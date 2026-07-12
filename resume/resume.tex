@@ -1,0 +1,59 @@
+\documentclass[letterpaper]{article}
+
+% ===== COLOR & FORMATTING CONTROLS =====
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{TLCresume}
+
+% ---- Compact typography (1-page fit) ----
+\renewcommand\normalsize{\fontsize{9.3}{10.0}\selectfont}\normalsize
+\geometry{left=0.05in, right=0.05in, top=0.1in, bottom=0.15in, includehead}
+
+% % COLOR: Modern Slate
+\definecolor{highlight}{RGB}{63, 81, 181}
+\definecolor{section}{RGB}{81, 45, 168}
+\definecolor{company}{RGB}{117, 70, 117}
+\definecolor{Project}{RGB}{48, 63, 159}
+\definecolor{role}{RGB}{117, 70, 117}
+\definecolor{date}{RGB}{117, 70, 117}
+
+% ---- Section Heading Formatting ----
+\titleformat{\section}
+  {\color{section}\scshape\centering\normalsize}
+  {}
+  {0em}
+  {}
+  [\vspace{0.2em}\hrule]
+
+\titlespacing*{\section}
+  {0em}
+  {0.05ex}
+  {0.2ex}
+
+% ====================
+% CONTACT INFORMATION
+% ====================
+\def\name{Tarun Mittal}
+\def\phone{(+91) 9001542418}
+\def\email{tm.eng2021@gmail.com}
+\def\LinkedIn{t-mittal}
+\def\github{TM-DEV-PRO}
+\def\role{Senior Software Engineer}
+
+\begin{document}
+\input{_header}
+
+\section{Summary}
+\input{sections/objective}
+
+\section{Skills}
+\input{sections/skills}
+
+\section{Professional Experience}
+\input{sections/experience}
+
+\section{Education \& Achievements}
+\input{sections/education}
+\input{sections/activities}
+\end{document}

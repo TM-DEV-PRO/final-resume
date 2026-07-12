@@ -1,0 +1,932 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/><title>Agentic Assort — Resume & Interview Playbook</title><style>
+:root{
+ --h:#4f46e5; --h2:#0891b2; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --bg:#ffffff; --soft:#f8fafc;
+ --hh:#7C3AED; --cc:#2563EB; --ss:#16A34A; --ll:#D97706; --zz:#DB2777; --obs:#0891B2;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+.layout{display:grid;grid-template-columns:300px 1fr;max-width:1500px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:20px 14px;border-right:1px solid var(--line);background:var(--soft);font-size:13px}
+nav.toc .brand{font-weight:800;font-size:15px;color:var(--h);margin-bottom:10px;letter-spacing:-.2px}
+nav.toc a{display:block;color:var(--muted);text-decoration:none;padding:3px 8px;border-radius:6px;border-left:2px solid transparent}
+nav.toc a:hover{background:#eef2ff;color:var(--h)}
+nav.toc a.lvl1{font-weight:700;color:var(--ink);margin-top:8px}
+nav.toc a.lvl2{margin-left:12px;font-size:12px}
+main{padding:36px 48px;min-width:0;overflow-x:hidden}
+h1{font-size:30px;font-weight:800;letter-spacing:-.5px;margin:46px 0 8px;padding-bottom:8px;border-bottom:4px solid;border-image:linear-gradient(90deg,var(--h),var(--h2)) 1;color:#0f172a}
+h1:first-child{margin-top:0}
+h2{font-size:23px;font-weight:750;margin:36px 0 10px;padding-left:12px;border-left:5px solid var(--h);color:#0f172a}
+h3{font-size:18px;font-weight:700;margin:24px 0 8px;color:#334155}
+h4{font-size:15px;font-weight:700;margin:16px 0 6px;color:#475569}
+p,li{font-size:14.5px}
+a{color:var(--h)}
+hr{border:none;border-top:1px dashed var(--line);margin:30px 0}
+code{background:#f1f5f9;padding:1.5px 5px;border-radius:5px;font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;color:#be185d}
+pre{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow-x:auto;font-size:12.5px}
+pre code{background:none;color:inherit;padding:0}
+table{border-collapse:collapse;width:100%;margin:16px 0;font-size:13px;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#f1f5f9;font-weight:700;color:#0f172a;position:sticky}
+tr:nth-child(even) td{background:#fafcff}
+figure{margin:10px 0;text-align:center}
+figure img{max-width:100%;border:1px solid var(--line);border-radius:10px;box-shadow:0 6px 20px rgba(2,6,23,.08)}
+figcaption{font-size:12px;color:var(--muted);font-style:italic;margin-top:6px}
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+.img-grid figure{margin:0}
+.callout{border-radius:12px;padding:14px 18px;margin:18px 0;font-size:14px;border:1px solid}
+.callout ol,.callout ul{margin:8px 0 0 0;padding-left:20px}
+.callout li{margin:4px 0}
+.callout.highlight{background:#eef2ff;border-color:#c7d2fe}
+.callout.highlight b{color:var(--h)}
+.callout.note{background:#ecfeff;border-color:#a5f3fc}
+.callout.note b{color:#0e7490}
+.callout.warn{background:#fff7ed;border-color:#fed7aa}
+.callout.warn b{color:#c2410c}
+.stage-badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.3px;color:#fff;padding:5px 12px;border-radius:999px;margin:6px 0 4px}
+.stage-h{background:var(--hh)} .stage-c{background:var(--cc)} .stage-s{background:var(--ss)} .stage-l{background:var(--ll)} .stage-z{background:var(--zz)} .stage-obs{background:var(--obs)}
+.mermaid{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0;text-align:center;overflow-x:auto}
+blockquote{margin:14px 0;padding:8px 16px;border-left:4px solid var(--h2);background:var(--soft);color:#334155;font-size:14px;border-radius:0 8px 8px 0}
+mjx-container{overflow-x:auto;overflow-y:hidden;max-width:100%}
+@media(max-width:960px){.layout{grid-template-columns:1fr}nav.toc{display:none}.img-grid{grid-template-columns:1fr}main{padding:22px}}
+@media print{nav.toc{display:none}.layout{grid-template-columns:1fr}main{padding:0}h1,h2{break-after:avoid}figure,table,.mermaid,.callout{break-inside:avoid}}
+</style></head><body>
+<div class="layout"><nav class="toc"><div class="brand">Agentic Assort · Resume Playbook</div><a class="lvl1" href="#agentic-assort-planner-resume-interview-playbook">Agentic Assort Planner — Resume &amp; Interview Playbook</a>
+<a class="lvl2" href="#how-to-use-this-doc">How to use this doc</a>
+<a class="lvl2" href="#the-format-googles-xyz-formula">The format: Google's XYZ formula</a>
+<a class="lvl1" href="#1-project-summary-paste-ready">1. Project summary (paste-ready)</a>
+<a class="lvl1" href="#2-resume-bullets-xyz-detailed-backing">2. Resume bullets (XYZ) + detailed backing</a>
+<a class="lvl2" href="#21-flagship-ai-agentic-orchestration">2.1 Flagship — AI / agentic orchestration</a>
+<a class="lvl2" href="#22-flagship-agentic-cluster-recommendation-copilot-the-module-now-in-build">2.2 Flagship — Agentic Cluster Recommendation Copilot (the module now in build)</a>
+<a class="lvl2" href="#23-flagship-data-database-architecture">2.3 Flagship — Data / database architecture</a>
+<a class="lvl2" href="#24-cost-performance-mostly-real-audit-numbers">2.4 Cost / performance (mostly REAL audit numbers)</a>
+<a class="lvl2" href="#25-leadership-breadth">2.5 Leadership / breadth</a>
+<a class="lvl1" href="#3-product-architecture-hld-how-the-agentic-planner-is-built">3. Product architecture (HLD) — how the agentic planner is built</a>
+<a class="lvl2" href="#31-the-planning-workspace-front-door">3.1 The planning workspace (front door)</a>
+<a class="lvl2" href="#32-cascade-aware-staged-planning">3.2 Cascade-aware staged planning</a>
+<a class="lvl2" href="#33-agent-orchestration-the-backend-shape">3.3 Agent orchestration (the backend shape)</a>
+<a class="lvl2" href="#34-the-pivot-planning-grid-edit-surface">3.4 The pivot planning grid (edit surface)</a>
+<a class="lvl2" href="#35-the-first-shipping-module-the-cluster-recommendation-copilot">3.5 The first shipping module — the Cluster Recommendation Copilot</a>
+<a class="lvl2" href="#36-the-wider-cortexeye-agentic-platform-context-you-can-speak-to">3.6 The wider CortexEye agentic platform (context you can speak to)</a>
+<a class="lvl1" href="#4-database-architecture-hld-lld">4. Database architecture (HLD + LLD)</a>
+<a class="lvl2" href="#41-hld-the-three-tier-spine">4.1 HLD — the three-tier spine</a>
+<a class="lvl2" href="#42-the-tenant-unified-derived-schema">4.2 The tenant-unified derived schema</a>
+<a class="lvl2" href="#43-lld-clickhouse-insert-only-versioned-model">4.3 LLD — ClickHouse insert-only / versioned model</a>
+<a class="lvl2" href="#44-cube-rollup-pivot-fast-reads">4.4 Cube / rollup / pivot (fast reads)</a>
+<a class="lvl2" href="#45-the-reconciled-verdict-decision-gates">4.5 The reconciled verdict + decision gates</a>
+<a class="lvl2" href="#46-ingestion-be-precise-in-the-room">4.6 Ingestion (be precise in the room)</a>
+<a class="lvl1" href="#5-technology-deep-dives-funda-architecture-why-it-solves-the-problem-gotchas">5. Technology deep dives (funda · architecture · why it solves the problem · gotchas)</a>
+<a class="lvl2" href="#51-clickhouse">5.1 ClickHouse</a>
+<a class="lvl2" href="#52-bigquery">5.2 BigQuery</a>
+<a class="lvl2" href="#53-postgresql">5.3 PostgreSQL</a>
+<a class="lvl2" href="#54-duckdb">5.4 DuckDB</a>
+<a class="lvl2" href="#55-agent-orchestration-router-planner-executor-supervisor-langgraph">5.5 Agent orchestration (router / planner-executor / supervisor) &amp; LangGraph</a>
+<a class="lvl2" href="#56-llm-plumbing-text-to-sql-decomposition-confidence-rag-cache">5.6 LLM plumbing (text-to-SQL, decomposition, confidence, RAG, cache)</a>
+<a class="lvl2" href="#57-rust-axum-cortexeye-data-api">5.7 Rust / Axum (CortexEye data API)</a>
+<a class="lvl2" href="#58-supporting-infra">5.8 Supporting infra</a>
+<a class="lvl1" href="#6-interview-qa-what-an-em-architect-will-ask">6. Interview Q&amp;A (what an EM / architect will ask)</a>
+<a class="lvl2" href="#61-architecture-databases">6.1 Architecture &amp; databases</a>
+<a class="lvl2" href="#62-ai-agents">6.2 AI / agents</a>
+<a class="lvl2" href="#63-tradeoffs-scale-what-would-you-do-differently">6.3 Tradeoffs, scale, "what would you do differently"</a>
+<a class="lvl2" href="#64-behavioral-use-these-as-star-seeds">6.4 Behavioral (use these as STAR seeds)</a>
+<a class="lvl1" href="#7-talking-tracks-tailoring-honesty">7. Talking tracks, tailoring &amp; honesty</a>
+<a class="lvl2" href="#71-three-pitch-lengths">7.1 Three pitch lengths</a>
+<a class="lvl2" href="#72-star-stories-ready-to-tell">7.2 STAR stories (ready to tell)</a>
+<a class="lvl2" href="#73-tailoring-to-the-jd">7.3 Tailoring to the JD</a>
+<a class="lvl2" href="#74-honesty-guardrail-repeat-this-protects-you">7.4 Honesty guardrail (repeat — this protects you)</a>
+<a class="lvl2" href="#75-one-page-resume-skeleton-fill-with-2-bullets">7.5 One-page résumé skeleton (fill with §2 bullets)</a>
+<a class="lvl2" href="#sources-resume-best-practice-research">Sources (résumé best-practice research)</a>
+<a class="lvl1" href="#8-authoritative-product-specifics-notebooklm-requirements-notebook">8. Authoritative product specifics (NotebookLM — requirements notebook)</a>
+<a class="lvl2" href="#81-agents-orchestration">8.1 Agents &amp; orchestration</a>
+<a class="lvl2" href="#82-governed-autonomy-concrete-thresholds">8.2 Governed autonomy (concrete thresholds)</a>
+<a class="lvl2" href="#83-tech-stack-as-stated">8.3 Tech stack (as stated)</a>
+<a class="lvl2" href="#84-database-model-clickhouse-as-stated">8.4 Database model &amp; ClickHouse (as stated)</a>
+<a class="lvl2" href="#85-poc-gating-benchmark-numbers-as-stated">8.5 PoC gating + benchmark numbers (as stated)</a>
+<a class="lvl2" href="#86-official-confluence-docs-audited-zero-contradictions-july-2026">8.6 Official Confluence docs — audited, zero contradictions (July 2026)</a>
+<a class="lvl2" href="#87-resume-bullets-these-unlock-add-to-2">8.7 Résumé bullets these unlock (add to §2)</a>
+<a class="lvl1" href="#9-the-cluster-recommendation-copilot-the-module-you-are-building-right-now">9. The Cluster Recommendation Copilot — the module you are building right now</a>
+<a class="lvl2" href="#91-what-in-one-breath">9.1 WHAT — in one breath</a>
+<a class="lvl2" href="#92-why-the-measured-problem-all-live-audit-numbers">9.2 WHY — the measured problem (all live-audit numbers)</a>
+<a class="lvl2" href="#93-how-the-workflow-inversion">9.3 HOW — the workflow inversion</a>
+<a class="lvl2" href="#94-the-architecture-positions-and-why">9.4 The architecture positions (and why)</a>
+<a class="lvl2" href="#95-the-strategy-doorway-22-of-the-frd-best-cross-module-story">9.5 The strategy doorway (§2.2 of the FRD — best cross-module story)</a>
+<a class="lvl2" href="#96-targets-rollout-know-these-cold">9.6 Targets &amp; rollout (know these cold)</a>
+<a class="lvl2" href="#97-interview-qa-for-this-module">9.7 Interview Q&amp;A for this module</a>
+<a class="lvl1" href="#10-engineering-stack-direction-july-2026-authoritative">10. Engineering stack direction — July 2026 (authoritative)</a>
+<a class="lvl2" href="#101-the-directive-verbatim-intent">10.1 The directive (verbatim intent)</a>
+<a class="lvl2" href="#102-why-each-choice-holds-up-interview-defense">10.2 Why each choice holds up (interview defense)</a>
+<a class="lvl2" href="#103-resume-phrasing-paste-ready">10.3 Résumé phrasing (paste-ready)</a>
+<a class="lvl2" href="#104-qa-for-this-directive">10.4 Q&amp;A for this directive</a></nav><main><h1 id="agentic-assort-planner-resume-interview-playbook">Agentic Assort Planner — Resume &amp; Interview Playbook</h1>
+<div class="stage-badge stage-obs">Senior SWE · Python + AI/Agents + Data · grounded in your own repos, PoC & audit — July 2026</div>
+
+<p>This is a single place to (1) copy <strong>resume-ready bullets</strong> for the <strong>Agentic Assort Planner</strong> project, (2) understand the <strong>detailed backing</strong> for every claim — the <em>why</em>, the <em>tradeoffs</em>, the <em>decision path</em>, the <em>impact</em> — and (3) walk into an interview able to defend the <strong>architecture, databases, AI/agent design, and every technology named</strong>, down to fundamentals. Written for a <strong>senior software engineer (Python + AI + data)</strong>.</p>
+<h2 id="how-to-use-this-doc">How to use this doc</h2>
+<ul>
+<li><strong>§1</strong> — the project one-liner + summary blurb (paste at the top of the project).</li>
+<li><strong>§2</strong> — the <strong>XYZ resume bullets</strong> (pick 5–8), each followed by a <strong>backing block</strong> (how/why/tradeoff/impact/evidence/honesty).</li>
+<li><strong>§3</strong> — <strong>product architecture (HLD)</strong> — the agentic planning workspace + agent orchestration.</li>
+<li><strong>§4</strong> — <strong>database architecture (HLD + LLD)</strong> — three-tier spine, the tenant-unified derived schema, and the ClickHouse insert-only/versioned design.</li>
+<li><strong>§5</strong> — <strong>per-technology deep dives</strong> — fundamentals · architecture · how it solves the problem · gotchas, for every tech you'd list.</li>
+<li><strong>§6</strong> — <strong>interview Q&amp;A</strong> — the questions an engineering manager / architect will ask, with model answers.</li>
+<li><strong>§7</strong> — <strong>talking tracks + honesty guardrail</strong> — 30-sec / 2-min / deep pitches, STAR stories, and exactly which numbers are real vs indicative.</li>
+<li><strong>§8</strong> — <strong>authoritative product specifics</strong> from the requirements notebook (stack, autonomy bands, ClickHouse PoC numbers).</li>
+<li><strong>§9</strong> — <strong>the Cluster Recommendation Copilot</strong> — the agentic clustering module now in build (FRD v1.8): what/why/how, measured baselines, targets, and its own Q&amp;A. This is your <em>present-tense</em> flagship — the answer to "what are you working on right now?"</li>
+<li><strong>§10</strong> — <strong>the July 2026 stack direction (authoritative)</strong> — Go/Gin for non-agentic flows, Rust for profile-proven hot paths, agentic tier unchanged, and <strong>ClickHouse end-to-end (transactional + analytical)</strong> via the insert-only/versioned write model. Where §4/§5 describe Postgres as the planning system-of-record, read them as decision history; §10 is the current stance.</li>
+</ul>
+<h2 id="the-format-googles-xyz-formula">The format: Google's XYZ formula</h2>
+<p>Every strong bullet follows <strong>"Accomplished [X], as measured by [Y], by doing [Z]"</strong> — X = the outcome, Y = the metric, Z = the method/tech. Lead with impact, quantify it, then name the technique. For a <em>senior</em> role the narrative is <strong>"I architected systems and multiplied team output,"</strong> not "I wrote code" — so bullets emphasize design decisions, cross-system tradeoffs, cost/latency wins, and de-risking. Structure the résumé as a 2–3 line summary, then 5–8 quantified XYZ bullets per project. (Sources: Wonsulting, Teal, IGotAnOffer — linked at the end.)</p>
+<div class="callout warn">
+<p><b>Honesty guardrail — read before you paste.</b> Keep only what <b>you personally</b> did; this doc is scoped to work evidenced in your repos/PoC/audit, but you must still own each line in the room. Two tiers of numbers appear here:</p>
+<ul>
+<li><b>REAL (defend as measured):</b> the BigQuery cost figures (≈3× / 74× / 280× / 880×; the 38.8 TiB / $327 <code>SELECT *</code> leak), the Postgres audit facts (88% orphaned optimizer rows; 5,503 partitions for 298K rows), and the catalog verification (5,385 columns, 46 FKs) — these come from the <b>live mtp audit + read-only metadata</b>.</li>
+<li><b>INDICATIVE (frame as "in an offline eval" / "design target"):</b> the decomposition score 0.54→0.99, and the PoC latency/seed/pivot milliseconds — these are <b>mock / pure-Python</b> harness results measuring <i>structure &amp; correctness</i>, not production model accuracy or real-engine latency. The load-bearing PoC result that IS real is the <b>architecture property</b>: <code>mutations_used = 0</code> at every scale.</li>
+<li><b>FRD (Cluster Copilot, §9):</b> two sub-tiers — <b>measured baselines</b> from live tenant audits (8.5% run failures = 37/437; 0% reproducibility; median job ≈20 s over 370 runs; 1-in-5 finalized plans with zero stores) which you defend as "measured on live tenants," and <b>committed targets</b> (&lt;1 h to finalized plan, ≥20 configs, &lt;2% failures, p95 &lt;500 ms) which you frame as "the design targets we set and are building against."</li>
+</ul>
+<p>Say "in an offline evaluation" or "modeled/projected" for the indicative ones and you'll never be caught out.</p>
+</div>
+<hr>
+<h1 id="1-project-summary-paste-ready">1. Project summary (paste-ready)</h1>
+<p><strong>One-liner (résumé project header):</strong></p>
+<blockquote>
+<p><strong>Agentic Assort Planner</strong> — AI-assisted, multi-agent retail merchandise-planning platform (Impact Analytics). <em>Python (FastAPI, LangGraph, FastMCP) · Go (Gin) · Rust (Axum) · ClickHouse (insert-only versioned, end-to-end) · BigQuery · pgvector · GCP.</em> <em>(Stack per the July 2026 direction — see §10.)</em></p>
+</blockquote>
+<p><strong>2–3 line summary (top of the project block):</strong></p>
+<blockquote>
+<p>Designed and built the AI and data backbone of a next-generation assortment-planning product: a <strong>router→orchestrator→specialist multi-agent system</strong> that turns natural-language planning questions into a validated execution DAG, and a <strong>three-tier data architecture</strong> (BigQuery source-of-truth → Postgres editable system-of-record → ClickHouse/DuckDB OLAP serving) with a <strong>tenant-unified schema at the derived grain</strong>. Currently building its first shipping module — an <strong>agentic store-clustering copilot</strong> (deterministic tools on a dedicated ClickHouse read plane, LLM orchestration, three human confirm-gates) targeting &lt;1 h to a finalized plan (from days), ≥20 configurations explored (from 1) and &lt;2% run failures (from a measured 8.5%). Drove the ClickHouse decision via a runnable PoC and a cost/perf audit that cut recurring BigQuery scan cost by up to ~280×.</p>
+</blockquote>
+<p><strong>Current-work one-liner (for "what are you doing right now?"):</strong></p>
+<blockquote>
+<p>"I'm building the clustering module of the agentic planner — a copilot where the planner states <em>what to cluster and for when</em>, and a dedicated agent handles store scoping, attribute selection and batch exploration on a dedicated ClickHouse read plane, with evidence packs and three human approval gates; approved clusters write back into the existing product unchanged. We spec'd it against live-audit baselines — 8.5% run failures, zero reproducibility, one configuration tried per plan — and the targets are &lt;1 hour to a finalized plan, ≥20 configs explored, and p95 sub-500 ms agent data probes." <em>(Full depth: §9.)</em></p>
+</blockquote>
+<p><strong>How to describe the product in one breath (for interviews):</strong></p>
+<blockquote>
+<p>"It's the agentic rebuild of our assortment planner. A merchant works a plan through a staged pipeline — hindsight → strategy → clustering → line plan → buy plan — and a fleet of specialist AI agents runs alongside: surfacing issues as <em>Signals</em>, proposing scenarios, and acting autonomously overnight within approval thresholds. Under the hood it's a multi-agent orchestrator plus a three-tier data spine designed so a pivot-heavy, editable planning grid and scan-heavy hindsight analytics each run on the engine that's best at them."</p>
+</blockquote>
+<p><strong>Where to place it on the résumé:</strong> flagship project under Impact Analytics. Lead the project with 2 AI/agentic bullets and 2 data-architecture bullets (the most senior, best-evidenced work), then 1–2 cost/perf or leadership bullets depending on the JD (§7 has tailoring guidance).</p>
+<hr>
+<h1 id="2-resume-bullets-xyz-detailed-backing">2. Resume bullets (XYZ) + detailed backing</h1>
+<p>Pick <strong>5–8</strong>. Each bullet is followed by a <strong>backing block</strong> — <em>why you did it, how, the tradeoff, the decision path, the impact, the evidence, and the honesty note</em> — so you can defend every word. Metrics tagged <strong>[REAL]</strong> are measured from the live audit/metadata; <strong>[EVAL]</strong> = offline/mock harness; <strong>[DESIGN]</strong> = design target / architecture property; <strong>[FRD]</strong> = a measured baseline or committed target from the Agentic Cluster FRD v1.8 (say "measured baseline" for the former, "design target" for the latter).</p>
+<h2 id="21-flagship-ai-agentic-orchestration">2.1 Flagship — AI / agentic orchestration</h2>
+<h3 id="a1-multi-agent-decomposition">A1 — Multi-agent decomposition</h3>
+<blockquote>
+<p><strong>Architected a router→orchestrator→specialist multi-agent system (5 domain agents) that decomposes a natural-language planning question into a validated execution DAG, raising decomposition quality from 0.54 to 0.99 across a 12-query offline eval by adding a structural DAG validator plus a single LLM self-repair pass — removing the No. 1 production failure of LLM planners (malformed plans).</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> free-form "let the LLM plan" produces invalid or under-specified plans that break downstream execution. <em>How:</em> a <strong>Router</strong> LLM classifies intent → <code>single | orchestrate</code>; a <strong>Decomposer</strong> emits <code>{sub_queries[], path[][]}</code> (an agent-routed DAG); a <strong><code>plan_schema.validate()</code></strong> gate rejects unknown domains, duplicate ids, over-wide stages, and — critically — <strong>forward references</strong> in <code>&lt;A_n&gt;</code> placeholders before anything executes; on failure it re-prompts the LLM once with the validation errors (<code>repaired=True</code>). <em>Tradeoff:</em> one extra LLM round-trip on the ~small fraction of invalid plans vs. cascading executor failures — cheap insurance. <em>Decision path:</em> chose a <strong>prompt + hard validator</strong> over a fine-tuned planner (faster, deterministic, debuggable) and over free-form ReAct (unpredictable). <em>Impact:</em> structural correctness 0.54→0.99 <strong>[EVAL, 12 gold queries]</strong>; the validator makes failures explicit and recoverable. <em>Evidence:</em> <code>agentic_assort_multiagent/core/{router,decomposer,plan_schema,orchestrator}.py</code>; <code>docs/03</code>. <em>Honesty:</em> the score is an <strong>offline structural eval</strong> on mock model outputs — say "in an offline evaluation harness."</p>
+<h3 id="a2-parallelism-dependency-passing-caching">A2 — Parallelism + dependency passing + caching</h3>
+<blockquote>
+<p><strong>Cut agent-pipeline latency by executing independent sub-queries in parallel within each DAG stage (thread pool) and passing cross-agent results through <code>&lt;A_n&gt;</code> placeholder rephrasing, and eliminated repeat work with a pgvector semantic cache (cosine similarity + TTL) that short-circuits the whole pipeline on similar questions.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> a planning question fans out to several agents; running them serially is needlessly slow, and users re-ask near-identical questions. <em>How:</em> the orchestrator walks <code>plan.path</code> <strong>stage-by-stage (sequential)</strong> but runs agents <strong>within a stage concurrently</strong> via <code>ThreadPoolExecutor(max_workers=max_per_stage)</code>; when a later stage depends on an earlier answer, a <strong>rephraser</strong> substitutes <code>&lt;A1&gt;</code> with the prior result before dispatch; a <strong><code>SemanticCache</code></strong> embeds the query and returns a cached answer when cosine-similarity ≥ threshold and TTL is fresh (pgvector <code>&lt;=&gt;</code> in prod, in-memory offline). <em>Tradeoff:</em> thread pool (not asyncio) because the agent I/O is largely blocking DB/LLM SDK calls — simpler and correct for the workload; cache adds a staleness window bounded by TTL. <em>Impact:</em> removes serialization on the fan-out and avoids full-pipeline recompute on repeats. <em>Evidence:</em> <code>core/orchestrator.py</code>, <code>connectors/cache.py</code>. <em>Honesty:</em> design/architecture property; no production latency number attached.</p>
+<h3 id="a3-resilient-agents-safe-text-to-sql">A3 — Resilient agents + safe text-to-SQL</h3>
+<blockquote>
+<p><strong>Built self-contained specialist agents on a <code>validate→fetch→analyze→narrate</code> lifecycle with exponential-backoff retries and partial-failure synthesis (the orchestrator still returns a useful answer when one agent errors), and generated text-to-SQL with hard guardrails — SELECT-only, <code>LIMIT</code> caps, <code>NULLIF</code> denominators, no <code>SELECT *</code>.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> one flaky data call shouldn't fail the whole answer, and LLM-authored SQL is a foot-gun (runaway scans, division-by-zero, full-table reads). <em>How:</em> <code>BaseAgent.answer()</code> never raises — a failure returns <code>AgentResult(status="error")</code> so <code>_synthesize()</code> produces a <strong>PARTIAL</strong> answer; <code>with_retries()</code> wraps transient <code>fetch()</code> with 0.2/0.4/0.8s backoff; the text-to-SQL prompt is constrained and the result is validated before execution. <em>Tradeoff:</em> partial answers must be clearly labeled to the user (trust) — surfaced via status + reason. <em>Impact:</em> graceful degradation instead of hard failure; bounded, safe queries. <em>Evidence:</em> <code>agents/base.py</code>, <code>core/retry.py</code>. <em>Honesty:</em> implemented in the PoC; production hardening (timeouts, circuit-breakers) is the next step — good thing to volunteer.</p>
+<h3 id="a4-governed-autonomy-human-in-the-loop">A4 — Governed autonomy (human-in-the-loop)</h3>
+<blockquote>
+<p><strong>Designed the agent autonomy model — agents act unattended only within confidence/impact thresholds; above threshold they raise a human-in-the-loop "Signal" with a reason code, and every agent action and human decision is written to an immutable audit log — enabling safe overnight automation.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> merchants won't trust an agent that silently changes a multi-million-dollar buy; autonomy must be bounded and auditable. <em>How:</em> <code>isAutonomous</code>/<code>aboveThreshold</code> gate actions; the <strong>Signals</strong> worklist carries Accept/Skip/Edit/Dismiss + reason; the <strong>Log/audit trail</strong> records who/what/when; overnight actions produce a morning summary. <em>Tradeoff:</em> thresholds too tight → agents feel useless; too loose → risk. Chose explicit, per-signal confirmation above threshold + full audit as the trust anchor. <em>Impact:</em> makes "overnight autonomy" acceptable to the business. <em>Evidence:</em> <code>product_artifacts/…Knowledge.md</code> (Signals/Log/autonomy threshold). <em>Honesty:</em> product-design + prototype behavior; frame as "designed the governance model."</p>
+<h2 id="22-flagship-agentic-cluster-recommendation-copilot-the-module-now-in-build">2.2 Flagship — Agentic Cluster Recommendation Copilot (the module now in build)</h2>
+<p><em>This is the concrete, shipping instantiation of the agentic vision: a dedicated agent for the store-clustering module, spec'd in the Agentic Cluster FRD v1.8 (companion HLD/LLD) with measured baselines from live tenant audits. These bullets are the freshest and most defensible "senior owns a system end-to-end" material — lead with 1–2 of them.</em></p>
+<h3 id="c1-the-copilot-itself-own-the-system-story">C1 — The copilot itself (own the system story)</h3>
+<blockquote>
+<p><strong>Designed an agentic store-clustering copilot — deterministic tools compute on a dedicated ClickHouse read plane, an LLM orchestrates and explains, and three human confirm-gates govern every write — targeting hierarchy-to-finalized-plan under 1 hour (from days), ≥20 configurations explored per plan (from exactly 1), and run failures below 2% (from a measured 8.5%) with 100% reproducible shipped clusterings (from 0%).</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> clustering is the foundation of every assortment strategy plan yet the least assisted step — the system already computes attribute significance, then makes the human choose from raw score lists; users try <strong>1 configuration per plan</strong> in a search space of 12 algorithms × k 3–10 × any attribute subset; <strong>8.5% of runs fail (37/437 on the kik tenant, &gt;80% on input mistakes)</strong> and nothing is reproducible (algorithm/params/seed never persisted) <strong>[FRD-measured]</strong>. <em>How:</em> invert the workflow — the user states <strong>intent</strong> (hierarchy + reference period, the only two non-derivable inputs); the agent handles scoping (active stores, sister-store substitution, sample-size guards), attribute selection (significance + coverage + redundancy gates → ranked feature sets), and batch exploration (20–100 pruned configs against an isolated scratch plan, results streaming as they score); the human confirms at <strong>3 gates</strong> and injects business knowledge (pins/moves). Approved results <strong>write back into the existing product tables unchanged</strong> — strategy/budget/wedge/line consume them with zero product changes. <em>Key design position:</em> the LLM never computes — <strong>deterministic tools compute, the LLM orchestrates and explains</strong>; same inputs + same scorer version ⇒ identical ranking. <em>Tradeoff:</em> an agentic layer beside (not replacing) the manual wizard doubles surfaces, but de-risks adoption — both modes converge on the same config document, gates and write-back (the "convergence rule"). <em>Impact targets (6-mo):</em> &lt;1 h to finalized plan, ≥20 configs, &lt;2% failures, ≥60% top-3 acceptance <strong>[FRD-target]</strong>. <em>Evidence:</em> Agentic Cluster FRD v1.8 §§0–2, 5, 6. <em>Honesty:</em> baselines are measured from live tenants; targets are committed design goals — say "measured baseline / design target."</p>
+<h3 id="c2-the-clickhouse-read-plane-data-infra-story">C2 — The ClickHouse read plane (data-infra story)</h3>
+<blockquote>
+<p><strong>Cut agent data-probe latency from 1–20s+ (shared BigQuery slots, uncontrolled variance) to a p95 &lt; 500 ms deterministic target by standing up a dedicated ClickHouse read plane fed by the existing BQ→ClickHouse ingestion lane — with agent access enforced read-only at the database-profile level, nightly precompute converting ≥80% of sessions from cold to warm, and cube-to-BigQuery reconciliation within 0.1%.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> an interactive copilot dies on 1–20s data probes; BigQuery's shared-reservation variance is the killer, and ad-hoc agent load on the shared slots hurts everyone else. <em>How:</em> reuse the org's proven BQ→ClickHouse ingestion pipeline (built for ItemSmart) to feed a <strong>dedicated instance</strong>; precompute significance + top candidates nightly for hierarchies with active plans; quote data-as-of in every recommendation; per-partition reconciliation guards derived-data rot. <em>Decision path:</em> this is the gated forward option from my reconciled DB verdict (L1) actually exercised — ClickHouse only for the read/pivot plane, BigQuery stays truth, Postgres stays the editable SoR; the FRD's non-goals state it explicitly ("NOT moving transactional data to ClickHouse"). <em>Tradeoff:</em> a derived copy that can rot (the org base rate is real) — mitigated by owned ingestion + freshness sentinel; and accepted physics on the ML itself (~9 s/config median model fit — we parallelize around it, we don't pretend to speed it up). <em>Impact:</em> P0 exit gate is p95 &lt; 500 ms and 0.1% reconciliation <strong>[FRD-target]</strong>; compute baselines measured over 370 live runs (median job ≈20 s, max 463 s) <strong>[FRD-measured]</strong>. <em>Evidence:</em> FRD §§0, 3, 6–8; US-09/US-10.</p>
+<h3 id="c3-deterministic-grounding-the-anti-hallucination-story">C3 — Deterministic grounding (the anti-hallucination story)</h3>
+<blockquote>
+<p><strong>Made chat-native intent safe by grounding every free-text mention deterministically — department names backtracked to full hierarchy paths via catalog search (never LLM guesses), season labels resolved against the tenant's fiscal calendar, ambiguity surfacing a clarifying question — with a confirm-required grounding card, so one prompt like "cluster Pet, Electrical and Cookware for Summer 2025" safely fans out to N parallel pipelines.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> the #1 way agent products lose trust is silently acting on a misparsed scope; hierarchy labels are ambiguous across levels and seasons differ per tenant and hemisphere. <em>How:</em> mentions → deterministic catalog backtracking to full paths (multiple departments → multiple filters); "Summer 2025" → fiscal-calendar + season-registry resolution with resolved dates displayed; the <strong>grounding card</strong> (scope, store cohort, sister-store substitutions, proposed attributes, each with a reason) must be confirmed before anything executes; batch intents get one disambiguation — <em>together or separately?</em> — then run as parallel pipelines bounded by a tenant concurrency budget. <em>Tradeoff:</em> an extra confirmation step per session vs. silent wrong-scope compute — cheap, and it doubles as the evidence surface. <em>Impact:</em> eliminates the input-error class behind &gt;80% of today's run failures <strong>[FRD-measured]</strong>; acceptance criteria US-12/US-15. <em>Evidence:</em> FRD §2.1, US-12, US-15. <em>Interview gold:</em> "the LLM arranges the conversation; a catalog search decides what the words mean."</p>
+<h3 id="c4-reproducibility-pins-governed-autonomy-the-trust-story">C4 — Reproducibility, pins &amp; governed autonomy (the trust story)</h3>
+<blockquote>
+<p><strong>Turned clustering from unreproducible one-shots into auditable, re-runnable artifacts — every shipped clustering persists a content-addressed config document (algorithm, k, params, seed, features, windows, pins, data watermark, scorer version), planner store-moves become durable "pin" constraints honored by every future re-run (0% → 100% survival), and autonomy is a three-level delegation ladder (copilot → autopilot-with-approval → standing drift monitor) where no path ever auto-finalizes.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> today the winning configuration is thrown away (0% reproducible), and a planner's manual store swap is silently erased by the next re-run — human knowledge has no durable home <strong>[FRD-measured]</strong>. <em>How:</em> the <strong>config document</strong> is the unit of record — persisted, content-addressed, re-runnable ("re-run reproduces membership on the same watermark or explains drift"); <strong>pins</strong> persist as constraints with required reason codes and survive every refresh; delegation levels: L1 copilot proposes/executes on confirmation → L2 autopilot runs one intent end-to-end for a single review → L3 nightly drift monitor raises re-clustering proposals — and <strong>system-originated work never self-finalizes</strong> (surfaces as <em>pending intents</em> unless the tenant grants recorded standing pre-approval). A flow audit of 19 workflows produced a <strong>closed-loop terminal-states contract</strong> (every flow defines success / rejection / failure / expiry — nothing accumulates silently). Deviations from recommendations are captured with reasons and feed three honest learning loops: deterministic memory → human-approved calibration → labeled corpus for a future ranker (no silent self-tuning). <em>Tradeoff:</em> gates add friction vs. pure autopilot — chosen deliberately; <code>is_final</code> is a human signature. <em>Evidence:</em> FRD §§2.2–2.5, US-05/08/16/17, OD-1–OD-6. <em>Honesty:</em> this is design-you-own + spec'd acceptance criteria; implementation is phased P0–P3.</p>
+<h3 id="c5-the-strategy-doorway-cross-module-product-thinking">C5 — The strategy doorway (cross-module product thinking)</h3>
+<blockquote>
+<p><strong>Closed the product's most-consumed dead-end — strategy plans must bind to a cluster plan at creation with zero help choosing (live audit: 1 in 5 finalized cluster plans had zero stores attached; briscoes' inventory 100% &gt;17 months stale) — by shipping a deterministic ≤2s FitScore ranking with hard eligibility gates, per-candidate explain cards ("explains X% of store-revenue variance"), and an inline spawn path that runs the full recommendation pipeline inside strategy-create, backtested against 467 historical bindings.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> every strategy plan binds to exactly one cluster plan; the audit even found strategies pointing at cluster plans that no longer exist — a silent-breakage class. <em>How:</em> hard eligibility gate first (finalized ∧ not deleted ∧ non-empty membership ∧ recoverable scope — never score the unusable); <strong>FitScore</strong> ranks in ≤2 s (cheap terms for all candidates, the variance-explained term only for the top-5, computed on the last comparable season, penalized for cluster count, weighted by store coverage); bands (Green/Yellow/Red) <strong>calibrated by backtesting against 363 kik + 104 briscoes historical bindings</strong>; always a top-3 shortlist (padded with a spawn card — never an empty dropdown); spawn writes at the pre-finalize step and promotes only on human confirmation, or parks as a pending intent under tenant governance; every spawned plan records <code>created_via</code> + full scope keys so future doorways match it; and the create API now <strong>validates bindings are live and finalized</strong> — eliminating the dangling-reference class. <em>Impact target:</em> ≥40% of new strategy plans created with a suggested cluster plan <strong>[FRD-target]</strong>. <em>Evidence:</em> FRD §2.2, US-07. <em>Interview gold:</em> the eligibility-gate stat — "1 in 5 finalized plans would silently break every downstream step; we made them unrankable."</p>
+<h2 id="23-flagship-data-database-architecture">2.3 Flagship — Data / database architecture</h2>
+<h3 id="d1-three-tier-data-spine">D1 — Three-tier data spine</h3>
+<blockquote>
+<p><strong>Designed the platform's three-tier data spine — BigQuery (source of truth + batch cube builds) → Postgres (editable, ACID system-of-record) → ClickHouse/DuckDB (OLAP pivot &amp; hindsight serving) — deliberately separating transactional grid edits from scan-heavy analytics instead of forcing one engine to do both.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> the product is "two shapes in one" — <strong>OLTP-with-pivot</strong> (an editable pivoted grid needing ACID + read-after-write) and <strong>OLAP</strong> (scan-and-aggregate hindsight). No single engine is best at both. <em>How:</em> BigQuery holds raw facts + builds the pre-aggregated planning cube via scheduled ELT; Postgres owns the editable plan (ACID, stored procs); DuckDB hydrates a plan slice for in-process pivots; ClickHouse is the gated read/pivot serving layer at scale. <em>Tradeoff:</em> more moving parts + a sync path vs. one-DB simplicity — justified because "everything in one OLAP DB" breaks transactional writes and per-edit cost, and "everything in BigQuery" hits DML quota/latency walls for interactive edits. <em>Decision path:</em> scored 4 engines across capabilities (writes, pivot latency, huge scans, cost) — Postgres wins writes, ClickHouse/DuckDB win pivots/scans — then assigned each its best job. <em>Impact:</em> each workload runs on the right engine; BigQuery stays truth in every scenario. <em>Evidence:</em> <code>docs/05</code> §7 scorecard; <code>db_architecture_poc/</code>. </p>
+<h3 id="d2-insert-only-versioned-clickhouse-the-key-insight">D2 — Insert-only / versioned ClickHouse (the key insight)</h3>
+<blockquote>
+<p><strong>Unlocked ClickHouse as a planning store by designing an insert-only/versioned write model — <code>ReplacingMergeTree(version)</code> + <code>argMax(version)</code> reads, soft-delete, and atomic <code>REPLACE PARTITION</code> for bulk re-seeds — that holds the async mutation queue at zero, sidestepping ClickHouse's ~1,000-mutation ceiling while natively powering overrides, version-diff and undo/redo.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> ClickHouse is superb at OLAP pivots but its <code>ALTER UPDATE/DELETE</code> <strong>mutations are async and degrade past ~500 / stop past ~1,000</strong> — and a planning grid is edit-heavy, which is exactly why the <em>legacy</em> audit said "no ClickHouse." <em>Insight:</em> that objection is a property of the <em>legacy in-place-UPDATE</em> code, <strong>not</strong> of planning itself. The new grid is built around versions/variance/undo, so an edit can be an <strong>INSERT of a new version</strong> instead of an UPDATE. <em>How:</em> every cell edit inserts a row with <code>version = epoch-ms</code>; reads take <code>argMax(value, version)</code> where <code>is_deleted=0</code>; deletes insert a tombstone; bulk LY/LLY re-seeds use atomic <code>ALTER TABLE … REPLACE PARTITION … FROM staging</code>. A guard tracks <code>mutations_used</code> and asserts it stays <strong>0</strong>. <em>Tradeoff:</em> history accumulates until background merges collapse duplicates (more storage, <code>FINAL</code>/<code>argMax</code> on read) — acceptable and it's exactly what powers undo/version-diff for free. <em>Impact:</em> converts the workload "from what ClickHouse is worst at to what it's fine at"; <strong><code>mutations_used = 0</code> at 1× and 10×</strong> with correct read-after-write <strong>[DESIGN/verified property]</strong>. <em>Evidence:</em> <code>db_architecture_poc/domain/ch_planning_schema.sql</code>, <code>connectors/clickhouse.py</code>, <code>results/team_poc_results.json</code>, <code>docs/06</code>/<code>07</code>. <em>Honesty:</em> the <em>latency</em> ms in the PoC are mock; the <em>zero-mutation</em> property is the real, load-bearing result.</p>
+<h3 id="d3-tenant-unified-schema-at-the-derived-grain">D3 — Tenant-unified schema at the derived grain</h3>
+<blockquote>
+<p><strong>Standardized a tenant-unified schema at the derived (cube) grain — one common <code>plan_cube</code> partitioned by tenant (Postgres <code>LIST(tenant)</code>; ClickHouse <code>(tenant, l1, fiscal_week)</code>) — so one codebase, query set and stored procedures serve every client with no per-tenant tables.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> the legacy product forks a separate DB (and schema drift) per tenant, multiplying maintenance. <em>How:</em> define the cube grain once (<code>cluster × class × fiscal_week</code>), key every table by <code>tenant</code>, create one partition per tenant on onboarding; the tenant-parameterized cube-build SQL is identical across clients. <em>Tradeoff:</em> per-tenant <em>physical</em> isolation (separate Postgres DB + BigQuery project) is retained for security/blast-radius; "unified" is a <strong>schema/codebase standard at the derived level</strong>, not one shared physical instance. <em>Impact:</em> same queries/procedures everywhere → far less per-client code; onboarding a tenant = add a partition. <em>Evidence:</em> <code>domain/planning_schema.sql</code>, <code>domain/ch_planning_schema.sql</code>, <code>docs/06</code> R1.</p>
+<h3 id="d4-cube-duckdb-pivot-accelerator">D4 — Cube + DuckDB pivot accelerator</h3>
+<blockquote>
+<p><strong>Built a pre-aggregated planning cube plus an in-process DuckDB pivot accelerator so cross-tab pivots read a small columnar cube slice instead of raw fact tables, keeping pivots interactive as the cube scaled 1×→100× in the benchmark.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> "pivot in the blink of an eye" over raw granular tables means re-scanning huge facts on every drag. <em>How:</em> materialize the cube in BigQuery, hydrate the plan's slice into an embedded DuckDB (Arrow), run native <code>PIVOT … USING sum() GROUP BY</code>; commit deltas back to Postgres. <em>Tradeoff:</em> the cube must be rebuilt/refreshed (staleness vs. speed) — acceptable for a planning cadence. <em>Impact:</em> pivot cost tracks the <em>cube slice</em> size, not the fact table. <em>Evidence:</em> <code>services/{cube_builder,pivot_service}.py</code>, <code>connectors/duckdb_engine.py</code>, <code>results/benchmark_results.json</code>. <em>Honesty:</em> the ms are mock/indicative — frame as "kept pivots interactive as the cube scaled."</p>
+<h2 id="24-cost-performance-mostly-real-audit-numbers">2.4 Cost / performance (mostly REAL audit numbers)</h2>
+<h3 id="p1-bigquery-cost-program">P1 — BigQuery cost program</h3>
+<blockquote>
+<p><strong>Cut recurring BigQuery scan cost by up to ~280× (2.9 TiB → 3.3 GiB per query) by routing hierarchy reads to a clustered copy (~3×), materializing a store×category×week rollup (~280×; ~$8 one-time + ~$0.008/day), and enforcing partition pruning — after catching a single <code>SELECT *</code> query billing 38.8 TiB ($327) to return 2 rows.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> BigQuery bills by <strong>bytes scanned</strong>; the hot recurring read rescanned the raw ~2.9 TiB fact. <em>How:</em> three levers — (1) read the clustered <code>_assort</code> copy, (2) build a narrow store×cat×week rollup, (3) require a date/partition predicate + kill <code>SELECT *</code>. <em>Tradeoff:</em> a rollup adds a build job + refresh; trivially paid back (~$8 once). <em>Impact:</em> ~3× → ~74× (with category pruning) → ~280×/~880× (rollup) fewer bytes <strong>[REAL, live audit]</strong>. <em>Evidence:</em> <code>benchmark/cost_model.py</code>, <code>docs/07</code> F2–F5. <em>Honesty:</em> these are <strong>real</strong> measured scan sizes/costs — defend them.</p>
+<h3 id="p2-bigquery-cost-guard">P2 — BigQuery cost guard</h3>
+<blockquote>
+<p><strong>Shipped a dependency-free "cost guard" in the query path that rejects <code>SELECT *</code> and un-dated scans and auto-routes raw-fact reads to the clustered copy — codifying the savings as a guardrail so future queries can't silently regress.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> one-off fixes rot; the leak recurs. <em>How:</em> a small linter around query execution (<code>bq_cost_guard</code>/<code>connectors/bigquery.py</code>) with knobs <code>FORBID_SELECT_STAR</code> / <code>REQUIRE_DATE_FILTER</code> / <code>CLUSTERED_FACT</code>. <em>Tradeoff:</em> a few legitimate queries need annotation to pass — worth it. <em>Impact:</em> makes the ~3× routing automatic and the biggest leak impossible. <em>Evidence:</em> <code>connectors/bigquery.py</code>, <code>services/bq_cost_guard.py</code>. <em>Honesty:</em> real mechanism; framed as guardrail.</p>
+<h3 id="p3-postgres-write-correctness-perf">P3 — Postgres write correctness &amp; perf</h3>
+<blockquote>
+<p><strong>Hardened the planning writes — wrapped multi-table saves in a single ACID transaction (eliminating ~88% orphaned optimizer rows), replaced N+1 per-row <code>jsonb_set</code> update loops with a set-based <code>UPDATE … FROM json_to_recordset</code>, and added the missing cascade-delete FK indexes.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> non-atomic multi-statement saves left orphans; per-row loops on a 138-column partitioned table are the top write hotspot; un-indexed cascade FKs seq-scan on every plan delete. <em>How:</em> one transaction/array per save; one set-based statement per plan; three one-line <code>CREATE INDEX</code>. <em>Tradeoff:</em> minimal — pure win. <em>Impact:</em> correctness (no orphans) + far fewer statements per save. <em>Evidence:</em> the performance-findings doc (§2, §3.2); <code>docs/07</code> F12/F14. <em>Honesty:</em> orphan % is a <strong>real</strong> audit fact; the write rewrite is a recommended fix you designed.</p>
+<h2 id="25-leadership-breadth">2.5 Leadership / breadth</h2>
+<h3 id="l1-reconciled-db-verdict-decision-under-ambiguity">L1 — Reconciled DB verdict (decision under ambiguity)</h3>
+<blockquote>
+<p><strong>Authored the reconciled database verdict across three conflicting analyses (a live "no ClickHouse" audit, a team ClickHouse push, and my own recommendation), converting disagreement into an explicit 3-gate decision — in-stack BigQuery fixes → Postgres discipline → a versioned-write PoC — that de-risked a costly migration before any infra spend.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> the org was split; a premature ClickHouse migration (or a premature "no") was expensive either way. <em>How:</em> separated <em>facts</em> (accepted from the live audit) from <em>conclusions</em>; showed the anti-CH argument was about legacy code, not the new product; set measurable gates. <em>Impact:</em> a defensible, staged path everyone could agree to. <em>Evidence:</em> <code>docs/06</code>, <code>docs/07</code>. <em>This is your best behavioral/leadership story</em> (see §7).</p>
+<h3 id="l2-reverse-engineered-a-4-service-agentic-platform">L2 — Reverse-engineered a 4-service agentic platform</h3>
+<blockquote>
+<p><strong>Reverse-engineered a four-service agentic platform (React frontend, Rust/Axum data API, two Python/LangGraph LLM services) and delivered a fit-assessment + integration plan (~1–1.5 eng-weeks to add the decomposition node), plus a catalog-verified data model (5,385 columns, 46 FKs) via $0 read-only metadata.</strong></p>
+</blockquote>
+<p><strong>Backing.</strong> <em>Why:</em> to plan the agentic rebuild you must first understand the existing system truthfully. <em>How:</em> code-level read of CortexEye (<code>genai</code> + <code>cortexeye-ai</code> LangGraph brains, Rust backend, React FE), then a metadata-only verification of the DB (Postgres <code>pg_catalog</code> + BigQuery <code>get_table</code>). <em>Impact:</em> corrected long-standing "inferred" assumptions and produced an actionable plan. <em>Evidence:</em> <code>docs/01</code>–<code>03</code>; the data deep-dive §1.8/§2.10. <em>Honesty:</em> verification numbers are <strong>real</strong>; keep the "reverse-engineered/authored" framing.</p>
+<hr>
+<h1 id="3-product-architecture-hld-how-the-agentic-planner-is-built">3. Product architecture (HLD) — how the agentic planner is built</h1>
+<h2 id="31-the-planning-workspace-front-door">3.1 The planning workspace (front door)</h2>
+<p>Four surfaces sit over the staged pipeline:</p>
+<ul>
+<li><strong>Signals</strong> — the agent worklist: issues/opportunities/proposals, each Accept / Skip / Edit / Dismiss with a <strong>reason code</strong>.</li>
+<li><strong>Pipeline</strong> — the staged plan workflow with <strong>cascade warnings</strong> when an upstream edit invalidates downstream work.</li>
+<li><strong>Log</strong> — the immutable <strong>audit trail</strong> (who/what/when) for every agent action + human decision.</li>
+<li><strong>Ask</strong> — the natural-language assistant; the UX front door to the multi-agent decomposition backend.</li>
+</ul>
+<p>Plus a <strong>Today</strong> triage bucket (Attention / Resolved / Dismissed) and <strong>overnight</strong> autonomous-action summaries.</p>
+<h2 id="32-cascade-aware-staged-planning">3.2 Cascade-aware staged planning</h2>
+<pre><code>Hindsight ─▶ Strategy ─▶ Clustering ─▶ Line plan / Architecture ─▶ Buy plan ─▶ Review &amp; approve
+(last season)  (targets)   (store groups)   (option counts/depth)      (qty/receipts/flow)
+        │ editing an upstream stage raises a cascade warning: downstream stages recompute/invalidate
+</code></pre>
+<p>Each stage is agent-assisted; <code>getDownstreamStages()</code> + <code>showCascadeWarning()</code> enforce that changing, say, clustering flags that the buy plan must be recomputed.</p>
+<h2 id="33-agent-orchestration-the-backend-shape">3.3 Agent orchestration (the backend shape)</h2>
+<p>Concrete pattern: <strong>Router → Orchestrator (supervisor) → specialist agents</strong>, executing a <strong>planner-executor DAG</strong>. In the product this runs on <strong>LangGraph</strong> (Planner → Executor → Solver nodes) with a <strong>FastMCP (Model Context Protocol)</strong> tool layer so agents discover/execute tools safely; the offline <code>agentic_assort_multiagent</code> PoC re-implements the same shape deterministically for testability (see §8.1).</p>
+<pre><code>NL query
+  │
+  ▼
+[Semantic cache]──hit──▶ cached answer
+  │ miss
+  ▼
+ROUTER (LLM intent classify)  ── single ──▶ one specialist agent ─▶ answer
+  │ orchestrate
+  ▼
+DECOMPOSER ─▶ Plan{sub_queries[], path[][]}  ─▶  plan_schema.validate()
+  │                                                   │ invalid
+  │                                                   ▼
+  │                                          self-repair (re-prompt once)
+  ▼
+ORCHESTRATOR executes path stage-by-stage:
+   stage 0:  [agentA ‖ agentB]      ← parallel within a stage (ThreadPoolExecutor)
+   stage 1:  [agentC(&lt;A0&gt;)]         ← &lt;A_n&gt; placeholder rephrased with prior answers
+   ...
+  ▼
+_synthesize()  ─▶  final answer (+ status: ok | partial | rejected | generic)
+</code></pre>
+<p><strong>Specialist fleet (5 agents), each <code>validate→fetch→analyze→narrate</code>:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Store</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AssortmentData</td>
+<td>BigQuery <code>fact_sales</code></td>
+<td>KPI snapshots, top/bottom-N</td>
+</tr>
+<tr>
+<td>Clustering</td>
+<td>Postgres <code>store_cluster</code></td>
+<td>cluster membership / tier / profile</td>
+</tr>
+<tr>
+<td>Hindsight</td>
+<td>BigQuery <code>causal_drivers</code></td>
+<td>rank KPI drivers by contribution (causal DAG "why")</td>
+</tr>
+<tr>
+<td>LinePlan</td>
+<td>Postgres <code>line_plan</code></td>
+<td>option counts / depth / phasing, Δ vs LY</td>
+</tr>
+<tr>
+<td>Recommendation</td>
+<td>BigQuery <code>ros_recommendations</code></td>
+<td>ROS-based option-count uplift + gap flags</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Resilience:</strong> <code>BaseAgent.answer()</code> never raises → <code>AgentResult(status="error")</code> → orchestrator still synthesizes a <strong>partial</strong> answer; transient <code>fetch()</code> wrapped in exponential-backoff retries.</p>
+<h2 id="34-the-pivot-planning-grid-edit-surface">3.4 The pivot planning grid (edit surface)</h2>
+<p>A React grid (<code>planning-grid-3.jsx</code>) with: drag <strong>dimension tiles</strong> into Row/Column/Filter axes (<code>PivotPanel</code>/<code>AxisZone</code>/<code>DimTile</code>); <strong>Override / Variance / Diff</strong> cells (<code>OvCell</code>/<code>VarCell</code>/<code>DiffCell</code>); <strong>BulkEdit</strong> (apply %, set, spread); <strong>reason capture</strong>; <strong>downstream impact</strong> panel; <strong>version drawer</strong> (compare/restore); and a custom <strong><code>useUndoRedo</code></strong> history. This grid is <em>why</em> the persistence layer must support versions/variance/diff — which is exactly what the insert-only ClickHouse model (below) provides natively.</p>
+<h2 id="35-the-first-shipping-module-the-cluster-recommendation-copilot">3.5 The first shipping module — the Cluster Recommendation Copilot</h2>
+<p>The agentic pattern above is now being instantiated for real in the <strong>clustering module</strong> (FRD v1.8): one dedicated agent, two entry surfaces (manual wizard with inline recommendations + chat-native), <strong>deterministic tools on a dedicated ClickHouse read plane</strong> (p95 &lt;500 ms target vs 1–20 s on shared BigQuery slots), an LLM that orchestrates and explains but never computes, <strong>three confirm gates</strong>, and write-back into the existing product tables unchanged. Delegation ladder: <strong>L1 copilot → L2 autopilot-with-approval → L3 standing drift monitor</strong> — nothing auto-finalizes. Full what/why/how, measured baselines, targets, rollout phases and module-specific Q&amp;A: <strong>§9</strong>.</p>
+<h2 id="36-the-wider-cortexeye-agentic-platform-context-you-can-speak-to">3.6 The wider CortexEye agentic platform (context you can speak to)</h2>
+<p>The agentic backend descends from CortexEye — a <strong>4-service</strong> system:
+- <strong>Frontend</strong> — React + Redux, <strong>Socket.IO</strong> streaming, AG Grid, Highcharts.
+- <strong>Data API</strong> — <strong>Rust (Axum / Tokio / SQLx)</strong>, <code>gcp-bigquery-client</code> — the deterministic data layer (no LLM).
+- <strong><code>genai</code></strong> — Python + <strong>LangGraph</strong> + FastAPI: intent classification (<code>causal &gt; data &gt; insights</code>), entity extraction (parallel via <code>asyncio.gather</code>), <strong>text-to-SQL</strong> (LlamaIndex RAG + GPT-4o) on BigQuery, <strong>confidence scoring</strong> (rules + LLM logprobs).
+- <strong><code>cortexeye-ai</code></strong> (Deep Research) — Python + LangGraph: the strong <strong>sub-query decomposer</strong> (<code>{question[], path[][]}</code> + <code>&lt;A_n&gt;</code> dependency rephrasing + reflection loop), hybrid <strong>BM25 + dense (pgvector) retrieval + Cohere rerank</strong>, semantic cache.
+Cross-cutting: <strong>Redis</strong> (chat history, semantic cache, abort flags across Cloud Run replicas), <strong>Postgres via PgBouncer</strong> (<code>aiopg</code>), <strong>GCS</strong> (audio/images), progress streamed over <strong>WSS</strong>.</p>
+<hr>
+<h1 id="4-database-architecture-hld-lld">4. Database architecture (HLD + LLD)</h1>
+<h2 id="41-hld-the-three-tier-spine">4.1 HLD — the three-tier spine</h2>
+<pre><code>                    ┌─────────────────────────────────────────────────────────┐
+   RAW FACTS  ─────▶│  BigQuery  =  SOURCE OF TRUTH + batch cube/rollup builds │  (OLAP, scan-heavy, quota-limited DML)
+                    └───────────────┬─────────────────────────────────────────┘
+                                    │ scheduled ELT (build pre-aggregated cube)
+                                    ▼
+                    ┌─────────────────────────────────────────────────────────┐
+   planner edits ──▶│  Postgres  =  EDITABLE SYSTEM-OF-RECORD (ACID, procs)    │  (OLTP writes, read-after-write)
+                    └───────────────┬───────────────────────────▲─────────────┘
+             hydrate plan slice     │ commit deltas             │
+                                    ▼                           │
+                    ┌───────────────────────────┐               │
+                    │ DuckDB (in-process pivot)  │───────────────┘
+                    └───────────────────────────┘
+                                    │ (at scale, read-serving)
+                                    ▼
+                    ┌─────────────────────────────────────────────────────────┐
+   fast pivots  ◀───│  ClickHouse = OLAP read/pivot serving (gated, insert-only)│
+                    └─────────────────────────────────────────────────────────┘
+   Invariant: BigQuery stays truth; Postgres stays the editable SoR — in every scenario.
+</code></pre>
+<p><strong>Why split:</strong> the product is <strong>OLTP-with-pivot</strong> (editable grid, ACID, read-after-write) <em>and</em> <strong>OLAP</strong> (hindsight scans). No single engine is best at both, so each workload runs on the engine that's best at it. "Everything in one OLAP DB" breaks transactional writes + per-edit cost; "everything in BigQuery" hits DML quota/latency walls for interactive edits.</p>
+<h2 id="42-the-tenant-unified-derived-schema">4.2 The tenant-unified derived schema</h2>
+<p>One common schema keyed by <code>tenant</code>, at the <strong>derived (cube) grain</strong> = <code>cluster × class × fiscal_week</code> — <strong>not</strong> per-tenant tables.</p>
+<ul>
+<li><strong>Postgres</strong> (<code>planning_schema.sql</code>): <code>plan_cube</code> <code>PARTITION BY LIST (tenant)</code>, PK <code>(tenant, season, plan_id, cluster, class, fiscal_week)</code>; onboarding a client = <code>CREATE TABLE plan_cube_kik PARTITION OF plan_cube FOR VALUES IN ('kik')</code>. Same-shaped <code>plan_cell_edits</code> audit table.</li>
+<li><strong>ClickHouse</strong> (<code>ch_planning_schema.sql</code>): <code>tenant</code> leads both <code>PARTITION BY (tenant, l1, fiscal_week)</code> and <code>ORDER BY (tenant, season, plan_id, l4, store_code, metric)</code>.</li>
+<li>The <strong>cube-build SQL is tenant-parameterized and identical</strong> across clients → one codebase/query set/procedures serves all tenants. Physical isolation (separate Postgres DB + BigQuery project per tenant) is retained; "unified" is a <strong>schema/codebase standard at the derived level</strong>, not a shared physical instance.</li>
+</ul>
+<h2 id="43-lld-clickhouse-insert-only-versioned-model">4.3 LLD — ClickHouse insert-only / versioned model</h2>
+<pre><code class="language-sql">-- main planning cube: INSERT-ONLY VERSIONED (no ALTER UPDATE/DELETE)
+CREATE TABLE plan_cube (
+  tenant String, season String, plan_id String,
+  l1 String, l4 String, store_code String,
+  fiscal_week UInt16,
+  metric String, value Float64,           -- 80–90 metrics modelled long (metric,value)
+  version UInt64,                          -- monotonic epoch-ms; newest wins
+  is_deleted UInt8 DEFAULT 0               -- soft delete (no hard DELETE)
+) ENGINE = ReplacingMergeTree(version)
+PARTITION BY (tenant, l1, fiscal_week)     -- week/L1 anchor avoids hot-partition churn
+ORDER BY (tenant, season, plan_id, l4, store_code, metric);
+
+-- EDIT  = insert a new version (never UPDATE)
+INSERT INTO plan_cube VALUES (..., metric, new_value, toUnixTimestamp64Milli(now64()), 0);
+
+-- READ latest = argMax over version (or FINAL on small partitions)
+SELECT l4, store_code, argMax(value, version) AS value
+FROM plan_cube WHERE tenant=? AND plan_id=? AND is_deleted=0
+GROUP BY l4, store_code;
+
+-- SOFT DELETE = insert a tombstone version
+INSERT INTO plan_cube VALUES (..., metric, 0.0, &lt;ver&gt;, 1);
+
+-- BULK re-seed (LY/LLY across a slice) = atomic partition swap, NOT a mutation
+ALTER TABLE plan_cube REPLACE PARTITION (tenant,l1,week) FROM plan_cube_staging;
+
+-- incremental brand/L1 rollups without rescans
+CREATE TABLE plan_cube_l1_rollup ( ..., value_state AggregateFunction(sum, Float64) )
+ENGINE = AggregatingMergeTree ...;
+</code></pre>
+<p><strong>Why this is the crux:</strong> ClickHouse <code>ALTER UPDATE/DELETE</code> <strong>mutations are async — they degrade past ~500 and stop accepting past ~1,000</strong>. A planning grid is edit-heavy, which is why the legacy audit said "no ClickHouse." The insight: <strong>model an edit as an INSERT of a new <code>version</code></strong>, read the latest with <code>argMax(version)</code>, tombstone for deletes, partition-swap for bulk re-seeds. A guard asserts <code>mutations_used == 0</code>. This also gives <strong>undo / version-diff for free</strong> (older versions retained until merge; the product caches <strong>up to 10 undo steps in Redis</strong> before async commit, rendering diffs as dual-value cells). Production hardens it with <strong><code>ReplicatedReplacingMergeTree</code> + sharding</strong> (ClickHouse Keeper, or physical <strong>L1-table sharding to kill hotspots</strong>), <strong><code>AggregatingMergeTree</code></strong> rollups, <strong><code>VersionedCollapsingMergeTree</code></strong> for out-of-order CDC, and <strong>Projections</strong>; partition <code>PARTITION BY toYYYYMM(week_date)</code>, <code>ORDER BY (measure, hierarchy…)</code> for sparse-index granule skipping. <strong>PoC results (requirements notebook):</strong> <code>mutations_used = 0</code> at every scale, and <strong>sub-second pivots over 250M synthetic rows — 8–130 ms filtered reads, ~160 ms writes, ~140–200× vs the legacy Postgres flat schema</strong> (see §8.4–8.5).</p>
+<h2 id="44-cube-rollup-pivot-fast-reads">4.4 Cube / rollup / pivot (fast reads)</h2>
+<ul>
+<li><strong>cube_builder</strong> — runs the tenant-parameterized <code>CUBE_BUILD_SQL</code> on BigQuery (aggregates fact → <code>cluster×class×week</code>), upserts to Postgres <code>plan_cube</code>.</li>
+<li><strong>rollup_builder</strong> — CTAS a store×category×week rollup <strong>from the clustered fact</strong> (<code>PARTITION BY RANGE_BUCKET(fiscal_week) CLUSTER BY store_code,l3_name</code>): reads ~3.3 GiB instead of ~2.9 TiB (<strong>~280–880× cheaper</strong>; ~$8 once, ~$0.008/day).</li>
+<li><strong>pivot_service</strong> — loads the plan's cube slice into DuckDB (Arrow) and runs native <code>PIVOT … USING sum() GROUP BY</code>; pivots track the <em>slice</em> size, not the fact.</li>
+</ul>
+<h2 id="45-the-reconciled-verdict-decision-gates">4.5 The reconciled verdict + decision gates</h2>
+<p>The decision was <strong>not</strong> "adopt ClickHouse now" — it was a staged gate:
+1. <strong>In-stack BigQuery fixes first</strong> (certain, no new infra): clustered <code>_assort</code> (~3×), store×cat×week rollup (~280×), forbid <code>SELECT *</code> + require date filter (kills the 38.8 TiB / $327 leak), fix cross-tenant hardcodes.
+2. <strong>Postgres discipline</strong>: transaction-wrap multi-table ops, set-based <code>UPDATE … FROM</code>, repartition <code>size_split_master</code> (5,503 LIST partitions for 298K rows), purge soft-delete debris, normalize the EAV spine.
+3. <strong>Versioned-write + pivot PoC at 10×</strong>: measure Postgres+DuckDB vs ClickHouse on the <em>same</em> insert-only cube; <strong>only then</strong> decide if ClickHouse earns a place.</p>
+<p><strong>Two end-states:</strong> (1) <strong>ClickHouse-unified</strong> if the insert-only model meets the pivot+update SLA at 100–200 users; (2) <strong>split SoR</strong> (BigQuery truth + Postgres strict-edit SoR + DuckDB pivot; CH read-only) if strict in-transaction per-cell read-after-write is required. <em>Anti-pattern explicitly rejected: "everything in one OLAP DB."</em></p>
+<h2 id="46-ingestion-be-precise-in-the-room">4.6 Ingestion (be precise in the room)</h2>
+<p>Ingestion into the serving/planning stores is <strong>batch ELT, not streaming</strong>: BigQuery cube/rollup builds → upsert/COPY into Postgres; ClickHouse fed by HTTP <code>INSERT … FORMAT JSONEachRow</code> + <code>REPLACE PARTITION</code> from staging. <strong>No Kafka/Airflow/Spark/Flink in the Agentic-Assort DB path.</strong> (Elsewhere in the org: the <em>data-fabric</em> platform uses an <strong>aiokafka</strong> consumer for async embeddings and <strong>Cloud Tasks + Cloud Scheduler</strong> for orchestration; legacy AssortSmart uses <strong>Pub/Sub</strong> for MDM sync — mention these as adjacent, not as this product's pipeline.)</p>
+<hr>
+<h1 id="5-technology-deep-dives-funda-architecture-why-it-solves-the-problem-gotchas">5. Technology deep dives (funda · architecture · why it solves the problem · gotchas)</h1>
+<p>Each entry is what you should be able to say if an interviewer points at a word on your résumé.</p>
+<h2 id="51-clickhouse">5.1 ClickHouse</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Open-source <strong>columnar OLAP</strong> DB. Column-oriented storage + vectorized execution → aggregations scan only needed columns, compress well, and run SIMD-fast. Data lives in immutable <strong>parts</strong> (sorted by the table's <code>ORDER BY</code>); a background process <strong>merges</strong> parts (the "MergeTree" family).</li>
+<li><strong>Architecture (engines).</strong> <code>MergeTree</code> = base (sorted parts, partitioning, sparse primary index). <code>ReplacingMergeTree(version)</code> = on merge, keep the <strong>highest <code>version</code></strong> per sort key → dedup by newest. <code>AggregatingMergeTree</code> = store partial aggregate states (<code>AggregateFunction</code>) merged incrementally. <code>Distributed</code>/<code>Replicated*</code> = sharding/replication (we defer to ClickHouse Cloud). <strong>Partitioning</strong> (<code>PARTITION BY</code>) prunes at query time; <strong><code>ORDER BY</code></strong> is the primary/sort key that clustering + the sparse index rely on. <strong>Projections &amp; materialized views</strong> precompute alternative sort orders/rollups.</li>
+<li><strong>How it solves our problem.</strong> Pivot + hindsight are scan-and-aggregate → columnar is ideal. Its weakness — <strong>async mutations</strong> (<code>ALTER UPDATE/DELETE</code> degrade &gt;500, stop &gt;1000) — is avoided by our <strong>insert-only/versioned</strong> model: edit = insert a new <code>version</code>, read = <code>argMax(version)</code>, bulk = <code>REPLACE PARTITION</code>. So we use the engine only where it's strong and never touch the mutation queue.</li>
+<li><strong>Deep-dive/gotchas.</strong> <code>argMax</code> (or <code>FINAL</code>) is needed on read because dedup only happens <em>eventually</em> on merge; keep partitions from getting too many parts (hot-partition churn) — we partition by <code>(tenant, l1, fiscal_week)</code>; <code>SELECT FINAL</code> is convenient but costs a merge-on-read; <code>AggregatingMergeTree</code> requires <code>-State</code>/<code>-Merge</code> function discipline. It is <strong>not</strong> for per-row transactional read-after-write with locks — that's Postgres's job.</li>
+</ul>
+<h2 id="52-bigquery">5.2 BigQuery</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Serverless columnar warehouse; storage (Capacitor columnar) separate from compute (<strong>slots</strong>). You're billed <strong>on-demand by bytes scanned</strong> (or by slot reservations). No secondary indexes.</li>
+<li><strong>Architecture.</strong> <strong>Partitioning</strong> (usually by date) + <strong>clustering</strong> (sort within partitions by up to 4 cols) are the only "indexes." Query cost = columns read × partitions touched. DML (<code>UPDATE/MERGE</code>) is quota-limited and rewrite-oriented → not for interactive edits.</li>
+<li><strong>How it solves our problem.</strong> Perfect <strong>source of truth</strong> + batch cube/rollup builder: cheap, scalable scans; scheduled ELT. We keep planner edits <em>out</em> of BigQuery.</li>
+<li><strong>Deep-dive/gotchas.</strong> The three levers that gave ~3×/~74×/~280×: (1) read the <strong>clustered</strong> copy not the raw fact, (2) always pass a <strong>partition/date predicate</strong> (a bypass floor like <code>date &gt; '1999-01-01'</code> <em>defeats</em> pruning), (3) <strong>never <code>SELECT *</code></strong> (one <code>SELECT * LIMIT 2</code> billed 38.8 TiB / $327). Set <code>require_partition_filter=TRUE</code> so un-pruned scans fail loudly.</li>
+</ul>
+<h2 id="53-postgresql">5.3 PostgreSQL</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Row-store RDBMS, <strong>MVCC</strong> (each write creates a new tuple version; <code>VACUUM</code> reclaims dead tuples), full ACID, rich indexing (btree, GIN, partial, expression), declarative <strong>partitioning</strong>, <code>jsonb</code>.</li>
+<li><strong>Architecture in our stack.</strong> The <strong>editable system-of-record</strong>: plan masters + the editable grid as row tables with stored procs; LIST-partitioned by tenant / <code>final_level</code>; <strong>PgBouncer</strong> pools connections (<code>aiopg</code> async). GIN index on <code>jsonb</code> attribute bags; composite btrees for hot filters.</li>
+<li><strong>How it solves our problem.</strong> ACID + read-after-write + locking = exactly what a per-cell planning edit needs (the thing OLAP engines are bad at).</li>
+<li><strong>Deep-dive/gotchas.</strong> MVCC + del+reinsert = <strong>dead-tuple bloat</strong> (needs VACUUM); a <code>jsonb -&gt;&gt;</code> filter can't use a <code>jsonb_path_ops</code> GIN (rewrite as <code>@&gt;</code>); <strong>always include the partition key</strong> or you scan every partition; cascade-delete FK columns must be indexed or each parent delete seq-scans children; prefer <strong>set-based <code>UPDATE … FROM json_to_recordset</code></strong> over N+1 per-row loops; over-partitioning (5,503 partitions for 298K rows) hurts planning time.</li>
+</ul>
+<h2 id="54-duckdb">5.4 DuckDB</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Embedded ("SQLite for analytics") <strong>columnar, vectorized</strong> OLAP engine; runs in-process, reads Arrow/Parquet zero-copy.</li>
+<li><strong>How it solves our problem.</strong> Per-plan/per-session <strong>pivot accelerator</strong>: hydrate the plan's small cube slice into DuckDB, run native <code>PIVOT … USING sum() GROUP BY</code>, commit deltas to Postgres — fast cross-tabs without a server round-trip or rescanning facts.</li>
+<li><strong>Deep-dive/gotchas.</strong> Great single-node/embedded; not a multi-user server (that's why it's session-scoped and Postgres/ClickHouse own durability + concurrency).</li>
+</ul>
+<h2 id="55-agent-orchestration-router-planner-executor-supervisor-langgraph">5.5 Agent orchestration (router / planner-executor / supervisor) &amp; LangGraph</h2>
+<ul>
+<li><strong>Fundamentals.</strong> <strong>LangGraph</strong> models an agent app as a <strong>state graph</strong> (nodes = steps/agents, edges = control flow, a shared typed <strong>state</strong> object) — good for cyclic, multi-step, human-in-the-loop flows vs. a linear chain. The classic patterns: <strong>router</strong> (classify then dispatch), <strong>planner-executor</strong> (plan a DAG, then execute), <strong>supervisor/orchestrator</strong> (a controller delegates to workers and synthesizes).</li>
+<li><strong>Architecture (ours).</strong> Router → Decomposer (emits a validated DAG) → Orchestrator executes stages (parallel within stage) → synthesize. CortexEye's production brains are LangGraph; our multi-agent PoC is a <strong>custom</strong> Python router/orchestrator (stdlib <code>concurrent.futures</code>) that mirrors that shape deterministically for testability.</li>
+<li><strong>How it solves our problem.</strong> A planning question needs several specialized data pulls with dependencies; a validated DAG + supervisor gives parallelism, dependency passing (<code>&lt;A_n&gt;</code>), partial-failure tolerance, and an auditable trace.</li>
+<li><strong>Deep-dive/gotchas.</strong> The <strong>#1 failure is a malformed plan</strong> → a hard structural validator + one self-repair pass is the fix; guard against forward references; keep stages ≤3 agents wide, ≤8 sub-questions; make each agent's <code>answer()</code> non-throwing so one failure yields a <em>partial</em>, not a crash.</li>
+</ul>
+<h2 id="56-llm-plumbing-text-to-sql-decomposition-confidence-rag-cache">5.6 LLM plumbing (text-to-SQL, decomposition, confidence, RAG, cache)</h2>
+<ul>
+<li><strong>Text-to-SQL.</strong> LLM emits SQL from NL + schema (LlamaIndex RAG over schema in CortexEye). <strong>Guardrails are the engineering:</strong> SELECT-only, <code>LIMIT</code> caps, <code>NULLIF</code> denominators, no <code>SELECT *</code>, validate before execute. Solves "let business users ask in English" without runaway scans.</li>
+<li><strong>Query decomposition.</strong> One strong prompt (18 worked examples) → <code>{sub_queries[], path[][]}</code> DAG + <code>&lt;A_n&gt;</code> dependency rephrasing + a reflection/repair loop. Solves multi-hop questions ("why did margin drop and which clusters?") that a single query can't.</li>
+<li><strong>Intent classification / confidence.</strong> A deterministic rules prompt at <code>temperature=0</code> (chosen over a RAG/few-shot classifier for <strong>latency, cost, determinism on novel queries</strong>); confidence via <strong>rules + LLM logprobs + intent-match + error detection</strong>. Solves routing + "should we trust/show this answer."</li>
+<li><strong>RAG (hybrid).</strong> <code>text-embedding-3-small</code> → <strong>pgvector</strong>; <strong>BM25 (sparse) + dense</strong> retrieval fused, then <strong>Cohere rerank</strong>. Hybrid beats either alone (lexical + semantic); rerank fixes ordering.</li>
+<li><strong>Semantic cache.</strong> Embed the query; return a cached answer when cosine-sim ≥ threshold within TTL (pgvector <code>&lt;=&gt;</code> in prod). Solves repeat/near-duplicate questions → skip the whole pipeline. Gotcha: threshold too loose returns wrong-but-similar answers — tune + TTL-bound.</li>
+</ul>
+<h2 id="57-rust-axum-cortexeye-data-api">5.7 Rust / Axum (CortexEye data API)</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Rust = memory-safe, no-GC, high-throughput; <strong>Axum</strong> (on <strong>Tokio</strong> async runtime, <strong>SQLx</strong> compile-checked queries) is the HTTP framework.</li>
+<li><strong>How it solves our problem.</strong> A <strong>deterministic, fast data API</strong> layer (BigQuery/GCS access, TTS streaming) separate from the probabilistic Python LLM services — clean separation of "deterministic data" vs "AI reasoning," and Rust's throughput/safety for the hot data path.</li>
+<li><strong>Deep-dive.</strong> Compile-time-checked SQL (SQLx) prevents a class of query bugs; async I/O (Tokio) for high concurrency; keeps LLM latency/cost out of the core data path.</li>
+</ul>
+<h2 id="58-supporting-infra">5.8 Supporting infra</h2>
+<ul>
+<li><strong>FastAPI + asyncio</strong> — async Python services; <code>asyncio.gather</code> to run classification + entity-extraction (or independent reads) concurrently.</li>
+<li><strong>Redis</strong> — chat history, <strong>semantic cache</strong>, and <strong>abort flags</strong> (cancel a running task across Cloud Run replicas). Fundamentals: in-memory key-value, sub-ms, TTL, pub/sub.</li>
+<li><strong>Socket.IO / WebSockets (WSS)</strong> — stream agent progress/partial tokens to the UI (long LLM calls need incremental feedback).</li>
+<li><strong>Google Cloud Tasks + Scheduler</strong> — async job offload + cron for ELT/cube builds (keeps heavy work off the request path).</li>
+<li><strong>Secret management</strong> — Google Secret Manager, IA convention <code>{client}_ms_ce_chatbot_{provider}_{env}</code>; ADC auth; no keys in code.</li>
+<li><strong>Apache tech (what the product actually uses).</strong> <strong>Apache Kafka</strong> (<code>aiokafka</code> / <code>confluent-kafka</code>) drives <strong>async embedding jobs</strong>, and <strong>Apache Parquet</strong> is the columnar storage/interchange format (§8.3). The <strong>planning-store ingestion path</strong> itself is <strong>batch ELT</strong> (BigQuery cube/rollup → Postgres/ClickHouse), not a streaming pipeline into the grid — so be precise: "Kafka for async embedding work + Parquet for storage; the grid's data lands via batch ELT." Kafka fundamentals to know: distributed append-only commit log, topics→partitions, consumer groups, at-least-once + offsets. If asked "where else would Kafka fit?": streaming POS/inventory events into the fact, or a CDC→ClickHouse path (ClickPipes / Kafka engine).</li>
+</ul>
+<hr>
+<h1 id="6-interview-qa-what-an-em-architect-will-ask">6. Interview Q&amp;A (what an EM / architect will ask)</h1>
+<h2 id="61-architecture-databases">6.1 Architecture &amp; databases</h2>
+<p><strong>Q: Why three databases? Isn't that over-engineered?</strong>
+A: The product is two workloads in one — an editable, pivoted <strong>planning grid</strong> (OLTP: ACID, per-cell read-after-write, locks) and <strong>hindsight analytics</strong> (OLAP: scan-and-aggregate). No single engine is best at both. BigQuery is the cheap, scalable source of truth; Postgres owns editable state with ACID; ClickHouse/DuckDB serve fast pivots. Forcing one engine means either broken transactional writes (OLAP DBs) or DML quota/latency walls (BigQuery). The complexity is a deliberate trade for correctness + cost + latency, and the invariant is simple: <strong>BigQuery = truth, Postgres = editable SoR, always.</strong></p>
+<p><strong>Q: Why ClickHouse if it's bad at updates — and a planning grid is all updates?</strong>
+A: That objection is about <em>in-place</em> updates. ClickHouse mutations are async and stop accepting past ~1,000, so <code>ALTER UPDATE</code> per cell is a non-starter. But our grid is built around <strong>versions/variance/undo</strong> — so an edit is an <strong>INSERT of a new version</strong>, reads take <code>argMax(version)</code>, deletes are tombstones, bulk re-seeds are atomic <code>REPLACE PARTITION</code>. That keeps the mutation queue at <strong>zero</strong> and turns "what ClickHouse is worst at" into "what it's fine at," while giving undo/version-diff for free. We proved <code>mutations_used = 0</code> at 1× and 10× in the PoC.</p>
+<p><strong>Q: How does undo / version-diff actually work on an append-only store?</strong>
+A: Every edit writes a row with a monotonic <code>version</code> (epoch-ms). The latest state is <code>argMax(value, version)</code>. Because older versions are retained until background merges collapse them, <strong>undo</strong> = read the prior version; <strong>version-diff</strong> = compare two <code>version</code> snapshots. <code>ReplacingMergeTree(version)</code> dedups newest-wins on merge; <code>FINAL</code>/<code>argMax</code> gives correct reads before merge.</p>
+<p><strong>Q: What does "unify the schema at the derived level" mean?</strong>
+A: One common schema keyed by <code>tenant</code> at the <strong>cube grain</strong> (<code>cluster×class×fiscal_week</code>), not per-tenant tables. The cube-build SQL is tenant-parameterized and identical, so one codebase/query set/procedures serve all clients; onboarding a tenant = add a partition. Physical isolation (separate Postgres DB + BigQuery project per tenant) is kept for blast-radius; "unified" is a <strong>schema/codebase standard</strong>, not one shared instance.</p>
+<p><strong>Q: How did you get ~280× cheaper on BigQuery?</strong>
+A: BigQuery bills by bytes scanned. Three levers: route the hot hierarchy read to the <strong>clustered</strong> <code>_assort</code> copy (~3×), materialize a narrow <strong>store×category×week rollup</strong> (reads ~3.3 GiB vs ~2.9 TiB → ~280×; ~$8 to build, ~$0.008/day), and enforce <strong>partition pruning + no <code>SELECT *</code></strong>. We also caught a <code>SELECT * LIMIT 2</code> billing 38.8 TiB / $327 — fixed by a cost-guard that rejects <code>SELECT *</code> and un-dated scans.</p>
+<p><strong>Q: How do you keep the three stores in sync?</strong>
+A: BigQuery → batch ELT builds the cube → upsert/COPY to Postgres (SoR). Planner edits commit to Postgres; DuckDB pivots a hydrated slice and commits deltas back. ClickHouse is fed read-only from BigQuery cube/rollup builds via HTTP insert / partition-swap. It's <strong>batch, not streaming</strong> — planning has a cadence, not a millisecond SLA.</p>
+<h2 id="62-ai-agents">6.2 AI / agents</h2>
+<p><strong>Q: Why multiple agents instead of one big prompt?</strong>
+A: Separation of concerns + reliability. Each agent owns a domain (hindsight, clustering, line plan, recommendations, assortment data), its own tools, prompt, and validation. A router decides single-agent vs orchestrate; a decomposer builds a DAG. This gives parallelism, targeted prompts (better accuracy), independent failure handling, and an auditable trace — impossible in one monolith prompt.</p>
+<p><strong>Q: LLM plans are unreliable — how do you stop bad plans from executing?</strong>
+A: A hard <strong>structural validator</strong> runs before execution: it rejects unknown domains/tools, duplicate ids, over-wide stages, and forward references in <code>&lt;A_n&gt;</code> placeholders. On failure it re-prompts the LLM once with the exact errors and re-validates (<code>repaired=True</code>). In an offline eval this lifted decomposition quality from 0.54→0.99. The validator — not the model — is what makes it production-safe.</p>
+<p><strong>Q: What happens when an agent fails?</strong>
+A: <code>BaseAgent.answer()</code> never raises; a failure returns <code>status="error"</code>, transient I/O is retried with exponential backoff, and the orchestrator still <strong>synthesizes a partial answer</strong> from the agents that succeeded (clearly labeled). Degrade, don't crash.</p>
+<p><strong>Q: How do agents pass data to each other?</strong>
+A: The DAG has stages; agents within a stage run in parallel (thread pool). When a later sub-query depends on an earlier answer, a rephraser substitutes the <code>&lt;A1&gt;</code> placeholder with the prior result before dispatch — explicit, inspectable dependency passing rather than hidden shared state.</p>
+<p><strong>Q: How do you keep autonomous agents safe?</strong>
+A: Confidence/impact <strong>thresholds</strong>: below threshold agents act and log; above it they raise a human-in-the-loop <strong>Signal</strong> with a reason code for Accept/Edit/Dismiss. Every action + decision hits an immutable <strong>audit log</strong>. That's what makes overnight autonomy acceptable to merchants.</p>
+<p><strong>Q: Is text-to-SQL safe?</strong>
+A: Only with guardrails: SELECT-only, <code>LIMIT</code> caps, <code>NULLIF</code> denominators, no <code>SELECT *</code>, validate before execute, and route through the BigQuery cost-guard. The LLM proposes; the guardrails dispose.</p>
+<p><strong>Q: How do you measure agent/answer quality?</strong>
+A: An offline eval harness scores routing, decomposition structure, dependency capture, and coverage against gold queries (structured 0.99 vs flat baseline 0.54). For confidence at serve time: rules + LLM logprobs + intent-match. (I'm explicit that the harness measures structure/correctness on mock outputs, not live model accuracy — production would add human-rated eval sets + online metrics.)</p>
+<p><strong>Q: You keep saying "agentic" — what's actually shipping?</strong>
+A: The clustering module — a cluster-recommendation copilot spec'd against live-audit baselines (1 config tried per plan, 8.5% run failures &gt;80% of which are input errors, 0% reproducibility). The planner states intent — hierarchy + period — and a dedicated agent does scoping, attribute selection and a 20–100-config batch exploration on a dedicated ClickHouse read plane; three human gates; approved results write back into the existing tables unchanged. Targets: &lt;1 h to a finalized plan, ≥20 configs, &lt;2% failures, p95 &lt;500 ms probes. Full module Q&amp;A in §9.7 — including "why isn't this just AutoML," "how do you stop hallucinated recommendations," and "what did you deliberately not build."</p>
+<h2 id="63-tradeoffs-scale-what-would-you-do-differently">6.3 Tradeoffs, scale, "what would you do differently"</h2>
+<p><strong>Q: Biggest tradeoff you made?</strong>
+A: Accepting <strong>more infra + a sync path</strong> (three tiers) to get correctness + cost + pivot latency, instead of one-DB simplicity. And on ClickHouse: trading <strong>storage + merge overhead</strong> (versioned history) for zero mutations + free undo/diff.</p>
+<p><strong>Q: How does this scale to 20k stores?</strong>
+A: Cube pre-aggregation keeps pivots proportional to the <em>slice</em>, not the fact; ClickHouse partition/cluster + <code>argMax</code> reads are sub-second on ~900M rows (cited target); Postgres stays the editable SoR with proper partitioning. The gate is a <strong>10× PoC</strong> on the insert-only model before committing ClickHouse.</p>
+<p><strong>Q: What would you do differently / next?</strong>
+A: Add circuit-breakers + per-agent timeouts; a human-rated eval set for model accuracy (not just structure); wire the <code>AggregatingMergeTree</code> materialized views end-to-end; and evaluate a CDC/Kafka path if we need near-real-time facts. I'd also fix the legacy BigQuery leaks first (cheapest, certain win) before any ClickHouse spend — which is exactly the staged gate I recommended.</p>
+<p><strong>Q: How did you decide ClickHouse vs not, given the team disagreed?</strong>
+A: I separated <strong>facts</strong> (accepted from the live audit) from <strong>conclusions</strong>, showed the anti-ClickHouse argument was about <em>legacy in-place-update code</em> not the new product, and converted the disagreement into a <strong>3-gate decision</strong> (in-stack BQ fixes → Postgres discipline → versioned-write PoC). Nobody had to "win" — we agreed on measurements.</p>
+<h2 id="64-behavioral-use-these-as-star-seeds">6.4 Behavioral (use these as STAR seeds)</h2>
+<ul>
+<li><strong>Decision under ambiguity / conflict:</strong> the reconciled DB verdict (three conflicting sources → one staged gate). <em>(§2 L1)</em></li>
+<li><strong>Ownership / de-risking:</strong> the BigQuery cost program + cost-guard (found a $327-for-2-rows leak; codified the fix). <em>(§2 P1/P2)</em></li>
+<li><strong>Depth / correctness:</strong> catalog-verified 5,385 columns / 46 FKs via $0 metadata, overturning "inferred" assumptions. <em>(§2 L2/P4)</em></li>
+<li><strong>Invention:</strong> the insert-only/versioned ClickHouse model that made an OLAP engine viable for an edit-heavy grid. <em>(§2 D2)</em></li>
+</ul>
+<hr>
+<h1 id="7-talking-tracks-tailoring-honesty">7. Talking tracks, tailoring &amp; honesty</h1>
+<h2 id="71-three-pitch-lengths">7.1 Three pitch lengths</h2>
+<p><strong>30 seconds:</strong> "I build the AI and data backbone of an agentic retail assortment planner — right now the store-clustering copilot: the planner states what to cluster and for when, a dedicated agent handles scoping, attribute selection and a 20-to-100-configuration exploration on a dedicated ClickHouse read plane, with evidence packs and three human approval gates. It's spec'd against measured baselines — 8.5% run failures, one config tried per plan, zero reproducibility — with targets of under an hour to a finalized plan and sub-500 ms agent probes. Under it sits a three-tier data architecture (BigQuery, Postgres, ClickHouse/DuckDB) I designed, and a BigQuery cost program that cut recurring scan cost up to ~280×."</p>
+<p><strong>2 minutes:</strong> add the <em>why</em> — clustering is the foundation of every strategy plan yet the least assisted step (the system computed attribute significance and then ignored it); the workflow inversion (human states intent, agent derives everything derivable, human confirms at gates and injects pins); the governance ladder (copilot → autopilot-with-approval → drift monitor; nothing auto-finalizes; content-addressed config documents make every shipped clustering reproducible); two workloads in one product (OLTP-with-pivot + OLAP) → three tiers; the ClickHouse insight (edit = insert-a-version → mutation queue stays at zero → undo/diff for free); the agent orchestration (router → decomposer → validated DAG → parallel specialists → synthesize, with a structural validator that fixed the #1 LLM failure); and the staged decision gate that de-risked the migration.</p>
+<p><strong>Deep dive:</strong> walk §9 (the copilot — measured problem → inversion → architecture positions → doorway), then §4 (DB LLD) and §3 (agent DAG), then the numbers in §2 (real vs indicative), then the tradeoffs in §6.3.</p>
+<h2 id="72-star-stories-ready-to-tell">7.2 STAR stories (ready to tell)</h2>
+<ul>
+<li><strong>S/T:</strong> Team split on whether the new planner should adopt ClickHouse; a live audit said "no," a SME push said "yes." <strong>A:</strong> Separated facts from conclusions, showed the objection was about legacy in-place-update code, designed an insert-only/versioned model + a 3-gate decision. <strong>R:</strong> Agreed, measurable path; PoC proved zero mutations at 10×; no premature infra spend.</li>
+<li><strong>S/T:</strong> Hindsight/pivot reads were slow and BigQuery spend was high. <strong>A:</strong> Audited scan patterns; routed to clustered copy, built a rollup, added a cost-guard. <strong>R:</strong> up to ~280× fewer bytes; caught a 38.8 TiB / $327 leak; codified as a guardrail.</li>
+<li><strong>S/T:</strong> LLM planners produced malformed multi-step plans. <strong>A:</strong> Added a structural DAG validator + one self-repair pass + <code>&lt;A_n&gt;</code> dependency passing. <strong>R:</strong> decomposition 0.54→0.99 in an offline eval; graceful partial answers on agent failure.</li>
+<li><strong>S/T:</strong> Clustering — the foundation of every strategy plan — was the least assisted step: 1 config tried per plan, 8.5% of runs failing on avoidable input errors, nothing reproducible, planner swaps silently erased. <strong>A:</strong> Spec'd and started building the cluster-recommendation copilot: intent-only input, deterministic grounding, batch exploration on a dedicated ClickHouse read plane, evidence packs, three gates, pins as durable constraints, content-addressed config documents. <strong>R:</strong> committed targets — &lt;1 h to a finalized plan, ≥20 configs, &lt;2% failures, 100% reproducibility, p95 &lt;500 ms probes — with write-back into the existing product unchanged.</li>
+</ul>
+<h2 id="73-tailoring-to-the-jd">7.3 Tailoring to the JD</h2>
+<ul>
+<li><strong>AI/ML-platform role</strong> → lead with C1 + C3 + A1–A4 + §5.5/5.6 (the shipping copilot, deterministic grounding, orchestration, decomposition, text-to-SQL, RAG, confidence).</li>
+<li><strong>Data/infra/DB role</strong> → lead with C2 + D1–D4 + P1–P3 + §4 (dedicated ClickHouse read plane, three-tier spine, insert-only ClickHouse, cost program).</li>
+<li><strong>Backend/platform role</strong> → lead with D1, A2, P3 + §5.7/5.8 (Rust API boundary, async, Redis, streaming, Cloud Tasks).</li>
+<li><strong>Staff/architect signal</strong> → lead with C1 + C4 + L1 (a governed agentic system you own end-to-end, the reconciled verdict / decision gates) + the tradeoff answers in §6.3.</li>
+<li><strong>Agentic/AI-product role</strong> → lead with C1–C5 wholesale + §9 (intent taxonomy, delegation levels, terminal-states contract, learning loops).
+Keep the résumé to the 5–8 strongest for that JD; the rest live here for the interview.</li>
+</ul>
+<h2 id="74-honesty-guardrail-repeat-this-protects-you">7.4 Honesty guardrail (repeat — this protects you)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Tier</th>
+<th>Say it as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BigQuery ~3× / 74× / 280× / 880×; 38.8 TiB / $327 leak</td>
+<td><strong>REAL</strong> (live audit)</td>
+<td>"measured" / "cut"</td>
+</tr>
+<tr>
+<td>Postgres 88% orphaned rows; 5,503 partitions / 298K rows</td>
+<td><strong>REAL</strong> (audit)</td>
+<td>"found / fixed"</td>
+</tr>
+<tr>
+<td>Catalog verified: 5,385 columns, 46 FKs</td>
+<td><strong>REAL</strong> (metadata)</td>
+<td>"verified"</td>
+</tr>
+<tr>
+<td><code>mutations_used = 0</code> at 1×/10× (insert-only works)</td>
+<td><strong>REAL property</strong> (PoC)</td>
+<td>"proved the architecture property"</td>
+</tr>
+<tr>
+<td>Decomposition 0.54 → 0.99 (+0.45)</td>
+<td><strong>EVAL</strong> (offline, mock model)</td>
+<td>"in an offline evaluation harness"</td>
+</tr>
+<tr>
+<td>Pivot/seed/edit milliseconds (1×→100×)</td>
+<td><strong>INDICATIVE</strong> (mock, pure-Python)</td>
+<td>"modeled / kept interactive as it scaled"</td>
+</tr>
+<tr>
+<td>ClickHouse PoC: <strong>8–130 ms pivots / ~160 ms writes / ~140–200× vs Postgres / 250M rows</strong></td>
+<td><strong>PoC benchmark</strong> (requirements notebook)</td>
+<td>"the ClickHouse PoC achieved …" (a PoC result, not a prod SLA)</td>
+</tr>
+<tr>
+<td>ClickHouse sub-second on 900M rows; 4.5M rows/s</td>
+<td><strong>CITED target</strong> (team benchmark)</td>
+<td>"the design target / cited benchmark"</td>
+</tr>
+<tr>
+<td>Cluster baselines: 8.5% failures (37/437); 0% reproducible; 1 config/plan; median job ≈20 s (370 runs); 1-in-5 finalized plans zero stores</td>
+<td><strong>REAL</strong> (FRD live-tenant audit)</td>
+<td>"measured on live tenants"</td>
+</tr>
+<tr>
+<td>Cluster targets: &lt;1 h to plan; ≥20 configs; &lt;2% failures; p95 &lt;500 ms; ≥60% top-3 acceptance</td>
+<td><strong>FRD TARGET</strong> (committed, in build)</td>
+<td>"the design targets we set / are building against"</td>
+</tr>
+</tbody>
+</table>
+<p>Never present a mock latency as production throughput. When in doubt, name the harness. Also be ready to say clearly <strong>what you personally built</strong> vs. what you reverse-engineered/designed vs. what's team/prototype — interviewers respect the precision.</p>
+<h2 id="75-one-page-resume-skeleton-fill-with-2-bullets">7.5 One-page résumé skeleton (fill with §2 bullets)</h2>
+<pre><code>TARUN MITTAL — Senior Software Engineer (Python · AI/Agents · Data)
+Summary: 2–3 lines — agentic systems + multi-engine data architecture; impact-first.
+
+IMPACT ANALYTICS — Senior Software Engineer
+Agentic Assort Planner — AI-assisted multi-agent retail planning platform
+  • C1  agentic cluster copilot: intent → agent explores ≥20 configs, 3 gates [AI · flagship]
+  • C2  dedicated ClickHouse read plane: probes 1–20s → p95 &lt;500ms target     [Data/AI-infra]
+  • A1  multi-agent decomposition + validated DAG (0.54→0.99 offline)         [AI]
+  • D2  insert-only/versioned ClickHouse planning store (0 mutations)         [Data]
+  • D1  three-tier data spine (BigQuery / Postgres / ClickHouse+DuckDB)       [Data/Arch]
+  • P1  BigQuery cost ↓ up to ~280× (2.9 TiB→3.3 GiB); caught $327/2-row leak [Perf]
+  • C4  reproducible clusterings (0%→100%) + pins + delegation-level autonomy [AI-governance]
+  • L1  reconciled DB verdict → 3-gate decision that de-risked migration      [Leadership]
+Tech: Python, FastAPI, asyncio · OpenAI/Gemini, LangGraph-style orchestration, RAG (pgvector,
+  BM25+dense, Cohere rerank), text-to-SQL · BigQuery, PostgreSQL, ClickHouse, DuckDB, Redis ·
+  Rust/Axum (adjacent) · GCP (Cloud Tasks/Scheduler, GCS, Secret Manager)
+(8 shown — trim to 5–8 per JD; C-bullets are the present-tense flagship, A/D the platform, P/L the seniority.)
+</code></pre>
+<h2 id="sources-resume-best-practice-research">Sources (résumé best-practice research)</h2>
+<ul>
+<li><a href="https://www.wonsulting.com/job-search-hub/the-power-of-quantifiable-results-how-to-use-the-xyz-formula-to-supercharge-your-resume">The XYZ Formula — Wonsulting</a></li>
+<li><a href="https://www.tealhq.com/post/xyz-resume">XYZ Method Resume — Teal</a></li>
+<li><a href="https://igotanoffer.com/en/advice/senior-software-engineer-resume-examples">Senior Software Engineer Resume Examples — IGotAnOffer</a></li>
+<li><a href="https://nestcv.com/blog/software-engineer-resume">Software Engineer Resume in 2025 — NestCV</a></li>
+</ul>
+<p><em>Product/architecture facts are grounded in your own repos and study artifacts: <code>agentic_assort_multiagent/</code>, <code>db_architecture_poc/</code> (+ <code>results/*.json</code>), <code>docs/01–07</code>, <code>product_artifacts/</code>, the AssortSmart data deep-dive / performance-findings deliverables, and the </em><em>Agentic Cluster FRD v1.8</em><em> (+ companion HLD/LLD) for the clustering copilot (§9).</em></p>
+<hr>
+<h1 id="8-authoritative-product-specifics-notebooklm-requirements-notebook">8. Authoritative product specifics (NotebookLM — requirements notebook)</h1>
+<div class="stage-badge stage-obs">Source: NotebookLM "AssortSmart Agentic Store Clustering & Module Requirements" (117 sources) · verified July 2026</div>
+
+<p>These are the <strong>canonical product/engineering facts</strong> straight from the requirements notebook — use them verbatim in interviews; they extend/confirm §3–§5. Where they differ from the offline PoC, prefer these for "what the product is," and keep the PoC framing (mock timings) for "what I personally ran."</p>
+<h2 id="81-agents-orchestration">8.1 Agents &amp; orchestration</h2>
+<ul>
+<li><strong>Five specialist agents:</strong> <code>AssortmentDataAgent</code>, <code>ClusteringAgent</code>, <code>HindsightAgent</code>, <code>LinePlanAgent</code>, <code>RecommendationAgent</code>.</li>
+<li><strong>Orchestration:</strong> <strong>LangGraph</strong> for multi-agent reasoning with <strong>Planner → Executor → Solver</strong> nodes, paired with <strong>FastMCP (Model Context Protocol)</strong> to <strong>discover and execute tools safely</strong>. (This is the production orchestration; the offline <code>agentic_assort_multiagent</code> PoC is a deterministic re-implementation of the same router/planner/executor shape.)</li>
+<li><strong>MCP tool layer</strong> (<code>mcp-core</code>) is how agents call tools — worth naming: "agents don't hard-code integrations; they discover tools over MCP."</li>
+</ul>
+<h2 id="82-governed-autonomy-concrete-thresholds">8.2 Governed autonomy (concrete thresholds)</h2>
+<ul>
+<li><strong>High confidence 0.85–1.00</strong> → auto-approve and proceed.</li>
+<li><strong>Medium 0.65–0.84</strong> → proceed but <strong>flag for planner review</strong>.</li>
+<li><strong>Low 0.00–0.64</strong> → <strong>halt the pipeline and escalate</strong> to a human planner.</li>
+<li><strong>HITL consent gate:</strong> for highly consequential/destructive actions, the graph <strong>interrupts</strong> to request explicit confirmation.</li>
+<li><strong>Overrides:</strong> require a <strong>≥10-character reason code</strong>, permanently written to the <strong>audit trail</strong>.</li>
+</ul>
+<blockquote>
+<p>Interview gold: "Autonomy is a banded policy — ≥0.85 auto, 0.65–0.84 act-and-flag, &lt;0.65 halt-and-escalate — plus a hard consent gate on destructive actions and a mandatory reason code on every override."</p>
+</blockquote>
+<h2 id="83-tech-stack-as-stated">8.3 Tech stack (as stated)</h2>
+<ul>
+<li><strong>Backend:</strong> Python <strong>3.11–3.13</strong>, <strong>FastAPI</strong>, <strong>Uvicorn</strong> (ASGI).</li>
+<li><strong>LLMs (multi-provider):</strong> OpenAI <strong>GPT-4.1 / GPT-4o / o4-mini</strong>, Google <strong>Gemini</strong>, Anthropic <strong>Claude</strong>, <strong>xAI</strong>.</li>
+<li><strong>Databases:</strong> <strong>BigQuery</strong> (historical facts/cubes) · <strong>PostgreSQL</strong> (editable transactional store) · <strong>DuckDB</strong> (in-memory pivot accelerator) · <strong>ClickHouse</strong> (<code>ReplacingMergeTree</code>, insert-only versioned OLAP/planning).</li>
+<li><strong>Memory / vector:</strong> <strong>Redis</strong>, <strong>Neo4j / Memgraph</strong> (graph), and vector stores <strong>pgvector / Qdrant / Chroma / FAISS</strong>.</li>
+<li><strong>Streaming/messaging + Apache:</strong> <strong>Socket.IO (WebSockets) + SSE</strong> (real-time); <strong>Google Cloud Tasks + GCP Pub/Sub</strong> (async queues); <strong>Apache Parquet</strong> (storage format); <strong>Apache Kafka</strong> (<code>aiokafka</code> / <code>confluent-kafka</code>) for <strong>async embedding jobs</strong>.</li>
+</ul>
+<div class="callout note">
+<p><b>Correction to earlier "no Apache" caveat.</b> The product <b>does</b> use Apache tech — <b>Kafka</b> (async embedding jobs) and <b>Parquet</b> (columnar storage/interchange). What's still true: the planning-store <em>ingestion path</em> is batch ELT (BigQuery cube/rollup → Postgres/ClickHouse), not a streaming pipeline into the grid.</p>
+</div>
+<h2 id="84-database-model-clickhouse-as-stated">8.4 Database model &amp; ClickHouse (as stated)</h2>
+<ul>
+<li><strong>Tenant unification:</strong> a <strong>generic core with "flex fields"</strong> absorbs each retailer's dynamic hierarchy <strong>without schema changes</strong>; <strong>tenant isolation resolves via environment variables to separate schemas</strong>, with <strong>shared master tables + extension hooks</strong> for per-client customization. (This is the mechanism behind "same codebase/queries/procedures across tenants.")</li>
+<li><strong>ClickHouse engines:</strong> <code>ReplacingMergeTree</code> (upserts/latest-wins), <code>AggregatingMergeTree</code> (rollups), <strong><code>VersionedCollapsingMergeTree</code></strong> (out-of-order CDC). <strong>Partition</strong> <code>PARTITION BY toYYYYMM(week_date)</code>; <strong><code>ORDER BY (measure, hierarchy…)</code></strong> to exploit <strong>sparse-index granule skipping</strong>. <strong>Production:</strong> <strong><code>ReplicatedReplacingMergeTree</code> + sharding</strong> (ClickHouse Keeper, or physical <strong>L1-table sharding to eliminate hotspots</strong>) and <strong>Projections</strong> for optimized rollups.</li>
+<li><strong>Edit / undo mechanics:</strong> <code>ALTER UPDATE</code> mutations are <strong>forbidden</strong>; edits <strong>insert new version rows</strong> (ms-epoch); latest state read via <strong><code>FINAL</code></strong> or <strong><code>argMax(value, version) … GROUP BY key</code></strong>. <strong>Up to 10 undo steps are cached in Redis</strong> before async DB commit; <strong>version-diffs render as dual-value cells</strong>.</li>
+<li><strong>Store-clustering model:</strong> <strong>K-Means</strong>, run <strong>twice independently</strong> — <strong>Performance (numeric)</strong> and <strong>Product/attribute (alphabetic)</strong> — then <strong>intersected into composite grades like "A1"</strong>, stored in <strong>EAV tables</strong>.</li>
+</ul>
+<h2 id="85-poc-gating-benchmark-numbers-as-stated">8.5 PoC gating + benchmark numbers (as stated)</h2>
+<ul>
+<li><strong>Gate:</strong> <strong>sub-second UI responsiveness over 250M synthetic rows.</strong></li>
+<li><strong>Result:</strong> ClickHouse <strong>meets it</strong> — <strong>8–130 ms filtered pivot reads</strong>, <strong>~160 ms flat-scale writes</strong> — a <strong>~140×–200× speedup over the legacy Postgres flat schemas.</strong></li>
+</ul>
+<div class="callout warn">
+<p><b>How to cite these numbers honestly.</b> They are the <b>ClickHouse PoC benchmark documented in the requirements notebook</b> (250M synthetic rows). Say <b>"the ClickHouse PoC achieved 8–130 ms pivot reads and ~140–200× over the legacy Postgres flat schema on 250M rows"</b> — i.e. a <i>PoC benchmark result</i>, not a production SLA and not necessarily your personal measurement. It's stronger and safer than the offline <code>db_architecture_poc</code> mock ms; use these for the DB-performance story and keep <code>mutations_used = 0</code> as the correctness property you personally proved.</p>
+</div>
+<h2 id="86-official-confluence-docs-audited-zero-contradictions-july-2026">8.6 Official Confluence docs — audited, zero contradictions (July 2026)</h2>
+<p>The full internal <strong>AssortSmart Docs</strong> Confluence space (~480 pages: API validation docs, module HLDs/LLDs, modular flows, business workflows) was walked in three passes and reconciled against everything above. <strong>No contradictions were found</strong> — an interview-grade credibility point: <em>"every engine behaviour I derived from code and live traffic matched the official validation docs."</em> Facts worth quoting:</p>
+<ul>
+<li><strong>Architecture is officially four-layer</strong> (<code>controller → service → data → data/query</code>, requests flow downward only), five modules — four in <code>assort_smart</code>, Cluster in its own <code>cluster_smart</code> package; async work via Cloud Tasks (Line-arch generation is a <strong>3-stage fan-out</strong>; edits propagate via a background worker).</li>
+<li><strong>The clustering spec confirms the composite-grade design</strong> (attribute letters × performance numbers, user k-override band 2–8) and its versioning model is <strong>copy-then-edit</strong> — a cluster plan bound to an active strategy is immutable.</li>
+<li><strong>The scale rationale is documented, not folklore:</strong> the Line table design budgeted <strong>~468 M store-week rows</strong> per worst-case tenant, which drove JSONB packing, ~2,000 LIST partitions and queue-based store-week updates — useful when defending the "per-row synchronous UPDATEs deviate from the module's own design" finding.</li>
+<li><strong>The C&amp;A tenant already shipped the fix family I recommend</strong> (BQ rollup tables, $3.8 → $0.30 per calc-attributes request, ~6× latency) — independent confirmation of the rollup strategy in §6.1's cost story.</li>
+</ul>
+<h2 id="87-resume-bullets-these-unlock-add-to-2">8.7 Résumé bullets these unlock (add to §2)</h2>
+<ul>
+<li><strong>"Orchestrated a 5-agent LangGraph pipeline (Planner→Executor→Solver) with a FastMCP tool layer, and a banded autonomy policy (auto ≥0.85 / act-and-flag 0.65–0.84 / halt &lt;0.65) plus a human-in-the-loop consent gate + audited reason codes."</strong></li>
+<li><strong>"Proved ClickHouse as an insert-only/versioned planning store — sub-second pivots over 250M rows (8–130 ms reads, ~160 ms writes), ~140–200× over the legacy Postgres flat schema — using ReplacingMergeTree + argMax(version), Redis-cached 10-step undo, and REPLACE PARTITION bulk re-seeds (zero mutations)."</strong></li>
+<li><strong>"Designed a tenant-generic 'flex-field' core (env-var schema isolation + shared masters + extension hooks) so one codebase serves every retailer's hierarchy with no per-client schema."</strong></li>
+<li><strong>"Implemented composite store grades (A1/A2/…) by intersecting independent K-Means runs on performance (numeric) and attribute (alphabetic) features, persisted via an EAV model."</strong></li>
+</ul>
+<hr>
+<h1 id="9-the-cluster-recommendation-copilot-the-module-you-are-building-right-now">9. The Cluster Recommendation Copilot — the module you are building right now</h1>
+<div class="stage-badge stage-c">Source: Agentic Cluster FRD v1.8 (PM edition, 2026-07-06) + companion HLD/LLD · live tenant audits (kik, briscoes)</div>
+
+<p>This is the <strong>current, concrete build</strong> — the strongest thing on the résumé because it is present-tense ownership: a full agentic module from measured problem → architecture → phased rollout. Everything below is what/why/how at interview depth. When asked <em>"what are you working on right now?"</em>, this chapter is the answer.</p>
+<h2 id="91-what-in-one-breath">9.1 WHAT — in one breath</h2>
+<blockquote>
+<p>"A conversational + structured copilot for store clustering. The planner states <em>what</em> to cluster and <em>for when</em> — a dedicated agent handles store scoping, attribute selection, exploration and scoring on a dedicated ClickHouse read plane; the planner reviews evidence, adjusts stores with consequences shown, and approves. The existing product consumes the result completely unchanged."</p>
+</blockquote>
+<p>Two entry modes, one agent: the <strong>manual wizard with inline recommendations</strong> (Mode A) and <strong>chat-native</strong> (Mode B — "cluster Small Appliances for SS27"). The <strong>convergence rule</strong> is non-negotiable: whichever door you enter, the flow converges before execution — same config document, same search plan, same three gates, same write-back. A session started in one mode can continue in the other; the modes are two surfaces on one agent, never two implementations.</p>
+<h2 id="92-why-the-measured-problem-all-live-audit-numbers">9.2 WHY — the measured problem (all live-audit numbers)</h2>
+<p>Store clustering is the foundation every strategy plan is built on — and the least assisted step in the product:</p>
+<table>
+<thead>
+<tr>
+<th>Measured reality (today)</th>
+<th>Number</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Configurations evaluated per plan</td>
+<td><strong>exactly 1</strong> (search space: 12 algorithms × k 3–10 × any attribute subset)</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Run failure rate</td>
+<td><strong>8.5%</strong> (37/437 runs, kik) — <strong>&gt;80% are input mistakes</strong> at the data boundary</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Reproducibility of shipped clusterings</td>
+<td><strong>0%</strong> — algorithm/params/seed never persisted</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Manual store swaps surviving a re-run</td>
+<td><strong>0%</strong> — silently erased</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Significance scores (the hardest signal)</td>
+<td>computed, then <strong>ignored</strong> — user picks from raw score lists</td>
+<td>code + UX audit</td>
+</tr>
+<tr>
+<td>Median clustering job</td>
+<td><strong>≈20 s</strong> (370 live runs; max 463 s)</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Agent data-probe latency on shared BQ</td>
+<td><strong>1–20 s+, variance uncontrolled</strong></td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Strategy-create help choosing a cluster plan</td>
+<td><strong>zero</strong> — and 1 in 5 finalized kik plans has <strong>zero stores attached</strong>; briscoes' finalized inventory is 100% <strong>&gt;17 months stale</strong></td>
+<td>live audit</td>
+</tr>
+</tbody>
+</table>
+<p>The one-line diagnosis for interviews: <strong>"the compute is fast (~20 s median); the bottleneck is everything around the machine"</strong> — expert choices made blind up-front, one shot per try, knowledge thrown away after.</p>
+<h2 id="93-how-the-workflow-inversion">9.3 HOW — the workflow inversion</h2>
+<p>Today's flow asks the human for four expert choices up front, blind, then runs once. The agentic flow inverts it:</p>
+<pre><code>TODAY:   human picks hierarchy → period → store groups → attributes → submit(1 config) → eyeball → hand-fix → finalize
+AGENTIC: human states INTENT (hierarchy + period — the only 2 non-derivable inputs)
+           → agent proposes store scope        (active stores, sister-store subs, sample-size guards)   [Gate ~ confirm]
+           → agent proposes attribute sets     (significance + coverage + redundancy gates, ranked)     [Gate 1: search plan]
+           → agent explores 20–100 pruned configs on an isolated scratch plan (results stream)
+           → top-3 with evidence packs (driving attributes, separation, stability, size balance,
+             churn-vs-current-live-clusters)
+           → human reviews, what-ifs (≤10 s warm), moves/pins stores with impact shown                  [Gate 2]
+           → explicit approval → write-back into today's tables                                          [Gate 3]
+</code></pre>
+<p>Key definitions you must own in the room:</p>
+<ul>
+<li><strong>Intent</strong> = hierarchy scope + reference period — the only two inputs that are business strategy rather than derivable from data. Everything else (store cohort, attributes, algorithm, k, tuning) the agent derives. Pins/moves are <em>not</em> intent — they're <strong>business-knowledge injection</strong> during review. The invariant: <em>intent is always human-owned; the agent may ground, expand, execute or queue it — never invent or auto-resolve one.</em></li>
+<li><strong>Config document</strong> = the unit of record: algorithm, k, hyperparameters, seed, features, windows, pins, data watermark, scorer version — persisted and <strong>content-addressed</strong>. "Re-run" reproduces membership on the same watermark or explains drift.</li>
+<li><strong>Pins</strong> = durable constraints with reason codes; honored by every subsequent re-run and refresh. This kills the silent-loss-of-swaps failure (0% → 100% survival).</li>
+<li><strong>Three delegation levels:</strong> <strong>L1 copilot</strong> (proposes every step, executes on confirmation — launch) → <strong>L2 autopilot-with-approval</strong> (one intent runs the whole flow unattended; one review, one approval) → <strong>L3 standing monitor</strong> (nightly drift detection — "12 stores no longer fit, stability dropped 0.18" — raises a proposal). Nothing at any level auto-finalizes; system-originated work surfaces as <strong>pending intents</strong> unless the tenant grants a recorded, one-time standing pre-approval.</li>
+</ul>
+<h2 id="94-the-architecture-positions-and-why">9.4 The architecture positions (and why)</h2>
+<ol>
+<li><strong>Deterministic tools compute; the LLM orchestrates and explains.</strong> Every number in an evidence pack traces to a tool call; same inputs + same scorer version ⇒ identical ranking. The LLM never invents a metric. This is the anti-hallucination stance <em>and</em> what makes recommendations auditable.</li>
+<li><strong>Deterministic grounding for chat.</strong> Department mentions are backtracked to full hierarchy paths via catalog search (ambiguity → clarifying question, never a guess); season labels resolve via the tenant's fiscal calendar (seasons differ per tenant and hemisphere); the <strong>grounding card</strong> (scope, cohort, attributes, each with a reason) must be confirmed before any compute.</li>
+<li><strong>A dedicated ClickHouse read plane.</strong> Agent probes need p95 &lt; 500 ms deterministic (vs 1–20 s+ on shared BigQuery slots). Fed by the org's existing BQ→CH ingestion pipeline (proven on ItemSmart); <strong>agent access is read-only enforced by database profile, not convention</strong>; exploration writes only to isolated scratch plans; nightly precompute makes active hierarchies feel instant (≥80% cold→warm target). This is the gated ClickHouse adoption from the reconciled DB verdict actually happening — read plane only; BigQuery stays truth; Postgres stays the editable SoR (explicit FRD non-goal).</li>
+<li><strong>Write-back compatibility.</strong> Approved results land in the existing <code>plan_cluster_final</code> / <code>plan_cluster_store_final</code> tables — strategy, budget, wedge, line consume them with <strong>zero product changes</strong>. The legacy wizard keeps working untouched in parallel (adoption de-risk).</li>
+<li><strong>Safe editing of consumed plans.</strong> Editing a plan referenced by strategies defaults to <strong>clone-and-version with lineage</strong> (in-place edits would silently invalidate downstream budgets/wedges); rebinding is explicit per-strategy; an edit-impact card shows consumers <em>before</em> any change.</li>
+<li><strong>Every flow closes.</strong> A 19-workflow audit produced a <strong>terminal-states contract</strong>: every flow defines success / rejection / failure / abandonment-expiry. Degraded batches (&lt;3 viable candidates) surface partials + a failure taxonomy + retry; capacity is a queue with a position banner, not an error; rejection returns to comparison and is captured as a learning event.</li>
+<li><strong>Honest learning loops.</strong> Deviations (attribute removed, store moved, non-top pick, dismissal) are captured with reason chips: (a) deterministic memory — never blindly re-recommend what this scope rejected; (b) human-approved calibration of tenant metric weights (versioned, never silently self-tuned); (c) a labeled recommended-vs-chosen corpus for any future learned ranker, shipped only as an explicit scorer-version release to preserve determinism.</li>
+</ol>
+<h2 id="95-the-strategy-doorway-22-of-the-frd-best-cross-module-story">9.5 The strategy doorway (§2.2 of the FRD — best cross-module story)</h2>
+<p>Every strategy plan binds to exactly one cluster plan at creation; today there's zero help and the audit found strategies pointing at cluster plans that <strong>no longer exist</strong>. The fix, three tiers:</p>
+<ul>
+<li><strong>Hard eligibility gate before scoring:</strong> finalized ∧ not deleted ∧ non-empty membership ∧ recoverable scope. (1 in 5 finalized kik plans has zero stores — binding one silently breaks every downstream step. Unusable plans are listed, never scored.)</li>
+<li><strong>FitScore ≤2 s, deterministic:</strong> cheap terms rank all candidates; the expensive variance-explained term ("these clusters explain X% of store-revenue variance in your scope") runs top-5-only, computed on the <strong>last comparable season</strong> (a future window has no sales yet), <strong>penalized for cluster count</strong> (so many-tiny-clusters can't game it) and <strong>weighted by store coverage</strong>. Bands Green/Yellow/Red <strong>calibrated by backtesting against 467 historical bindings</strong> (363 kik + 104 briscoes).</li>
+<li><strong>Always a top-3 shortlist</strong> with explain cards + pairwise deltas ("#2 covers your scope but is 9 months staler"); padded with a <strong>spawn card</strong> when fewer exist — never an empty dropdown. Spawn runs the full recommendation pipeline inline, writes at the pre-finalize step, promotes only on human confirmation (or parks as a <strong>pending intent</strong> where tenant governance requires a cluster-owner sign-off), records <code>created_via</code> + full scope keys for future dedup, and the create API now validates bindings are live + finalized — eliminating the dangling-reference class.</li>
+</ul>
+<h2 id="96-targets-rollout-know-these-cold">9.6 Targets &amp; rollout (know these cold)</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Baseline (measured)</th>
+<th>Target (6 mo)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hierarchy → finalized plan</td>
+<td>hours–days</td>
+<td><strong>&lt; 1 h</strong> (&lt;10 min precomputed)</td>
+</tr>
+<tr>
+<td>Configs evaluated per plan</td>
+<td>1</td>
+<td><strong>≥ 20</strong></td>
+</tr>
+<tr>
+<td>Run failure rate</td>
+<td>8.5%</td>
+<td><strong>&lt; 2%</strong></td>
+</tr>
+<tr>
+<td>Top-3 contains shipped config</td>
+<td>n/a</td>
+<td><strong>≥ 60%</strong></td>
+</tr>
+<tr>
+<td>Store corrections surviving re-run</td>
+<td>0%</td>
+<td><strong>100%</strong></td>
+</tr>
+<tr>
+<td>Agent probe latency</td>
+<td>1–20 s+</td>
+<td><strong>p95 &lt; 500 ms</strong></td>
+</tr>
+<tr>
+<td>Reproducible shipped clusterings</td>
+<td>0%</td>
+<td><strong>100%</strong></td>
+</tr>
+<tr>
+<td>Strategy plans using a suggested cluster</td>
+<td>0%</td>
+<td><strong>≥ 40%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phases:</strong> P0 read-only copilot (CH instance + cubes + significance/explain tools; exit: p95 &lt;500 ms, cube reconciles to BQ within 0.1%) → P1 recommendation engine (batch exploration + what-if + config documents; exit: top-3 ≤60 s cold, deterministic re-rank) → P2 approve &amp; write-back (gates, pins with impact preview, doorway point-at-existing; exit: end-to-end consumption in staging) → P3 scale-out (nightly precompute, L2/L3, spawn, kik at 6,040 stores — gated on kik's BQ env cutover).</p>
+<p><strong>Top risks + mitigations (one-liners):</strong> derived-data rot → owned ingestion + freshness sentinel + data-as-of quoted in every rec; metric gaming → hard gates before scoring, stability as pass/fail, full metric vector always shown; trust gap → evidence packs + churn-vs-current + P0 ships read-only value first; compute tail (463 s max) → async batches with streamed partials + nightly precompute for heavy hierarchies.</p>
+<h2 id="97-interview-qa-for-this-module">9.7 Interview Q&amp;A for this module</h2>
+<p><strong>Q: Why an agent at all — isn't this just AutoML for clustering?</strong>
+A: AutoML optimizes a loss; this optimizes a <em>decision</em> a human must own. The agent's job is search + evidence + explanation; the human's job is intent, business-knowledge injection (pins), and accountability (<code>is_final</code> is a human signature). The measured problem wasn't model quality — it was 1 config tried per plan, 8.5% avoidable failures, zero reproducibility. Those are workflow failures, so the fix is a workflow agent with hard governance, not a better optimizer.</p>
+<p><strong>Q: How do you stop the LLM from hallucinating a recommendation?</strong>
+A: It structurally can't — deterministic tools compute every number, the LLM only orchestrates and narrates, and every figure in an evidence pack traces to a tool call. Scope grounding is catalog search, season resolution is the fiscal calendar, and ranking is a versioned deterministic scorer: same inputs ⇒ identical order.</p>
+<p><strong>Q: Why ClickHouse here when the earlier audit said no?</strong>
+A: The audit's "no" was about the <em>legacy editable</em> workload (in-place OLTP mutations). This is the opposite shape: a <strong>read-only</strong> analytical plane for agent probes, insert-only ingestion from BigQuery, isolated from the product's write path. It's exactly the gated forward option my reconciled verdict defined — and the FRD non-goals pin it: no transactional data moves, BigQuery stays truth.</p>
+<p><strong>Q: What happens when the agent is wrong or the batch degrades?</strong>
+A: Defined outcomes everywhere (the terminal-states contract): &lt;3 viable candidates → partial results + failure taxonomy + one-tap retry; autopilot ambiguity → parked as a pending intent, never auto-resolved; capacity → queue with a position banner; rejection → back to comparison, reason captured as a learning event. Nothing accumulates silently; sessions expire at the tenant retention boundary.</p>
+<p><strong>Q: How does it learn without becoming non-deterministic?</strong>
+A: Three honest loops — deterministic memory (never re-recommend what this scope rejected, acknowledged in-session), human-approved calibration (aggregated deviations inform the next <em>versioned</em> weight set), and a labeled corpus for a future ranker shipped only as an explicit scorer-version release. No silent self-tuning, ever.</p>
+<p><strong>Q: Multi-tenancy?</strong>
+A: Per-tenant everything: ingestion lanes, quotas/concurrency budgets, k-ranges and algorithm allow-lists, metric weights (versioned, actually consumed — fixing a known ignored-weightage defect), default-hierarchy registries with draft vs standing-pre-approval governance, and ClickHouse placement per tenant (briscoes = AU, kik = EU) as a config decision, not a redesign. kik launch gates on its BigQuery environment cutover — its prod dataset is an empty shell today.</p>
+<p><strong>Q: What did you deliberately not build?</strong>
+A: Four explicit non-goals: no auto-finalize without human approval; no replacement of the existing wizard (parallel, untouched); no transactional/plan data on ClickHouse and no replacing BigQuery as truth; no attempt to make the ML itself faster (~9 s/config median is accepted physics — we parallelize and precompute around it).</p>
+<hr>
+<h1 id="10-engineering-stack-direction-july-2026-authoritative">10. Engineering stack direction — July 2026 (authoritative)</h1>
+<div class="stage-badge stage-obs">Manager directive, agentic-assort · July 2026 · supersedes earlier "Postgres-SoR + gated ClickHouse" framing in §4/§5 where they conflict</div>
+
+<p>This is the <strong>current, committed technology direction</strong> for the agentic-assort build. Use this when describing the stack on the résumé and in interviews. Earlier chapters (§2 D1–D2, §4, §5) remain correct as the <strong>decision history</strong> that led here — and that history is exactly what makes this defensible.</p>
+<h2 id="101-the-directive-verbatim-intent">10.1 The directive (verbatim intent)</h2>
+<ol>
+<li><strong>All non-agentic flows → GoLang.</strong> Traditional backend services (plan lifecycle CRUD, reference-data reads, scoping/write-back APIs, tenant config) are built in <strong>Go</strong>, using <strong>Gin</strong> as the HTTP framework.</li>
+<li><strong>Agentic workflows → unchanged.</strong> Python 3.11+ · FastAPI · <strong>LangGraph</strong> (Planner→Executor→Solver) · <strong>FastMCP</strong> tool discovery · multi-provider LLMs (OpenAI/Gemini/Claude). Nothing about the agent brain moves.</li>
+<li><strong>Performance-critical APIs that Go cannot satisfy → Rust.</strong> Where a specific endpoint needs performance Go can't reach (allocation-heavy hot loops, large columnar result shaping, very high fan-out concurrency), that endpoint is built in <strong>Rust</strong> (Axum on Tokio). Precedent exists in-house: the CortexEye backend is already Rust/Axum.</li>
+<li><strong>ClickHouse end-to-end — both transactional and analytical.</strong> ClickHouse is the platform's operational <strong>and</strong> analytical engine for planning data: the OLAP pivot/hindsight serving layer <strong>and</strong> the transactional-style planning store, made safe by the <strong>insert-only / versioned write model</strong> (§2 D2): every edit is an INSERT with <code>version = epoch-ms</code>, reads take <code>argMax(value, version)</code>, deletes are tombstones, bulk re-seeds are atomic <code>REPLACE PARTITION</code> — the async-mutation queue stays at <strong>zero</strong>.</li>
+</ol>
+<h2 id="102-why-each-choice-holds-up-interview-defense">10.2 Why each choice holds up (interview defense)</h2>
+<h3 id="go-gin-for-non-agentic-flows">Go + Gin for non-agentic flows</h3>
+<ul>
+<li><strong>Why Go:</strong> the non-agentic surface is high-QPS, low-logic I/O plumbing — auth, validation, fan-out reads, write-back orchestration. Go gives a small static binary, fast cold start, goroutine-per-request concurrency without an async framework, and a single obvious way to do things — right for a service tier many engineers touch.</li>
+<li><strong>Why Gin specifically:</strong> the most battle-tested Go HTTP framework (radix-tree router, middleware chain, <code>c.ShouldBindJSON</code> validation); boring in the good way. Alternatives considered: <strong>chi</strong> (closer to stdlib, but less batteries), <strong>Echo</strong> (comparable; Gin chosen for team familiarity + ecosystem), <strong>fiber</strong> (fasthttp-based — non-standard <code>net/http</code> semantics, rejected).</li>
+<li><strong>Supporting kit:</strong> <code>clickhouse-go</code> v2 (native protocol, columnar blocks) for ClickHouse; <code>pgx</code> where Postgres metadata remains; <code>sqlc</code> for typed queries; OpenTelemetry middleware; golangci-lint.</li>
+<li><strong>The tradeoff to admit:</strong> Python had all the team's data tooling; Go splits the codebase into two languages. Accepted because the agentic and non-agentic tiers were already separate deployables with an API contract between them — the language boundary lands on an existing service boundary.</li>
+</ul>
+<h3 id="rust-for-the-hot-paths-exception-not-default">Rust for the hot paths (exception, not default)</h3>
+<ul>
+<li><strong>Scope discipline:</strong> Rust is <em>not</em> the default backend language — it's the escape hatch for endpoints where profiling shows Go's GC/allocation profile or FFI overhead is the bottleneck (e.g. wide pivot-grid assembly over millions of versioned cells, evidence-pack aggregation under fan-out).</li>
+<li><strong>Why Rust when needed:</strong> no GC pauses, zero-cost abstractions, fearless concurrency (Tokio), <code>Arrow</code>/<code>polars</code> ecosystem for columnar shaping; Axum shares the tower middleware ecosystem.</li>
+<li><strong>The one-liner:</strong> "Go by default, Rust by measurement — an endpoint earns Rust with a profile, not a preference."</li>
+</ul>
+<h3 id="clickhouse-end-to-end-the-big-one">ClickHouse end-to-end (the big one)</h3>
+<ul>
+<li><strong>The evolution story (tell it in this order):</strong>
+  1. Live audit of the legacy backend said <strong>"no ClickHouse"</strong> — correct, because the legacy planner does in-place OLTP mutations (keyed UPDATE, jsonb-merge, delete+reinsert), which ClickHouse mutations are genuinely bad at (async, degrade &gt;500 queued, stall &gt;1,000).
+  2. My reconciled verdict (§2 L1): that objection is a property of the <em>legacy write model</em>, not of planning — so ClickHouse stayed a <strong>gated option</strong> behind a versioned-write PoC.
+  3. The PoC proved the gate: <strong>insert-only/versioned</strong> semantics (<code>ReplacingMergeTree(version)</code>, <code>argMax</code> reads, tombstones, <code>REPLACE PARTITION</code>) hold <code>mutations_used = 0</code> at 1× and 10× scale with correct read-after-write.
+  4. <strong>July 2026: the org committed</strong> — ClickHouse end-to-end for both transactional and analytical planning workloads. The versioned model is no longer a proposal; it's the adopted write contract, and it natively powers overrides, version-diff and undo/redo that the product grid needs anyway.</li>
+<li><strong>What "transactional" means here (be precise):</strong> not bank-ledger OLTP — it's <strong>planning-grid transactionality</strong>: atomic multi-row saves (batch INSERT of one version), read-after-write within a session (client-side <code>version</code> watermark + <code>argMax</code>), idempotent replays (deterministic version keys), and audit-grade history for free. Cross-entity invariants that truly need ACID multi-statement transactions (auth, tenant config, workflow state) stay on a thin Postgres metadata plane — say this unprompted; it shows judgment.</li>
+<li><strong>What we gave up:</strong> engine-enforced constraints/FKs (moved to service-layer validation in Go), instant hard deletes (tombstones + TTL merges instead), and storage amplification until background merges collapse versions. All accepted consciously.</li>
+<li><strong>BigQuery stays upstream</strong> as the historical source of truth feeding ClickHouse through the proven BQ→CH ingestion lane (§2 C2); the read plane and the planning store are now the same engine, which kills a whole class of cross-engine reconciliation.</li>
+</ul>
+<h2 id="103-resume-phrasing-paste-ready">10.3 Résumé phrasing (paste-ready)</h2>
+<ul>
+<li><em>Stack line for the IA project header:</em> *<em>Python (FastAPI, LangGraph, FastMCP) · Go (Gin) · Rust (Axum) · ClickHouse (insert-only versioned) · BigQuery · pgvector · GCP.</em></li>
+<li><em>Bullet (stack architecture):</em> "Defined the platform's polyglot service architecture — Go/Gin for all non-agentic backend flows, Rust for profile-proven hot-path APIs, Python/LangGraph unchanged for agent orchestration — and led the adoption of ClickHouse as the end-to-end transactional + analytical planning store by designing an insert-only/versioned write model (<code>ReplacingMergeTree</code> + <code>argMax</code> reads + <code>REPLACE PARTITION</code>) that keeps the async-mutation queue at zero while natively powering overrides, version-diff and undo/redo."</li>
+</ul>
+<h2 id="104-qa-for-this-directive">10.4 Q&amp;A for this directive</h2>
+<ul>
+<li><strong>"Why not keep everything Python?"</strong> The agent tier stays Python — that's where the ecosystem lives. The non-agentic tier is throughput-shaped, not ML-shaped; Go halves its infra footprint and removes the async-framework tax.</li>
+<li><strong>"Why not everything Rust?"</strong> Team throughput. Rust's compile-time rigor pays on hot paths; on CRUD it just slows delivery. Hence "Rust by measurement."</li>
+<li><strong>"Isn't ClickHouse for analytics only?"</strong> Classically yes — and I authored the audit position saying exactly that for the legacy mutation-heavy code. The unlock is changing the write model, not the engine: insert-only versions turn edits into what ClickHouse is best at (appends + background merges). We proved the mutation queue stays at zero before committing.</li>
+<li><strong>"Where's Postgres now?"</strong> A thin metadata/auth/config plane and pgvector for the semantic cache. Planning data — writes and reads — is ClickHouse.</li>
+</ul></main></div>
+</body></html>

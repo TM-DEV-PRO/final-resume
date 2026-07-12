@@ -1,0 +1,120 @@
+# Behavioral / managerial rounds — 10 STAR stories
+
+Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness signals** (intellectual humility, bias to action, collaboration, comfort with ambiguity, doing the right thing). Tell them in 60–90 seconds: one line of Situation, one of Task, 3–4 concrete Actions, quantified Result, and a one-line Lesson. Never share the same story twice in one loop — this bank gives you coverage.
+
+**Coverage matrix**
+
+| Story | Amazon LPs | Googliness |
+|---|---|---|
+| 1. Reconciled ClickHouse verdict | Are Right, A Lot · Have Backbone; Disagree & Commit · Dive Deep | Intellectual humility · ambiguity |
+| 2. BigQuery cost program | Frugality · Ownership · Invent & Simplify | Bias to action |
+| 3. Malformed-plan validator | Customer Obsession · Insist on Highest Standards | Problem-first thinking |
+| 4. Clustering copilot inversion | Think Big · Customer Obsession · Deliver Results | Ambiguity · user empathy |
+| 5. Constants-refactor regression | Insist on Highest Standards · Earn Trust | Humility · owning mistakes |
+| 6. Coverage-gap fix (test where code lives) | Dive Deep · Learn & Be Curious | Rigor |
+| 7. ORM-vs-repository disagreement | Have Backbone; Disagree & Commit · Earn Trust | Healthy conflict |
+| 8. Masters India migration under deadline | Deliver Results · Ownership · Bias for Action | Execution under pressure |
+| 9. Anti-bot arms race | Learn & Be Curious · Invent & Simplify | Persistence |
+| 10. Double-filing near-miss / idempotency | Earn Trust · Insist on Highest Standards | Doing the right thing |
+
+---
+
+## 1. The reconciled database verdict (disagreement between two expert camps)
+**Use for:** "Tell me about a time you disagreed with your team / made a decision with incomplete data / influenced without authority."
+
+- **S:** At Impact Analytics, the org was split on adopting ClickHouse for the new agentic planner. A live audit of the legacy backend concluded "no ClickHouse"; senior SMEs pushed "yes, unified OLAP." Both sides had evidence; a wrong call was expensive either way.
+- **T:** Produce a recommendation the org could commit to, without discarding either side's evidence.
+- **A:** Separated *facts* from *conclusions*: accepted every measured fact in the audit, then showed its "no" conclusion was a property of the legacy in-place-UPDATE write model, not of planning workloads. Designed an insert-only/versioned write model that sidesteps ClickHouse's mutation weakness, and proposed a 3-gate path: in-stack BigQuery fixes first, Postgres discipline second, a versioned-write PoC third — each gate measurable.
+- **R:** Both camps agreed to the staged path. The PoC held the mutation queue at zero at 10× scale; in July 2026 the org committed to ClickHouse end-to-end. No premature infra spend, no camp "lost."
+- **Lesson:** disagreements between competent people are usually about hidden assumptions, not facts — make the assumptions explicit and the decision often resolves itself.
+
+## 2. The 280× BigQuery cost program
+**Use for:** "Impact you're proud of / frugality / finding problems nobody asked you to find."
+
+- **S:** While auditing the legacy backend's data patterns I noticed recurring hindsight reads scanning a raw ~2.9 TiB fact table.
+- **T:** Nobody had asked for a cost program; I made it one anyway.
+- **A:** Measured scan patterns across the workload; found reads targeting the un-clustered raw fact when a clustered copy existed (~3× cheaper); materialized a store×category×week rollup (~280× cheaper, ~$8 one-time); found one `SELECT * LIMIT 2` query that had billed 38.8 TiB ($327) for 2 rows; then codified all of it as a query-path cost guard (rejects `SELECT *` and un-dated scans, auto-routes to the clustered copy) so the saving can't regress.
+- **R:** Up to ~280× fewer bytes billed on the hot recurring reads; the guardrail made the fix permanent.
+- **Lesson:** the fix that matters is the one that makes the regression impossible, not the one-off cleanup.
+
+## 3. Fixing the #1 LLM-planner failure (malformed plans)
+**Use for:** "Hardest technical problem / quality bar / working with non-deterministic systems."
+
+- **S:** Our multi-agent planner let an LLM decompose questions into execution plans; malformed plans (unknown agents, forward references, over-wide stages) were the top failure class — structural correctness was 0.54 on our eval set.
+- **T:** Make plans safe to execute without giving up LLM flexibility.
+- **A:** Wrote a hard structural validator over the plan schema (domains, duplicate ids, stage widths, forward references in dependency placeholders) that runs before anything executes; on failure, one self-repair pass re-prompts the LLM with the specific validation errors; made every agent's `answer()` non-throwing so a single agent failure produces a labeled partial answer instead of a crash.
+- **R:** Structural correctness 0.54 → 0.99 on the offline eval; failures became explicit and recoverable.
+- **Lesson:** with LLMs, don't chase a perfect prompt — put a deterministic contract around a probabilistic component.
+
+## 4. Inverting the clustering workflow (customer obsession + think big)
+**Use for:** "A time you challenged the status quo / product thinking / ambiguity."
+
+- **S:** Store clustering is the foundation of every assortment plan, yet it was the least-assisted step: the system computed attribute significance and then made humans choose from raw score lists. Live audits: users tried exactly 1 configuration per plan (search space: 12 algorithms × k=3–10 × any attribute subset), 8.5% of runs failed (37/437, >80% on input mistakes), and nothing was reproducible.
+- **T:** Define the module's agentic rebuild — with adoption risk as the main constraint.
+- **A:** Inverted the workflow: the user states intent (hierarchy + reference period — the only non-derivable inputs); the agent derives everything derivable (scoping, attribute selection, 20–100 config batch exploration) and the human confirms at three gates and injects business knowledge as durable pins. Kept the manual wizard alive and made both modes converge on the same config document and write-back (the convergence rule) so adoption is opt-in, not forced.
+- **R:** Committed targets: <1 h to a finalized plan (from days), ≥20 configs explored (from 1), <2% failures, 100% reproducibility — with write-back into existing product tables unchanged.
+- **Lesson:** the highest-leverage AI feature is often workflow inversion, not model quality.
+
+## 5. The "pure refactor" that wasn't (owning a mistake)
+**Use for:** "Tell me about a mistake / a bug you caused / quality standards."
+
+- **S:** At Uber, PR 2 of my 3-PR stacked refactor — supposedly a constants-only consolidation across 31 files — had a downstream test failing.
+- **T:** Find why a test asserting "preserve COMPONENT strategy when selection is empty" now saw AGGREGATE.
+- **A:** Diffed my own PR ruthlessly: I had slipped in a `_resolve_strategy` helper that silently downgraded the strategy — a behavioral change smuggled into a refactor. Removed it, restored the pass-through, and added "pure refactor ⇒ zero test diff" to the team's stacked-PR checklist so the class of error is caught by process, not vigilance.
+- **R:** Shipped as a true refactor; the checklist caught a similar issue for a teammate weeks later.
+- **Lesson:** call your own fouls fast and convert them into process — credibility compounds.
+
+## 6. Coverage that lied (dive deep)
+**Use for:** "Tell me about debugging something non-obvious / testing philosophy."
+
+- **S:** My Uber ORM migration failed CI at 34.6% new-line coverage despite the code paths being exercised.
+- **T:** Understand how tested code could be "uncovered."
+- **A:** Dug into the coverage mechanics: repository-layer tests stubbed the new ORM classmethods via mock chains, so the model package's lines never executed — mocking had shifted the coverage to the wrong layer. Wrote 12 direct model-layer unit tests including rejection paths (empty updates, unknown columns).
+- **R:** 100% on the changed module; the pattern ("test where the code lives, not where it's called") went into the team's testing notes.
+- **Lesson:** a metric you don't understand is a metric that will lie to you.
+
+## 7. Disagreeing with the architecture rulebook (backbone + commit)
+**Use for:** "A time you disagreed with a standard / with a senior engineer."
+
+- **S:** Uber's team architecture rules said all data access lives in `repository/`. For the ORM migration, I put query classmethods on the ORM model instead.
+- **T:** Either follow the rule mechanically or argue the exception.
+- **A:** Made the engineering case: classmethods keep SQL adjacent to column definitions so renames fail the type checker immediately; the repository stays a thin session wrapper; no business logic leaks. Heard the counter-argument (consistency of the rulebook), documented the deviation explicitly, and committed to free repository functions for dynamic queries that don't naturally belong to one model.
+- **R:** Exception accepted and documented; the latent column-aliasing bug that motivated the migration (raw SQL reading income-statement rows with balance-sheet column lists) could not recur.
+- **Lesson:** disagree with a written rationale, commit visibly, and leave the decision auditable.
+
+## 8. The migration nobody could pause the business for (deliver results)
+**Use for:** "Delivering under pressure / leading a project end-to-end."
+
+- **S:** Masters India's PHP monolith was collapsing during monthly GST deadline peaks — worker pools exhausted by blocking government-portal calls — while 2,500+ enterprise clients kept filing.
+- **T:** Lead the migration to async FastAPI microservices with zero downtime tolerance during deadline windows.
+- **A:** Strangler pattern per endpoint behind the gateway; shadow traffic on read paths first; moved bulk/async paths before interactive filing; kept data in place (PostgreSQL) to avoid a risky data migration during cutover; froze cutovers during deadline weeks.
+- **R:** p95 1.2 s → 300 ms (75%), 1M+ transactions/day, no deadline-window outage during the migration, bulk imports scaled to 100K+ transactions.
+- **Lesson:** sequencing is the risk-management tool — the migration plan mattered more than the target architecture.
+
+## 9. The anti-bot arms race (learn and be curious)
+**Use for:** "Working against a moving target / persistence."
+
+- **S:** Uber menu scrapers were being blocked — success rates dropped as source platforms rotated their bot defenses.
+- **T:** Get ingestion reliability up without an unbounded proxy budget.
+- **A:** Treated it as an experiment loop, not a one-off fix: instrumented per-source block signatures, iterated countermeasures (IP rotation, user-agent/fingerprint management, dynamic proxy pools), set retry budgets per source, and fed block-rate metrics into the same Pinot health dashboards as parse failures so regressions surfaced in minutes.
+- **R:** Successful ingestions up 95%; the measurement loop meant new defenses were detected and countered in days, not weeks.
+- **Lesson:** against an adversarial moving target, the asset is the feedback loop, not any single countermeasure.
+
+## 10. The double-filing near-miss (earn trust / do the right thing)
+**Use for:** "Integrity / a time you raised a problem you could have hidden."
+
+- **S:** At Masters India, a retried bulk import came close to filing duplicate e-invoices with the government portal — a compliance-grade error for the client. It hadn't caused customer damage yet, and nobody outside the team would have known.
+- **T:** Decide between quietly patching the retry and treating it as the systemic risk it was.
+- **A:** Flagged it to leadership as a near-miss, wrote the incident review myself, and retrofitted idempotency keys (client + file hash + batch index) across the entire bulk pipeline plus a dead-letter replay path — not just the endpoint that almost failed.
+- **R:** Zero duplicate filings after rollout; the near-miss review became the template the team used for later incidents.
+- **Lesson:** trust is built in the moments where you could have stayed quiet.
+
+---
+
+## Rapid-fire answers (30 seconds each)
+
+- **"Why are you leaving / why big tech?"** "I've now built and owned systems end-to-end — an agentic platform, streaming pipelines, a finance-grade audit tool. I want the scale ceiling removed: harder distributed-systems problems, deeper peer bench, and infrastructure where a 1% improvement matters."
+- **"Biggest weakness?"** "I over-invest in written artifacts — decision docs, playbooks. I've learned to time-box them and lead with a one-page summary, because a 20-page analysis nobody reads is a failure mode too." (Real, specific, shows self-correction.)
+- **"Conflict with a manager?"** Use story 7 (rulebook disagreement), framed upward.
+- **"A time you failed?"** Story 5 (refactor regression) or story 10 (near-miss) — both end in process fixes.
+- **"What are you most proud of?"** Story 1 — turning an org-level disagreement into a gated, evidence-based decision that later became the committed direction.

@@ -1,0 +1,25 @@
+# Final Resume — Interview Prep Hub
+
+**Tarun Mittal · Senior Software Engineer · July 2026**
+
+This hub backs every line of `resume/resume.tex` (PDF in `output/`). Study order:
+
+1. **Project deep dives** — one chapter per resume project, in resume order: Impact Analytics (Agentic Assort Planner + Clustering Copilot), Uber FRM Scoping, Uber Menu Ingestion, Masters India GST, GeeksforGeeks.
+2. **Tech deep dives** — every technology named on the resume: fundamentals, internals, why-this-not-that, gotchas. (ClickHouse/BigQuery/Postgres/DuckDB/LangGraph/RAG live in the playbook chapters at the end.)
+3. **Behavioral bank** — 10 STAR stories mapped to Amazon Leadership Principles and Googliness signals, plus rapid-fire answers.
+4. **Agentic Assort playbook (§0–§10)** — the full Impact Analytics reference: XYZ bullets with backing blocks, HLD/LLD, DB architecture, per-tech deep dives, Q&A bank, honesty tiers, the Cluster Copilot FRD digest, and the **July 2026 stack direction** (Go/Gin + Rust + ClickHouse end-to-end).
+
+<div class="callout warn">
+<b>Honesty guardrail (read before every interview).</b> Know which numbers are <b>REAL</b> (live-audit measured: 280× BigQuery, 38.8 TiB/$327 leak, 8.5% run failures = 37/437, 75% Masters India latency), which are <b>offline-eval</b> (0.54→0.99 decomposition), and which are <b>design targets</b> (p95 &lt;500 ms, &lt;1 h to plan, &lt;2% failures). Say "measured," "in an offline evaluation," or "our design target" accordingly — the full tier table is in the playbook §7.4.
+</div>
+
+## The resume at a glance
+
+| Company | Project | Lead metric |
+|---|---|---|
+| Impact Analytics (Jun 2026–) | Agentic Assort Planner | decomposition 0.54→0.99 · 280× BigQuery · ClickHouse end-to-end, 0 mutations at 10× |
+| Impact Analytics | Store-Clustering Copilot | <1 h to plan (from days) · 20+ configs (from 1) · <2% failures (from 8.5%) |
+| Uber via EPAM (Jul 2024–May 2026) | FRM Scoping Platform | 70% cycle-time cut · 36 endpoints/8 screens · 19M rows/quarter |
+| Uber via EPAM | Menu Ingestion Platform | 30K+ menus/mo · 24 h→2 h · $600K+/yr · Kafka/Flink/Spark/Pinot |
+| Masters India (Dec 2022–Jun 2024) | GST e-invoicing SaaS | p95 1.2 s→300 ms · 1M+ txn/day · 100K+ per import |
+| GeeksforGeeks (Aug 2021–Nov 2022) | Community & courses backend | 100K+ daily queries · +15–20% subscriptions |

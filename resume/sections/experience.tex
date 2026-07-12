@@ -1,0 +1,97 @@
+%============================================================================%
+%  COLUMN & LIST DEFINITIONS
+%============================================================================%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+%====================
+% EXPERIENCE A — IMPACT ANALYTICS
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{June 2026 -- Present}\\
+\end{tabularx}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textbf{Agentic Assort Planner --- Multi-Agent Retail Merchandise-Planning Platform}}
+\vspace{-1.2ex}
+\begin{zitemize}
+    \item Architected a router$\rightarrow$orchestrator$\rightarrow$specialist \textbf{multi-agent system (5 domain agents)} decomposing natural-language planning questions into a validated execution DAG, \textbf{raising decomposition quality 0.54 $\rightarrow$ 0.99} (offline eval) via a structural DAG validator with one LLM self-repair pass.
+    \item Designed the polyglot service architecture --- \textbf{Go (Gin) for all non-agentic services, Rust (Axum) for performance-critical APIs}, Python (LangGraph, MCP) for agents.
+    \item Led adoption of \textbf{ClickHouse as the end-to-end transactional + analytical planning store} by designing an insert-only, versioned write model (ReplacingMergeTree, argMax reads, atomic partition swaps) that \textbf{holds the async-mutation queue at zero at 10$\times$ scale} while natively powering overrides, version-diff, and undo/redo.
+    \item Cut recurring \textbf{BigQuery scan cost up to 280$\times$ (2.9 TiB $\rightarrow$ 3.3 GiB/query)} via clustered-copy routing, a store$\times$category$\times$week rollup, and a query-path cost guard --- after catching one SELECT * query billing 38.8 TiB (\$327) for 2 rows.
+    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, Rust, Axum, ClickHouse, BigQuery, pgvector, Redis, Kafka, GCP.
+\end{zitemize}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textbf{Agentic Store-Clustering Copilot (flagship module)}}
+\vspace{-1.2ex}
+\begin{zitemize}
+    \item Designed an agentic clustering copilot --- deterministic tools on a dedicated ClickHouse read plane, LLM orchestration, three human confirm-gates --- targeting \textbf{under 1 h to a finalized plan (from days), 20+ configs explored (from 1), and run failures below 2\% (from 8.5\%)}.
+    \item Cut agent data-probe latency from \textbf{1--20 s (shared BigQuery slots) to p95 under 500 ms} via a dedicated ClickHouse read plane with nightly precompute (80\%+ warm sessions).
+    \item Eliminated the input-error class behind \textbf{80\%+ of run failures} via deterministic grounding (catalog backtracking, season resolution, confirm gates); made shipped clusterings \textbf{100\% reproducible (from 0\%)} via content-addressed config documents and durable pins.
+    \item \textbf{Tech Used}: Python, LangGraph, MCP, ClickHouse, BigQuery, scikit-learn, FastAPI, SSE, GCP.
+\end{zitemize}
+
+%====================
+% EXPERIENCE B — UBER
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Engineer} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
+\end{tabularx}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform --- Uber Finance}}
+\vspace{-1.2ex}
+\begin{zitemize}
+    \item Cut Uber's quarterly financial-risk-scoping cycle time by \textbf{70\%} by replacing a manual Google-Sheets workflow with a FastAPI + MySQL platform serving \textbf{36 REST endpoints across 8 workflow screens}; output feeds PwC audit work papers.
+    \item Designed an \textbf{8-table normalized MySQL schema} with a polymorphic review-status table isolating UI writes from a quarterly ETL ingesting \textbf{19M+ raw general-ledger rows into 300K aggregated rows}, reconciled against Uber's public 10-Q within \$2--3M tolerance.
+    \item Eliminated a latent column-aliasing bug and raised new-line test coverage \textbf{34.6\% $\rightarrow$ 100\%} by migrating raw-SQL access to SQLAlchemy 2.0 ORM, shipped as a 3-PR stacked refactor.
+    \item \textbf{Tech Used}: Python, FastAPI, SQLAlchemy, Pydantic, MySQL, Bazel, pytest, ruff, Redis, React (integration).
+\end{zitemize}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform --- Uber Eats}}
+\vspace{-1.2ex}
+\begin{zitemize}
+    \item Cut vendor onboarding time \textbf{90\% (24 h $\rightarrow$ 2 h)} and saved \textbf{\$600K+ annually} by building an event-driven ingestion pipeline --- Kafka event bus, \textbf{Apache Flink} real-time normalization, \textbf{Apache Spark} batch reprocessing --- ingesting \textbf{30,000+ vendor menus/month} into Uber Eats.
+    \item Raised extraction fidelity to \textbf{98\% with 100\% schema consistency} via an agentic AI pipeline (RAG + Gemini 2.5 Pro, SFT for schema adherence) for unstructured PDF/image menus.
+    \item Increased successful ingestions by \textbf{95\%} via anti-bot countermeasures (IP rotation, dynamic proxy pools); cut failure time-to-detect from hours to minutes with \textbf{Apache Pinot} real-time ingestion analytics and alerting.
+    \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, RAG, GCP, Docker.
+\end{zitemize}
+
+%====================
+% EXPERIENCE C — MASTERS INDIA
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
+\end{tabularx}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textbf{GST Compliance \& E-Invoicing SaaS Platform}}
+\vspace{-1.2ex}
+\begin{zitemize}
+    \item Cut p95 API latency \textbf{75\% (1.2 s $\rightarrow$ 300 ms)} and scaled to \textbf{1M+ daily transactions for 2,500+ enterprise clients} by leading the migration from a monolithic PHP (Laravel) app to asynchronous Python (FastAPI) microservices.
+    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import} via chunked async workers and set-based database writes; implemented \textbf{encryption, RBAC, JWT auth, and audit logging} for financial-compliance data.
+    \item Accelerated incident triage \textbf{70\%} with centralized ELK logging and New Relic APM; raised \textbf{test coverage 35\% $\rightarrow$ 82\%} with 98\% deployment success.
+    \item \textbf{Tech Used}: Python, FastAPI, PostgreSQL, Redis, Celery, Docker, ELK, New Relic, AWS.
+\end{zitemize}
+
+%====================
+% EXPERIENCE D — GEEKSFORGEEKS
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
+\end{tabularx}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textbf{Community \& Courses Platform Backend}}
+\vspace{-1.2ex}
+\begin{zitemize}
+    \item Increased premium subscription sales \textbf{15--20\%} by designing data models and REST APIs for engagement features while migrating the backend from PHP to Django (\textbf{100,000+ daily queries}); boosted course sales \textbf{30\%} with a real-time influencer analytics dashboard.
+    \item \textbf{Tech Used}: Python, Django, MySQL, Redis, REST, Cron, AWS.
+\end{zitemize}

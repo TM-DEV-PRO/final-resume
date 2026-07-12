@@ -1,0 +1,27 @@
+%====================
+% Header: Contact (Centered & Balanced)
+%====================
+
+\pagestyle{fancy}
+\fancyhf{} % Clear all header/footer fields
+
+% Center header: Stacked Name, Designation, and Links
+\chead{
+    \centering
+    {\huge \textbf{\name}} \\[0.1em]
+    {\color{highlight} \large \role} \\[0.2em]
+    \small
+    \phone \quad | \quad
+    \href{mailto:\email}{\email} \quad | \quad
+    \href{https://www.linkedin.com/in/\LinkedIn}{linkedin.com/in/\LinkedIn} \quad | \quad
+    \href{https://github.com/\github}{github.com/\github} \quad | \quad
+    Bangalore, India
+}
+
+% Header rule thickness and color
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\headrule}{\color{highlight}\hrule height \headrulewidth}
+
+% Adjust heights to fit the 3-line centered layout
+\setlength{\headheight}{52pt}
+\setlength{\headsep}{3pt}
