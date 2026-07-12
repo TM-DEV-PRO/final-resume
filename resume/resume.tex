@@ -6,9 +6,9 @@
 \usepackage{array}
 \usepackage{TLCresume}
 
-% ---- Compact typography (1-page fit) ----
-\renewcommand\normalsize{\fontsize{9.3}{10.0}\selectfont}\normalsize
-\geometry{left=0.05in, right=0.05in, top=0.1in, bottom=0.15in, includehead}
+% ---- Typography (1-page fit with breathing room) ----
+\renewcommand\normalsize{\fontsize{9.6}{10.2}\selectfont}\normalsize
+\geometry{left=0.15in, right=0.15in, top=0.12in, bottom=0.18in, includehead}
 
 % % COLOR: Modern Slate
 \definecolor{highlight}{RGB}{63, 81, 181}
@@ -20,16 +20,16 @@
 
 % ---- Section Heading Formatting ----
 \titleformat{\section}
-  {\color{section}\scshape\centering\normalsize}
+  {\color{section}\scshape\centering\large}
   {}
   {0em}
   {}
-  [\vspace{0.2em}\hrule]
+  [\vspace{0.25em}\hrule]
 
 \titlespacing*{\section}
   {0em}
-  {0.05ex}
-  {0.2ex}
+  {0.6ex}
+  {0.5ex}
 
 % ====================
 % CONTACT INFORMATION
@@ -53,7 +53,9 @@
 \section{Professional Experience}
 \input{sections/experience}
 
-\section{Education \& Achievements}
+\section{Education}
 \input{sections/education}
+
+\section{Achievements}
 \input{sections/activities}
 \end{document}

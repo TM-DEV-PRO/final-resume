@@ -41,4 +41,5 @@ Upload `output/Tarun_Mittal_Resume_Overleaf.zip` → New Project → Upload Proj
 - Google XYZ format: "Accomplished [X], as measured by [Y], by doing [Z]" on every bullet.
 - Structure: company → project → bullets, with a **Tech Used** line per project.
 - One page, ATS-safe (single column, standard headings, no images/tables in content).
-- No Java. Stack reflects the July 2026 direction: Python (agents) · Go/Gin (non-agentic) · Rust (hot paths) · ClickHouse end-to-end.
+- No Java. Resume stack reflects the July 2026 direction: Python (agents) · Go/Gin (non-agentic) · ClickHouse end-to-end. (Rust is kept out of the resume by choice; it remains covered in the prep material.)
+- `ats_scan.py` audits the compiled PDF against an ATS rubric (parseability, headings, dates, JD keyword coverage, quantified bullets); rerun after any edit.
