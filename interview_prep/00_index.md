@@ -17,7 +17,7 @@ This hub backs every line of `resume/resume.tex` (PDF in `output/`). Study order
 
 | Company | Project | Lead metric |
 |---|---|---|
-| Impact Analytics (Jun 2026–) | Agentic AssortSmart (one project block) | clustering module: 3–5 ranked scenarios, days → <1 h · Go services · ClickHouse append-only versioned store · pivot grid p95 <500 ms / edits <80 ms · per-tenant config in PostgreSQL |
+| Impact Analytics (Jun 2026–) | Agentic AssortSmart (one project block) | Python agentic microservice, clustering agent: 3–5 ranked scenarios, days → <1 h · Go core backend · ClickHouse append-only versioned store · planning grid backend p95 <500 ms / edits <80 ms |
 | Uber via EPAM (Jul 2024–May 2026) | FRM Scoping Platform (listed first) | 70% cycle-time cut · 36 endpoints/8 screens · 19M rows/quarter |
 | Uber via EPAM | Menu Ingestion Platform | 30K+ menus/mo · 24 h→2 h · $600K+/yr · Kafka/Flink/Spark/Pinot |
 | Masters India (Dec 2022–Jun 2024) | GST e-invoicing SaaS | p95 1.2s→300ms · 1M+ txn/day · 100K+ per import |

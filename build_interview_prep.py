@@ -26,7 +26,8 @@ parts = []
 order = (
     [os.path.join(IP, "00_index.md")]
     + sorted(glob.glob(os.path.join(IP, "projects", "*.md")))
-    + [os.path.join(IP, "06_tech_deep_dives.md"), os.path.join(IP, "07_behavioral_star_stories.md")]
+    + [os.path.join(IP, "06_tech_deep_dives.md"), os.path.join(IP, "07_behavioral_star_stories.md"),
+       os.path.join(IP, "08_role_targeting_and_rapid_fire.md")]
     + sorted(glob.glob(os.path.join(IP, "agentic_assort_playbook", "*.md")))
 )
 for f in order:

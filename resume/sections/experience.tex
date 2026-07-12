@@ -19,9 +19,9 @@
 \begin{zitemize}
     \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores, with AI agents drafting store clusters and plans for planner review, override, and approval.
     \item Developing the \textbf{Python agentic microservice (FastAPI, LangGraph, MCP)} for all agentic workflows, where the store clustering agent selects features by significance, optimizes cluster count via silhouette scoring, and generates \textbf{3 to 5 ranked scenarios}, cutting turnaround from days to \textbf{under 1 hour}.
-    \item Building the core backend as \textbf{Go (Gin) microservices} exposing REST APIs for plan lifecycle, reference data, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts.
+    \item Building the core backend as \textbf{Go (Gin) microservices} exposing REST APIs for plan lifecycle, tenant configuration, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts.
     \item Led adoption of \textbf{ClickHouse} as the planning store with an append only versioned write model where every planner override is an insert, powering version diff, undo/redo, and an immutable audit trail.
-    \item Designing the \textbf{pivot grid serving layer} for rollup and drill down across product, store, and week hierarchies at \textbf{p95 under 500ms} with optimistic cell edits under \textbf{80ms}, with per tenant configuration in \textbf{PostgreSQL} onboarding retailers without code deployment.
+    \item Designing the backend for the \textbf{planning grid, an Excel like pivot surface} where planners edit plans across product, store, and week hierarchies, serving rollups and drill downs from pre aggregated \textbf{ClickHouse} data at \textbf{p95 under 500ms} and cell edits under \textbf{80ms} via async write back.
     \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
@@ -50,7 +50,7 @@
 \begin{zitemize}
     \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
     \item Built an AI extraction pipeline with \textbf{RAG and Gemini 2.5 Pro} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
-    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools, and built ingestion health analytics on \textbf{Apache Pinot}.
+    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools, and built ingestion health dashboards on \textbf{Apache Pinot}.
     \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
 \end{zitemize}
 
@@ -69,7 +69,7 @@
 \begin{zitemize}
     \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Python (FastAPI) microservices}, cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
     \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with chunked async workers and idempotent retries.
-    \item Set up centralized \textbf{ELK logging and New Relic monitoring}, speeding up incident triage by 70\%, and raised test coverage from \textbf{35\% to 82\%}.
+    \item Set up centralized \textbf{ELK logging and New Relic monitoring with alerting}, cutting incident triage time by 70\%, and raised test coverage from \textbf{35\% to 82\%} with pytest automated tests gating CI/CD releases.
     \item Implemented \textbf{encryption, RBAC, JWT auth, and audit logging} for financial compliance data.
     \item \textbf{Tech Used}: Python, FastAPI, PostgreSQL, Redis, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}
@@ -86,6 +86,6 @@
 \begin{zitemize}
     \item Redesigned and migrated the backend from PHP to \textbf{Django (Python)}, improving reliability for \textbf{100,000+ daily queries}.
     \item Designed data models and REST APIs for voting and pinning features, increasing \textbf{premium subscription sales by 15 to 20\%}.
-    \item Developed an influencer dashboard with real-time analytics, \textbf{boosting course sales by 30\%}.
+    \item Developed an influencer dashboard with real-time analytics and async cron pipelines for video processing, \textbf{boosting course sales by 30\%}.
     \item \textbf{Tech Used}: Python, Django, MySQL, Redis, REST, Cron, AWS.
 \end{zitemize}

@@ -40,7 +40,7 @@ strong{color:#fff}
 <a class="lvl2" href="#3-the-stack-story-you-must-tell-in-order-july-2026-direction">3. The stack story you must tell in order (July 2026 direction)</a>
 <a class="lvl2" href="#3b-the-go-services-what-you-actually-build-defend-the-go-bullet">3b. The Go services — what you actually build (defend the Go bullet)</a>
 <a class="lvl2" href="#3d-the-clustering-module-defend-the-scenarios-bullet-hlr-v11">3d. The clustering module — defend the scenarios bullet (HLR v1.1)</a>
-<a class="lvl2" href="#3e-the-pivot-grid-serving-layer-tenant-config-defend-the-grid-bullet">3e. The pivot grid serving layer + tenant config (defend the grid bullet)</a>
+<a class="lvl2" href="#3e-the-planning-grid-backend-defend-the-grid-bullet">3e. The planning grid backend (defend the grid bullet)</a>
 <a class="lvl2" href="#3c-the-bigqueryclickhouse-ingestion-pipeline-background-not-a-resume-bullet-anymore">3c. The BigQuery→ClickHouse ingestion pipeline (background — NOT a resume bullet anymore)</a>
 <a class="lvl2" href="#4-architecture-in-one-diagram">4. Architecture in one diagram</a>
 <a class="lvl2" href="#5-every-resume-bullet-where-its-defense-lives">5. Every resume bullet → where its defense lives</a>
@@ -95,6 +95,11 @@ strong{color:#fff}
 <a class="lvl2" href="#9-the-anti-bot-arms-race-learn-and-be-curious">9. The anti-bot arms race (learn and be curious)</a>
 <a class="lvl2" href="#10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust / do the right thing)</a>
 <a class="lvl2" href="#rapid-fire-answers-30-seconds-each">Rapid-fire answers (30 seconds each)</a>
+<a class="lvl1" href="#role-targeting-rapid-fire-defense-checked-against-live-listings-jul-13-2026">Role targeting + rapid-fire defense (checked against live listings, Jul 13 2026)</a>
+<a class="lvl2" href="#1-the-five-target-listings-and-what-each-actually-screens-for">1. The five target listings and what each actually screens for</a>
+<a class="lvl2" href="#2-rapid-fire-defending-every-operationalquality-claim-on-the-resume">2. Rapid-fire: defending every operational/quality claim on the resume</a>
+<a class="lvl2" href="#3-the-two-claims-interviewers-will-poke-hardest-and-the-honest-lines">3. The two claims interviewers will poke hardest, and the honest lines</a>
+<a class="lvl2" href="#4-if-the-interviewer-is-google-mid-level-loops">4. If the interviewer is Google (mid-level loops)</a>
 <a class="lvl1" href="#agentic-assort-planner-resume-interview-playbook">Agentic Assort Planner — Resume &amp; Interview Playbook</a>
 <a class="lvl2" href="#how-to-use-this-doc">How to use this doc</a>
 <a class="lvl2" href="#the-format-googles-xyz-formula">The format: Google's XYZ formula</a>
@@ -186,7 +191,7 @@ strong{color:#fff}
 <tr>
 <td>Impact Analytics (Jun 2026–)</td>
 <td>Agentic AssortSmart (one project block)</td>
-<td>clustering module: 3–5 ranked scenarios, days → &lt;1 h · Go services · ClickHouse append-only versioned store · pivot grid p95 &lt;500 ms / edits &lt;80 ms · per-tenant config in PostgreSQL</td>
+<td>Python agentic microservice, clustering agent: 3–5 ranked scenarios, days → &lt;1 h · Go core backend · ClickHouse append-only versioned store · planning grid backend p95 &lt;500 ms / edits &lt;80 ms</td>
 </tr>
 <tr>
 <td>Uber via EPAM (Jul 2024–May 2026)</td>
@@ -270,7 +275,7 @@ strong{color:#fff}
 <p><strong>Precision on "transactional":</strong> it's planning-grid transactionality — atomic batch inserts of one version, session read-after-write via version watermarks, idempotent replays, audit history for free — <em>not</em> bank-ledger OLTP. Cross-entity invariants that need true multi-statement ACID (auth, tenant config, workflow state) stay on a thin Postgres metadata plane. Say this unprompted; it shows judgment.</p>
 <p><strong>Go vs Rust discipline:</strong> "Go by default, Rust by measurement — an endpoint earns Rust with a profile, not a preference." Gin chosen over chi/Echo/fiber for maturity + team familiarity (fiber rejected: fasthttp breaks <code>net/http</code> semantics). Rust precedent exists in-house (CortexEye backend is Rust/Axum). <em>(Rust is deliberately not on the resume — if asked about the stack, mention it as the escape hatch, don't claim Rust delivery.)</em></p>
 <h2 id="3b-the-go-services-what-you-actually-build-defend-the-go-bullet">3b. The Go services — what you actually build (defend the Go bullet)</h2>
-<p>The resume says: <em>"Building the core backend as Go (Gin) microservices exposing REST APIs for plan lifecycle, reference data, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts."</em> Here is the concrete shape behind each phrase:</p>
+<p>The resume says: <em>"Building the core backend as Go (Gin) microservices exposing REST APIs for plan lifecycle, tenant configuration, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts."</em> Here is the concrete shape behind each phrase:</p>
 <ul>
 <li><strong>Plan lifecycle APIs</strong> — create/copy/finalize/soft-delete plan endpoints; state transitions validated server-side (draft → in-review → finalized); finalize is a human signature, so the handler enforces role + confirmation token.</li>
 <li><strong>Reference data APIs</strong> — hierarchy trees, fiscal calendars, store masters, tenant config. Read-heavy fan-out: handler issues concurrent ClickHouse/Postgres reads with <code>errgroup.WithContext</code>, returns partial-safe composites.</li>
@@ -290,15 +295,13 @@ strong{color:#fff}
 <li><strong>The turnaround claim (&lt;1 h from days):</strong> comes from the copilot FRD baseline work — measured 8.5% run failures and one configuration tried per plan in the legacy flow. The agent explores many configurations internally but <em>presents</em> 3–5 (that's the HLR constraint — don't confuse the two numbers).</li>
 <li><strong>Child cluster cap (HLR-SC-004):</strong> default 10, configurable per client.</li>
 </ul>
-<h2 id="3e-the-pivot-grid-serving-layer-tenant-config-defend-the-grid-bullet">3e. The pivot grid serving layer + tenant config (defend the grid bullet)</h2>
-<p>From the Planning Platform Architecture deck (ARCH-06, NFR-01, GRID-*):</p>
-<ul>
-<li><strong>What it is:</strong> planners work in a pivot grid — product hierarchy × store/cluster × week — where every cell holds two values: the agent's recommendation (read-only) and the planner's working value (editable). Overrides require a reason, feed the learning loop, and roll up/spread down the hierarchy.</li>
-<li><strong>The latency targets (design targets, own them as such):</strong> rollup/drill-down <strong>&lt; 500 ms</strong> because reads hit a pre-aggregated cube layer, never the transactional store; cell edits feel instant (<strong>&lt; 80 ms</strong>) because writes go to a per-user view store first and cube invalidation + DB commit happen async ("optimistic write-back"). Stale-data warnings compare source commit timestamps against the view's saved-at.</li>
-<li><strong>Where ClickHouse fits:</strong> the append-only versioned planning store is what makes the grid's version diff, undo/redo (50-deep stack), scenario copies (up to 5 per plan), and immutable audit trail cheap — every override is an insert with a version, never a mutation.</li>
-<li><strong>Per-tenant configuration in PostgreSQL:</strong> which planning stages a retailer runs, stage sequence and skip rules, approval thresholds, metric catalogs, hierarchy names/levels — all tenant config, not code. Config edits deploy by config sync in minutes with schema validation, no code deployment (deck ENG-01; Hindsight FRD FR-1.3: tenant onboarding config applies without deployment). That is what "onboards retailers without code deployment" means.</li>
-<li><strong>The fixed-core principle (great senior talking point):</strong> planning algorithms are Layer 1 — universal, never forked per retailer. Retailer differences live in Layer 2 config and Layer 3 isolated extension containers. A retailer requirement that would change core science becomes a platform roadmap item, never a fork.</li>
-</ul>
+<h2 id="3e-the-planning-grid-backend-defend-the-grid-bullet">3e. The planning grid backend (defend the grid bullet)</h2>
+<p>The resume says: <em>"Designing the backend for the planning grid, an Excel like pivot surface where planners edit plans across product, store, and week hierarchies, serving rollups and drill downs from pre aggregated ClickHouse data at p95 under 500ms and cell edits under 80ms via async write back."</em></p>
+<p><strong>If asked "what is the planning grid?" — the plain answer:</strong> it's the main working screen of the product, and it behaves like a giant Excel pivot table. Rows might be product categories, columns weeks, and each cell a number like planned sales or buy quantity. A planner can re-pivot it (swap product for store on the rows), drill from department down to subclass, and edit any cell. The difference from Excel: every cell shows both what the AI recommended and what the planner decided, every edit needs a reason, and everything rolls up correctly through the hierarchy. From the Planning Platform Architecture deck (ARCH-06, NFR-01, GRID-<em>):
+- </em><em>The latency targets (design targets, own them as such):</em><em> rollup/drill-down </em><em>&lt; 500 ms</em><em> because reads hit a pre-aggregated cube layer, never the transactional store; cell edits feel instant (</em><em>&lt; 80 ms</em><em>) because writes go to a per-user view store first and cube invalidation + DB commit happen async ("optimistic write-back"). Stale-data warnings compare source commit timestamps against the view's saved-at.
+- </em><em>Where ClickHouse fits:</em><em> the append-only versioned planning store is what makes the grid's version diff, undo/redo (50-deep stack), scenario copies (up to 5 per plan), and immutable audit trail cheap — every override is an insert with a version, never a mutation.
+- </em><em>Per-tenant configuration in PostgreSQL:</em><em> which planning stages a retailer runs, stage sequence and skip rules, approval thresholds, metric catalogs, hierarchy names/levels — all tenant config, not code. Config edits deploy by config sync in minutes with schema validation, no code deployment (deck ENG-01; Hindsight FRD FR-1.3: tenant onboarding config applies without deployment). That is what "onboards retailers without code deployment" means.
+- </em><em>The fixed-core principle (great senior talking point):</em>* planning algorithms are Layer 1 — universal, never forked per retailer. Retailer differences live in Layer 2 config and Layer 3 isolated extension containers. A retailer requirement that would change core science becomes a platform roadmap item, never a fork.</p>
 <h2 id="3c-the-bigqueryclickhouse-ingestion-pipeline-background-not-a-resume-bullet-anymore">3c. The BigQuery→ClickHouse ingestion pipeline (background — NOT a resume bullet anymore)</h2>
 <p>Be precise about what the BigQuery relationship is: <strong>we don't build in BigQuery — it's the upstream historical source of truth, and I own the lane that ingests from it into ClickHouse.</strong></p>
 <ul>
@@ -871,6 +874,72 @@ frm-scoping-db           frm-collaboration-db             │
 <li><strong>"Conflict with a manager?"</strong> Use story 7 (rulebook disagreement), framed upward.</li>
 <li><strong>"A time you failed?"</strong> Story 5 (refactor regression) or story 10 (near-miss) — both end in process fixes.</li>
 <li><strong>"What are you most proud of?"</strong> Story 1 — turning an org-level disagreement into a gated, evidence-based decision that later became the committed direction.</li>
+</ul>
+<hr>
+<h1 id="role-targeting-rapid-fire-defense-checked-against-live-listings-jul-13-2026">Role targeting + rapid-fire defense (checked against live listings, Jul 13 2026)</h1>
+<p>The resume was scored at 100% keyword coverage against these five live listings. This file tells you <strong>which parts of your story to lead with per role family</strong>, and gives rapid-fire answers for every operational claim on the resume.</p>
+<h2 id="1-the-five-target-listings-and-what-each-actually-screens-for">1. The five target listings and what each actually screens for</h2>
+<table>
+<thead>
+<tr>
+<th>Listing</th>
+<th>What they screen for</th>
+<th>Lead with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google mid-level SWE (SWE III / Senior, search page quals)</td>
+<td>Languages + DSA, testing/launching products, 1–3 yrs design &amp; architecture, large-scale distributed systems</td>
+<td>IA architecture story (agentic service + Go backend + ClickHouse write model), then Uber scale numbers. Expect heavy DSA + system design rounds — the resume only gets you in the door.</td>
+</tr>
+<tr>
+<td>Airbnb Senior SWE (Quality), Payments — 7668022, Bangalore</td>
+<td>Test automation, CI/CD integration, debugging, DSA, testability advocacy, payments/financial domain</td>
+<td>Masters India (financial compliance, coverage 35→82%, pytest gating CI/CD releases) + Uber FRM (audit-grade correctness, changed-module coverage 100%, PwC work papers). You have a genuinely strong quality narrative — financial data where correctness is audited.</td>
+</tr>
+<tr>
+<td>Airbnb Senior SWE, Global Markets (Backend) — 7768472</td>
+<td>Large-scale backend architecture, APIs, scalable data models, high-throughput pipelines, metrics-driven iteration</td>
+<td>Uber Menu (Kafka/Flink/Spark pipeline, 30K+ menus/mo) + IA planning grid backend (p95 targets) + GST (1M+ txn/day). Note: posting is China-based, no visa support — treat as a template for the role family.</td>
+</tr>
+<tr>
+<td>Airbnb Senior SWE, Reliability Engineering — 8026696</td>
+<td>SRE tooling, incident response, monitoring/alerting, Docker/K8s, AWS/GCP, Go/Python</td>
+<td>Masters India observability story (ELK + New Relic with alerting, triage 70% faster) + Menu ingestion health dashboards on Pinot + Go services (context timeouts, graceful shutdown = reliability thinking).</td>
+</tr>
+<tr>
+<td>Airbnb Senior SWE, Reliability Experience — 8026735</td>
+<td>Internal tooling, observability UX, dashboards, Grafana, async programming, developer productivity</td>
+<td>Pinot ingestion health dashboards (built FOR operators — that's an internal tool), ELK/New Relic rollout as a productivity story (what did triage look like before/after), Grafana in skills.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-rapid-fire-defending-every-operationalquality-claim-on-the-resume">2. Rapid-fire: defending every operational/quality claim on the resume</h2>
+<p><strong>"You claim incident triage got 70% faster. How did you measure that?"</strong>
+Before: a support escalation meant SSH-ing into boxes and grepping app logs across services — median time to find the failing request was over an hour. After centralized ELK (structured JSON logs, correlation IDs, per-service indexes) plus New Relic APM with alert policies on error rate and latency, the same lookup is a filtered query — minutes. The 70% is the change in median time-to-root-cause on escalated tickets across a quarter.</p>
+<p><strong>"What does 'pytest automated tests gating CI/CD releases' mean concretely?"</strong>
+The pipeline blocks merge/deploy if the test suite fails or coverage drops below threshold on changed modules. Tests are the unit + integration suite (httpx test client against FastAPI apps, DB fixtures on a throwaway schema). Coverage went 35% → 82% because we wrote tests module-by-module as we extracted services from the monolith — each extraction PR had to land with its tests.</p>
+<p><strong>"How do you design for testability?"</strong> (Payments Quality will ask this)
+Three habits: (1) dependency boundaries as interfaces — repositories and external clients injected, so handlers test against fakes; (2) deterministic cores — pure functions for business rules (tax computation, dedup rules) that test without I/O; (3) contract-first APIs — Pydantic/validator schemas mean malformed input is rejected at the boundary and tests enumerate the contract, not the implementation. At Uber, Bazel + the changed-module coverage rule enforced this: you can't merge untested logic.</p>
+<p><strong>"Tell me about an incident you handled."</strong>
+Use the Masters India peak-window story: GSTR filing deadline, worker pool exhaustion from blocking government-portal calls. Walk detection (New Relic latency alert), mitigation (shed bulk imports to the async queue, scale workers), root cause (sync I/O in request path), permanent fix (async workers + idempotent retries so replays are safe), and the lesson (capacity planning around deadline-shaped traffic, alerts on saturation not just errors).</p>
+<p><strong>"What's 'idempotent retries' protecting against?"</strong>
+Duplicate side effects on replay. Bulk e-invoice imports chunk into jobs; each job carries a deterministic key (import id + chunk index + content hash). On retry after a crash or timeout, already-committed chunks are recognized and skipped — so a retry storm can't double-register invoices with the government portal. Same pattern in the IA bulk-save path (batch id + content hash prevents double-inserting versions).</p>
+<p><strong>"How would you monitor a service you own?"</strong> (Reliability roles)
+Four layers: RED metrics per endpoint (rate, errors, duration — p50/p95/p99, not averages); saturation metrics (worker pool depth, queue lag, DB connections); structured logs with correlation IDs so a trace ties the layers together; and alerts on symptoms users feel (error rate, p95 breach, queue age) rather than causes, with runbooks per alert. That's the shape I set up with ELK + New Relic and what the Pinot ingestion-health dashboards did for the menu pipeline — per-source success rate, failure taxonomy, detection in minutes instead of the next morning.</p>
+<p><strong>"What made the Pinot dashboards an internal product?"</strong> (Reliability Experience)
+The users were ops and vendor-onboarding teams, not customers. Before: failures discovered when a partner complained. After: real-time ingestion health by source, drill-down to failure class (auth, layout change, blocking), and time-to-detection in minutes. The design decisions were UX decisions — what the operator needs to see first, what's actionable vs noise — which is exactly the Reliability Experience pitch: observability tooling is a product with engineers as customers.</p>
+<h2 id="3-the-two-claims-interviewers-will-poke-hardest-and-the-honest-lines">3. The two claims interviewers will poke hardest, and the honest lines</h2>
+<ul>
+<li><strong>IA latency numbers (p95 &lt;500 ms, &lt;80 ms edits):</strong> "Those are the committed design targets from our platform architecture NFRs — the numbers the serving layer is engineered and load-tested against, not yet year-in-production measurements. The architecture that delivers them: pre-aggregated ClickHouse serving reads so the grid never hits the transactional path, and optimistic write-back so the UI acknowledges before the async commit."</li>
+<li><strong>Menu $600K+/yr saving:</strong> cost model from onboarding-hours saved × ops hourly cost at 30K menus/month — the finance team's number, adopted by the team. Know the arithmetic before you quote it.</li>
+</ul>
+<h2 id="4-if-the-interviewer-is-google-mid-level-loops">4. If the interviewer is Google (mid-level loops)</h2>
+<ul>
+<li>The resume gets you the screen; the loop is DSA (2 rounds), system design (1), Googliness (1). Design round: pick the <strong>planning grid backend</strong> or the <strong>menu ingestion pipeline</strong> as your prepared "tell me about a system you built" — both have clean load numbers, storage choices, and failure-mode stories.</li>
+<li>Googliness maps: use STAR story 1 (reconciled ClickHouse verdict — intellectual humility), story 4 (clustering copilot — ambiguity), story 5 (constants-refactor regression — owning mistakes).</li>
+<li>Mid level at Google = "drives progress, solves problems, mentors juniors." Sprinkle the mentoring evidence: PR reviews at Uber (stacked PRs culture), onboarding EPAM teammates, GFG interns.</li>
 </ul>
 <hr>
 <h1 id="agentic-assort-planner-resume-interview-playbook">Agentic Assort Planner — Resume &amp; Interview Playbook</h1>

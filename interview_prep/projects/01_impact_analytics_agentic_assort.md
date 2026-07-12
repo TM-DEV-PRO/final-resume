@@ -40,7 +40,7 @@ This is the single most senior narrative you own. Tell it as an *evolution*, not
 
 ## 3b. The Go services — what you actually build (defend the Go bullet)
 
-The resume says: *"Building the core backend as Go (Gin) microservices exposing REST APIs for plan lifecycle, reference data, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts."* Here is the concrete shape behind each phrase:
+The resume says: *"Building the core backend as Go (Gin) microservices exposing REST APIs for plan lifecycle, tenant configuration, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts."* Here is the concrete shape behind each phrase:
 
 - **Plan lifecycle APIs** — create/copy/finalize/soft-delete plan endpoints; state transitions validated server-side (draft → in-review → finalized); finalize is a human signature, so the handler enforces role + confirmation token.
 - **Reference data APIs** — hierarchy trees, fiscal calendars, store masters, tenant config. Read-heavy fan-out: handler issues concurrent ClickHouse/Postgres reads with `errgroup.WithContext`, returns partial-safe composites.
@@ -61,11 +61,11 @@ The resume says: *"Building the core backend as Go (Gin) microservices exposing 
 - **The turnaround claim (<1 h from days):** comes from the copilot FRD baseline work — measured 8.5% run failures and one configuration tried per plan in the legacy flow. The agent explores many configurations internally but *presents* 3–5 (that's the HLR constraint — don't confuse the two numbers).
 - **Child cluster cap (HLR-SC-004):** default 10, configurable per client.
 
-## 3e. The pivot grid serving layer + tenant config (defend the grid bullet)
+## 3e. The planning grid backend (defend the grid bullet)
 
-From the Planning Platform Architecture deck (ARCH-06, NFR-01, GRID-*):
+The resume says: *"Designing the backend for the planning grid, an Excel like pivot surface where planners edit plans across product, store, and week hierarchies, serving rollups and drill downs from pre aggregated ClickHouse data at p95 under 500ms and cell edits under 80ms via async write back."*
 
-- **What it is:** planners work in a pivot grid — product hierarchy × store/cluster × week — where every cell holds two values: the agent's recommendation (read-only) and the planner's working value (editable). Overrides require a reason, feed the learning loop, and roll up/spread down the hierarchy.
+**If asked "what is the planning grid?" — the plain answer:** it's the main working screen of the product, and it behaves like a giant Excel pivot table. Rows might be product categories, columns weeks, and each cell a number like planned sales or buy quantity. A planner can re-pivot it (swap product for store on the rows), drill from department down to subclass, and edit any cell. The difference from Excel: every cell shows both what the AI recommended and what the planner decided, every edit needs a reason, and everything rolls up correctly through the hierarchy. From the Planning Platform Architecture deck (ARCH-06, NFR-01, GRID-*):
 - **The latency targets (design targets, own them as such):** rollup/drill-down **< 500 ms** because reads hit a pre-aggregated cube layer, never the transactional store; cell edits feel instant (**< 80 ms**) because writes go to a per-user view store first and cube invalidation + DB commit happen async ("optimistic write-back"). Stale-data warnings compare source commit timestamps against the view's saved-at.
 - **Where ClickHouse fits:** the append-only versioned planning store is what makes the grid's version diff, undo/redo (50-deep stack), scenario copies (up to 5 per plan), and immutable audit trail cheap — every override is an insert with a version, never a mutation.
 - **Per-tenant configuration in PostgreSQL:** which planning stages a retailer runs, stage sequence and skip rules, approval thresholds, metric catalogs, hierarchy names/levels — all tenant config, not code. Config edits deploy by config sync in minutes with schema validation, no code deployment (deck ENG-01; Hindsight FRD FR-1.3: tenant onboarding config applies without deployment). That is what "onboards retailers without code deployment" means.

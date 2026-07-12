@@ -72,52 +72,56 @@ misses = [k for k in jd_keywords if k not in low]
 cov = len(hits) / len(jd_keywords)
 check("JD keyword coverage >= 85%", 12, cov >= 0.85, f"{cov:.0%} ({len(hits)}/{len(jd_keywords)}); missing: {misses}")
 
-# ---------- 5b. Coverage vs REAL senior SWE listings (pulled Jul 2026) ----------
+# ---------- 5b. Coverage vs REAL target listings (checked Jul 13, 2026) ----------
 # Each keyword is a list of acceptable synonyms; any one match counts.
-# Sources: amazon.jobs SDE II postings (RBS Tech 2870705, EKS 10421065, Offers
-# Platform 2928690), Google careers Senior SWE (Cloud AI, Infrastructure, Pay
-# Agent Infra), Uber careers Sr Backend (150586, 157384, 153451), Airbnb
-# careers Senior Backend (App Foundation 7717198, Community Support 8017556).
+# Sources: Google careers mid-level SWE search (SWE III / Senior SWE minimum
+# quals across Cloud Networking, Distributed Cloud, Control Plane, Serverless
+# Networking, AI/ML roles) and four live Airbnb postings fetched directly.
 company_jds = {
-    "Amazon SDE II": [
-        ["software development"], ["design"], ["architecture", "architected"],
-        ["reliability", "reliable"], ["scaling", "scalable", "scaled", "scalability"],
-        ["distributed systems"], ["data structures"], ["algorithms"],
-        ["microservices"], ["high-performance", "performance"],
-        ["testing", "test coverage", "pytest", "unit testing"],
-        ["operations", "operating", "production"],
-        ["aws"], ["dynamodb", "nosql", "mongodb", "cassandra"], ["elasticsearch"],
-        ["machine learning", "ai", "llm"], ["python", "go", "java", "c++"],
-    ],
-    "Google Senior SWE": [
+    "Google Mid/Senior SWE (search page quals)": [
         ["software development"], ["python"], ["go "], ["data structures"],
         ["algorithms"], ["software design", "system design"],
         ["architecture", "architected"], ["large-scale", "scale", "scalable"],
-        ["distributed systems"], ["launching", "launched", "shipped", "delivered", "built"],
+        ["distributed systems"], ["infrastructure"],
         ["testing", "test coverage", "unit testing"],
-        ["technical leadership", "led ", "leading"],
-        ["agentic ai", "ai agents", "agentic", "llm agents"],
-        ["debugging", "debug", "triage", "incident"],
+        ["launching", "launched", "shipped", "delivered", "built"],
+        ["kubernetes"], ["cloud", "gcp"],
+        ["machine learning", "ml", "llm", "ai"],
+        ["performance"], ["reliability"],
     ],
-    "Uber Senior Backend": [
-        ["go ", "golang"], ["python"], ["rest"], ["grpc"],
-        ["event-driven"], ["ci/cd"], ["docker"], ["kubernetes"],
-        ["distributed systems"], ["reliability"], ["idempotency", "idempotent"],
-        ["retries", "retry"], ["postgres", "postgresql"], ["mysql"], ["redis"],
-        ["schema"], ["kafka"], ["cassandra"], ["microservices"],
-        ["caching", "cache", "semantic caching"],
-        ["observability", "monitoring", "grafana", "new relic"],
-        ["gcp", "aws"], ["backend"], ["apis"],
+    "Airbnb Payments Quality 7668022": [
+        ["python"], ["data structure"], ["algorithm"],
+        ["automated tests", "pytest", "test coverage", "unit testing"],
+        ["ci/cd"], ["git"], ["debug", "triage", "troubleshoot"],
+        ["testability", "testable", "test"],
+        ["payments", "financial", "e-invoic", "invoic"],
+        ["cross-functional", "cross functional", "collaborat", "stakeholder", "planners", "feeds"],
+        ["code quality", "coverage"], ["release", "deploy"],
     ],
-    "Airbnb Senior Backend": [
-        ["backend"], ["distributed"], ["databases", "database", "postgresql", "mysql"],
-        ["cloud", "gcp", "aws"], ["asynchronous", "async"],
-        ["high-throughput", "high-concurrency", "throughput"],
-        ["rag"], ["llm"], ["agent"], ["apis", "api"],
+    "Airbnb Global Markets Backend 7768472": [
+        ["backend"], ["distributed systems"], ["apis", "api"],
         ["data models", "data model", "schema"],
-        ["testing", "test coverage"], ["performance"],
-        ["reliability"], ["scalable", "scaling", "scale"],
-        ["python", "java", "kotlin", "ruby"],
+        ["high-throughput", "high-concurrency", "throughput"],
+        ["pipelines", "pipeline"], ["python"],
+        ["testing", "test coverage"], ["instrumentation", "monitoring", "observability"],
+        ["performance"], ["reliability"], ["scalable", "scaling", "scale"],
+        ["metrics", "p95", "latency"], ["production"],
+    ],
+    "Airbnb Reliability Engineering 8026696": [
+        ["distributed systems"], ["service-oriented", "microservices"],
+        ["aws"], ["gcp", "google cloud"], ["go ", "golang"], ["python"],
+        ["version control", "git"], ["automated test", "test coverage", "pytest"],
+        ["continuous integration", "ci/cd"], ["docker"], ["kubernetes"],
+        ["incident"], ["monitoring"], ["alerting", "alert"],
+        ["reliability"], ["scalability", "scalable"], ["tooling", "tools", "automation", "automated"],
+    ],
+    "Airbnb Reliability Experience 8026735": [
+        ["internal infrastructure", "infrastructure", "platform"],
+        ["observability"], ["grafana"], ["python"],
+        ["data structures"], ["asynchronous", "async"],
+        ["dashboards", "dashboard"], ["monitoring"],
+        ["engineering productivity", "productivity", "developer", "triage"],
+        ["testing", "tested", "test"], ["reliability"], ["performance"],
     ],
 }
 for company, kw_groups in company_jds.items():
