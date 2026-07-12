@@ -9,7 +9,7 @@
 
 ## 1. Elevator pitch (30 seconds)
 
-"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. The shift we're building: AI agents draft the plan — store clusters, assortment scenarios — and planners review, override, and approve, instead of configuring everything by hand. I own the store-clustering module: the agent selects clustering features by statistical significance, optimizes cluster count with silhouette scoring, and presents 3 to 5 distinct ranked scenarios with plain-English rationale for planner approval — turnaround goes from days to under an hour. Alongside that I build the Go services for plan lifecycle and bulk saves, and the data layer: ClickHouse with an append-only versioned write model where every planner override is an insert — which gives us version diff, undo/redo, and an immutable audit trail for free — plus the pivot-grid serving layer with sub-500 ms rollups and 80 ms optimistic cell edits."
+"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. The shift we're building: AI agents draft the plan — store clusters, assortment scenarios — and planners review, override, and approve, instead of configuring everything by hand. Architecturally it's one Python agentic microservice (FastAPI, LangGraph, MCP) that runs all agentic workflows, and a Go core backend — Gin microservices exposing the REST APIs for plan lifecycle, reference data, and bulk saves. In the agent tier I own the store-clustering agent: it selects features by statistical significance, optimizes cluster count with silhouette scoring, and presents 3 to 5 distinct ranked scenarios with plain-English rationale for planner approval — turnaround goes from days to under an hour. Under both sits ClickHouse with an append-only versioned write model where every planner override is an insert — which gives us version diff, undo/redo, and an immutable audit trail for free — plus the pivot-grid serving layer with sub-500 ms rollups and 80 ms optimistic cell edits."
 
 ## 2. The resume project (one block: Agentic AssortSmart)
 
@@ -18,10 +18,12 @@ The resume shows **one project** under Impact Analytics with five bullets. Sourc
 | Resume bullet | What it covers | Where the defense lives |
 |---|---|---|
 | Platform intro (agents draft, planners approve) | What AssortSmart does for retailers and why the agentic rebuild exists | §3d below; Architecture deck slides 1–2 |
-| Agentic store clustering module (3–5 scenarios, <1 h) | Autonomous feature selection, k optimization, multi-scenario compare, approval gating | §3d below; HLR-AG-001…006, HLR-SC-001…004 |
-| Go (Gin) microservices | The non-agentic service surface you build | §3b below; playbook **§10** |
+| Python agentic microservice (all agentic workflows) + clustering agent (3–5 scenarios, <1 h) | ONE agentic service owns every agentic workflow; the clustering agent is its flagship: autonomous feature selection, k optimization, multi-scenario compare, approval gating | §3d below; HLR-AG-001…006, HLR-SC-001…004 |
+| Go (Gin) core backend microservices | The main backend: REST APIs for everything non-agentic | §3b below; playbook **§10** |
 | ClickHouse append-only versioned store | Every override is an insert; version diff / undo-redo / audit trail | playbook §2 D2, §4, **§10** |
 | Pivot grid serving layer + per-tenant config in PostgreSQL | <500 ms rollup/drill-down, <80 ms optimistic edits, config-driven tenant onboarding | §3e below; Architecture deck ARCH-06, NFR-01, ENG-01 |
+
+**The service split, one line (say it exactly like this):** "One Python microservice (FastAPI, LangGraph, MCP) runs all agentic workflows — the agents, their tools, LLM orchestration. The core backend is Go: Gin microservices exposing the REST APIs for plan lifecycle, reference data, and bulk saves. The two talk over versioned API contracts, and the split lands on a natural deployment boundary — the agent tier scales with LLM latency, the Go tier scales with request volume."
 
 ## 3. The stack story you must tell in order (July 2026 direction)
 
@@ -38,7 +40,7 @@ This is the single most senior narrative you own. Tell it as an *evolution*, not
 
 ## 3b. The Go services — what you actually build (defend the Go bullet)
 
-The resume says: *"Building Go (Gin) microservices for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context-based timeouts."* Here is the concrete shape behind each phrase:
+The resume says: *"Building the core backend as Go (Gin) microservices exposing REST APIs for plan lifecycle, reference data, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts."* Here is the concrete shape behind each phrase:
 
 - **Plan lifecycle APIs** — create/copy/finalize/soft-delete plan endpoints; state transitions validated server-side (draft → in-review → finalized); finalize is a human signature, so the handler enforces role + confirmation token.
 - **Reference data APIs** — hierarchy trees, fiscal calendars, store masters, tenant config. Read-heavy fan-out: handler issues concurrent ClickHouse/Postgres reads with `errgroup.WithContext`, returns partial-safe composites.

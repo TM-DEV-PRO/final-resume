@@ -31,7 +31,9 @@ def check(name, weight, ok, detail=""):
 
 # ---------- 1. Parseability ----------
 check("Text extractable (not image-based)", 10, len(words) > 200, f"{len(words)} words extracted")
-check("Single page", 4, True, "1 page (verified via pypdf)")
+from pypdf import PdfReader
+n_pages = len(PdfReader(PDF).pages)
+check("Single page", 4, n_pages == 1, f"{n_pages} page(s) via pypdf")
 # Jobscan/Resume Worded flag resumes over ~1000 words; dense one-page senior
 # resumes typically land 600-900
 check("Word count in 400-900 band", 4, 400 <= len(words) <= 900, f"{len(words)} words")
@@ -139,10 +141,18 @@ quantified = [b for b in exp_bullets if re.search(r"\d", b)]
 check(">=60% experience bullets quantified", 8,
       len(quantified) / max(len(exp_bullets), 1) >= 0.6,
       f"{len(quantified)}/{len(exp_bullets)} experience bullets carry numbers")
-verbs = ["architected", "designed", "built", "led", "reduced", "cut", "scaled",
-         "migrated", "implemented", "developed", "increased", "redesigned"]
+verbs = ["architected", "designed", "built", "building", "led", "reduced",
+         "cut", "scaled", "migrated", "implemented", "developed", "developing",
+         "increased", "redesigned", "designing", "set up"]
 verb_hits = sum(1 for b in bullets for v in verbs if b.lower().lstrip("\u2022 ").startswith(v))
 check("Action-verb-led bullets", 5, verb_hits >= 12, f"{verb_hits} bullets start with action verbs")
+semis = [b[:60] for b in exp_bullets if ";" in b]
+check("No semicolons in bullets", 3, not semis, f"bullets with ';': {semis}")
+senior_signals = ["led", "architected", "designed", "adoption", "migration",
+                  "p95", "microservices", "distributed"]
+sig_hits = [s for s in senior_signals if s in low]
+check("Senior-scope signals present", 4, len(sig_hits) >= 6,
+      f"{len(sig_hits)}/{len(senior_signals)}: {sig_hits}")
 
 # ---------- 7. Red flags ----------
 check("No tables/columns artifacts (contact on one band)", 3, "@" in norm.splitlines()[2] or "@" in norm[:400])

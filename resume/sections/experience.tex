@@ -17,18 +17,18 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where enterprise retailers decide what to buy, how much, and for which stores; AI agents draft store clusters and plans that planners review, override, and approve.
-    \item Developing the \textbf{agentic store clustering module (Python, FastAPI, LangGraph)} that selects features by statistical significance, optimizes cluster count via silhouette scoring, and generates \textbf{3 to 5 ranked scenarios} for planner approval, cutting turnaround from days to \textbf{under 1 hour}.
-    \item Building \textbf{Go (Gin) microservices} for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context based timeouts.
+    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores, with AI agents drafting store clusters and plans for planner review, override, and approval.
+    \item Developing the \textbf{Python agentic microservice (FastAPI, LangGraph, MCP)} for all agentic workflows, where the store clustering agent selects features by significance, optimizes cluster count via silhouette scoring, and generates \textbf{3 to 5 ranked scenarios}, cutting turnaround from days to \textbf{under 1 hour}.
+    \item Building the core backend as \textbf{Go (Gin) microservices} exposing REST APIs for plan lifecycle, reference data, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts.
     \item Led adoption of \textbf{ClickHouse} as the planning store with an append only versioned write model where every planner override is an insert, powering version diff, undo/redo, and an immutable audit trail.
-    \item Designing the \textbf{pivot grid serving layer} for rollup and drill down across product, store, and week hierarchies at \textbf{p95 under 500ms} with optimistic cell edits under \textbf{80ms}; per tenant configuration in \textbf{PostgreSQL} onboards retailers without code deployment.
+    \item Designing the \textbf{pivot grid serving layer} for rollup and drill down across product, store, and week hierarchies at \textbf{p95 under 500ms} with optimistic cell edits under \textbf{80ms}, with per tenant configuration in \textbf{PostgreSQL} onboarding retailers without code deployment.
     \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
 %====================
 % EXPERIENCE B — UBER
 %====================
-\vspace{1ex}
+\vspace{0.8ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Engineer} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
@@ -38,7 +38,7 @@
 \textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} by replacing a manual Google Sheets workflow with a FastAPI and MySQL platform serving \textbf{36 REST endpoints across 8 screens}; output feeds PwC audit work papers.
+    \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} by replacing a manual Google Sheets workflow with a FastAPI and MySQL platform serving \textbf{36 REST endpoints across 8 screens}, with output feeding PwC audit work papers.
     \item Designed an \textbf{8-table normalized MySQL schema} whose quarterly ETL aggregates \textbf{19M+ general-ledger rows into 300K rows}, reconciled against public 10-Q filings.
     \item Migrated raw SQL access to \textbf{SQLAlchemy 2.0 ORM}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
     \item \textbf{Tech Used}: Python, FastAPI, SQLAlchemy, Pydantic, MySQL, Redis, Bazel, pytest.
@@ -50,14 +50,14 @@
 \begin{zitemize}
     \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
     \item Built an AI extraction pipeline with \textbf{RAG and Gemini 2.5 Pro} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
-    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools; added ingestion health analytics on \textbf{Apache Pinot}.
+    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools, and built ingestion health analytics on \textbf{Apache Pinot}.
     \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
 \end{zitemize}
 
 %====================
 % EXPERIENCE C — MASTERS INDIA
 %====================
-\vspace{1ex}
+\vspace{0.8ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
@@ -69,7 +69,7 @@
 \begin{zitemize}
     \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Python (FastAPI) microservices}, cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
     \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with chunked async workers and idempotent retries.
-    \item Set up centralized \textbf{ELK logging and New Relic monitoring}, speeding up incident triage by 70\%; raised test coverage from \textbf{35\% to 82\%}.
+    \item Set up centralized \textbf{ELK logging and New Relic monitoring}, speeding up incident triage by 70\%, and raised test coverage from \textbf{35\% to 82\%}.
     \item Implemented \textbf{encryption, RBAC, JWT auth, and audit logging} for financial compliance data.
     \item \textbf{Tech Used}: Python, FastAPI, PostgreSQL, Redis, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}
@@ -77,7 +77,7 @@
 %====================
 % EXPERIENCE D — GEEKSFORGEEKS
 %====================
-\vspace{1ex}
+\vspace{0.8ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\

@@ -219,7 +219,7 @@ strong{color:#fff}
 </blockquote>
 <hr>
 <h2 id="1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</h2>
-<p>"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. The shift we're building: AI agents draft the plan — store clusters, assortment scenarios — and planners review, override, and approve, instead of configuring everything by hand. I own the store-clustering module: the agent selects clustering features by statistical significance, optimizes cluster count with silhouette scoring, and presents 3 to 5 distinct ranked scenarios with plain-English rationale for planner approval — turnaround goes from days to under an hour. Alongside that I build the Go services for plan lifecycle and bulk saves, and the data layer: ClickHouse with an append-only versioned write model where every planner override is an insert — which gives us version diff, undo/redo, and an immutable audit trail for free — plus the pivot-grid serving layer with sub-500 ms rollups and 80 ms optimistic cell edits."</p>
+<p>"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. The shift we're building: AI agents draft the plan — store clusters, assortment scenarios — and planners review, override, and approve, instead of configuring everything by hand. Architecturally it's one Python agentic microservice (FastAPI, LangGraph, MCP) that runs all agentic workflows, and a Go core backend — Gin microservices exposing the REST APIs for plan lifecycle, reference data, and bulk saves. In the agent tier I own the store-clustering agent: it selects features by statistical significance, optimizes cluster count with silhouette scoring, and presents 3 to 5 distinct ranked scenarios with plain-English rationale for planner approval — turnaround goes from days to under an hour. Under both sits ClickHouse with an append-only versioned write model where every planner override is an insert — which gives us version diff, undo/redo, and an immutable audit trail for free — plus the pivot-grid serving layer with sub-500 ms rollups and 80 ms optimistic cell edits."</p>
 <h2 id="2-the-resume-project-one-block-agentic-assortsmart">2. The resume project (one block: Agentic AssortSmart)</h2>
 <p>The resume shows <strong>one project</strong> under Impact Analytics with five bullets. Sources: the <strong>Agentic Store Clustering HLR v1.1</strong>, the <strong>Planning Platform Architecture v5 deck</strong>, and the <strong>Hindsight Module FRD</strong> (copies in <code>../source_docs/</code>), plus the playbook.</p>
 <table>
@@ -237,13 +237,13 @@ strong{color:#fff}
 <td>§3d below; Architecture deck slides 1–2</td>
 </tr>
 <tr>
-<td>Agentic store clustering module (3–5 scenarios, &lt;1 h)</td>
-<td>Autonomous feature selection, k optimization, multi-scenario compare, approval gating</td>
+<td>Python agentic microservice (all agentic workflows) + clustering agent (3–5 scenarios, &lt;1 h)</td>
+<td>ONE agentic service owns every agentic workflow; the clustering agent is its flagship: autonomous feature selection, k optimization, multi-scenario compare, approval gating</td>
 <td>§3d below; HLR-AG-001…006, HLR-SC-001…004</td>
 </tr>
 <tr>
-<td>Go (Gin) microservices</td>
-<td>The non-agentic service surface you build</td>
+<td>Go (Gin) core backend microservices</td>
+<td>The main backend: REST APIs for everything non-agentic</td>
 <td>§3b below; playbook <strong>§10</strong></td>
 </tr>
 <tr>
@@ -258,6 +258,7 @@ strong{color:#fff}
 </tr>
 </tbody>
 </table>
+<p><strong>The service split, one line (say it exactly like this):</strong> "One Python microservice (FastAPI, LangGraph, MCP) runs all agentic workflows — the agents, their tools, LLM orchestration. The core backend is Go: Gin microservices exposing the REST APIs for plan lifecycle, reference data, and bulk saves. The two talk over versioned API contracts, and the split lands on a natural deployment boundary — the agent tier scales with LLM latency, the Go tier scales with request volume."</p>
 <h2 id="3-the-stack-story-you-must-tell-in-order-july-2026-direction">3. The stack story you must tell in order (July 2026 direction)</h2>
 <p>This is the single most senior narrative you own. Tell it as an <em>evolution</em>, not a static choice:</p>
 <ol>
@@ -269,7 +270,7 @@ strong{color:#fff}
 <p><strong>Precision on "transactional":</strong> it's planning-grid transactionality — atomic batch inserts of one version, session read-after-write via version watermarks, idempotent replays, audit history for free — <em>not</em> bank-ledger OLTP. Cross-entity invariants that need true multi-statement ACID (auth, tenant config, workflow state) stay on a thin Postgres metadata plane. Say this unprompted; it shows judgment.</p>
 <p><strong>Go vs Rust discipline:</strong> "Go by default, Rust by measurement — an endpoint earns Rust with a profile, not a preference." Gin chosen over chi/Echo/fiber for maturity + team familiarity (fiber rejected: fasthttp breaks <code>net/http</code> semantics). Rust precedent exists in-house (CortexEye backend is Rust/Axum). <em>(Rust is deliberately not on the resume — if asked about the stack, mention it as the escape hatch, don't claim Rust delivery.)</em></p>
 <h2 id="3b-the-go-services-what-you-actually-build-defend-the-go-bullet">3b. The Go services — what you actually build (defend the Go bullet)</h2>
-<p>The resume says: <em>"Building Go (Gin) microservices for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context-based timeouts."</em> Here is the concrete shape behind each phrase:</p>
+<p>The resume says: <em>"Building the core backend as Go (Gin) microservices exposing REST APIs for plan lifecycle, reference data, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts."</em> Here is the concrete shape behind each phrase:</p>
 <ul>
 <li><strong>Plan lifecycle APIs</strong> — create/copy/finalize/soft-delete plan endpoints; state transitions validated server-side (draft → in-review → finalized); finalize is a human signature, so the handler enforces role + confirmation token.</li>
 <li><strong>Reference data APIs</strong> — hierarchy trees, fiscal calendars, store masters, tenant config. Read-heavy fan-out: handler issues concurrent ClickHouse/Postgres reads with <code>errgroup.WithContext</code>, returns partial-safe composites.</li>
