@@ -28,3 +28,7 @@ Every strong bullet follows **"Accomplished [X], as measured by [Y], by doing [Z
 </ul>
 Say "in an offline evaluation" or "modeled/projected" for the indicative ones and you'll never be caught out.
 </div>
+
+<div class="callout warn">
+<b>Final-resume alignment (July 2026).</b> The shipped resume diverges from this playbook in three deliberate ways: (1) the <b>BigQuery cost program (§2 P1–P2) is NOT on the resume</b> — treat it as platform history/context only, never claim it as your delivery; the resume bullet is the <b>BigQuery→ClickHouse ingestion pipeline</b> (see the final-resume project file §3c). (2) <b>Rust is not on the resume</b> — it stays the profile-proven escape hatch in conversation only. (3) The resume shows <b>one project block</b> ("Agentic AssortSmart") with five bullets: multi-agent system, clustering copilot, Go (Gin) services, ClickHouse unified store, BQ→CH pipeline. When a playbook talking track conflicts with these, the resume framing wins.
+</div>

@@ -7,7 +7,7 @@ Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness s
 | Story | Amazon LPs | Googliness |
 |---|---|---|
 | 1. Reconciled ClickHouse verdict | Are Right, A Lot · Have Backbone; Disagree & Commit · Dive Deep | Intellectual humility · ambiguity |
-| 2. BigQuery cost program | Frugality · Ownership · Invent & Simplify | Bias to action |
+| 2. BQ→CH ingestion lane (freshness as a feature) | Ownership · Invent & Simplify · Insist on Highest Standards | Bias to action |
 | 3. Malformed-plan validator | Customer Obsession · Insist on Highest Standards | Problem-first thinking |
 | 4. Clustering copilot inversion | Think Big · Customer Obsession · Deliver Results | Ambiguity · user empathy |
 | 5. Constants-refactor regression | Insist on Highest Standards · Earn Trust | Humility · owning mistakes |
@@ -28,14 +28,14 @@ Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness s
 - **R:** Both camps agreed to the staged path. The PoC held the mutation queue at zero at 10× scale; in July 2026 the org committed to ClickHouse end-to-end. No premature infra spend, no camp "lost."
 - **Lesson:** disagreements between competent people are usually about hidden assumptions, not facts — make the assumptions explicit and the decision often resolves itself.
 
-## 2. The 280× BigQuery cost program
-**Use for:** "Impact you're proud of / frugality / finding problems nobody asked you to find."
+## 2. The BigQuery→ClickHouse ingestion lane (freshness as a feature)
+**Use for:** "Design decision you're proud of / handling hidden failure modes / raising the bar."
 
-- **S:** While auditing the legacy backend's data patterns I noticed recurring hindsight reads scanning a raw ~2.9 TiB fact table.
-- **T:** Nobody had asked for a cost program; I made it one anyway.
-- **A:** Measured scan patterns across the workload; found reads targeting the un-clustered raw fact when a clustered copy existed (~3× cheaper); materialized a store×category×week rollup (~280× cheaper, ~$8 one-time); found one `SELECT * LIMIT 2` query that had billed 38.8 TiB ($327) for 2 rows; then codified all of it as a query-path cost guard (rejects `SELECT *` and un-dated scans, auto-routes to the clustered copy) so the saving can't regress.
-- **R:** Up to ~280× fewer bytes billed on the hot recurring reads; the guardrail made the fix permanent.
-- **Lesson:** the fix that matters is the one that makes the regression impossible, not the one-off cleanup.
+- **S:** The copilot's agent probes needed deterministic low latency (design target p95 <500 ms), but our historical data lives in BigQuery, where shared-slot variance means the same query can take 1 to 20 seconds. The obvious fix — copy the data into ClickHouse — has a known trap: derived copies rot silently, and a planner making buy decisions on stale data is worse than a slow query.
+- **T:** Build the ingestion lane from BigQuery into ClickHouse so the agent read plane is both fast *and* provably fresh.
+- **A:** Designed the lane in three parts: scheduled exports land in ClickHouse staging tables and get promoted with atomic `REPLACE PARTITION`, so readers never see a half-loaded night; per-partition row-count and sum reconciliation against the BigQuery source with 0.1% tolerance blocks promotion on mismatch; and a freshness sentinel stamps *data-as-of* into every agent recommendation, so staleness is visible in the product instead of discovered in an incident. Added nightly precompute of attribute significance for hierarchies with active plans so most copilot sessions start warm.
+- **R:** The read plane serves agent probes against its p95 <500 ms design target, and the failure mode everyone fears with derived data — silent rot — is structurally impossible: loads are atomic, mismatches block promotion, and staleness is printed on the answer.
+- **Lesson:** when you copy data for speed, freshness and reconciliation are product features, not ops chores — design them in on day one.
 
 ## 3. Fixing the #1 LLM-planner failure (malformed plans)
 **Use for:** "Hardest technical problem / quality bar / working with non-deterministic systems."

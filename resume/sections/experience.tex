@@ -12,37 +12,28 @@
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{June 2026 -- Present}\\
 \end{tabularx}
-\vspace{0.5ex}
+\vspace{0.1ex}
 
 \textcolor{Project}{\textbf{Agentic AssortSmart (Multi-Agent Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
     \item Architected a \textbf{multi-agent planning system with 5 domain agents} that converts natural-language questions into validated execution DAGs, improving plan correctness from \textbf{0.54 to 0.99} in offline evaluation.
-    \item Designed an \textbf{agentic store-clustering copilot} with three human approval gates and a dedicated ClickHouse read plane (\textbf{p95 probes under 500ms}), cutting plan finalization from days to \textbf{under 1 hour} and run failures from \textbf{8.5\% to under 2\%}.
+    \item Designed an \textbf{agentic store-clustering copilot} with three human approval gates, cutting plan finalization time from days to \textbf{under 1 hour} and run failures from \textbf{8.5\% to under 2\%}.
+    \item Building \textbf{Go (Gin) microservices} for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context-based timeouts.
     \item Led adoption of \textbf{ClickHouse as the unified transactional and analytical planning store}, designing an insert-only versioned write model that powers overrides, version diff, and undo/redo with zero mutation backlog.
-    \item Reduced recurring \textbf{BigQuery scan costs by up to 280x} (2.9 TiB to 3.3 GiB per query) through clustered reads, pre-aggregated rollups, and a query cost guard.
-    \item Built non-agentic backend microservices in \textbf{Go (Gin)} serving plan lifecycle, reference data, and write-back APIs.
+    \item Built the \textbf{BigQuery to ClickHouse ingestion pipeline} with nightly precompute and reconciliation, serving agent probes at \textbf{p95 under 500ms}.
     \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, BigQuery, PostgreSQL, pgvector, Redis, Kafka, GCP.
 \end{zitemize}
 
 %====================
 % EXPERIENCE B — UBER
 %====================
+\vspace{1ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Engineer} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
 \end{tabularx}
-\vspace{0.5ex}
-
-\textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
-\vspace{-1ex}
-\begin{zitemize}
-    \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding time from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
-    \item Built an AI extraction pipeline with \textbf{RAG and Gemini 2.5 Pro} that converts PDF and image menus into schema-validated catalog data with \textbf{98\% extraction fidelity}.
-    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools; added ingestion health analytics on \textbf{Apache Pinot}.
-    \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
-\end{zitemize}
-\vspace{0.5ex}
+\vspace{0.1ex}
 
 \textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
 \vspace{-1ex}
@@ -52,15 +43,26 @@
     \item Migrated raw SQL access to \textbf{SQLAlchemy 2.0 ORM}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
     \item \textbf{Tech Used}: Python, FastAPI, SQLAlchemy, Pydantic, MySQL, Redis, Bazel, pytest.
 \end{zitemize}
+\vspace{0.5ex}
+
+\textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding time from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
+    \item Built an AI extraction pipeline with \textbf{RAG and Gemini 2.5 Pro} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
+    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools; added ingestion health analytics on \textbf{Apache Pinot}.
+    \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
+\end{zitemize}
 
 %====================
 % EXPERIENCE C — MASTERS INDIA
 %====================
+\vspace{1ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
 \end{tabularx}
-\vspace{0.5ex}
+\vspace{0.1ex}
 
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
@@ -75,11 +77,12 @@
 %====================
 % EXPERIENCE D — GEEKSFORGEEKS
 %====================
+\vspace{1ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
 \end{tabularx}
-\vspace{-0.5ex}
+\vspace{-0.8ex}
 \begin{zitemize}
     \item Redesigned and migrated the backend from PHP to \textbf{Django (Python)}, improving reliability for \textbf{100,000+ daily queries}.
     \item Designed data models and REST APIs for voting and pinning features, increasing \textbf{premium subscription sales by 15 to 20\%}.

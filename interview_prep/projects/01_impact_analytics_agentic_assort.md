@@ -9,14 +9,19 @@
 
 ## 1. Elevator pitch (30 seconds)
 
-"I build the AI and data backbone of an agentic retail assortment planner — the agentic rebuild of our AssortSmart product. Right now I'm shipping the store-clustering copilot: the planner states *what to cluster and for when*, a dedicated agent handles store scoping, attribute selection, and a 20-to-100-configuration exploration on a dedicated ClickHouse read plane, with evidence packs and three human approval gates. It's spec'd against measured baselines — 8.5% run failures, one configuration tried per plan, zero reproducibility — with targets of under an hour to a finalized plan and sub-500 ms agent data probes. Under it sits a polyglot service architecture I helped define — Go for non-agentic services, Rust for hot paths, Python for the agent tier — and ClickHouse as the end-to-end transactional-plus-analytical planning store, made safe by an insert-only versioned write model I designed and proved in a PoC."
+"I build the AI and data backbone of an agentic retail assortment planner — the agentic rebuild of our AssortSmart product. Right now I'm shipping the store-clustering copilot: the planner states *what to cluster and for when*, a dedicated agent handles store scoping, attribute selection, and a 20-to-100-configuration exploration, with evidence packs and three human approval gates. It's spec'd against measured baselines — 8.5% run failures, one configuration tried per plan, zero reproducibility — with targets of under an hour to a finalized plan and sub-500 ms agent data probes. Alongside the agent tier I build the Go services for the non-agentic surface (plan lifecycle, reference data, bulk saves), and the data spine: ClickHouse as the unified transactional-plus-analytical planning store — made safe by an insert-only versioned write model I designed and proved in a PoC — fed by an ingestion pipeline from BigQuery, which stays the historical source of truth."
 
-## 2. The two-project split on the resume
+## 2. The resume project (one block: Agentic AssortSmart)
 
-| Resume project | What it covers | Playbook sections |
+The resume shows **one project** under Impact Analytics with five bullets. Each maps to playbook material:
+
+| Resume bullet | What it covers | Playbook sections |
 |---|---|---|
-| **Agentic Assort Planner** (platform) | Multi-agent orchestration (router→decomposer→DAG→specialists), polyglot stack, ClickHouse end-to-end decision, BigQuery cost program | §2 A1–A4, D1–D4, P1–P3, §3, §4, **§10** |
-| **Agentic Store-Clustering Copilot** (flagship module) | The shipping module: intent-first workflow, dedicated CH read plane, deterministic grounding, reproducibility/pins, strategy doorway | §2 C1–C5, §9 |
+| Multi-agent planning system (0.54→0.99) | Router→decomposer→validated DAG→specialist agents | §2 A1–A4, §3 |
+| Store-clustering copilot (gates, <1 h, <2%) | Intent-first workflow, deterministic grounding, reproducibility/pins | §2 C1, C3–C5, §9 |
+| Go (Gin) microservices | The non-agentic service surface you build (see §3b below) | **§10** |
+| ClickHouse unified planning store | Insert-only versioned write model, zero mutation backlog | §2 D2, §4, **§10** |
+| BigQuery→ClickHouse ingestion pipeline | The data lane feeding the store + agent read plane (p95 <500 ms target) | §2 C2, §9 |
 
 ## 3. The stack story you must tell in order (July 2026 direction)
 
@@ -29,7 +34,28 @@ This is the single most senior narrative you own. Tell it as an *evolution*, not
 
 **Precision on "transactional":** it's planning-grid transactionality — atomic batch inserts of one version, session read-after-write via version watermarks, idempotent replays, audit history for free — *not* bank-ledger OLTP. Cross-entity invariants that need true multi-statement ACID (auth, tenant config, workflow state) stay on a thin Postgres metadata plane. Say this unprompted; it shows judgment.
 
-**Go vs Rust discipline:** "Go by default, Rust by measurement — an endpoint earns Rust with a profile, not a preference." Gin chosen over chi/Echo/fiber for maturity + team familiarity (fiber rejected: fasthttp breaks `net/http` semantics). Rust precedent exists in-house (CortexEye backend is Rust/Axum).
+**Go vs Rust discipline:** "Go by default, Rust by measurement — an endpoint earns Rust with a profile, not a preference." Gin chosen over chi/Echo/fiber for maturity + team familiarity (fiber rejected: fasthttp breaks `net/http` semantics). Rust precedent exists in-house (CortexEye backend is Rust/Axum). *(Rust is deliberately not on the resume — if asked about the stack, mention it as the escape hatch, don't claim Rust delivery.)*
+
+## 3b. The Go services — what you actually build (defend the Go bullet)
+
+The resume says: *"Building Go (Gin) microservices for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context-based timeouts."* Here is the concrete shape behind each phrase:
+
+- **Plan lifecycle APIs** — create/copy/finalize/soft-delete plan endpoints; state transitions validated server-side (draft → in-review → finalized); finalize is a human signature, so the handler enforces role + confirmation token.
+- **Reference data APIs** — hierarchy trees, fiscal calendars, store masters, tenant config. Read-heavy fan-out: handler issues concurrent ClickHouse/Postgres reads with `errgroup.WithContext`, returns partial-safe composites.
+- **Bulk save APIs** — the versioned write path: a grid save arrives as a batch of cell edits; the service assigns one `version = epoch-ms` to the batch, validates rows (Gin `ShouldBindJSON` + validator tags), and a **goroutine worker pool** (bounded channel, N workers) fans batched inserts into ClickHouse via `clickhouse-go` v2 native-protocol batch inserts. Idempotency: batch id + content hash so retries don't double-insert versions.
+- **Middleware chain** — JWT auth (tenant + role claims), request-scoped logging with correlation IDs, request validation, panic recovery, per-route rate limits. Standard Gin `c.Next()` chain.
+- **Context discipline** — every handler derives `context.WithTimeout`; DB calls take the ctx; slow ClickHouse probes get cancelled instead of piling up. Graceful shutdown drains in-flight requests (`server.Shutdown(ctx)`).
+- **Testing** — table-driven tests, `httptest` for handlers, interface-mocked repositories; `golangci-lint` in CI.
+- **Why Go here (say it like a Go dev):** "This tier is straightforward request/response work at volume — bind, validate, authorize, fan out I/O, return. Goroutines give me cheap per-request concurrency without an async framework, the binary deploys as a single static artifact, and the code stays boring enough that anyone on the team can touch it."
+
+## 3c. The BigQuery→ClickHouse ingestion pipeline (defend the pipeline bullet)
+
+Be precise about what the BigQuery relationship is: **we don't build in BigQuery — it's the upstream historical source of truth, and I own the lane that ingests from it into ClickHouse.**
+
+- **Flow:** scheduled exports of the needed fact/dimension slices from BigQuery → staging tables in ClickHouse → atomic `REPLACE PARTITION` promotion (no half-visible loads).
+- **Nightly precompute:** attribute significance and top candidate sets for hierarchies with active plans, so ≥80% of copilot sessions start warm.
+- **Reconciliation:** per-partition row-count and sum checks against the BigQuery source, 0.1% tolerance; a freshness sentinel stamps *data-as-of* into every agent recommendation so derived-data rot is visible, not silent.
+- **Why this design:** agent probes need deterministic low latency (p95 <500 ms design target) and BigQuery's shared-slot variance (1–20 s) can't give that; a derived copy can rot, so the pipeline owns freshness + reconciliation as first-class features.
 
 ## 4. Architecture in one diagram
 
@@ -58,10 +84,10 @@ This is the single most senior narrative you own. Tell it as an *evolution*, not
    └───────────────────────────────▲─────────────────────────────────┘
                                    │ proven BQ→CH ingestion lane
    ┌───────────────────────────────┴───────────────┐  ┌──────────────┐
-   │  BigQuery — historical source of truth, cubes │  │ Postgres     │
-   │  (partitioned+clustered, cost-guarded)        │  │ metadata/auth│
-   └───────────────────────────────────────────────┘  │ + pgvector   │
-                                                      └──────────────┘
+   │  BigQuery — upstream historical source of     │  │ Postgres     │
+   │  truth (we ingest FROM it; we don't build in  │  │ metadata/auth│
+   │  it) — nightly precompute + reconciliation    │  │ + pgvector   │
+   └───────────────────────────────────────────────┘  └──────────────┘
 ```
 
 ## 5. Every resume bullet → where its defense lives
@@ -69,13 +95,14 @@ This is the single most senior narrative you own. Tell it as an *evolution*, not
 | Bullet | Claim tier | Defense |
 |---|---|---|
 | Multi-agent DAG, 0.54→0.99 | **EVAL** (offline, 12 gold queries) — say "offline evaluation harness" | Playbook §2 A1, §3 |
-| Polyglot Go/Rust/Python architecture | Committed direction | Playbook §10 |
-| ClickHouse end-to-end, mutations = 0 at 10× | **Verified PoC property** (latency ms are mock; the zero-mutation property is real) | Playbook §2 D2, §4, §10 |
-| BigQuery 280× (2.9 TiB → 3.3 GiB), 38.8 TiB/$327 leak | **REAL** — live audit; defend as measured | Playbook §2 P1–P2 |
-| Copilot targets (<1 h, 20+ configs, <2% failures) | **FRD targets** vs **measured baselines** (8.5% = 37/437 runs; 1 config/plan; 0% reproducible) | Playbook §2 C1, §9 |
-| p95 <500 ms read plane, 80%+ warm | **FRD target** — say "design target we're building against" | Playbook §2 C2 |
+| Copilot targets (<1 h, <2% failures) | **FRD targets** vs **measured baselines** (8.5% = 37/437 runs; 1 config/plan; 0% reproducible) | Playbook §2 C1, §9 |
+| Go (Gin) microservices | Current build work — describe the concrete service shape | §3b above, Playbook §10 |
+| ClickHouse unified store, zero mutation backlog | **Verified PoC property** (latency ms are mock; the zero-mutation property is real) | Playbook §2 D2, §4, §10 |
+| BQ→CH ingestion pipeline, p95 <500 ms probes | Pipeline is the real work; p95 is a **design target** — say "design target we're building against" | §3c above, Playbook §2 C2 |
 | Deterministic grounding, 80%+ of failures were input errors | Baseline **measured**, mechanism designed | Playbook §2 C3 |
 | 100% reproducible via config documents + pins | Design-you-own + spec'd acceptance criteria | Playbook §2 C4 |
+
+> **Dropped from the resume on purpose:** the BigQuery 280× cost-program claim (that was an org audit finding, not your delivery — keep it as *context* you can cite about the platform's history, never as "I did") and Rust (escape-hatch option only). If an interviewer asks about BigQuery, your line is: "BigQuery is our upstream historical source of truth; my work is the ingestion lane from it into ClickHouse and the freshness/reconciliation guarantees on that lane."
 
 ## 6. Five questions you will definitely get
 
@@ -92,7 +119,7 @@ It never computes. Deterministic tools compute — significance, coverage, redun
 Deterministic grounding: department mentions are backtracked to full hierarchy paths via catalog search, seasons resolve against the tenant's fiscal calendar, ambiguity raises a clarifying question, and a confirm-required grounding card (scope, cohort, substitutions, proposed attributes, each with a reason) gates execution. That kills the input-error class behind >80% of measured run failures.
 
 **"What's real vs. aspirational in your numbers?"**
-(Answer with the honesty table in §5 above — interviewers reward this candor. Lead with the REAL audit numbers: 280×, 38.8 TiB/$327, 8.5% = 37/437.)
+(Answer with the honesty table in §5 above — interviewers reward this candor. Lead with the REAL measured baselines: 8.5% run failures = 37/437 live runs, 1 config per plan, 0% reproducibility; the <1 h / <2% / p95 <500 ms figures are the committed design targets we build and test against.)
 
 ## 7. What I'd volunteer unprompted
 
