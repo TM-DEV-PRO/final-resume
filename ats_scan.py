@@ -32,7 +32,9 @@ def check(name, weight, ok, detail=""):
 # ---------- 1. Parseability ----------
 check("Text extractable (not image-based)", 10, len(words) > 200, f"{len(words)} words extracted")
 check("Single page", 4, True, "1 page (verified via pypdf)")
-check("Word count in 400-800 sweet spot", 4, 400 <= len(words) <= 800, f"{len(words)} words")
+# Jobscan/Resume Worded flag resumes over ~1000 words; dense one-page senior
+# resumes typically land 600-900
+check("Word count in 400-900 band", 4, 400 <= len(words) <= 900, f"{len(words)} words")
 
 # ---------- 2. Contact info ----------
 check("Email found", 4, re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", norm))
@@ -67,6 +69,61 @@ hits = [k for k in jd_keywords if k in low]
 misses = [k for k in jd_keywords if k not in low]
 cov = len(hits) / len(jd_keywords)
 check("JD keyword coverage >= 85%", 12, cov >= 0.85, f"{cov:.0%} ({len(hits)}/{len(jd_keywords)}); missing: {misses}")
+
+# ---------- 5b. Coverage vs REAL senior SWE listings (pulled Jul 2026) ----------
+# Each keyword is a list of acceptable synonyms; any one match counts.
+# Sources: amazon.jobs SDE II postings (RBS Tech 2870705, EKS 10421065, Offers
+# Platform 2928690), Google careers Senior SWE (Cloud AI, Infrastructure, Pay
+# Agent Infra), Uber careers Sr Backend (150586, 157384, 153451), Airbnb
+# careers Senior Backend (App Foundation 7717198, Community Support 8017556).
+company_jds = {
+    "Amazon SDE II": [
+        ["software development"], ["design"], ["architecture", "architected"],
+        ["reliability", "reliable"], ["scaling", "scalable", "scaled", "scalability"],
+        ["distributed systems"], ["data structures"], ["algorithms"],
+        ["microservices"], ["high-performance", "performance"],
+        ["testing", "test coverage", "pytest", "unit testing"],
+        ["operations", "operating", "production"],
+        ["aws"], ["dynamodb", "nosql", "mongodb", "cassandra"], ["elasticsearch"],
+        ["machine learning", "ai", "llm"], ["python", "go", "java", "c++"],
+    ],
+    "Google Senior SWE": [
+        ["software development"], ["python"], ["go "], ["data structures"],
+        ["algorithms"], ["software design", "system design"],
+        ["architecture", "architected"], ["large-scale", "scale", "scalable"],
+        ["distributed systems"], ["launching", "launched", "shipped", "delivered", "built"],
+        ["testing", "test coverage", "unit testing"],
+        ["technical leadership", "led ", "leading"],
+        ["agentic ai", "ai agents", "agentic", "llm agents"],
+        ["debugging", "debug", "triage", "incident"],
+    ],
+    "Uber Senior Backend": [
+        ["go ", "golang"], ["python"], ["rest"], ["grpc"],
+        ["event-driven"], ["ci/cd"], ["docker"], ["kubernetes"],
+        ["distributed systems"], ["reliability"], ["idempotency", "idempotent"],
+        ["retries", "retry"], ["postgres", "postgresql"], ["mysql"], ["redis"],
+        ["schema"], ["kafka"], ["cassandra"], ["microservices"],
+        ["caching", "cache", "semantic caching"],
+        ["observability", "monitoring", "grafana", "new relic"],
+        ["gcp", "aws"], ["backend"], ["apis"],
+    ],
+    "Airbnb Senior Backend": [
+        ["backend"], ["distributed"], ["databases", "database", "postgresql", "mysql"],
+        ["cloud", "gcp", "aws"], ["asynchronous", "async"],
+        ["high-throughput", "high-concurrency", "throughput"],
+        ["rag"], ["llm"], ["agent"], ["apis", "api"],
+        ["data models", "data model", "schema"],
+        ["testing", "test coverage"], ["performance"],
+        ["reliability"], ["scalable", "scaling", "scale"],
+        ["python", "java", "kotlin", "ruby"],
+    ],
+}
+for company, kw_groups in company_jds.items():
+    got_kw = [g[0] for g in kw_groups if any(s in low for s in g)]
+    miss_kw = [g[0] for g in kw_groups if not any(s in low for s in g)]
+    c = len(got_kw) / len(kw_groups)
+    check(f"{company} JD coverage >= 80%", 5, c >= 0.8,
+          f"{c:.0%} ({len(got_kw)}/{len(kw_groups)}); missing: {miss_kw}")
 
 # ---------- 6. Bullet quality ----------
 bullets = [ln.strip() for ln in norm.splitlines() if ln.strip().startswith("\u2022")]

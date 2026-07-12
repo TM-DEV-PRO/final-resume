@@ -9,19 +9,19 @@
 
 ## 1. Elevator pitch (30 seconds)
 
-"I build the AI and data backbone of an agentic retail assortment planner — the agentic rebuild of our AssortSmart product. Right now I'm shipping the store-clustering copilot: the planner states *what to cluster and for when*, a dedicated agent handles store scoping, attribute selection, and a 20-to-100-configuration exploration, with evidence packs and three human approval gates. It's spec'd against measured baselines — 8.5% run failures, one configuration tried per plan, zero reproducibility — with targets of under an hour to a finalized plan and sub-500 ms agent data probes. Alongside the agent tier I build the Go services for the non-agentic surface (plan lifecycle, reference data, bulk saves), and the data spine: ClickHouse as the unified transactional-plus-analytical planning store — made safe by an insert-only versioned write model I designed and proved in a PoC — fed by an ingestion pipeline from BigQuery, which stays the historical source of truth."
+"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. The shift we're building: AI agents draft the plan — store clusters, assortment scenarios — and planners review, override, and approve, instead of configuring everything by hand. I own the store-clustering module: the agent selects clustering features by statistical significance, optimizes cluster count with silhouette scoring, and presents 3 to 5 distinct ranked scenarios with plain-English rationale for planner approval — turnaround goes from days to under an hour. Alongside that I build the Go services for plan lifecycle and bulk saves, and the data layer: ClickHouse with an append-only versioned write model where every planner override is an insert — which gives us version diff, undo/redo, and an immutable audit trail for free — plus the pivot-grid serving layer with sub-500 ms rollups and 80 ms optimistic cell edits."
 
 ## 2. The resume project (one block: Agentic AssortSmart)
 
-The resume shows **one project** under Impact Analytics with five bullets. Each maps to playbook material:
+The resume shows **one project** under Impact Analytics with five bullets. Sources: the **Agentic Store Clustering HLR v1.1**, the **Planning Platform Architecture v5 deck**, and the **Hindsight Module FRD** (copies in `../source_docs/`), plus the playbook.
 
-| Resume bullet | What it covers | Playbook sections |
+| Resume bullet | What it covers | Where the defense lives |
 |---|---|---|
-| Multi-agent planning system (0.54→0.99) | Router→decomposer→validated DAG→specialist agents | §2 A1–A4, §3 |
-| Store-clustering copilot (gates, <1 h, <2%) | Intent-first workflow, deterministic grounding, reproducibility/pins | §2 C1, C3–C5, §9 |
-| Go (Gin) microservices | The non-agentic service surface you build (see §3b below) | **§10** |
-| ClickHouse unified planning store | Insert-only versioned write model, zero mutation backlog | §2 D2, §4, **§10** |
-| BigQuery→ClickHouse ingestion pipeline | The data lane feeding the store + agent read plane (p95 <500 ms target) | §2 C2, §9 |
+| Platform intro (agents draft, planners approve) | What AssortSmart does for retailers and why the agentic rebuild exists | §3d below; Architecture deck slides 1–2 |
+| Agentic store clustering module (3–5 scenarios, <1 h) | Autonomous feature selection, k optimization, multi-scenario compare, approval gating | §3d below; HLR-AG-001…006, HLR-SC-001…004 |
+| Go (Gin) microservices | The non-agentic service surface you build | §3b below; playbook **§10** |
+| ClickHouse append-only versioned store | Every override is an insert; version diff / undo-redo / audit trail | playbook §2 D2, §4, **§10** |
+| Pivot grid serving layer + per-tenant config in PostgreSQL | <500 ms rollup/drill-down, <80 ms optimistic edits, config-driven tenant onboarding | §3e below; Architecture deck ARCH-06, NFR-01, ENG-01 |
 
 ## 3. The stack story you must tell in order (July 2026 direction)
 
@@ -48,7 +48,28 @@ The resume says: *"Building Go (Gin) microservices for plan lifecycle, reference
 - **Testing** — table-driven tests, `httptest` for handlers, interface-mocked repositories; `golangci-lint` in CI.
 - **Why Go here (say it like a Go dev):** "This tier is straightforward request/response work at volume — bind, validate, authorize, fan out I/O, return. Goroutines give me cheap per-request concurrency without an async framework, the binary deploys as a single static artifact, and the code stays boring enough that anyone on the team can touch it."
 
-## 3c. The BigQuery→ClickHouse ingestion pipeline (defend the pipeline bullet)
+## 3d. The clustering module — defend the scenarios bullet (HLR v1.1)
+
+**What the product does (say this first, plainly):** AssortSmart is how a retail chain decides, months before a season, what products go into which stores and in what depth. Step one is always **store clustering** — grouping hundreds of stores into a handful of clusters that shop alike, so the assortment can differ per cluster instead of being one-size-fits-all. Today that clustering is manual: a planner picks KPIs off a significance table, sets a cluster-count range, runs once, takes what they get. The agentic module inverts it:
+
+- **Autonomous feature selection (HLR-AG-001):** the agent picks the feature set and weights per scenario from statistical significance; the significance table becomes a read-only transparency panel, not a manual picker. The manual path stays available as a legacy option per client.
+- **Autonomous k optimization (HLR-AG-002):** elbow method + silhouette scoring pick the cluster count per scenario; client-configured min/max bounds remain as guardrails the agent cannot exceed; all tested k values and scores are visible to the planner.
+- **Multi-scenario comparison (HLR-AG-003, HLR-SC-001):** instead of one result, the agent presents **3–5 distinct ranked scenarios** (cap is a hard constraint; distinctness is mandatory; a baseline scenario mimicking the client's legacy configuration is always included), each with a composite score, cluster composition, and a plain-English narrative.
+- **Approval gating (HLR-AG-004…006):** nothing finalizes without planner approval; outlier stores are surfaced and handled explicitly; clustering scope can be submitted in parallel across categories.
+- **The turnaround claim (<1 h from days):** comes from the copilot FRD baseline work — measured 8.5% run failures and one configuration tried per plan in the legacy flow. The agent explores many configurations internally but *presents* 3–5 (that's the HLR constraint — don't confuse the two numbers).
+- **Child cluster cap (HLR-SC-004):** default 10, configurable per client.
+
+## 3e. The pivot grid serving layer + tenant config (defend the grid bullet)
+
+From the Planning Platform Architecture deck (ARCH-06, NFR-01, GRID-*):
+
+- **What it is:** planners work in a pivot grid — product hierarchy × store/cluster × week — where every cell holds two values: the agent's recommendation (read-only) and the planner's working value (editable). Overrides require a reason, feed the learning loop, and roll up/spread down the hierarchy.
+- **The latency targets (design targets, own them as such):** rollup/drill-down **< 500 ms** because reads hit a pre-aggregated cube layer, never the transactional store; cell edits feel instant (**< 80 ms**) because writes go to a per-user view store first and cube invalidation + DB commit happen async ("optimistic write-back"). Stale-data warnings compare source commit timestamps against the view's saved-at.
+- **Where ClickHouse fits:** the append-only versioned planning store is what makes the grid's version diff, undo/redo (50-deep stack), scenario copies (up to 5 per plan), and immutable audit trail cheap — every override is an insert with a version, never a mutation.
+- **Per-tenant configuration in PostgreSQL:** which planning stages a retailer runs, stage sequence and skip rules, approval thresholds, metric catalogs, hierarchy names/levels — all tenant config, not code. Config edits deploy by config sync in minutes with schema validation, no code deployment (deck ENG-01; Hindsight FRD FR-1.3: tenant onboarding config applies without deployment). That is what "onboards retailers without code deployment" means.
+- **The fixed-core principle (great senior talking point):** planning algorithms are Layer 1 — universal, never forked per retailer. Retailer differences live in Layer 2 config and Layer 3 isolated extension containers. A retailer requirement that would change core science becomes a platform roadmap item, never a fork.
+
+## 3c. The BigQuery→ClickHouse ingestion pipeline (background — NOT a resume bullet anymore)
 
 Be precise about what the BigQuery relationship is: **we don't build in BigQuery — it's the upstream historical source of truth, and I own the lane that ingests from it into ClickHouse.**
 
@@ -94,15 +115,15 @@ Be precise about what the BigQuery relationship is: **we don't build in BigQuery
 
 | Bullet | Claim tier | Defense |
 |---|---|---|
-| Multi-agent DAG, 0.54→0.99 | **EVAL** (offline, 12 gold queries) — say "offline evaluation harness" | Playbook §2 A1, §3 |
-| Copilot targets (<1 h, <2% failures) | **FRD targets** vs **measured baselines** (8.5% = 37/437 runs; 1 config/plan; 0% reproducible) | Playbook §2 C1, §9 |
+| Platform intro (agents draft, planners approve) | Product description — safe, no metric to defend | §3d; Architecture deck slides 1–2 |
+| Clustering module: significance-based features, silhouette k, 3–5 ranked scenarios | **HLR-committed behavior** (v1.1, in build) — say "the module in build, spec'd in our HLR" | §3d; HLR-AG-001/002/003, HLR-SC-001 |
+| Clustering turnaround: days → <1 h | **Design target** vs **measured baseline** (8.5% = 37/437 runs; 1 config/plan in legacy flow) | Playbook §2 C1, §9 |
 | Go (Gin) microservices | Current build work — describe the concrete service shape | §3b above, Playbook §10 |
-| ClickHouse unified store, zero mutation backlog | **Verified PoC property** (latency ms are mock; the zero-mutation property is real) | Playbook §2 D2, §4, §10 |
-| BQ→CH ingestion pipeline, p95 <500 ms probes | Pipeline is the real work; p95 is a **design target** — say "design target we're building against" | §3c above, Playbook §2 C2 |
-| Deterministic grounding, 80%+ of failures were input errors | Baseline **measured**, mechanism designed | Playbook §2 C3 |
-| 100% reproducible via config documents + pins | Design-you-own + spec'd acceptance criteria | Playbook §2 C4 |
+| ClickHouse append-only versioned store | **Verified PoC property** (latency ms are mock; the zero-mutation property is real) | Playbook §2 D2, §4, §10 |
+| Pivot grid p95 <500 ms / edits <80 ms | **Architecture design targets** (NFR-01) — say "the targets the architecture is engineered to" | §3e; deck NFR-01 |
+| Per-tenant config in PostgreSQL, no code deployment | Committed architecture (config vs extension vs core) | §3e; deck ENG-01, Hindsight FR-1.3 |
 
-> **Dropped from the resume on purpose:** the BigQuery 280× cost-program claim (that was an org audit finding, not your delivery — keep it as *context* you can cite about the platform's history, never as "I did") and Rust (escape-hatch option only). If an interviewer asks about BigQuery, your line is: "BigQuery is our upstream historical source of truth; my work is the ingestion lane from it into ClickHouse and the freshness/reconciliation guarantees on that lane."
+> **Dropped from the resume on purpose:** the BigQuery 280× cost-program claim (org audit finding, not your delivery — context only, never "I did"); the BQ→CH ingestion pipeline bullet (you can still describe the data lane as background, §3c); the "multi-agent system with 5 domain agents / 0.54→0.99" bullet (offline-eval work from the decomposition study — keep as a story about evaluation discipline, not a resume claim); and Rust (escape-hatch option only). If asked about BigQuery: "BigQuery is our upstream historical source of truth; data is ingested from it into ClickHouse through a pipeline."
 
 ## 6. Five questions you will definitely get
 

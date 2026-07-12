@@ -14,15 +14,15 @@
 \end{tabularx}
 \vspace{0.1ex}
 
-\textcolor{Project}{\textbf{Agentic AssortSmart (Multi-Agent Merchandise Planning Platform)}}
+\textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Architected a \textbf{multi-agent planning system with 5 domain agents} that converts natural-language questions into validated execution DAGs, improving plan correctness from \textbf{0.54 to 0.99} in offline evaluation.
-    \item Designed an \textbf{agentic store-clustering copilot} with three human approval gates, cutting plan finalization time from days to \textbf{under 1 hour} and run failures from \textbf{8.5\% to under 2\%}.
-    \item Building \textbf{Go (Gin) microservices} for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context-based timeouts.
-    \item Led adoption of \textbf{ClickHouse as the unified transactional and analytical planning store}, designing an insert-only versioned write model that powers overrides, version diff, and undo/redo with zero mutation backlog.
-    \item Built the \textbf{BigQuery to ClickHouse ingestion pipeline} with nightly precompute and reconciliation, serving agent probes at \textbf{p95 under 500ms}.
-    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, BigQuery, PostgreSQL, pgvector, Redis, Kafka, GCP.
+    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where enterprise retailers decide what to buy, how much, and for which stores; AI agents draft store clusters and plans that planners review, override, and approve.
+    \item Developing the \textbf{agentic store clustering module (Python, FastAPI, LangGraph)} that selects features by statistical significance, optimizes cluster count via silhouette scoring, and generates \textbf{3 to 5 ranked scenarios} for planner approval, cutting turnaround from days to \textbf{under 1 hour}.
+    \item Building \textbf{Go (Gin) microservices} for plan lifecycle, reference data, and bulk save APIs, with JWT auth and validation middleware, goroutine worker pools for concurrent writes, and context based timeouts.
+    \item Led adoption of \textbf{ClickHouse} as the planning store with an append only versioned write model where every planner override is an insert, powering version diff, undo/redo, and an immutable audit trail.
+    \item Designing the \textbf{pivot grid serving layer} for rollup and drill down across product, store, and week hierarchies at \textbf{p95 under 500ms} with optimistic cell edits under \textbf{80ms}; per tenant configuration in \textbf{PostgreSQL} onboards retailers without code deployment.
+    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -48,7 +48,7 @@
 \textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding time from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
+    \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
     \item Built an AI extraction pipeline with \textbf{RAG and Gemini 2.5 Pro} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
     \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools; added ingestion health analytics on \textbf{Apache Pinot}.
     \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
@@ -67,8 +67,8 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Led the migration from a monolithic PHP (Laravel) application to asynchronous \textbf{Python (FastAPI) microservices}, cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
-    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with chunked async workers.
+    \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Python (FastAPI) microservices}, cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
+    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with chunked async workers and idempotent retries.
     \item Set up centralized \textbf{ELK logging and New Relic monitoring}, speeding up incident triage by 70\%; raised test coverage from \textbf{35\% to 82\%}.
     \item Implemented \textbf{encryption, RBAC, JWT auth, and audit logging} for financial compliance data.
     \item \textbf{Tech Used}: Python, FastAPI, PostgreSQL, Redis, Celery, Docker, ELK, New Relic, AWS.
