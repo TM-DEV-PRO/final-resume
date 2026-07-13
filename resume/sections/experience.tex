@@ -18,9 +18,9 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores, with AI agents drafting store clusters and plans for planner review, override, and approval.
-    \item Developing the \textbf{Agentic Microservice (FastAPI, LangGraph)} for agentic workflows, where the clustering agent selects features by significance, optimizes cluster count via silhouette scoring, and generates \textbf{3-5 ranked scenarios}, cutting turnaround from days to \textbf{under 1 hour}.
-    \item Building the core backend as \textbf{Go (Gin) microservices} exposing REST APIs for plan lifecycle, tenant configuration, and bulk saves, with JWT auth middleware, goroutine worker pools for concurrent writes, and context based timeouts.
-    \item Led adoption of \textbf{ClickHouse} as the planning store with an append only versioned write model where every planner override is an insert, powering version diff, undo/redo, and an immutable audit trail.
+    \item Developing the \textbf{agentic microservice (FastAPI, LangGraph)} whose conversational agent grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, cutting turnaround from days to \textbf{under 1 hour}.
+    \item Designing the core backend as \textbf{Go (Gin) microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs, with goroutine worker pools and bounded channels for concurrent writes, context based timeouts, and JWT auth middleware.
+    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model} where facts land as atomic partition swaps and every decision is an insert resolved via latest state views, enabling version diff, undo/redo, lock free writes, and a full audit trail.
     % \item Designing the backend for the \textbf{planning grid, an Excel like pivot surface} where planners edit plans across product, store, and week hierarchies, serving rollups and drill downs from pre aggregated \textbf{ClickHouse} data at \textbf{p95 under 500ms} and cell edits under \textbf{80ms} via async write back.
     \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
@@ -67,7 +67,7 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Python (FastAPI) microservices}, cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
+    \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Python (FastAPI) microservices}, mentoring junior engineers through the rollout and cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
     \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with async workers and idempotent retries.
     \item Set up centralized \textbf{ELK logging and New Relic monitoring with alerting}, cutting incident triage time by 70\%, and raised test coverage from \textbf{35\% to 82\%} with pytest automated tests gating CI/CD releases.
     % \item Implemented \textbf{encryption, RBAC, JWT auth, and audit logging} for financial compliance data.

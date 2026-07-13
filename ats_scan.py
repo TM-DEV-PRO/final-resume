@@ -115,6 +115,20 @@ company_jds = {
         ["incident"], ["monitoring"], ["alerting", "alert"],
         ["reliability"], ["scalability", "scalable"], ["tooling", "tools", "automation", "automated"],
     ],
+    # Amazon Sr. SDE basic+preferred quals (jobs 10378053, 3182977, 3009042,
+    # 2884596, 10426956 - checked Jul 13, 2026): 5+ yrs dev, 5+ yrs one language,
+    # 5+ yrs leading design/architecture (reliability & scaling), mentor/tech
+    # lead, full SDLC (reviews, build, testing, operations), large-scale
+    # distributed systems, high-volume transactions, AWS, DS&A, bachelor's.
+    "Amazon Senior SDE (basic+preferred quals)": [
+        ["5 years"], ["python"], ["go "],
+        ["led the design", "led the migration", "led adoption", "leading design", "architected", "architecture"],
+        ["reliability"], ["scaling", "scalable", "scaled"], ["mentor"],
+        ["testing", "test coverage", "pytest"], ["ci/cd"],
+        ["operations", "monitoring", "observability"],
+        ["distributed systems"], ["transactions", "high-volume"],
+        ["aws"], ["data structures"], ["algorithms"], ["b.tech", "bachelor"],
+    ],
     "Airbnb Reliability Experience 8026735": [
         ["internal infrastructure", "infrastructure", "platform"],
         ["observability"], ["grafana"], ["python"],
