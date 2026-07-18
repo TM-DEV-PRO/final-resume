@@ -35,7 +35,7 @@ Oracle HFM  ~19M raw → ~300K aggregated
 
 ## 3. Hibernate / JPA migration bullet
 
-Resume: *"Migrated raw JDBC access to Spring Data JPA / Hibernate, fixing a latent column-aliasing bug and raising changed-module test coverage to 100%."*
+Resume: *"Refactored brittle raw SQL data access to Spring Data JPA / Hibernate, fixing a latent column-aliasing bug and raising changed-module test coverage to 100%."*
 
 - **Before:** hand-written SQL with brittle column aliases; rename/refactor bugs invisible until runtime (same failure mode as the live SQLAlchemy migration — do not invent a JDBC-only history).
 - **After:** typed entities + `JpaRepository` / custom `@Query`; JPQL/Criteria for dynamic filters; the aliasing bug surfaced during mapping and was fixed with explicit `@Column` names.

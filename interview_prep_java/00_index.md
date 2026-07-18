@@ -2,12 +2,12 @@
 
 **Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026**
 
-This hub backs every line of `resume_java/resume.tex` (PDF: `output/Tarun_Mittal_SSE_Java_5yr.pdf`). It is a **separate track** from the Python/Go prep in `interview_prep/` — same projects, metrics, and companies; **tech stack reframed to Java / Spring / Hibernate / J2EE**.
+This hub backs every line of `resume_java/resume.tex` (PDF: `output/Tarun_Mittal_SSE_Java_5yr.pdf`). It is a **separate track** from the Python/Go prep in `interview_prep/` — same projects, metrics, and companies; **non-agentic APIs framed in Spring Boot / Hibernate where defensible; AI/RAG + Menu streaming stay Python**.
 
 Study order:
 
 1. **Project deep dives** — one chapter per resume project (Impact → Uber FRM → Uber Menu → Masters India → GFG).
-2. **Tech deep dives** — Java, Spring Boot, Hibernate/JPA, Spring Security, Spring Batch/WebFlux, Kafka/Flink/Spark/Pinot, cloud.
+2. **Tech deep dives** — Java, Spring Boot, Hibernate/JPA, Spring Security, Spring Batch, Kafka/Flink/Spark/Pinot, Python agents, cloud.
 3. **Behavioral bank** — same STAR stories as the main track (outcomes don't change); stack references swapped to Java where needed.
 4. **Role targeting** — Java/Spring senior SWE listings and rapid-fire defense.
 

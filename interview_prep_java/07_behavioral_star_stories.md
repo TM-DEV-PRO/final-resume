@@ -11,7 +11,7 @@ Outcomes, leadership signals, and story structure are **identical** to `intervie
 | 5. Constants-refactor regression | Owning mistakes | JUnit gate; "tests that would have caught it" |
 | 6. Coverage-gap fix | Test where code lives | JUnit/Mockito; CI coverage on changed modules |
 | 7. ORM-vs-repository | Disagree & commit | Hibernate/JPA repository boundaries vs raw SQL |
-| 8. Masters India migration | Deadline pressure, p95 | Spring Boot/WebFlux strangler; Spring Batch bulk path |
+| 8. Masters India migration | Deadline pressure, p95 | Spring Boot strangler; Spring Batch bulk path |
 | 9. Anti-bot arms race | Persistence | Same; Selenium + proxy pools |
 | 10. Double-filing / idempotency | Earn trust | Idempotency keys in Batch writers / DB constraints |
 
