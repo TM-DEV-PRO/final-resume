@@ -10,7 +10,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). The original `
 |---|---|---|
 | IA turnaround claim | “cutting … under 1 hour” | “**targeting** … under 1 hour” (FRD design target) |
 | ClickHouse writes | “lock free writes” | “concurrent writes **without lock contention**” |
-| Languages | + Rust, C, C++ | Python, Go, Java, SQL only |
+| Languages | + Rust, C, C++, Java | Python, Go, SQL only |
 | Backend skills | + gRPC | Dropped gRPC (not on any Tech Used line) |
 | AI skills | + ChromaDB, semantic caching | Kept LangGraph/LangChain/MCP/RAG/text-to-SQL/pgvector |
 | Streaming/data | + DuckDB | Dropped DuckDB (ClickHouse end-to-end direction) |

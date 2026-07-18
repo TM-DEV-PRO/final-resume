@@ -2,7 +2,7 @@
 
 | Removed / demoted | Why | If interviewer asks anyway |
 |---|---|---|
-| Rust, C, C++ | Not on Tech Used; Rust is escape-hatch only per playbook | “Familiar / adjacent; Go is the shipped non-agentic tier” |
+| Rust, C, C++, Java | Not on Tech Used for this Python/Go track | “Go + Python are the shipped tiers on this resume” |
 | gRPC | Not evidenced on project lines | “Would use for service-to-service binary contracts; REST is what we shipped” |
 | DuckDB | Superseded by ClickHouse end-to-end (Jul 2026) | “Earlier pivot-accelerator idea; current store is ClickHouse” |
 | MongoDB, Cassandra, Elasticsearch | Never on Tech Used | “General familiarity, not ownership claims on this resume” |
