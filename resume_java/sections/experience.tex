@@ -1,0 +1,88 @@
+%============================================================================%
+%  COLUMN & LIST DEFINITIONS
+%============================================================================%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+%====================
+% EXPERIENCE A — IMPACT ANALYTICS
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{June 2026 -- Present}\\
+\end{tabularx}
+\vspace{-2ex}
+
+\textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores, with AI agents drafting store clusters and plans for planner review, override, and approval.
+    \item Developing the \textbf{agentic microservice (Spring Boot, Spring AI)} whose conversational agent grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, cutting turnaround from days to \textbf{under 1 hour}.
+    \item Designing the core backend as \textbf{Spring Boot microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs, with worker pools for concurrent writes, timeouts, and JWT auth via \textbf{Spring Security}.
+    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model} where facts land as atomic partition swaps and every decision is an insert resolved via latest state views, enabling version diff, undo/redo, lock free writes, and a full audit trail.
+    \item \textbf{Tech Used}: Java, Spring Boot, Spring AI, LangChain4j, Hibernate, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
+\end{zitemize}
+
+%====================
+% EXPERIENCE B — UBER
+%====================
+\vspace{0.5ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
+\end{tabularx}
+\vspace{-2ex}
+
+\textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} by replacing a manual Google Sheets workflow with a Spring Boot and MySQL platform serving \textbf{36 REST endpoints across 8 screens}, with output feeding PwC audit work papers.
+    \item Designed an \textbf{8-table normalized MySQL schema} whose quarterly ETL aggregates \textbf{19M+ general-ledger rows into 300K rows}, reconciled against public 10-Q filings.
+    \item Migrated raw JDBC access to \textbf{Spring Data JPA / Hibernate}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
+    \item \textbf{Tech Used}: Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, Redis, Maven, JUnit.
+\end{zitemize}
+\vspace{0.3ex}
+
+\textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
+    \item Built an AI extraction pipeline with \textbf{RAG and Gemini} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
+    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools, and built ingestion health dashboards on \textbf{Apache Pinot}.
+    \item \textbf{Tech Used}: Java, Spring Boot, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
+\end{zitemize}
+
+%====================
+% EXPERIENCE C — MASTERS INDIA
+%====================
+\vspace{0.5ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
+\end{tabularx}
+\vspace{-2ex}
+
+\textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Java (Spring Boot / WebFlux) microservices}, mentoring junior engineers through the rollout and cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
+    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with Spring Batch workers and idempotent retries.
+    \item Set up centralized \textbf{ELK logging and New Relic monitoring with alerting}, cutting incident triage time by 70\%, and raised test coverage from \textbf{35\% to 82\%} with JUnit automated tests gating CI/CD releases.
+    \item \textbf{Tech Used}: Java, Spring Boot, Spring WebFlux, Hibernate, PostgreSQL, Redis, Spring Batch, Docker, ELK, New Relic, AWS.
+\end{zitemize}
+
+%====================
+% EXPERIENCE D — GEEKSFORGEEKS
+%====================
+\vspace{0.5ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
+\end{tabularx}
+\vspace{-3ex}
+\begin{zitemize}
+    \item Redesigned and migrated the backend from PHP to \textbf{Spring Boot (Java)}, improving reliability for \textbf{100,000+ daily queries}.
+    \item Designed data models and REST APIs for voting and pinning features, increasing \textbf{premium subscription sales by 15 to 20\%}.
+    \item \textbf{Tech Used}: Java, Spring Boot, Spring MVC, Hibernate, MySQL, Redis, REST, Cron, AWS.
+\end{zitemize}
