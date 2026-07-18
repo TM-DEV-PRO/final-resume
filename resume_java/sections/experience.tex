@@ -21,7 +21,7 @@
     \item Developing the \textbf{agentic microservice (Python, FastAPI, LangGraph)} whose conversational agent grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, cutting turnaround from days to \textbf{under 1 hour}.
     \item Designing the core backend as \textbf{Spring Boot (Java) microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs, with worker pools for concurrent writes, timeouts, and JWT auth via \textbf{Spring Security}.
     \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model} where facts land as atomic partition swaps and every decision is an insert resolved via latest state views, enabling version diff, undo/redo, lock free writes, and a full audit trail.
-    \item \textbf{Tech Used}: Java, Spring Boot, Hibernate, Python, FastAPI, LangGraph, MCP, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
+    \item \textbf{Tech Used}: Java, Spring Boot, Spring Security, Python, FastAPI, LangGraph, MCP, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -39,8 +39,8 @@
 \begin{zitemize}
     \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} by replacing a manual Google Sheets workflow with a Spring Boot and MySQL platform serving \textbf{36 REST endpoints across 8 screens}, with output feeding PwC audit work papers.
     \item Designed an \textbf{8-table normalized MySQL schema} whose quarterly ETL aggregates \textbf{19M+ general-ledger rows into 300K rows}, reconciled against public 10-Q filings.
-    \item Migrated raw JDBC access to \textbf{Spring Data JPA / Hibernate}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
-    \item \textbf{Tech Used}: Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, Redis, Maven, JUnit.
+    \item Refactored brittle raw SQL data access to \textbf{Spring Data JPA / Hibernate}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
+    \item \textbf{Tech Used}: Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, Redis, Bazel, JUnit.
 \end{zitemize}
 \vspace{0.3ex}
 
@@ -48,9 +48,9 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
-    \item Built an AI extraction pipeline with \textbf{RAG and Gemini} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
+    \item Built a \textbf{Python} AI extraction pipeline with \textbf{RAG and Gemini} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
     \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools, and built ingestion health dashboards on \textbf{Apache Pinot}.
-    \item \textbf{Tech Used}: Java, Spring Boot, Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
+    \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -66,10 +66,10 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Led the migration from a PHP (Laravel) monolith to asynchronous \textbf{Java (Spring Boot / WebFlux) microservices}, mentoring junior engineers through the rollout and cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
+    \item Led the migration from a PHP (Laravel) monolith to \textbf{Java Spring Boot microservices}, mentoring junior engineers through the rollout and cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
     \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with Spring Batch workers and idempotent retries.
     \item Set up centralized \textbf{ELK logging and New Relic monitoring with alerting}, cutting incident triage time by 70\%, and raised test coverage from \textbf{35\% to 82\%} with JUnit automated tests gating CI/CD releases.
-    \item \textbf{Tech Used}: Java, Spring Boot, Spring WebFlux, Hibernate, PostgreSQL, Redis, Spring Batch, Docker, ELK, New Relic, AWS.
+    \item \textbf{Tech Used}: Java, Spring Boot, Hibernate, PostgreSQL, Redis, Spring Batch, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
 %====================

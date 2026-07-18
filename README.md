@@ -57,5 +57,5 @@ Upload `output/Tarun_Mittal_Resume_Overleaf.zip` → New Project → Upload Proj
 - Structure: company → project → bullets, with a **Tech Used** line per project.
 - One page, ATS-safe (single column, standard headings, no images/tables in content).
 - **Python/Go track:** stack reflects the July 2026 direction: Python (agents) · Go/Gin (non-agentic) · ClickHouse end-to-end. (Rust stays in prep, not on the resume.)
-- **Java track (`resume_java/`):** same projects/metrics; primary stack Java · Spring Boot · Hibernate/JPA · Spring Security/Batch/WebFlux for non-agentic APIs; **AI/agentic tier stays Python** (FastAPI, LangGraph, LangChain, MCP); cloud + Kafka/Flink/Spark/Pinot/ClickHouse unchanged.
+- **Java track (`resume_java/`):** same projects/metrics; Spring Boot/Hibernate/JPA for non-agentic API framing; **AI/agentic + Menu RAG stay Python**; Menu streaming stack unchanged (no Spring claim); cloud + Kafka/Flink/Spark/Pinot/ClickHouse unchanged. Avoid WebFlux/J2EE keyword padding.
 - `ats_scan.py` audits the compiled PDF against an ATS rubric; rerun after any edit.

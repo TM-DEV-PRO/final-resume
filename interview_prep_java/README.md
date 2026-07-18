@@ -1,6 +1,6 @@
 # Java / Spring track — README
 
-Separate **Senior Software Engineer** resume and interview prep for **Java / Spring / Hibernate / J2EE** roles. Same companies, projects, and metrics as the main Python/Go track; tech stack swapped.
+Separate **Senior Software Engineer** resume and interview prep for **Java / Spring / Hibernate** roles. Same companies, projects, and metrics as the main Python/Go track; non-agentic APIs framed in Spring where defensible; AI/RAG and Menu streaming stay Python.
 
 ## Layout
 
@@ -33,6 +33,7 @@ Or upload `output/Tarun_Mittal_Resume_Java_Overleaf.zip` to Overleaf (main file 
 ## Stack on this resume
 
 - **Languages lead:** Java  
-- **Backend:** Spring Boot, Spring MVC/WebFlux, Spring Security, Spring Data JPA, Hibernate, Jakarta EE (J2EE), Spring Batch  
-- **AI:** Python — FastAPI, LangGraph, LangChain, MCP, RAG (agentic tier only; core APIs are Java/Spring)  
-- **Unchanged:** Kafka, Flink, Spark, Pinot, ClickHouse, Postgres/MySQL/Redis, GCP/AWS, Docker/K8s, observability
+- **Backend:** Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, Spring Batch  
+- **AI:** Python — FastAPI, LangGraph, LangChain, MCP, RAG (agentic + menu RAG; not Spring AI)  
+- **Unchanged streaming:** Kafka, Flink, Spark, Pinot (Menu tech line stays Python + streaming — no Spring claim)  
+- **Data/cloud:** ClickHouse, Postgres/MySQL/Redis, GCP/AWS, Docker/K8s, observability

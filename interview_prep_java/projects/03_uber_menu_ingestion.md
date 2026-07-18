@@ -1,9 +1,9 @@
 # Uber (via EPAM) — Menu Ingestion Platform (Java / Spring track)
 
 **Role:** Software Development Engineer 2 · July 2024 – May 2026 · Bangalore  
-**Resume tech:** Java, Spring Boot, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker
+**Resume tech:** Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker
 
-> Same pipeline and metrics as `interview_prep/projects/03_uber_menu_ingestion.md`. Application services in Java/Spring; streaming engines unchanged (Kafka/Flink/Spark/Pinot).
+> Same pipeline and metrics as `interview_prep/projects/03_uber_menu_ingestion.md`. **No Spring claim on this project** — streaming + Python RAG matches the live stack and stays defensible.
 
 ---
 
@@ -20,20 +20,20 @@
    Kafka (ingest bus)
         │
         ├─ Flink job: validate, dedup (keyed state), route structured vs unstructured
-        │     ├─ structured → catalog upsert API (Spring Boot)
-        │     └─ unstructured → RAG + Gemini extract → schema-validated catalog
+        │     ├─ structured → catalog upsert API
+        │     └─ unstructured → Python RAG + Gemini extract → schema-validated catalog
         │
         └─ Spark: backfills / reprocessing
         │
    Pinot ← ingestion-health events → real-time ops dashboards + alerts
 ```
 
-## 3. Java / Spring pieces you own in the story
+## 3. What you own in the story
 
-- **Catalog upsert / control-plane APIs** — Spring Boot services consuming validated payloads (Kafka listeners via `spring-kafka` where applicable, or Flink sinks calling internal APIs).
-- **Schema validation** — Jackson + Bean Validation (or Avro/Protobuf contracts on the bus).
-- **RAG extraction orchestration** — Python service calling Gemini; chunk → retrieve → generate → validate against menu schema; 98% fidelity claim is offline/eval-backed — say so. Control plane / catalog APIs remain Java/Spring.
-- **Anti-bot layer** — same engineering story (IP rotation, proxy pools → +95% successful ingestions); implementation language secondary to the control loop.
+- **Streaming path** — Kafka bus, Flink normalize/dedup/route, Spark backfills, Pinot health dashboards (defend these deeply).
+- **RAG extraction** — Python service calling Gemini; chunk → retrieve → generate → validate against menu schema; 98% fidelity is offline/eval-backed — say so.
+- **Anti-bot layer** — IP rotation, proxy pools → +95% successful ingestions.
+- **Do not invent:** a Spring Boot catalog service on this resume line unless you add a real bullet for it.
 
 ## 4. Streaming defense (must be deep)
 
@@ -46,5 +46,5 @@ Interviewers will probe Kafka/Flink/Spark/Pinot more than Spring here. Use the s
 
 ## 5. Q&A
 
-- **"Why Flink not Spring Cloud Stream alone?"** Need true streaming state (dedup, event-time LWW). Spring is great for API/control; Flink is the stream engine.
+- **"Why Flink not a Spring consumer alone?"** Need true streaming state (dedup, event-time LWW). Flink is the stream engine; don't claim Spring Cloud Stream as a substitute on this project.
 - **"$600K — how?"** Onboarding-hours saved × ops cost at 30K menus/mo — finance-owned model; know the arithmetic before quoting.
