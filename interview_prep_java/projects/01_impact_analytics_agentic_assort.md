@@ -1,19 +1,19 @@
 # Impact Analytics — Agentic AssortSmart (Java / Spring track)
 
 **Role:** Senior Software Engineer · June 2026 – Present · Bangalore  
-**Resume header tech:** Java · Spring Boot · Spring AI / LangChain4j · MCP · Hibernate · ClickHouse · PostgreSQL · Redis · Kafka · GCP · Docker
+**Resume header tech:** Java · Spring Boot · Hibernate · Python (FastAPI, LangGraph, MCP) · ClickHouse · PostgreSQL · Redis · Kafka · GCP · Docker
 
-> Same product, metrics, and architecture as `interview_prep/projects/01_impact_analytics_agentic_assort.md` and the agentic playbook. This file is the **Java/Spring telling** for interviews targeting Java backend roles.
+> Same product, metrics, and architecture as `interview_prep/projects/01_impact_analytics_agentic_assort.md` and the agentic playbook. This file is the **Java/Spring telling** for interviews targeting Java backend roles — **agentic / AI tier stays Python**.
 
 ---
 
 ## 1. Elevator pitch (30 seconds)
 
-"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. AI agents draft store clusters and plans; planners review, override, and approve. Architecturally it's one Spring Boot agentic microservice (Spring AI / LangChain4j, MCP) that runs agentic workflows, and a Spring Boot core backend exposing REST APIs for plan lifecycle, reference data, and bulk saves. I own the store-clustering agent: it grounds a plain-language request into hierarchy, season, and store scopes, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for planner approval — turnaround from days to under an hour. Under both sits ClickHouse with an append-only versioned write model — every planner override is an insert — giving version diff, undo/redo, and an immutable audit trail."
+"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. AI agents draft store clusters and plans; planners review, override, and approve. Architecturally it's one Python agentic microservice (FastAPI, LangGraph, MCP) that runs agentic workflows, and a Spring Boot (Java) core backend exposing REST APIs for plan lifecycle, reference data, and bulk saves. I own the store-clustering agent: it grounds a plain-language request into hierarchy, season, and store scopes, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for planner approval — turnaround from days to under an hour. Under both sits ClickHouse with an append-only versioned write model — every planner override is an insert — giving version diff, undo/redo, and an immutable audit trail."
 
 ## 2. Service split (say it exactly)
 
-"One Spring Boot microservice runs all agentic workflows — agents, tools, LLM orchestration via Spring AI / LangChain4j and MCP. The core backend is also Spring Boot: REST controllers for plan lifecycle, tenant config, and bulk saves, secured with Spring Security JWT. The two talk over versioned API contracts. The split is a natural deployment boundary — the agent tier scales with LLM latency; the API tier scales with request volume."
+"One Python microservice (FastAPI, LangGraph, MCP) runs all agentic workflows — agents, tools, LLM orchestration. The core backend is Spring Boot (Java): REST controllers for plan lifecycle, tenant config, and bulk saves, secured with Spring Security JWT. The two talk over versioned API contracts. The split is a natural deployment boundary — the agent tier scales with LLM latency; the API tier scales with request volume."
 
 ## 3. Spring Boot core backend — defend the bullet
 
@@ -30,11 +30,11 @@ Resume: *"Spring Boot microservices covering plan lifecycle, tenant configuratio
 
 Same product behavior as the main playbook (HLR-AG-001…006): autonomous feature selection, k optimization via silhouette, top 3 scenarios with evidence, approval gating, <1 h turnaround.
 
-**Java framing:**
-- Orchestration graph in LangChain4j / Spring AI (nodes = tool calls + LLM steps; state held in a typed conversation/session object).
-- Tools call ClickHouse / Postgres / Redis via Spring beans (repositories), not ad-hoc HTTP from prompts.
-- MCP tools as first-class integrations where the platform exposes them.
-- Streaming progress to the UI via SSE (`SseEmitter` / WebFlux `Flux`).
+**Python framing (unchanged from main track):**
+- Orchestration graph in LangGraph (nodes = tool calls + LLM steps; state in a typed conversation object).
+- Tools call ClickHouse / Postgres / Redis via Python clients / MCP — not ad-hoc SQL from prompts.
+- Streaming progress to the UI via SSE.
+- **Why Python for agents, Java for core:** "LLM tooling, LangGraph, and RAG ecosystems are strongest in Python; the request/response API tier is throughput-shaped Java/Spring the team owns long-term."
 
 ## 5. ClickHouse append-only store
 
@@ -46,11 +46,12 @@ Unchanged from main track: `ReplacingMergeTree(version)`, `argMax` / latest-stat
 
 1. Live audit said "no ClickHouse" for legacy in-place UPDATEs — correct for that write model.
 2. Verdict: objection is write-model, not engine → gated PoC on insert-only semantics.
-3. PoC passed → org committed ClickHouse end-to-end; Spring Boot for API + agent tiers; ClickHouse for planning facts.
+3. PoC passed → org committed ClickHouse end-to-end; Spring Boot for the non-agentic API tier; Python/LangGraph for the agent tier; ClickHouse for planning facts.
 
 ## 7. Q&A (Java-flavored)
 
 - **"Why Spring Boot over Quarkus/Micronaut?"** Team familiarity, Actuator/observability ecosystem, Spring Data + Security maturity; Quarkus wins on cold start for serverless — not our deployment model.
 - **"Hibernate on ClickHouse?"** No — ClickHouse via native JDBC / clickhouse-java client. Hibernate/JPA only on PostgreSQL metadata.
+- **"Why not Spring AI for agents?"** Agent tooling (LangGraph, MCP, RAG) stays Python by design on this resume; Java owns the Spring Boot core APIs.
 - **"Virtual threads?"** Prefer virtual threads for blocking I/O fan-out on Java 21+; keep a bounded platform-thread pool for CPU-bound scoring if needed.
 - **"How do you test?"** JUnit 5 + Mockito for services; `@SpringBootTest` + Testcontainers for Postgres/Redis integration; contract tests on REST with MockMvc / WebTestClient.

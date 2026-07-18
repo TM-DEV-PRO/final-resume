@@ -34,5 +34,5 @@ Or upload `output/Tarun_Mittal_Resume_Java_Overleaf.zip` to Overleaf (main file 
 
 - **Languages lead:** Java  
 - **Backend:** Spring Boot, Spring MVC/WebFlux, Spring Security, Spring Data JPA, Hibernate, Jakarta EE (J2EE), Spring Batch  
-- **AI:** Spring AI, LangChain4j, MCP, RAG  
+- **AI:** Python — FastAPI, LangGraph, LangChain, MCP, RAG (agentic tier only; core APIs are Java/Spring)  
 - **Unchanged:** Kafka, Flink, Spark, Pinot, ClickHouse, Postgres/MySQL/Redis, GCP/AWS, Docker/K8s, observability

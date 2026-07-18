@@ -19,12 +19,12 @@ Study order:
 
 | Original | Java track |
 |---|---|
-| FastAPI / Gin | Spring Boot (MVC / WebFlux) |
+| Gin / non-agentic FastAPI | Spring Boot (MVC / WebFlux) |
 | SQLAlchemy / Pydantic | Hibernate / Spring Data JPA + Bean Validation / Jackson |
 | Django | Spring Boot + Spring MVC |
 | Celery | Spring Batch + `@Async` / Redis-backed workers |
 | pytest | JUnit 5 + Mockito + Testcontainers |
-| LangGraph / FastAPI agents | Spring Boot + Spring AI / LangChain4j |
+| **LangGraph / FastAPI agents** | **Unchanged — Python (FastAPI, LangGraph, LangChain, MCP)** |
 | Goroutine pools / channels | `ExecutorService` + bounded queues / virtual threads |
 | JWT middleware | Spring Security (JWT resource server) |
 
@@ -32,7 +32,7 @@ Study order:
 
 | Company | Project | Lead metric |
 |---|---|---|
-| Impact Analytics (Jun 2026–) | Agentic AssortSmart | Agentic microservice (Spring Boot + Spring AI): ~100 silhouette-scored clusterings → top 3, days → <1 h · Spring Boot core: worker pools, timeouts, Spring Security JWT · ClickHouse append-only never-erase store |
+| Impact Analytics (Jun 2026–) | Agentic AssortSmart | Python agentic microservice (FastAPI, LangGraph): ~100 silhouette-scored clusterings → top 3, days → <1 h · Spring Boot (Java) core: worker pools, timeouts, Spring Security JWT · ClickHouse append-only never-erase store |
 | Uber via EPAM (Jul 2024–May 2026) | FRM Scoping Platform | 70% cycle-time cut · 36 endpoints/8 screens · 19M rows/quarter · JPA/Hibernate |
 | Uber via EPAM | Menu Ingestion Platform | 30K+ menus/mo · 24 h→2 h · $600K+/yr · Kafka/Flink/Spark/Pinot |
 | Masters India (Dec 2022–Jun 2024) | GST e-invoicing SaaS | p95 1.2s→300ms · 1M+ txn/day · Spring WebFlux + Spring Batch |

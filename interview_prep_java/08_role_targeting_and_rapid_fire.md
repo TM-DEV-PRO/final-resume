@@ -9,7 +9,7 @@ Use this when applying with `resume_java` / `Tarun_Mittal_SSE_Java_5yr.pdf`. Lea
 | Senior Java / Spring Boot backend | Spring Boot, JPA, microservices, REST, SQL | Masters India migration (WebFlux/Batch, p95, 1M+ txn/day) + Uber FRM (JPA, 36 APIs, audit correctness) |
 | Platform / distributed systems (Java shops) | Kafka, scale, design | Menu ingestion (Kafka/Flink/Spark/Pinot) + IA ClickHouse write model |
 | FinTech / payments / compliance Java | Correctness, audits, observability | FRM (PwC work papers, 100% module coverage) + GST (RBAC, audit logs, idempotency) |
-| AI platform with Java services | Agents + solid backend | IA: Spring AI agent service + Spring Boot core + ClickHouse |
+| AI platform with Java services | Agents + solid backend | IA: Python agent service + Spring Boot core + ClickHouse |
 | SRE-leaning Java | Observability, K8s, incidents | ELK + New Relic 70% triage; Actuator/metrics; Pinot ops dashboards |
 
 ## 2. Rapid-fire (Java resume claims)

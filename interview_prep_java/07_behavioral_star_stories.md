@@ -7,7 +7,7 @@ Outcomes, leadership signals, and story structure are **identical** to `intervie
 | 1. ClickHouse verdict | Decision process, PoC gates | Implementation plane: Spring Boot services + ClickHouse client |
 | 2. BQ→CH ingestion | Freshness, REPLACE PARTITION | Scheduler/job in Java (Batch/cron service) if asked "who runs the job" |
 | 3. Malformed-plan validator | Product failure mode | Bean Validation / schema checks before agent commit |
-| 4. Clustering copilot | HLR behavior, <1 h | Spring AI / LangChain4j agent microservice |
+| 4. Clustering copilot | HLR behavior, <1 h | Python FastAPI/LangGraph agent microservice |
 | 5. Constants-refactor regression | Owning mistakes | JUnit gate; "tests that would have caught it" |
 | 6. Coverage-gap fix | Test where code lives | JUnit/Mockito; CI coverage on changed modules |
 | 7. ORM-vs-repository | Disagree & commit | Hibernate/JPA repository boundaries vs raw SQL |

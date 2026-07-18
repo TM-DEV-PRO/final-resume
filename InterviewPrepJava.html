@@ -73,7 +73,7 @@ strong{color:#fff}
 <a class="lvl2" href="#5-spring-security-jwt">5. Spring Security (JWT)</a>
 <a class="lvl2" href="#6-spring-batch-async-workers">6. Spring Batch + async workers</a>
 <a class="lvl2" href="#7-bean-validation-jackson">7. Bean Validation + Jackson</a>
-<a class="lvl2" href="#8-spring-ai-langchain4j-agent-tier">8. Spring AI / LangChain4j (agent tier)</a>
+<a class="lvl2" href="#8-python-agent-tier-fastapi-langgraph-mcp">8. Python agent tier (FastAPI + LangGraph + MCP)</a>
 <a class="lvl2" href="#9-apache-kafka-java-client-spring-kafka">9. Apache Kafka (Java client / Spring Kafka)</a>
 <a class="lvl2" href="#10-flink-spark-pinot">10. Flink / Spark / Pinot</a>
 <a class="lvl2" href="#11-redis-mysql-postgresql-clickhouse">11. Redis / MySQL / PostgreSQL / ClickHouse</a>
@@ -111,7 +111,7 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>FastAPI / Gin</td>
+<td>Gin / non-agentic FastAPI</td>
 <td>Spring Boot (MVC / WebFlux)</td>
 </tr>
 <tr>
@@ -131,8 +131,8 @@ strong{color:#fff}
 <td>JUnit 5 + Mockito + Testcontainers</td>
 </tr>
 <tr>
-<td>LangGraph / FastAPI agents</td>
-<td>Spring Boot + Spring AI / LangChain4j</td>
+<td><strong>LangGraph / FastAPI agents</strong></td>
+<td><strong>Unchanged — Python (FastAPI, LangGraph, LangChain, MCP)</strong></td>
 </tr>
 <tr>
 <td>Goroutine pools / channels</td>
@@ -157,7 +157,7 @@ strong{color:#fff}
 <tr>
 <td>Impact Analytics (Jun 2026–)</td>
 <td>Agentic AssortSmart</td>
-<td>Agentic microservice (Spring Boot + Spring AI): ~100 silhouette-scored clusterings → top 3, days → &lt;1 h · Spring Boot core: worker pools, timeouts, Spring Security JWT · ClickHouse append-only never-erase store</td>
+<td>Python agentic microservice (FastAPI, LangGraph): ~100 silhouette-scored clusterings → top 3, days → &lt;1 h · Spring Boot (Java) core: worker pools, timeouts, Spring Security JWT · ClickHouse append-only never-erase store</td>
 </tr>
 <tr>
 <td>Uber via EPAM (Jul 2024–May 2026)</td>
@@ -184,15 +184,15 @@ strong{color:#fff}
 <hr>
 <h1 id="impact-analytics-agentic-assortsmart-java-spring-track">Impact Analytics — Agentic AssortSmart (Java / Spring track)</h1>
 <p><strong>Role:</strong> Senior Software Engineer · June 2026 – Present · Bangalore<br>
-<strong>Resume header tech:</strong> Java · Spring Boot · Spring AI / LangChain4j · MCP · Hibernate · ClickHouse · PostgreSQL · Redis · Kafka · GCP · Docker</p>
+<strong>Resume header tech:</strong> Java · Spring Boot · Hibernate · Python (FastAPI, LangGraph, MCP) · ClickHouse · PostgreSQL · Redis · Kafka · GCP · Docker</p>
 <blockquote>
-<p>Same product, metrics, and architecture as <code>interview_prep/projects/01_impact_analytics_agentic_assort.md</code> and the agentic playbook. This file is the <strong>Java/Spring telling</strong> for interviews targeting Java backend roles.</p>
+<p>Same product, metrics, and architecture as <code>interview_prep/projects/01_impact_analytics_agentic_assort.md</code> and the agentic playbook. This file is the <strong>Java/Spring telling</strong> for interviews targeting Java backend roles — <strong>agentic / AI tier stays Python</strong>.</p>
 </blockquote>
 <hr>
 <h2 id="1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</h2>
-<p>"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. AI agents draft store clusters and plans; planners review, override, and approve. Architecturally it's one Spring Boot agentic microservice (Spring AI / LangChain4j, MCP) that runs agentic workflows, and a Spring Boot core backend exposing REST APIs for plan lifecycle, reference data, and bulk saves. I own the store-clustering agent: it grounds a plain-language request into hierarchy, season, and store scopes, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for planner approval — turnaround from days to under an hour. Under both sits ClickHouse with an append-only versioned write model — every planner override is an insert — giving version diff, undo/redo, and an immutable audit trail."</p>
+<p>"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. AI agents draft store clusters and plans; planners review, override, and approve. Architecturally it's one Python agentic microservice (FastAPI, LangGraph, MCP) that runs agentic workflows, and a Spring Boot (Java) core backend exposing REST APIs for plan lifecycle, reference data, and bulk saves. I own the store-clustering agent: it grounds a plain-language request into hierarchy, season, and store scopes, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for planner approval — turnaround from days to under an hour. Under both sits ClickHouse with an append-only versioned write model — every planner override is an insert — giving version diff, undo/redo, and an immutable audit trail."</p>
 <h2 id="2-service-split-say-it-exactly">2. Service split (say it exactly)</h2>
-<p>"One Spring Boot microservice runs all agentic workflows — agents, tools, LLM orchestration via Spring AI / LangChain4j and MCP. The core backend is also Spring Boot: REST controllers for plan lifecycle, tenant config, and bulk saves, secured with Spring Security JWT. The two talk over versioned API contracts. The split is a natural deployment boundary — the agent tier scales with LLM latency; the API tier scales with request volume."</p>
+<p>"One Python microservice (FastAPI, LangGraph, MCP) runs all agentic workflows — agents, tools, LLM orchestration. The core backend is Spring Boot (Java): REST controllers for plan lifecycle, tenant config, and bulk saves, secured with Spring Security JWT. The two talk over versioned API contracts. The split is a natural deployment boundary — the agent tier scales with LLM latency; the API tier scales with request volume."</p>
 <h2 id="3-spring-boot-core-backend-defend-the-bullet">3. Spring Boot core backend — defend the bullet</h2>
 <p>Resume: <em>"Spring Boot microservices covering plan lifecycle, tenant configuration, and bulk save REST APIs, with ExecutorService worker pools and bounded queues for concurrent writes, request-scoped timeouts, and JWT auth via Spring Security."</em></p>
 <ul>
@@ -205,11 +205,11 @@ strong{color:#fff}
 </ul>
 <h2 id="4-agentic-microservice-defend-the-clustering-bullet">4. Agentic microservice — defend the clustering bullet</h2>
 <p>Same product behavior as the main playbook (HLR-AG-001…006): autonomous feature selection, k optimization via silhouette, top 3 scenarios with evidence, approval gating, &lt;1 h turnaround.</p>
-<p><strong>Java framing:</strong>
-- Orchestration graph in LangChain4j / Spring AI (nodes = tool calls + LLM steps; state held in a typed conversation/session object).
-- Tools call ClickHouse / Postgres / Redis via Spring beans (repositories), not ad-hoc HTTP from prompts.
-- MCP tools as first-class integrations where the platform exposes them.
-- Streaming progress to the UI via SSE (<code>SseEmitter</code> / WebFlux <code>Flux</code>).</p>
+<p><strong>Python framing (unchanged from main track):</strong>
+- Orchestration graph in LangGraph (nodes = tool calls + LLM steps; state in a typed conversation object).
+- Tools call ClickHouse / Postgres / Redis via Python clients / MCP — not ad-hoc SQL from prompts.
+- Streaming progress to the UI via SSE.
+- <strong>Why Python for agents, Java for core:</strong> "LLM tooling, LangGraph, and RAG ecosystems are strongest in Python; the request/response API tier is throughput-shaped Java/Spring the team owns long-term."</p>
 <h2 id="5-clickhouse-append-only-store">5. ClickHouse append-only store</h2>
 <p>Unchanged from main track: <code>ReplacingMergeTree(version)</code>, <code>argMax</code> / latest-state views, <code>REPLACE PARTITION</code> seeds, never-erase inserts, Postgres for true ACID metadata (auth, tenant config, workflow state).</p>
 <p><strong>Precision:</strong> planning-grid transactionality ≠ bank-ledger OLTP. Say this unprompted.</p>
@@ -217,12 +217,13 @@ strong{color:#fff}
 <ol>
 <li>Live audit said "no ClickHouse" for legacy in-place UPDATEs — correct for that write model.</li>
 <li>Verdict: objection is write-model, not engine → gated PoC on insert-only semantics.</li>
-<li>PoC passed → org committed ClickHouse end-to-end; Spring Boot for API + agent tiers; ClickHouse for planning facts.</li>
+<li>PoC passed → org committed ClickHouse end-to-end; Spring Boot for the non-agentic API tier; Python/LangGraph for the agent tier; ClickHouse for planning facts.</li>
 </ol>
 <h2 id="7-qa-java-flavored">7. Q&amp;A (Java-flavored)</h2>
 <ul>
 <li><strong>"Why Spring Boot over Quarkus/Micronaut?"</strong> Team familiarity, Actuator/observability ecosystem, Spring Data + Security maturity; Quarkus wins on cold start for serverless — not our deployment model.</li>
 <li><strong>"Hibernate on ClickHouse?"</strong> No — ClickHouse via native JDBC / clickhouse-java client. Hibernate/JPA only on PostgreSQL metadata.</li>
+<li><strong>"Why not Spring AI for agents?"</strong> Agent tooling (LangGraph, MCP, RAG) stays Python by design on this resume; Java owns the Spring Boot core APIs.</li>
 <li><strong>"Virtual threads?"</strong> Prefer virtual threads for blocking I/O fan-out on Java 21+; keep a bounded platform-thread pool for CPU-bound scoring if needed.</li>
 <li><strong>"How do you test?"</strong> JUnit 5 + Mockito for services; <code>@SpringBootTest</code> + Testcontainers for Postgres/Redis integration; contract tests on REST with MockMvc / WebTestClient.</li>
 </ul>
@@ -297,7 +298,7 @@ Oracle HFM  ~19M raw → ~300K aggregated
 <ul>
 <li><strong>Catalog upsert / control-plane APIs</strong> — Spring Boot services consuming validated payloads (Kafka listeners via <code>spring-kafka</code> where applicable, or Flink sinks calling internal APIs).</li>
 <li><strong>Schema validation</strong> — Jackson + Bean Validation (or Avro/Protobuf contracts on the bus).</li>
-<li><strong>RAG extraction orchestration</strong> — Spring service calling Gemini; chunk → retrieve → generate → validate against menu schema; 98% fidelity claim is offline/eval-backed — say so.</li>
+<li><strong>RAG extraction orchestration</strong> — Python service calling Gemini; chunk → retrieve → generate → validate against menu schema; 98% fidelity claim is offline/eval-backed — say so. Control plane / catalog APIs remain Java/Spring.</li>
 <li><strong>Anti-bot layer</strong> — same engineering story (IP rotation, proxy pools → +95% successful ingestions); implementation language secondary to the control loop.</li>
 </ul>
 <h2 id="4-streaming-defense-must-be-deep">4. Streaming defense (must be deep)</h2>
@@ -416,11 +417,12 @@ Oracle HFM  ~19M raw → ~300K aggregated
 <li>Boundary validation (<code>@NotNull</code>, custom constraints) on DTOs — never trust clients.</li>
 <li>Jackson: <code>ObjectMapper</code> config, <code>@JsonIgnore</code>, unknown properties policy; record/DTO preference over exposing entities.</li>
 </ul>
-<h2 id="8-spring-ai-langchain4j-agent-tier">8. Spring AI / LangChain4j (agent tier)</h2>
+<h2 id="8-python-agent-tier-fastapi-langgraph-mcp">8. Python agent tier (FastAPI + LangGraph + MCP)</h2>
 <ul>
-<li><strong>Role.</strong> LLM calls, tool/function calling, chat memory, RAG retrievers wired as Spring beans.</li>
-<li><strong>MCP.</strong> Tools as integrations the agent can invoke with typed inputs/outputs.</li>
+<li><strong>Role on this resume.</strong> All agentic / RAG / LLM orchestration stays Python — FastAPI service, LangGraph workflows, LangChain tools, MCP integrations. Spring Boot does not run the agents.</li>
+<li><strong>Why Python here.</strong> Mature agent graphs, tool-calling, RAG, and eval loops; pairs cleanly with a Java API tier over versioned HTTP contracts.</li>
 <li><strong>Gotchas.</strong> Prompt injection; schema validation of tool args; timeout/budget per turn; never let the model write raw SQL without a guarded text-to-SQL layer.</li>
+<li>Defenses for LangGraph/RAG/MCP: same depth as main <code>interview_prep/agentic_assort_playbook/05_tech_deep_dives.md</code>.</li>
 </ul>
 <h2 id="9-apache-kafka-java-client-spring-kafka">9. Apache Kafka (Java client / Spring Kafka)</h2>
 <ul>
@@ -480,7 +482,7 @@ Oracle HFM  ~19M raw → ~300K aggregated
 <tr>
 <td>4. Clustering copilot</td>
 <td>HLR behavior, &lt;1 h</td>
-<td>Spring AI / LangChain4j agent microservice</td>
+<td>Python FastAPI/LangGraph agent microservice</td>
 </tr>
 <tr>
 <td>5. Constants-refactor regression</td>
@@ -552,7 +554,7 @@ Oracle HFM  ~19M raw → ~300K aggregated
 <tr>
 <td>AI platform with Java services</td>
 <td>Agents + solid backend</td>
-<td>IA: Spring AI agent service + Spring Boot core + ClickHouse</td>
+<td>IA: Python agent service + Spring Boot core + ClickHouse</td>
 </tr>
 <tr>
 <td>SRE-leaning Java</td>

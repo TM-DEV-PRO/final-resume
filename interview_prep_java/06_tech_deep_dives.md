@@ -48,11 +48,12 @@ Every technology on `resume_java`. Fundamentals → internals → why we used it
 - Boundary validation (`@NotNull`, custom constraints) on DTOs — never trust clients.
 - Jackson: `ObjectMapper` config, `@JsonIgnore`, unknown properties policy; record/DTO preference over exposing entities.
 
-## 8. Spring AI / LangChain4j (agent tier)
+## 8. Python agent tier (FastAPI + LangGraph + MCP)
 
-- **Role.** LLM calls, tool/function calling, chat memory, RAG retrievers wired as Spring beans.
-- **MCP.** Tools as integrations the agent can invoke with typed inputs/outputs.
+- **Role on this resume.** All agentic / RAG / LLM orchestration stays Python — FastAPI service, LangGraph workflows, LangChain tools, MCP integrations. Spring Boot does not run the agents.
+- **Why Python here.** Mature agent graphs, tool-calling, RAG, and eval loops; pairs cleanly with a Java API tier over versioned HTTP contracts.
 - **Gotchas.** Prompt injection; schema validation of tool args; timeout/budget per turn; never let the model write raw SQL without a guarded text-to-SQL layer.
+- Defenses for LangGraph/RAG/MCP: same depth as main `interview_prep/agentic_assort_playbook/05_tech_deep_dives.md`.
 
 ## 9. Apache Kafka (Java client / Spring Kafka)
 

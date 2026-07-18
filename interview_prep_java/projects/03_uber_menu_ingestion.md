@@ -32,7 +32,7 @@
 
 - **Catalog upsert / control-plane APIs** — Spring Boot services consuming validated payloads (Kafka listeners via `spring-kafka` where applicable, or Flink sinks calling internal APIs).
 - **Schema validation** — Jackson + Bean Validation (or Avro/Protobuf contracts on the bus).
-- **RAG extraction orchestration** — Spring service calling Gemini; chunk → retrieve → generate → validate against menu schema; 98% fidelity claim is offline/eval-backed — say so.
+- **RAG extraction orchestration** — Python service calling Gemini; chunk → retrieve → generate → validate against menu schema; 98% fidelity claim is offline/eval-backed — say so. Control plane / catalog APIs remain Java/Spring.
 - **Anti-bot layer** — same engineering story (IP rotation, proxy pools → +95% successful ingestions); implementation language secondary to the control loop.
 
 ## 4. Streaming defense (must be deep)
