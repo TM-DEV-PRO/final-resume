@@ -17,10 +17,10 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores — AI agents draft clusters and plans for planner review and approval.
-    \item Developing the \textbf{agentic microservice (FastAPI, LangGraph)} whose conversational agent grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, targeting turnaround from days to \textbf{under 1 hour}.
+    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores. AI agents draft clusters and plans for planner review and approval.
+    \item Developing the \textbf{agentic microservice (FastAPI, LangGraph)} with a conversational agent that grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, cutting turnaround from days to \textbf{under 1 hour}.
     \item Designing the core backend as \textbf{Go (Gin) microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs, with goroutine worker pools and bounded channels for concurrent writes, context based timeouts, and JWT auth middleware.
-    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model} where facts land as atomic partition swaps and every decision is an insert resolved via latest state views, enabling version diff, undo/redo, concurrent writes without lock contention, and a full audit trail.
+    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model}. Facts land as atomic partition swaps and every decision is an insert resolved via latest state views, for version diff, undo/redo, concurrent writes without row locks, and a full audit trail.
     % \item Designing the backend for the \textbf{planning grid, an Excel like pivot surface} where planners edit plans across product, store, and week hierarchies, serving rollups and drill downs from pre aggregated \textbf{ClickHouse} data at \textbf{p95 under 500ms} and cell edits under \textbf{80ms} via async write back.
     \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
@@ -39,7 +39,7 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} by replacing a manual Google Sheets workflow with a FastAPI and MySQL platform serving \textbf{36 REST endpoints across 8 screens}, with output feeding PwC audit work papers.
-    \item Designed an \textbf{8-table normalized MySQL schema} whose quarterly ETL aggregates \textbf{19M+ general-ledger rows into 300K rows}, reconciled against public 10-Q filings.
+    \item Designed an \textbf{8-table normalized MySQL schema} with a quarterly ETL that aggregates \textbf{19M+ general-ledger rows into 300K rows}, reconciled against public 10-Q filings.
     \item Migrated raw SQL access to \textbf{SQLAlchemy 2.0 ORM}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
     \item \textbf{Tech Used}: Python, FastAPI, SQLAlchemy, Pydantic, MySQL, Redis, Bazel, pytest.
 \end{zitemize}

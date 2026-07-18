@@ -2,11 +2,11 @@
 
 | Removed / demoted | Why | If interviewer asks anyway |
 |---|---|---|
-| Rust, C, C++, Java | Not on Tech Used for this Python/Go track | “Go + Python are the shipped tiers on this resume” |
-| gRPC | Not evidenced on project lines | “Would use for service-to-service binary contracts; REST is what we shipped” |
-| DuckDB | Superseded by ClickHouse end-to-end (Jul 2026) | “Earlier pivot-accelerator idea; current store is ClickHouse” |
-| Cassandra | Not on Tech Used | “General familiarity only” |
-| ChromaDB, semantic caching | Soft vs pgvector on the live path | “pgvector / Postgres path is the one I defend; Chroma was exploratory” |
+| Rust, C, C++, Java | Not on Tech Used for this Python/Go track | "Go + Python are the shipped tiers on this resume" |
+| gRPC | Not evidenced on project lines | "Would use for service-to-service binary contracts; REST is what we shipped" |
+| DuckDB | Superseded by ClickHouse end-to-end (Jul 2026) | "Earlier pivot-accelerator idea; current store is ClickHouse" |
+| Cassandra | Not on Tech Used | "General familiarity only" |
+| ChromaDB, semantic caching | Soft vs pgvector on the live path | "pgvector / Postgres path is the one I defend; Chroma was exploratory" |
 
 ## Kept on purpose
 

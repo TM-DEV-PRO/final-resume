@@ -14,7 +14,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). The original `
 | Backend skills | + gRPC | Dropped gRPC (not on any Tech Used line) |
 | AI skills | + ChromaDB, semantic caching | Kept LangGraph/LangChain/MCP/RAG/text-to-SQL/pgvector |
 | Streaming/data | + DuckDB | Dropped DuckDB (ClickHouse end-to-end direction) |
-| Databases | + Cassandra (dropped); MongoDB/ES restored | Postgres, MySQL, Redis, MongoDB, Elasticsearch, S3 |
+| Databases | + Cassandra (dropped) | Postgres, MySQL, Redis, MongoDB, Elasticsearch, S3 (MongoDB/ES used at Masters + GFG) |
 | BigQuery | In skills | **Kept** — defend as upstream SoT you ingest from, not “I optimize BigQuery” |
 
 ## Study path
