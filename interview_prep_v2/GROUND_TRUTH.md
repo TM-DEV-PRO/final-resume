@@ -55,7 +55,9 @@ Do NOT claim: identical benchmark hardware (PG 32vCPU/256GB vs CH 16vCPU/64GB), 
 
 ## Uber Menu Ingestion (same employment)
 
-All HISTORICAL from 4yr resume + prep: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved, Kafka ~200-500 peak events/s ESTIMATED, Spark backfills ~1-2M rows ESTIMATED, Pinot sub-second ops dashboards.
+All HISTORICAL from 4yr resume + prep: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved.
+
+RESUME DECISION (Jul 2026): Kafka/Flink/Spark/Pinot claims REMOVED from resume bullets. The 4yr resume (source of truth) describes a **Python + Selenium + GCP scraping pipeline**, not a streaming platform. Resume now matches that stack exactly; Kafka remains in skills, justified by Masters India (AsyncIOKafka messaging, per 2.5yr resume). If asked about streaming, speak to Kafka at Masters India, not Uber Menu.
 
 ## Masters India (Dec 2022 - Jun 2024)
 

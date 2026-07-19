@@ -2048,6 +2048,9 @@ Getting the recursive tree correct and consistent between v1 and v2 while the un
 <hr>
 <h1 id="uber-menu-ingestion-deep-dive-v2-resume-defense">Uber Menu Ingestion Deep Dive (v2 resume defense)</h1>
 <p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Streaming rates tagged ESTIMATED.</p>
+<blockquote>
+<p><strong>RESUME CHANGE (Jul 2026):</strong> Kafka/Flink/Spark/Pinot were REMOVED from the resume bullets. The resume now describes exactly what the 4yr resume documents: a <strong>Python + Selenium scraping pipeline on GCP</strong>, the RAG + Gemini 2.5 Pro + SFT extraction path, anti bot work (IP rotation, proxy pools), and the ANZ compliance automation (99.9%, 20h/week saved). The streaming sections below are background only; do NOT claim you built Kafka/Flink/Spark at Uber. If asked about streaming experience, use Kafka messaging at Masters India (AsyncIOKafka).</p>
+</blockquote>
 <hr>
 <h2 id="what-the-system-does">What the system does</h2>
 <p>Uber Eats onboards restaurant menus from third party platforms and unstructured PDFs/images into the catalog. Scrapers emit events, Flink normalizes and dedups in real time, Spark handles backfills, Pinot powers ops health dashboards, and a Python RAG plus Gemini path extracts structured items from messy menus. Success criteria: time to onboard, ingestion success rate, extraction fidelity, and ops time to detect failures.</p>

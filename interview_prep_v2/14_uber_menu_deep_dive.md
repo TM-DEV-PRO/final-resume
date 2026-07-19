@@ -2,6 +2,8 @@
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Streaming rates tagged ESTIMATED.
 
+> **RESUME CHANGE (Jul 2026):** Kafka/Flink/Spark/Pinot were REMOVED from the resume bullets. The resume now describes exactly what the 4yr resume documents: a **Python + Selenium scraping pipeline on GCP**, the RAG + Gemini 2.5 Pro + SFT extraction path, anti bot work (IP rotation, proxy pools), and the ANZ compliance automation (99.9%, 20h/week saved). The streaming sections below are background only; do NOT claim you built Kafka/Flink/Spark at Uber. If asked about streaming experience, use Kafka messaging at Masters India (AsyncIOKafka).
+
 ---
 
 ## What the system does
