@@ -14,9 +14,8 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md) — strangler migration, caching, GFG
 6. [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md) — intro, every switch, IA 14 May 2026 exit
 7. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — ownership, on-call/SLOs, fault tolerance; STUDY ONLY for multi-region, K8s ops, Spark, Flink, Terraform
-8. [`09_metrics_derivations.md`](09_metrics_derivations.md) — ESTIMATED vs DOCUMENTED arithmetic
-
-Supporting: [`01_skills_trim_rationale.md`](01_skills_trim_rationale.md), [`02_mongodb_elasticsearch.md`](02_mongodb_elasticsearch.md), [`03_uber_menu_streaming_numbers.md`](03_uber_menu_streaming_numbers.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md), [`15_judge_loop_report.md`](15_judge_loop_report.md).
+8. [`09_metrics_derivations.md`](09_metrics_derivations.md) + [`18_resume_number_catalog.md`](18_resume_number_catalog.md) — every resume number, money math, Spark/Flink decision log
+9. [`15_judge_loop_report.md`](15_judge_loop_report.md) / [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md)
 
 Original playbook still useful for agentic Assort depth: `../interview_prep/agentic_assort_playbook/`.
 
@@ -29,7 +28,7 @@ Original playbook still useful for agentic Assort depth: `../interview_prep/agen
 | Company | Lead claims |
 |---|---|
 | Impact Analytics (14 May 2026–) | CH Order Batching 3.86s vs PG 3m40s+ (60x); 5.9M rows/s insert; CQRS + CDC + Redis RYW; update 39s to 7s; copilot targets days to under 1h |
-| Uber FRM | Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70% |
-| Uber Menu | 30K menus/mo, 24h to 2h, $600K+/yr, +95% ingest, RAG/Gemini 98% fidelity (Python + Selenium + GCP) |
+| Uber FRM | Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks to ~3–4 days) |
+| Uber Menu | 30K menus/mo, 24h to 2h, $600K+/yr ($2/menu × 30K × 12 = $720K list), +95% ingest, RAG/Gemini 98% fidelity (Python + Selenium + GCP; **no Spark/Flink**) |
 | Masters India | Owned strangler + mentored 2; Kafka/sharding TPS/RPS; idempotency/DLQ fault tolerance; on-call alerting; 1M+ txn/day |
 | GeeksforGeeks | 10K+ daily queries; +15–20% premium; +30% courses; +70% ops efficiency |

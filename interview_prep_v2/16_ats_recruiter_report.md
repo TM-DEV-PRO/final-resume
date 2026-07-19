@@ -565,3 +565,13 @@ Chaseable with referral (BORDERLINE): Google, Amazon, Airbnb (Py/Go), Databricks
 **Strict PASS count unchanged structurally (YoE gates):** Py/Go 2/9 (Microsoft, PlanetScale); Java 2/9 (Microsoft, Airbnb). Ownership/architecture language improves Amazon/Google skim quality inside BORDERLINE, without inventing 5 years of leading design.
 
 **Honesty still required in interviews:** claim ~3 years leading design reviews (Masters + FRM), not Amazon's literal 5+ years leading architecture.
+
+## Number / money / Spark-Flink verification pass (Jul 2026)
+
+| Check | Result |
+|---|---|
+| IA PG→CH POC | **VERIFIED** against `ClickHouse-POC-Dump/_SYNTHESIS/BENCHMARK-NUMBERS.md`: 23.7M join rows, CH 3.86s vs PG 3m40s–7m48s (~60×), insert 5.91M vs 250K (~24×). Hardware caveat required in interview. |
+| FRM 70% brackets | Resume now shows **targeting 70% (~2 weeks to ~3–4 days)**. 70% = TDD TARGET; from-to ESTIMATED. |
+| Spark / Flink / Pinot | **Decision: stay OFF resumes.** Menu = Python + Selenium + GCP. Kafka justified by Masters only. Study-only in `17_…` + decision log in `09_…` / `18_…`. |
+| Money deep dive | Menu $600K+ = $2/menu × 30K × 12 = $720K list → conservative floor. Catalogued in `18_resume_number_catalog.md`. |
+| Big-tech company skim (Google, Amazon, Microsoft, Airbnb, PlanetScale, Databricks, Roku, Rubrik, Netflix) | Unchanged structural PASS map: Microsoft + PlanetScale (Py/Go); Microsoft + Airbnb (Java). Ownership/architecture/fault-tolerance/on-call alerting improve BORDERLINE skim. YoE hard fails (Roku 8+, Rubrik 9+) unchanged. Databricks still weak without Spark ownership (correct omission). |

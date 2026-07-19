@@ -85,3 +85,13 @@ Source: PyMuPDF text extract of `Tarun_Mittal_SSE_5yr_v2.pdf` and `Tarun_Mittal_
 | One-page layout | PASS. v2 bottom ~778, Java ~773 (letter page ~792). No semicolons / em dashes. |
 | Prep coverage | PASS. `17_senior_systems_study_only.md` added with STUDY ONLY labels and official SRE/K8s/Terraform/Spark/Flink links. Java FRM/Masters project pages corrected (dropped 36 endpoints / 19M rows / 2500 clients). |
 | Cross-track numeric parity | PASS on shared money/scale figures. |
+
+## Loop 7 number / money / Spark-Flink verification
+
+| Check | Result |
+|---|---|
+| IA CH POC vs BENCHMARK-NUMBERS.md | PASS. 60× / 23.7M / 3m40s→3.86s / 24× 250K→5.9M all MEASURED. |
+| FRM 70% with (~2 weeks to ~3–4 days) | PASS on both PDFs. Tagged TARGET + ESTIMATED baseline in GT. |
+| Spark/Flink absent from PDFs | PASS. Decision log + study-only prep present. |
+| Every resume number catalogued | PASS via `18_resume_number_catalog.md` + rewritten `09_metrics_derivations.md`. |
+| AI markers / CGPA / one page | PASS. |

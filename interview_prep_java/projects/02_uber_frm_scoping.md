@@ -9,7 +9,7 @@
 
 ## 1. Elevator pitch
 
-"I owned Uber's Financial Risk Management quarterly scoping backend — the system that decides which financial statement line items get audited each quarter. It replaced a Google Sheets workflow with a Spring-framed service used by FRM managers; the output feeds PwC audit work papers. Across 8 screens and 30+ REST APIs, at $340M group materiality, we targeted a 70% cut in manual reconciliation. I designed the layered architecture on an 11-table MySQL schema, owned the Sheets-to-MySQL v2 recon migration (18 files), and led 3 engineers through design reviews and CI gates."
+"I owned Uber's Financial Risk Management quarterly scoping backend — the system that decides which financial statement line items get audited each quarter. It replaced a Google Sheets workflow with a Spring-framed service used by FRM managers; the output feeds PwC audit work papers. Across 8 screens and 30+ REST APIs, at $340M group materiality, we targeted a 70% cut in manual reconciliation (~2 weeks to ~3-4 days ESTIMATED baseline; 70% is a TDD target). I designed the layered architecture on an 11-table MySQL schema, owned the Sheets-to-MySQL v2 recon migration (18 files), and led 3 engineers through design reviews and CI gates."
 
 ## 2. Architecture (Java telling)
 

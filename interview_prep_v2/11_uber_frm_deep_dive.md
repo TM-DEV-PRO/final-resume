@@ -8,7 +8,7 @@ Role framing: Software Development Engineer 2 at Uber Finance via EPAM Systems, 
 
 ## 0. The four bullets I am defending (Jul 2026 hardened wording)
 
-1. **Owned** Uber's FRM Risk Scoping platform (FastAPI, MySQL, React) across **8 screens and 30+ REST APIs**, automating quarterly scoping at **$340M group materiality**, targeting a **70% cut** in manual reconciliation.
+1. **Owned** Uber's FRM Risk Scoping platform (FastAPI, MySQL, React) across **8 screens and 30+ REST APIs**, automating quarterly scoping at **$340M group materiality**, targeting a **70% cut** in manual reconciliation (**~2 weeks to ~3–4 days**, ESTIMATED baseline; 70% is TDD TARGET).
 2. **Designed the software architecture** for an **11 table SQLAlchemy 2.0 MySQL schema** with layered handler, service, and repository boundaries, auto flagging material items across **55 line items and 14 entities**.
 3. **Owned** Sheets to **MySQL v2 recon migration (18 files)**, validating HFM extracts against public **10-Q** filings and fixing a latent column aliasing bug.
 4. **Led 3 engineers**, owning design reviews, API contracts, and CI quality gates for releases feeding PwC audit work papers.
