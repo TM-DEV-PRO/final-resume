@@ -17,10 +17,11 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart Platform \& PostgreSQL to ClickHouse Data Migration}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building the \textbf{Cluster Recommendation Copilot} for AssortSmart, an agentic store clustering module where an \textbf{LLM agent (Python, LangGraph, MCP)} plans and calls \textbf{14 audited tools} while a deterministic engine computes clusters, with human approval gates before any write. Targets are plan turnaround \textbf{under 1 hour} (from days), \textbf{20+ configurations} evaluated per run (from 1), and run failures \textbf{under 2\%} (from a measured 8.5\%).
-    \item Benchmarked \textbf{PostgreSQL vs ClickHouse} on production retail workloads. The Order Batching metric over \textbf{23.7M joined rows} ran in \textbf{3.86s on ClickHouse vs 3m 40s+ on PostgreSQL (60x)}, parallel bulk loads sustained \textbf{5.9M rows/sec vs 250K rows/sec}, and query to CSV export throughput improved \textbf{43x} (607 to 26,400 rows/sec).
-    \item Designed the Order Batching \textbf{CQRS read path migration} keeping writes on PostgreSQL and serving analytical reads from ClickHouse, with \textbf{CDC mirrors} for hot fact tables, daily refresh for low churn dimensions, and \textbf{Redis read your writes routing (30s TTL)} so users see their own saves instantly.
-    \item Cut 10K row update handling on a \textbf{29M row fact table from 39s to 7s} using partition scoped merges over full table rewrites, and validated \textbf{ReplacingMergeTree} versioned updates, partition pruning, and dictionary lookups (17M row fact table compressed \textbf{7.8x} to 433 MiB).
+    \item Built a \textbf{Python LangGraph/MCP clustering copilot} with 14 audited tools; targets: days to under 1h, 1 to 20+ configurations, 8.5\% to under 2\% failures.
+    \item Benchmarked a \textbf{23.7M-row} Order Batching query at \textbf{3.86s on ClickHouse vs 3m 40s+ on PostgreSQL}, a \textbf{60x} improvement.
+    \item Sustained \textbf{5.9M vs 250K rows/sec} on bulk loads and improved query-to-CSV export throughput \textbf{43x}, from 607 to 26.4K rows/sec.
+    \item Designed a \textbf{CQRS/CDC migration}: PostgreSQL writes, ClickHouse reads, daily dimension refresh, and \textbf{Redis RYW routing with a 30s TTL}.
+    \item Cut 10K-row updates on a \textbf{29M-row fact table from 39s to 7s} via partition merges; compressed 17M rows \textbf{7.8x} to 433 MiB.
     \item \textbf{Tech Used}: Python, LangGraph, MCP, ClickHouse, PostgreSQL, CDC, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
@@ -37,10 +38,10 @@
 \textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built Uber's quarterly \textbf{FRM Risk Scoping platform (Spring Boot, MySQL, React)} replacing a manual Google Sheets workflow across \textbf{8 screens and 30+ REST endpoints}, with scoping output feeding \textbf{PwC audit work papers at \$340M group materiality}, targeting a \textbf{70\% cut} in manual ingestion and reconciliation effort per close.
-    \item Designed the \textbf{11 table normalized MySQL schema} (balance sheet, income statement, EMI, thresholds, component and residual scoping, recon) mapped through \textbf{Spring Data JPA / Hibernate} behind a layered \textbf{controller, service, repository} architecture with header based auth.
-    \item Owned the migration of reconciliation from Sheets backed v1 APIs to \textbf{MySQL backed v2 APIs}, validating HFM vs public \textbf{10-Q} amounts, and fixed a latent \textbf{column aliasing bug} surfaced during the ORM move.
-    \item \textbf{Led a pod of 3 engineers}; grew the service to \textbf{1,100+ unit tests} with mocked controller and repository suites gating CI.
+    \item Built Uber's \textbf{FRM Risk Scoping platform} across \textbf{8 screens and 30+ APIs}, targeting 70\% less manual work at \textbf{\$340M materiality}.
+    \item Designed an \textbf{11-table MySQL schema} using Spring Data JPA/Hibernate and controller, service, repository layers with header-based auth.
+    \item Migrated Sheets-backed reconciliation to \textbf{MySQL v2 APIs}, validated HFM against 10-Q data, and fixed a column-aliasing bug.
+    \item \textbf{Led 3 engineers} and grew the service to \textbf{1,100+ unit tests} across controllers, services, and repositories.
     \item \textbf{Tech Used}: Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, Redis, JUnit, Docker.
 \end{zitemize}
 \vspace{0.3ex}
@@ -48,15 +49,16 @@
 \textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built an event-driven pipeline with \textbf{Kafka (200 to 500 peak events/sec), Flink, and Spark} for \textbf{30,000+ vendor menus/month}, cutting onboarding from 24h to 2h and saving \textbf{\$600K+ annually} by eliminating a \$2 per menu third party tool.
-    \item Built a \textbf{Python} AI extraction pipeline with \textbf{RAG and Gemini} converting PDF and image menus into schema validated catalog data with \textbf{98\% fidelity and 100\% schema consistency} via supervised fine tuning.
-    \item Increased successful ingestions by \textbf{95\%} (roughly 60\% to 95\%+) via IP rotation and proxy pools; built ingestion health dashboards on \textbf{Apache Pinot} with sub-second queries, cutting failure detection from hours to minutes.
+    \item Built a \textbf{Kafka/Flink/Spark} pipeline for 30K+ menus/month; cut onboarding 24h to 2h and saved \textbf{\$600K+/year}.
+    \item Built a \textbf{Python RAG/Gemini} pipeline for PDFs and images, reaching \textbf{98\% fidelity and 100\% schema consistency} in offline evaluation.
+    \item Raised ingestion success about 60\% to 95\%+ via proxies and IP rotation; \textbf{Pinot} dashboards cut detection from hours to minutes.
     \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
 \end{zitemize}
 
 %====================
 % EXPERIENCE C — MASTERS INDIA
 %====================
+\newpage
 \vspace{0.5ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
@@ -67,10 +69,10 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Led the migration from a PHP (Laravel) monolith to \textbf{Java Spring Boot microservices}, \textbf{mentoring 2 engineers} through the rollout and cutting p95 API latency from \textbf{1.2s to 300ms} for \textbf{1,500+ enterprise clients}.
-    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} (12 TPS average, 100+ TPS at filing deadline peaks) with \textbf{Spring Batch} workers and idempotent retries, raising sustained throughput from \textbf{700 to 4,000 requests/min}.
-    \item Added \textbf{Redis caching} that cut redundant database reads by \textbf{30\%}, and shipped an \textbf{audit logging} feature that reduced client churn by \textbf{15\%}.
-    \item Set up \textbf{ELK and New Relic alerting}, cutting incident triage by \textbf{70\%} (about 30 min to under 10), and raised test coverage from \textbf{35\% to 82\%} with JUnit gating CI/CD at a \textbf{98\% deployment success rate}.
+    \item Led a PHP-to-\textbf{Spring Boot microservices} migration and mentored \textbf{2 engineers}, cutting p95 latency \textbf{1.2s to 300ms} for 1,500+ clients.
+    \item Scaled \textbf{Spring Batch} imports to 100K+ transactions and 1M+ daily, raising sustained throughput \textbf{700 to 4,000 requests/min}.
+    \item Added \textbf{Redis cache-aside} to cut redundant DB reads 30\%; shipped audit logs that reduced client churn \textbf{15\%}.
+    \item Added \textbf{ELK/New Relic} alerting, cutting triage 70\%; raised coverage \textbf{35\% to 82\%} with a 98\% deployment success rate.
     \item \textbf{Tech Used}: Java, Spring Boot, Hibernate, PostgreSQL, MongoDB, Redis, Elasticsearch, Spring Batch, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
@@ -84,7 +86,7 @@
 \end{tabularx}
 \vspace{-3ex}
 \begin{zitemize}
-    \item Redesigned and migrated the backend from PHP to \textbf{Spring Boot (Java)}, improving reliability for \textbf{10,000+ daily queries}.
-    \item Designed data models and REST APIs for voting and pinning, lifting \textbf{premium subscriptions 15 to 20\%} (Spring Boot, MySQL, MongoDB, Redis, Elasticsearch, AWS).
-    \item Built an influencer dashboard with real time analytics and cron pipelines for video processing and reminders, boosting \textbf{course sales 30\%} and operational efficiency \textbf{70\%}.
+    \item Migrated PHP services to \textbf{Spring Boot}, improving reliability for \textbf{10K+ daily queries}.
+    \item Built voting and pinning APIs using MySQL, MongoDB, Redis, and Elasticsearch, lifting \textbf{premium subscriptions 15 to 20\%}.
+    \item Built influencer analytics and scheduled jobs for video processing, raising \textbf{course sales 30\%} and operational efficiency 70\%.
 \end{zitemize}

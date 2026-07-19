@@ -42,3 +42,10 @@ Scanned experience/objective/skills/activities/education for em dash, whose, ena
 2. Menu Kafka peak events/sec and Spark row counts remain ESTIMATED.
 3. FRM cycle from-to days remain ESTIMATED if spoken; resume correctly says "targeting a 70% cut" without inventing days.
 4. Two page resumes are intentional per user; many FAANG ATS prefer one page for ~5 YoE — keep a one page condensed variant ready if a recruiter asks.
+
+## Loop 6. Layout and credentials
+
+- PASS: name/contact header appears on page 1 only.
+- PASS: every project heading has its first bullet on the same page.
+- PASS: resume bullets render in one line, except the copilot bullet which uses one full line plus a short continuation.
+- PASS: HackerRank Problem Solving and LangChain Academy links match `KNOWLEDGE-MATERIAL/certificates.txt`.

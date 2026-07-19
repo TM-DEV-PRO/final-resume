@@ -85,6 +85,7 @@ All HISTORICAL from 4yr resume + prep: 30K+ menus/month, onboarding 24h to 2h (9
 ## Achievements / education
 
 - Code Jam 2260 / 37,000+ (2021). SIH 2020 finalist, top 3 nationally. **Global AI Hackathon, EPAM Systems** (add). CGPA 7.7/10 (add).
+- Certificates verified in `KNOWLEDGE-MATERIAL/certificates.txt`: **HackerRank Problem Solving** (`7e492a2e11be`) and **LangChain Academy** (`vkkkoij3ke`).
 
 ## Why-switch narratives (see behavioral prep)
 
