@@ -19,8 +19,8 @@
 \begin{zitemize}
     \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores, with AI agents drafting store clusters and plans for planner review, override, and approval.
     \item Developing the \textbf{agentic microservice (Python, FastAPI, LangGraph)} with a conversational agent that grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, cutting turnaround from days to \textbf{under 1 hour}.
-    \item Designing the core backend as \textbf{Spring Boot (Java) microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs, with worker pools for concurrent writes, timeouts, and JWT auth via \textbf{Spring Security}.
-    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model}. Facts land as atomic partition swaps and every decision is an insert resolved via latest state views, for version diff, undo/redo, lock free writes, and a full audit trail.
+    \item Designing the core backend as \textbf{Spring Boot (Java) microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs at \textbf{$\sim$10--20 peak RPS}, with worker pools for concurrent writes, timeouts, and JWT auth via \textbf{Spring Security}.
+    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model} sustaining \textbf{$\sim$5--10K row writes/sec}. Facts land as atomic partition swaps and every decision is an insert resolved via latest state views, for version diff, undo/redo, lock free writes, and a full audit trail.
     \item \textbf{Tech Used}: Java, Spring Boot, Spring Security, Python, FastAPI, LangGraph, MCP, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
@@ -37,7 +37,7 @@
 \textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} by replacing a manual Google Sheets workflow with a Spring Boot and MySQL platform serving \textbf{36 REST endpoints across 8 screens}, with output feeding PwC audit work papers.
+    \item Cut Uber's quarterly financial risk-scoping cycle time by \textbf{70\%} (\textbf{$\sim$2 weeks to $\sim$3--4 days}) by replacing a Google Sheets workflow with a Spring Boot/MySQL platform serving \textbf{36 REST endpoints across 8 screens} (\textbf{p95 $<$ 300ms}), feeding PwC audit work papers.
     \item Designed an \textbf{8-table normalized MySQL schema} with a quarterly ETL that aggregates \textbf{19M+ general-ledger rows into 300K rows}, reconciled against public 10-Q filings.
     \item Refactored brittle raw SQL data access to \textbf{Spring Data JPA / Hibernate}, fixing a latent column-aliasing bug and raising changed-module test coverage to \textbf{100\%}.
     \item \textbf{Tech Used}: Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, Redis, Bazel, JUnit.
@@ -47,9 +47,9 @@
 \textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built an event-driven ingestion pipeline using \textbf{Kafka, Apache Flink, and Apache Spark} that processes \textbf{30,000+ vendor menus per month}, cutting onboarding from 24 hours to 2 hours and saving \textbf{\$600K+ annually}.
+    \item Built an event-driven pipeline with \textbf{Kafka ($\sim$200--500 peak events/sec), Flink, and Spark} for \textbf{30,000+ vendor menus/month}, cutting onboarding from 24h to 2h and saving \textbf{\$600K+/yr}.
     \item Built a \textbf{Python} AI extraction pipeline with \textbf{RAG and Gemini} converting PDF and image menus into schema-validated catalog data with \textbf{98\% fidelity}.
-    \item Increased successful ingestions by \textbf{95\%} using IP rotation and dynamic proxy pools, and built ingestion health dashboards on \textbf{Apache Pinot}.
+    \item Increased successful ingestions by \textbf{95\%} (\textbf{$\sim$60--65\% to 95\%+}) via IP rotation and proxy pools; health dashboards on \textbf{Apache Pinot} (sub-second).
     \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
 \end{zitemize}
 
@@ -67,8 +67,8 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Led the migration from a PHP (Laravel) monolith to \textbf{Java Spring Boot microservices}, mentoring junior engineers through the rollout and cutting p95 API latency from \textbf{1.2s to 300ms} for 2,500+ enterprise clients.
-    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} with Spring Batch workers and idempotent retries.
-    \item Set up centralized \textbf{ELK logging and New Relic monitoring with alerting}, cutting incident triage time by 70\%, and raised test coverage from \textbf{35\% to 82\%} with JUnit automated tests gating CI/CD releases.
+    \item Scaled bulk e-invoice processing to \textbf{100,000+ transactions per import and 1M+ daily transactions} (\textbf{$\sim$12 TPS avg, 100+ TPS peak}) with Spring Batch workers and idempotent retries.
+    \item Set up \textbf{ELK and New Relic alerting}, cutting incident triage by \textbf{70\%} (\textbf{$\sim$30 min to $<$10 min}), and raised test coverage from \textbf{35\% to 82\%} with JUnit gating CI/CD.
     \item \textbf{Tech Used}: Java, Spring Boot, Hibernate, PostgreSQL, Redis, Spring Batch, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
@@ -82,7 +82,7 @@
 \end{tabularx}
 \vspace{-3ex}
 \begin{zitemize}
-    \item Redesigned and migrated the backend from PHP to \textbf{Spring Boot (Java)}, improving reliability for \textbf{100,000+ daily queries}.
-    \item Designed data models and REST APIs for voting and pinning features, increasing \textbf{premium subscription sales by 15 to 20\%}.
+    \item Redesigned and migrated the backend from PHP to \textbf{Spring Boot (Java)}, improving reliability for \textbf{100,000+ daily queries} (\textbf{$\sim$1--2 RPS avg, $\sim$10$\times$ contest spikes}).
+    \item Designed data models and REST APIs for voting and pinning features, increasing \textbf{premium subscription sales by 15 to 20\%} (relative lift).
     \item \textbf{Tech Used}: Java, Spring Boot, Spring MVC, Hibernate, MySQL, Redis, REST, Cron, AWS.
 \end{zitemize}

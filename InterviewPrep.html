@@ -34,6 +34,7 @@ strong{color:#fff}
 </style></head><body>
 <div class="layout"><nav class="toc"><div class="brand">Final Resume · Interview Prep</div><a class="lvl1" href="#final-resume-interview-prep-hub">Final Resume — Interview Prep Hub</a>
 <a class="lvl2" href="#the-resume-at-a-glance">The resume at a glance</a>
+<a class="lvl2" href="#metrics-honesty">Metrics honesty</a>
 <a class="lvl1" href="#impact-analytics-agentic-assort-planner-store-clustering-copilot">Impact Analytics — Agentic Assort Planner &amp; Store-Clustering Copilot</a>
 <a class="lvl2" href="#1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</a>
 <a class="lvl2" href="#2-the-resume-project-one-block-agentic-assortsmart">2. The resume project (one block: Agentic AssortSmart)</a>
@@ -100,6 +101,13 @@ strong{color:#fff}
 <a class="lvl2" href="#2-rapid-fire-defending-every-operationalquality-claim-on-the-resume">2. Rapid-fire: defending every operational/quality claim on the resume</a>
 <a class="lvl2" href="#3-the-two-claims-interviewers-will-poke-hardest-and-the-honest-lines">3. The two claims interviewers will poke hardest, and the honest lines</a>
 <a class="lvl2" href="#4-if-the-interviewer-is-google-mid-level-loops">4. If the interviewer is Google (mid-level loops)</a>
+<a class="lvl1" href="#metrics-derivations-estimated-vs-documented">Metrics Derivations (estimated vs documented)</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart">1. Impact Analytics — AssortSmart</a>
+<a class="lvl2" href="#2-uber-frm-scoping">2. Uber FRM Scoping</a>
+<a class="lvl2" href="#3-uber-menu-ingestion-kafka-flink-spark-pinot">3. Uber Menu Ingestion (Kafka / Flink / Spark / Pinot)</a>
+<a class="lvl2" href="#4-masters-india-gst">4. Masters India GST</a>
+<a class="lvl2" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
+<a class="lvl2" href="#6-uber-menu-streaming-why-with-numbers-study-card">6. Uber Menu — streaming "why" with numbers (study card)</a>
 <a class="lvl1" href="#agentic-assort-planner-resume-interview-playbook">Agentic Assort Planner — Resume &amp; Interview Playbook</a>
 <a class="lvl2" href="#how-to-use-this-doc">How to use this doc</a>
 <a class="lvl2" href="#the-format-googles-xyz-formula">The format: Google's XYZ formula</a>
@@ -196,25 +204,27 @@ strong{color:#fff}
 <tr>
 <td>Uber via EPAM (Jul 2024–May 2026)</td>
 <td>FRM Scoping Platform (listed first)</td>
-<td>70% cycle-time cut · 36 endpoints/8 screens · 19M rows/quarter</td>
+<td>70% cycle (~2 weeks → ~3–4 days) · 36 endpoints p95 &lt;300ms · 19M→300K rows</td>
 </tr>
 <tr>
 <td>Uber via EPAM</td>
 <td>Menu Ingestion Platform</td>
-<td>30K+ menus/mo · 24 h→2 h · $600K+/yr · Kafka/Flink/Spark/Pinot</td>
+<td>30K+ menus/mo · Kafka ~200–500 peak events/sec · +95% (~60–65% → 95%+) · Pinot sub-second</td>
 </tr>
 <tr>
 <td>Masters India (Dec 2022–Jun 2024)</td>
 <td>GST e-invoicing SaaS</td>
-<td>p95 1.2s→300ms · 1M+ txn/day · 100K+ per import</td>
+<td>p95 1.2s→300ms · 1M+ txn/day (~12 TPS avg, 100+ peak) · triage 70% (~30→&lt;10 min)</td>
 </tr>
 <tr>
 <td>GeeksforGeeks (Aug 2021–Nov 2022)</td>
 <td>Backend (no project header on resume)</td>
-<td>100K+ daily queries · +15–20% subscriptions</td>
+<td>100K+ daily queries (~1–2 RPS avg, ~10× spikes) · +15–20% relative</td>
 </tr>
 </tbody>
 </table>
+<h2 id="metrics-honesty">Metrics honesty</h2>
+<p>Every TPS/RPS/from→to on the PDF is catalogued in <a href="09_metrics_derivations.md"><code>09_metrics_derivations.md</code></a> as <strong>DOCUMENTED</strong> vs <strong>ESTIMATED</strong>. Read that before quoting numbers.</p>
 <hr>
 <h1 id="impact-analytics-agentic-assort-planner-store-clustering-copilot">Impact Analytics — Agentic Assort Planner &amp; Store-Clustering Copilot</h1>
 <p><strong>Role:</strong> Senior Software Engineer · June 2026 – Present · Bangalore
@@ -357,8 +367,8 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>Clustering module: grounding, ~100-candidate batch, top 3 with evidence</td>
-<td><strong>HLR-committed behavior</strong> (v1.1, in build) — say "the module in build, spec'd in our HLR"</td>
-<td>§3d; HLR-AG-001/002/003, HLR-SC-001</td>
+<td><strong>Committed design</strong> (HLR v1.1 + CH DDL model v1.2, in build) — say "the module in build, per our HLR and DDL model"</td>
+<td>§3d; HLR-AG-001/002/003, HLR-SC-001; DDL v1.2 §1</td>
 </tr>
 <tr>
 <td>Clustering turnaround: days → &lt;1 h</td>
@@ -561,15 +571,16 @@ frm-scoping-db           frm-collaboration-db             │
 </code></pre>
 <h2 id="3-why-each-component-the-why-this-not-that-defense">3. Why each component (the "why this, not that" defense)</h2>
 <ul>
-<li><strong>Kafka as the ingest bus</strong> — scrapers are bursty and flaky; downstream consumers (Flink, AI extraction, audit) must be decoupled from scrape timing. Kafka gives replayable, partitioned, ordered-per-key (vendor id) buffering. <em>Alternative rejected:</em> direct HTTP to the catalog service — no replay, backpressure pushed into scrapers, one slow consumer stalls ingestion.</li>
-<li><strong>Flink for the real-time path</strong> — per-event normalization with <strong>keyed state</strong> (dedup by menu content hash per vendor), event-time semantics for out-of-order scrape retries, exactly-once sink semantics via checkpointing. <em>Alternative rejected:</em> Kafka consumer + cron — no state management, no exactly-once, hand-rolled windowing. Spark Structured Streaming — micro-batch latency and heavier ops for a per-event workload; at Uber, Flink is the standard stream engine.</li>
-<li><strong>Spark for batch</strong> — backfills ("re-ingest vendor X's last 90 days"), reprocessing after schema/parser upgrades, and large joins against catalog snapshots. Batch is throughput-shaped: Spark's shuffle + columnar reads win; running backfills through the Flink job would starve the real-time path.</li>
-<li><strong>Pinot for ingestion health</strong> — ops needed <em>sub-minute</em> visibility ("is parse-failure rate spiking on source Y?"). Pinot ingests straight from Kafka and serves low-latency OLAP (filter+groupBy on high-cardinality dims: source, vendor, stage, error class). <em>Alternative rejected:</em> batch warehouse dashboards — hours of lag; the whole point was cutting time-to-detect from hours to minutes.</li>
-<li><strong>RAG + Gemini 2.5 Pro + SFT for unstructured menus</strong> — PDFs/images defeat rule-based parsers. Retrieval grounds extraction in similar previously-labeled menus; SFT enforces the output schema (100% schema consistency, 98% extraction fidelity). Validation gate before catalog write: schema check, price sanity, currency/locale checks; sub-threshold confidence → human review queue.</li>
-<li><strong>Anti-bot layer</strong> — IP rotation, user-agent spoofing, dynamic proxy pools; retry budget per source; raised successful ingestions by 95%.</li>
+<li><strong>Kafka as the ingest bus</strong> — scrapers are bursty and flaky; downstream consumers (Flink, AI extraction, audit) must be decoupled from scrape timing. Kafka gives replayable, partitioned, ordered-per-key (vendor id) buffering. <strong>Numbers (ESTIMATED):</strong> 30K menus/mo ≈ 1K menus/day; item-level scrape + retry + health events peak at <strong>~200–500 events/sec</strong> during fleet runs (steady-state much lower). Consumer lag is the health metric. <em>Alternative rejected:</em> direct HTTP to the catalog service — no replay, backpressure pushed into scrapers, one slow consumer stalls ingestion.</li>
+<li><strong>Flink for the real-time path</strong> — per-event normalization with <strong>keyed state</strong> (dedup by menu content hash per vendor), event-time semantics for out-of-order scrape retries, exactly-once sink semantics via checkpointing. <strong>Numbers (ESTIMATED):</strong> job sized to keep pace with the Kafka peak (~200–500 events/sec) with near-zero lag in steady state; keyed state TTL prevents unbounded growth. <em>Alternative rejected:</em> Kafka consumer + cron — no state management, no exactly-once, hand-rolled windowing. Spark Structured Streaming — micro-batch latency and heavier ops for a per-event workload; at Uber, Flink is the standard stream engine.</li>
+<li><strong>Spark for batch</strong> — backfills ("re-ingest vendor X's last 90 days"), reprocessing after schema/parser upgrades, and large joins against catalog snapshots. Batch is throughput-shaped: Spark's shuffle + columnar reads win; running backfills through the Flink job would starve the real-time path. <strong>Numbers (ESTIMATED):</strong> a typical 90-day / parser-upgrade backfill is on the order of <strong>~1–2M item rows</strong> — deliberately off the real-time path.</li>
+<li><strong>Pinot for ingestion health</strong> — ops needed <em>sub-minute</em> visibility ("is parse-failure rate spiking on source Y?"). Pinot ingests straight from Kafka and serves low-latency OLAP (filter+groupBy on high-cardinality dims: source, vendor, stage, error class). <strong>Numbers:</strong> sub-second dashboard queries (ops target); time-to-detect hours → minutes (documented intent). <em>Alternative rejected:</em> batch warehouse dashboards — hours of lag.</li>
+<li><strong>RAG + Gemini 2.5 Pro + SFT for unstructured menus</strong> — PDFs/images defeat rule-based parsers. Retrieval grounds extraction in similar previously-labeled menus; SFT enforces the output schema (100% schema consistency, 98% extraction fidelity — offline/eval). Validation gate before catalog write: schema check, price sanity, currency/locale checks; sub-threshold confidence → human review queue.</li>
+<li><strong>Anti-bot layer</strong> — IP rotation, user-agent spoofing, dynamic proxy pools; retry budget per source; raised successful ingestions by <strong>95% (~60–65% → 95%+)</strong> (baseline ESTIMATED — see <code>09_metrics_derivations.md</code>).</li>
 </ul>
 <h2 id="4-numbers-to-keep-straight">4. Numbers to keep straight</h2>
-<p>30,000+ menus/month · onboarding 24 h → 2 h (90%) · $2/menu third-party cost eliminated → $600K+/yr · +95% successful ingestions (anti-bot) · 98% extraction fidelity, 100% schema consistency (SFT) · failure time-to-detect hours → minutes (Pinot) · ANZ compliance automation: 99.9% document compliance, 20 h/week manual work removed (separate workstream, same platform umbrella).</p>
+<p>30,000+ menus/month · onboarding 24 h → 2 h (90%) · $2/menu third-party cost eliminated → $600K+/yr · Kafka peak <strong>~200–500 events/sec</strong> (ESTIMATED) · Flink at that rate with keyed dedup · Spark backfills <strong>~1–2M item rows</strong> (ESTIMATED) · Pinot sub-second health queries · +95% successful ingestions (<strong>~60–65% → 95%+</strong>, baseline ESTIMATED) · 98% extraction fidelity, 100% schema consistency (SFT, offline/eval) · failure time-to-detect hours → minutes (Pinot) · ANZ compliance automation: 99.9% document compliance, 20 h/week manual work removed (separate workstream, same platform umbrella).</p>
+<p>Full ESTIMATED vs DOCUMENTED tags: <code>../09_metrics_derivations.md</code>.</p>
 <h2 id="5-deep-dive-qa">5. Deep-dive Q&amp;A</h2>
 <ul>
 <li><strong>"How does the Flink job stay correct on retries?"</strong> Checkpointed keyed state; dedup key = hash(vendor_id, menu content); sink is idempotent upsert into the catalog keyed by vendor+item, so replays converge.</li>
@@ -665,6 +676,7 @@ frm-scoping-db           frm-collaboration-db             │
 <li><strong>Fundamentals.</strong> Distributed, partitioned, replicated <strong>commit log</strong>. Topics → partitions (unit of parallelism + ordering); producers partition by key; consumer groups get exclusive partition assignment; offsets are consumer-owned progress markers.</li>
 <li><strong>Internals worth knowing:</strong> sequential disk I/O + zero-copy sendfile = throughput; replication with leader/ISR, <code>acks=all</code> + <code>min.insync.replicas</code> for durability; <strong>exactly-once</strong> = idempotent producer (sequence numbers) + transactions (read-process-write atomically); log compaction for changelog topics; consumer rebalancing (cooperative sticky avoids stop-the-world).</li>
 <li><strong>Where I used it:</strong> Uber menu ingestion bus (decouple bursty scrapers from consumers; replay for backfills; per-vendor key ordering). IA: async embedding jobs (<code>aiokafka</code>).</li>
+<li><strong>Numbers (Menu, ESTIMATED):</strong> peak <strong>~200–500 events/sec</strong> during scraper fleet runs (30K menus/mo → ~1K/day, amplified by item-level events + retries). Steady-state lower. Do not invent partition counts without evidence — say "partitioned by vendor id; lag is the SLO."</li>
 <li><strong>Gotchas:</strong> partition count is the parallelism ceiling; hot keys skew partitions; consumer lag monitoring is <em>the</em> health metric; ordering only within a partition; rebalance storms from slow consumers (<code>max.poll.interval.ms</code>).</li>
 </ul>
 <h2 id="4-apache-flink">4. Apache Flink</h2>
@@ -672,6 +684,7 @@ frm-scoping-db           frm-collaboration-db             │
 <li><strong>Fundamentals.</strong> True <strong>per-event streaming</strong> (not micro-batch). Job = dataflow graph of operators; parallel subtasks; <strong>keyed state</strong> (per-key state backends — RocksDB for large state) is the superpower: dedup, aggregation, joins with state that survives failures.</li>
 <li><strong>Correctness machinery:</strong> <strong>event time vs processing time</strong>; <strong>watermarks</strong> (assertion that no events older than T remain) drive window firing; <strong>checkpoints</strong> = distributed snapshots (Chandy-Lamport barrier alignment) giving exactly-once <em>state</em> semantics; end-to-end exactly-once needs transactional/idempotent sinks (two-phase commit sink to Kafka).</li>
 <li><strong>Where I used it:</strong> Uber menu normalization — keyed dedup (vendor+content hash), event-time last-write-wins on out-of-order scrape retries, validation + routing (structured vs unstructured path).</li>
+<li><strong>Numbers (Menu, ESTIMATED):</strong> sized for the Kafka peak (~200–500 events/sec); near-zero lag in steady state; state TTL on vendor keys. Checkpoint interval tuned so recovery does not exceed scrape retry windows.</li>
 <li><strong>vs Spark Streaming:</strong> Flink = per-event latency + first-class state; Spark Structured Streaming = micro-batch, better for batch-parity code. Uber's standard stream engine is Flink.</li>
 <li><strong>Gotchas:</strong> watermark skew from idle partitions (idleness markers); state growth → TTL it; checkpoint duration vs interval tension; backpressure propagates upstream (watch busy/backpressure metrics per operator).</li>
 </ul>
@@ -679,6 +692,7 @@ frm-scoping-db           frm-collaboration-db             │
 <ul>
 <li><strong>Fundamentals.</strong> Distributed <strong>batch</strong> engine (also micro-batch streaming). Driver builds a DAG of transformations on DataFrames; <strong>Catalyst</strong> optimizes the logical plan; <strong>Tungsten</strong> does whole-stage codegen; stages split at <strong>shuffle</strong> boundaries; tasks per partition.</li>
 <li><strong>Where I used it:</strong> Uber backfills/reprocessing (re-ingest a vendor's history after parser upgrades; large joins against catalog snapshots) + Databricks for exploratory pipeline work.</li>
+<li><strong>Numbers (Menu, ESTIMATED):</strong> typical backfill / reprocess window <strong>~1–2M item rows</strong> — kept off Flink so real-time path is not starved.</li>
 <li><strong>Performance levers they probe:</strong> shuffle is the enemy (partitioning, broadcast joins for small tables); skew handling (salting, AQE skew-join splitting); caching only reused intermediates; file sizes (small-files problem); predicate pushdown into Parquet.</li>
 <li><strong>vs Flink:</strong> throughput-shaped, restart-a-stage recovery model — right for backfills; wrong for per-event latency.</li>
 </ul>
@@ -686,6 +700,7 @@ frm-scoping-db           frm-collaboration-db             │
 <ul>
 <li><strong>Fundamentals.</strong> Real-time <strong>OLAP</strong> store for user-facing analytics: sub-second filter/groupBy on high-cardinality data, at high QPS. Ingests <strong>directly from Kafka</strong> (real-time segments) + batch segments from files; columnar with inverted/sorted/star-tree indexes; scatter-gather query via brokers.</li>
 <li><strong>Where I used it:</strong> Uber ingestion-health analytics — success/failure-rate by source/stage/error-class in near-real-time; alert rules on failure spikes; cut time-to-detect from hours to minutes. (Pinot is Uber's standard for real-time OLAP — it powers UberEats ops dashboards.)</li>
+<li><strong>Numbers:</strong> sub-second filter/groupBy for ops dashboards (target); QPS is ops-dashboard scale, not public edge — do not invent a Pinot QPS number.</li>
 <li><strong>vs ClickHouse/Druid:</strong> Pinot shines at high-QPS user-facing slices with upserts from Kafka; ClickHouse at heavy ad-hoc analytical scans. At Uber, Pinot was the paved road.</li>
 <li><strong>Gotchas:</strong> segment sizing; upsert tables need primary keys + memory budget; star-tree index trades storage for pre-aggregation; real-time→offline segment handoff.</li>
 </ul>
@@ -941,6 +956,257 @@ The users were ops and vendor-onboarding teams, not customers. Before: failures 
 <li>Googliness maps: use STAR story 1 (reconciled ClickHouse verdict — intellectual humility), story 4 (clustering copilot — ambiguity), story 5 (constants-refactor regression — owning mistakes).</li>
 <li>Mid level at Google = "drives progress, solves problems, mentors juniors." Sprinkle the mentoring evidence: PR reviews at Uber (stacked PRs culture), onboarding EPAM teammates, GFG interns.</li>
 </ul>
+<hr>
+<h1 id="metrics-derivations-estimated-vs-documented">Metrics Derivations (estimated vs documented)</h1>
+<p>Every TPS / RPS / from→to number on the resume. Interview line: say <strong>"estimated, derived from X"</strong> for ESTIMATED rows and <strong>"documented / measured"</strong> for DOCUMENTED rows. Do not invent finer precision than this table.</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DOCUMENTED</strong></td>
+<td>Already in prep / resume source material before this pass</td>
+</tr>
+<tr>
+<td><strong>ESTIMATED</strong></td>
+<td>Derived from a documented volume; mark as estimate in interviews</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-impact-analytics-assortsmart">1. Impact Analytics — AssortSmart</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Days → under 1 hour turnaround</td>
+<td>DOCUMENTED (design target)</td>
+<td>FRD / playbook design target — say "targeting", not measured live</td>
+</tr>
+<tr>
+<td>~100 candidate clusterings → top 3</td>
+<td>DOCUMENTED</td>
+<td>Agentic design (silhouette-scored batch)</td>
+</tr>
+<tr>
+<td>Bulk-save APIs <strong>~10–20 peak RPS</strong></td>
+<td>ESTIMATED</td>
+<td>Internal planner SaaS: tens of concurrent planners, not consumer internet scale. Peak ≈ concurrent edit sessions × a few saves/min → ~10–20 RPS. Do <strong>not</strong> claim thousands of RPS.</td>
+</tr>
+<tr>
+<td>ClickHouse <strong>~5–10K row writes/sec</strong></td>
+<td>ESTIMATED</td>
+<td>Derived from 250M-row PoC load + bulk plan-edit batches (partition swaps / insert batches). Sustained <em>row write</em> throughput under load tests / PoC shape — not a live multi-tenant SLA yet.</td>
+</tr>
+<tr>
+<td>p95 &lt; 500 ms reads / &lt; 80 ms cell edits</td>
+<td>DOCUMENTED (design target)</td>
+<td>Playbook grid targets (bullet may be commented on resume)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rapid fire:</strong> <em>"How did you get 10–20 RPS?"</em> — Internal planning tool, not public API. Concurrent planners × save frequency, not load-test peak of a public edge.</p>
+<hr>
+<h2 id="2-uber-frm-scoping">2. Uber FRM Scoping</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>70%</strong> cycle-time cut (<strong>~2 weeks → ~3–4 days</strong>)</td>
+<td>ESTIMATED baseline</td>
+<td>70% DOCUMENTED as outcome claim. From→to ESTIMATED from a ~10-business-day quarterly close workflow → ~3–4 days after platform. Say "about two weeks of analyst calendar time down to three-to-four days."</td>
+</tr>
+<tr>
+<td>36 REST endpoints / 8 screens</td>
+<td>DOCUMENTED</td>
+<td>Resume / FRM prep</td>
+</tr>
+<tr>
+<td>Endpoint <strong>p95 &lt; 300 ms</strong></td>
+<td>ESTIMATED</td>
+<td>Internal quarterly tool, low concurrency. Latency framing for API quality — not a public RPS claim. Do <strong>not</strong> invent RPS for FRM (traffic is sparse).</td>
+</tr>
+<tr>
+<td>19M → 300K rows quarterly ETL</td>
+<td>DOCUMENTED</td>
+<td>Resume / FRM prep</td>
+</tr>
+<tr>
+<td>100% changed-module coverage</td>
+<td>DOCUMENTED</td>
+<td>Resume</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rapid fire:</strong> <em>"Why no RPS on FRM?"</em> — Quarterly internal finance tool; claiming thousands of RPS would be dishonest. Defend schema, ETL compaction, and endpoint latency instead.</p>
+<hr>
+<h2 id="3-uber-menu-ingestion-kafka-flink-spark-pinot">3. Uber Menu Ingestion (Kafka / Flink / Spark / Pinot)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>30,000+ menus/month · 24h → 2h · $600K+/yr</td>
+<td>DOCUMENTED</td>
+<td>Menu prep</td>
+</tr>
+<tr>
+<td>Kafka <strong>~200–500 peak events/sec</strong></td>
+<td>ESTIMATED</td>
+<td>30K menus/mo ≈ 1K menus/day. Item-level scrape/retry events (items + retries + health) amplify menu count; burst windows during fleet runs → hundreds of events/sec peak. Steady-state much lower.</td>
+</tr>
+<tr>
+<td>Flink processes at that peak</td>
+<td>ESTIMATED</td>
+<td>Same event rate; keyed dedup / validate / route keeps up with Kafka lag target near zero in steady state</td>
+</tr>
+<tr>
+<td>Spark nightly / backfill <strong>~1–2M item rows</strong></td>
+<td>ESTIMATED</td>
+<td>~1K menus/day × tens–hundreds of items + 90-day reprocess windows → order of 1–2M rows for a typical backfill batch</td>
+</tr>
+<tr>
+<td>Pinot <strong>sub-second</strong> health queries</td>
+<td>ESTIMATED (ops target)</td>
+<td>Uber Pinot paved-road expectation for filter+groupBy dashboards; time-to-detect hours → minutes is DOCUMENTED intent</td>
+</tr>
+<tr>
+<td><strong>+95%</strong> successful ingestions (<strong>~60–65% → 95%+</strong>)</td>
+<td>ESTIMATED baseline</td>
+<td>+95% DOCUMENTED. From→to ESTIMATED: pre-anti-bot success in the low-to-mid 60s → mid-90s after IP rotation / proxy pools</td>
+</tr>
+<tr>
+<td>98% extraction fidelity</td>
+<td>DOCUMENTED (offline/eval)</td>
+<td>Say "offline evaluation / SFT eval", not live measured forever</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why each streaming piece (with numbers):</strong> see § below and <code>projects/03_uber_menu_ingestion.md</code>.</p>
+<p><strong>Rapid fire:</strong> <em>"How did you get 200–500 events/sec?"</em> — Menus/day × items × scrape retries, peaked during fleet runs — order-of-magnitude estimate, not a Grafana screenshot.</p>
+<hr>
+<h2 id="4-masters-india-gst">4. Masters India GST</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p95 <strong>1.2s → 300ms</strong></td>
+<td>DOCUMENTED</td>
+<td>Resume / GST prep</td>
+</tr>
+<tr>
+<td>100K+ txn/import · <strong>1M+ daily</strong></td>
+<td>DOCUMENTED</td>
+<td>Resume</td>
+</tr>
+<tr>
+<td><strong>~12 TPS avg, 100+ TPS peak</strong></td>
+<td>ESTIMATED</td>
+<td>1M txn/day ÷ 86,400 ≈ <strong>11.6 TPS</strong> average. Filing-deadline peaks (GSTR windows) assumed ~8–10× average → <strong>~100+ TPS</strong> peak on the write path</td>
+</tr>
+<tr>
+<td>Triage <strong>70%</strong> (<strong>~30 min → &lt;10 min</strong>)</td>
+<td>ESTIMATED baseline</td>
+<td>70% DOCUMENTED with ELK/New Relic. From→to ESTIMATED from ~half-hour mean triage to under 10 minutes with centralized logs + alerts</td>
+</tr>
+<tr>
+<td>Coverage <strong>35% → 82%</strong></td>
+<td>DOCUMENTED</td>
+<td>Resume</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rapid fire:</strong> <em>"How 100 TPS?"</em> — 1M/day is ~12 TPS flat; peaks are filing deadlines when many clients push invoices — order-of-magnitude 8–10×, not a precise load-test number.</p>
+<hr>
+<h2 id="5-geeksforgeeks">5. GeeksforGeeks</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>100,000+ daily queries</strong></td>
+<td>DOCUMENTED</td>
+<td>Resume</td>
+</tr>
+<tr>
+<td><strong>~1–2 RPS avg, ~10× contest spikes</strong></td>
+<td>ESTIMATED</td>
+<td>100K/day ÷ 86,400 ≈ <strong>1.16 RPS</strong> average. Contests / viral posts → short spikes ~10× → ~10–20 RPS</td>
+</tr>
+<tr>
+<td>Premium <strong>+15–20%</strong> (relative lift)</td>
+<td>DOCUMENTED as relative</td>
+<td>No absolute baseline (before ARR or sub count) in prep — always say <strong>relative lift</strong>, not "from X% to Y%"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rapid fire:</strong> <em>"What's the RPS?"</em> — Convert daily queries to average RPS; call out contest spikes separately.</p>
+<hr>
+<h2 id="6-uber-menu-streaming-why-with-numbers-study-card">6. Uber Menu — streaming "why" with numbers (study card)</h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Why required</th>
+<th>Number to say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Scrapers are bursty/flaky; need replay, per-vendor key order, backpressure isolation</td>
+<td>Peak <strong>~200–500 events/sec</strong> into topics; consumer lag = health</td>
+</tr>
+<tr>
+<td><strong>Flink</strong></td>
+<td>Per-event dedup + event-time LWW on out-of-order retries; exactly-once state via checkpoints</td>
+<td>Same peak rate; keyed state by vendor+content hash</td>
+</tr>
+<tr>
+<td><strong>Spark</strong></td>
+<td>Backfills / parser upgrades must not starve the real-time path</td>
+<td>Batch windows <strong>~1–2M item rows</strong>; nightly or on-demand</td>
+</tr>
+<tr>
+<td><strong>Pinot</strong></td>
+<td>Ops need minutes-not-hours detection of parse/scrape failures</td>
+<td>Sub-second filter/groupBy; ingest from Kafka health topic</td>
+</tr>
+</tbody>
+</table>
+<p>Full prose defense: <code>projects/03_uber_menu_ingestion.md</code> §3–4 and <code>06_tech_deep_dives.md</code> §§3–6.</p>
 <hr>
 <h1 id="agentic-assort-planner-resume-interview-playbook">Agentic Assort Planner — Resume &amp; Interview Playbook</h1>
 <div class="stage-badge stage-obs">Senior SWE · Python + AI/Agents + Data · grounded in your own repos, PoC & audit — July 2026</div>

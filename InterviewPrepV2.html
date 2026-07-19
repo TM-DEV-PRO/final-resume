@@ -32,22 +32,28 @@ hr{border:none;border-top:1px solid var(--line);margin:30px 0}
 strong{color:#fff}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style></head><body>
-<div class="layout"><nav class="toc"><div class="brand">Python/Go v2 · Hardened</div><a class="lvl1" href="#pythongo-resume-v2-interview-prep-hub-hardened">Python/Go resume v2 — Interview Prep Hub (hardened)</a>
+<div class="layout"><nav class="toc"><div class="brand">Python/Go v2 · Interview Prep</div><a class="lvl1" href="#pythongo-resume-v2-interview-prep-hub-hardened">Python/Go resume v2 — Interview Prep Hub (hardened)</a>
 <a class="lvl2" href="#what-changed-vs-the-original-resume">What changed vs the original resume</a>
 <a class="lvl2" href="#study-path">Study path</a>
 <a class="lvl2" href="#resume-at-a-glance-v2">Resume at a glance (v2)</a>
+<a class="lvl1" href="#pythongo-resume-v2-hardened">Python/Go resume v2 (hardened)</a>
+<a class="lvl2" href="#layout">Layout</a>
+<a class="lvl2" href="#fixes-applied">Fixes applied</a>
+<a class="lvl2" href="#rebuild">Rebuild</a>
 <a class="lvl1" href="#skills-defense-what-was-trimmed-in-v2">Skills defense — what was trimmed in v2</a>
 <a class="lvl2" href="#kept-on-purpose">Kept on purpose</a>
 <a class="lvl1" href="#masters-india-geeksforgeeks-mongodb-elasticsearch-v2">Masters India &amp; GeeksforGeeks — MongoDB / Elasticsearch (v2)</a>
 <a class="lvl2" href="#masters-india">Masters India</a>
 <a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
 <a class="lvl2" href="#interview-one-liners">Interview one-liners</a>
+<a class="lvl1" href="#uber-menu-streaming-numbers-v2-pointer">Uber Menu — streaming numbers (v2 pointer)</a>
 <a class="lvl1" href="#role-targeting-rapid-fire-pythongo-resume-v2">Role targeting + rapid-fire — Python/Go resume v2</a>
 <a class="lvl2" href="#new-wording-you-must-say-correctly">New wording you must say correctly</a>
 <a class="lvl2" href="#role-families">Role families</a>
-<a class="lvl1" href="InterviewPrep.html">← Original prep</a>
-<a class="lvl1" href="index.html">Home</a>
-</nav><main><h1 id="pythongo-resume-v2-interview-prep-hub-hardened">Python/Go resume v2 — Interview Prep Hub (hardened)</h1>
+<a class="lvl1" href="#metrics-derivations-resume-v2">Metrics Derivations (resume v2)</a>
+<a class="lvl2" href="#resume-facing-quick-list-v2-wording">Resume-facing quick list (v2 wording)</a>
+<a class="lvl2" href="#streaming-study-pointer">Streaming study pointer</a></nav>
+<main><h1 id="pythongo-resume-v2-interview-prep-hub-hardened">Python/Go resume v2 — Interview Prep Hub (hardened)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer · July 2026</strong></p>
 <p>This hub backs <code>resume_v2/</code> (PDF: <code>Tarun_Mittal_SSE_5yr_v2.pdf</code>). The original <code>resume/</code> + <code>interview_prep/</code> are <strong>unchanged</strong> — use this track when you want the credibility-hardened Python/Go resume.</p>
 <h2 id="what-changed-vs-the-original-resume">What changed vs the original resume</h2>
@@ -110,12 +116,38 @@ strong{color:#fff}
 <li><code>../interview_prep/07_behavioral_star_stories.md</code></li>
 <li><code>../interview_prep/agentic_assort_playbook/</code> (§0–§10)</li>
 </ol>
-<p>Plus this folder’s rapid-fire for v2 wording.</p>
+<p>Plus this folder’s rapid-fire for v2 wording, <a href="09_metrics_derivations.md"><code>09_metrics_derivations.md</code></a>, and <a href="03_uber_menu_streaming_numbers.md"><code>03_uber_menu_streaming_numbers.md</code></a>.</p>
 <div class="callout warn">
 <p><b>Honesty guardrail (same as original).</b> Know REAL vs offline-eval vs design targets. BigQuery = upstream source of truth you ingest from — never claim BigQuery optimization work as yours. Rust stays off the resume; if asked, “Go by default, Rust by measurement / escape hatch — not a shipped claim on this PDF.”</p>
 </div>
 <h2 id="resume-at-a-glance-v2">Resume at a glance (v2)</h2>
 <p>Same companies, projects, and metrics as the original — only skills trim + two IA phrasing hardenings above.</p>
+<p>TPS/RPS/from→to (same as main PDF): see <a href="09_metrics_derivations.md"><code>09_metrics_derivations.md</code></a>.</p>
+<hr>
+<h1 id="pythongo-resume-v2-hardened">Python/Go resume v2 (hardened)</h1>
+<p>Credibility-hardened copy of the main Python/Go resume. <strong>Does not modify</strong> <code>resume/</code> or <code>interview_prep/</code>.</p>
+<h2 id="layout">Layout</h2>
+<pre><code>resume_v2/                 LaTeX sources
+interview_prep_v2/         Delta prep (index + skills rationale + rapid-fire)
+output/
+  Tarun_Mittal_SSE_5yr_v2.pdf
+  Tarun_Mittal_Resume_v2_Overleaf.zip
+Tarun_Mittal_SSE_5yr_v2.pdf
+InterviewPrepV2.html
+</code></pre>
+<h2 id="fixes-applied">Fixes applied</h2>
+<ol>
+<li>Skills trimmed to technologies evidenced on Tech Used lines / live stack</li>
+<li>IA “under 1 hour” → <strong>targeting</strong> (design target)</li>
+<li>“lock free writes” → concurrent writes <strong>without lock contention</strong></li>
+<li>BigQuery kept with explicit ingest-SoT talking track in prep</li>
+</ol>
+<h2 id="rebuild">Rebuild</h2>
+<pre><code class="language-bash">cd resume_v2 &amp;&amp; tectonic resume.tex --outdir ../output
+mv ../output/resume.pdf ../output/Tarun_Mittal_SSE_5yr_v2.pdf
+cp ../output/Tarun_Mittal_SSE_5yr_v2.pdf ../
+</code></pre>
+<p>Deep project chapters remain in <code>interview_prep/</code> — this folder only documents v2 deltas.</p>
 <hr>
 <h1 id="skills-defense-what-was-trimmed-in-v2">Skills defense — what was trimmed in v2</h1>
 <table>
@@ -181,6 +213,51 @@ strong{color:#fff}
 <li>If probed on indexing: ES inverted index + analyzers; Mongo indexes on query fields; know when you’d pick one over the other.</li>
 </ul>
 <hr>
+<h1 id="uber-menu-streaming-numbers-v2-pointer">Uber Menu — streaming numbers (v2 pointer)</h1>
+<p>v2 resume uses the same Menu bullets as the main track. Do not duplicate the full HLD here.</p>
+<p><strong>Study:</strong></p>
+<ol>
+<li><a href="../interview_prep/projects/03_uber_menu_ingestion.md"><code>../interview_prep/projects/03_uber_menu_ingestion.md</code></a> §3–4 (why Kafka/Flink/Spark/Pinot <strong>with numbers</strong>)</li>
+<li><a href="../interview_prep/06_tech_deep_dives.md"><code>../interview_prep/06_tech_deep_dives.md</code></a> §§3–6</li>
+<li><a href="09_metrics_derivations.md"><code>09_metrics_derivations.md</code></a> §3</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Why</th>
+<th>Number (ESTIMATED unless noted)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kafka</td>
+<td>Burst scrape bus, replay, per-vendor order</td>
+<td>~200–500 peak events/sec</td>
+</tr>
+<tr>
+<td>Flink</td>
+<td>Keyed dedup, event-time LWW, checkpoints</td>
+<td>Same peak; near-zero lag steady state</td>
+</tr>
+<tr>
+<td>Spark</td>
+<td>Backfills without starving real-time</td>
+<td>~1–2M item rows per typical window</td>
+</tr>
+<tr>
+<td>Pinot</td>
+<td>Ops health OLAP from Kafka</td>
+<td>Sub-second queries; hours→minutes detect</td>
+</tr>
+<tr>
+<td>Anti-bot</td>
+<td>Proxy/IP rotation</td>
+<td>+95% success (~60–65% → 95%+)</td>
+</tr>
+</tbody>
+</table>
+<hr>
 <h1 id="role-targeting-rapid-fire-pythongo-resume-v2">Role targeting + rapid-fire — Python/Go resume v2</h1>
 <p>Use with <code>resume_v2/</code> / <code>Tarun_Mittal_SSE_5yr_v2.pdf</code>.</p>
 <h2 id="new-wording-you-must-say-correctly">New wording you must say correctly</h2>
@@ -195,4 +272,41 @@ strong{color:#fff}
 <p><strong>Menu 98% / $600K</strong><br>
 Same as original prep: offline-eval fidelity; finance-owned savings model — know the arithmetic before quoting.</p>
 <h2 id="role-families">Role families</h2>
-<p>Same lead stories as <code>../interview_prep/08_role_targeting_and_rapid_fire.md</code> — IA Go+ClickHouse, Uber Menu streaming, Masters quality/observability, FRM audit correctness.</p></main></div></body></html>
+<p>Same lead stories as <code>../interview_prep/08_role_targeting_and_rapid_fire.md</code> — IA Go+ClickHouse, Uber Menu streaming, Masters quality/observability, FRM audit correctness.</p>
+<hr>
+<h1 id="metrics-derivations-resume-v2">Metrics Derivations (resume v2)</h1>
+<p><strong>Same numbers and honesty tags as the main track.</strong> Full tables: <a href="../interview_prep/09_metrics_derivations.md"><code>../interview_prep/09_metrics_derivations.md</code></a>.</p>
+<p>v2 only hardens IA <em>phrasing</em> (targeting / concurrent writes without row locks) and skills trim. <strong>All TPS / RPS / from→to / streaming rates match the main resume.</strong></p>
+<h2 id="resume-facing-quick-list-v2-wording">Resume-facing quick list (v2 wording)</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Numbers to defend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AssortSmart</td>
+<td>Go Gin bulk-save <strong>~10–20 peak RPS</strong> · ClickHouse <strong>~5–10K row writes/sec</strong> · turnaround <strong>targeting</strong> days→&lt;1h</td>
+</tr>
+<tr>
+<td>FRM</td>
+<td><strong>70%</strong> cycle (<strong>~2 weeks → ~3–4 days</strong>) · 36 endpoints <strong>p95 &lt; 300 ms</strong> · 19M→300K · no RPS claim</td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>Kafka <strong>~200–500 peak events/sec</strong> · +<strong>95%</strong> (<strong>~60–65% → 95%+</strong>) · Pinot sub-second · Spark <strong>~1–2M</strong> item rows</td>
+</tr>
+<tr>
+<td>Masters GST</td>
+<td><strong>~12 TPS avg / 100+ TPS peak</strong> · triage <strong>70%</strong> (<strong>~30 min → &lt;10 min</strong>) · p95 1.2s→300ms · MongoDB/ES as documented</td>
+</tr>
+<tr>
+<td>GFG</td>
+<td><strong>~1–2 RPS avg, ~10× contest spikes</strong> · +15–20% premium <strong>relative</strong> · MongoDB/ES as documented</td>
+</tr>
+</tbody>
+</table>
+<h2 id="streaming-study-pointer">Streaming study pointer</h2>
+<p>Use main <code>../interview_prep/projects/03_uber_menu_ingestion.md</code> and <code>../interview_prep/06_tech_deep_dives.md</code> §§3–6 (updated with rates). Do not invent Kafka partition counts.</p></main></div></body></html>

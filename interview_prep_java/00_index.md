@@ -34,7 +34,11 @@ Study order:
 | Company | Project | Lead metric |
 |---|---|---|
 | Impact Analytics (Jun 2026–) | Agentic AssortSmart | Python agentic microservice (FastAPI, LangGraph): ~100 silhouette-scored clusterings → top 3, days → <1 h · Spring Boot (Java) core: worker pools, timeouts, Spring Security JWT · ClickHouse append-only never-erase store |
-| Uber via EPAM (Jul 2024–May 2026) | FRM Scoping Platform | 70% cycle-time cut · 36 endpoints/8 screens · 19M rows/quarter · JPA/Hibernate |
-| Uber via EPAM | Menu Ingestion Platform | 30K+ menus/mo · 24 h→2 h · $600K+/yr · Kafka/Flink/Spark/Pinot |
-| Masters India (Dec 2022–Jun 2024) | GST e-invoicing SaaS | p95 1.2s→300ms · 1M+ txn/day · Spring Boot + Spring Batch |
-| GeeksforGeeks (Aug 2021–Nov 2022) | Backend | 100K+ daily queries · +15–20% subscriptions · Spring Boot |
+| Uber via EPAM (Jul 2024–May 2026) | FRM Scoping Platform | 70% cycle (~2 weeks → ~3–4 days) · 36 endpoints p95 <300ms · 19M→300K · JPA/Hibernate |
+| Uber via EPAM | Menu Ingestion Platform | 30K+ menus/mo · Kafka ~200–500 peak events/sec · +95% (~60–65% → 95%+) · Pinot sub-second |
+| Masters India (Dec 2022–Jun 2024) | GST e-invoicing SaaS | p95 1.2s→300ms · 1M+/day (~12 TPS avg, 100+ peak) · triage 70% (~30→<10 min) · Spring Batch |
+| GeeksforGeeks (Aug 2021–Nov 2022) | Backend | 100K+ daily queries (~1–2 RPS avg, ~10× spikes) · +15–20% relative · Spring Boot |
+
+## Metrics honesty
+
+Same numbers as the main track — see [`09_metrics_derivations.md`](09_metrics_derivations.md) and [`../interview_prep/09_metrics_derivations.md`](../interview_prep/09_metrics_derivations.md).

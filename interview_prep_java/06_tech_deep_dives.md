@@ -57,7 +57,9 @@ Every technology on `resume_java`. Fundamentals → internals → why we used it
 
 ## 9. Flink / Spark / Pinot
 
-Same depth as main `interview_prep/06_tech_deep_dives.md` §§3–6. Flink/Spark jobs are often Java/Scala at Uber; this resume's Menu **Tech Used** line stays Python + streaming (matches live stack) — do not invent a Spring control-plane bullet you cannot defend.
+Same depth as main `interview_prep/06_tech_deep_dives.md` §§3–6 (now includes ESTIMATED rates). Flink/Spark jobs are often Java/Scala at Uber; this resume's Menu **Tech Used** line stays Python + streaming (matches live stack) — do not invent a Spring control-plane bullet you cannot defend.
+
+**Numbers to memorize (ESTIMATED):** Kafka peak ~200–500 events/sec · Flink keeps pace · Spark backfills ~1–2M item rows · Pinot sub-second health queries · +95% ingest success (~60–65% → 95%+). Full derivation: `09_metrics_derivations.md`.
 
 ## 10. Redis / MySQL / PostgreSQL / ClickHouse
 

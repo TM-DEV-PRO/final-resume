@@ -37,12 +37,13 @@
 
 ## 4. Streaming defense (must be deep)
 
-Interviewers will probe Kafka/Flink/Spark/Pinot more than Spring here. Use the same depth as the main `06_tech_deep_dives.md` streaming sections. One-liners:
+Interviewers will probe Kafka/Flink/Spark/Pinot more than Spring here. Use the same depth as the main `interview_prep/06_tech_deep_dives.md` streaming sections and `interview_prep/projects/03_uber_menu_ingestion.md` §3. One-liners **with numbers** (ESTIMATED — see `09_metrics_derivations.md`):
 
-- **Kafka:** partitioned log, per-vendor key ordering, consumer lag as health.
-- **Flink:** event time, watermarks, keyed state dedup, checkpoints.
-- **Spark:** batch backfills, shuffle-aware joins.
-- **Pinot:** real-time OLAP for high-QPS ops slices from Kafka.
+- **Kafka:** partitioned log, per-vendor key ordering, consumer lag as health; peak **~200–500 events/sec** during fleet runs (30K menus/mo → ~1K/day, item+retry amplification).
+- **Flink:** event time, watermarks, keyed state dedup, checkpoints; sized for that peak with near-zero lag in steady state.
+- **Spark:** batch backfills / parser upgrades off the real-time path; typical window **~1–2M item rows**.
+- **Pinot:** real-time OLAP for ops slices from Kafka; **sub-second** dashboards; hours → minutes time-to-detect.
+- **Anti-bot:** +**95%** successful ingestions (**~60–65% → 95%+**).
 
 ## 5. Q&A
 

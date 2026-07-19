@@ -35,6 +35,11 @@ strong{color:#fff}
 <div class="layout"><nav class="toc"><div class="brand">Java/Spring · Interview Prep</div><a class="lvl1" href="#java-track-interview-prep-hub">Java Track — Interview Prep Hub</a>
 <a class="lvl2" href="#stack-mapping-pythongo-resume-this-java-resume">Stack mapping (Python/Go resume → this Java resume)</a>
 <a class="lvl2" href="#the-resume-at-a-glance">The resume at a glance</a>
+<a class="lvl2" href="#metrics-honesty">Metrics honesty</a>
+<a class="lvl1" href="#java-spring-track-readme">Java / Spring track — README</a>
+<a class="lvl2" href="#layout">Layout</a>
+<a class="lvl2" href="#rebuild-pdf">Rebuild PDF</a>
+<a class="lvl2" href="#stack-on-this-resume">Stack on this resume</a>
 <a class="lvl1" href="#impact-analytics-agentic-assortsmart-java-spring-track">Impact Analytics — Agentic AssortSmart (Java / Spring track)</a>
 <a class="lvl2" href="#1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</a>
 <a class="lvl2" href="#2-service-split-say-it-exactly">2. Service split (say it exactly)</a>
@@ -84,9 +89,10 @@ strong{color:#fff}
 <a class="lvl2" href="#2-rapid-fire-java-resume-claims">2. Rapid-fire (Java resume claims)</a>
 <a class="lvl2" href="#3-claims-interviewers-poke-hardest">3. Claims interviewers poke hardest</a>
 <a class="lvl2" href="#4-system-design-prep-picks-java-interview">4. System design prep picks (Java interview)</a>
-<a class="lvl1" href="InterviewPrep.html">← Python/Go track</a>
-<a class="lvl1" href="index.html">Home</a>
-</nav><main><h1 id="java-track-interview-prep-hub">Java Track — Interview Prep Hub</h1>
+<a class="lvl1" href="#metrics-derivations-java-track">Metrics Derivations (Java track)</a>
+<a class="lvl2" href="#resume-facing-quick-list-java-wording">Resume-facing quick list (Java wording)</a>
+<a class="lvl2" href="#interview-line">Interview line</a></nav>
+<main><h1 id="java-track-interview-prep-hub">Java Track — Interview Prep Hub</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026</strong></p>
 <p>This hub backs every line of <code>resume_java/resume.tex</code> (PDF: <code>output/Tarun_Mittal_SSE_Java_5yr.pdf</code>). It is a <strong>separate track</strong> from the Python/Go prep in <code>interview_prep/</code> — same projects, metrics, and companies; <strong>non-agentic APIs framed in Spring Boot / Hibernate where defensible; AI/RAG + Menu streaming stay Python</strong>.</p>
 <p>Study order:</p>
@@ -164,25 +170,58 @@ strong{color:#fff}
 <tr>
 <td>Uber via EPAM (Jul 2024–May 2026)</td>
 <td>FRM Scoping Platform</td>
-<td>70% cycle-time cut · 36 endpoints/8 screens · 19M rows/quarter · JPA/Hibernate</td>
+<td>70% cycle (~2 weeks → ~3–4 days) · 36 endpoints p95 &lt;300ms · 19M→300K · JPA/Hibernate</td>
 </tr>
 <tr>
 <td>Uber via EPAM</td>
 <td>Menu Ingestion Platform</td>
-<td>30K+ menus/mo · 24 h→2 h · $600K+/yr · Kafka/Flink/Spark/Pinot</td>
+<td>30K+ menus/mo · Kafka ~200–500 peak events/sec · +95% (~60–65% → 95%+) · Pinot sub-second</td>
 </tr>
 <tr>
 <td>Masters India (Dec 2022–Jun 2024)</td>
 <td>GST e-invoicing SaaS</td>
-<td>p95 1.2s→300ms · 1M+ txn/day · Spring Boot + Spring Batch</td>
+<td>p95 1.2s→300ms · 1M+/day (~12 TPS avg, 100+ peak) · triage 70% (~30→&lt;10 min) · Spring Batch</td>
 </tr>
 <tr>
 <td>GeeksforGeeks (Aug 2021–Nov 2022)</td>
 <td>Backend</td>
-<td>100K+ daily queries · +15–20% subscriptions · Spring Boot</td>
+<td>100K+ daily queries (~1–2 RPS avg, ~10× spikes) · +15–20% relative · Spring Boot</td>
 </tr>
 </tbody>
 </table>
+<h2 id="metrics-honesty">Metrics honesty</h2>
+<p>Same numbers as the main track — see <a href="09_metrics_derivations.md"><code>09_metrics_derivations.md</code></a> and <a href="../interview_prep/09_metrics_derivations.md"><code>../interview_prep/09_metrics_derivations.md</code></a>.</p>
+<hr>
+<h1 id="java-spring-track-readme">Java / Spring track — README</h1>
+<p>Separate <strong>Senior Software Engineer</strong> resume and interview prep for <strong>Java / Spring / Hibernate</strong> roles. Same companies, projects, and metrics as the main Python/Go track; non-agentic APIs framed in Spring where defensible; AI/RAG and Menu streaming stay Python.</p>
+<h2 id="layout">Layout</h2>
+<pre><code>resume_java/                 LaTeX sources (Overleaf-ready)
+  resume.tex                 compile this
+  sections/*.tex
+output/
+  Tarun_Mittal_SSE_Java_5yr.pdf
+  Tarun_Mittal_Resume_Java_Overleaf.zip
+interview_prep_java/
+  00_index.md                hub + stack mapping table
+  projects/01..05_*.md       per-project deep dives (Java telling)
+  06_tech_deep_dives.md      Java, Spring, JPA, Security, Batch, Kafka, …
+  07_behavioral_star_stories.md  pointers + Java wording swaps
+  08_role_targeting_and_rapid_fire.md
+</code></pre>
+<p>Main (Python/Go) materials stay in <code>resume/</code> and <code>interview_prep/</code> — do not mix stacks in one interview loop.</p>
+<h2 id="rebuild-pdf">Rebuild PDF</h2>
+<pre><code class="language-bash">cd resume_java &amp;&amp; tectonic resume.tex --outdir ../output
+mv ../output/resume.pdf ../output/Tarun_Mittal_SSE_Java_5yr.pdf
+</code></pre>
+<p>Or upload <code>output/Tarun_Mittal_Resume_Java_Overleaf.zip</code> to Overleaf (main file <code>resume.tex</code>).</p>
+<h2 id="stack-on-this-resume">Stack on this resume</h2>
+<ul>
+<li><strong>Languages lead:</strong> Java  </li>
+<li><strong>Backend:</strong> Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, Spring Batch  </li>
+<li><strong>AI:</strong> Python — FastAPI, LangGraph, LangChain, MCP, RAG (agentic + menu RAG; not Spring AI)  </li>
+<li><strong>Unchanged streaming:</strong> Kafka, Flink, Spark, Pinot (Menu tech line stays Python + streaming — no Spring claim)  </li>
+<li><strong>Data/cloud:</strong> ClickHouse, Postgres/MySQL/Redis, GCP/AWS, Docker/K8s, observability</li>
+</ul>
 <hr>
 <h1 id="impact-analytics-agentic-assortsmart-java-spring-track">Impact Analytics — Agentic AssortSmart (Java / Spring track)</h1>
 <p><strong>Role:</strong> Senior Software Engineer · June 2026 – Present · Bangalore<br>
@@ -304,12 +343,13 @@ Oracle HFM  ~19M raw → ~300K aggregated
 <li><strong>Do not invent:</strong> a Spring Boot catalog service on this resume line unless you add a real bullet for it.</li>
 </ul>
 <h2 id="4-streaming-defense-must-be-deep">4. Streaming defense (must be deep)</h2>
-<p>Interviewers will probe Kafka/Flink/Spark/Pinot more than Spring here. Use the same depth as the main <code>06_tech_deep_dives.md</code> streaming sections. One-liners:</p>
+<p>Interviewers will probe Kafka/Flink/Spark/Pinot more than Spring here. Use the same depth as the main <code>interview_prep/06_tech_deep_dives.md</code> streaming sections and <code>interview_prep/projects/03_uber_menu_ingestion.md</code> §3. One-liners <strong>with numbers</strong> (ESTIMATED — see <code>09_metrics_derivations.md</code>):</p>
 <ul>
-<li><strong>Kafka:</strong> partitioned log, per-vendor key ordering, consumer lag as health.</li>
-<li><strong>Flink:</strong> event time, watermarks, keyed state dedup, checkpoints.</li>
-<li><strong>Spark:</strong> batch backfills, shuffle-aware joins.</li>
-<li><strong>Pinot:</strong> real-time OLAP for high-QPS ops slices from Kafka.</li>
+<li><strong>Kafka:</strong> partitioned log, per-vendor key ordering, consumer lag as health; peak <strong>~200–500 events/sec</strong> during fleet runs (30K menus/mo → ~1K/day, item+retry amplification).</li>
+<li><strong>Flink:</strong> event time, watermarks, keyed state dedup, checkpoints; sized for that peak with near-zero lag in steady state.</li>
+<li><strong>Spark:</strong> batch backfills / parser upgrades off the real-time path; typical window <strong>~1–2M item rows</strong>.</li>
+<li><strong>Pinot:</strong> real-time OLAP for ops slices from Kafka; <strong>sub-second</strong> dashboards; hours → minutes time-to-detect.</li>
+<li><strong>Anti-bot:</strong> +<strong>95%</strong> successful ingestions (<strong>~60–65% → 95%+</strong>).</li>
 </ul>
 <h2 id="5-qa_1">5. Q&amp;A</h2>
 <ul>
@@ -427,7 +467,8 @@ Oracle HFM  ~19M raw → ~300K aggregated
 <li><strong>Gotchas.</strong> Listener concurrency vs partition count; blocking work in listeners; committing offsets too early.</li>
 </ul>
 <h2 id="9-flink-spark-pinot">9. Flink / Spark / Pinot</h2>
-<p>Same depth as main <code>interview_prep/06_tech_deep_dives.md</code> §§3–6. Flink/Spark jobs are often Java/Scala at Uber; this resume's Menu <strong>Tech Used</strong> line stays Python + streaming (matches live stack) — do not invent a Spring control-plane bullet you cannot defend.</p>
+<p>Same depth as main <code>interview_prep/06_tech_deep_dives.md</code> §§3–6 (now includes ESTIMATED rates). Flink/Spark jobs are often Java/Scala at Uber; this resume's Menu <strong>Tech Used</strong> line stays Python + streaming (matches live stack) — do not invent a Spring control-plane bullet you cannot defend.</p>
+<p><strong>Numbers to memorize (ESTIMATED):</strong> Kafka peak ~200–500 events/sec · Flink keeps pace · Spark backfills ~1–2M item rows · Pinot sub-second health queries · +95% ingest success (~60–65% → 95%+). Full derivation: <code>09_metrics_derivations.md</code>.</p>
 <h2 id="10-redis-mysql-postgresql-clickhouse">10. Redis / MySQL / PostgreSQL / ClickHouse</h2>
 <ul>
 <li><strong>Redis:</strong> cache, rate limits, Batch/broker adjacent state; eviction + stampede.</li>
@@ -579,4 +620,43 @@ This Java resume is a <strong>positioning track</strong> for Spring roles — sa
 <li><strong>Planning grid backend</strong> — versioned writes, ClickHouse, Spring API tier + Python agents.  </li>
 <li><strong>Menu ingestion</strong> — Kafka → Flink → sinks; Python RAG path (no Spring claim on resume).  </li>
 <li><strong>GST bulk e-invoice</strong> — Spring Batch + idempotency + rate limits to external IRP.</li>
-</ol></main></div></body></html>
+</ol>
+<hr>
+<h1 id="metrics-derivations-java-track">Metrics Derivations (Java track)</h1>
+<p><strong>Same numbers and honesty tags as the main track.</strong> Full tables: <a href="../interview_prep/09_metrics_derivations.md"><code>../interview_prep/09_metrics_derivations.md</code></a>.</p>
+<p>Stack framing only changes <em>how</em> you describe the service (Spring Boot / JPA / Spring Batch vs FastAPI / SQLAlchemy / Celery). <strong>TPS, RPS, from→to baselines, and Kafka/Flink/Spark/Pinot rates do not change.</strong></p>
+<h2 id="resume-facing-quick-list-java-wording">Resume-facing quick list (Java wording)</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Numbers to defend</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AssortSmart</td>
+<td>Spring Boot bulk-save <strong>~10–20 peak RPS</strong> · ClickHouse <strong>~5–10K row writes/sec</strong> · agent days→&lt;1h (design target)</td>
+</tr>
+<tr>
+<td>FRM</td>
+<td><strong>70%</strong> cycle (<strong>~2 weeks → ~3–4 days</strong>) · 36 endpoints <strong>p95 &lt; 300 ms</strong> · 19M→300K · no RPS claim</td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>Kafka <strong>~200–500 peak events/sec</strong> · +<strong>95%</strong> success (<strong>~60–65% → 95%+</strong>) · Pinot sub-second · Spark <strong>~1–2M</strong> item-row batches · <strong>Python</strong> streaming/RAG (no Spring claim)</td>
+</tr>
+<tr>
+<td>Masters GST</td>
+<td><strong>~12 TPS avg / 100+ TPS peak</strong> on 1M+ txn/day · triage <strong>70%</strong> (<strong>~30 min → &lt;10 min</strong>) · p95 1.2s→300ms</td>
+</tr>
+<tr>
+<td>GFG</td>
+<td><strong>~1–2 RPS avg, ~10× contest spikes</strong> · +15–20% premium <strong>relative</strong> lift</td>
+</tr>
+</tbody>
+</table>
+<h2 id="interview-line">Interview line</h2>
+<blockquote>
+<p>"Those RPS/TPS figures are <strong>estimated from documented daily volumes</strong> (1M txn/day, 100K queries/day, 30K menus/month). I can walk the arithmetic. I will not invent partition counts or Grafana screenshots I don't have."</p>
+</blockquote></main></div></body></html>

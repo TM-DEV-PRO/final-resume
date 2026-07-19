@@ -26,7 +26,7 @@ Deep project defense is still in the original materials (do not duplicate):
 3. `../interview_prep/07_behavioral_star_stories.md`
 4. `../interview_prep/agentic_assort_playbook/` (§0–§10)
 
-Plus this folder’s rapid-fire for v2 wording.
+Plus this folder’s rapid-fire for v2 wording, [`09_metrics_derivations.md`](09_metrics_derivations.md), and [`03_uber_menu_streaming_numbers.md`](03_uber_menu_streaming_numbers.md).
 
 <div class="callout warn">
 <b>Honesty guardrail (same as original).</b> Know REAL vs offline-eval vs design targets. BigQuery = upstream source of truth you ingest from — never claim BigQuery optimization work as yours. Rust stays off the resume; if asked, “Go by default, Rust by measurement / escape hatch — not a shipped claim on this PDF.”
@@ -35,3 +35,5 @@ Plus this folder’s rapid-fire for v2 wording.
 ## Resume at a glance (v2)
 
 Same companies, projects, and metrics as the original — only skills trim + two IA phrasing hardenings above.
+
+TPS/RPS/from→to (same as main PDF): see [`09_metrics_derivations.md`](09_metrics_derivations.md).

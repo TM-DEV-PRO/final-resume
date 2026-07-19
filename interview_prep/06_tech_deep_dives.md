@@ -25,6 +25,7 @@ For each technology: fundamentals → how it works inside → why we used it →
 - **Fundamentals.** Distributed, partitioned, replicated **commit log**. Topics → partitions (unit of parallelism + ordering); producers partition by key; consumer groups get exclusive partition assignment; offsets are consumer-owned progress markers.
 - **Internals worth knowing:** sequential disk I/O + zero-copy sendfile = throughput; replication with leader/ISR, `acks=all` + `min.insync.replicas` for durability; **exactly-once** = idempotent producer (sequence numbers) + transactions (read-process-write atomically); log compaction for changelog topics; consumer rebalancing (cooperative sticky avoids stop-the-world).
 - **Where I used it:** Uber menu ingestion bus (decouple bursty scrapers from consumers; replay for backfills; per-vendor key ordering). IA: async embedding jobs (`aiokafka`).
+- **Numbers (Menu, ESTIMATED):** peak **~200–500 events/sec** during scraper fleet runs (30K menus/mo → ~1K/day, amplified by item-level events + retries). Steady-state lower. Do not invent partition counts without evidence — say "partitioned by vendor id; lag is the SLO."
 - **Gotchas:** partition count is the parallelism ceiling; hot keys skew partitions; consumer lag monitoring is *the* health metric; ordering only within a partition; rebalance storms from slow consumers (`max.poll.interval.ms`).
 
 ## 4. Apache Flink
@@ -32,6 +33,7 @@ For each technology: fundamentals → how it works inside → why we used it →
 - **Fundamentals.** True **per-event streaming** (not micro-batch). Job = dataflow graph of operators; parallel subtasks; **keyed state** (per-key state backends — RocksDB for large state) is the superpower: dedup, aggregation, joins with state that survives failures.
 - **Correctness machinery:** **event time vs processing time**; **watermarks** (assertion that no events older than T remain) drive window firing; **checkpoints** = distributed snapshots (Chandy-Lamport barrier alignment) giving exactly-once *state* semantics; end-to-end exactly-once needs transactional/idempotent sinks (two-phase commit sink to Kafka).
 - **Where I used it:** Uber menu normalization — keyed dedup (vendor+content hash), event-time last-write-wins on out-of-order scrape retries, validation + routing (structured vs unstructured path).
+- **Numbers (Menu, ESTIMATED):** sized for the Kafka peak (~200–500 events/sec); near-zero lag in steady state; state TTL on vendor keys. Checkpoint interval tuned so recovery does not exceed scrape retry windows.
 - **vs Spark Streaming:** Flink = per-event latency + first-class state; Spark Structured Streaming = micro-batch, better for batch-parity code. Uber's standard stream engine is Flink.
 - **Gotchas:** watermark skew from idle partitions (idleness markers); state growth → TTL it; checkpoint duration vs interval tension; backpressure propagates upstream (watch busy/backpressure metrics per operator).
 
@@ -39,6 +41,7 @@ For each technology: fundamentals → how it works inside → why we used it →
 
 - **Fundamentals.** Distributed **batch** engine (also micro-batch streaming). Driver builds a DAG of transformations on DataFrames; **Catalyst** optimizes the logical plan; **Tungsten** does whole-stage codegen; stages split at **shuffle** boundaries; tasks per partition.
 - **Where I used it:** Uber backfills/reprocessing (re-ingest a vendor's history after parser upgrades; large joins against catalog snapshots) + Databricks for exploratory pipeline work.
+- **Numbers (Menu, ESTIMATED):** typical backfill / reprocess window **~1–2M item rows** — kept off Flink so real-time path is not starved.
 - **Performance levers they probe:** shuffle is the enemy (partitioning, broadcast joins for small tables); skew handling (salting, AQE skew-join splitting); caching only reused intermediates; file sizes (small-files problem); predicate pushdown into Parquet.
 - **vs Flink:** throughput-shaped, restart-a-stage recovery model — right for backfills; wrong for per-event latency.
 
@@ -46,6 +49,7 @@ For each technology: fundamentals → how it works inside → why we used it →
 
 - **Fundamentals.** Real-time **OLAP** store for user-facing analytics: sub-second filter/groupBy on high-cardinality data, at high QPS. Ingests **directly from Kafka** (real-time segments) + batch segments from files; columnar with inverted/sorted/star-tree indexes; scatter-gather query via brokers.
 - **Where I used it:** Uber ingestion-health analytics — success/failure-rate by source/stage/error-class in near-real-time; alert rules on failure spikes; cut time-to-detect from hours to minutes. (Pinot is Uber's standard for real-time OLAP — it powers UberEats ops dashboards.)
+- **Numbers:** sub-second filter/groupBy for ops dashboards (target); QPS is ops-dashboard scale, not public edge — do not invent a Pinot QPS number.
 - **vs ClickHouse/Druid:** Pinot shines at high-QPS user-facing slices with upserts from Kafka; ClickHouse at heavy ad-hoc analytical scans. At Uber, Pinot was the paved road.
 - **Gotchas:** segment sizing; upsert tables need primary keys + memory budget; star-tree index trades storage for pre-aggregation; real-time→offline segment handoff.
 

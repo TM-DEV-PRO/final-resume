@@ -1,51 +1,17 @@
 #!/usr/bin/env python3
-"""Build InterviewPrep.html — single-file study hub for the final resume.
-
-Concatenates, in study order:
-  1. interview_prep/00_index.md            (orientation)
-  2. interview_prep/projects/*.md          (per-company project deep dives)
-  3. interview_prep/06_tech_deep_dives.md
-  4. interview_prep/07_behavioral_star_stories.md
-  5. interview_prep/agentic_assort_playbook/*.md  (full IA playbook §0–§10)
-"""
+"""Build InterviewPrep*.html study hubs for all resume tracks."""
 import glob
 import os
 import re
 import sys
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-IP = os.path.join(BASE, "interview_prep")
 
 try:
     import markdown
 except ImportError:
     os.system(f"{sys.executable} -m pip install markdown --break-system-packages -q")
     import markdown
-
-parts = []
-order = (
-    [os.path.join(IP, "00_index.md")]
-    + sorted(glob.glob(os.path.join(IP, "projects", "*.md")))
-    + [os.path.join(IP, "06_tech_deep_dives.md"), os.path.join(IP, "07_behavioral_star_stories.md"),
-       os.path.join(IP, "08_role_targeting_and_rapid_fire.md")]
-    + sorted(glob.glob(os.path.join(IP, "agentic_assort_playbook", "*.md")))
-)
-for f in order:
-    if os.path.exists(f):
-        parts.append(open(f, encoding="utf-8").read())
-raw = "\n\n---\n\n".join(parts)
-
-# fenced ASCII diagrams survive; enable markdown inside callout divs
-for d in ('<div class="callout note">', '<div class="callout warn">', '<div class="callout highlight">'):
-    raw = raw.replace(d, d[:-1] + ' markdown="1">')
-
-md = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "fenced_code"], output_format="html5")
-html = md.convert(raw)
-
-nav = "\n".join(
-    f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
-    for m in re.finditer(r'<h([12]) id="([^"]+)">(.*?)</h\1>', html, flags=re.DOTALL)
-)
 
 CSS = """<style>
 :root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
@@ -80,12 +46,65 @@ strong{color:#fff}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>"""
 
-page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Tarun Mittal — Final Resume · Interview Prep Hub</title>{CSS}</head><body>
-<div class="layout"><nav class="toc"><div class="brand">Final Resume · Interview Prep</div>{nav}</nav>
-<main>{html}</main></div></body></html>"""
 
-out = os.path.join(BASE, "InterviewPrep.html")
-open(out, "w", encoding="utf-8").write(page)
-print("wrote", out, "| nav entries:", nav.count("lvl"), "| bytes:", len(page))
+def build(order, out_name, title, brand):
+    parts = []
+    for f in order:
+        if os.path.exists(f):
+            parts.append(open(f, encoding="utf-8").read())
+    raw = "\n\n---\n\n".join(parts)
+    for d in ('<div class="callout note">', '<div class="callout warn">', '<div class="callout highlight">'):
+        raw = raw.replace(d, d[:-1] + ' markdown="1">')
+    md = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "fenced_code"], output_format="html5")
+    html = md.convert(raw)
+    nav = "\n".join(
+        f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
+        for m in re.finditer(r'<h([12]) id="([^"]+)">(.*?)</h\1>', html, flags=re.DOTALL)
+    )
+    page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{title}</title>{CSS}</head><body>
+<div class="layout"><nav class="toc"><div class="brand">{brand}</div>{nav}</nav>
+<main>{html}</main></div></body></html>"""
+    out = os.path.join(BASE, out_name)
+    open(out, "w", encoding="utf-8").write(page)
+    print("wrote", out, "| nav entries:", nav.count("lvl"), "| bytes:", len(page))
+
+
+IP = os.path.join(BASE, "interview_prep")
+build(
+    [os.path.join(IP, "00_index.md")]
+    + sorted(glob.glob(os.path.join(IP, "projects", "*.md")))
+    + [os.path.join(IP, "06_tech_deep_dives.md"), os.path.join(IP, "07_behavioral_star_stories.md"),
+       os.path.join(IP, "08_role_targeting_and_rapid_fire.md"),
+       os.path.join(IP, "09_metrics_derivations.md")]
+    + sorted(glob.glob(os.path.join(IP, "agentic_assort_playbook", "*.md"))),
+    "InterviewPrep.html",
+    "Tarun Mittal — Final Resume · Interview Prep Hub",
+    "Final Resume · Interview Prep",
+)
+
+IPJ = os.path.join(BASE, "interview_prep_java")
+build(
+    [os.path.join(IPJ, "00_index.md"), os.path.join(IPJ, "README.md")]
+    + sorted(glob.glob(os.path.join(IPJ, "projects", "*.md")))
+    + [os.path.join(IPJ, "06_tech_deep_dives.md"), os.path.join(IPJ, "07_behavioral_star_stories.md"),
+       os.path.join(IPJ, "08_role_targeting_and_rapid_fire.md"),
+       os.path.join(IPJ, "09_metrics_derivations.md")],
+    "InterviewPrepJava.html",
+    "Tarun Mittal — Java/Spring · Interview Prep Hub",
+    "Java/Spring · Interview Prep",
+)
+
+IPV2 = os.path.join(BASE, "interview_prep_v2")
+build(
+    [os.path.join(IPV2, "00_index.md"), os.path.join(IPV2, "README.md"),
+     os.path.join(IPV2, "01_skills_trim_rationale.md"),
+     os.path.join(IPV2, "02_mongodb_elasticsearch.md"),
+     os.path.join(IPV2, "03_uber_menu_streaming_numbers.md"),
+     os.path.join(IPV2, "08_role_targeting_and_rapid_fire.md"),
+     os.path.join(IPV2, "09_metrics_derivations.md")],
+    "InterviewPrepV2.html",
+    "Tarun Mittal — Python/Go v2 · Interview Prep",
+    "Python/Go v2 · Interview Prep",
+)
