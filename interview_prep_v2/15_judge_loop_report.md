@@ -72,3 +72,16 @@ Source: PyMuPDF text extract of `Tarun_Mittal_SSE_5yr_v2.pdf` and `Tarun_Mittal_
 4. Both PDFs, IA copilot: "targeting turnaround under 1 hour from days" -> "targeting turnaround under 1 hour (from days)".
 5. Optional hyphen polish (both): evidence-backed, read-only, rule-based, anti-bot, on-call, AI-Powered, Sheets-backed.
 6. Optional GT hygiene: add "3 approval gates" to GROUND_TRUTH so the PDF number is not GT-orphan.
+
+## Loop 6 evidence-backed skill hardening (Jul 2026)
+
+| Check | Result |
+|---|---|
+| Evidence matrix in GROUND_TRUTH | PASS. Resume-safe vs omit rows documented for ownership, architecture, on-call alerting, fault tolerance, Design Patterns, and STUDY-ONLY items. |
+| CGPA removed from both PDFs | PASS. Still recorded in GROUND_TRUTH only. |
+| Ownership / architecture wording | PASS. FRM uses Owned + Designed the software architecture + Owned recon v2 (18 files). Masters uses Owned strangler. |
+| Fault tolerance + on-call alerting | PASS. Masters idempotency/retries/DLQ + ELK/New Relic on-call alerting. Skills add Fault Tolerance; v2 adds Design Patterns. |
+| Forbidden on resume | PASS. No Terraform, Spark, Flink, multi-region, Vitess on either PDF. |
+| One-page layout | PASS. v2 bottom ~778, Java ~773 (letter page ~792). No semicolons / em dashes. |
+| Prep coverage | PASS. `17_senior_systems_study_only.md` added with STUDY ONLY labels and official SRE/K8s/Terraform/Spark/Flink links. Java FRM/Masters project pages corrected (dropped 36 endpoints / 19M rows / 2500 clients). |
+| Cross-track numeric parity | PASS on shared money/scale figures. |

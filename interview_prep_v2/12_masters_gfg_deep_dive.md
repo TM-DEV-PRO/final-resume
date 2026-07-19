@@ -10,7 +10,9 @@ Every number here traces to `GROUND_TRUTH.md`. Tags: HISTORICAL (from past resum
 
 GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoices through our APIs, we validate, register them with the government Invoice Registration Portal (IRP), and return signed e-invoices with IRN and QR codes. Bulk imports, reconciliation against GST returns, and audit trails on top. Compliance means correctness and traceability matter more than raw speed, but filing deadline days bring heavy spikes.
 
-### Bullet 1. PHP monolith to FastAPI microservices, mentored 2 engineers, p95 1.2s to 300ms, 1,500+ clients
+### Bullet 1. Owned PHP monolith to FastAPI microservices strangler, mentored 2 engineers, p95 1.2s to 300ms, 1,500+ clients
+
+**Resume XYZ:** Owned the strangler migration (X) by cutting over services behind a gateway with canaries and mentoring 2 engineers (Y), cutting p95 from 1.2s to 300ms for 1,500+ clients (Z).
 
 **Why migrate.** The Laravel monolith was synchronous, one slow IRP callout blocked a worker per request, deployments were all-or-nothing, and scaling meant scaling everything. Filing deadline spikes caused queue pileups and timeouts.
 
@@ -30,24 +32,33 @@ GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoice
 
 **Mentoring 2 engineers.** Two juniors owned individual service extractions. I set the conventions (router, service, repository layering, Pydantic schemas at the boundary, retry and idempotency helpers), reviewed every PR for the first months, and paired on the first canary cutover. Both were independently shipping services by the end.
 
-### Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM
+### Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)
+
+**Resume XYZ:** Scaled bulk e-invoicing with async Kafka and PostgreSQL quarter sharding (X/Y) to 100K+ per import and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).
 
 - Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.
 - 1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.
 - Sustained throughput went from 700 to 4,000 requests per minute (HISTORICAL) after the async rewrite plus worker autoscaling on queue depth.
-- Idempotency: every invoice carries a client-supplied reference; a unique constraint plus an idempotency key check makes retries safe, since double-registering an invoice with the government is not recoverable.
 
-### Bullet 3. Redis caching (30 percent fewer redundant reads) and audit logs (15 percent churn cut)
+### Bullet 3. Fault tolerant bulk paths (idempotency, retries, DLQ) + Redis -30% reads
 
-- Cache-aside pattern. On miss, read DB, set with TTL. TTLs carried jitter to avoid synchronized expiry stampedes. Hot keys: client config, rate/tax masters, session and auth lookups.
-- Invalidation on write for config data (delete key inside the update transaction boundary), TTL-only for slowly changing masters.
-- What p95 gains came from caching vs async: caching mostly helped p50 and read-heavy endpoints; async IO and query fixes drove the p95 tail.
-- Audit logging (HISTORICAL): immutable event trail per invoice and per user action, exposed to enterprise clients. Compliance teams could self-serve answers during disputes and audits, which was cited in renewals; churn dropped about 15 percent.
+**Resume XYZ:** Built fault tolerant bulk paths with idempotency keys, retries, and DLQ replay (X/Y), and Redis caching that cut redundant DB reads 30% (Z). Audit-log churn -15% remains HISTORICAL prep depth, not required on the hardened one-pager.
 
-### Bullet 4. ELK + New Relic, triage 70 percent faster, coverage 35 to 82, 98 percent deploy success
+- Idempotency: `client + fileHash + batchIndex` (and client-supplied invoice references) so retries never double-register with IRP.
+- Retries: exponential backoff with jitter and bounded concurrency against the flaky government portal.
+- DLQ / dead-letter state: poison batches park for operator replay instead of blocking the whole import.
+- Circuit breaker (verbal): open when IRP error rate spikes; serve degraded status to clients.
+- Cache-aside: miss to read DB to SET with TTL jitter; SETNX singleflight against stampedes. Hot keys: client config, rate/tax masters, session and auth lookups, GSTIN masters.
+- Invalidation on write for config data; TTL-only for slowly changing masters.
+- Caching mostly helped p50 and read-heavy endpoints; async IO and query fixes drove the p95 tail.
+
+### Bullet 4. ELK + New Relic on-call alerting, triage 70 percent faster, coverage 35 to 82, 98 percent deploy success
+
+**Resume XYZ:** Established ELK and New Relic on-call alerting (X/Y), cutting incident triage 70% and raising coverage 35% to 82% with 98% deployment success (Z).
 
 - Before: SSH into boxes and grep. After: structured JSON logs with request IDs shipped to ELK, New Relic APM traces, alert rules on error rate and latency SLOs.
 - Triage went from about 30 minutes to under 10 (baseline ESTIMATED, the 70 percent cut is HISTORICAL). The win is correlation: one request ID follows a transaction across services and workers.
+- Honesty: claim on-call **alerting** and faster triage. Do not invent a formal pager rotation or SEV commander title without proof.
 - Coverage 35 to 82 percent with pytest, enforced as a CI gate. Focus was on money paths first (registration, reconciliation, imports). Deployment success rate reached 98 percent (HISTORICAL).
 
 ### Rapid fire
@@ -146,10 +157,10 @@ GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoice
 
 | Resume bullet | Rating | Fallback wording if pressed |
 |---|---|---|
-| FastAPI migration, mentored 2, p95 1.2s to 300ms, 1,500+ clients | SOLID | Use 1000-1200ms to 300-400ms band if they cite older resumes; never say 2,500+ clients (dropped). |
+| Owned FastAPI strangler, mentored 2, p95 1.2s to 300ms, 1,500+ clients | SOLID | Use 1000-1200ms to 300-400ms band if they cite older resumes; never say 2,500+ clients (dropped). |
 | 100K+/import, 1M+ daily, async Kafka, quarter sharding, 700 to 4,000 req/min | SOLID on throughput; NEEDS CARE on peak TPS | Say ~12 TPS avg and 100+ TPS peak as ESTIMATED. Kafka justification: ordering, replay, consumer groups; admit RabbitMQ could work at that scale. |
-| Redis -30% redundant reads; audit logs -15% churn | NEEDS CARE on churn | Cache: defend with keys/TTL/invalidation. Churn: "attributed in renewals / HISTORICAL business metric; I owned the audit trail feature." |
-| ELK + New Relic, triage -70%; coverage 35 to 82; 98% deploy success | SOLID on coverage/deploy; NEEDS CARE on triage baseline | Triage baseline ~30 min to <10 min is ESTIMATED behind HISTORICAL 70%. |
+| Fault tolerant bulk paths (idempotency, retries, DLQ) + Redis -30% reads | SOLID on pattern; NEEDS CARE on circuit-breaker wording | Defend idempotency key shape and DLQ replay. Circuit breaker is verbal prep, not a measured resume metric. Audit churn -15% is prep-only now. |
+| ELK + New Relic on-call alerting, triage -70%; coverage 35 to 82; 98% deploy success | SOLID on coverage/deploy; NEEDS CARE on triage baseline | Claim alerting, not unproven pager ownership. Triage baseline ~30 min to <10 min is ESTIMATED behind HISTORICAL 70%. |
 | GFG PHP to Django, 10K+ daily queries | SOLID (standardized) | Say "order of ten thousand daily interactions"; do not say 100K. |
 | Voting/pinning, premium +15-20% | NEEDS CARE | "Relative lift attributed by growth; engineering owned APIs and reliability." |
 | Influencer dashboard + cron, course sales +30%, ops +70% | NEEDS CARE | Own engineering; attribute sales/efficiency as HISTORICAL business metrics. |

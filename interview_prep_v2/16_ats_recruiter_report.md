@@ -547,3 +547,21 @@ Chaseable with referral (BORDERLINE): Google, Amazon, Airbnb (Py/Go), Databricks
 2. **Amazon:** Keep architecture-years honest (2-3+ leading design), do not imply 5 years of leading architecture.  
 3. **Submit the right PDF:** Py/Go for PlanetScale and Go-heavy Google pods; Java for Airbnb / many Amazon / Netflix L5 pods.  
 4. Still do not invent Vitess, Spark, Terraform depth, or YoE inflation for Roku/Rubrik.
+
+## Re-screen after evidence-backed skill hardening (Loop 6)
+
+**Delta:** ownership verbs + software architecture language on FRM; Masters strangler ownership + fault-tolerant bulk (idempotency/retries/DLQ) + on-call alerting; Design Patterns / Fault Tolerance skills; CGPA removed; STUDY ONLY deep dive for multi-region / K8s ops / Spark / Flink / Terraform (not on PDFs).
+
+| Theme | Py/Go | Java | Notes |
+|---|---|---|---|
+| Ownership / design and architecture | HIT | HIT | "Owned", "Designed the software architecture", "18 files", "Led 3 engineers" |
+| On-call / live-site | HIT (alerting) | HIT (alerting) | Honest scope: alerting + triage, not invented pager commander |
+| Fault tolerance | HIT | HIT | Idempotency, retries, DLQ + Core skill |
+| Design Patterns | HIT (skills) | HIT (skills) | Backed by strangler / layered / cache-aside verbally |
+| Multi-region | MISS (correct) | MISS (correct) | Study-only; would fail honesty audit if added |
+| K8s ops depth | WEAK (skills only) | WEAK (skills only) | Correct; do not promote |
+| Spark / Flink / Terraform | MISS (correct) | MISS (correct) | Study-only; Databricks Spark lane still needs real Spark later |
+
+**Strict PASS count unchanged structurally (YoE gates):** Py/Go 2/9 (Microsoft, PlanetScale); Java 2/9 (Microsoft, Airbnb). Ownership/architecture language improves Amazon/Google skim quality inside BORDERLINE, without inventing 5 years of leading design.
+
+**Honesty still required in interviews:** claim ~3 years leading design reviews (Masters + FRM), not Amazon's literal 5+ years leading architecture.

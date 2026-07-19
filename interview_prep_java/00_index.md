@@ -12,7 +12,8 @@ Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. N
 4. [`../interview_prep_v2/14_uber_menu_deep_dive.md`](../interview_prep_v2/14_uber_menu_deep_dive.md) — no Spring claim
 5. [`../interview_prep_v2/12_masters_gfg_deep_dive.md`](../interview_prep_v2/12_masters_gfg_deep_dive.md) — Celery → Spring Batch
 6. [`../interview_prep_v2/13_behavioral_why_switch.md`](../interview_prep_v2/13_behavioral_why_switch.md)
-7. Local: [`06_tech_deep_dives.md`](06_tech_deep_dives.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md), [`09_metrics_derivations.md`](09_metrics_derivations.md)
+7. [`../interview_prep_v2/17_senior_systems_study_only.md`](../interview_prep_v2/17_senior_systems_study_only.md) — STUDY ONLY for multi-region, K8s ops, Spark, Flink, Terraform
+8. Local: [`06_tech_deep_dives.md`](06_tech_deep_dives.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md), [`09_metrics_derivations.md`](09_metrics_derivations.md)
 
 ## Stack mapping
 
@@ -34,7 +35,7 @@ Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. N
 | Company | Lead claims |
 |---|---|
 | Impact Analytics (14 May 2026–) | Same CH/CQRS/copilot numbers as v2 (Python) |
-| Uber FRM | Spring Boot + JPA framing; 8 screens, 30+ endpoints, 11 tables, led 3, 1,100+ tests, targeting 70% |
-| Uber Menu | Python streaming (no Spring) |
-| Masters India | Spring Boot + Spring Batch framing; mentored 2; 1.2s to 300ms; 700 to 4,000 RPM |
+| Uber FRM | Spring Boot + JPA framing; owned platform + layered architecture + recon v2 (18 files); led 3; targeting 70% |
+| Uber Menu | Python scraping/RAG (no Spring) |
+| Masters India | Spring Boot + Spring Batch framing; owned strangler; Kafka TPS/RPS; idempotency/DLQ; on-call alerting |
 | GeeksforGeeks | Spring Boot framing; 10K+ daily queries |

@@ -2,6 +2,26 @@
 
 Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA PRDs, all past resumes) on 19 Jul 2026. Every resume bullet on the v2 and Java PDFs must trace to a row here. Tags: **MEASURED** (documented artifact), **TARGET** (design goal, say "targeting"), **HISTORICAL** (from past resumes, defensible), **ESTIMATED** (derived, say so).
 
+## Evidence matrix (95%+ resume-safe vs omit)
+
+| Claim | Confidence | Placement | Source |
+|---|---|---|---|
+| Owned Uber FRM recon v1 Sheets to MySQL v2 (18 files, +1,268 LOC) | 95% MEASURED | Resume experience | `RECON_API_MIGRATION.md`, FRM code |
+| Designed layered handler / service / repository / ORM architecture (11 models, 30+ APIs) | 95% MEASURED | Resume experience | `frm_scoping_service/` |
+| Led 3 engineers (EPAM pod) via design reviews, API contracts, CI gates | 90% user-confirmed | Resume experience | User confirm + code conventions |
+| Led Masters PHP monolith to microservices (strangler), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
+| Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS) | 85% HISTORICAL / ESTIMATED peaks | Resume experience | Past resumes + metrics derivations |
+| Fault tolerance: idempotency keys, retries, DLQ replay on bulk IRP path | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
+| On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
+| Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | Skills | FRM code + Masters migration |
+| Fault Tolerance keyword | 85% | Skills | Masters idempotency / DLQ / retries |
+| Kubernetes skills list | 60% ATS | Skills only | Listed historically; no cluster-ops proof |
+| Multi-region / active-active / DR ownership | <5% | **OMIT resume** | CDC DR doc authored by Ashvin Sharma; no personal ownership |
+| Kubernetes cluster operations (kubectl/helm/operators) | <5% | **OMIT resume experience**; STUDY ONLY prep | Zero manifests / ops narrative |
+| Spark / Flink production ownership | <25% | **OMIT resume** (retracted) | 4yr Menu stack is Python + Selenium + GCP |
+| Terraform / IaC production ownership | <5% | **OMIT resume**; STUDY ONLY prep | Keyword blob only on old PDF |
+| CGPA 7.7/10 | MEASURED | **Removed from resume PDFs** (kept here for reference) | Education record |
+
 ## Career timeline (canonical)
 
 | Company | Title | Dates |
@@ -71,7 +91,8 @@ RESUME DECISION (Jul 2026): Kafka/Flink/Spark/Pinot claims REMOVED from resume b
 | Audit Logs feature reduced client churn ~15% | HISTORICAL (2.5yr) |
 | Bulk e-invoicing 100K+ txns/import, **1M+ daily txns** (~12 TPS avg, 100+ TPS peak ESTIMATED), **1,500+ clients** (use 1500+, drop 2500+ which appears only once) | HISTORICAL |
 | Coverage 35% to 82%, 98% deployment success | HISTORICAL |
-| ELK + New Relic, triage -70% (~30 min to <10 min ESTIMATED baseline) | HISTORICAL |
+| ELK + New Relic on-call alerting, triage -70% (~30 min to <10 min ESTIMATED baseline) | HISTORICAL |
+| Fault tolerance on bulk IRP path: idempotency keys (client + file hash + batch index), exponential backoff retries, dead-letter replay | HISTORICAL (prep + past narratives) |
 | KMS encryption, RBAC, JWT, audit logging for compliance | HISTORICAL |
 | Client usage dashboard, support tickets -35% | HISTORICAL |
 
@@ -87,7 +108,7 @@ RESUME DECISION (Jul 2026): Kafka/Flink/Spark/Pinot claims REMOVED from resume b
 
 ## Achievements / education
 
-- Code Jam 2260 / 37,000+ (2021). SIH 2020 finalist, top 3 nationally. **Global AI Hackathon, EPAM Systems** (add). CGPA 7.7/10 (add).
+- Code Jam 2260 / 37,000+ (2021). SIH 2020 finalist, top 3 nationally. **Global AI Hackathon, EPAM Systems**. CGPA 7.7/10 kept in ground truth only; **removed from v2 and Java resume PDFs** per Jul 2026 hardening.
 - Certificates verified in `KNOWLEDGE-MATERIAL/certificates.txt`: **HackerRank Problem Solving** (`7e492a2e11be`) and **LangChain Academy** (`vkkkoij3ke`).
 
 ## Why-switch narratives (see behavioral prep)

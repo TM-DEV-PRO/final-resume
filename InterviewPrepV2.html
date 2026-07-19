@@ -36,6 +36,7 @@ strong{color:#fff}
 <a class="lvl2" href="#study-order-do-this">Study order (do this)</a>
 <a class="lvl2" href="#resume-at-a-glance-v2-grounded">Resume at a glance (v2 grounded)</a>
 <a class="lvl1" href="#ground-truth-fact-sheet-single-source-for-v2-java-tracks">Ground Truth Fact Sheet (single source for v2 + Java tracks)</a>
+<a class="lvl2" href="#evidence-matrix-95-resume-safe-vs-omit">Evidence matrix (95%+ resume-safe vs omit)</a>
 <a class="lvl2" href="#career-timeline-canonical">Career timeline (canonical)</a>
 <a class="lvl2" href="#impact-analytics-may-2026-present">Impact Analytics (May 2026 - Present)</a>
 <a class="lvl2" href="#uber-frm-jul-2024-may-2026">Uber FRM (Jul 2024 - May 2026)</a>
@@ -74,7 +75,7 @@ strong{color:#fff}
 <a class="lvl2" href="#mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</a>
 <a class="lvl2" href="#confidence-audit">Confidence audit</a>
 <a class="lvl1" href="#11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</a>
-<a class="lvl2" href="#0-the-four-bullets-i-am-defending">0. The four bullets I am defending</a>
+<a class="lvl2" href="#0-the-four-bullets-i-am-defending-jul-2026-hardened-wording">0. The four bullets I am defending (Jul 2026 hardened wording)</a>
 <a class="lvl2" href="#1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</a>
 <a class="lvl2" href="#2-the-real-database-schema-11-sqlalchemy-20-models">2. The real database schema (11 SQLAlchemy 2.0 models)</a>
 <a class="lvl2" href="#3-api-surface-from-handlerscoping_handlerpy">3. API surface (from handler/scoping_handler.py)</a>
@@ -112,6 +113,7 @@ strong{color:#fff}
 <a class="lvl2" href="#loop-5-open-risks-do-not-hide">Loop 5. Open risks (do not hide)</a>
 <a class="lvl2" href="#loop-6-layout-and-credentials">Loop 6. Layout and credentials</a>
 <a class="lvl2" href="#loop-5-final-judge-tpsrps-hardening-round">Loop 5 final judge (TPS/RPS hardening round)</a>
+<a class="lvl2" href="#loop-6-evidence-backed-skill-hardening-jul-2026">Loop 6 evidence-backed skill hardening (Jul 2026)</a>
 <a class="lvl1" href="#ats-recruiter-screening-report">ATS + Recruiter Screening Report</a>
 <a class="lvl2" href="#recruiter-gut-check-applies-to-both-variants">Recruiter gut-check (applies to both variants)</a>
 <a class="lvl2" href="#1-google">1. Google</a>
@@ -127,7 +129,20 @@ strong{color:#fff}
 <a class="lvl2" href="#keyword-gaps-appearing-across-3-companies">Keyword gaps appearing across 3+ companies</a>
 <a class="lvl2" href="#top-10-changes-ranked-by-impact">Top 10 changes ranked by impact</a>
 <a class="lvl2" href="#final-recruiter-note">Final recruiter note</a>
-<a class="lvl2" href="#re-screen-after-tpsrps-and-planetscale-hardening-loop-4">Re-screen after TPS/RPS and PlanetScale hardening (Loop 4)</a></nav>
+<a class="lvl2" href="#re-screen-after-tpsrps-and-planetscale-hardening-loop-4">Re-screen after TPS/RPS and PlanetScale hardening (Loop 4)</a>
+<a class="lvl2" href="#re-screen-after-evidence-backed-skill-hardening-loop-6">Re-screen after evidence-backed skill hardening (Loop 6)</a>
+<a class="lvl1" href="#senior-systems-deep-dive-ownership-reliability-data-infra">Senior Systems Deep Dive (Ownership, Reliability, Data Infra)</a>
+<a class="lvl2" href="#1-ownership-and-software-design-architecture-resume-safe">1. Ownership and software design / architecture (RESUME-SAFE)</a>
+<a class="lvl2" href="#2-on-call-incident-response-slos-partial-resume-safe">2. On-call, incident response, SLOs (PARTIAL RESUME-SAFE)</a>
+<a class="lvl2" href="#3-fault-tolerance-resume-safe-at-masters">3. Fault tolerance (RESUME-SAFE at Masters)</a>
+<a class="lvl2" href="#4-multi-region-ha-dr-study-only-not-resume-experience">4. Multi-region / HA / DR (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
+<a class="lvl2" href="#5-kubernetes-operational-depth-study-only-beyond-skills-keyword">5. Kubernetes operational depth (STUDY ONLY beyond skills keyword)</a>
+<a class="lvl2" href="#6-terraform-iac-study-only-not-resume-experience">6. Terraform / IaC (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
+<a class="lvl2" href="#7-spark-study-only-not-resume-experience">7. Spark (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
+<a class="lvl2" href="#8-flink-study-only-not-resume-experience">8. Flink (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
+<a class="lvl2" href="#9-design-patterns-resume-skill-verbal-depth">9. Design patterns (RESUME SKILL + verbal depth)</a>
+<a class="lvl2" href="#10-mock-interviewer-loop-hardest-combined-questions">10. Mock interviewer loop (hardest combined questions)</a>
+<a class="lvl2" href="#11-company-targeting-cheat-sheet">11. Company targeting cheat sheet</a></nav>
 <main><h1 id="pythongo-resume-v2-interview-prep-hub-grounded-rewrite">Python/Go resume v2 — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer · July 2026</strong></p>
 <p>This hub backs <code>resume_v2/</code> (PDF: <code>Tarun_Mittal_SSE_5yr_v2.pdf</code>). Original <code>resume/</code> + <code>interview_prep/</code> stay untouched.</p>
@@ -140,9 +155,10 @@ strong{color:#fff}
 <li><a href="14_uber_menu_deep_dive.md"><code>14_uber_menu_deep_dive.md</code></a> — Kafka/Flink/Spark/Pinot</li>
 <li><a href="12_masters_gfg_deep_dive.md"><code>12_masters_gfg_deep_dive.md</code></a> — strangler migration, caching, GFG</li>
 <li><a href="13_behavioral_why_switch.md"><code>13_behavioral_why_switch.md</code></a> — intro, every switch, IA 14 May 2026 exit</li>
+<li><a href="17_senior_systems_study_only.md"><code>17_senior_systems_study_only.md</code></a> — ownership, on-call/SLOs, fault tolerance; STUDY ONLY for multi-region, K8s ops, Spark, Flink, Terraform</li>
 <li><a href="09_metrics_derivations.md"><code>09_metrics_derivations.md</code></a> — ESTIMATED vs DOCUMENTED arithmetic</li>
 </ol>
-<p>Supporting: <a href="01_skills_trim_rationale.md"><code>01_skills_trim_rationale.md</code></a>, <a href="02_mongodb_elasticsearch.md"><code>02_mongodb_elasticsearch.md</code></a>, <a href="03_uber_menu_streaming_numbers.md"><code>03_uber_menu_streaming_numbers.md</code></a>, <a href="08_role_targeting_and_rapid_fire.md"><code>08_role_targeting_and_rapid_fire.md</code></a>.</p>
+<p>Supporting: <a href="01_skills_trim_rationale.md"><code>01_skills_trim_rationale.md</code></a>, <a href="02_mongodb_elasticsearch.md"><code>02_mongodb_elasticsearch.md</code></a>, <a href="03_uber_menu_streaming_numbers.md"><code>03_uber_menu_streaming_numbers.md</code></a>, <a href="08_role_targeting_and_rapid_fire.md"><code>08_role_targeting_and_rapid_fire.md</code></a>, <a href="15_judge_loop_report.md"><code>15_judge_loop_report.md</code></a>.</p>
 <p>Original playbook still useful for agentic Assort depth: <code>../interview_prep/agentic_assort_playbook/</code>.</p>
 <div class="callout warn">
 <p><b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. CDC tool authorship is not yours. Copilot is Phase 1 design approved, load test pending. Benchmark hardware was not identical (PG 32 vCPU / 256 GB vs CH 16 vCPU / 64 GB).</p>
@@ -162,15 +178,15 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>Uber FRM</td>
-<td>8 screens, 30+ endpoints, 11 table schema, recon v1 to v2, led 3 engineers, 1,100+ tests, $340M materiality, targeting 70% cut</td>
+<td>Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70%</td>
 </tr>
 <tr>
 <td>Uber Menu</td>
-<td>30K menus/mo, 24h to 2h, $600K+/yr, +95% ingest, RAG/Gemini 98% fidelity, Pinot</td>
+<td>30K menus/mo, 24h to 2h, $600K+/yr, +95% ingest, RAG/Gemini 98% fidelity (Python + Selenium + GCP)</td>
 </tr>
 <tr>
 <td>Masters India</td>
-<td>Mentored 2; p95 1.2s to 300ms; 700 to 4,000 RPM; Redis -30%; audit -15% churn; 1M+ txn/day</td>
+<td>Owned strangler + mentored 2; Kafka/sharding TPS/RPS; idempotency/DLQ fault tolerance; on-call alerting; 1M+ txn/day</td>
 </tr>
 <tr>
 <td>GeeksforGeeks</td>
@@ -181,6 +197,109 @@ strong{color:#fff}
 <hr>
 <h1 id="ground-truth-fact-sheet-single-source-for-v2-java-tracks">Ground Truth Fact Sheet (single source for v2 + Java tracks)</h1>
 <p>Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA PRDs, all past resumes) on 19 Jul 2026. Every resume bullet on the v2 and Java PDFs must trace to a row here. Tags: <strong>MEASURED</strong> (documented artifact), <strong>TARGET</strong> (design goal, say "targeting"), <strong>HISTORICAL</strong> (from past resumes, defensible), <strong>ESTIMATED</strong> (derived, say so).</p>
+<h2 id="evidence-matrix-95-resume-safe-vs-omit">Evidence matrix (95%+ resume-safe vs omit)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Confidence</th>
+<th>Placement</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Owned Uber FRM recon v1 Sheets to MySQL v2 (18 files, +1,268 LOC)</td>
+<td>95% MEASURED</td>
+<td>Resume experience</td>
+<td><code>RECON_API_MIGRATION.md</code>, FRM code</td>
+</tr>
+<tr>
+<td>Designed layered handler / service / repository / ORM architecture (11 models, 30+ APIs)</td>
+<td>95% MEASURED</td>
+<td>Resume experience</td>
+<td><code>frm_scoping_service/</code></td>
+</tr>
+<tr>
+<td>Led 3 engineers (EPAM pod) via design reviews, API contracts, CI gates</td>
+<td>90% user-confirmed</td>
+<td>Resume experience</td>
+<td>User confirm + code conventions</td>
+</tr>
+<tr>
+<td>Led Masters PHP monolith to microservices (strangler), mentored 2, p95 1.2s to 300ms</td>
+<td>85%+ HISTORICAL</td>
+<td>Resume experience</td>
+<td>Past resumes + prep</td>
+</tr>
+<tr>
+<td>Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS)</td>
+<td>85% HISTORICAL / ESTIMATED peaks</td>
+<td>Resume experience</td>
+<td>Past resumes + metrics derivations</td>
+</tr>
+<tr>
+<td>Fault tolerance: idempotency keys, retries, DLQ replay on bulk IRP path</td>
+<td>75% HISTORICAL narrative</td>
+<td>Resume experience (Masters)</td>
+<td>Masters prep + past resumes</td>
+</tr>
+<tr>
+<td>On-call alerting via ELK + New Relic, triage ~70% faster</td>
+<td>75% HISTORICAL</td>
+<td>Resume experience (Masters)</td>
+<td>4yr resume; baseline ~30 to &lt;10 min ESTIMATED</td>
+</tr>
+<tr>
+<td>Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency)</td>
+<td>90%+ pattern evidence</td>
+<td>Skills</td>
+<td>FRM code + Masters migration</td>
+</tr>
+<tr>
+<td>Fault Tolerance keyword</td>
+<td>85%</td>
+<td>Skills</td>
+<td>Masters idempotency / DLQ / retries</td>
+</tr>
+<tr>
+<td>Kubernetes skills list</td>
+<td>60% ATS</td>
+<td>Skills only</td>
+<td>Listed historically; no cluster-ops proof</td>
+</tr>
+<tr>
+<td>Multi-region / active-active / DR ownership</td>
+<td>&lt;5%</td>
+<td><strong>OMIT resume</strong></td>
+<td>CDC DR doc authored by Ashvin Sharma; no personal ownership</td>
+</tr>
+<tr>
+<td>Kubernetes cluster operations (kubectl/helm/operators)</td>
+<td>&lt;5%</td>
+<td><strong>OMIT resume experience</strong>; STUDY ONLY prep</td>
+<td>Zero manifests / ops narrative</td>
+</tr>
+<tr>
+<td>Spark / Flink production ownership</td>
+<td>&lt;25%</td>
+<td><strong>OMIT resume</strong> (retracted)</td>
+<td>4yr Menu stack is Python + Selenium + GCP</td>
+</tr>
+<tr>
+<td>Terraform / IaC production ownership</td>
+<td>&lt;5%</td>
+<td><strong>OMIT resume</strong>; STUDY ONLY prep</td>
+<td>Keyword blob only on old PDF</td>
+</tr>
+<tr>
+<td>CGPA 7.7/10</td>
+<td>MEASURED</td>
+<td><strong>Removed from resume PDFs</strong> (kept here for reference)</td>
+<td>Education record</td>
+</tr>
+</tbody>
+</table>
 <h2 id="career-timeline-canonical">Career timeline (canonical)</h2>
 <table>
 <thead>
@@ -425,8 +544,12 @@ strong{color:#fff}
 <td>HISTORICAL</td>
 </tr>
 <tr>
-<td>ELK + New Relic, triage -70% (~30 min to &lt;10 min ESTIMATED baseline)</td>
+<td>ELK + New Relic on-call alerting, triage -70% (~30 min to &lt;10 min ESTIMATED baseline)</td>
 <td>HISTORICAL</td>
+</tr>
+<tr>
+<td>Fault tolerance on bulk IRP path: idempotency keys (client + file hash + batch index), exponential backoff retries, dead-letter replay</td>
+<td>HISTORICAL (prep + past narratives)</td>
 </tr>
 <tr>
 <td>KMS encryption, RBAC, JWT, audit logging for compliance</td>
@@ -471,7 +594,7 @@ strong{color:#fff}
 </table>
 <h2 id="achievements-education">Achievements / education</h2>
 <ul>
-<li>Code Jam 2260 / 37,000+ (2021). SIH 2020 finalist, top 3 nationally. <strong>Global AI Hackathon, EPAM Systems</strong> (add). CGPA 7.7/10 (add).</li>
+<li>Code Jam 2260 / 37,000+ (2021). SIH 2020 finalist, top 3 nationally. <strong>Global AI Hackathon, EPAM Systems</strong>. CGPA 7.7/10 kept in ground truth only; <strong>removed from v2 and Java resume PDFs</strong> per Jul 2026 hardening.</li>
 <li>Certificates verified in <code>KNOWLEDGE-MATERIAL/certificates.txt</code>: <strong>HackerRank Problem Solving</strong> (<code>7e492a2e11be</code>) and <strong>LangChain Academy</strong> (<code>vkkkoij3ke</code>).</li>
 </ul>
 <h2 id="why-switch-narratives-see-behavioral-prep">Why-switch narratives (see behavioral prep)</h2>
@@ -1647,13 +1770,14 @@ distribution_centres       ─daily─►  distribution_centres
 <p>Defense material for the four Uber FRM resume bullets. Every number here traces to <code>GROUND_TRUTH.md</code> or to the code in <code>KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/</code>. Tags: <strong>MEASURED</strong> (documented artifact or code), <strong>TARGET</strong> (design goal, say "targeting"), <strong>ESTIMATED</strong> (derived, say so). No number here is invented.</p>
 <p>Role framing: Software Development Engineer 2 at Uber Finance via EPAM Systems, Jul 2024 to May 2026. This was Uber's internal monorepo (Bazel, Fusion.js, SOADB MySQL, langfx FastAPI framework).</p>
 <hr>
-<h2 id="0-the-four-bullets-i-am-defending">0. The four bullets I am defending</h2>
+<h2 id="0-the-four-bullets-i-am-defending-jul-2026-hardened-wording">0. The four bullets I am defending (Jul 2026 hardened wording)</h2>
 <ol>
-<li>Built Uber's quarterly FRM Risk Scoping platform (FastAPI, MySQL, React) replacing a manual Google Sheets workflow across <strong>8 screens and 30+ REST endpoints</strong>, scoping output feeding <strong>PwC audit work papers at $340M group materiality</strong>, targeting a <strong>70% cut</strong> in manual ingestion and reconciliation effort per close.</li>
-<li>Designed the <strong>11 table SQLAlchemy 2.0 MySQL schema</strong> behind a layered <strong>handler / service / repository</strong> architecture with header based auth middleware.</li>
-<li>Owned the migration of reconciliation from Sheets backed v1 APIs to <strong>MySQL backed v2 APIs</strong>, validating HFM vs public <strong>10-Q</strong> amounts, and fixed a latent <strong>column aliasing bug</strong> surfaced during the ORM move.</li>
-<li><strong>Led a pod of 3 engineers</strong>; grew the service to <strong>1,100+ pytest unit tests</strong> under Bazel with mocked handler and repository suites gating CI.</li>
+<li><strong>Owned</strong> Uber's FRM Risk Scoping platform (FastAPI, MySQL, React) across <strong>8 screens and 30+ REST APIs</strong>, automating quarterly scoping at <strong>$340M group materiality</strong>, targeting a <strong>70% cut</strong> in manual reconciliation.</li>
+<li><strong>Designed the software architecture</strong> for an <strong>11 table SQLAlchemy 2.0 MySQL schema</strong> with layered handler, service, and repository boundaries, auto flagging material items across <strong>55 line items and 14 entities</strong>.</li>
+<li><strong>Owned</strong> Sheets to <strong>MySQL v2 recon migration (18 files)</strong>, validating HFM extracts against public <strong>10-Q</strong> filings and fixing a latent column aliasing bug.</li>
+<li><strong>Led 3 engineers</strong>, owning design reviews, API contracts, and CI quality gates for releases feeding PwC audit work papers.</li>
 </ol>
+<p>Java track maps FastAPI layers to Spring Boot controller / service / repository / JPA. Same ownership and numbers. Do not say 36 endpoints or 19M GL rows.</p>
 <hr>
 <h2 id="1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</h2>
 <p>FRM is Uber's Financial Risk Management team inside Finance. Once a quarter, during the financial close, they run the <strong>Scoping Process</strong>: deciding which financial line items (FSLIs, Financial Statement Line Items) and which legal entities are "in scope" for risk assessment and audit testing. The output is the evidence PwC (external auditor) uses to build their <strong>audit work papers</strong>. Getting scoping right is a SOX-style compliance activity: too narrow and you miss risk, too broad and you waste audit hours.</p>
@@ -1992,7 +2116,8 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 <h2 id="masters-india-dec-2022-to-jun-2024-sde-2">Masters India (Dec 2022 to Jun 2024), SDE 2</h2>
 <h3 id="what-the-product-is">What the product is</h3>
 <p>GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoices through our APIs, we validate, register them with the government Invoice Registration Portal (IRP), and return signed e-invoices with IRN and QR codes. Bulk imports, reconciliation against GST returns, and audit trails on top. Compliance means correctness and traceability matter more than raw speed, but filing deadline days bring heavy spikes.</p>
-<h3 id="bullet-1-php-monolith-to-fastapi-microservices-mentored-2-engineers-p95-12s-to-300ms-1500-clients">Bullet 1. PHP monolith to FastAPI microservices, mentored 2 engineers, p95 1.2s to 300ms, 1,500+ clients</h3>
+<h3 id="bullet-1-owned-php-monolith-to-fastapi-microservices-strangler-mentored-2-engineers-p95-12s-to-300ms-1500-clients">Bullet 1. Owned PHP monolith to FastAPI microservices strangler, mentored 2 engineers, p95 1.2s to 300ms, 1,500+ clients</h3>
+<p><strong>Resume XYZ:</strong> Owned the strangler migration (X) by cutting over services behind a gateway with canaries and mentoring 2 engineers (Y), cutting p95 from 1.2s to 300ms for 1,500+ clients (Z).</p>
 <p><strong>Why migrate.</strong> The Laravel monolith was synchronous, one slow IRP callout blocked a worker per request, deployments were all-or-nothing, and scaling meant scaling everything. Filing deadline spikes caused queue pileups and timeouts.</p>
 <p><strong>How we did it (this is the migration playbook to narrate).</strong></p>
 <ol>
@@ -2008,24 +2133,30 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 - Query fixes surfaced during the rewrite: missing composite indexes on (client_id, invoice_date), N+1 removal, pagination on list endpoints.
 - Connection pooling per service instead of PHP-FPM per-request connections.</p>
 <p><strong>Mentoring 2 engineers.</strong> Two juniors owned individual service extractions. I set the conventions (router, service, repository layering, Pydantic schemas at the boundary, retry and idempotency helpers), reviewed every PR for the first months, and paired on the first canary cutover. Both were independently shipping services by the end.</p>
-<h3 id="bullet-2-100k-per-import-1m-daily-transactions-700-to-4000-rpm">Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM</h3>
+<h3 id="bullet-2-100k-per-import-1m-daily-transactions-700-to-4000-rpm-12-tps-67-rps">Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)</h3>
+<p><strong>Resume XYZ:</strong> Scaled bulk e-invoicing with async Kafka and PostgreSQL quarter sharding (X/Y) to 100K+ per import and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
 <ul>
 <li>Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.</li>
 <li>1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.</li>
 <li>Sustained throughput went from 700 to 4,000 requests per minute (HISTORICAL) after the async rewrite plus worker autoscaling on queue depth.</li>
-<li>Idempotency: every invoice carries a client-supplied reference; a unique constraint plus an idempotency key check makes retries safe, since double-registering an invoice with the government is not recoverable.</li>
 </ul>
-<h3 id="bullet-3-redis-caching-30-percent-fewer-redundant-reads-and-audit-logs-15-percent-churn-cut">Bullet 3. Redis caching (30 percent fewer redundant reads) and audit logs (15 percent churn cut)</h3>
+<h3 id="bullet-3-fault-tolerant-bulk-paths-idempotency-retries-dlq-redis-30-reads">Bullet 3. Fault tolerant bulk paths (idempotency, retries, DLQ) + Redis -30% reads</h3>
+<p><strong>Resume XYZ:</strong> Built fault tolerant bulk paths with idempotency keys, retries, and DLQ replay (X/Y), and Redis caching that cut redundant DB reads 30% (Z). Audit-log churn -15% remains HISTORICAL prep depth, not required on the hardened one-pager.</p>
 <ul>
-<li>Cache-aside pattern. On miss, read DB, set with TTL. TTLs carried jitter to avoid synchronized expiry stampedes. Hot keys: client config, rate/tax masters, session and auth lookups.</li>
-<li>Invalidation on write for config data (delete key inside the update transaction boundary), TTL-only for slowly changing masters.</li>
-<li>What p95 gains came from caching vs async: caching mostly helped p50 and read-heavy endpoints; async IO and query fixes drove the p95 tail.</li>
-<li>Audit logging (HISTORICAL): immutable event trail per invoice and per user action, exposed to enterprise clients. Compliance teams could self-serve answers during disputes and audits, which was cited in renewals; churn dropped about 15 percent.</li>
+<li>Idempotency: <code>client + fileHash + batchIndex</code> (and client-supplied invoice references) so retries never double-register with IRP.</li>
+<li>Retries: exponential backoff with jitter and bounded concurrency against the flaky government portal.</li>
+<li>DLQ / dead-letter state: poison batches park for operator replay instead of blocking the whole import.</li>
+<li>Circuit breaker (verbal): open when IRP error rate spikes; serve degraded status to clients.</li>
+<li>Cache-aside: miss to read DB to SET with TTL jitter; SETNX singleflight against stampedes. Hot keys: client config, rate/tax masters, session and auth lookups, GSTIN masters.</li>
+<li>Invalidation on write for config data; TTL-only for slowly changing masters.</li>
+<li>Caching mostly helped p50 and read-heavy endpoints; async IO and query fixes drove the p95 tail.</li>
 </ul>
-<h3 id="bullet-4-elk-new-relic-triage-70-percent-faster-coverage-35-to-82-98-percent-deploy-success">Bullet 4. ELK + New Relic, triage 70 percent faster, coverage 35 to 82, 98 percent deploy success</h3>
+<h3 id="bullet-4-elk-new-relic-on-call-alerting-triage-70-percent-faster-coverage-35-to-82-98-percent-deploy-success">Bullet 4. ELK + New Relic on-call alerting, triage 70 percent faster, coverage 35 to 82, 98 percent deploy success</h3>
+<p><strong>Resume XYZ:</strong> Established ELK and New Relic on-call alerting (X/Y), cutting incident triage 70% and raising coverage 35% to 82% with 98% deployment success (Z).</p>
 <ul>
 <li>Before: SSH into boxes and grep. After: structured JSON logs with request IDs shipped to ELK, New Relic APM traces, alert rules on error rate and latency SLOs.</li>
 <li>Triage went from about 30 minutes to under 10 (baseline ESTIMATED, the 70 percent cut is HISTORICAL). The win is correlation: one request ID follows a transaction across services and workers.</li>
+<li>Honesty: claim on-call <strong>alerting</strong> and faster triage. Do not invent a formal pager rotation or SEV commander title without proof.</li>
 <li>Coverage 35 to 82 percent with pytest, enforced as a CI gate. Focus was on money paths first (registration, reconciliation, imports). Deployment success rate reached 98 percent (HISTORICAL).</li>
 </ul>
 <h3 id="rapid-fire">Rapid fire</h3>
@@ -2102,7 +2233,7 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 </thead>
 <tbody>
 <tr>
-<td>FastAPI migration, mentored 2, p95 1.2s to 300ms, 1,500+ clients</td>
+<td>Owned FastAPI strangler, mentored 2, p95 1.2s to 300ms, 1,500+ clients</td>
 <td>SOLID</td>
 <td>Use 1000-1200ms to 300-400ms band if they cite older resumes; never say 2,500+ clients (dropped).</td>
 </tr>
@@ -2112,14 +2243,14 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 <td>Say ~12 TPS avg and 100+ TPS peak as ESTIMATED. Kafka justification: ordering, replay, consumer groups; admit RabbitMQ could work at that scale.</td>
 </tr>
 <tr>
-<td>Redis -30% redundant reads; audit logs -15% churn</td>
-<td>NEEDS CARE on churn</td>
-<td>Cache: defend with keys/TTL/invalidation. Churn: "attributed in renewals / HISTORICAL business metric; I owned the audit trail feature."</td>
+<td>Fault tolerant bulk paths (idempotency, retries, DLQ) + Redis -30% reads</td>
+<td>SOLID on pattern; NEEDS CARE on circuit-breaker wording</td>
+<td>Defend idempotency key shape and DLQ replay. Circuit breaker is verbal prep, not a measured resume metric. Audit churn -15% is prep-only now.</td>
 </tr>
 <tr>
-<td>ELK + New Relic, triage -70%; coverage 35 to 82; 98% deploy success</td>
+<td>ELK + New Relic on-call alerting, triage -70%; coverage 35 to 82; 98% deploy success</td>
 <td>SOLID on coverage/deploy; NEEDS CARE on triage baseline</td>
-<td>Triage baseline ~30 min to &lt;10 min is ESTIMATED behind HISTORICAL 70%.</td>
+<td>Claim alerting, not unproven pager ownership. Triage baseline ~30 min to &lt;10 min is ESTIMATED behind HISTORICAL 70%.</td>
 </tr>
 <tr>
 <td>GFG PHP to Django, 10K+ daily queries</td>
@@ -2490,6 +2621,49 @@ Selenium scrapers on GCP (proxy pool, UA rotation, retries)
 <li>Optional hyphen polish (both): evidence-backed, read-only, rule-based, anti-bot, on-call, AI-Powered, Sheets-backed.</li>
 <li>Optional GT hygiene: add "3 approval gates" to GROUND_TRUTH so the PDF number is not GT-orphan.</li>
 </ol>
+<h2 id="loop-6-evidence-backed-skill-hardening-jul-2026">Loop 6 evidence-backed skill hardening (Jul 2026)</h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Evidence matrix in GROUND_TRUTH</td>
+<td>PASS. Resume-safe vs omit rows documented for ownership, architecture, on-call alerting, fault tolerance, Design Patterns, and STUDY-ONLY items.</td>
+</tr>
+<tr>
+<td>CGPA removed from both PDFs</td>
+<td>PASS. Still recorded in GROUND_TRUTH only.</td>
+</tr>
+<tr>
+<td>Ownership / architecture wording</td>
+<td>PASS. FRM uses Owned + Designed the software architecture + Owned recon v2 (18 files). Masters uses Owned strangler.</td>
+</tr>
+<tr>
+<td>Fault tolerance + on-call alerting</td>
+<td>PASS. Masters idempotency/retries/DLQ + ELK/New Relic on-call alerting. Skills add Fault Tolerance; v2 adds Design Patterns.</td>
+</tr>
+<tr>
+<td>Forbidden on resume</td>
+<td>PASS. No Terraform, Spark, Flink, multi-region, Vitess on either PDF.</td>
+</tr>
+<tr>
+<td>One-page layout</td>
+<td>PASS. v2 bottom ~778, Java ~773 (letter page ~792). No semicolons / em dashes.</td>
+</tr>
+<tr>
+<td>Prep coverage</td>
+<td>PASS. <code>17_senior_systems_study_only.md</code> added with STUDY ONLY labels and official SRE/K8s/Terraform/Spark/Flink links. Java FRM/Masters project pages corrected (dropped 36 endpoints / 19M rows / 2500 clients).</td>
+</tr>
+<tr>
+<td>Cross-track numeric parity</td>
+<td>PASS on shared money/scale figures.</td>
+</tr>
+</tbody>
+</table>
 <hr>
 <h1 id="ats-recruiter-screening-report">ATS + Recruiter Screening Report</h1>
 <p><strong>Candidate:</strong> Tarun Mittal (~5 years, Bangalore)<br>
@@ -3730,4 +3904,389 @@ India siblings often ask <strong>6-7+ years</strong> (e.g. Data Platform Bengalu
 <li><strong>Amazon:</strong> Keep architecture-years honest (2-3+ leading design), do not imply 5 years of leading architecture.  </li>
 <li><strong>Submit the right PDF:</strong> Py/Go for PlanetScale and Go-heavy Google pods; Java for Airbnb / many Amazon / Netflix L5 pods.  </li>
 <li>Still do not invent Vitess, Spark, Terraform depth, or YoE inflation for Roku/Rubrik.</li>
-</ol></main></div></body></html>
+</ol>
+<h2 id="re-screen-after-evidence-backed-skill-hardening-loop-6">Re-screen after evidence-backed skill hardening (Loop 6)</h2>
+<p><strong>Delta:</strong> ownership verbs + software architecture language on FRM; Masters strangler ownership + fault-tolerant bulk (idempotency/retries/DLQ) + on-call alerting; Design Patterns / Fault Tolerance skills; CGPA removed; STUDY ONLY deep dive for multi-region / K8s ops / Spark / Flink / Terraform (not on PDFs).</p>
+<table>
+<thead>
+<tr>
+<th>Theme</th>
+<th>Py/Go</th>
+<th>Java</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ownership / design and architecture</td>
+<td>HIT</td>
+<td>HIT</td>
+<td>"Owned", "Designed the software architecture", "18 files", "Led 3 engineers"</td>
+</tr>
+<tr>
+<td>On-call / live-site</td>
+<td>HIT (alerting)</td>
+<td>HIT (alerting)</td>
+<td>Honest scope: alerting + triage, not invented pager commander</td>
+</tr>
+<tr>
+<td>Fault tolerance</td>
+<td>HIT</td>
+<td>HIT</td>
+<td>Idempotency, retries, DLQ + Core skill</td>
+</tr>
+<tr>
+<td>Design Patterns</td>
+<td>HIT (skills)</td>
+<td>HIT (skills)</td>
+<td>Backed by strangler / layered / cache-aside verbally</td>
+</tr>
+<tr>
+<td>Multi-region</td>
+<td>MISS (correct)</td>
+<td>MISS (correct)</td>
+<td>Study-only; would fail honesty audit if added</td>
+</tr>
+<tr>
+<td>K8s ops depth</td>
+<td>WEAK (skills only)</td>
+<td>WEAK (skills only)</td>
+<td>Correct; do not promote</td>
+</tr>
+<tr>
+<td>Spark / Flink / Terraform</td>
+<td>MISS (correct)</td>
+<td>MISS (correct)</td>
+<td>Study-only; Databricks Spark lane still needs real Spark later</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Strict PASS count unchanged structurally (YoE gates):</strong> Py/Go 2/9 (Microsoft, PlanetScale); Java 2/9 (Microsoft, Airbnb). Ownership/architecture language improves Amazon/Google skim quality inside BORDERLINE, without inventing 5 years of leading design.</p>
+<p><strong>Honesty still required in interviews:</strong> claim ~3 years leading design reviews (Masters + FRM), not Amazon's literal 5+ years leading architecture.</p>
+<hr>
+<h1 id="senior-systems-deep-dive-ownership-reliability-data-infra">Senior Systems Deep Dive (Ownership, Reliability, Data Infra)</h1>
+<p><strong>Purpose:</strong> Interview fluency for big-tech senior screens.<br>
+<strong>Honesty rule:</strong> Items marked <code>STUDY ONLY - NOT RESUME EXPERIENCE</code> are study material. Do <strong>not</strong> claim them as production ownership on the resume unless a later evidence matrix row reaches 95%+.</p>
+<p>Resume-safe claims live in <code>GROUND_TRUTH.md</code> evidence matrix: FRM ownership/architecture, Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call alerting, Design Patterns / Fault Tolerance skills. Kubernetes stays skills-listed only. Multi-region, K8s ops, Spark, Flink, and Terraform are <strong>off the resume</strong>.</p>
+<hr>
+<h2 id="1-ownership-and-software-design-architecture-resume-safe">1. Ownership and software design / architecture (RESUME-SAFE)</h2>
+<h3 id="what-recruiters-mean">What recruiters mean</h3>
+<p>End-to-end ownership = you can answer: who owned the design doc, who set API contracts, who owned the cutover, who owned the rollback, who owned the post-incident fix.</p>
+<h3 id="map-to-your-work">Map to your work</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Your evidence</th>
+<th>Defense line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Owned a platform</td>
+<td>Uber FRM Risk Scoping (8 screens, 30+ APIs)</td>
+<td>"I owned the recon v2 migration branch and enforced layer boundaries across the pod."</td>
+</tr>
+<tr>
+<td>Software design and architecture</td>
+<td>FRM handler / service / repository / ORM</td>
+<td>"Controllers stay thin; services own rules; repositories own SQL."</td>
+</tr>
+<tr>
+<td>Led design reviews</td>
+<td>Led 3 engineers (EPAM)</td>
+<td>"I sliced work by layer, reviewed PRs for contract and test gates."</td>
+</tr>
+<tr>
+<td>Strangler migration ownership</td>
+<td>Masters India monolith cutover</td>
+<td>"Per-endpoint canary, shared DB first, no dual-write source of truth."</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-questions">Cross-questions</h3>
+<p><strong>Interviewer:</strong> What does "owned design and architecture" mean day to day?<br>
+<strong>Candidate:</strong> Design review agenda, API contract freeze before UI, migration plan with rollback, CI quality gates, and being the person who can explain every non-obvious trade-off in the critical path.</p>
+<p><strong>Interviewer:</strong> Amazon asks for years leading design. How do you answer without lying?<br>
+<strong>Candidate:</strong> Do not say 5 years leading design. Say roughly 3 years of leading design reviews and architecture decisions across Masters India (~1.5y) and Uber FRM (~1.9y), with IC ownership at IA.</p>
+<h3 id="official-references">Official references</h3>
+<ul>
+<li><a href="https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/welcome.html">AWS Reliability Pillar</a></li>
+<li><a href="https://martinfowler.com/articles/patterns-of-distributed-systems/">Martin Fowler: Patterns of Distributed Systems</a></li>
+<li><a href="https://microservices.io/patterns/index.html">microservices.io patterns</a></li>
+</ul>
+<hr>
+<h2 id="2-on-call-incident-response-slos-partial-resume-safe">2. On-call, incident response, SLOs (PARTIAL RESUME-SAFE)</h2>
+<h3 id="resume-safe-wording">Resume-safe wording</h3>
+<p>Masters India: established ELK + New Relic on-call alerting, cut incident triage ~70% (HISTORICAL; baseline ~30 min to under 10 min is ESTIMATED), coverage 35% to 82%, 98% deploy success.</p>
+<h3 id="do-not-claim">Do not claim</h3>
+<p>Pager rotation ownership, SEV commander title, Netflix-scale error budgets, or Uber Menu Pinot dashboards as on-call proof.</p>
+<h3 id="concepts-to-study-google-sre">Concepts to study (Google SRE)</h3>
+<ul>
+<li>SLO = service level objective (for example p95 latency, availability).</li>
+<li>Error budget = 100% minus SLO; burn rate drives release freezes.</li>
+<li>Alert on symptoms users feel, not every CPU blip.</li>
+<li>Postmortem: timeline, root cause, blast radius, action items with owners.</li>
+</ul>
+<h3 id="cross-questions_1">Cross-questions</h3>
+<p><strong>Interviewer:</strong> Walk an incident from alert to close.<br>
+<strong>Candidate:</strong> Alert on error rate or p95 spike with request IDs in ELK. Trace one ID across API, worker, and third party. Mitigate first (rollback, open circuit, shed load). Write the incident note with cause and follow-ups. At Masters, correlation IDs were the triage win; I do not invent a formal pager rotation I cannot prove.</p>
+<h3 id="official-references_1">Official references</h3>
+<ul>
+<li><a href="https://sre.google/sre-book/service-level-objectives/">Google SRE: Service Level Objectives</a></li>
+<li><a href="https://sre.google/workbook/alerting-on-slos/">Google SRE Workbook: Alerting on SLOs</a></li>
+<li><a href="https://sre.google/sre-book/monitoring-distributed-systems/">Monitoring distributed systems</a></li>
+</ul>
+<hr>
+<h2 id="3-fault-tolerance-resume-safe-at-masters">3. Fault tolerance (RESUME-SAFE at Masters)</h2>
+<h3 id="resume-safe-wording_1">Resume-safe wording</h3>
+<p>Built fault tolerant bulk paths with idempotency keys, retries, and DLQ replay, plus Redis caching that cut redundant DB reads 30%.</p>
+<h3 id="patterns-you-can-defend">Patterns you can defend</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Why</th>
+<th>Your example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Idempotency key</td>
+<td>Retries must not double-register invoices with IRP</td>
+<td><code>client + fileHash + batchIndex</code></td>
+</tr>
+<tr>
+<td>Exponential backoff + jitter</td>
+<td>Flaky government portal</td>
+<td>Bounded concurrency on IRP submit</td>
+</tr>
+<tr>
+<td>Dead-letter queue / state</td>
+<td>Park poison batches for operator replay</td>
+<td>Bulk import DLQ</td>
+</tr>
+<tr>
+<td>Circuit breaker</td>
+<td>Stop hammering a dead dependency</td>
+<td>IRP breaker (prep narrative)</td>
+</tr>
+<tr>
+<td>Cache-aside + TTL jitter + SETNX</td>
+<td>Stampede protection</td>
+<td>Redis masters/config cache</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-questions_2">Cross-questions</h3>
+<p><strong>Interviewer:</strong> Why not exactly-once end to end?<br>
+<strong>Candidate:</strong> Across a government portal you get at-least-once plus idempotency. Exactly-once needs a shared transactional sink; IRP is outside your transaction boundary.</p>
+<h3 id="official-references_2">Official references</h3>
+<ul>
+<li><a href="https://docs.aws.amazon.com/wellarchitected/latest/reliability-pillar/rel_fault_isolation_multiaz_region.html">AWS Reliability: Fault isolation</a></li>
+<li><a href="https://sre.google/sre-book/handling-overload/">Google SRE: Handling overload</a></li>
+</ul>
+<hr>
+<h2 id="4-multi-region-ha-dr-study-only-not-resume-experience">4. Multi-region / HA / DR (<code>STUDY ONLY - NOT RESUME EXPERIENCE</code>)</h2>
+<h3 id="why-it-is-off-the-resume">Why it is off the resume</h3>
+<p>No personal multi-region ownership in source material. IA CDC docs mention active-active / disaster recovery goals for a tool authored by Ashvin Sharma. Do not claim you built multi-region HA.</p>
+<h3 id="study-map-whiteboard-fluency">Study map (whiteboard fluency)</h3>
+<pre><code>Client
+  │
+  ├─ Region A (active) ── DB primary + replicas
+  │
+  └─ Region B (passive or active) ── replica / second primary
+         │
+         └─ DNS / GSLB failover + data replication lag budget
+</code></pre>
+<p>Trade-offs to recite:
+- Active-passive: simpler consistency, longer failover.
+- Active-active: lower RTO, harder conflict resolution.
+- RPO = data you can lose. RTO = time to recover.
+- Multi-AZ is not multi-region. AZ failure != region failure.</p>
+<h3 id="cross-questions_3">Cross-questions</h3>
+<p><strong>Interviewer:</strong> Have you operated multi-region production?<br>
+<strong>Candidate:</strong> No. I can design for it: define RPO/RTO, choose async vs sync replication, and test failover. My production reliability work was single-region SaaS with fault-tolerant bulk paths and observability.</p>
+<h3 id="official-references_3">Official references</h3>
+<ul>
+<li><a href="https://kubernetes.io/docs/setup/best-practices/multiple-zones/">Kubernetes multiple zones</a></li>
+<li><a href="https://learn.microsoft.com/en-us/azure/aks/reliability-multi-region-deployment-models">AKS multi-region models</a></li>
+<li><a href="https://cloud.google.com/architecture/framework/reliability">GCP Architecture Framework: Reliability</a></li>
+</ul>
+<hr>
+<h2 id="5-kubernetes-operational-depth-study-only-beyond-skills-keyword">5. Kubernetes operational depth (<code>STUDY ONLY</code> beyond skills keyword)</h2>
+<h3 id="resume-boundary">Resume boundary</h3>
+<p>Kubernetes appears on the skills line historically. There is no kubectl/helm/operator production narrative in your material. Do <strong>not</strong> say "operated production clusters."</p>
+<h3 id="study-topics-for-infra-interviews">Study topics for infra interviews</h3>
+<ul>
+<li>Pod, Deployment, Service, Ingress, ConfigMap, Secret.</li>
+<li>Requests/limits, HPA, PDB, readiness vs liveness.</li>
+<li>Control plane HA, etcd, multi-AZ worker pools.</li>
+<li>Rollout strategies: rolling, blue/green, canary.</li>
+<li>Failure modes: CrashLoopBackOff, OOMKilled, image pull backoff, network policy blocks.</li>
+</ul>
+<h3 id="cross-questions_4">Cross-questions</h3>
+<p><strong>Interviewer:</strong> How deep is your Kubernetes experience?<br>
+<strong>Candidate:</strong> Containerized services with Docker and listed Kubernetes familiarity. I have not owned cluster upgrades or operators. For Masters and Uber work I can defend service design, health checks, and deploy gates; cluster control-plane ownership is not my claim.</p>
+<h3 id="official-references_4">Official references</h3>
+<ul>
+<li><a href="https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/">kubeadm HA</a></li>
+<li><a href="https://kubernetes.io/docs/setup/best-practices/multiple-zones/">Kubernetes production best practices</a></li>
+</ul>
+<hr>
+<h2 id="6-terraform-iac-study-only-not-resume-experience">6. Terraform / IaC (<code>STUDY ONLY - NOT RESUME EXPERIENCE</code>)</h2>
+<h3 id="why-off-the-resume">Why off the resume</h3>
+<p>No Terraform modules, state files, or IaC ownership in your material.</p>
+<h3 id="study-topics">Study topics</h3>
+<ul>
+<li>Providers, resources, modules, remote state, workspaces.</li>
+<li>Plan/apply, drift, import, destroy safety.</li>
+<li>Secrets: do not store them in state plaintext; use secret managers.</li>
+<li>Idempotent infra changes vs snowflake servers.</li>
+</ul>
+<h3 id="cross-questions_5">Cross-questions</h3>
+<p><strong>Interviewer:</strong> Did you manage infra with Terraform?<br>
+<strong>Candidate:</strong> No production Terraform ownership. I can explain plan/apply and remote state, and I owned application deploy quality (CI gates, 98% deploy success) rather than cloud account IaC.</p>
+<h3 id="official-references_5">Official references</h3>
+<ul>
+<li><a href="https://developer.hashicorp.com/terraform/language">Terraform language</a></li>
+<li><a href="https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eks_cluster">AWS EKS Terraform resource</a></li>
+<li><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster">GKE Terraform resource</a></li>
+</ul>
+<hr>
+<h2 id="7-spark-study-only-not-resume-experience">7. Spark (<code>STUDY ONLY - NOT RESUME EXPERIENCE</code>)</h2>
+<h3 id="why-off-the-resume_1">Why off the resume</h3>
+<p>Explicitly retracted. Uber Menu source of truth is Python + Selenium + GCP, not a Spark batch platform. Do not re-add Spark to skills or experience.</p>
+<h3 id="study-topics-databricks-data-platform-interviews">Study topics (Databricks / data-platform interviews)</h3>
+<ul>
+<li>Driver vs executors, partitions, shuffle, skew, AQE.</li>
+<li>Narrow vs wide transformations.</li>
+<li>Structured Streaming micro-batches vs continuous.</li>
+<li>When Spark beats a warehouse OLAP engine and when ClickHouse wins for interactive analytics.</li>
+</ul>
+<h3 id="bridge-from-your-real-work">Bridge from your real work</h3>
+<p>"I proved a 60x analytics speedup moving Order Batching aggregation from PostgreSQL to ClickHouse. That is OLAP engineering adjacent to Spark jobs, but I did not own a Spark production pipeline."</p>
+<h3 id="official-references_6">Official references</h3>
+<ul>
+<li><a href="https://spark.apache.org/docs/latest/cluster-overview.html">Spark overview</a></li>
+<li><a href="https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html">Structured Streaming</a></li>
+</ul>
+<hr>
+<h2 id="8-flink-study-only-not-resume-experience">8. Flink (<code>STUDY ONLY - NOT RESUME EXPERIENCE</code>)</h2>
+<h3 id="why-off-the-resume_2">Why off the resume</h3>
+<p>Same retraction as Spark for Menu. Kafka remains justified by Masters India only.</p>
+<h3 id="study-topics_1">Study topics</h3>
+<ul>
+<li>Event time vs processing time, watermarks, keyed state.</li>
+<li>Checkpoints (Chandy-Lamport style), savepoints, exactly-once sinks.</li>
+<li>Backpressure and operator chaining.</li>
+<li>Flink vs Kafka Streams vs Spark Structured Streaming trade-offs.</li>
+</ul>
+<h3 id="bridge-from-your-real-work_1">Bridge from your real work</h3>
+<p>"At Masters India I used Kafka for ordered, replayable compliance events with consumer groups. If the interview needs stream processing beyond Kafka consumers, I can discuss Flink concepts as study knowledge, not as my production ownership."</p>
+<h3 id="official-references_7">Official references</h3>
+<ul>
+<li><a href="https://nightlies.apache.org/flink/flink-docs-stable/">Flink docs</a></li>
+<li><a href="https://nightlies.apache.org/flink/flink-docs-stable/docs/deployment/ha/overview/">Flink HA overview</a></li>
+<li><a href="https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/">Stateful stream processing</a></li>
+</ul>
+<hr>
+<h2 id="9-design-patterns-resume-skill-verbal-depth">9. Design patterns (RESUME SKILL + verbal depth)</h2>
+<h3 id="patterns-you-can-name-from-your-projects">Patterns you can name from your projects</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strangler Fig</td>
+<td>Masters monolith migration</td>
+</tr>
+<tr>
+<td>Layered / Repository</td>
+<td>FRM handler-service-repository</td>
+</tr>
+<tr>
+<td>CQRS (verbal, not resume bullet)</td>
+<td>IA Order Batching PG writes / CH reads</td>
+</tr>
+<tr>
+<td>Cache-aside</td>
+<td>Masters Redis</td>
+</tr>
+<tr>
+<td>Idempotent consumer</td>
+<td>Masters bulk IRP</td>
+</tr>
+<tr>
+<td>Parallel run / expand-contract</td>
+<td>FRM recon v1 + v2 endpoints side by side</td>
+</tr>
+</tbody>
+</table>
+<h3 id="cross-questions_6">Cross-questions</h3>
+<p><strong>Interviewer:</strong> Give one design pattern and the trade-off.<br>
+<strong>Candidate:</strong> Strangler vs rewrite. Strangler keeps filing day safe with per-endpoint rollback, at the cost of temporary dual stacks and gateway complexity. Rewrite is cleaner long-term but unacceptable for compliance deadlines.</p>
+<hr>
+<h2 id="10-mock-interviewer-loop-hardest-combined-questions">10. Mock interviewer loop (hardest combined questions)</h2>
+<p><strong>Q1:</strong> Sell me on your ownership in 60 seconds without buzzwords.<br>
+<strong>A:</strong> At Uber FRM I owned recon v2 end to end: schema, repository, service, handlers, tests, and the cutover from Sheets. At Masters I owned the strangler migration plan, mentored two engineers through canaries, and owned the bulk path that hit 1M+ daily transactions.</p>
+<p><strong>Q2:</strong> Where is fault tolerance in your stack, with numbers?<br>
+<strong>A:</strong> Masters bulk e-invoicing: 100K+ per import, ~12 TPS average and 100+ peak estimated, 700 to 4,000 RPM. Idempotency keys stop double IRP registration. Retries with backoff absorb portal flakes. DLQ holds poison batches. Redis cut redundant reads 30%.</p>
+<p><strong>Q3:</strong> Why should PlanetScale / Netflix care if you lack multi-region and Terraform?<br>
+<strong>A:</strong> Because I can prove production ownership of data correctness, sharding, throughput, latency, and alerting. Multi-region and Terraform are study-ready; I will not invent cluster or IaC ownership. My closest HA story is fault-tolerant bulk processing and observability, not geo failover.</p>
+<p><strong>Q4:</strong> Spark vs ClickHouse for AssortSmart analytics?<br>
+<strong>A:</strong> Interactive planner metrics with sub-second probes and high insert rates fit ClickHouse (measured 3.86s vs multi-minute PG, 5.9M rows/s inserts). Spark fits large offline ETL and ML feature generation across object storage. I own the CH POC path; Spark remains study-only for me.</p>
+<p><strong>Q5:</strong> How do you answer Kubernetes depth without failing the screen?<br>
+<strong>A:</strong> Honest scope: Dockerized services, Kubernetes listed as familiarity, no claim of operating control planes. Pivot to deploy quality, health checks, and rollback stories from CI and canary cutovers.</p>
+<hr>
+<h2 id="11-company-targeting-cheat-sheet">11. Company targeting cheat sheet</h2>
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Lean on</th>
+<th>Do not invent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google / Amazon</td>
+<td>Ownership, design reviews, latency, on-call alerting</td>
+<td>5y leading design, multi-region</td>
+</tr>
+<tr>
+<td>Microsoft</td>
+<td>Backend + agentic + cloud</td>
+<td>Azure-only depth</td>
+</tr>
+<tr>
+<td>Airbnb</td>
+<td>Java track for App Foundation; Kafka + scale</td>
+<td>Kotlin unless true</td>
+</tr>
+<tr>
+<td>PlanetScale</td>
+<td>Go track, MySQL/PG, sharding, TPS/RPS, Linux</td>
+<td>Vitess internals, DB engine work</td>
+</tr>
+<tr>
+<td>Databricks</td>
+<td>ClickHouse/analytics + distributed design</td>
+<td>Production Spark ownership</td>
+</tr>
+<tr>
+<td>Netflix</td>
+<td>HA language, on-call alerting, p95</td>
+<td>Netflix-scale blast radius</td>
+</tr>
+<tr>
+<td>Roku / Rubrik</td>
+<td>Skip hard YoE gates; study K8s/Terraform only</td>
+<td>Fake infra ownership</td>
+</tr>
+</tbody>
+</table></main></div></body></html>
