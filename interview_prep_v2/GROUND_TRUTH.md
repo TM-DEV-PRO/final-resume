@@ -25,7 +25,7 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | Incremental CH MV 0.65s per 100K insert vs PG full refresh ~4s over 1.69M rows (~85% faster) | MEASURED | 2701262897, 2702934024 |
 | 10K updates on ~29M-row CARFG: full rewrite 36-39s, partition-scoped ~7s, delta join 6.7s/partition, full-table delta OOM at 14.4 GiB | MEASURED | 2780954663 |
 | Fact table 17.15M rows, 432.81 MiB compressed vs 3.31 GiB raw (~7.8x compression) | MEASURED | 2642608187 |
-| Order Batching migration architecture: **CQRS** (PG writes / CH reads), CDC mirrors for CARFG + plan_master + dc_pack_reserve, daily full refresh for low-churn dims, Redis read-your-writes flag TTL ~30s falling back to PG post-save | MEASURED design doc | 2764046370 |
+| Order Batching migration architecture: **CQRS** (PG writes / CH reads), CDC mirrors for CARFG + plan_master + dc_pack_reserve, daily full refresh for low-churn dims, Redis read-your-writes flag TTL ~30s falling back to PG post-save. Resume phrases this plainly ("keeping writes on PostgreSQL, syncing hot fact tables in near real time"); use the CQRS/CDC terms verbally in interviews | MEASURED design doc | 2764046370 |
 | CDC platform SLOs (PG commit to CH visible p95 <= 10s, snapshot >= 25K rows/s) | MEASURED (tool by Ashvin Sharma; say "designed against / integrated with", NOT "built") | 2727084070 |
 | Cluster Recommendation Copilot: LLM orchestrates, deterministic plane computes, 14 audited tools, agent cannot write, human approval gates | MEASURED design (Phase 1, external review PASS, load test pending) | 2817589251, 2816999437 |
 | Copilot baselines: run failures 8.5% (37/437), median clustering job ~20s, reproducibility 0% | MEASURED | 2817589251 |

@@ -7,7 +7,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 ## Study order (do this)
 
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) — every shippable number and honesty tag
-2. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — CH POC, CQRS/CDC, copilot
+2. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — Agentic AssortSmart, PG to CH POC, read path design, copilot
 3. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) — real schema, routes, recon migration
 4. [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) — Kafka/Flink/Spark/Pinot
 5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md) — strangler migration, caching, GFG

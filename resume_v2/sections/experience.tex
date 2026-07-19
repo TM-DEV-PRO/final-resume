@@ -14,15 +14,14 @@
 \end{tabularx}
 \vspace{-2ex}
 
-\textcolor{Project}{\textbf{Agentic AssortSmart Platform \& PostgreSQL to ClickHouse Data Migration}}
+\textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built a \textbf{LangGraph/MCP clustering copilot} with 14 audited tools; targets: days to under 1h, 1 to 20+ configurations, 8.5\% to under 2\% failures.
-    \item Benchmarked a \textbf{23.7M-row} Order Batching query at \textbf{3.86s on ClickHouse vs 3m 40s+ on PostgreSQL}, a \textbf{60x} improvement.
-    \item Sustained \textbf{5.9M vs 250K rows/sec} on bulk loads and improved query-to-CSV export throughput \textbf{43x}, from 607 to 26.4K rows/sec.
-    \item Designed a \textbf{CQRS/CDC migration}: PostgreSQL writes, ClickHouse reads, daily dimension refresh, and \textbf{Redis RYW routing with a 30s TTL}.
-    \item Cut 10K-row updates on a \textbf{29M-row fact table from 39s to 7s} via partition merges; compressed 17M rows \textbf{7.8x} to 433 MiB.
-    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, ClickHouse, PostgreSQL, CDC, Redis, Kafka, GCP, Docker.
+    \item Building the agentic rebuild of AssortSmart with a \textbf{LangGraph and MCP copilot} that plans store clusters through \textbf{14 audited tools}, targeting plan turnaround \textbf{under 1 hour} from days and failures under 2\% from 8.5\%.
+    \item Led the \textbf{PostgreSQL to ClickHouse POC} for AssortSmart planning analytics, benchmarking the \textbf{23.7M row} Order Batching metric at \textbf{3.86s on ClickHouse vs 3m 40s+ on PostgreSQL (60x)} and bulk loads at \textbf{5.9M vs 250K rows/sec}.
+    \item Designed the ClickHouse read path for Order Batching, keeping writes on PostgreSQL, syncing hot fact tables in near real time, and routing post save reads through \textbf{Redis (30s TTL)} so planners see their own saves instantly.
+    \item Cut 10K row updates on a \textbf{29M row fact table from 39s to 7s} with partition scoped merges and \textbf{ReplacingMergeTree} versioned updates, and compressed a 17M row fact table \textbf{7.8x} to 433 MiB.
+    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -38,10 +37,10 @@
 \textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built Uber's \textbf{FRM Risk Scoping platform} across \textbf{8 screens and 30+ APIs}, targeting 70\% less manual work at \textbf{\$340M materiality}.
-    \item Designed an \textbf{11-table SQLAlchemy/MySQL schema} using handler, service, and repository layers with header-based authentication.
-    \item Migrated Sheets-backed reconciliation to \textbf{MySQL v2 APIs}, validated HFM against 10-Q data, and fixed a column-aliasing bug.
-    \item \textbf{Led 3 engineers} and grew the Bazel-tested service to \textbf{1,100+ pytest tests} across handlers, services, and repositories.
+    \item Built Uber's \textbf{FRM Risk Scoping platform (FastAPI, MySQL, React)} across \textbf{8 screens and 30+ REST APIs}, targeting a \textbf{70\% cut} in manual scoping work at \textbf{\$340M group materiality}, with output feeding PwC audit work papers.
+    \item Designed an \textbf{11 table SQLAlchemy 2.0 MySQL schema} behind layered handler, service, and repository code with header based auth.
+    \item Migrated Sheets backed reconciliation to \textbf{MySQL v2 APIs} validating HFM against public \textbf{10-Q} data, fixing a latent column aliasing bug.
+    \item \textbf{Led 3 engineers} and grew the Bazel tested service to \textbf{1,100+ pytest unit tests} gating CI.
     \item \textbf{Tech Used}: Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, pytest, Docker.
 \end{zitemize}
 \vspace{0.3ex}
@@ -49,16 +48,15 @@
 \textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Built a \textbf{Kafka/Flink/Spark} pipeline for 30K+ menus/month; cut onboarding 24h to 2h and saved \textbf{\$600K+/year}.
-    \item Built a \textbf{RAG/Gemini} extraction pipeline for PDFs and images, reaching \textbf{98\% fidelity and 100\% schema consistency} in offline evaluation.
-    \item Raised ingestion success about 60\% to 95\%+ via proxies and IP rotation; \textbf{Pinot} dashboards cut detection from hours to minutes.
+    \item Built a \textbf{Kafka, Flink, and Spark} pipeline for \textbf{30K+ menus/month}, cutting onboarding from 24h to 2h and saving \textbf{\$600K+ annually}.
+    \item Built a \textbf{RAG and Gemini} extraction pipeline for PDF and image menus, reaching \textbf{98\% fidelity and 100\% schema consistency} in offline evaluation.
+    \item Raised ingestion success from about 60\% to \textbf{95\%+} via IP rotation and proxy pools, and built \textbf{Pinot} dashboards cutting detection from hours to minutes.
     \item \textbf{Tech Used}: Python, Apache Kafka, Apache Flink, Apache Spark, Apache Pinot, Selenium, Gemini, GCP, Docker.
 \end{zitemize}
 
 %====================
 % EXPERIENCE C — MASTERS INDIA
 %====================
-\newpage
 \vspace{0.5ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
@@ -69,10 +67,10 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Led a PHP-to-\textbf{FastAPI microservices} migration and mentored \textbf{2 engineers}, cutting p95 latency \textbf{1.2s to 300ms} for 1,500+ clients.
-    \item Scaled bulk imports to \textbf{100K+ transactions} and 1M+ daily transactions, raising sustained throughput \textbf{700 to 4,000 requests/min}.
-    \item Added \textbf{Redis cache-aside} to cut redundant DB reads 30\%; shipped audit logs that reduced client churn \textbf{15\%}.
-    \item Added \textbf{ELK/New Relic} alerting, cutting triage 70\%; raised test coverage \textbf{35\% to 82\%} with a 98\% deployment success rate.
+    \item Led a PHP to \textbf{FastAPI microservices} migration and \textbf{mentored 2 engineers}, cutting p95 latency from \textbf{1.2s to 300ms} for 1,500+ enterprise clients.
+    \item Scaled bulk imports to \textbf{100K+ transactions and 1M+ daily}, raising sustained throughput from \textbf{700 to 4,000 requests/min}.
+    \item Added \textbf{Redis caching} cutting redundant database reads 30\%, and shipped audit logs that reduced client churn \textbf{15\%}.
+    \item Set up \textbf{ELK and New Relic alerting} cutting incident triage 70\%, and raised test coverage from \textbf{35\% to 82\%} at a 98\% deployment success rate.
     \item \textbf{Tech Used}: Python, FastAPI, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
@@ -86,7 +84,7 @@
 \end{tabularx}
 \vspace{-3ex}
 \begin{zitemize}
-    \item Migrated PHP services to \textbf{Django}, improving reliability for \textbf{10K+ daily queries}.
-    \item Built voting and pinning APIs using MySQL, MongoDB, Redis, and Elasticsearch, lifting \textbf{premium subscriptions 15 to 20\%}.
+    \item Migrated PHP services to \textbf{Django (Python)}, improving reliability for \textbf{10K+ daily queries}.
+    \item Built voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch, lifting \textbf{premium subscriptions 15 to 20\%}.
     \item Built influencer analytics and cron pipelines for video processing, raising \textbf{course sales 30\%} and operational efficiency 70\%.
 \end{zitemize}

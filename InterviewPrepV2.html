@@ -101,7 +101,7 @@ strong{color:#fff}
 <h2 id="study-order-do-this">Study order (do this)</h2>
 <ol>
 <li><a href="GROUND_TRUTH.md"><code>GROUND_TRUTH.md</code></a> — every shippable number and honesty tag</li>
-<li><a href="10_impact_analytics_deep_dive.md"><code>10_impact_analytics_deep_dive.md</code></a> — CH POC, CQRS/CDC, copilot</li>
+<li><a href="10_impact_analytics_deep_dive.md"><code>10_impact_analytics_deep_dive.md</code></a> — Agentic AssortSmart, PG to CH POC, read path design, copilot</li>
 <li><a href="11_uber_frm_deep_dive.md"><code>11_uber_frm_deep_dive.md</code></a> — real schema, routes, recon migration</li>
 <li><a href="14_uber_menu_deep_dive.md"><code>14_uber_menu_deep_dive.md</code></a> — Kafka/Flink/Spark/Pinot</li>
 <li><a href="12_masters_gfg_deep_dive.md"><code>12_masters_gfg_deep_dive.md</code></a> — strangler migration, caching, GFG</li>
@@ -231,7 +231,7 @@ strong{color:#fff}
 <td>2642608187</td>
 </tr>
 <tr>
-<td>Order Batching migration architecture: <strong>CQRS</strong> (PG writes / CH reads), CDC mirrors for CARFG + plan_master + dc_pack_reserve, daily full refresh for low-churn dims, Redis read-your-writes flag TTL ~30s falling back to PG post-save</td>
+<td>Order Batching migration architecture: <strong>CQRS</strong> (PG writes / CH reads), CDC mirrors for CARFG + plan_master + dc_pack_reserve, daily full refresh for low-churn dims, Redis read-your-writes flag TTL ~30s falling back to PG post-save. Resume phrases this plainly ("keeping writes on PostgreSQL, syncing hot fact tables in near real time"); use the CQRS/CDC terms verbally in interviews</td>
 <td>MEASURED design doc</td>
 <td>2764046370</td>
 </tr>
@@ -1093,8 +1093,9 @@ distribution_centres       ─daily─►  distribution_centres
 <hr>
 <h2 id="6-resume-bullet-3-cqrs-migration-order-batching">6. Resume bullet 3: CQRS migration (Order Batching)</h2>
 <blockquote>
-<p>Designed the Order Batching CQRS read path migration keeping writes on PostgreSQL and serving analytical reads from ClickHouse, with CDC mirrors for hot fact tables, daily refresh for low churn dimensions, and Redis read your writes routing (30s TTL) so users see their own saves instantly.</p>
+<p>Designed the ClickHouse read path for Order Batching, keeping writes on PostgreSQL, syncing hot fact tables in near real time, and routing post save reads through Redis (30s TTL) so planners see their own saves instantly.</p>
 </blockquote>
+<p>Note: the resume deliberately says "syncing hot fact tables in near real time" instead of CQRS/CDC jargon. In the interview, name the patterns yourself: this is CQRS (writes and reads on separate stores) implemented with CDC mirrors for hot facts and daily refresh for low churn dimensions.</p>
 <h3 id="61-exact-story-with-numbers">6.1 Exact story with numbers</h3>
 <p><strong>Goal:</strong> move aggregation-heavy <strong>reads</strong> for Order Batching to ClickHouse to cut PG load, while <strong>all writes stay on Postgres</strong>. GCS parquet edit sessions stay unchanged (no DB during in-memory edits).</p>
 <p><strong>Sync:</strong> CDC for high/moderate churn facts (CARFG, plan_master, dc_pack_reserve); daily full refresh for low-churn dims.</p>

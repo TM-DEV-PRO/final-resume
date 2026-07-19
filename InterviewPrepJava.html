@@ -1186,8 +1186,9 @@ distribution_centres       ─daily─►  distribution_centres
 <hr>
 <h2 id="6-resume-bullet-3-cqrs-migration-order-batching">6. Resume bullet 3: CQRS migration (Order Batching)</h2>
 <blockquote>
-<p>Designed the Order Batching CQRS read path migration keeping writes on PostgreSQL and serving analytical reads from ClickHouse, with CDC mirrors for hot fact tables, daily refresh for low churn dimensions, and Redis read your writes routing (30s TTL) so users see their own saves instantly.</p>
+<p>Designed the ClickHouse read path for Order Batching, keeping writes on PostgreSQL, syncing hot fact tables in near real time, and routing post save reads through Redis (30s TTL) so planners see their own saves instantly.</p>
 </blockquote>
+<p>Note: the resume deliberately says "syncing hot fact tables in near real time" instead of CQRS/CDC jargon. In the interview, name the patterns yourself: this is CQRS (writes and reads on separate stores) implemented with CDC mirrors for hot facts and daily refresh for low churn dimensions.</p>
 <h3 id="61-exact-story-with-numbers">6.1 Exact story with numbers</h3>
 <p><strong>Goal:</strong> move aggregation-heavy <strong>reads</strong> for Order Batching to ClickHouse to cut PG load, while <strong>all writes stay on Postgres</strong>. GCS parquet edit sessions stay unchanged (no DB during in-memory edits).</p>
 <p><strong>Sync:</strong> CDC for high/moderate churn facts (CARFG, plan_master, dc_pack_reserve); daily full refresh for low-churn dims.</p>

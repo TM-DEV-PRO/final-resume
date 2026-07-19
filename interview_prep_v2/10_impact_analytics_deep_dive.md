@@ -342,7 +342,9 @@ CH often had **weaker** hardware and less tuning, and still won. Treat results a
 
 ## 6. Resume bullet 3: CQRS migration (Order Batching)
 
-> Designed the Order Batching CQRS read path migration keeping writes on PostgreSQL and serving analytical reads from ClickHouse, with CDC mirrors for hot fact tables, daily refresh for low churn dimensions, and Redis read your writes routing (30s TTL) so users see their own saves instantly.
+> Designed the ClickHouse read path for Order Batching, keeping writes on PostgreSQL, syncing hot fact tables in near real time, and routing post save reads through Redis (30s TTL) so planners see their own saves instantly.
+
+Note: the resume deliberately says "syncing hot fact tables in near real time" instead of CQRS/CDC jargon. In the interview, name the patterns yourself: this is CQRS (writes and reads on separate stores) implemented with CDC mirrors for hot facts and daily refresh for low churn dimensions.
 
 ### 6.1 Exact story with numbers
 
