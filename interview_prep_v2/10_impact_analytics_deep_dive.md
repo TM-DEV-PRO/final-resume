@@ -344,7 +344,7 @@ CH often had **weaker** hardware and less tuning, and still won. Treat results a
 
 > Designed the ClickHouse read path for Order Batching, keeping writes on PostgreSQL, syncing hot fact tables in near real time, and routing post save reads through Redis (30s TTL) so planners see their own saves instantly.
 
-Note: the resume deliberately says "syncing hot fact tables in near real time" instead of CQRS/CDC jargon. In the interview, name the patterns yourself: this is CQRS (writes and reads on separate stores) implemented with CDC mirrors for hot facts and daily refresh for low churn dimensions.
+Note: the resume now carries only ONE ClickHouse point, the PG to ClickHouse migration POC with benchmark numbers. The read path design below (CQRS, CDC mirrors, Redis read your writes) is prep-only depth: bring it up verbally when asked "what would the production migration look like".
 
 ### 6.1 Exact story with numbers
 
