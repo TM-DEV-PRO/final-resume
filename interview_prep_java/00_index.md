@@ -1,44 +1,40 @@
-# Java Track — Interview Prep Hub
+# Java Track — Interview Prep Hub (grounded rewrite)
 
 **Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026**
 
-This hub backs every line of `resume_java/resume.tex` (PDF: `output/Tarun_Mittal_SSE_Java_5yr.pdf`). It is a **separate track** from the Python/Go prep in `interview_prep/` — same projects, metrics, and companies; **non-agentic APIs framed in Spring Boot / Hibernate where defensible; AI/RAG + Menu streaming stay Python**.
+Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu streaming, and ClickHouse work stay Python.
 
-Study order:
+## Study order
 
-1. **Project deep dives** — one chapter per resume project (Impact → Uber FRM → Uber Menu → Masters India → GFG).
-2. **Tech deep dives** — Java, Spring Boot, Hibernate/JPA, Spring Security, Spring Batch, Kafka/Flink/Spark/Pinot, Python agents, cloud.
-3. **Behavioral bank** — same STAR stories as the main track (outcomes don't change); stack references swapped to Java where needed.
-4. **Role targeting** — Java/Spring senior SWE listings and rapid-fire defense.
+1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) then [`../interview_prep_v2/GROUND_TRUTH.md`](../interview_prep_v2/GROUND_TRUTH.md)
+2. [`../interview_prep_v2/10_impact_analytics_deep_dive.md`](../interview_prep_v2/10_impact_analytics_deep_dive.md)
+3. [`../interview_prep_v2/11_uber_frm_deep_dive.md`](../interview_prep_v2/11_uber_frm_deep_dive.md) — map FastAPI layers to Spring controller / service / repository
+4. [`../interview_prep_v2/14_uber_menu_deep_dive.md`](../interview_prep_v2/14_uber_menu_deep_dive.md) — no Spring claim
+5. [`../interview_prep_v2/12_masters_gfg_deep_dive.md`](../interview_prep_v2/12_masters_gfg_deep_dive.md) — Celery → Spring Batch
+6. [`../interview_prep_v2/13_behavioral_why_switch.md`](../interview_prep_v2/13_behavioral_why_switch.md)
+7. Local: [`06_tech_deep_dives.md`](06_tech_deep_dives.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md), [`09_metrics_derivations.md`](09_metrics_derivations.md)
+
+## Stack mapping
+
+| Real / v2 | Java track claim |
+|---|---|
+| FastAPI (FRM, Masters) | Spring Boot (MVC) |
+| SQLAlchemy 2.0 | Spring Data JPA / Hibernate |
+| Django (GFG) | Spring Boot + Spring MVC |
+| Celery | Spring Batch / `@Async` |
+| pytest | JUnit 5 + Mockito |
+| LangGraph / Menu / ClickHouse | Unchanged Python |
 
 <div class="callout warn">
-<b>Honesty guardrail.</b> Same as the main track: know which numbers are <b>REAL</b> (measured), <b>offline-eval</b>, or <b>design targets</b>. Say "measured," "in an offline evaluation," or "our design target" accordingly. BigQuery is the <b>upstream source of truth we ingest from</b> — never claim BigQuery optimization work as yours. This Java resume is a <b>positioning variant</b> for Java/Spring roles; defend the architecture and outcomes, and be ready to map Spring/JPA patterns to the same systems you built.
+<b>Honesty.</b> Same as v2 GROUND_TRUTH. Do not invent Spring for Menu or Hibernate for ClickHouse. FRM 70% is a TDD target. Endpoint count is 30+, not 36.
 </div>
 
-## Stack mapping (Python/Go resume → this Java resume)
+## Resume at a glance (Java grounded)
 
-| Original | Java track |
+| Company | Lead claims |
 |---|---|
-| Gin / non-agentic FastAPI | Spring Boot (MVC) |
-| SQLAlchemy / Pydantic | Hibernate / Spring Data JPA + Bean Validation / Jackson |
-| Django | Spring Boot + Spring MVC |
-| Celery | Spring Batch + `@Async` / Redis-backed workers |
-| pytest | JUnit 5 + Mockito + Testcontainers |
-| **LangGraph / FastAPI agents** | **Unchanged — Python (FastAPI, LangGraph, LangChain, MCP)** |
-| Menu ingestion (Kafka/Flink/Spark/Pinot + RAG) | **Unchanged — Python + streaming stack** (no Spring claim) |
-| Goroutine pools / channels | `ExecutorService` + bounded queues / virtual threads |
-| JWT middleware | Spring Security (JWT resource server) |
-
-## The resume at a glance
-
-| Company | Project | Lead metric |
-|---|---|---|
-| Impact Analytics (Jun 2026–) | Agentic AssortSmart | Python agentic microservice (FastAPI, LangGraph): ~100 silhouette-scored clusterings → top 3, days → <1 h · Spring Boot (Java) core: worker pools, timeouts, Spring Security JWT · ClickHouse append-only never-erase store |
-| Uber via EPAM (Jul 2024–May 2026) | FRM Scoping Platform | 70% cycle (~2 weeks → ~3–4 days) · 36 endpoints p95 <300ms · 19M→300K · JPA/Hibernate |
-| Uber via EPAM | Menu Ingestion Platform | 30K+ menus/mo · Kafka ~200–500 peak events/sec · +95% (~60–65% → 95%+) · Pinot sub-second |
-| Masters India (Dec 2022–Jun 2024) | GST e-invoicing SaaS | p95 1.2s→300ms · 1M+/day (~12 TPS avg, 100+ peak) · triage 70% (~30→<10 min) · Spring Batch |
-| GeeksforGeeks (Aug 2021–Nov 2022) | Backend | 100K+ daily queries (~1–2 RPS avg, ~10× spikes) · +15–20% relative · Spring Boot |
-
-## Metrics honesty
-
-Same numbers as the main track — see [`09_metrics_derivations.md`](09_metrics_derivations.md) and [`../interview_prep/09_metrics_derivations.md`](../interview_prep/09_metrics_derivations.md).
+| Impact Analytics (14 May 2026–) | Same CH/CQRS/copilot numbers as v2 (Python) |
+| Uber FRM | Spring Boot + JPA framing; 8 screens, 30+ endpoints, 11 tables, led 3, 1,100+ tests, targeting 70% |
+| Uber Menu | Python streaming (no Spring) |
+| Masters India | Spring Boot + Spring Batch framing; mentored 2; 1.2s to 300ms; 700 to 4,000 RPM |
+| GeeksforGeeks | Spring Boot framing; 10K+ daily queries |

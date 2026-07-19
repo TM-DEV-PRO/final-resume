@@ -85,12 +85,20 @@ build(
 )
 
 IPJ = os.path.join(BASE, "interview_prep_java")
+IPV2 = os.path.join(BASE, "interview_prep_v2")
 build(
-    [os.path.join(IPJ, "00_index.md"), os.path.join(IPJ, "README.md")]
+    [os.path.join(IPJ, "00_index.md"), os.path.join(IPJ, "GROUND_TRUTH.md"),
+     os.path.join(IPJ, "README.md")]
     + sorted(glob.glob(os.path.join(IPJ, "projects", "*.md")))
     + [os.path.join(IPJ, "06_tech_deep_dives.md"), os.path.join(IPJ, "07_behavioral_star_stories.md"),
        os.path.join(IPJ, "08_role_targeting_and_rapid_fire.md"),
-       os.path.join(IPJ, "09_metrics_derivations.md")],
+       os.path.join(IPJ, "09_metrics_derivations.md"),
+       # Shared grounded deep dives (same facts; map layers to Spring in interviews)
+       os.path.join(IPV2, "10_impact_analytics_deep_dive.md"),
+       os.path.join(IPV2, "11_uber_frm_deep_dive.md"),
+       os.path.join(IPV2, "12_masters_gfg_deep_dive.md"),
+       os.path.join(IPV2, "13_behavioral_why_switch.md"),
+       os.path.join(IPV2, "14_uber_menu_deep_dive.md")],
     "InterviewPrepJava.html",
     "Tarun Mittal — Java/Spring · Interview Prep Hub",
     "Java/Spring · Interview Prep",
@@ -98,12 +106,18 @@ build(
 
 IPV2 = os.path.join(BASE, "interview_prep_v2")
 build(
-    [os.path.join(IPV2, "00_index.md"), os.path.join(IPV2, "README.md"),
+    [os.path.join(IPV2, "00_index.md"),
+     os.path.join(IPV2, "GROUND_TRUTH.md"),
      os.path.join(IPV2, "01_skills_trim_rationale.md"),
      os.path.join(IPV2, "02_mongodb_elasticsearch.md"),
      os.path.join(IPV2, "03_uber_menu_streaming_numbers.md"),
      os.path.join(IPV2, "08_role_targeting_and_rapid_fire.md"),
-     os.path.join(IPV2, "09_metrics_derivations.md")],
+     os.path.join(IPV2, "09_metrics_derivations.md"),
+     os.path.join(IPV2, "10_impact_analytics_deep_dive.md"),
+     os.path.join(IPV2, "11_uber_frm_deep_dive.md"),
+     os.path.join(IPV2, "12_masters_gfg_deep_dive.md"),
+     os.path.join(IPV2, "13_behavioral_why_switch.md"),
+     os.path.join(IPV2, "14_uber_menu_deep_dive.md")],
     "InterviewPrepV2.html",
     "Tarun Mittal — Python/Go v2 · Interview Prep",
     "Python/Go v2 · Interview Prep",

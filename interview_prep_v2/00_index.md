@@ -1,39 +1,33 @@
-# Python/Go resume v2 — Interview Prep Hub (hardened)
+# Python/Go resume v2 — Interview Prep Hub (grounded rewrite)
 
 **Tarun Mittal · Senior Software Engineer · July 2026**
 
-This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). The original `resume/` + `interview_prep/` are **unchanged** — use this track when you want the credibility-hardened Python/Go resume.
+This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resume/` + `interview_prep/` stay untouched.
 
-## What changed vs the original resume
+## Study order (do this)
 
-| Area | Original | v2 (this track) |
-|---|---|---|
-| IA turnaround claim | “cutting … under 1 hour” | “**targeting** … under 1 hour” (FRD design target) |
-| ClickHouse writes | “lock free writes” | “concurrent writes **without lock contention**” |
-| Languages | + Rust, C, C++, Java | Python, Go, SQL only |
-| Backend skills | + gRPC | Dropped gRPC (not on any Tech Used line) |
-| AI skills | + ChromaDB, semantic caching | Kept LangGraph/LangChain/MCP/RAG/text-to-SQL/pgvector |
-| Streaming/data | + DuckDB | Dropped DuckDB (ClickHouse end-to-end direction) |
-| Databases | + Cassandra (dropped) | Postgres, MySQL, Redis, MongoDB, Elasticsearch, S3 (MongoDB/ES used at Masters + GFG) |
-| BigQuery | In skills | **Kept** — defend as upstream SoT you ingest from, not “I optimize BigQuery” |
+1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) — every shippable number and honesty tag
+2. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — CH POC, CQRS/CDC, copilot
+3. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) — real schema, routes, recon migration
+4. [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) — Kafka/Flink/Spark/Pinot
+5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md) — strangler migration, caching, GFG
+6. [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md) — intro, every switch, IA 14 May 2026 exit
+7. [`09_metrics_derivations.md`](09_metrics_derivations.md) — ESTIMATED vs DOCUMENTED arithmetic
 
-## Study path
+Supporting: [`01_skills_trim_rationale.md`](01_skills_trim_rationale.md), [`02_mongodb_elasticsearch.md`](02_mongodb_elasticsearch.md), [`03_uber_menu_streaming_numbers.md`](03_uber_menu_streaming_numbers.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md).
 
-Deep project defense is still in the original materials (do not duplicate):
-
-1. `../interview_prep/projects/01..05_*.md`
-2. `../interview_prep/06_tech_deep_dives.md`
-3. `../interview_prep/07_behavioral_star_stories.md`
-4. `../interview_prep/agentic_assort_playbook/` (§0–§10)
-
-Plus this folder’s rapid-fire for v2 wording, [`09_metrics_derivations.md`](09_metrics_derivations.md), and [`03_uber_menu_streaming_numbers.md`](03_uber_menu_streaming_numbers.md).
+Original playbook still useful for agentic Assort depth: `../interview_prep/agentic_assort_playbook/`.
 
 <div class="callout warn">
-<b>Honesty guardrail (same as original).</b> Know REAL vs offline-eval vs design targets. BigQuery = upstream source of truth you ingest from — never claim BigQuery optimization work as yours. Rust stays off the resume; if asked, “Go by default, Rust by measurement / escape hatch — not a shipped claim on this PDF.”
+<b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. CDC tool authorship is not yours. Copilot is Phase 1 design approved, load test pending. Benchmark hardware was not identical (PG 32 vCPU / 256 GB vs CH 16 vCPU / 64 GB).
 </div>
 
-## Resume at a glance (v2)
+## Resume at a glance (v2 grounded)
 
-Same companies, projects, and metrics as the original — only skills trim + two IA phrasing hardenings above.
-
-TPS/RPS/from→to (same as main PDF): see [`09_metrics_derivations.md`](09_metrics_derivations.md).
+| Company | Lead claims |
+|---|---|
+| Impact Analytics (14 May 2026–) | CH Order Batching 3.86s vs PG 3m40s+ (60x); 5.9M rows/s insert; CQRS + CDC + Redis RYW; update 39s to 7s; copilot targets days to under 1h |
+| Uber FRM | 8 screens, 30+ endpoints, 11 table schema, recon v1 to v2, led 3 engineers, 1,100+ tests, $340M materiality, targeting 70% cut |
+| Uber Menu | 30K menus/mo, 24h to 2h, $600K+/yr, +95% ingest, RAG/Gemini 98% fidelity, Pinot |
+| Masters India | Mentored 2; p95 1.2s to 300ms; 700 to 4,000 RPM; Redis -30%; audit -15% churn; 1M+ txn/day |
+| GeeksforGeeks | 10K+ daily queries; +15–20% premium; +30% courses; +70% ops efficiency |
