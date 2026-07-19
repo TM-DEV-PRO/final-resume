@@ -18,8 +18,8 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Building Agentic AssortSmart, a merchandise planning SaaS where AI agents draft store clusters and plans for planner approval.
-    \item Developing the \textbf{Cluster Recommendation Copilot (FastAPI, LangGraph, MCP)} that turns planner chat into evidence backed cluster recommendations, batch evaluating \textbf{20 to 100 configurations per plan vs 1 manual attempt}, targeting turnaround \textbf{under 1 hour} from days.
-    \item Enforced \textbf{read only agent tools and 3 human approval gates}, designed to cut clustering run failures from a measured \textbf{8.5\% to under 2\%} and make shipped clusters \textbf{100\% reproducible}.
+    \item Developing the \textbf{Cluster Recommendation Copilot (FastAPI, LangGraph, MCP)} that turns planner chat into evidence backed cluster recommendations, batch evaluating \textbf{20 to 100 configurations per plan vs 1 manual attempt}, targeting turnaround \textbf{under 1 hour} (from days).
+    \item Enforcing \textbf{read only agent tools and 3 approval gates}, targeting failures under 2\% from \textbf{8.5\%}, \textbf{100\% reproducible} clusters, and \textbf{p95 probes under 500ms} vs 1 to 20s on BigQuery.
     \item Designing \textbf{Go (Gin) microservices} for plan lifecycle and bulk save REST APIs with goroutine worker pools and JWT middleware.
     \item Proved a \textbf{60x analytics speedup} in the \textbf{PostgreSQL to ClickHouse POC}, cutting the \textbf{23.7M row} Order Batching metric from 3m 40s to \textbf{3.86s} and raising bulk load throughput \textbf{24x (250K to 5.9M rows/sec)}.
     \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, BigQuery, Redis, GCP, Docker.
@@ -50,7 +50,7 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Engineered a \textbf{Python and Selenium ingestion pipeline on GCP} for \textbf{30K+ vendor menus/month}, cutting onboarding from 24h to 2h and saving \textbf{\$600K+ annually}.
-    \item Shipped a \textbf{RAG and Gemini 2.5 Pro} pipeline with supervised fine tuning, converting PDF and image menus at \textbf{98\% fidelity and 100\% schema consistency} in offline evaluation.
+    \item Shipped a \textbf{RAG and Gemini 2.5 Pro} pipeline with supervised fine tuning, hitting \textbf{98\% fidelity and 100\% schema consistency} (offline eval).
     \item Defeated anti bot defenses with IP rotation and dynamic proxy pools, increasing successful ingestions \textbf{95\%}.
     \item Automated \textbf{ANZ driver document compliance to 99.9\%}, saving 20 hours/week of manual verification.
     \item \textbf{Tech Used}: Python, Selenium, Gemini, RAG, SFT, GCP, Docker.
@@ -69,10 +69,10 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Led the PHP (Laravel) monolith to \textbf{FastAPI microservices} migration and \textbf{mentored 2 engineers}, cutting p95 latency from \textbf{1.2s to 300ms} for 1,500+ clients.
-    \item Scaled bulk e-invoicing to \textbf{100K+ per import and 1M+ daily} via async Kafka and quarter sharding, lifting throughput \textbf{700 to 4,000 requests/min}.
+    \item Led the PHP monolith to \textbf{FastAPI microservices} migration and \textbf{mentored 2 engineers}, cutting p95 latency from \textbf{1.2s to 300ms} for 1,500+ clients.
+    \item Scaled bulk e-invoicing to \textbf{100K+ per import and 1M+ daily ($\sim$12 TPS avg, 100+ peak)} via async Kafka and PostgreSQL quarter sharding, lifting throughput from \textbf{700 to 4,000 requests/min ($\sim$67 RPS)}.
     \item Introduced \textbf{Redis caching} that cut redundant database reads 30\%, and shipped audit logging that reduced client churn \textbf{15\%}.
-    \item Established \textbf{ELK and New Relic} observability and on call alerting, cutting incident triage 70\%, and raised test coverage from \textbf{35\% to 82\%} with 98\% deployment success.
+    \item Established \textbf{ELK and New Relic} on call alerting, cutting incident triage 70\%, and raised coverage from \textbf{35\% to 82\%} with 98\% deployment success.
     \item \textbf{Tech Used}: Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
@@ -86,7 +86,7 @@
 \end{tabularx}
 \vspace{-3ex}
 \begin{zitemize}
-    \item Migrated the doubt support backend from PHP to \textbf{Django (Python)}, improving reliability for \textbf{10K+ daily queries}.
+    \item Migrated the doubt support backend from PHP to \textbf{Django (Python)}, improving reliability for \textbf{10K+ daily queries and 10x contest spikes}.
     \item Designed voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch, lifting \textbf{premium subscriptions 15 to 20\%}.
     \item Launched an influencer analytics dashboard and cron pipelines for video processing, raising \textbf{course sales 30\%} and operational efficiency 70\%.
 \end{zitemize}

@@ -4,8 +4,9 @@ Same facts as [`../interview_prep_v2/GROUND_TRUTH.md`](../interview_prep_v2/GROU
 
 Stack framing only:
 - FRM and Masters and GFG APIs: Spring Boot / Hibernate / Spring Batch (positioning variant)
-- Menu streaming and AI extraction: **Python unchanged**
+- Menu scraping and AI extraction: **Python unchanged**
 - IA agentic and ClickHouse work: **Python unchanged**; ClickHouse is not accessed via Hibernate
+- IA services tier bullet ("Designing Java (Spring Boot) microservices for plan lifecycle and bulk save REST APIs"): positioning variant of the same services tier the v2 resume frames as Go (Gin). The platform services tier is being designed now; on the Java track you present the design in Spring Boot terms (async executors, HikariCP connection pooling, JWT auth filter). If pressed on implementation detail, discuss the design honestly: service boundaries, worker pool sizing, timeout budgets, and idempotent bulk save semantics are language independent. Never claim shipped Java services in production at IA.
 
 Deep dives to study (shared with v2):
 - `../interview_prep_v2/10_impact_analytics_deep_dive.md`

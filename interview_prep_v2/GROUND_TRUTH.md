@@ -30,6 +30,7 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | Cluster Recommendation Copilot: LLM orchestrates, deterministic plane computes, 14 audited tools, agent cannot write, human approval gates | MEASURED design (Phase 1, external review PASS, load test pending) | 2817589251, 2816999437 |
 | Copilot baselines: run failures 8.5% (37/437), median clustering job ~20s, reproducibility 0% | MEASURED | 2817589251 |
 | Copilot targets: hierarchy-to-finalized-plan days to <1h, configs 1 to >=20, failures <2%, reproducibility 100%, CH read plane sub-second | TARGET | 2817589251 |
+| Agent data probe latency: baseline 1-20s+ on shared BigQuery slots (measured, variance uncontrolled), target p95 <500ms deterministic on dedicated ClickHouse. Resume gates bullet cites this as "p95 probes under 500ms vs 1 to 20s on BigQuery" | MEASURED baseline / TARGET | 2817589251 s6 |
 | Agentic cluster DDL: 63 tables / 8 layers / 624 columns, partition-swapped facts, append-only events, zero row-level mutations | MEASURED design | 2816606240 |
 | Grid p95 <500ms, cell edit <80ms, History Opt <30s, 3 scenarios <60s | TARGET (platform NFRs) | Planning_Platform_Architecture_v5-2 |
 | Clustering agent flow: auto feature select + k via elbow+silhouette, 3-5 scenarios per session, planner approve before master write | MEASURED PRD | Agentic_Store_Clustering_HLR_v1.1 |

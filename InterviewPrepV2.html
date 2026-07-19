@@ -111,6 +111,7 @@ strong{color:#fff}
 <a class="lvl2" href="#loop-4-prep-completeness-per-resume-bullet">Loop 4. Prep completeness per resume bullet</a>
 <a class="lvl2" href="#loop-5-open-risks-do-not-hide">Loop 5. Open risks (do not hide)</a>
 <a class="lvl2" href="#loop-6-layout-and-credentials">Loop 6. Layout and credentials</a>
+<a class="lvl2" href="#loop-5-final-judge-tpsrps-hardening-round">Loop 5 final judge (TPS/RPS hardening round)</a>
 <a class="lvl1" href="#ats-recruiter-screening-report">ATS + Recruiter Screening Report</a>
 <a class="lvl2" href="#recruiter-gut-check-applies-to-both-variants">Recruiter gut-check (applies to both variants)</a>
 <a class="lvl2" href="#1-google">1. Google</a>
@@ -125,7 +126,8 @@ strong{color:#fff}
 <a class="lvl2" href="#cross-company-scorecard-summary">Cross-company scorecard summary</a>
 <a class="lvl2" href="#keyword-gaps-appearing-across-3-companies">Keyword gaps appearing across 3+ companies</a>
 <a class="lvl2" href="#top-10-changes-ranked-by-impact">Top 10 changes ranked by impact</a>
-<a class="lvl2" href="#final-recruiter-note">Final recruiter note</a></nav>
+<a class="lvl2" href="#final-recruiter-note">Final recruiter note</a>
+<a class="lvl2" href="#re-screen-after-tpsrps-and-planetscale-hardening-loop-4">Re-screen after TPS/RPS and PlanetScale hardening (Loop 4)</a></nav>
 <main><h1 id="pythongo-resume-v2-interview-prep-hub-grounded-rewrite">Python/Go resume v2 — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer · July 2026</strong></p>
 <p>This hub backs <code>resume_v2/</code> (PDF: <code>Tarun_Mittal_SSE_5yr_v2.pdf</code>). Original <code>resume/</code> + <code>interview_prep/</code> stay untouched.</p>
@@ -286,6 +288,11 @@ strong{color:#fff}
 <td>Copilot targets: hierarchy-to-finalized-plan days to &lt;1h, configs 1 to &gt;=20, failures &lt;2%, reproducibility 100%, CH read plane sub-second</td>
 <td>TARGET</td>
 <td>2817589251</td>
+</tr>
+<tr>
+<td>Agent data probe latency: baseline 1-20s+ on shared BigQuery slots (measured, variance uncontrolled), target p95 &lt;500ms deterministic on dedicated ClickHouse. Resume gates bullet cites this as "p95 probes under 500ms vs 1 to 20s on BigQuery"</td>
+<td>MEASURED baseline / TARGET</td>
+<td>2817589251 s6</td>
 </tr>
 <tr>
 <td>Agentic cluster DDL: 63 tables / 8 layers / 624 columns, partition-swapped facts, append-only events, zero row-level mutations</td>
@@ -626,7 +633,7 @@ Same as original prep: offline-eval fidelity; finance-owned savings model — kn
 </tr>
 <tr>
 <td>Masters GST</td>
-<td><strong>~12 TPS avg / 100+ TPS peak</strong> · triage <strong>70%</strong> (<strong>~30 min → &lt;10 min</strong>) · p95 1.2s→300ms · MongoDB/ES as documented</td>
+<td><strong>~12 TPS avg / 100+ TPS peak</strong> (1M+/day / 86,400s ≈ 11.6; peak ESTIMATED from filing-deadline bursts) · <strong>4,000 req/min ≈ 67 RPS</strong> · triage <strong>70%</strong> (<strong>~30 min → &lt;10 min</strong>) · p95 1.2s→300ms · MongoDB/ES as documented</td>
 </tr>
 <tr>
 <td>GFG</td>
@@ -2434,6 +2441,55 @@ Selenium scrapers on GCP (proxy pool, UA rotation, retries)
 <li>PASS: resume bullets render in one line, except the copilot bullet which uses one full line plus a short continuation.</li>
 <li>PASS: HackerRank Problem Solving and LangChain Academy links match <code>KNOWLEDGE-MATERIAL/certificates.txt</code>.</li>
 </ul>
+<h2 id="loop-5-final-judge-tpsrps-hardening-round">Loop 5 final judge (TPS/RPS hardening round)</h2>
+<p>Source: PyMuPDF text extract of <code>Tarun_Mittal_SSE_5yr_v2.pdf</code> and <code>Tarun_Mittal_SSE_Java_5yr.pdf</code> vs <code>GROUND_TRUTH.md</code> (19 Jul 2026).</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Number consistency vs GROUND_TRUTH</td>
+<td>PASS with notes. All listed money/scale/latency/throughput figures match GT (23.7M, 3.86s, 3m 40s, 60x, 24x, 250K to 5.9M, 8.5% to under 2%, 100% reproducible, p95 under 500ms vs 1 to 20s, 20 to 100 configs, 8 screens, 30+ APIs, $340M, targeting 70%, 11 tables, 55 line items, 14 entities, 10-Q, 30K+/24h to 2h/$600K+, 98%/100% schema, 95% ingestions, 99.9%/20h, 1.2s to 300ms, 1,500+, 100K+/1M+, ~12 TPS/100+ peak, 700 to 4,000 RPM/~67 RPS, 30%/15%/70% triage, 35% to 82%, 98% deploy, 10K+/10x, 15 to 20%, 30%/70% GFG, 2260/37,000+, CGPA 7.7). No 1,100+ tests claim on either PDF (correct: GT has ~1125 unit tests but resume omits). Soft note: "3 approval gates" is not enumerated in GROUND_TRUTH (only "human approval gates"); number is defended in <code>10_impact_analytics_deep_dive.md</code> Q6.</td>
+</tr>
+<tr>
+<td>2. Grammar / wording / tense</td>
+<td>FAIL (minor). Current-role IA mixes present progressive (Building/Developing/Designing) with past "Enforced". Several "from X to Y" ranges omit "from" (latency, throughput, coverage). Hyphen gaps: evidence backed, read only, rule based, anti bot, on call, AI Powered, Sheets backed. Copilot turnaround clause "under 1 hour from days" is stumble-prone.</td>
+</tr>
+<tr>
+<td>3. AI markers</td>
+<td>PASS. No em dashes, no semicolons in bullet text, no leveraging/spearheaded/utilize/delve/robust/seamlessly. Date en dashes only.</td>
+</tr>
+<tr>
+<td>4. v2 vs Java consistency</td>
+<td>PASS. Same dates (May 2026 Present, July 2024 May 2026, December 2022 June 2024, August 2021 November 2022). Same numeric claims for shared bullets. Contact/email/phone and stack wording differences intentional.</td>
+</tr>
+<tr>
+<td>5. Recruiter 6s first-bullet scan</td>
+<td>FAIL (IA only). IA opener is product description with no scale/money/leadership. FRM ($340M/70%), Menu ($600K+/30K+), Masters (led 2 / 1,500+ / p95), GFG (10K+/10x) all lead with strength.</td>
+</tr>
+<tr>
+<td>6. Duplicate opening verbs within a project</td>
+<td>PASS.</td>
+</tr>
+<tr>
+<td>7. Past-role tense</td>
+<td>PASS.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="flagged-items-actionable">Flagged items (actionable)</h3>
+<ol>
+<li>Both PDFs, IA bullet 1: weak 6s scan opener. Prefer leading with 60x / 23.7M / ClickHouse POC or Copilot batch 20 to 100 + under 1 hour target.</li>
+<li>Both PDFs, IA gates bullet: "Enforced ..." among present-tense bullets. Prefer "Enforcing read-only agent tools and 3 approval gates, ..."</li>
+<li>Both PDFs, Masters: "cutting p95 latency 1.2s to 300ms" -&gt; "from 1.2s to 300ms"; "lifting throughput 700 to 4,000" -&gt; "from 700 to 4,000"; "raised coverage 35% to 82%" -&gt; "from 35% to 82%".</li>
+<li>Both PDFs, IA copilot: "targeting turnaround under 1 hour from days" -&gt; "targeting turnaround under 1 hour (from days)".</li>
+<li>Optional hyphen polish (both): evidence-backed, read-only, rule-based, anti-bot, on-call, AI-Powered, Sheets-backed.</li>
+<li>Optional GT hygiene: add "3 approval gates" to GROUND_TRUTH so the PDF number is not GT-orphan.</li>
+</ol>
 <hr>
 <h1 id="ats-recruiter-screening-report">ATS + Recruiter Screening Report</h1>
 <p><strong>Candidate:</strong> Tarun Mittal (~5 years, Bangalore)<br>
@@ -3447,4 +3503,231 @@ India siblings often ask <strong>6-7+ years</strong> (e.g. Data Platform Bengalu
 <hr>
 <h2 id="final-recruiter-note">Final recruiter note</h2>
 <p>Both one-pagers are <strong>above average</strong> for a ~5 YoE Bangalore backend candidate: real metrics, migration ownership, mentorship, and a modern agentic stack. They are <strong>not yet default FAANG Senior / L5 auto-passes</strong>. The limiting factors are <strong>years at senior ownership</strong>, <strong>vendor tenure at Uber</strong>, <strong>brand-new SSE title</strong>, and <strong>company-specific language stacks</strong> (Go vs Java), not a missing laundry list of buzzwords.</p>
-<p><strong>Best near-term screen strategy:</strong> Microsoft + Databricks backend + Airbnb (Java) + Google (language-matched) + PlanetScale (Py/Go only). Treat Amazon Sr SDE and Netflix L5 as <strong>referral / borderline</strong> campaigns. Park Rubrik Enterprise AI and Roku Backend-and-Data until YoE and infra depth catch up.</p></main></div></body></html>
+<p><strong>Best near-term screen strategy:</strong> Microsoft + Databricks backend + Airbnb (Java) + Google (language-matched) + PlanetScale (Py/Go only). Treat Amazon Sr SDE and Netflix L5 as <strong>referral / borderline</strong> campaigns. Park Rubrik Enterprise AI and Roku Backend-and-Data until YoE and infra depth catch up.</p>
+<hr>
+<h2 id="re-screen-after-tpsrps-and-planetscale-hardening-loop-4">Re-screen after TPS/RPS and PlanetScale hardening (Loop 4)</h2>
+<p><strong>Re-screen date:</strong> 19 Jul 2026<br>
+<strong>PDFs re-extracted:</strong> <code>Tarun_Mittal_SSE_5yr_v2.pdf</code>, <code>Tarun_Mittal_SSE_Java_5yr.pdf</code><br>
+<strong>Delta since prior scorecard:</strong> Masters TPS/RPS (~12 TPS avg / 100+ peak, ~67 RPS), p95 latency 1.2s to 300ms, IA p95 probes under 500ms vs 1 to 20s BigQuery, Py/Go skills now include Linux + Sharding + Performance Tuning, Masters on-call alerting bullet, Java IA Spring Boot microservices bullet, separate certification bullets.</p>
+<h3 id="planetscale-deep-evaluation-priority">PlanetScale deep evaluation (priority)</h3>
+<p><strong>Active listings checked (planetscale.com/careers + Greenhouse, Jul 2026):</strong>
+- <a href="https://job-boards.greenhouse.io/planetscale/jobs/4009746009">Software Engineer - PlanetScale Vitess</a> (EMEA Remote)
+- <a href="https://job-boards.greenhouse.io/planetscale/jobs/4280570009">Software Engineer - Neki Orchestration</a> (SF Bay / Remote)
+- <a href="https://job-boards.greenhouse.io/planetscale/jobs/4009936009">Software Engineer - Sharded Postgres (Neki)</a> (SF Bay / Remote)
+- Also open: PlanetScale Postgres, Insights, Platform; <strong>Postgres Internals</strong> (C / PG core) is a different hiring lane and is out of scope for this candidate.</p>
+<p><strong>What PlanetScale screens for (shared across Vitess / Neki Orchestration):</strong>
+- 5+ years backend / large-scale production systems
+- <strong>Strong Go</strong> (Python/Java/C++ secondary)
+- MySQL or other relational DBs
+- Kubernetes + containers (working knowledge)
+- Building and operating distributed systems at scale
+- Performance, Linux/OS fundamentals (stronger on Neki Orchestration)
+- On-call participation (explicit on Neki Orchestration)
+- Nice: DB internals, query optimization, consensus, OSS, cloud, observability
+- Culture signal: small-team ownership, high autonomy, customer-facing systems work</p>
+<p><strong>Sharded Postgres (Neki) is a harder bar:</strong> "focus on backend systems, database engines, query planners" and "not just operating, but <strong>developing</strong> PostgreSQL, MySQL or other databases." That is engine/product work, not app sharding alone.</p>
+<h4 id="keyword-hit-miss-updated-pygo-resume">Keyword hit / miss (updated Py/Go resume)</h4>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Vitess / Neki Orchestration</th>
+<th>Evidence on updated Py/Go PDF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5+ years backend</td>
+<td>HIT</td>
+<td>Stated 5y; multi-company production ownership</td>
+</tr>
+<tr>
+<td>Strong Go</td>
+<td>HIT</td>
+<td>IA: Go (Gin) microservices, goroutine worker pools, JWT middleware</td>
+</tr>
+<tr>
+<td>MySQL / relational</td>
+<td>HIT</td>
+<td>Uber FRM MySQL schema + APIs; GFG MySQL; Masters PostgreSQL; IA PostgreSQL/ClickHouse</td>
+</tr>
+<tr>
+<td>Sharding</td>
+<td>HIT (new)</td>
+<td>Masters quarter sharding + Core skill "Sharding"</td>
+</tr>
+<tr>
+<td>Throughput / scale numbers</td>
+<td>HIT (new)</td>
+<td>~12 TPS avg / 100+ peak; ~67 RPS; 1M+ daily invoices</td>
+</tr>
+<tr>
+<td>Performance tuning</td>
+<td>HIT (new)</td>
+<td>Skills keyword; p95 1.2s to 300ms; CH POC 60x; probe p95 under 500ms</td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>HIT (new)</td>
+<td>Skills: Linux</td>
+</tr>
+<tr>
+<td>On-call / ops</td>
+<td>HIT (new)</td>
+<td>ELK + New Relic on-call alerting; incident triage 70%</td>
+</tr>
+<tr>
+<td>K8s + containers</td>
+<td>HIT (thin depth)</td>
+<td>Docker + Kubernetes in skills; no cluster-ops narrative</td>
+</tr>
+<tr>
+<td>Observability</td>
+<td>HIT</td>
+<td>ELK, New Relic, Prometheus, Grafana</td>
+</tr>
+<tr>
+<td>Cloud (AWS/GCP)</td>
+<td>HIT</td>
+<td>Both present</td>
+</tr>
+<tr>
+<td>DB internals / Vitess / consensus</td>
+<td>MISS</td>
+<td>Do not invent; preferred only on Vitess/Neki Orchestration</td>
+</tr>
+<tr>
+<td>Developing PG/MySQL engines</td>
+<td>MISS</td>
+<td>Blocks clean PASS on Sharded Postgres (Neki) engine role</td>
+</tr>
+<tr>
+<td>OSS DB contributions</td>
+<td>MISS</td>
+<td>Preferred only</td>
+</tr>
+</tbody>
+</table>
+<h4 id="verdict-by-planetscale-lane">Verdict by PlanetScale lane</h4>
+<table>
+<thead>
+<tr>
+<th>Listing</th>
+<th>Py/Go</th>
+<th>Java</th>
+<th>Margin / note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Vitess</strong></td>
+<td><strong>PASS</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Py/Go clears all hard quals with <strong>comfortable margin</strong>. Go + MySQL + sharding + TPS/RPS + Linux + performance + on-call is a coherent PlanetScale story. Internals/Vitess still preferred-only gaps.</td>
+</tr>
+<tr>
+<td><strong>Neki Orchestration</strong></td>
+<td><strong>PASS</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Same hard-qual clear. On-call + PostgreSQL + sharding + Linux/performance align well with control-plane / ops flavor. Margin <strong>comfortable</strong>, not "Vitess committer" margin.</td>
+</tr>
+<tr>
+<td><strong>Sharded Postgres (Neki)</strong></td>
+<td><strong>BORDERLINE</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Go + sharding help ATS, but JD asks for <strong>developing</strong> DB engines / query planners. App-level quarter sharding and CH/PG POC benchmarking are adjacent, not engine work.</td>
+</tr>
+<tr>
+<td><strong>Postgres Internals</strong></td>
+<td><strong>FAIL</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Needs C + PostgreSQL core/extensions. Out of lane.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Headline PlanetScale call (primary apply targets = Vitess + Neki Orchestration):</strong><br>
+- <strong>Py/Go: PASS with margin</strong> (up from Loop 1 BORDERLINE). Loop 4 closed the thematic gaps (sharding, Linux, performance, quantified throughput, on-call) that previously made Go look like a side skill on a Python resume.<br>
+- <strong>Java: FAIL</strong> (unchanged). Missing strong Go is a hard miss for these listings.</p>
+<p><strong>Honest-only wording still worth making (optional; thickens margin, does not invent Vitess/kernel):</strong>
+1. Summary (Py/Go): add one clause elevating Go + data-plane ownership, e.g. "Go (Gin) production microservices; MySQL/PostgreSQL schema and quarter-based sharding for high-throughput billing APIs."
+2. Masters sharding bullet: keep honesty as <strong>quarter-based sharding</strong> (time/partition strategy), optionally add "PostgreSQL" inline so ATS ties sharding to a relational store, not only Kafka.
+3. Uber FRM: if true, one short phrase on <strong>indexing / query performance</strong> for the 11-table MySQL schema (schema design is already there; query/index language helps PlanetScale preferred "query optimization" without claiming internals).</p>
+<p>Do <strong>not</strong> add Vitess, replication protocol work, consensus, or database kernel experience.</p>
+<h3 id="updated-9-company-scorecard-both-variants">Updated 9-company scorecard (both variants)</h3>
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Py/Go</th>
+<th>Java</th>
+<th>What Loop 4 closed / still open</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Google</td>
+<td>BORDERLINE</td>
+<td>BORDERLINE</td>
+<td>On-call + latency numbers help design/launch skim. Still EPAM discount + short SSE tenure.</td>
+</tr>
+<tr>
+<td>Amazon</td>
+<td>BORDERLINE</td>
+<td>BORDERLINE</td>
+<td>On-call helps preferred ops. Still blocked by "5+ years leading design/architecture" cold parse.</td>
+</tr>
+<tr>
+<td>Microsoft</td>
+<td><strong>PASS</strong></td>
+<td><strong>PASS</strong></td>
+<td>Already PASS; on-call and p95 numbers strengthen live-site signal.</td>
+</tr>
+<tr>
+<td>Airbnb</td>
+<td>BORDERLINE</td>
+<td><strong>PASS</strong></td>
+<td>TPS/RPS help high-traffic skim. Py/Go still weak vs Java/Kotlin App Foundation language bar.</td>
+</tr>
+<tr>
+<td>PlanetScale</td>
+<td><strong>PASS</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Py/Go flipped BORDERLINE to PASS with margin (sharding, Linux, performance, TPS/RPS, on-call). Java still no Go.</td>
+</tr>
+<tr>
+<td>Databricks</td>
+<td>BORDERLINE</td>
+<td>BORDERLINE</td>
+<td>Throughput + SaaS/CH POC help. YoE still soft on 6-7y India posts; no Spark.</td>
+</tr>
+<tr>
+<td>Roku</td>
+<td><strong>FAIL</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Hard 8+ YoE gate unchanged.</td>
+</tr>
+<tr>
+<td>Rubrik</td>
+<td><strong>FAIL</strong></td>
+<td><strong>FAIL</strong></td>
+<td>Hard 9+ YoE gate unchanged; Linux/on-call do not move years.</td>
+</tr>
+<tr>
+<td>Netflix</td>
+<td>BORDERLINE</td>
+<td>BORDERLINE</td>
+<td>On-call + p95 latency close a prior gap. Still short of Netflix-scale HA ownership for clean L5 PASS.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Strict PASS count after Loop 4:</strong><br>
+- <strong>Py/Go: 2 / 9</strong> (Microsoft, PlanetScale). Was 1 / 9.<br>
+- <strong>Java: 2 / 9</strong> (Microsoft, Airbnb). Unchanged. PlanetScale remains FAIL on Java.</p>
+<p>Chaseable with referral (BORDERLINE): Google, Amazon, Airbnb (Py/Go), Databricks, Netflix. Non-starters on YoE: Roku, Rubrik.</p>
+<h3 id="remaining-honest-only-suggestions-post-loop-4">Remaining honest-only suggestions (post Loop 4)</h3>
+<ol>
+<li><strong>PlanetScale / Google Go teams:</strong> Elevate Go into the Py/Go summary (see PlanetScale wording above). Biggest remaining ATS skim gap vs skills-row-only Go.  </li>
+<li><strong>Amazon:</strong> Keep architecture-years honest (2-3+ leading design), do not imply 5 years of leading architecture.  </li>
+<li><strong>Submit the right PDF:</strong> Py/Go for PlanetScale and Go-heavy Google pods; Java for Airbnb / many Amazon / Netflix L5 pods.  </li>
+<li>Still do not invent Vitess, Spark, Terraform depth, or YoE inflation for Roku/Rubrik.</li>
+</ol></main></div></body></html>

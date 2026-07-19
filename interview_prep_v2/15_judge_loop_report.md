@@ -49,3 +49,26 @@ Scanned experience/objective/skills/activities/education for em dash, whose, ena
 - PASS: every project heading has its first bullet on the same page.
 - PASS: resume bullets render in one line, except the copilot bullet which uses one full line plus a short continuation.
 - PASS: HackerRank Problem Solving and LangChain Academy links match `KNOWLEDGE-MATERIAL/certificates.txt`.
+
+## Loop 5 final judge (TPS/RPS hardening round)
+
+Source: PyMuPDF text extract of `Tarun_Mittal_SSE_5yr_v2.pdf` and `Tarun_Mittal_SSE_Java_5yr.pdf` vs `GROUND_TRUTH.md` (19 Jul 2026).
+
+| Check | Result |
+|---|---|
+| 1. Number consistency vs GROUND_TRUTH | PASS with notes. All listed money/scale/latency/throughput figures match GT (23.7M, 3.86s, 3m 40s, 60x, 24x, 250K to 5.9M, 8.5% to under 2%, 100% reproducible, p95 under 500ms vs 1 to 20s, 20 to 100 configs, 8 screens, 30+ APIs, $340M, targeting 70%, 11 tables, 55 line items, 14 entities, 10-Q, 30K+/24h to 2h/$600K+, 98%/100% schema, 95% ingestions, 99.9%/20h, 1.2s to 300ms, 1,500+, 100K+/1M+, ~12 TPS/100+ peak, 700 to 4,000 RPM/~67 RPS, 30%/15%/70% triage, 35% to 82%, 98% deploy, 10K+/10x, 15 to 20%, 30%/70% GFG, 2260/37,000+, CGPA 7.7). No 1,100+ tests claim on either PDF (correct: GT has ~1125 unit tests but resume omits). Soft note: "3 approval gates" is not enumerated in GROUND_TRUTH (only "human approval gates"); number is defended in `10_impact_analytics_deep_dive.md` Q6. |
+| 2. Grammar / wording / tense | FAIL (minor). Current-role IA mixes present progressive (Building/Developing/Designing) with past "Enforced". Several "from X to Y" ranges omit "from" (latency, throughput, coverage). Hyphen gaps: evidence backed, read only, rule based, anti bot, on call, AI Powered, Sheets backed. Copilot turnaround clause "under 1 hour from days" is stumble-prone. |
+| 3. AI markers | PASS. No em dashes, no semicolons in bullet text, no leveraging/spearheaded/utilize/delve/robust/seamlessly. Date en dashes only. |
+| 4. v2 vs Java consistency | PASS. Same dates (May 2026 Present, July 2024 May 2026, December 2022 June 2024, August 2021 November 2022). Same numeric claims for shared bullets. Contact/email/phone and stack wording differences intentional. |
+| 5. Recruiter 6s first-bullet scan | FAIL (IA only). IA opener is product description with no scale/money/leadership. FRM ($340M/70%), Menu ($600K+/30K+), Masters (led 2 / 1,500+ / p95), GFG (10K+/10x) all lead with strength. |
+| 6. Duplicate opening verbs within a project | PASS. |
+| 7. Past-role tense | PASS. |
+
+### Flagged items (actionable)
+
+1. Both PDFs, IA bullet 1: weak 6s scan opener. Prefer leading with 60x / 23.7M / ClickHouse POC or Copilot batch 20 to 100 + under 1 hour target.
+2. Both PDFs, IA gates bullet: "Enforced ..." among present-tense bullets. Prefer "Enforcing read-only agent tools and 3 approval gates, ..."
+3. Both PDFs, Masters: "cutting p95 latency 1.2s to 300ms" -> "from 1.2s to 300ms"; "lifting throughput 700 to 4,000" -> "from 700 to 4,000"; "raised coverage 35% to 82%" -> "from 35% to 82%".
+4. Both PDFs, IA copilot: "targeting turnaround under 1 hour from days" -> "targeting turnaround under 1 hour (from days)".
+5. Optional hyphen polish (both): evidence-backed, read-only, rule-based, anti-bot, on-call, AI-Powered, Sheets-backed.
+6. Optional GT hygiene: add "3 approval gates" to GROUND_TRUTH so the PDF number is not GT-orphan.

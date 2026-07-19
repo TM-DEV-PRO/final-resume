@@ -452,3 +452,98 @@ These miss or weak signals show up repeatedly:
 Both one-pagers are **above average** for a ~5 YoE Bangalore backend candidate: real metrics, migration ownership, mentorship, and a modern agentic stack. They are **not yet default FAANG Senior / L5 auto-passes**. The limiting factors are **years at senior ownership**, **vendor tenure at Uber**, **brand-new SSE title**, and **company-specific language stacks** (Go vs Java), not a missing laundry list of buzzwords.
 
 **Best near-term screen strategy:** Microsoft + Databricks backend + Airbnb (Java) + Google (language-matched) + PlanetScale (Py/Go only). Treat Amazon Sr SDE and Netflix L5 as **referral / borderline** campaigns. Park Rubrik Enterprise AI and Roku Backend-and-Data until YoE and infra depth catch up.
+
+---
+
+## Re-screen after TPS/RPS and PlanetScale hardening (Loop 4)
+
+**Re-screen date:** 19 Jul 2026  
+**PDFs re-extracted:** `Tarun_Mittal_SSE_5yr_v2.pdf`, `Tarun_Mittal_SSE_Java_5yr.pdf`  
+**Delta since prior scorecard:** Masters TPS/RPS (~12 TPS avg / 100+ peak, ~67 RPS), p95 latency 1.2s to 300ms, IA p95 probes under 500ms vs 1 to 20s BigQuery, Py/Go skills now include Linux + Sharding + Performance Tuning, Masters on-call alerting bullet, Java IA Spring Boot microservices bullet, separate certification bullets.
+
+### PlanetScale deep evaluation (priority)
+
+**Active listings checked (planetscale.com/careers + Greenhouse, Jul 2026):**
+- [Software Engineer - PlanetScale Vitess](https://job-boards.greenhouse.io/planetscale/jobs/4009746009) (EMEA Remote)
+- [Software Engineer - Neki Orchestration](https://job-boards.greenhouse.io/planetscale/jobs/4280570009) (SF Bay / Remote)
+- [Software Engineer - Sharded Postgres (Neki)](https://job-boards.greenhouse.io/planetscale/jobs/4009936009) (SF Bay / Remote)
+- Also open: PlanetScale Postgres, Insights, Platform; **Postgres Internals** (C / PG core) is a different hiring lane and is out of scope for this candidate.
+
+**What PlanetScale screens for (shared across Vitess / Neki Orchestration):**
+- 5+ years backend / large-scale production systems
+- **Strong Go** (Python/Java/C++ secondary)
+- MySQL or other relational DBs
+- Kubernetes + containers (working knowledge)
+- Building and operating distributed systems at scale
+- Performance, Linux/OS fundamentals (stronger on Neki Orchestration)
+- On-call participation (explicit on Neki Orchestration)
+- Nice: DB internals, query optimization, consensus, OSS, cloud, observability
+- Culture signal: small-team ownership, high autonomy, customer-facing systems work
+
+**Sharded Postgres (Neki) is a harder bar:** "focus on backend systems, database engines, query planners" and "not just operating, but **developing** PostgreSQL, MySQL or other databases." That is engine/product work, not app sharding alone.
+
+#### Keyword hit / miss (updated Py/Go resume)
+
+| Requirement | Vitess / Neki Orchestration | Evidence on updated Py/Go PDF |
+|---|---|---|
+| 5+ years backend | HIT | Stated 5y; multi-company production ownership |
+| Strong Go | HIT | IA: Go (Gin) microservices, goroutine worker pools, JWT middleware |
+| MySQL / relational | HIT | Uber FRM MySQL schema + APIs; GFG MySQL; Masters PostgreSQL; IA PostgreSQL/ClickHouse |
+| Sharding | HIT (new) | Masters quarter sharding + Core skill "Sharding" |
+| Throughput / scale numbers | HIT (new) | ~12 TPS avg / 100+ peak; ~67 RPS; 1M+ daily invoices |
+| Performance tuning | HIT (new) | Skills keyword; p95 1.2s to 300ms; CH POC 60x; probe p95 under 500ms |
+| Linux | HIT (new) | Skills: Linux |
+| On-call / ops | HIT (new) | ELK + New Relic on-call alerting; incident triage 70% |
+| K8s + containers | HIT (thin depth) | Docker + Kubernetes in skills; no cluster-ops narrative |
+| Observability | HIT | ELK, New Relic, Prometheus, Grafana |
+| Cloud (AWS/GCP) | HIT | Both present |
+| DB internals / Vitess / consensus | MISS | Do not invent; preferred only on Vitess/Neki Orchestration |
+| Developing PG/MySQL engines | MISS | Blocks clean PASS on Sharded Postgres (Neki) engine role |
+| OSS DB contributions | MISS | Preferred only |
+
+#### Verdict by PlanetScale lane
+
+| Listing | Py/Go | Java | Margin / note |
+|---|---|---|---|
+| **Vitess** | **PASS** | **FAIL** | Py/Go clears all hard quals with **comfortable margin**. Go + MySQL + sharding + TPS/RPS + Linux + performance + on-call is a coherent PlanetScale story. Internals/Vitess still preferred-only gaps. |
+| **Neki Orchestration** | **PASS** | **FAIL** | Same hard-qual clear. On-call + PostgreSQL + sharding + Linux/performance align well with control-plane / ops flavor. Margin **comfortable**, not "Vitess committer" margin. |
+| **Sharded Postgres (Neki)** | **BORDERLINE** | **FAIL** | Go + sharding help ATS, but JD asks for **developing** DB engines / query planners. App-level quarter sharding and CH/PG POC benchmarking are adjacent, not engine work. |
+| **Postgres Internals** | **FAIL** | **FAIL** | Needs C + PostgreSQL core/extensions. Out of lane. |
+
+**Headline PlanetScale call (primary apply targets = Vitess + Neki Orchestration):**  
+- **Py/Go: PASS with margin** (up from Loop 1 BORDERLINE). Loop 4 closed the thematic gaps (sharding, Linux, performance, quantified throughput, on-call) that previously made Go look like a side skill on a Python resume.  
+- **Java: FAIL** (unchanged). Missing strong Go is a hard miss for these listings.
+
+**Honest-only wording still worth making (optional; thickens margin, does not invent Vitess/kernel):**
+1. Summary (Py/Go): add one clause elevating Go + data-plane ownership, e.g. "Go (Gin) production microservices; MySQL/PostgreSQL schema and quarter-based sharding for high-throughput billing APIs."
+2. Masters sharding bullet: keep honesty as **quarter-based sharding** (time/partition strategy), optionally add "PostgreSQL" inline so ATS ties sharding to a relational store, not only Kafka.
+3. Uber FRM: if true, one short phrase on **indexing / query performance** for the 11-table MySQL schema (schema design is already there; query/index language helps PlanetScale preferred "query optimization" without claiming internals).
+
+Do **not** add Vitess, replication protocol work, consensus, or database kernel experience.
+
+### Updated 9-company scorecard (both variants)
+
+| Company | Py/Go | Java | What Loop 4 closed / still open |
+|---|---|---|---|
+| Google | BORDERLINE | BORDERLINE | On-call + latency numbers help design/launch skim. Still EPAM discount + short SSE tenure. |
+| Amazon | BORDERLINE | BORDERLINE | On-call helps preferred ops. Still blocked by "5+ years leading design/architecture" cold parse. |
+| Microsoft | **PASS** | **PASS** | Already PASS; on-call and p95 numbers strengthen live-site signal. |
+| Airbnb | BORDERLINE | **PASS** | TPS/RPS help high-traffic skim. Py/Go still weak vs Java/Kotlin App Foundation language bar. |
+| PlanetScale | **PASS** | **FAIL** | Py/Go flipped BORDERLINE to PASS with margin (sharding, Linux, performance, TPS/RPS, on-call). Java still no Go. |
+| Databricks | BORDERLINE | BORDERLINE | Throughput + SaaS/CH POC help. YoE still soft on 6-7y India posts; no Spark. |
+| Roku | **FAIL** | **FAIL** | Hard 8+ YoE gate unchanged. |
+| Rubrik | **FAIL** | **FAIL** | Hard 9+ YoE gate unchanged; Linux/on-call do not move years. |
+| Netflix | BORDERLINE | BORDERLINE | On-call + p95 latency close a prior gap. Still short of Netflix-scale HA ownership for clean L5 PASS. |
+
+**Strict PASS count after Loop 4:**  
+- **Py/Go: 2 / 9** (Microsoft, PlanetScale). Was 1 / 9.  
+- **Java: 2 / 9** (Microsoft, Airbnb). Unchanged. PlanetScale remains FAIL on Java.
+
+Chaseable with referral (BORDERLINE): Google, Amazon, Airbnb (Py/Go), Databricks, Netflix. Non-starters on YoE: Roku, Rubrik.
+
+### Remaining honest-only suggestions (post Loop 4)
+
+1. **PlanetScale / Google Go teams:** Elevate Go into the Py/Go summary (see PlanetScale wording above). Biggest remaining ATS skim gap vs skills-row-only Go.  
+2. **Amazon:** Keep architecture-years honest (2-3+ leading design), do not imply 5 years of leading architecture.  
+3. **Submit the right PDF:** Py/Go for PlanetScale and Go-heavy Google pods; Java for Airbnb / many Amazon / Netflix L5 pods.  
+4. Still do not invent Vitess, Spark, Terraform depth, or YoE inflation for Roku/Rubrik.
