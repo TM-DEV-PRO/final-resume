@@ -86,3 +86,70 @@ GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoice
 - Why Django here but FastAPI at Masters India? 2021 CMS-style product with admin, auth, ORM batteries included; Masters India needed async IO for third-party government APIs.
 - Hot-row problem on votes? Unique constraint for correctness, Redis counter for display, periodic reconciliation for truth.
 - What would you change today? Move vote events onto a queue and make counters event-sourced; add idempotency on the reminder cron.
+- SMTP 50% faster? Keep the SMTP connection open and reuse it across sends (1yr/2.5yr resume). TCP+TLS handshake is often 100-400ms per new connection; amortizing that across a batch cuts wall-clock send time roughly in half for reminder and promo traffic.
+
+## Mock interview: hardest questions with answers
+
+### Masters India
+
+**Interviewer:** You were on AWS. Why Kafka instead of RabbitMQ or SQS for e-invoicing?
+
+**Candidate:** We needed three things together: per-client ordering, durable replay for compliance, and independent consumer groups. Partition key was client GSTIN (or GSTIN plus document type), so invoice submit, IRN callback, and webhook fan-out for one taxpayer stayed ordered on one partition. Kafka's log lets us reset offsets and reprocess a bad consumer window after a parser bug; SQS deletes on ack and does not give cheap multi-consumer replay, and SQS FIFO caps throughput per message group. RabbitMQ could have worked at our scale for task dispatch; I am honest about that. We still picked Kafka because (1) replay and audit reprocessing were first-class for GST disputes, (2) multiple groups could read the same topic (IRP workers, audit projector, metrics) without fanout-exchange plumbing, and (3) the team already had AsyncIOKafka in the FastAPI stack (2.5yr resume). Ops cost of Kafka was the trade-off; correctness and replay won.
+
+**Interviewer:** Derive TPS and RPS from your resume numbers. Do they even hang together?
+
+**Candidate:** 1M+ daily transactions is 1,000,000 / 86,400 ≈ 11.6 TPS average, call it ~12 TPS (ESTIMATED). Filing deadline spikes are the sizing problem; we sized for 100+ TPS peak, roughly 8 to 10x average (ESTIMATED). Sustained API throughput went from 700 to 4,000 requests per minute (HISTORICAL), which is 700/60 ≈ 12 RPS to 4,000/60 ≈ 67 RPS. Those are complementary: RPM is gateway and service capacity under load tests and peaks; daily transactions are IRP-registered documents. p95 latency moved from about 1.2s (resumes also say 1000-1200ms) to about 300ms (300-400ms band) for 1,500+ clients.
+
+**Interviewer:** What actually drove p95 from 1.2s to 300ms? Caching alone cannot do that.
+
+**Candidate:** Caching helped p50 and read-heavy endpoints; the p95 tail was async IO and removing PHP synchronous bottlenecks. IRP calls no longer blocked a PHP-FPM worker for the full round trip; FastAPI plus workers returned 202 or awaited without holding a process hostage. Connection pooling replaced per-request connect storms. We killed N+1 list queries and added composite indexes on (client_id, invoice_date). Redis cut redundant DB reads about 30% (HISTORICAL), which shortened the middle of the distribution. Net: async + pooling + query fixes moved the tail; cache moved the body.
+
+**Interviewer:** Cache-aside specifics: keys, TTLs, invalidation, thundering herd. Make the 30% read cut plausible.
+
+**Candidate:** Pattern was classic cache-aside: miss → read DB → SET with TTL. Hot keys: e-invoice IRP auth tokens (short TTL, under the IRP token lifetime, typically a few hours with safety margin), client config and feature flags, GSTIN master lookups, and tax-rate masters. Config and GSTIN keys invalidated on write (DELETE inside the update path) so admins never served stale credentials. Masters used TTL-only with jitter so expiries did not align. Thundering herd: TTL jitter plus a SETNX lock so one worker recomputes while others wait or serve slightly stale. 30% fewer redundant reads is plausible because the same client config and GSTIN validation ran on every invoice in a bulk import; caching those across 100K-row imports removes a huge duplicate read fan-out.
+
+**Interviewer:** Quarter-based sharding: why shard GST data by financial quarter instead of plain partitioning?
+
+**Candidate:** Indian GST reporting and returns are quarter-scoped and filing-deadline driven. Writes concentrate in the current quarter; older quarters are mostly read for reconciliation and audits. Separate quarter tables (or quarter schemas) let us prune or archive cold quarters without touching the hot write set, and keep indexes smaller where inserts land. Trade-off versus native RANGE partitioning: we owned routing in application code (AsyncMotorIO / SQL layer picked the quarter), which is more moving parts than DB-native partitions, but gave us explicit drop/archive of an entire quarter and clearer operational runbooks. Wrong-quarter writes are the footgun; we derived quarter from invoice date at the API boundary and rejected mismatches.
+
+**Interviewer:** Sketch the IRP e-invoicing path and where Kafka sits.
+
+**Candidate:** Client creates the invoice in their ERP, posts JSON to our API, we validate schema and GSTIN, then report to a government Invoice Registration Portal. IRP returns a signed e-invoice with IRN and QR; that is what makes a B2B GST invoice valid. Kafka carried async stages: accepted import chunks, IRP submit jobs, signed-response persistence to Mongo snapshots, and client webhooks. Idempotency keys plus unique client references stopped double registration, which is not recoverable with the government. Bulk path: file to object storage, chunk validate, bounded concurrency to IRP, progress on the dashboard. 100K+ transactions per import and 1M+ daily (HISTORICAL).
+
+**Interviewer:** You mentored 2 engineers on a monolith-to-microservices migration. What did "led" mean day to day?
+
+**Candidate:** Strangler pattern behind the gateway, not a big bang. I owned conventions: router / service / repository, Pydantic at the boundary, retry and idempotency helpers. Two juniors each extracted a service; I reviewed early PRs closely and paired on the first canary cutover (Nginx percentage route, watch errors and latency, ramp or roll back by config). Shared DB during traffic cutover avoided dual writes; table splits came after. Mentorship claim is user-confirmed: 2 engineers at Masters India.
+
+**Interviewer:** ELK + New Relic cut triage 70%. Prove that is not vanity metrics.
+
+**Candidate:** Before: SSH and grep across boxes with no request correlation. After: structured JSON logs with request IDs into Elasticsearch/Kibana, New Relic APM traces, alerts on error rate and latency. Triage from roughly 30 minutes to under 10 is ESTIMATED baseline math behind a HISTORICAL 70% cut. The real win is one request ID across API, Kafka consumer, and IRP worker. Coverage 35% to 82% with pytest as a CI gate on money paths; deployment success 98% (HISTORICAL).
+
+### GeeksforGeeks
+
+**Interviewer:** Doubt support at 10K+ daily queries. Design unread counts without melting MySQL.
+
+**Candidate:** Scale is user-standardized at 10K+ daily interactions (older resumes said 1000+ doubts/day; 4yr said 100K; we standardize 10K+). Average is well under 1 RPS with contest-day spikes maybe 10x (ESTIMATED). Unread counts lived behind a REST API: per-user counters in Redis for the badge path, durable rows in MySQL for threads and messages. Increment on new reply, decrement or clear on read receipts. Periodic reconcile from MySQL fixed drift. PHP to Django migration bought transactions, validation, and cleaner read/write separation for reliability.
+
+**Interviewer:** Voting API idempotency and hot rows. How did MySQL, Redis, MongoDB, and Elasticsearch split?
+
+**Candidate:** Vote table had a unique (user_id, content_id) constraint so double-submit is idempotent at the DB. Display counters sat in Redis and reconciled asynchronously to MySQL to avoid hot-row contention on popular doubts. MySQL remained source of truth for relational threads and permissions. Mongo held flexible payloads where the doubt body or attachments varied. Elasticsearch powered search across doubts and content. Pinning was per-context ordering columns, not a free-for-all sort. Premium lift 15 to 20% is HISTORICAL relative attribution by growth.
+
+**Interviewer:** Cron pipelines for video processing claimed +70% ops efficiency. How do you keep crons reliable?
+
+**Candidate:** Jobs covered video processing handoffs, automated reminders, payment processing, and cloud recording deletion. Reliability pattern: lock or DB advisory lease so two cron hosts do not double-run, idempotent job keys, structured success/fail logs, and dead-letter or retry for partial batches. The 70% efficiency figure is HISTORICAL time saved on those manual ops workflows. Course sales +30% is business attribution on the influencer dashboard; I own the engineering, attribute causality carefully.
+
+**Interviewer:** You also cut email send time 50% with SMTP changes. Is that real?
+
+**Candidate:** Yes, on the 1yr and 2.5yr resumes: keep the SMTP connection open and reuse it across sends instead of TCP+TLS handshaking every message. Handshake overhead is often 100-400ms per new connection; pooling amortizes it across reminder and promo batches. That matches what large mail senders document with SMTP connection reuse. It is a GFG optimization detail, not a Masters India claim.
+
+## Confidence audit
+
+| Resume bullet | Rating | Fallback wording if pressed |
+|---|---|---|
+| FastAPI migration, mentored 2, p95 1.2s to 300ms, 1,500+ clients | SOLID | Use 1000-1200ms to 300-400ms band if they cite older resumes; never say 2,500+ clients (dropped). |
+| 100K+/import, 1M+ daily, async Kafka, quarter sharding, 700 to 4,000 req/min | SOLID on throughput; NEEDS CARE on peak TPS | Say ~12 TPS avg and 100+ TPS peak as ESTIMATED. Kafka justification: ordering, replay, consumer groups; admit RabbitMQ could work at that scale. |
+| Redis -30% redundant reads; audit logs -15% churn | NEEDS CARE on churn | Cache: defend with keys/TTL/invalidation. Churn: "attributed in renewals / HISTORICAL business metric; I owned the audit trail feature." |
+| ELK + New Relic, triage -70%; coverage 35 to 82; 98% deploy success | SOLID on coverage/deploy; NEEDS CARE on triage baseline | Triage baseline ~30 min to <10 min is ESTIMATED behind HISTORICAL 70%. |
+| GFG PHP to Django, 10K+ daily queries | SOLID (standardized) | Say "order of ten thousand daily interactions"; do not say 100K. |
+| Voting/pinning, premium +15-20% | NEEDS CARE | "Relative lift attributed by growth; engineering owned APIs and reliability." |
+| Influencer dashboard + cron, course sales +30%, ops +70% | NEEDS CARE | Own engineering; attribute sales/efficiency as HISTORICAL business metrics. |

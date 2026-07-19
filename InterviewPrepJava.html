@@ -107,6 +107,8 @@ strong{color:#fff}
 <a class="lvl2" href="#10-numbers-cheat-sheet-flash-card">10. Numbers cheat sheet (flash card)</a>
 <a class="lvl2" href="#11-phrases-to-use-avoid">11. Phrases to use / avoid</a>
 <a class="lvl2" href="#12-suggested-45-minute-drill-order">12. Suggested 45-minute drill order</a>
+<a class="lvl2" href="#mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#confidence-audit">Confidence audit</a>
 <a class="lvl1" href="#11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</a>
 <a class="lvl2" href="#0-the-four-bullets-i-am-defending">0. The four bullets I am defending</a>
 <a class="lvl2" href="#1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</a>
@@ -117,9 +119,13 @@ strong{color:#fff}
 <a class="lvl2" href="#6-honesty-guardrails-do-not-oversell">6. Honesty guardrails (do not oversell)</a>
 <a class="lvl2" href="#7-rapid-fire-qa-12">7. Rapid-fire Q&amp;A (12+)</a>
 <a class="lvl2" href="#8-one-paragraph-verbal-summary-for-walk-me-through-frm">8. One-paragraph verbal summary (for "walk me through FRM")</a>
+<a class="lvl2" href="#mock-interview-hardest-questions-with-answers_1">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#confidence-audit_1">Confidence audit</a>
 <a class="lvl1" href="#masters-india-and-geeksforgeeks-deep-dive-v2-resume-defense">Masters India and GeeksforGeeks Deep Dive (v2 resume defense)</a>
 <a class="lvl2" href="#masters-india-dec-2022-to-jun-2024-sde-2">Masters India (Dec 2022 to Jun 2024), SDE 2</a>
 <a class="lvl2" href="#geeksforgeeks-aug-2021-to-nov-2022-sde">GeeksforGeeks (Aug 2021 to Nov 2022), SDE</a>
+<a class="lvl2" href="#mock-interview-hardest-questions-with-answers_2">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#confidence-audit_2">Confidence audit</a>
 <a class="lvl1" href="#behavioral-intros-and-why-switch-v2-java-tracks">Behavioral, Intros, and Why Switch (v2 + Java tracks)</a>
 <a class="lvl2" href="#60-second-introduction">60 second introduction</a>
 <a class="lvl2" href="#why-each-switch-keep-each-under-45-seconds">Why each switch (keep each under 45 seconds)</a>
@@ -129,8 +135,11 @@ strong{color:#fff}
 <a class="lvl1" href="#uber-menu-ingestion-deep-dive-v2-resume-defense">Uber Menu Ingestion Deep Dive (v2 resume defense)</a>
 <a class="lvl2" href="#what-the-system-does">What the system does</a>
 <a class="lvl2" href="#bullet-defenses">Bullet defenses</a>
-<a class="lvl2" href="#end-to-end-flow">End to end flow</a>
-<a class="lvl2" href="#rapid-fire_2">Rapid fire</a></nav>
+<a class="lvl2" href="#end-to-end-flow-resume-aligned">End to end flow (resume-aligned)</a>
+<a class="lvl2" href="#rapid-fire-menu-stack-only">Rapid fire (Menu stack only)</a>
+<a class="lvl2" href="#streaming-context-do-not-claim-on-resume">Streaming context (DO NOT CLAIM ON RESUME)</a>
+<a class="lvl2" href="#mock-interview-hardest-questions-with-answers_3">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#confidence-audit_3">Confidence audit</a></nav>
 <main><h1 id="java-track-interview-prep-hub-grounded-rewrite">Java Track — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026</strong></p>
 <p>Backs <code>resume_java/</code> (PDF: <code>Tarun_Mittal_SSE_Java_5yr.pdf</code>). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu streaming, and ClickHouse work stay Python.</p>
@@ -1616,7 +1625,85 @@ distribution_centres       ─daily─►  distribution_centres
 <li>Rapid-fire from §9 (10 min).</li>
 </ol>
 <hr>
-<p><em>End of IA deep dive. All figures trace to <code>GROUND_TRUTH.md</code> and the cited Confluence/PRD sources. If a number is not on this page, do not invent it in the interview.</em></p>
+<p><em>End of IA deep dive core. Mock interview Q&amp;A below. All figures still trace to <code>GROUND_TRUTH.md</code> and the cited Confluence/PRD sources. If a number is not on this page, do not invent it in the interview.</em></p>
+<hr>
+<h2 id="mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</h2>
+<p>Format: skeptical engineering manager asks; candidate answers. Tags match <code>GROUND_TRUTH.md</code>. Do not soften TARGET into measured. No production cutover claim. Hardware for the insert/metric POC was not identical (PG 32 vCPU / 256 GB vs CH 16 vCPU / 64 GB).</p>
+<h3 id="q1-you-say-you-are-building-assortsmart-with-ai-agents-what-ships-today-versus-what-is-design">Q1. You say you are "building" AssortSmart with AI agents. What ships today versus what is design?</h3>
+<p><strong>A:</strong> AssortSmart is the merchandise planning SaaS: retailers decide what to buy, in what depth, for which stores, a season ahead. Store clustering is the foundation every strategy plan binds to. The agentic rebuild inverts today's flow (four expert choices up front, one config run) into: planner states intent (hierarchy + reference period), the agent proposes scope and features, batch-explores configs, and a human approves before write-back. Phase 1 of the Cluster Recommendation Copilot is design-complete: four internal adversarial passes plus external review <strong>PASS, approve to bring-up</strong>. Bring-up load test is still pending. So I own present-tense design and build work, not a claim that every tenant already runs the shipped copilot in production.</p>
+<h3 id="q2-why-langgraph-instead-of-a-plain-function-calling-loop-in-fastapi">Q2. Why LangGraph instead of a plain function-calling loop in FastAPI?</h3>
+<p><strong>A:</strong> Clustering is a multi-step stateful workflow: ground scope, confirm a search plan, fan out batch compute, stream scored candidates, pause for pins and what-ifs, then hit approval gates. LangGraph makes that graph explicit (nodes, edges, checkpointable state, human-in-the-loop interrupts) instead of burying control flow in ad-hoc <code>while</code> loops around chat messages. Plain function calling is fine for one-shot tool use; it gets brittle when you need durable session state, gate pauses that survive a reconnect, and the same graph driving both wizard Mode A and chat Mode B under the convergence rule (same config document, same gates, same write-back). Trade-off: more framework surface; payoff is auditable orchestration that matches product gates rather than prompt spaghetti.</p>
+<h3 id="q3-why-mcp-on-top-of-langgraph-isnt-that-two-frameworks-for-one-agent">Q3. Why MCP on top of LangGraph? Isn't that two frameworks for one agent?</h3>
+<p><strong>A:</strong> They solve different layers. LangGraph orchestrates <em>when</em> to call tools and <em>when</em> to stop for a human. MCP is the tool delivery contract: a fixed registry of <strong>14 audited tools</strong> lives behind an MCP server so the agent discovers schemas at runtime and cannot invent SQL. That decoupling matters for tenancy and ops: tool versioning, read-only enforcement, and reuse across clients without hardcoding tool implementations into the graph. Function-calling schemas alone would couple tool code to the orchestrator process. Trade-off: an extra process boundary and discovery handshake; payoff is a hard boundary between "LLM may select a tool" and "only these templated tools run."</p>
+<h3 id="q4-walk-the-cluster-recommendation-copilot-where-do-the-20-to-100-configs-and-under-1-hour-come-from">Q4. Walk the Cluster Recommendation Copilot. Where do the 20 to 100 configs and "under 1 hour" come from?</h3>
+<p><strong>A:</strong> Today the pipeline evaluates <strong>exactly 1</strong> configuration the planner chose by hand, inside a search space of roughly 12 algorithms × k 3–10 × any attribute subset (MEASURED live audit). The FRD designs a pruned batch of <strong>20–100</strong> configs against an isolated scratch plan, with results streaming as they score; the headline product target is <strong>≥20</strong> configs evaluated per plan (TARGET). Hierarchy-to-finalized-plan <strong>days → under 1 hour</strong> is also TARGET, not a production measurement yet. Compute itself is already fast: median clustering job <strong>~20s</strong> over 370 live runs (MEASURED). The bottleneck is everything around the machine: blind expert choices, one shot, no reproducibility. UI still presents <strong>3–5</strong> distinct scenarios (HLR-SC-001 constraint); batch breadth under the hood is the 20–100 / ≥20 story. Say "targeting under 1 hour" and "batch evaluating 20 to 100 in design / ≥20 as the success bar."</p>
+<h3 id="q5-failures-85-to-under-2-reproducibility-0-to-100-prove-the-baselines-and-stop-claiming-the-targets-as-done">Q5. Failures 8.5% to under 2%, reproducibility 0% to 100%. Prove the baselines and stop claiming the targets as done.</h3>
+<p><strong>A:</strong> On the kik tenant: <strong>8.5% run failures (37 of 437)</strong>; <strong>&gt;80%</strong> of those are input mistakes at the data boundary (MEASURED). Winning algorithm, hyperparameters, and seed were never persisted ⇒ <strong>reproducibility 0%</strong> (MEASURED). Manual store swaps also die on re-run (0% survival). Targets are <strong>failures under 2%</strong> and <strong>100% reproducible shipped clusterings</strong> via content-addressed config documents (hash of recipe + data watermark) and append-only decision events (TARGET). Mechanism for the failure cut: deterministic grounding (catalog backtrack for hierarchy, fiscal calendar for seasons), sample-size guards, and machine-composed requests so the input-error class never reaches the engine. I will not say "we cut failures to under 2%" until post-load-test metrics exist. Correct phrase: "designed to cut from a measured 8.5% toward under 2%."</p>
+<h3 id="q6-why-only-three-human-approval-gates-overview-docs-mention-grounding-search-plan-approval-and-write-back">Q6. Why only three human approval gates? Overview docs mention grounding, search plan, approval, and write-back.</h3>
+<p><strong>A:</strong> The Phase-1 FRD product story is <strong>three confirm gates</strong> after intent: Gate 1 search plan (attributes + 20–100 config plan), Gate 2 approve the winning recommendation, Gate 3 governance sign-off where required; write-back then lands in today's tables. The grounding card is the confirm-what-was-understood step before compute (Mode B clubs cohort + attributes on that card). Module overview language lists grounding → search plan → approval → write-back as the consequential human stops. In the room I say: "Three product confirm gates plus write-back that never happens without an approved config; the agent physically cannot write." Resume "3 human approval gates" maps to the FRD's three confirms. If pressed on four stops, acknowledge grounding and write-back as the bookends without inventing a fourth numbered gate beyond the FRD.</p>
+<h3 id="q7-why-read-only-agent-tools-at-the-database-profile-not-just-a-prompt-that-says-dont-write">Q7. Why read-only agent tools at the database profile, not just a prompt that says "don't write"?</h3>
+<p><strong>A:</strong> Prompts are not a control plane. The agent runs with a <strong>read-only DB profile</strong>; exploration writes only to isolated scratch plans; write-back is a separate path after human approval. That matches the FRD non-goal: no silent auto-finalize, and <code>is_optimal</code> (engine) never overwrites <code>is_final</code> (human). Schema reinforces it: <strong>63 tables / 8 layers / 624 columns</strong>, partition-swapped facts, append-only events, zero row-level mutations by doctrine (MEASURED design, DDL validated on ClickHouse 25.12). Failure mode if you skip this: an LLM tool that can <code>INSERT</code> into cluster master under prompt drift. Trade-off: new capability needs a new audited tool, not a prompt tweak.</p>
+<h3 id="q8-why-dedicated-clickhouse-for-agent-probes-instead-of-shared-bigquery">Q8. Why dedicated ClickHouse for agent probes instead of shared BigQuery?</h3>
+<p><strong>A:</strong> Measured agent data-probe latency on shared BigQuery slots is <strong>1–20s+</strong> with uncontrolled variance (MEASURED live audit). Interactive copilot UX and platform NFRs need deterministic probes; design target is agent probe <strong>p95 under 500ms</strong> on a dedicated ClickHouse read plane (TARGET), with nightly precompute aiming to move <strong>≥80%</strong> of sessions cold→warm (TARGET). Feed is the org's existing BQ→CH ingestion lane (ItemSmart-proven pattern): BigQuery stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots. Cube reconciliation target within <strong>0.1%</strong> of BigQuery (TARGET). Explicit FRD non-goal: not moving transactional/plan data to ClickHouse for this module's Phase 1 read plane. Trade-off: a derived copy can rot; mitigate with owned ingestion, freshness sentinel, and data-as-of stamped on every recommendation.</p>
+<h3 id="q9-why-go-gin-for-plan-lifecycle-and-bulk-save-instead-of-keeping-everything-in-python-fastapi">Q9. Why Go (Gin) for plan lifecycle and bulk save instead of keeping everything in Python FastAPI?</h3>
+<p><strong>A:</strong> Service split is intentional. One Python microservice (FastAPI, LangGraph, MCP) owns agentic workflows that scale with LLM latency. The non-agentic core is throughput-shaped I/O: plan lifecycle CRUD (create/copy/finalize/soft-delete with server-side state transitions), reference data fan-out, and bulk save of versioned cell batches. Go gives goroutine-per-request concurrency without an async framework tax, a static binary, and boring code many engineers can touch. Gin: radix-tree router, middleware chain (<code>c.Next()</code>), <code>ShouldBindJSON</code> validation. Rejected fiber because fasthttp breaks standard <code>net/http</code> semantics; chi/Echo were fine but Gin won on team familiarity. JWT middleware carries tenant + role claims. Bulk save: bounded goroutine worker pool fans validated batches (design: version = epoch-ms, idempotency via batch id + content hash). This is <strong>current build / stack direction</strong>, not a MEASURED production RPS claim in ground truth. Do not invent peak RPS unless you label it estimated capacity from prep.</p>
+<h3 id="q10-goroutine-worker-pools-for-bulk-save-what-problem-what-failure-mode">Q10. Goroutine worker pools for bulk save: what problem, what failure mode?</h3>
+<p><strong>A:</strong> A grid save arrives as a large batch of cell edits that must become one versioned insert wave, not N serial round-trips. A bounded worker pool (channel + N workers) caps concurrency into ClickHouse native batch inserts so you do not open unbounded goroutines under a save spike. Context timeouts cancel slow probes instead of piling up. Failure modes to own: goroutine leaks if cancel paths are missing; unbounded fan-out melting merge pressure on ClickHouse parts; retries without idempotency double-inserting versions. Mitigations: <code>context.WithTimeout</code> on every handler, pool size as a hard cap, batch id + content hash for safe replay, graceful <code>Shutdown</code> that drains in-flight work.</p>
+<h3 id="q11-why-clickhouse-over-staying-on-postgresql-for-the-order-batching-analytics-poc">Q11. Why ClickHouse over staying on PostgreSQL for the Order Batching analytics POC?</h3>
+<p><strong>A:</strong> PostgreSQL is excellent OLTP; at multi-million join/agg scale it becomes the wrong engine for this read shape. We ported real workloads, not synthetic TPC. Order Batching metric at <strong>23,749,263</strong> join rows: ClickHouse <strong>3.857s (~3.86s)</strong> vs PostgreSQL <strong>3m 40s</strong> (UTC) / <strong>7m 48s</strong> (<code>Australia/Melbourne</code>) ⇒ about <strong>~60×</strong> (docs; range ~57–120× depending on TZ path) (MEASURED). At small scale (~57K join rows) PG was slightly faster (2.04s vs 2.80s), so we do not hide the parity case. Insert POC: CH <strong>~5.91M rows/s</strong> effective on <strong>3.9B</strong> rows (30 promos × 10M) vs PG <strong>250K</strong> raw / <strong>~417K</strong> detach-attach ⇒ <strong>~14–24×</strong>, and CH did it at <strong>~30</strong> connections vs PG <strong>280</strong> (MEASURED). Hardware caveat first: PG <strong>32 vCPU / 256 GB</strong> tuned; CH <strong>16 vCPU / 64 GB</strong> untuned. POC evidence, not production cutover.</p>
+<h3 id="q12-why-not-apache-druid-or-pinot-or-bigquery-directly-for-that-olap-path">Q12. Why not Apache Druid or Pinot (or BigQuery directly) for that OLAP path?</h3>
+<p><strong>A:</strong> For the Order Batching migration POC the team standardized on ClickHouse: SQL familiarity when porting PG stored procedures, MergeTree / ReplacingMergeTree fit for CDC mirrors, and existing CH investment / Cloud DDL already in flight. BigQuery remains upstream historical truth for agentic cubes, but shared-slot variance (<strong>1–20s+</strong>) fails the interactive agent-probe budget; dedicated CH is the gated read plane. Pinot I know from Uber-style high-QPS ops dashboards; Druid is strong at certain ingest/concurrency shapes. I would reopen Druid/Pinot only if we needed those specific characteristics and wanted a second OLAP stack. For this POC scope, a second engine was unjustified complexity. ReplacingMergeTree behavior matches our CDC apply pattern (versioned inserts, background dedupe; <code>FINAL</code> or <code>argMax</code> when latest-before-merge matters).</p>
+<h3 id="q13-defend-the-24-bulk-load-claim-how-was-throughput-measured">Q13. Defend the 24× bulk load claim. How was throughput measured?</h3>
+<p><strong>A:</strong> Effective rows/sec = <code>sum(expected_rows) / (max(ended) − min(started))</code> across successful parallel jobs, not the sum of per-job times. Best CH run: <strong>30 promos × 10M = 3.9B</strong> rows in <strong>660.184s</strong> ⇒ <strong>5,907,446 ~5.9M rows/s</strong> (MEASURED). Against PG raw <strong>250K rows/s</strong> that is <strong>~23.6×</strong> (resume rounds to <strong>24×</strong>). Against PG detach/attach <strong>~417K</strong> it is <strong>~14×</strong>. Resume "24× (250K to 5.9M)" is the raw-insert comparison; if challenged on detach/attach, cite both multiples honestly. Export path separately: PG <strong>541s / 607 rows/s</strong> vs CH <strong>~38s / 26.4K rows/s</strong> (~<strong>43×</strong> throughput) (MEASURED); note export row counts differed (~329K vs 1M), so defend rows/sec and wall methodology, not identical dump size.</p>
+<h3 id="q14-replacingmergetree-and-partition-updates-what-broke-and-why-still-ch">Q14. ReplacingMergeTree and partition updates: what broke, and why still CH?</h3>
+<p><strong>A:</strong> ClickHouse mutations (<code>ALTER UPDATE</code>) are async and expensive for interactive planning; insert-only versioned rows fit both CDC and analytical rebuilds. On ~<strong>29M</strong>-row CARFG: full-table scope merge for <strong>10K</strong> updates sat <strong>~35.6–38.8s</strong>; partition-scoped merge on day partition <code>20260512</code> (~3.8M rows) finished in <strong>7.309s</strong> (MEASURED). Delta join on one partition <strong>6.734s</strong>; full-table delta <strong>OOM at 14.40 GiB</strong>. Exploded Order Batching query at <strong>133.7M</strong> rows in one partition crashed the server. Lesson: bound working sets; prefer partition swap / scoped merge over unbounded joins. <code>FINAL</code> forces merge-on-read for latest visibility but costs CPU/IO; prefer prune-first query shapes. Compression example (separate fact): <strong>17.15M</strong> rows, <strong>432.81 MiB</strong> compressed vs <strong>3.31 GiB</strong> raw (~<strong>7.8×</strong>) (MEASURED).</p>
+<h3 id="q15-cqrs-for-order-batching-why-not-dual-write-pg-and-ch-in-one-request">Q15. CQRS for Order Batching: why not dual-write PG and CH in one request?</h3>
+<p><strong>A:</strong> Dual-write splits the failure domain: PG commit succeeds, CH fails (or the reverse), retries create duplicates, and lock/finalise semantics live in PG stored procedures today. Design: PG remains system of record for writes (CARFG, locks, session save); CDC mirrors hot facts (CARFG, plan_master, dc_pack_reserve); low-churn dims refresh daily; router defaults reads to CH; after save/finalise Redis key <code>ob:ryw:{l0_name}</code> TTL <strong>~30s</strong> forces the writer onto PG for read-your-writes (MEASURED design). CDC platform SLOs I designed against / integrated with (tool authored by Ashvin Sharma, not me): commit-to-visible <strong>p95 ≤ 10s</strong>, snapshot <strong>≥ 25K rows/s</strong>. Apply CH first, then advance PG slot: at-least-once + ReplacingMergeTree dedupe. This is architecture + POC stage; do not claim full production cutover unless you personally cut over.</p>
+<h3 id="q16-elbow-silhouette-for-k-but-business-wants-actionable-assortments-how-do-you-not-optimize-the-wrong-objective">Q16. Elbow + silhouette for k, but business wants actionable assortments. How do you not optimize the wrong objective?</h3>
+<p><strong>A:</strong> HLR-AG-002: agent picks k via elbow + silhouette inside client min/max guardrails; HLR-SC-004 adds a default <strong>max 10</strong> child clusters per parent (configurable). If unconstrained optimum exceeds the cap, pick best k within the cap and record the constraint in the scenario summary. HLR-SC-001 caps UI scenarios at <strong>3–5</strong> with mandatory distinctness across lens, time horizon, store scope, and k; HLR-SC-003 always includes Baseline (Previous Plan) when one exists. Statistical fit is necessary but not sufficient; planner approval and pins inject business knowledge the dataset does not contain. That is why this is a gated decision agent, not AutoML that ships a loss minimum silently.</p>
+<h3 id="q17-what-would-make-you-discard-the-poc-numbers-in-a-design-review">Q17. What would make you discard the POC numbers in a design review?</h3>
+<p><strong>A:</strong> Three things I already document. (1) Non-identical hardware: CH often weaker and still faster, so treat as directional, not lab-perfect A/B. (2) Small-scale parity: at ~57K join rows PG can win; the cliff is tens of millions of rows. (3) Methodology differences: export row counts differed; insert throughput is wall-clock effective across parallel jobs. Separately, ML fit median <strong>~9s/config</strong> is accepted physics (MEASURED); we parallelize and precompute around it rather than claiming we made the model faster. If load test on real kik extract fails cube sizing or p95 probe budgets, we revisit precompute and concurrency quotas before claiming agent latency targets.</p>
+<h3 id="q18-ownership-challenge-did-you-build-pg2ch_cdc-and-ship-the-copilot">Q18. Ownership challenge: did you build <code>pg2ch_cdc</code> and ship the copilot?</h3>
+<p><strong>A:</strong> No on both overclaims. <code>pg2ch_cdc</code> was authored by Ashvin Sharma; I designed Order Batching migration against its SLOs and mirror patterns and integrated with them. Copilot: Phase 1 design approved to bring-up; load test pending; L2 autopilot and L3 drift monitor are later phases. Correct ownership language: "designed / developing / designed against," not "I built the CDC platform end to end" or "shipped the copilot to all tenants."</p>
+<hr>
+<h2 id="confidence-audit">Confidence audit</h2>
+<table>
+<thead>
+<tr>
+<th>Resume bullet</th>
+<th>Verdict</th>
+<th>If pushed, say exactly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Building Agentic AssortSmart; agents draft clusters/plans for planner approval</td>
+<td><strong>SOLID</strong></td>
+<td>Product description of the agentic rebuild. Present-tense build; Phase 1 design PASS; not "already live for every tenant."</td>
+</tr>
+<tr>
+<td>2. Cluster Recommendation Copilot (FastAPI, LangGraph, MCP); 20–100 configs vs 1; days → under 1 hour</td>
+<td><strong>NEEDS CARE</strong></td>
+<td>Baseline <strong>1 config/plan</strong> MEASURED. Batch <strong>20–100</strong> is FRD design range; success bar <strong>≥20</strong> is TARGET. <strong>Under 1 hour</strong> is TARGET. Stack (FastAPI/LangGraph/MCP, 14 tools) is MEASURED design. "Developing / targeting," never "we already cut turnaround to under an hour in prod."</td>
+</tr>
+<tr>
+<td>3. Read-only tools + 3 human gates; 8.5% → under 2%; 100% reproducible</td>
+<td><strong>NEEDS CARE</strong></td>
+<td><strong>8.5% (37/437)</strong> and <strong>0% reproducibility</strong> MEASURED. <strong>Under 2%</strong> and <strong>100% reproducible</strong> TARGET. Read-only profiles + gates MEASURED design. Phrase: "designed to cut failures from a measured 8.5% toward under 2%." Align "3 gates" with FRD confirm gates; mention grounding/write-back as bookends if asked.</td>
+</tr>
+<tr>
+<td>4. Go (Gin) microservices; plan lifecycle + bulk save; goroutine pools; JWT</td>
+<td><strong>NEEDS CARE</strong></td>
+<td>Stack direction and concrete service shape (JWT middleware, worker pools, plan lifecycle APIs) are defensible as current design/build work. No MEASURED production RPS in <code>GROUND_TRUTH.md</code>. Do not invent throughput; describe architecture and trade-offs vs Python-only.</td>
+</tr>
+<tr>
+<td>5. 60× analytics; 23.7M rows 3m40s → 3.86s; 24× load 250K → 5.9M rows/s</td>
+<td><strong>SOLID</strong></td>
+<td>All MEASURED POC numbers. Lead with hardware caveat (PG 32/256 vs CH 16/64). Cite UTC <strong>3m40s</strong> and TZ <strong>7m48s</strong>. <strong>24×</strong> vs raw 250K; also own <strong>~14×</strong> vs detach/attach 417K. POC, not production cutover.</td>
+</tr>
+</tbody>
+</table>
+<hr>
 <hr>
 <h1 id="11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</h1>
 <p>Defense material for the four Uber FRM resume bullets. Every number here traces to <code>GROUND_TRUTH.md</code> or to the code in <code>KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/</code>. Tags: <strong>MEASURED</strong> (documented artifact or code), <strong>TARGET</strong> (design goal, say "targeting"), <strong>ESTIMATED</strong> (derived, say so). No number here is invented.</p>
@@ -1885,6 +1972,82 @@ Getting the recursive tree correct and consistent between v1 and v2 while the un
 <h2 id="8-one-paragraph-verbal-summary-for-walk-me-through-frm">8. One-paragraph verbal summary (for "walk me through FRM")</h2>
 <p>"At Uber Finance I built the FRM Risk Scoping platform, a FastAPI + MySQL + React tool that replaced a manual Google Sheets close for the quarterly scoping process, the activity that decides which financial line items and entities are in scope for PwC's audit. It is 8 screens and 30-plus REST endpoints over an 11-table SQLAlchemy 2.0 schema, in a strict handler / service / repository layering with header-based auth. On the Q4 2025 close, group materiality was $340M. The project's goal was targeting a 70% cut in manual ingestion and reconciliation time. I personally owned migrating reconciliation from Sheets-backed v1 APIs to MySQL-backed v2 APIs, running both in parallel and validating HFM against the filed 10-Q, and I fixed a latent column-aliasing bug where joined tables produced duplicate result-key names and silently mapped rows to the wrong identity, by moving to SQLAlchemy aliased selects with explicit labels. I led a pod of 3 engineers and we grew the service to 1,100-plus pytest tests gated by Bazel CI."</p>
 <hr>
+<h2 id="mock-interview-hardest-questions-with-answers_1">Mock interview: hardest questions with answers</h2>
+<p>Adversarial round with a skeptical senior engineering manager from a fintech background. Questions are the ones designed to expose exaggeration; answers are grounded only in the code and KT docs. Anything not in the shipped scoping-service code is labeled design intent, not implemented fact.</p>
+<p><strong>Q1. You put "30+ REST APIs" on a resume. That reads like padding. Show me the real number and prove you are not double counting trivial routes.</strong>
+The honest basis is code, not marketing. In <code>handler/scoping_handler.py</code>, <code>setup_routes()</code> makes exactly 32 <code>add_api_route(...)</code> registrations, one of which is <code>/health</code>, so it is 31 functional endpoints plus a health check. I say "30+" precisely so I am under-claiming against the real count. I do not say 36, because that number only appears if you fold in the separate <code>frm-collaboration-service</code> comment and notification APIs, which I did not build. The 31 span reconciliation v1 and v2, group balance sheet and income statement, component scoping and filters, residual risk, EMI, metrics and materiality and benchmarks, threshold setup, and scoping questions and assessments. None of them are duplicate verbs on the same resource for padding; the PATCH and PUT routes carry distinct business logic like status transitions and benchmark recomputation.</p>
+<p><strong>Q2. Why MySQL and not PostgreSQL? Postgres has recursive CTEs and better JSON. Defend the choice or admit it was handed to you.</strong>
+Both are true at once: it was the right tool and it was the platform standard, and I will not pretend I picked it in a vacuum. Uber's SOADB standard for service-owned relational data is MySQL on InnoDB, so choosing anything else would have meant fighting the platform for no product gain. On the merits it still fits: the working set is tiny, up to about 95K raw GL rows per quarter and roughly 1.7K to 1.8K accounts and about 400 entities, so this is a tens-of-thousands-of-rows correctness problem, not a scale problem. I did not need Postgres recursive CTEs because I do not resolve the hierarchy in SQL at query time; the ETL flattens the recursive FSLI tree into a stable <code>level_id</code> in <code>level_mapping</code>, and the API joins facts to that id plus the fiscal period. InnoDB gives me the ACID multi-user edit semantics the close needs, and that is what actually matters here.</p>
+<p><strong>Q3. "SQLAlchemy 2.0" is a buzzword unless you can tell me what 2.0 actually changed for you. What did the 2.0 style buy you on this project?</strong>
+Concretely, every model is a <code>Mapped[...]</code> / <code>mapped_column(...)</code> declaration on a shared <code>DeclarativeBase</code>, which gives me typed attributes the type checker can see instead of the old implicit <code>Column</code> attributes. The read paths use the 2.0 <code>select()</code> construct with <code>aliased()</code> models rather than legacy <code>Query</code>, which is exactly what let me kill the column-aliasing bug by labeling every projected column. It also standardized session handling: repositories open a session with <code>get_read_write()</code>, commit on success, roll back on any exception, and close in a <code>finally</code>. So 2.0 is not decoration here; the typed models plus <code>select()</code> with explicit <code>.label()</code> are the mechanism behind the correctness fix I am proudest of.</p>
+<p><strong>Q4. In the Java variant of your resume this is Spring Boot and Hibernate. Which is the lie?</strong>
+Neither is a lie, and I would tell an interviewer the truth up front: the actual implementation is Python, FastAPI, and SQLAlchemy 2.0. When I present the Java framing I am mapping the same architecture onto the Spring vocabulary because the patterns are one to one: the FastAPI handler layer is the Spring <code>@RestController</code>, the service layer is <code>@Service</code>, the repository layer is the Spring Data JPA repository, and the SQLAlchemy declarative models map to JPA entities under Hibernate. The <code>x-auth-params-email</code> middleware is a servlet filter or <code>HandlerInterceptor</code>, and the Bazel <code>uber_py_test</code> gate is the equivalent of a Maven or Gradle Surefire gate. I position it as "transferable architecture, implemented in Python," and I never claim I wrote Hibernate code that I did not write.</p>
+<p><strong>Q5. Explain materiality and FSLI to me like I do not have a finance degree, then tell me exactly where they live in your system.</strong>
+An FSLI is a Financial Statement Line Item, one line on the balance sheet or income statement, for example Cash, Accounts Receivable, or Revenue. Materiality is the dollar threshold above which a misstatement would change the decision of someone reading the financials; auditors set it top-down, commonly as a percentage of a key figure like pre-tax income, total assets, or revenue. In my system materiality is not hard coded; it is a row in <code>frm_metrics_table</code> with <code>metric_key = "materiality"</code>, and on the Q4 2025 close it was $340M with a residual threshold of $170M. The FSLIs live as rows in <code>balance_sheet</code> and <code>income_statement</code>, about 26 balance-sheet and 29 income-statement line items on that close, each carrying its HFM amount and its computed significance conclusion.</p>
+<p><strong>Q6. Walk me through the rule engine. What is the actual boolean logic that flags an item as material, and where is it in code?</strong>
+There are two independent tests per line and then an OR. Quantitative Material is "YES if HFM Amount &gt; Materiality," a straight value against the $340M threshold. Qualitative Material is a manual yes or no answer captured against a scoping question. The overall verdict is Overall Significance = Significant if quantitative OR qualitative is YES, and that exact rule is in the code as <code>conclusion_overall_significance_from_balance_sheet_materials</code>. At the component level there is a second rule set from <code>Scoping Features.docx</code>: a component is a Financially Significant Component if Total Revenue % &gt; 5% OR absolute Total Assets % &gt; 5%, where the 5% benchmarks are configurable metrics (<code>assets_benchmark</code>, <code>revenue_benchmark</code>) recomputed via <code>PUT /update_benchmark_thresholds</code>. So it is threshold comparisons and a benchmark rule, deterministic and auditable, not a black box.</p>
+<p><strong>Q7. Residual risk sounds like a made-up screen. What does it actually compute?</strong>
+It answers "after everything we already put in scope, how much uncovered balance is left and does it still matter." Per leaf line the computation is Residual Balances = HFM Amount minus Total in Scope, and Residual Multiples = Residual Balances divided by Materiality, both from the <code>Scoping Features.docx</code> calculation matrix and stored on the fact rows as <code>residual_balances</code> and <code>residual_multiples</code>. The screen then flags lines where residual exceeds 50% of materiality or crosses a percentage-change threshold, which is what tells a manager an uncovered remainder is still audit-relevant. It is served by <code>GET /residual_risk?fsli_type=bs|is</code>. The point is that scoping is not just "flag the big lines," it also proves the leftover is small enough to ignore.</p>
+<p><strong>Q8. How do you model a recursive financial hierarchy in a database that you just told me has no recursive queries? That smells contradictory.</strong>
+The trick is I resolve recursion once, in the ETL, not on every read. <code>level_mapping</code> holds the flattened path columns <code>level1</code> through <code>level4</code> and a stable <code>uuid</code> that I use as <code>level_id</code>. Every fact row in <code>balance_sheet</code>, <code>income_statement</code>, and <code>component_entity</code> stores that <code>level_id</code> instead of the hierarchy text, so a rename of a parent node does not rewrite thousands of fact rows. At read time the service builds the L1 to L2 to L3 nested tree in application code and aggregates child sums up to parents, and joins always AND <code>level_id</code> with <code>fiscal_quarter</code>, <code>fiscal_year</code>, and the active flags. So the hierarchy is real and recursive in shape, but it is materialized into stable ids, which is both faster and safer than recursive SQL for a dataset this size.</p>
+<p><strong>Q9. Tell me the column-aliasing bug precisely. What broke, how did it surface, and how did you find it? No hand waving.</strong>
+The legacy read path built row dicts with <code>dict(zip(result.keys(), row))</code> off a raw SQL result. That is only safe when <code>result.keys()</code> is unique. The component aggregate joins the fact table (aliased <code>i</code>) to <code>level_mapping</code> (aliased <code>lm</code>), and both sides carry <code>uuid</code>, <code>level_id</code>, <code>fiscal_quarter</code>, and <code>fiscal_year</code>. When the projection returned two columns literally named <code>uuid</code>, <code>zip</code> paired positionally and <code>dict</code> kept the last write, so the row silently took the <code>level_mapping</code> uuid instead of the fact uuid. The symptom was rows that looked correct on screen but keyed off the wrong identifier, so PATCH-by-uuid and comment mapping pointed at the wrong line; it surfaced when an edit to one recon line appeared to affect a different line. The fix was to move to a SQLAlchemy <code>select()</code> on <code>aliased()</code> models and give every projected column an explicit <code>.label()</code>, for example <code>func.min(i.uuid).label("fsli_id")</code> versus <code>func.max(lm.uuid).label("level_mapping_uuid")</code>, so <code>result.keys()</code> can no longer collide.</p>
+<p><strong>Q10. The 10-Q validation is the part I trust least. Walk me through exactly how HFM numbers get checked against a public filing.</strong>
+HFM is Oracle Hyperion Financial Management, the consolidation system where entity trial balances are loaded, currency-translated, and run through intercompany eliminations and minority-interest and equity adjustments to produce the consolidated group numbers. The 10-Q is the quarterly report filed with the SEC, so its line items are the post-consolidation, publicly attested truth. The recon screen puts the two side by side per line: <code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>, and a nonzero difference means HFM and the filed statement do not tie and someone has to explain it before scoping proceeds. This is a standard finance tie-out: you reconcile the consolidated HFM output against the filed statements so that scoping is built on numbers that match what went to the SEC. In my system the v2 recon endpoints persist those leaf rows in <code>recon_balance_sheet</code> and <code>recon_income_statement</code> keyed by quarter and year so the tie-out is queryable and comment-mappable, which the old Sheets version could not do.</p>
+<p><strong>Q11. What are the 8 screens, and which ones carry real logic versus being glorified tables?</strong>
+The 8 are Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, and Summary. Reconciliation runs the HFM-versus-10-Q tie-out. Materiality stores and edits the $340M threshold and benchmarks. EMI Scoping handles Equity Method Investments, one grid column per investee with ownership percentage, asset balance, and preliminary income or loss. Group Scoping applies the quantitative-OR-qualitative significance rule at the consolidated level with status transitions Draft, Review, ReOpen, and Closed; Component Scoping drills into entities under each FSLI and applies the 5% Financially Significant Component rule; Threshold Setup manages legal-entity significance; Residual Risk computes the residual balance and multiple; and Summary rolls up coverage. So Group, Component, Residual, Threshold, and EMI carry real rule logic; Reconciliation carries the tie-out; Materiality and Summary are lighter but still write-through.</p>
+<p><strong>Q12. Multiple managers edit the same close at once. How do you stop them from clobbering each other? Be specific about what you actually built versus what was designed.</strong>
+I will separate the two cleanly. What I built in the scoping service: writes are keyed by <code>uuid</code> primary key with explicit column sets, each write runs in a single committed transaction with rollback on failure, and every mutation records <code>updated_by</code> from the auth header, so the system of record is consistent and attributable. What is design intent in the TDD, not something I hand-wrote in the scoping service: true real-time multi-user sync uses a WebSocket-lite or polling model on the frontend via TanStack Query, and Optimistic Concurrency Control with version numbers lives in the separate <code>frm-collaboration-service</code> and its own MySQL, which checks that no other manager modified a record since it was fetched. So if you ask "did you personally ship WebSocket conflict resolution," the honest answer is no; the scoping service relies on transactional per-uuid writes, and the real-time and version-check layers are the collaboration service and the client.</p>
+<p><strong>Q13. Your auth is one header. That is either elegant or a gaping hole. Convince me it is not the latter.</strong>
+The service reads <code>x-auth-params-email</code> via <code>_get_auth_email(request)</code>, returns 401 if it is missing, and stores that email as <code>created_by</code> and <code>updated_by</code>. It works because Uber's gateway authenticates the user at the edge and injects that header only after authentication, so the service trusts the edge and its job is identity capture for the audit trail, which is exactly what a SOX-adjacent tool needs. The honest limitation, and I say it before the interviewer does, is that this is authentication trust plus audit, not fine-grained authorization; the service does not itself decide who is allowed to edit which entity, that was enforced upstream. If I were hardening it standalone I would add role checks in a dependency and verify a signed token rather than a plain header, so the service does not blindly trust an internal-only assumption.</p>
+<p><strong>Q14. You claim "1,100+ tests." Sounds inflated. What is the real count, what do they actually cover, and could they all be trivial?</strong>
+The real count is higher than the resume: a grep of <code>def test_</code> across the roughly 65 test files returns about 1,288 test functions, and I wrote 1,100+ deliberately to under-claim. They are not trivial: <code>handler/tests/test_scoping_handler.py</code> alone has about 112 functions using FastAPI's <code>TestClient</code> with <code>AsyncMock</code> and <code>patch</code> to inject fake services, so handlers are tested for status codes, response shapes, the 401-on-missing-header path, and error-to-status mapping with zero database. The layered design is what makes this possible; I can unit test a handler against a mocked service and a service against a mocked repository. What I do not claim is a coverage percentage, because I never verified one for this project, so I quote the test count, not a coverage number.</p>
+<p><strong>Q15. Bazel for a Python service? Explain the test setup and why CI actually gates anything.</strong>
+Bazel is the Uber monorepo build system, so it is not a choice, it is the environment. Each package has a <code>tests/BUILD.bazel</code> declaring an <code>uber_py_test</code> target, <code>python_version = "3.11"</code>, listing its srcs and deps including the package library and third-party pytest and FastAPI. The app itself is a <code>py_binary</code> over a <code>py_library</code>. CI runs the five layer targets, database, schema, repository, service, and handler, and all must pass before merge, which is documented in <code>RECON_API_MIGRATION.md</code>. The gate is real because the review convention I enforced was that every PR must add or update tests in the matching <code>tests/</code> folder, which is the direct reason the suite grew past 1,100.</p>
+<p><strong>Q16. "Led 3 engineers" is the easiest thing on a resume to inflate. What did leading actually look like, with evidence?</strong>
+I was the tech lead of a 3-engineer EPAM pod inside Uber Finance, not a people manager, and I say that framing plainly. Leading meant three concrete things backed by the codebase. First, I sliced work along the handler, service, repository, model boundary so two engineers could build the same feature without merge collisions; the recon migration is the clean example, 18 files and 1,268 insertions split across five layers. Second, I set and enforced the conventions that appear uniformly across the code: thin handlers doing only HTTP, auth, and error mapping; services owning tree building; repositories owning every session; and the <code>x-auth-params-email</code> plus <code>updated_by</code> pattern on every write. Third, I ran the review gate that required tests with every PR and passing Bazel targets before merge, which came out of the backend team syncs documented in <code>Notes - FRM CT Backend Team Sync.docx</code>. The uniformity of those patterns across many files is the evidence it was an enforced standard, not one person's style.</p>
+<p><strong>Q17. Where is your caching and what are your latency numbers? Fintech grids get slow.</strong>
+I will be exact about what exists versus what was planned. In the shipped scoping service, the only server-side caching is that <code>MySQLManager</code> memoizes the SQLAlchemy engine per config with <code>pool_pre_ping=True</code>; there is no Redis and no response cache in my code, so I will not claim one. The frontend, per the TDD, uses TanStack Query for client-side caching and Base Web virtual scrolling to render thousands of FSLIs, and the TDD states a sub-second grid target. Those are design intent and NFR targets, not latency numbers I measured and can defend, so I present them as targets. If asked how I would add caching, the honest design is a per-period response cache, because a closed period's tree is immutable and expensive to rebuild, plus composite indexes on <code>(fiscal_quarter, fiscal_year, level_id)</code>; I mark that as what I would do, not what shipped.</p>
+<p><strong>Q18. This whole thing is tens of thousands of rows. Is this even a hard engineering problem, or a spreadsheet with extra steps?</strong>
+It is deliberately not a big-data problem, and pretending otherwise is how people get caught. The raw GL extracts are up to about 95K rows per quarter across roughly 1.7K to 1.8K accounts and about 400 entities, so throughput is trivial. The hardness is correctness, hierarchy, and auditability under a hard quarterly-close deadline for a PwC-audited process. Getting the recursive tree right, keeping parent equal to the sum of children, migrating recon from Sheets to MySQL with both paths running in parallel, and fixing an identity bug that silently mapped rows to the wrong line, those are the real risks, because a wrong number here flows into an SEC filing's audit evidence. So the value is not scale, it is that the output is trustworthy and traceable, which a spreadsheet cannot guarantee.</p>
+<p><strong>Q19. If HFM does not tie to the 10-Q, what does your system do? Does it block or just display?</strong>
+The v2 recon endpoint computes and returns the per-line <code>difference</code> between the HFM amount and the filed financial-statement amount, so a nonzero difference is surfaced explicitly rather than hidden. The system displays and persists the mismatch keyed by quarter and year, and because recon lines now have stable ids, a manager can attach a comment explaining or resolving each break, which the old Sheets version could not do. It does not hard-block scoping in code; the control is procedural, a manager must review and clear differences before finalizing, and the tool makes every break visible and commentable rather than silently proceeding. That is the honest boundary: the tool enforces visibility and auditability of breaks, humans enforce the sign-off.</p>
+<p><strong>Q20. What is the single thing most likely to silently produce a wrong scoping result, and how do you defend against it?</strong>
+Aggregation identity errors, because L1 and L2 amounts are sums of children, so a single duplicated or mis-mapped leaf double-counts and quietly inflates a parent. That is exactly the failure mode the column-aliasing bug could have caused, which is why the fix and the test plan both matter. My defenses are the parent-equals-sum-of-children invariant checked in the recon test plan, explicit <code>.label()</code> on every joined column so identity can never collide, and the active-flag discipline where joins require <code>is_active = 'true'</code> and <code>is_level_active = 'true'</code> so stale rows drop out. The residual honest risk is silent data issues from the ETL, like a malformed currency string parsing to 0.0 in <code>parse_currency_display_to_float</code> or an active-flag drift making a line vanish with no error, which I would harden with validation and reconciliation alerts rather than trusting the upstream load.</p>
+<hr>
+<h2 id="confidence-audit_1">Confidence audit</h2>
+<p>Each resume bullet with a SOLID or NEEDS CARE verdict and the exact safer wording to fall back to if pressed. SOLID means it traces directly to code or a KT artifact. NEEDS CARE means it is a target, a framing, or partly outside my direct authorship and must be qualified.</p>
+<p><strong>Bullet 1: Built Uber's FRM Risk Scoping platform (FastAPI, MySQL, React), 8 screens and 30+ REST APIs, automating quarterly risk scoping at $340M group materiality, targeting a 70% cut in manual reconciliation.</strong>
+- 8 screens: SOLID (TDD + <code>Scoping Features.docx</code>).
+- 30+ REST APIs: SOLID (32 <code>add_api_route</code> registrations, 31 functional plus health). Fallback: "30-plus endpoints; the exact code count is 31 functional plus a health route, I say 30+ to stay conservative."
+- $340M group materiality: SOLID but period-specific. Fallback: "that was the Q4 2025 close figure, stored in <code>frm_metrics_table</code>, not a fixed constant."
+- 70% cut: NEEDS CARE, it is a TDD target, not a measured result. Fallback: "targeting a 70% reduction, that is the design goal in TDD section 3.1, I do not claim it was measured post-launch; the estimated baseline was roughly a two-week manual close down to three or four days."
+- Overall verdict: SOLID with the 70% qualified as a target.</p>
+<p><strong>Bullet 2: Modeled recursive financial hierarchies in an 11-table SQLAlchemy 2.0 MySQL schema and built the rule-based engine that auto-flags material items across 55 line items and 14 entities.</strong>
+- 11-table SQLAlchemy 2.0 schema: SOLID (11 ORM models in <code>database/models/</code>). Fallback: "11 SQLAlchemy models in the scoping service; the full physical schema has 16-plus tables including the separate collaboration service, so I scope the claim to the scoping service's models."
+- Recursive hierarchies: SOLID (flattened into <code>level_mapping</code> <code>level1..level4</code> with stable <code>level_id</code>).
+- Rule engine: SOLID (<code>conclusion_overall_significance_from_balance_sheet_materials</code>, quantitative-OR-qualitative, plus the 5% component rule).
+- 55 line items: SOLID but explain the split. Fallback: "about 26 balance-sheet plus 29 income-statement FSLIs on the Q4 2025 close, which is where 55 comes from."
+- 14 entities: SOLID for the Q4 2025 sample. Fallback: "14 entities in that close's scoping set; the broader GL has around 400 entities, so I am referring to the scoped set."
+- Overall verdict: SOLID.</p>
+<p><strong>Bullet 3: Migrated Sheets-backed reconciliation to MySQL v2 APIs, validating HFM extracts against public 10-Q filings and fixing a latent column-aliasing bug.</strong>
+- Migration ownership: SOLID and personally owned (branch <code>tmitta1/recon-income-api-migration</code>, 18 files, +1,268 lines, <code>RECON_API_MIGRATION.md</code>).
+- HFM vs 10-Q validation: SOLID (v2 returns per-line <code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>). Fallback: "the tool surfaces and persists the tie-out difference per line; final sign-off on breaks is procedural, done by managers."
+- Column-aliasing bug: SOLID as a code pattern (<code>dict(zip(result.keys(), row))</code> collision, fixed with <code>aliased()</code> and <code>.label()</code>). Fallback if pressed on whether it was a live production incident: "the ambiguous-keys pattern was real in the legacy read path and I fixed it during the ORM move; I present it as a latent bug I removed, not necessarily a customer-facing outage."
+- Overall verdict: SOLID.</p>
+<p><strong>Bullet 4: Led 3 engineers, owning design reviews, API contracts, and CI quality gates for releases feeding PwC audit work papers.</strong>
+- Led 3 engineers: NEEDS CARE on title, SOLID on headcount (user-confirmed EPAM pod). Fallback: "tech lead of a 3-engineer EPAM pod, not a people manager."
+- Design reviews and API contracts: SOLID (enforced layered conventions, Pydantic schemas, backend team syncs).
+- CI quality gates: SOLID (Bazel <code>uber_py_test</code>, tests required per PR, roughly 1,288 test functions, resume says 1,100+).
+- Feeds PwC audit work papers: SOLID (TDD states scoping output feeds the external auditor).
+- Overall verdict: SOLID with the "led" framed as pod tech lead.</p>
+<p><strong>Cross-cutting NEEDS CARE items that span bullets:</strong>
+- Real-time collaboration, WebSockets, Optimistic Concurrency Control, and Slack notifications: NEEDS CARE. These are TDD design intent and largely live in the separate <code>frm-collaboration-service</code> and the frontend, not in my scoping-service code. Fallback: "the scoping service uses transactional per-uuid writes; real-time sync and version-check concurrency are the collaboration service and the client, which I did not author."
+- Caching, Redis, and p95 latency: NEEDS CARE. No Redis or response cache in the shipped scoping service; only the memoized engine with <code>pool_pre_ping</code>. Fallback: "server-side, only the SQLAlchemy engine is cached; TanStack Query caching and the sub-second grid target are frontend design intent, and any p95 figure is a target, not a measurement."
+- ETL from HFM: NEEDS CARE on ownership. Fallback: "the service consumes HFM-loaded MySQL tables; I owned the scoping APIs and the recon migration, the ETL pipeline was a shared responsibility."
+- 19M GL rows: DROPPED, do not claim. Real scale is up to about 95K rows per quarter. If asked about volume, "this is a tens-of-thousands-of-rows correctness system, not big data."
+- Coverage percentage: do not quote one for FRM; quote the 1,288 test-function count instead.</p>
+<hr>
 <h1 id="masters-india-and-geeksforgeeks-deep-dive-v2-resume-defense">Masters India and GeeksforGeeks Deep Dive (v2 resume defense)</h1>
 <p>Every number here traces to <code>GROUND_TRUTH.md</code>. Tags: HISTORICAL (from past resume claims, own experience), ESTIMATED (derived, say "estimated").</p>
 <hr>
@@ -1961,7 +2124,82 @@ Getting the recursive tree correct and consistent between v1 and v2 while the un
 <li>Why Django here but FastAPI at Masters India? 2021 CMS-style product with admin, auth, ORM batteries included; Masters India needed async IO for third-party government APIs.</li>
 <li>Hot-row problem on votes? Unique constraint for correctness, Redis counter for display, periodic reconciliation for truth.</li>
 <li>What would you change today? Move vote events onto a queue and make counters event-sourced; add idempotency on the reminder cron.</li>
+<li>SMTP 50% faster? Keep the SMTP connection open and reuse it across sends (1yr/2.5yr resume). TCP+TLS handshake is often 100-400ms per new connection; amortizing that across a batch cuts wall-clock send time roughly in half for reminder and promo traffic.</li>
 </ul>
+<h2 id="mock-interview-hardest-questions-with-answers_2">Mock interview: hardest questions with answers</h2>
+<h3 id="masters-india">Masters India</h3>
+<p><strong>Interviewer:</strong> You were on AWS. Why Kafka instead of RabbitMQ or SQS for e-invoicing?</p>
+<p><strong>Candidate:</strong> We needed three things together: per-client ordering, durable replay for compliance, and independent consumer groups. Partition key was client GSTIN (or GSTIN plus document type), so invoice submit, IRN callback, and webhook fan-out for one taxpayer stayed ordered on one partition. Kafka's log lets us reset offsets and reprocess a bad consumer window after a parser bug; SQS deletes on ack and does not give cheap multi-consumer replay, and SQS FIFO caps throughput per message group. RabbitMQ could have worked at our scale for task dispatch; I am honest about that. We still picked Kafka because (1) replay and audit reprocessing were first-class for GST disputes, (2) multiple groups could read the same topic (IRP workers, audit projector, metrics) without fanout-exchange plumbing, and (3) the team already had AsyncIOKafka in the FastAPI stack (2.5yr resume). Ops cost of Kafka was the trade-off; correctness and replay won.</p>
+<p><strong>Interviewer:</strong> Derive TPS and RPS from your resume numbers. Do they even hang together?</p>
+<p><strong>Candidate:</strong> 1M+ daily transactions is 1,000,000 / 86,400 ≈ 11.6 TPS average, call it ~12 TPS (ESTIMATED). Filing deadline spikes are the sizing problem; we sized for 100+ TPS peak, roughly 8 to 10x average (ESTIMATED). Sustained API throughput went from 700 to 4,000 requests per minute (HISTORICAL), which is 700/60 ≈ 12 RPS to 4,000/60 ≈ 67 RPS. Those are complementary: RPM is gateway and service capacity under load tests and peaks; daily transactions are IRP-registered documents. p95 latency moved from about 1.2s (resumes also say 1000-1200ms) to about 300ms (300-400ms band) for 1,500+ clients.</p>
+<p><strong>Interviewer:</strong> What actually drove p95 from 1.2s to 300ms? Caching alone cannot do that.</p>
+<p><strong>Candidate:</strong> Caching helped p50 and read-heavy endpoints; the p95 tail was async IO and removing PHP synchronous bottlenecks. IRP calls no longer blocked a PHP-FPM worker for the full round trip; FastAPI plus workers returned 202 or awaited without holding a process hostage. Connection pooling replaced per-request connect storms. We killed N+1 list queries and added composite indexes on (client_id, invoice_date). Redis cut redundant DB reads about 30% (HISTORICAL), which shortened the middle of the distribution. Net: async + pooling + query fixes moved the tail; cache moved the body.</p>
+<p><strong>Interviewer:</strong> Cache-aside specifics: keys, TTLs, invalidation, thundering herd. Make the 30% read cut plausible.</p>
+<p><strong>Candidate:</strong> Pattern was classic cache-aside: miss → read DB → SET with TTL. Hot keys: e-invoice IRP auth tokens (short TTL, under the IRP token lifetime, typically a few hours with safety margin), client config and feature flags, GSTIN master lookups, and tax-rate masters. Config and GSTIN keys invalidated on write (DELETE inside the update path) so admins never served stale credentials. Masters used TTL-only with jitter so expiries did not align. Thundering herd: TTL jitter plus a SETNX lock so one worker recomputes while others wait or serve slightly stale. 30% fewer redundant reads is plausible because the same client config and GSTIN validation ran on every invoice in a bulk import; caching those across 100K-row imports removes a huge duplicate read fan-out.</p>
+<p><strong>Interviewer:</strong> Quarter-based sharding: why shard GST data by financial quarter instead of plain partitioning?</p>
+<p><strong>Candidate:</strong> Indian GST reporting and returns are quarter-scoped and filing-deadline driven. Writes concentrate in the current quarter; older quarters are mostly read for reconciliation and audits. Separate quarter tables (or quarter schemas) let us prune or archive cold quarters without touching the hot write set, and keep indexes smaller where inserts land. Trade-off versus native RANGE partitioning: we owned routing in application code (AsyncMotorIO / SQL layer picked the quarter), which is more moving parts than DB-native partitions, but gave us explicit drop/archive of an entire quarter and clearer operational runbooks. Wrong-quarter writes are the footgun; we derived quarter from invoice date at the API boundary and rejected mismatches.</p>
+<p><strong>Interviewer:</strong> Sketch the IRP e-invoicing path and where Kafka sits.</p>
+<p><strong>Candidate:</strong> Client creates the invoice in their ERP, posts JSON to our API, we validate schema and GSTIN, then report to a government Invoice Registration Portal. IRP returns a signed e-invoice with IRN and QR; that is what makes a B2B GST invoice valid. Kafka carried async stages: accepted import chunks, IRP submit jobs, signed-response persistence to Mongo snapshots, and client webhooks. Idempotency keys plus unique client references stopped double registration, which is not recoverable with the government. Bulk path: file to object storage, chunk validate, bounded concurrency to IRP, progress on the dashboard. 100K+ transactions per import and 1M+ daily (HISTORICAL).</p>
+<p><strong>Interviewer:</strong> You mentored 2 engineers on a monolith-to-microservices migration. What did "led" mean day to day?</p>
+<p><strong>Candidate:</strong> Strangler pattern behind the gateway, not a big bang. I owned conventions: router / service / repository, Pydantic at the boundary, retry and idempotency helpers. Two juniors each extracted a service; I reviewed early PRs closely and paired on the first canary cutover (Nginx percentage route, watch errors and latency, ramp or roll back by config). Shared DB during traffic cutover avoided dual writes; table splits came after. Mentorship claim is user-confirmed: 2 engineers at Masters India.</p>
+<p><strong>Interviewer:</strong> ELK + New Relic cut triage 70%. Prove that is not vanity metrics.</p>
+<p><strong>Candidate:</strong> Before: SSH and grep across boxes with no request correlation. After: structured JSON logs with request IDs into Elasticsearch/Kibana, New Relic APM traces, alerts on error rate and latency. Triage from roughly 30 minutes to under 10 is ESTIMATED baseline math behind a HISTORICAL 70% cut. The real win is one request ID across API, Kafka consumer, and IRP worker. Coverage 35% to 82% with pytest as a CI gate on money paths; deployment success 98% (HISTORICAL).</p>
+<h3 id="geeksforgeeks">GeeksforGeeks</h3>
+<p><strong>Interviewer:</strong> Doubt support at 10K+ daily queries. Design unread counts without melting MySQL.</p>
+<p><strong>Candidate:</strong> Scale is user-standardized at 10K+ daily interactions (older resumes said 1000+ doubts/day; 4yr said 100K; we standardize 10K+). Average is well under 1 RPS with contest-day spikes maybe 10x (ESTIMATED). Unread counts lived behind a REST API: per-user counters in Redis for the badge path, durable rows in MySQL for threads and messages. Increment on new reply, decrement or clear on read receipts. Periodic reconcile from MySQL fixed drift. PHP to Django migration bought transactions, validation, and cleaner read/write separation for reliability.</p>
+<p><strong>Interviewer:</strong> Voting API idempotency and hot rows. How did MySQL, Redis, MongoDB, and Elasticsearch split?</p>
+<p><strong>Candidate:</strong> Vote table had a unique (user_id, content_id) constraint so double-submit is idempotent at the DB. Display counters sat in Redis and reconciled asynchronously to MySQL to avoid hot-row contention on popular doubts. MySQL remained source of truth for relational threads and permissions. Mongo held flexible payloads where the doubt body or attachments varied. Elasticsearch powered search across doubts and content. Pinning was per-context ordering columns, not a free-for-all sort. Premium lift 15 to 20% is HISTORICAL relative attribution by growth.</p>
+<p><strong>Interviewer:</strong> Cron pipelines for video processing claimed +70% ops efficiency. How do you keep crons reliable?</p>
+<p><strong>Candidate:</strong> Jobs covered video processing handoffs, automated reminders, payment processing, and cloud recording deletion. Reliability pattern: lock or DB advisory lease so two cron hosts do not double-run, idempotent job keys, structured success/fail logs, and dead-letter or retry for partial batches. The 70% efficiency figure is HISTORICAL time saved on those manual ops workflows. Course sales +30% is business attribution on the influencer dashboard; I own the engineering, attribute causality carefully.</p>
+<p><strong>Interviewer:</strong> You also cut email send time 50% with SMTP changes. Is that real?</p>
+<p><strong>Candidate:</strong> Yes, on the 1yr and 2.5yr resumes: keep the SMTP connection open and reuse it across sends instead of TCP+TLS handshaking every message. Handshake overhead is often 100-400ms per new connection; pooling amortizes it across reminder and promo batches. That matches what large mail senders document with SMTP connection reuse. It is a GFG optimization detail, not a Masters India claim.</p>
+<h2 id="confidence-audit_2">Confidence audit</h2>
+<table>
+<thead>
+<tr>
+<th>Resume bullet</th>
+<th>Rating</th>
+<th>Fallback wording if pressed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FastAPI migration, mentored 2, p95 1.2s to 300ms, 1,500+ clients</td>
+<td>SOLID</td>
+<td>Use 1000-1200ms to 300-400ms band if they cite older resumes; never say 2,500+ clients (dropped).</td>
+</tr>
+<tr>
+<td>100K+/import, 1M+ daily, async Kafka, quarter sharding, 700 to 4,000 req/min</td>
+<td>SOLID on throughput; NEEDS CARE on peak TPS</td>
+<td>Say ~12 TPS avg and 100+ TPS peak as ESTIMATED. Kafka justification: ordering, replay, consumer groups; admit RabbitMQ could work at that scale.</td>
+</tr>
+<tr>
+<td>Redis -30% redundant reads; audit logs -15% churn</td>
+<td>NEEDS CARE on churn</td>
+<td>Cache: defend with keys/TTL/invalidation. Churn: "attributed in renewals / HISTORICAL business metric; I owned the audit trail feature."</td>
+</tr>
+<tr>
+<td>ELK + New Relic, triage -70%; coverage 35 to 82; 98% deploy success</td>
+<td>SOLID on coverage/deploy; NEEDS CARE on triage baseline</td>
+<td>Triage baseline ~30 min to &lt;10 min is ESTIMATED behind HISTORICAL 70%.</td>
+</tr>
+<tr>
+<td>GFG PHP to Django, 10K+ daily queries</td>
+<td>SOLID (standardized)</td>
+<td>Say "order of ten thousand daily interactions"; do not say 100K.</td>
+</tr>
+<tr>
+<td>Voting/pinning, premium +15-20%</td>
+<td>NEEDS CARE</td>
+<td>"Relative lift attributed by growth; engineering owned APIs and reliability."</td>
+</tr>
+<tr>
+<td>Influencer dashboard + cron, course sales +30%, ops +70%</td>
+<td>NEEDS CARE</td>
+<td>Own engineering; attribute sales/efficiency as HISTORICAL business metrics.</td>
+</tr>
+</tbody>
+</table>
 <hr>
 <h1 id="behavioral-intros-and-why-switch-v2-java-tracks">Behavioral, Intros, and Why Switch (v2 + Java tracks)</h1>
 <p>Use with STAR stories in the main prep. Numbers and ownership match <code>GROUND_TRUTH.md</code>.</p>
@@ -2047,47 +2285,108 @@ Getting the recursive tree correct and consistent between v1 and v2 while the un
 </ul>
 <hr>
 <h1 id="uber-menu-ingestion-deep-dive-v2-resume-defense">Uber Menu Ingestion Deep Dive (v2 resume defense)</h1>
-<p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Streaming rates tagged ESTIMATED.</p>
+<p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Rates tagged ESTIMATED where derived.</p>
 <blockquote>
-<p><strong>RESUME CHANGE (Jul 2026):</strong> Kafka/Flink/Spark/Pinot were REMOVED from the resume bullets. The resume now describes exactly what the 4yr resume documents: a <strong>Python + Selenium scraping pipeline on GCP</strong>, the RAG + Gemini 2.5 Pro + SFT extraction path, anti bot work (IP rotation, proxy pools), and the ANZ compliance automation (99.9%, 20h/week saved). The streaming sections below are background only; do NOT claim you built Kafka/Flink/Spark at Uber. If asked about streaming experience, use Kafka messaging at Masters India (AsyncIOKafka).</p>
+<p><strong>RESUME ALIGNMENT (Jul 2026, mandatory):</strong> Kafka, Flink, Spark, and Pinot were deliberately REMOVED from the Menu Ingestion resume bullets. The 4yr resume is the source of truth: <strong>Python + Selenium + GCP scraping</strong>, RAG + Gemini 2.5 Pro + SFT extraction, IP rotation / dynamic proxy pools, and ANZ compliance automation (99.9%, 20h/week). Do NOT say you built or owned a Kafka/Flink/Spark/Pinot pipeline at Uber Menu. Kafka stays on the skills line because of Masters India (<code>AsyncIOKafka</code> messaging on the 2.5yr resume). If an interviewer asks about streaming at Uber, redirect: "Menu work was Selenium on GCP; my Kafka production experience is Masters India e-invoicing."</p>
 </blockquote>
 <hr>
 <h2 id="what-the-system-does">What the system does</h2>
-<p>Uber Eats onboards restaurant menus from third party platforms and unstructured PDFs/images into the catalog. Scrapers emit events, Flink normalizes and dedups in real time, Spark handles backfills, Pinot powers ops health dashboards, and a Python RAG plus Gemini path extracts structured items from messy menus. Success criteria: time to onboard, ingestion success rate, extraction fidelity, and ops time to detect failures.</p>
+<p>Uber Eats onboards restaurant menus from partner-authorized third-party platforms and unstructured PDFs/images into the catalog. A Python fleet on GCP drives Selenium scrapers through proxy pools, persists raw and normalized menu payloads, and routes messy PDFs/images through a RAG plus Gemini 2.5 Pro path with supervised fine tuning and schema validation. A separate Python automation track keeps ANZ driver and vehicle documents compliant. Success criteria: time to onboard, ingestion success rate, extraction fidelity, and ops hours saved on compliance.</p>
 <hr>
 <h2 id="bullet-defenses">Bullet defenses</h2>
-<h3 id="1-kafka-200-to-500-peak-eventssec-flink-spark-30k-menusmonth-24h-to-2h-600kyr">1. Kafka (200 to 500 peak events/sec), Flink, Spark, 30K menus/month, 24h to 2h, $600K+/yr</h3>
-<p><strong>Why Kafka.</strong> Scrapers are bursty and flaky. Direct HTTP into the catalog couples scrape timing to write path and has no replay. Kafka gives per vendor key ordering, durable buffering, and consumer isolation. Peak rate ESTIMATED from 30K menus/month (~1K/day) times item level events and retries during fleet runs.</p>
-<p><strong>Why Flink.</strong> Per event dedup keyed by vendor plus content hash, event time last write wins for out of order scrape retries, checkpoints for exactly once state. Spark Structured Streaming would add micro batch latency; at Uber, Flink is the stream engine for this class of work.</p>
-<p><strong>Why Spark.</strong> Parser upgrades and 90 day reprocess windows would starve the real time path if run through Flink. Spark batch windows are about 1 to 2M item rows (ESTIMATED).</p>
-<p><strong>Impact.</strong> Onboarding 24h to 2h. Eliminated a $2 per menu third party tool at 30K menus/month = $600K+/yr (HISTORICAL).</p>
+<h3 id="1-python-selenium-gcp-30k-menusmonth-24h-to-2h-600kyr">1. Python + Selenium + GCP, 30K menus/month, 24h to 2h, $600K+/yr</h3>
+<p><strong>Stack (HISTORICAL, 4yr resume).</strong> Python workers on GCP run Selenium against JS-heavy vendor sites, write structured catalogs, and retry with proxy rotation. Not a streaming platform claim.</p>
+<p><strong>Impact.</strong> Onboarding 24h to 2h (90%). Eliminated a $2 per menu third-party tool at 30K menus/month = $600K+/yr (HISTORICAL arithmetic: 30K x $2 x 12 = $720K list; resume says $600K+).</p>
 <h3 id="2-rag-gemini-98-fidelity-100-schema-consistency">2. RAG + Gemini, 98% fidelity, 100% schema consistency</h3>
-<p>Unstructured PDFs and images defeat rule based parsers. Pipeline: chunk menu, retrieve similar labeled menus, generate structured items with Gemini, validate against schema (prices, currency, locale), low confidence goes to human review. SFT enforces schema. 98% fidelity and 100% schema consistency are offline/eval numbers. Say that.</p>
-<h3 id="3-95-success-about-60-to-95-pinot-sub-second-dashboards">3. +95% success (about 60% to 95%+), Pinot sub-second dashboards</h3>
-<p>Anti bot: IP rotation, user agent spoofing, dynamic proxy pools, per source retry budgets. Baseline from about 60 to 65% to 95%+ (baseline ESTIMATED). Pinot ingests health events from Kafka for filter and groupBy on source, stage, error class in sub seconds, cutting detection from hours to minutes.</p>
+<p>Unstructured PDFs and images defeat rule-based parsers. Pipeline: chunk menu, retrieve similar labeled menus, generate structured items with Gemini, validate against schema (prices, currency, locale), low confidence goes to human review. SFT enforces schema. 98% fidelity and 100% schema consistency are offline/eval numbers. Say that.</p>
+<h3 id="3-95-success-about-60-to-95-anti-bot">3. +95% success (about 60% to 95%+), anti-bot</h3>
+<p>Anti bot: IP rotation, user agent spoofing, dynamic proxy pools, per source retry budgets. Baseline from about 60 to 65% to 95%+ (baseline ESTIMATED).</p>
+<h3 id="4-anz-compliance-999-20hweek-saved">4. ANZ compliance 99.9%, 20h/week saved</h3>
+<p>Python automation checks driver and vehicle document freshness against local authority rules for Uber earners in ANZ. 99.9% compliance and 20 hours/week of manual verification saved (HISTORICAL, 4yr resume).</p>
 <hr>
-<h2 id="end-to-end-flow">End to end flow</h2>
-<pre><code>Scrapers (Selenium + proxies)
+<h2 id="end-to-end-flow-resume-aligned">End to end flow (resume-aligned)</h2>
+<pre><code>Partner-authorized vendor sites / PDF+image menus
         |
         v
-   Kafka topics (per vendor key)
+Selenium scrapers on GCP (proxy pool, UA rotation, retries)
         |
-        +--&gt; Flink (normalize, dedup, route structured vs unstructured)
+        +--&gt; Structured catalog upsert (idempotent by vendor+menu version)
+        |
+        +--&gt; RAG + Gemini 2.5 Pro + SFT --&gt; Pydantic/JSON schema validate
         |         |
-        |         +--&gt; Catalog upsert (idempotent)
-        |         +--&gt; AI extraction queue (async, separate consumer group)
+        |         +--&gt; human review on low confidence
         |
-        +--&gt; Pinot (health events) --&gt; ops dashboards + alerts
-        |
-        +--&gt; Spark (backfills / parser upgrades)
+        +--&gt; ANZ document compliance automation (separate track)
 </code></pre>
 <hr>
-<h2 id="rapid-fire_2">Rapid fire</h2>
+<h2 id="rapid-fire-menu-stack-only">Rapid fire (Menu stack only)</h2>
 <ul>
-<li>Why not run LLM inside Flink? Latency and cost isolation. LLM calls are seconds and can fail; streaming job must stay hot.</li>
-<li>Event time or processing time? Event time with bounded lateness so latest menu version wins.</li>
-<li>What breaks at 10x? Proxy pool and per source rate limits first. Streaming scales by partitions.</li>
-<li>Pinot vs ClickHouse for health? Pinot is Uber paved road for high QPS real time OLAP from Kafka.</li>
-<li>Exactly once story? Idempotent producer plus Flink checkpoints plus idempotent catalog upserts.</li>
+<li>Why Selenium not requests+BS4? Vendor pages are JS-rendered SPAs; HTML fetch returns empty shells.</li>
+<li>Why not Playwright? Existing Uber/EPAM Selenium grid and fleet already ran; rewrites were risk without measured flake wins. Acknowledge Playwright is often better for greenfield.</li>
+<li>Ethics of scraping? Partner-authorized catalog sync under Uber partnership agreements, not open-web scraping.</li>
+<li>What breaks at 10x? Proxy pool capacity and per-source rate limits first.</li>
+<li>How is 98% fidelity measured? Offline labeled eval set (item name, price, category match), not live A/B.</li>
+<li>What is 100% schema consistency? Every accepted payload passes Pydantic/JSON Schema before catalog write.</li>
 </ul>
-<p>Full production pattern notes: see research brief in session (Kafka/Flink/Spark/Pinot section of tech production practices).</p></main></div></body></html>
+<hr>
+<h2 id="streaming-context-do-not-claim-on-resume">Streaming context (DO NOT CLAIM ON RESUME)</h2>
+<p>Background only if an interviewer asks how Uber typically wires scrapers into catalog systems. Do not present this as your Menu ownership. For Kafka experience, use Masters India.</p>
+<pre><code>Scrapers --&gt; (platform bus) --&gt; normalize/dedup --&gt; catalog
+                          \--&gt; health dashboards / backfills
+</code></pre>
+<p>If pressed on personal streaming work: "I did not own Kafka/Flink on Menu. My production Kafka is AsyncIOKafka at Masters India for e-invoice fan-out and replay."</p>
+<h2 id="mock-interview-hardest-questions-with-answers_3">Mock interview: hardest questions with answers</h2>
+<p><strong>Interviewer:</strong> You claim Selenium on GCP for 30K menus a month. Why not Playwright, and why not plain <code>requests</code> plus BeautifulSoup?</p>
+<p><strong>Candidate:</strong> Vendor menu pages were JS-heavy SPAs. A bare HTTP GET returned an empty shell, so BeautifulSoup alone could not see items or prices. Selenium was already the paved path in the Uber/EPAM automation fleet: shared grids, Chrome drivers, and ops runbooks. Playwright is often better for greenfield (auto-wait, lightweight contexts, native network interception), and I would pick it for a new scraper today. Rewriting a working fleet mid-onboarding would have burned weeks for unproven flake gains. So the choice was existing infra plus real browser rendering, not ideology.</p>
+<p><strong>Interviewer:</strong> Scraping at Uber sounds legally risky. How do you defend IP rotation and proxy pools without sounding like a bot farm?</p>
+<p><strong>Candidate:</strong> This was partner-authorized catalog sync under Uber Eats partnership agreements, not open-web scraping of random restaurants. Proxies and IP rotation existed because partner platforms still run anti-bot defenses that throttle datacenter IPs even for legitimate integrations. The pool rotated exit IPs, stuck sessions per vendor when needed, and backed off on 403/429 with per-source budgets. Ethics line I say out loud: we only hit sources we were contracted to ingest, logged every run, and respected rate limits we negotiated. Anti-bot work raised successful ingestions about 95% relative (HISTORICAL), from a rough 60 to 65% baseline (ESTIMATED) to 95%+.</p>
+<p><strong>Interviewer:</strong> Walk the $600K savings math. I will poke holes if the arithmetic is soft.</p>
+<p><strong>Candidate:</strong> Third-party menu tool cost was about $2 per menu. At 30K+ menus per month that is 30,000 x $2 = $60,000 per month, or $720,000 per year list. Resume says $600K+ annually, which is the conservative floor after volume mix and partial cutover months. Onboarding time fell from 24 hours to 2 hours (90%) because scrapers plus extraction replaced a slow manual or vendor-tool loop. Numbers are HISTORICAL from the 4yr resume; I do not invent a different unit cost.</p>
+<p><strong>Interviewer:</strong> Why Gemini 2.5 Pro with supervised fine tuning instead of prompt-only extraction?</p>
+<p><strong>Candidate:</strong> Prompt-only drifted on layout variants: multi-column PDFs, handwritten specials, mixed currencies, and image-only menus. RAG pulled similar labeled menus so the model saw the right shape before generating. SFT on schema-shaped examples forced field names, types, and required keys so the model stopped inventing columns. Prompt-only might hit high fidelity on easy PDFs and still fail schema validation; SFT is what pushed accepted outputs to 100% schema consistency on the eval set. Cost and latency of Gemini mattered less than catalog write failures from malformed JSON.</p>
+<p><strong>Interviewer:</strong> Define 98% fidelity and 100% schema consistency precisely. How were they measured?</p>
+<p><strong>Candidate:</strong> Schema consistency means every accepted payload passes Pydantic or JSON Schema validation before catalog write: required fields present, types correct, currency codes valid, price non-negative. That gate is binary, so we report 100% for accepted rows; rejects go to human review and do not count as consistent writes. Fidelity is offline eval against a labeled set: item name, price, and category matched within defined tolerances, about 98% on that set. I say offline eval out loud so nobody hears it as a live A/B or production SLA. Live traffic still has a review queue for low-confidence cases.</p>
+<p><strong>Interviewer:</strong> How does dynamic proxy pool rotation actually work at fleet scale?</p>
+<p><strong>Candidate:</strong> Workers pull a proxy lease from a pool service keyed by source and geography. Sticky leases keep one exit IP for a short vendor session so login or pagination cookies stay valid. On hard blocks we release the lease, mark the IP cool-down, and retry with a different residential or partner IP. User-agent rotation and human-like pacing sit on top. The failure mode at 10x is pool exhaustion and source rate limits, not CPU on the scraper box.</p>
+<p><strong>Interviewer:</strong> Why is Kafka missing from your Menu bullets when older prep talked about Flink and Pinot?</p>
+<p><strong>Candidate:</strong> Deliberate resume correction. The 4yr resume documents Python, Selenium, and GCP for Menu, not a streaming platform I owned. Kafka, Flink, Spark, and Pinot were removed so the bullets match what I can defend. If you want Kafka production experience, Masters India used AsyncIOKafka for e-invoice messaging with ordering and replay. I will not claim I built Uber's Menu bus.</p>
+<p><strong>Interviewer:</strong> ANZ compliance to 99.9% and 20 hours a week saved. What did the automation actually check?</p>
+<p><strong>Candidate:</strong> Python jobs validated driver and vehicle document status against local authority rules for Uber earners in Australia and New Zealand: expiry, document type presence, and mismatch flags. Failures opened ops queues; successes auto-cleared. 99.9% compliance is the measured clear rate after automation (HISTORICAL). Manual verification dropped about 20 hours per week because humans only touched exceptions. I do not claim I wrote the government systems; I owned the Uber-side automation and reporting.</p>
+<p><strong>Interviewer:</strong> RAG retrieval for menus: what is indexed, and what happens on a retrieval miss?</p>
+<p><strong>Candidate:</strong> We embedded chunked labeled menus and catalog exemplars (cuisine, layout family, locale) in a vector store. At inference we retrieved nearest neighbors, stuffed them into the Gemini context, then generated structured items. On miss or low similarity we fell back to a stricter prompt, raised the confidence threshold, and routed more rows to human review instead of writing garbage. Retrieval quality mattered as much as the generator for fidelity.</p>
+<p><strong>Interviewer:</strong> Idempotent catalog writes: how do you avoid double-ingesting the same vendor menu during retries?</p>
+<p><strong>Candidate:</strong> Upsert key is vendor id plus menu version or content hash of the normalized item set. Scrapers retry freely; the write path is idempotent. Partial failures mark a run checkpoint so the next attempt resumes without duplicating already-written items. That pattern is what made aggressive proxy retries safe at 30K menus per month.</p>
+<p><strong>Interviewer:</strong> If Playwright is better today, what would you change in a redesign without rewriting everything?</p>
+<p><strong>Candidate:</strong> Pilot Playwright on the flakiest JS sources first, keep Selenium on stable sources, share the same proxy lease API and idempotent upsert contract. Measure flake rate, wall-clock per menu, and proxy burn before a fleet cutover. Greenfield preference for Playwright does not erase that Selenium plus proxies already delivered the 24h to 2h and $600K+ outcomes.</p>
+<h2 id="confidence-audit_3">Confidence audit</h2>
+<table>
+<thead>
+<tr>
+<th>Resume bullet</th>
+<th>Rating</th>
+<th>Fallback wording if pressed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python + Selenium + GCP, 30K+ menus/month, 24h to 2h, $600K+/yr</td>
+<td>SOLID</td>
+<td>Keep $2/menu and 30K/month arithmetic; say "$600K+ after partial cutover" if they want exact finance sign-off.</td>
+</tr>
+<tr>
+<td>RAG + Gemini 2.5 Pro + SFT, 98% fidelity, 100% schema consistency</td>
+<td>NEEDS CARE</td>
+<td>Always say "offline eval / accepted payloads." Fallback: "about 98% item match on a labeled set; 100% of writes that pass schema validation."</td>
+</tr>
+<tr>
+<td>IP rotation + proxy pools, +95% successful ingestions</td>
+<td>NEEDS CARE</td>
+<td>+95% is relative lift (HISTORICAL); baseline ~60-65% is ESTIMATED. Fallback: "roughly doubled successful ingestions once proxies and rotation stabilized."</td>
+</tr>
+<tr>
+<td>ANZ compliance 99.9%, 20h/week saved</td>
+<td>SOLID</td>
+<td>Stick to automation of document checks and exception queues; do not invent regulator API details.</td>
+</tr>
+</tbody>
+</table></main></div></body></html>

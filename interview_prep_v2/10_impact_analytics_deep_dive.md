@@ -634,4 +634,96 @@ Note: the resume now carries only ONE ClickHouse point, the PG to ClickHouse mig
 
 ---
 
-*End of IA deep dive. All figures trace to `GROUND_TRUTH.md` and the cited Confluence/PRD sources. If a number is not on this page, do not invent it in the interview.*
+*End of IA deep dive core. Mock interview Q&A below. All figures still trace to `GROUND_TRUTH.md` and the cited Confluence/PRD sources. If a number is not on this page, do not invent it in the interview.*
+
+---
+
+## Mock interview: hardest questions with answers
+
+Format: skeptical engineering manager asks; candidate answers. Tags match `GROUND_TRUTH.md`. Do not soften TARGET into measured. No production cutover claim. Hardware for the insert/metric POC was not identical (PG 32 vCPU / 256 GB vs CH 16 vCPU / 64 GB).
+
+### Q1. You say you are "building" AssortSmart with AI agents. What ships today versus what is design?
+
+**A:** AssortSmart is the merchandise planning SaaS: retailers decide what to buy, in what depth, for which stores, a season ahead. Store clustering is the foundation every strategy plan binds to. The agentic rebuild inverts today's flow (four expert choices up front, one config run) into: planner states intent (hierarchy + reference period), the agent proposes scope and features, batch-explores configs, and a human approves before write-back. Phase 1 of the Cluster Recommendation Copilot is design-complete: four internal adversarial passes plus external review **PASS, approve to bring-up**. Bring-up load test is still pending. So I own present-tense design and build work, not a claim that every tenant already runs the shipped copilot in production.
+
+### Q2. Why LangGraph instead of a plain function-calling loop in FastAPI?
+
+**A:** Clustering is a multi-step stateful workflow: ground scope, confirm a search plan, fan out batch compute, stream scored candidates, pause for pins and what-ifs, then hit approval gates. LangGraph makes that graph explicit (nodes, edges, checkpointable state, human-in-the-loop interrupts) instead of burying control flow in ad-hoc `while` loops around chat messages. Plain function calling is fine for one-shot tool use; it gets brittle when you need durable session state, gate pauses that survive a reconnect, and the same graph driving both wizard Mode A and chat Mode B under the convergence rule (same config document, same gates, same write-back). Trade-off: more framework surface; payoff is auditable orchestration that matches product gates rather than prompt spaghetti.
+
+### Q3. Why MCP on top of LangGraph? Isn't that two frameworks for one agent?
+
+**A:** They solve different layers. LangGraph orchestrates *when* to call tools and *when* to stop for a human. MCP is the tool delivery contract: a fixed registry of **14 audited tools** lives behind an MCP server so the agent discovers schemas at runtime and cannot invent SQL. That decoupling matters for tenancy and ops: tool versioning, read-only enforcement, and reuse across clients without hardcoding tool implementations into the graph. Function-calling schemas alone would couple tool code to the orchestrator process. Trade-off: an extra process boundary and discovery handshake; payoff is a hard boundary between "LLM may select a tool" and "only these templated tools run."
+
+### Q4. Walk the Cluster Recommendation Copilot. Where do the 20 to 100 configs and "under 1 hour" come from?
+
+**A:** Today the pipeline evaluates **exactly 1** configuration the planner chose by hand, inside a search space of roughly 12 algorithms × k 3–10 × any attribute subset (MEASURED live audit). The FRD designs a pruned batch of **20–100** configs against an isolated scratch plan, with results streaming as they score; the headline product target is **≥20** configs evaluated per plan (TARGET). Hierarchy-to-finalized-plan **days → under 1 hour** is also TARGET, not a production measurement yet. Compute itself is already fast: median clustering job **~20s** over 370 live runs (MEASURED). The bottleneck is everything around the machine: blind expert choices, one shot, no reproducibility. UI still presents **3–5** distinct scenarios (HLR-SC-001 constraint); batch breadth under the hood is the 20–100 / ≥20 story. Say "targeting under 1 hour" and "batch evaluating 20 to 100 in design / ≥20 as the success bar."
+
+### Q5. Failures 8.5% to under 2%, reproducibility 0% to 100%. Prove the baselines and stop claiming the targets as done.
+
+**A:** On the kik tenant: **8.5% run failures (37 of 437)**; **>80%** of those are input mistakes at the data boundary (MEASURED). Winning algorithm, hyperparameters, and seed were never persisted ⇒ **reproducibility 0%** (MEASURED). Manual store swaps also die on re-run (0% survival). Targets are **failures under 2%** and **100% reproducible shipped clusterings** via content-addressed config documents (hash of recipe + data watermark) and append-only decision events (TARGET). Mechanism for the failure cut: deterministic grounding (catalog backtrack for hierarchy, fiscal calendar for seasons), sample-size guards, and machine-composed requests so the input-error class never reaches the engine. I will not say "we cut failures to under 2%" until post-load-test metrics exist. Correct phrase: "designed to cut from a measured 8.5% toward under 2%."
+
+### Q6. Why only three human approval gates? Overview docs mention grounding, search plan, approval, and write-back.
+
+**A:** The Phase-1 FRD product story is **three confirm gates** after intent: Gate 1 search plan (attributes + 20–100 config plan), Gate 2 approve the winning recommendation, Gate 3 governance sign-off where required; write-back then lands in today's tables. The grounding card is the confirm-what-was-understood step before compute (Mode B clubs cohort + attributes on that card). Module overview language lists grounding → search plan → approval → write-back as the consequential human stops. In the room I say: "Three product confirm gates plus write-back that never happens without an approved config; the agent physically cannot write." Resume "3 human approval gates" maps to the FRD's three confirms. If pressed on four stops, acknowledge grounding and write-back as the bookends without inventing a fourth numbered gate beyond the FRD.
+
+### Q7. Why read-only agent tools at the database profile, not just a prompt that says "don't write"?
+
+**A:** Prompts are not a control plane. The agent runs with a **read-only DB profile**; exploration writes only to isolated scratch plans; write-back is a separate path after human approval. That matches the FRD non-goal: no silent auto-finalize, and `is_optimal` (engine) never overwrites `is_final` (human). Schema reinforces it: **63 tables / 8 layers / 624 columns**, partition-swapped facts, append-only events, zero row-level mutations by doctrine (MEASURED design, DDL validated on ClickHouse 25.12). Failure mode if you skip this: an LLM tool that can `INSERT` into cluster master under prompt drift. Trade-off: new capability needs a new audited tool, not a prompt tweak.
+
+### Q8. Why dedicated ClickHouse for agent probes instead of shared BigQuery?
+
+**A:** Measured agent data-probe latency on shared BigQuery slots is **1–20s+** with uncontrolled variance (MEASURED live audit). Interactive copilot UX and platform NFRs need deterministic probes; design target is agent probe **p95 under 500ms** on a dedicated ClickHouse read plane (TARGET), with nightly precompute aiming to move **≥80%** of sessions cold→warm (TARGET). Feed is the org's existing BQ→CH ingestion lane (ItemSmart-proven pattern): BigQuery stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots. Cube reconciliation target within **0.1%** of BigQuery (TARGET). Explicit FRD non-goal: not moving transactional/plan data to ClickHouse for this module's Phase 1 read plane. Trade-off: a derived copy can rot; mitigate with owned ingestion, freshness sentinel, and data-as-of stamped on every recommendation.
+
+### Q9. Why Go (Gin) for plan lifecycle and bulk save instead of keeping everything in Python FastAPI?
+
+**A:** Service split is intentional. One Python microservice (FastAPI, LangGraph, MCP) owns agentic workflows that scale with LLM latency. The non-agentic core is throughput-shaped I/O: plan lifecycle CRUD (create/copy/finalize/soft-delete with server-side state transitions), reference data fan-out, and bulk save of versioned cell batches. Go gives goroutine-per-request concurrency without an async framework tax, a static binary, and boring code many engineers can touch. Gin: radix-tree router, middleware chain (`c.Next()`), `ShouldBindJSON` validation. Rejected fiber because fasthttp breaks standard `net/http` semantics; chi/Echo were fine but Gin won on team familiarity. JWT middleware carries tenant + role claims. Bulk save: bounded goroutine worker pool fans validated batches (design: version = epoch-ms, idempotency via batch id + content hash). This is **current build / stack direction**, not a MEASURED production RPS claim in ground truth. Do not invent peak RPS unless you label it estimated capacity from prep.
+
+### Q10. Goroutine worker pools for bulk save: what problem, what failure mode?
+
+**A:** A grid save arrives as a large batch of cell edits that must become one versioned insert wave, not N serial round-trips. A bounded worker pool (channel + N workers) caps concurrency into ClickHouse native batch inserts so you do not open unbounded goroutines under a save spike. Context timeouts cancel slow probes instead of piling up. Failure modes to own: goroutine leaks if cancel paths are missing; unbounded fan-out melting merge pressure on ClickHouse parts; retries without idempotency double-inserting versions. Mitigations: `context.WithTimeout` on every handler, pool size as a hard cap, batch id + content hash for safe replay, graceful `Shutdown` that drains in-flight work.
+
+### Q11. Why ClickHouse over staying on PostgreSQL for the Order Batching analytics POC?
+
+**A:** PostgreSQL is excellent OLTP; at multi-million join/agg scale it becomes the wrong engine for this read shape. We ported real workloads, not synthetic TPC. Order Batching metric at **23,749,263** join rows: ClickHouse **3.857s (~3.86s)** vs PostgreSQL **3m 40s** (UTC) / **7m 48s** (`Australia/Melbourne`) ⇒ about **~60×** (docs; range ~57–120× depending on TZ path) (MEASURED). At small scale (~57K join rows) PG was slightly faster (2.04s vs 2.80s), so we do not hide the parity case. Insert POC: CH **~5.91M rows/s** effective on **3.9B** rows (30 promos × 10M) vs PG **250K** raw / **~417K** detach-attach ⇒ **~14–24×**, and CH did it at **~30** connections vs PG **280** (MEASURED). Hardware caveat first: PG **32 vCPU / 256 GB** tuned; CH **16 vCPU / 64 GB** untuned. POC evidence, not production cutover.
+
+### Q12. Why not Apache Druid or Pinot (or BigQuery directly) for that OLAP path?
+
+**A:** For the Order Batching migration POC the team standardized on ClickHouse: SQL familiarity when porting PG stored procedures, MergeTree / ReplacingMergeTree fit for CDC mirrors, and existing CH investment / Cloud DDL already in flight. BigQuery remains upstream historical truth for agentic cubes, but shared-slot variance (**1–20s+**) fails the interactive agent-probe budget; dedicated CH is the gated read plane. Pinot I know from Uber-style high-QPS ops dashboards; Druid is strong at certain ingest/concurrency shapes. I would reopen Druid/Pinot only if we needed those specific characteristics and wanted a second OLAP stack. For this POC scope, a second engine was unjustified complexity. ReplacingMergeTree behavior matches our CDC apply pattern (versioned inserts, background dedupe; `FINAL` or `argMax` when latest-before-merge matters).
+
+### Q13. Defend the 24× bulk load claim. How was throughput measured?
+
+**A:** Effective rows/sec = `sum(expected_rows) / (max(ended) − min(started))` across successful parallel jobs, not the sum of per-job times. Best CH run: **30 promos × 10M = 3.9B** rows in **660.184s** ⇒ **5,907,446 ~5.9M rows/s** (MEASURED). Against PG raw **250K rows/s** that is **~23.6×** (resume rounds to **24×**). Against PG detach/attach **~417K** it is **~14×**. Resume "24× (250K to 5.9M)" is the raw-insert comparison; if challenged on detach/attach, cite both multiples honestly. Export path separately: PG **541s / 607 rows/s** vs CH **~38s / 26.4K rows/s** (~**43×** throughput) (MEASURED); note export row counts differed (~329K vs 1M), so defend rows/sec and wall methodology, not identical dump size.
+
+### Q14. ReplacingMergeTree and partition updates: what broke, and why still CH?
+
+**A:** ClickHouse mutations (`ALTER UPDATE`) are async and expensive for interactive planning; insert-only versioned rows fit both CDC and analytical rebuilds. On ~**29M**-row CARFG: full-table scope merge for **10K** updates sat **~35.6–38.8s**; partition-scoped merge on day partition `20260512` (~3.8M rows) finished in **7.309s** (MEASURED). Delta join on one partition **6.734s**; full-table delta **OOM at 14.40 GiB**. Exploded Order Batching query at **133.7M** rows in one partition crashed the server. Lesson: bound working sets; prefer partition swap / scoped merge over unbounded joins. `FINAL` forces merge-on-read for latest visibility but costs CPU/IO; prefer prune-first query shapes. Compression example (separate fact): **17.15M** rows, **432.81 MiB** compressed vs **3.31 GiB** raw (~**7.8×**) (MEASURED).
+
+### Q15. CQRS for Order Batching: why not dual-write PG and CH in one request?
+
+**A:** Dual-write splits the failure domain: PG commit succeeds, CH fails (or the reverse), retries create duplicates, and lock/finalise semantics live in PG stored procedures today. Design: PG remains system of record for writes (CARFG, locks, session save); CDC mirrors hot facts (CARFG, plan_master, dc_pack_reserve); low-churn dims refresh daily; router defaults reads to CH; after save/finalise Redis key `ob:ryw:{l0_name}` TTL **~30s** forces the writer onto PG for read-your-writes (MEASURED design). CDC platform SLOs I designed against / integrated with (tool authored by Ashvin Sharma, not me): commit-to-visible **p95 ≤ 10s**, snapshot **≥ 25K rows/s**. Apply CH first, then advance PG slot: at-least-once + ReplacingMergeTree dedupe. This is architecture + POC stage; do not claim full production cutover unless you personally cut over.
+
+### Q16. Elbow + silhouette for k, but business wants actionable assortments. How do you not optimize the wrong objective?
+
+**A:** HLR-AG-002: agent picks k via elbow + silhouette inside client min/max guardrails; HLR-SC-004 adds a default **max 10** child clusters per parent (configurable). If unconstrained optimum exceeds the cap, pick best k within the cap and record the constraint in the scenario summary. HLR-SC-001 caps UI scenarios at **3–5** with mandatory distinctness across lens, time horizon, store scope, and k; HLR-SC-003 always includes Baseline (Previous Plan) when one exists. Statistical fit is necessary but not sufficient; planner approval and pins inject business knowledge the dataset does not contain. That is why this is a gated decision agent, not AutoML that ships a loss minimum silently.
+
+### Q17. What would make you discard the POC numbers in a design review?
+
+**A:** Three things I already document. (1) Non-identical hardware: CH often weaker and still faster, so treat as directional, not lab-perfect A/B. (2) Small-scale parity: at ~57K join rows PG can win; the cliff is tens of millions of rows. (3) Methodology differences: export row counts differed; insert throughput is wall-clock effective across parallel jobs. Separately, ML fit median **~9s/config** is accepted physics (MEASURED); we parallelize and precompute around it rather than claiming we made the model faster. If load test on real kik extract fails cube sizing or p95 probe budgets, we revisit precompute and concurrency quotas before claiming agent latency targets.
+
+### Q18. Ownership challenge: did you build `pg2ch_cdc` and ship the copilot?
+
+**A:** No on both overclaims. `pg2ch_cdc` was authored by Ashvin Sharma; I designed Order Batching migration against its SLOs and mirror patterns and integrated with them. Copilot: Phase 1 design approved to bring-up; load test pending; L2 autopilot and L3 drift monitor are later phases. Correct ownership language: "designed / developing / designed against," not "I built the CDC platform end to end" or "shipped the copilot to all tenants."
+
+---
+
+## Confidence audit
+
+| Resume bullet | Verdict | If pushed, say exactly |
+|---|---|---|
+| 1. Building Agentic AssortSmart; agents draft clusters/plans for planner approval | **SOLID** | Product description of the agentic rebuild. Present-tense build; Phase 1 design PASS; not "already live for every tenant." |
+| 2. Cluster Recommendation Copilot (FastAPI, LangGraph, MCP); 20–100 configs vs 1; days → under 1 hour | **NEEDS CARE** | Baseline **1 config/plan** MEASURED. Batch **20–100** is FRD design range; success bar **≥20** is TARGET. **Under 1 hour** is TARGET. Stack (FastAPI/LangGraph/MCP, 14 tools) is MEASURED design. "Developing / targeting," never "we already cut turnaround to under an hour in prod." |
+| 3. Read-only tools + 3 human gates; 8.5% → under 2%; 100% reproducible | **NEEDS CARE** | **8.5% (37/437)** and **0% reproducibility** MEASURED. **Under 2%** and **100% reproducible** TARGET. Read-only profiles + gates MEASURED design. Phrase: "designed to cut failures from a measured 8.5% toward under 2%." Align "3 gates" with FRD confirm gates; mention grounding/write-back as bookends if asked. |
+| 4. Go (Gin) microservices; plan lifecycle + bulk save; goroutine pools; JWT | **NEEDS CARE** | Stack direction and concrete service shape (JWT middleware, worker pools, plan lifecycle APIs) are defensible as current design/build work. No MEASURED production RPS in `GROUND_TRUTH.md`. Do not invent throughput; describe architecture and trade-offs vs Python-only. |
+| 5. 60× analytics; 23.7M rows 3m40s → 3.86s; 24× load 250K → 5.9M rows/s | **SOLID** | All MEASURED POC numbers. Lead with hardware caveat (PG 32/256 vs CH 16/64). Cite UTC **3m40s** and TZ **7m48s**. **24×** vs raw 250K; also own **~14×** vs detach/attach 417K. POC, not production cutover. |
+
+---
