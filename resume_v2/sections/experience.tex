@@ -17,12 +17,11 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Architecting Agentic AssortSmart: AI-drafted store clusters and plans for planner approval under gated write-back.
-    \item Developing the \textbf{Cluster Recommendation Copilot (FastAPI, LangGraph, MCP)} that owns chat and calls a \textbf{Go doing layer} as tools, batch evaluating \textbf{20 to 100 configurations per plan vs 1 manual attempt}, targeting turnaround \textbf{under 1 hour} (from days).
-    \item Enforcing \textbf{read only agent tools and 3 approval gates}, targeting failures under 2\% from \textbf{8.5\%}, \textbf{100\% reproducible} clusters, and \textbf{p95 probes under 500ms} vs 1 to 20s on BigQuery.
-    \item Designing \textbf{Go (Gin) microservices} for manual REST and agent tool paths (Hindsight, Clustering, Strategy) with JWT auth, plus \textbf{Datadog}, \textbf{LangSmith}, and \textbf{PostHog} under a shared OTEL trace id.
-    \item Building Agentic AssortSmart on \textbf{ClickHouse/GCS} as the end-to-end planning store (insert-only versioned writes): POC cut \textbf{250M-row} pivot grids from \textbf{189s to 12.3s} ($\sim$15x) and a line-plan aggregate avoided materializing \textbf{12B} store-week rows (\textbf{100 to 450x}).
-    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
+    \item Raised planner throughput by targeting \textbf{20 to 100 cluster configs per plan vs 1} and turnaround \textbf{under 1 hour} (from days) by building the \textbf{Cluster Recommendation Copilot (FastAPI, LangGraph, MCP)} over a \textbf{Go doing layer}.
+    \item Drove failure rate toward \textbf{under 2\% from 8.5\%} with \textbf{100\% reproducible} clusters and \textbf{p95 probes under 500ms} vs 1 to 20s BigQuery via \textbf{read-only agent tools and 3 approval gates}.
+    \item Unified manual REST and agent tool paths for Hindsight, Clustering, and Strategy in \textbf{Go (Gin)} with JWT auth and \textbf{Datadog}, \textbf{LangSmith}, and \textbf{PostHog} on a shared OTEL trace id.
+    \item Cut \textbf{250M-row} pivot grids from \textbf{189s to 12.3s} ($\sim$15x) and avoided materializing \textbf{12B} store-week rows (\textbf{100 to 450x}) by adopting \textbf{ClickHouse/GCS} insert-only versioned planning storage.
+    \item \textbf{Tech} -- Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -39,21 +38,21 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Owned Uber's \textbf{FRM Risk Scoping platform (FastAPI, MySQL, React)} across \textbf{8 screens and 30+ REST APIs}, automating quarterly scoping at \textbf{\$340M group materiality} and targeting a \textbf{70\% cut} in manual reconciliation (\textbf{$\sim$2 weeks to $\sim$3--4 days}).
-    \item Designed the software architecture for an \textbf{11 table SQLAlchemy 2.0 MySQL schema} with layered handler, service, and repository boundaries, auto flagging material items across \textbf{55 line items and 14 entities}.
-    \item Owned Sheets to \textbf{MySQL v2 recon migration} (18 files), validating HFM extracts against public \textbf{10-Q} filings and fixing a latent column aliasing bug.
-    \item \textbf{Led 3 engineers}, owning design reviews, API contracts, and CI quality gates for releases feeding PwC audit work papers.
-    \item \textbf{Tech Used}: Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, Docker.
+    \item Designed an \textbf{11-table SQLAlchemy 2.0 MySQL} architecture with handler, service, and repository layers that auto-flags material items across \textbf{55 line items and 14 entities}.
+    \item Owned Sheets to \textbf{MySQL v2 recon migration} across \textbf{18 files}, validating HFM extracts against public \textbf{10-Q} filings and fixing a latent column-aliasing bug.
+    \item \textbf{Led 3 engineers} through design reviews, API contracts, and CI quality gates for releases feeding PwC audit work papers.
+    \item \textbf{Tech} -- Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, Docker.
 \end{zitemize}
 \vspace{0.3ex}
 
 \textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Engineered menu ingestion with \textbf{Selenium scrapers on GCP} publishing to \textbf{Kafka ($\sim$200--500 peak events/sec)}, with \textbf{Flink} normalize/dedupe and \textbf{Spark} backfills, for \textbf{30K+ menus/month}, cutting onboarding 24h to 2h and saving \textbf{\$600K+ annually}.
-    \item Shipped a \textbf{RAG and Gemini 2.5 Pro} pipeline with supervised fine tuning, hitting \textbf{98\% fidelity and 100\% schema consistency} (offline eval).
-    \item Defeated anti bot defenses with IP rotation and dynamic proxy pools, increasing successful ingestions \textbf{95\%}.
-    \item Automated \textbf{ANZ driver document compliance to 99.9\%}, saving 20 hours/week of manual verification.
-    \item \textbf{Tech Used}: Python, Selenium, Kafka, Flink, Spark, Gemini, RAG, SFT, GCP, Docker.
+    \item Cut menu onboarding from \textbf{24h to 2h} and saved \textbf{\$600K+ annually} on \textbf{30K+ menus/month} by shipping \textbf{Selenium} scrapers on GCP into \textbf{Kafka ($\sim$200--500 peak events/sec)} with \textbf{Flink} normalize/dedupe and \textbf{Spark} backfills.
+    \item Hit \textbf{98\% fidelity and 100\% schema consistency} (offline eval) with a \textbf{RAG and Gemini 2.5 Pro} pipeline plus supervised fine-tuning.
+    \item Raised successful ingestions \textbf{95\%} by defeating anti-bot defenses with IP rotation and dynamic proxy pools.
+    \item Automated \textbf{ANZ driver document compliance to 99.9\%}, saving \textbf{20 hours/week} of manual verification.
+    \item \textbf{Tech} -- Python, Selenium, Kafka, Flink, Spark, Gemini, RAG, SFT, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -69,11 +68,11 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Owned the PHP monolith to \textbf{FastAPI microservices} strangler migration and \textbf{mentored 2 engineers}, cutting p95 latency from \textbf{1.2s to 300ms} for 1,500+ clients.
-    \item Scaled bulk e-invoicing to \textbf{100K+ per import and 1M+ daily ($\sim$12 TPS avg, 100+ peak)} via async Kafka and PostgreSQL quarter sharding, lifting throughput from \textbf{700 to 4,000 requests/min ($\sim$67 RPS)}.
-    \item Built fault tolerant bulk paths with \textbf{idempotency keys, retries, and DLQ replay}, plus Redis caching that cut redundant database reads \textbf{30\%}.
-    \item Established \textbf{ELK and New Relic} on-call alerting, cutting incident triage 70\%, and raised coverage from \textbf{35\% to 82\%} with 98\% deployment success.
-    \item \textbf{Tech Used}: Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
+    \item Cut p95 latency from \textbf{1.2s to 300ms} for \textbf{1,500+ clients} by leading the PHP monolith to \textbf{FastAPI microservices} strangler migration and mentoring \textbf{2 engineers}.
+    \item Scaled bulk e-invoicing to \textbf{100K+ per import and 1M+ daily} (\textbf{$\sim$12 TPS} avg, \textbf{100+} peak) and lifted throughput from \textbf{700 to 4,000 requests/min} (\textbf{$\sim$67 RPS}) via async Kafka and PostgreSQL quarter sharding.
+    \item Cut redundant database reads \textbf{30\%} with Redis caching while hardening bulk paths with \textbf{idempotency keys, retries, and DLQ replay}.
+    \item Cut incident triage \textbf{70\%} with \textbf{ELK and New Relic} on-call alerting and raised coverage from \textbf{35\% to 82\%} at \textbf{98\%} deployment success.
+    \item \textbf{Tech} -- Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
 %====================
@@ -86,7 +85,7 @@
 \end{tabularx}
 \vspace{-3ex}
 \begin{zitemize}
-    \item Migrated the doubt support backend from PHP to \textbf{Django (Python)}, improving reliability for \textbf{10K+ daily queries and 10x contest spikes}.
-    \item Designed voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch, lifting \textbf{premium subscriptions 15 to 20\%}.
-    \item Launched an influencer analytics dashboard and cron pipelines for video processing, raising \textbf{course sales 30\%} and operational efficiency 70\%.
+    \item Improved reliability for \textbf{10K+ daily queries and 10x contest spikes} by migrating the doubt-support backend from PHP to \textbf{Django (Python)}.
+    \item Lifted \textbf{premium subscriptions 15 to 20\%} by designing voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch.
+    \item Raised \textbf{course sales 30\%} and operational efficiency \textbf{70\%} by launching an influencer analytics dashboard and cron pipelines for video processing.
 \end{zitemize}

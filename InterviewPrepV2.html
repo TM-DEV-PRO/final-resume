@@ -193,7 +193,7 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>Impact Analytics</td>
-<td>ClickHouse/GCS end-to-end planning store (insert-only versions); 250M pivot 189s→12.3s (~15×); avoided 12B flat (100–450×); FastAPI chat + Go doing layer; Datadog/LangSmith/PostHog</td>
+<td>XYZ bullets — Copilot 20–100/under 1h TARGET; 8.5%→under 2% / p95&lt;500ms; Go/Spring + Datadog/LangSmith/PostHog; CH/GCS 189s→12.3s + avoided 12B</td>
 </tr>
 <tr>
 <td>Uber FRM</td>
@@ -733,7 +733,7 @@ strong{color:#fff}
 Same as original prep: offline-eval fidelity; finance-owned savings model — know the arithmetic before quoting.</p>
 <h2 id="role-families">Role families</h2>
 <p>Same lead stories as <code>../interview_prep/08_role_targeting_and_rapid_fire.md</code> — IA ClickHouse/GCS planning store + FastAPI/Go agentic path, Uber Menu streaming, Masters quality/observability, FRM audit correctness.</p>
-<p><strong>IA 15-second lead (Jul 2026):</strong> “ClickHouse/GCS end-to-end planning store (insert-only versions). POC: 250M pivot <strong>189s→12.3s</strong> (~15× DISTINCT; typical ~2–3×); avoided <strong>12B</strong> store-week (<strong>100–450×</strong>). FastAPI chat + Go doing layer; Datadog / LangSmith / PostHog + OTEL. Legacy mtp-assort still hybrid / fix BQ first.”</p>
+<p><strong>IA 15-second lead (Jul 2026):</strong> “Raised planner throughput toward <strong>20–100 configs vs 1</strong> and under <strong>1 hour</strong> with Copilot over Go. ClickHouse/GCS insert-only store cut <strong>250M</strong> grids <strong>189s→12.3s</strong> (~15×) and avoided <strong>12B</strong> store-week (<strong>100–450×</strong>). Obs via Datadog / LangSmith / PostHog + OTEL.”</p>
 <hr>
 <h1 id="metrics-derivations-resume-v2-java-tracks">Metrics Derivations (resume v2 + Java tracks)</h1>
 <p>Every TPS / RPS / from-to / money number on the <strong>current</strong> v2 and Java PDFs. Interview line: say <strong>"estimated, derived from X"</strong> for ESTIMATED and <strong>"measured / documented"</strong> for MEASURED or HISTORICAL. Do not invent finer precision than this table.</p>
@@ -2227,29 +2227,29 @@ distribution_centres       ─daily─►  distribution_centres
 </thead>
 <tbody>
 <tr>
-<td>1. Architecting AssortSmart; gated write-back</td>
-<td><strong>SOLID</strong></td>
-<td>Product framing + FRD non-goal (no silent auto-finalize). Present-tense; Phase 1 design PASS; not "already live for every tenant."</td>
-</tr>
-<tr>
-<td>2. Cluster Recommendation Copilot (FastAPI, LangGraph, MCP); 20–100 configs vs 1; days → under 1 hour</td>
+<td>1. Raised throughput via 20–100 configs vs 1 and under 1h by Copilot (FastAPI/LangGraph/MCP) over Go doing layer</td>
 <td><strong>NEEDS CARE</strong></td>
-<td>Baseline <strong>1 config/plan</strong> MEASURED. Batch <strong>20–100</strong> is FRD design range; success bar <strong>≥20</strong> is TARGET. <strong>Under 1 hour</strong> is TARGET. Stack (FastAPI/LangGraph/MCP, 14 tools) is MEASURED design. "Developing / targeting," never "we already cut turnaround to under an hour in prod."</td>
+<td>Batch <strong>20–100</strong> and <strong>under 1 hour</strong> are TARGET. Stack MEASURED design. Say "targeting," not shipped prod SLA.</td>
 </tr>
 <tr>
-<td>3. Read-only tools + 3 human gates; 8.5% → under 2%; 100% reproducible</td>
+<td>2. Under 2% from 8.5%, 100% reproducible, p95 &lt;500ms vs 1–20s BQ via read-only tools + 3 gates</td>
 <td><strong>NEEDS CARE</strong></td>
-<td><strong>8.5% (37/437)</strong> and <strong>0% reproducibility</strong> MEASURED. <strong>Under 2%</strong> and <strong>100% reproducible</strong> TARGET. Read-only profiles + gates MEASURED design. Phrase: "designed to cut failures from a measured 8.5% toward under 2%." Align "3 gates" with FRD confirm gates; mention grounding/write-back as bookends if asked.</td>
+<td><strong>8.5% (37/437)</strong> and BQ <strong>1–20s+</strong> MEASURED. Under 2%, 100% reproducible, p95 &lt;500ms TARGET.</td>
 </tr>
 <tr>
-<td>4. Go (Gin) microservices; manual REST + agent tools (Hindsight/Clustering/Strategy); Datadog + LangSmith + PostHog + OTEL</td>
+<td>3. Go (Gin) Hindsight/Clustering/Strategy + Datadog/LangSmith/PostHog + OTEL</td>
 <td><strong>NEEDS CARE</strong></td>
-<td>HLD diagram design. Claim instrumentation model and dual Path A/M, not sole ownership of Datadog/PostHog/LangSmith products.</td>
+<td>HLD design. Claim instrumentation model, not SaaS ownership.</td>
 </tr>
 <tr>
-<td>5. ClickHouse/GCS end-to-end planning store; 250M 189s→12.3s (~15×); avoided 12B (100–450×)</td>
+<td>4. 250M 189s→12.3s (~15×); avoided 12B (100–450×) via ClickHouse/GCS insert-only store</td>
 <td><strong>SOLID with care</strong></td>
-<td>HLD + Jul 2026 stack = CH planning store (insert-only versions). Numbers MEASURED from POCs. Say <strong>~2–3× typical</strong> if they strip DISTINCT. Do <strong>not</strong> claim wholesale CH for legacy mtp-assort. If they wave the POC “hybrid” slide: that is decision history for OLTP mutations — agentic unlock was changing the write model.</td>
+<td>Numbers MEASURED. CH end-to-end = Jul 2026 stack + HLD. Typical aggs ~2–3× if DISTINCT stripped. No wholesale CH for legacy mtp-assort.</td>
+</tr>
+<tr>
+<td>Tech line</td>
+<td><strong>SOLID</strong></td>
+<td>Matches HLD stack.</td>
 </tr>
 </tbody>
 </table>

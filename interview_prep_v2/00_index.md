@@ -28,7 +28,7 @@ Original playbook still useful for agentic Assort depth: `../interview_prep/agen
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | ClickHouse/GCS end-to-end planning store (insert-only versions); 250M pivot 189s→12.3s (~15×); avoided 12B flat (100–450×); FastAPI chat + Go doing layer; Datadog/LangSmith/PostHog |
+| Impact Analytics | XYZ bullets — Copilot 20–100/under 1h TARGET; 8.5%→under 2% / p95&lt;500ms; Go/Spring + Datadog/LangSmith/PostHog; CH/GCS 189s→12.3s + avoided 12B |
 | Uber FRM | Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks to ~3–4 days) |
 | Uber Menu | Selenium→Kafka→Flink→Spark; 30K menus/mo; 24h to 2h; $600K+/yr; +95% ingest; RAG/Gemini 98% fidelity |
 | Masters India | Owned strangler + mentored 2; Kafka/sharding TPS/RPS; idempotency/DLQ fault tolerance; on-call alerting; 1M+ txn/day |

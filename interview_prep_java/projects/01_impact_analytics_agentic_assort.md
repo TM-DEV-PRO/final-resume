@@ -9,7 +9,7 @@
 
 ## 1. Elevator pitch (30 seconds)
 
-"I work on AssortSmart's agentic rebuild. FastAPI owns chat (LangGraph/MCP); Spring Boot is the doing layer for Hindsight, Clustering, and Strategy — manual REST and agent tools hit the same APIs against **ClickHouse/GCS**. We instrumented Datadog, LangSmith, and PostHog under a shared OTEL trace id. Planning data is **ClickHouse end-to-end** via insert-only versioned writes — unlocked after POCs showed classic OLTP mutations are the wrong CH model. Evidence: on a **250M-row** pivot harness CH cut heavy grids from **189s to 12.3s** (~**15×** on DISTINCT grids; typical aggregates ~**2–3×**), and line-planning avoided materializing **~12B** store-week rows via a **~25M** aggregate (**100–450×**). Copilot targets under **1 hour** and under **2%** failures from measured **8.5%**; Phase 1 design PASS, load test pending."
+"I raised AssortSmart planner throughput by targeting 20 to 100 cluster configs per plan versus 1 and under-one-hour turnaround with a Python Copilot over a Spring Boot doing layer. We drove failures toward under 2% from a measured 8.5% with read-only tools and approval gates, and instrumented Datadog, LangSmith, and PostHog on a shared OTEL trace. On storage we cut 250M-row pivot grids from 189s to 12.3s and avoided materializing 12B store-week rows by adopting ClickHouse/GCS insert-only versioned planning storage. Phase 1 design PASS, load test pending."
 
 ## 2. Service split (say it exactly)
 

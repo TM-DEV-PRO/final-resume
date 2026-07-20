@@ -220,7 +220,7 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>Impact Analytics</td>
-<td>ClickHouse/GCS planning store + pivot/line-plan POC numbers; FastAPI agent + Spring doing layer; Datadog/LangSmith/PostHog</td>
+<td>XYZ bullets — Copilot TARGETS; CH/GCS 189s→12.3s + avoided 12B; Spring doing layer + Datadog/LangSmith/PostHog</td>
 </tr>
 <tr>
 <td>Uber FRM</td>
@@ -300,7 +300,7 @@ mv ../output/resume.pdf ../output/Tarun_Mittal_SSE_Java_5yr.pdf
 </blockquote>
 <hr>
 <h2 id="1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</h2>
-<p>"I work on AssortSmart's agentic rebuild. FastAPI owns chat (LangGraph/MCP); Spring Boot is the doing layer for Hindsight, Clustering, and Strategy — manual REST and agent tools hit the same APIs against <strong>ClickHouse/GCS</strong>. We instrumented Datadog, LangSmith, and PostHog under a shared OTEL trace id. Planning data is <strong>ClickHouse end-to-end</strong> via insert-only versioned writes — unlocked after POCs showed classic OLTP mutations are the wrong CH model. Evidence: on a <strong>250M-row</strong> pivot harness CH cut heavy grids from <strong>189s to 12.3s</strong> (~<strong>15×</strong> on DISTINCT grids; typical aggregates ~<strong>2–3×</strong>), and line-planning avoided materializing <strong>~12B</strong> store-week rows via a <strong>~25M</strong> aggregate (<strong>100–450×</strong>). Copilot targets under <strong>1 hour</strong> and under <strong>2%</strong> failures from measured <strong>8.5%</strong>; Phase 1 design PASS, load test pending."</p>
+<p>"I raised AssortSmart planner throughput by targeting 20 to 100 cluster configs per plan versus 1 and under-one-hour turnaround with a Python Copilot over a Spring Boot doing layer. We drove failures toward under 2% from a measured 8.5% with read-only tools and approval gates, and instrumented Datadog, LangSmith, and PostHog on a shared OTEL trace. On storage we cut 250M-row pivot grids from 189s to 12.3s and avoided materializing 12B store-week rows by adopting ClickHouse/GCS insert-only versioned planning storage. Phase 1 design PASS, load test pending."</p>
 <h2 id="2-service-split-say-it-exactly">2. Service split (say it exactly)</h2>
 <p>"Path A: FE → FastAPI <code>POST /chat</code> → LLM → tools → <strong>Spring Boot doing layer</strong> → CH/GCS. Path M: FE → Spring REST → <strong>same</strong> doing modules — no LLM. FastAPI owns chat because agent loops are LLM-latency-shaped. Spring owns doing because Path M is throughput I/O. Agent never bypasses Spring for mutations; probe DB profiles stay read-only."</p>
 <h2 id="3-spring-boot-doing-layer-defend-the-resume-bullet">3. Spring Boot doing layer — defend the resume bullet</h2>
@@ -1855,29 +1855,29 @@ distribution_centres       ─daily─►  distribution_centres
 </thead>
 <tbody>
 <tr>
-<td>1. Architecting AssortSmart; gated write-back</td>
-<td><strong>SOLID</strong></td>
-<td>Product framing + FRD non-goal (no silent auto-finalize). Present-tense; Phase 1 design PASS; not "already live for every tenant."</td>
-</tr>
-<tr>
-<td>2. Cluster Recommendation Copilot (FastAPI, LangGraph, MCP); 20–100 configs vs 1; days → under 1 hour</td>
+<td>1. Raised throughput via 20–100 configs vs 1 and under 1h by Copilot (FastAPI/LangGraph/MCP) over Go doing layer</td>
 <td><strong>NEEDS CARE</strong></td>
-<td>Baseline <strong>1 config/plan</strong> MEASURED. Batch <strong>20–100</strong> is FRD design range; success bar <strong>≥20</strong> is TARGET. <strong>Under 1 hour</strong> is TARGET. Stack (FastAPI/LangGraph/MCP, 14 tools) is MEASURED design. "Developing / targeting," never "we already cut turnaround to under an hour in prod."</td>
+<td>Batch <strong>20–100</strong> and <strong>under 1 hour</strong> are TARGET. Stack MEASURED design. Say "targeting," not shipped prod SLA.</td>
 </tr>
 <tr>
-<td>3. Read-only tools + 3 human gates; 8.5% → under 2%; 100% reproducible</td>
+<td>2. Under 2% from 8.5%, 100% reproducible, p95 &lt;500ms vs 1–20s BQ via read-only tools + 3 gates</td>
 <td><strong>NEEDS CARE</strong></td>
-<td><strong>8.5% (37/437)</strong> and <strong>0% reproducibility</strong> MEASURED. <strong>Under 2%</strong> and <strong>100% reproducible</strong> TARGET. Read-only profiles + gates MEASURED design. Phrase: "designed to cut failures from a measured 8.5% toward under 2%." Align "3 gates" with FRD confirm gates; mention grounding/write-back as bookends if asked.</td>
+<td><strong>8.5% (37/437)</strong> and BQ <strong>1–20s+</strong> MEASURED. Under 2%, 100% reproducible, p95 &lt;500ms TARGET.</td>
 </tr>
 <tr>
-<td>4. Go (Gin) microservices; manual REST + agent tools (Hindsight/Clustering/Strategy); Datadog + LangSmith + PostHog + OTEL</td>
+<td>3. Go (Gin) Hindsight/Clustering/Strategy + Datadog/LangSmith/PostHog + OTEL</td>
 <td><strong>NEEDS CARE</strong></td>
-<td>HLD diagram design. Claim instrumentation model and dual Path A/M, not sole ownership of Datadog/PostHog/LangSmith products.</td>
+<td>HLD design. Claim instrumentation model, not SaaS ownership.</td>
 </tr>
 <tr>
-<td>5. ClickHouse/GCS end-to-end planning store; 250M 189s→12.3s (~15×); avoided 12B (100–450×)</td>
+<td>4. 250M 189s→12.3s (~15×); avoided 12B (100–450×) via ClickHouse/GCS insert-only store</td>
 <td><strong>SOLID with care</strong></td>
-<td>HLD + Jul 2026 stack = CH planning store (insert-only versions). Numbers MEASURED from POCs. Say <strong>~2–3× typical</strong> if they strip DISTINCT. Do <strong>not</strong> claim wholesale CH for legacy mtp-assort. If they wave the POC “hybrid” slide: that is decision history for OLTP mutations — agentic unlock was changing the write model.</td>
+<td>Numbers MEASURED. CH end-to-end = Jul 2026 stack + HLD. Typical aggs ~2–3× if DISTINCT stripped. No wholesale CH for legacy mtp-assort.</td>
+</tr>
+<tr>
+<td>Tech line</td>
+<td><strong>SOLID</strong></td>
+<td>Matches HLD stack.</td>
 </tr>
 </tbody>
 </table>
