@@ -7,7 +7,8 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 ## Study order (do this)
 
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) — every shippable number and honesty tag
-2. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — Agentic AssortSmart, PG to CH POC, read path design, copilot, mock interview Q&A
+2. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — Agentic AssortSmart, hybrid PG/CH POCs, HLD, mock interview Q&A
+   - Source extracts: [`19_ia_ch_pg_poc_source.md`](19_ia_ch_pg_poc_source.md), [`20_ia_lineplanning_benchmark_source.md`](20_ia_lineplanning_benchmark_source.md), [`21_ia_pivot_benchmark_source.md`](21_ia_pivot_benchmark_source.md)
 0. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) — big tech ATS/recruiter scorecards per company (which resume to send where)
 3. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) — real schema, routes, recon migration
 4. [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) — Kafka/Flink/Spark/Pinot
@@ -27,7 +28,7 @@ Original playbook still useful for agentic Assort depth: `../interview_prep/agen
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics (14 May 2026–) | CH Order Batching 3.86s vs PG 3m40s+ (60x); 5.9M rows/s insert; CQRS + CDC + Redis RYW; update 39s to 7s; copilot targets days to under 1h |
+| Impact Analytics | ClickHouse/GCS end-to-end planning store (insert-only versions); 250M pivot 189s→12.3s (~15×); avoided 12B flat (100–450×); FastAPI chat + Go doing layer; Datadog/LangSmith/PostHog |
 | Uber FRM | Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks to ~3–4 days) |
 | Uber Menu | Selenium→Kafka→Flink→Spark; 30K menus/mo; 24h to 2h; $600K+/yr; +95% ingest; RAG/Gemini 98% fidelity |
 | Masters India | Owned strangler + mentored 2; Kafka/sharding TPS/RPS; idempotency/DLQ fault tolerance; on-call alerting; 1M+ txn/day |

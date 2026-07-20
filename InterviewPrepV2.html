@@ -57,7 +57,7 @@ strong{color:#fff}
 <a class="lvl2" href="#role-families">Role families</a>
 <a class="lvl1" href="#metrics-derivations-resume-v2-java-tracks">Metrics Derivations (resume v2 + Java tracks)</a>
 <a class="lvl2" href="#decision-log-spark-flink-pinot-terraform-multi-region-k8s-ops">Decision log: Spark, Flink, Pinot, Terraform, multi-region, K8s ops</a>
-<a class="lvl2" href="#1-impact-analytics-assortsmart-pgch-poc">1. Impact Analytics — AssortSmart + PG→CH POC</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart-clickhouse-planning-store">1. Impact Analytics — AssortSmart + ClickHouse planning store</a>
 <a class="lvl2" href="#2-uber-frm-scoping">2. Uber FRM Scoping</a>
 <a class="lvl2" href="#3-uber-menu-ingestion-selenium-kafka-flink-spark">3. Uber Menu Ingestion (Selenium → Kafka → Flink → Spark)</a>
 <a class="lvl2" href="#4-masters-india-gst">4. Masters India GST</a>
@@ -69,7 +69,7 @@ strong{color:#fff}
 <a class="lvl2" href="#2-clickhouse-planning-agentic-schema-sketch">2. ClickHouse planning / agentic schema sketch</a>
 <a class="lvl2" href="#3-clustering-copilot-user-flow-what-i-walk-through">3. Clustering copilot user flow (what I walk through)</a>
 <a class="lvl2" href="#4-resume-bullet-1-cluster-recommendation-copilot">4. Resume bullet 1: Cluster Recommendation Copilot</a>
-<a class="lvl2" href="#5-resume-bullet-2-postgresql-vs-clickhouse-benchmarks">5. Resume bullet 2: PostgreSQL vs ClickHouse benchmarks</a>
+<a class="lvl2" href="#5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</a>
 <a class="lvl2" href="#6-resume-bullet-3-cqrs-migration-order-batching">6. Resume bullet 3: CQRS migration (Order Batching)</a>
 <a class="lvl2" href="#7-resume-bullet-4-update-strategies-replacingmergetree-compression">7. Resume bullet 4: Update strategies, ReplacingMergeTree, compression</a>
 <a class="lvl2" href="#8-cross-cutting-talking-track-2-minute-narrative">8. Cross-cutting talking track (2-minute narrative)</a>
@@ -78,7 +78,9 @@ strong{color:#fff}
 <a class="lvl2" href="#11-phrases-to-use-avoid">11. Phrases to use / avoid</a>
 <a class="lvl2" href="#12-suggested-45-minute-drill-order">12. Suggested 45-minute drill order</a>
 <a class="lvl2" href="#mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#new-poc-hld-mock-interview-jul-2026">New POC + HLD mock interview (Jul 2026)</a>
 <a class="lvl2" href="#confidence-audit">Confidence audit</a>
+<a class="lvl2" href="#order-batching-60-prep-depth-replaced-on-resume-headline">Order Batching 60× (prep depth — replaced on resume headline)</a>
 <a class="lvl1" href="#11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</a>
 <a class="lvl2" href="#0-the-four-bullets-i-am-defending-jul-2026-hardened-wording">0. The four bullets I am defending (Jul 2026 hardened wording)</a>
 <a class="lvl2" href="#1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</a>
@@ -165,7 +167,8 @@ strong{color:#fff}
 <h2 id="study-order-do-this">Study order (do this)</h2>
 <ol>
 <li><a href="GROUND_TRUTH.md"><code>GROUND_TRUTH.md</code></a> — every shippable number and honesty tag</li>
-<li><a href="10_impact_analytics_deep_dive.md"><code>10_impact_analytics_deep_dive.md</code></a> — Agentic AssortSmart, PG to CH POC, read path design, copilot, mock interview Q&amp;A</li>
+<li><a href="10_impact_analytics_deep_dive.md"><code>10_impact_analytics_deep_dive.md</code></a> — Agentic AssortSmart, hybrid PG/CH POCs, HLD, mock interview Q&amp;A
+   - Source extracts: <a href="19_ia_ch_pg_poc_source.md"><code>19_ia_ch_pg_poc_source.md</code></a>, <a href="20_ia_lineplanning_benchmark_source.md"><code>20_ia_lineplanning_benchmark_source.md</code></a>, <a href="21_ia_pivot_benchmark_source.md"><code>21_ia_pivot_benchmark_source.md</code></a></li>
 <li><a href="16_ats_recruiter_report.md"><code>16_ats_recruiter_report.md</code></a> — big tech ATS/recruiter scorecards per company (which resume to send where)</li>
 <li><a href="11_uber_frm_deep_dive.md"><code>11_uber_frm_deep_dive.md</code></a> — real schema, routes, recon migration</li>
 <li><a href="14_uber_menu_deep_dive.md"><code>14_uber_menu_deep_dive.md</code></a> — Kafka/Flink/Spark/Pinot</li>
@@ -189,8 +192,8 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>Impact Analytics (14 May 2026–)</td>
-<td>CH Order Batching 3.86s vs PG 3m40s+ (60x); 5.9M rows/s insert; CQRS + CDC + Redis RYW; update 39s to 7s; copilot targets days to under 1h</td>
+<td>Impact Analytics</td>
+<td>ClickHouse/GCS end-to-end planning store (insert-only versions); 250M pivot 189s→12.3s (~15×); avoided 12B flat (100–450×); FastAPI chat + Go doing layer; Datadog/LangSmith/PostHog</td>
 </tr>
 <tr>
 <td>Uber FRM</td>
@@ -365,88 +368,73 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>PG vs CH POC on retail workloads (promo loaders, aggregation MVs, Order Batching metric SP)</td>
+<td><strong>Agentic AssortSmart store (resume headline):</strong> ClickHouse/GCS end-to-end planning store via <strong>insert-only versioned writes</strong> (<code>ReplacingMergeTree</code> + <code>argMax</code> / version watermark); HLD doing layer → ClickHouse/GCS only. Thin Postgres metadata (auth/tenant/workflow) may remain — not the planning SoR on this resume</td>
+<td>MEASURED design (Jul 2026 stack direction + HLD)</td>
+<td><code>10_stack_direction_jul2026.md</code>, <code>final_agenticassort.png</code></td>
+</tr>
+<tr>
+<td><strong>POC evidence (numbers on resume):</strong> CH cut <strong>250M-row</strong> pivot grids from <strong>189.4s to 12.3s</strong> (~15.5× COUNT DISTINCT; typical aggs ~<strong>2–3×</strong>); line-plan flat→aggregate avoided <strong>~12B</strong> store-week (<strong>100–450×</strong> / ~140–457×). Hardware: PG 48 GB host advantaged; CH 10 CPU / 3.3 GB Docker</td>
 <td>MEASURED</td>
-<td>POC dump 2612625411, 2707030040</td>
+<td>Pivot + LinePlanning + consolidated POC</td>
+</tr>
+<tr>
+<td><strong>POC hybrid verdict (prep / decision history):</strong> PG wins interactive keyed UPDATE (~0.35–0.94 ms); CH wins large reads; <strong>no wholesale CH</strong> for legacy mtp-assort (fix BQ first). Unlocked agentic CH writes by changing write model to insert-only versions — not by claiming CH beats PG at OLTP mutations</td>
+<td>MEASURED</td>
+<td>consolidated POC; stack direction evolution story</td>
+</tr>
+<tr>
+<td>Agentic clustering POC 5 (2026-07-06): dedicated CH for runtime <strong>read</strong> plane (slot-determinism vs BQ); early note said writes still PG for strategy-flow join — <strong>superseded for agentic-assort</strong> by Jul 2026 CH end-to-end planning-store directive</td>
+<td>MEASURED decision → superseded for greenfield</td>
+<td>POC §6 vs stack direction §10</td>
+</tr>
+<tr>
+<td>Existing mtp-assort: <strong>NO</strong> wholesale CH move now; fix BigQuery SELECT*/clustering/rollups first</td>
+<td>MEASURED decision</td>
+<td>consolidated POC §5</td>
+</tr>
+<tr>
+<td><strong>HLD Agentic System (<code>final_agenticassort.png</code>):</strong> Path A FE→FastAPI Agent (<code>POST /chat</code> DIRECT)→LLM→tools→Go Doing Layer; Path M FE→Go REST manual; Go domains Hindsight/Clustering/Strategy; stores <strong>ClickHouse + GCS</strong>; obs LangSmith (L1) + Datadog (L2) + PostHog linked by OTEL <code>trace_id</code></td>
+<td>MEASURED design</td>
+<td>diagram</td>
 </tr>
 <tr>
 <td>Order Batching metric, 23.7M join rows: CH <strong>3.86s</strong> vs PG <strong>3m40s - 7m48s</strong> (~60x)</td>
-<td>MEASURED</td>
-<td>2707030040</td>
+<td>MEASURED (<strong>prep depth</strong>)</td>
+<td>POC dump 2707030040</td>
 </tr>
 <tr>
-<td>CH insert ~<strong>5.9M rows/s</strong> (3.9B rows, 30 parallel promos) vs PG 250K raw / 417K detach-attach (~14-24x) at ~30 vs 280 connections</td>
-<td>MEASURED</td>
+<td>CH insert ~<strong>5.9M rows/s</strong> vs PG 250K raw (~14-24x)</td>
+<td>MEASURED (prep)</td>
 <td>2612625411</td>
 </tr>
 <tr>
-<td>Export path 541s / 607 rows/s (PG) to 38s / 26.4K rows/s (CH), ~43x</td>
-<td>MEASURED</td>
-<td>2612625411</td>
-</tr>
-<tr>
-<td>Incremental CH MV 0.65s per 100K insert vs PG full refresh ~4s over 1.69M rows (~85% faster)</td>
-<td>MEASURED</td>
-<td>2701262897, 2702934024</td>
-</tr>
-<tr>
-<td>10K updates on ~29M-row CARFG: full rewrite 36-39s, partition-scoped ~7s, delta join 6.7s/partition, full-table delta OOM at 14.4 GiB</td>
-<td>MEASURED</td>
-<td>2780954663</td>
-</tr>
-<tr>
-<td>Fact table 17.15M rows, 432.81 MiB compressed vs 3.31 GiB raw (~7.8x compression)</td>
-<td>MEASURED</td>
-<td>2642608187</td>
-</tr>
-<tr>
-<td>Order Batching migration architecture: <strong>CQRS</strong> (PG writes / CH reads), CDC mirrors for CARFG + plan_master + dc_pack_reserve, daily full refresh for low-churn dims, Redis read-your-writes flag TTL ~30s falling back to PG post-save. Resume phrases this plainly ("keeping writes on PostgreSQL, syncing hot fact tables in near real time"); use the CQRS/CDC terms verbally in interviews</td>
-<td>MEASURED design doc</td>
+<td>Order Batching CQRS / CDC design (PG writes / CH reads, Redis RYW TTL ~30s)</td>
+<td>MEASURED design (legacy/Order Batching path)</td>
 <td>2764046370</td>
 </tr>
 <tr>
-<td>CDC platform SLOs (PG commit to CH visible p95 &lt;= 10s, snapshot &gt;= 25K rows/s)</td>
-<td>MEASURED (tool by Ashvin Sharma; say "designed against / integrated with", NOT "built")</td>
+<td>CDC platform SLOs (p95 ≤ 10s visible; tool by Ashvin Sharma)</td>
+<td>MEASURED</td>
 <td>2727084070</td>
 </tr>
 <tr>
-<td>Cluster Recommendation Copilot: LLM orchestrates, deterministic plane computes, 14 audited tools, agent cannot write, human approval gates</td>
-<td>MEASURED design (Phase 1, external review PASS, load test pending)</td>
-<td>2817589251, 2816999437</td>
-</tr>
-<tr>
-<td>Copilot baselines: run failures 8.5% (37/437), median clustering job ~20s, reproducibility 0%</td>
-<td>MEASURED</td>
+<td>Cluster Recommendation Copilot: LLM orchestrates, deterministic plane, 14 tools, human gates</td>
+<td>MEASURED design (Phase 1 PASS, load test pending)</td>
 <td>2817589251</td>
 </tr>
 <tr>
-<td>Copilot targets: hierarchy-to-finalized-plan days to &lt;1h, configs 1 to &gt;=20, failures &lt;2%, reproducibility 100%, CH read plane sub-second</td>
-<td>TARGET</td>
+<td>Copilot baselines: failures 8.5% (37/437), reproducibility 0%; targets under 2%, 100% reproducible, under 1h, ≥20 configs</td>
+<td>MEASURED / TARGET</td>
 <td>2817589251</td>
 </tr>
 <tr>
-<td>Agent data probe latency: baseline 1-20s+ on shared BigQuery slots (measured, variance uncontrolled), target p95 &lt;500ms deterministic on dedicated ClickHouse. Resume gates bullet cites this as "p95 probes under 500ms vs 1 to 20s on BigQuery"</td>
-<td>MEASURED baseline / TARGET</td>
-<td>2817589251 s6</td>
-</tr>
-<tr>
-<td>Agentic cluster DDL: 63 tables / 8 layers / 624 columns, partition-swapped facts, append-only events, zero row-level mutations</td>
-<td>MEASURED design</td>
-<td>2816606240</td>
-</tr>
-<tr>
-<td>Grid p95 &lt;500ms, cell edit &lt;80ms, History Opt &lt;30s, 3 scenarios &lt;60s</td>
-<td>TARGET (platform NFRs)</td>
-<td>Planning_Platform_Architecture_v5-2</td>
-</tr>
-<tr>
-<td>Clustering agent flow: auto feature select + k via elbow+silhouette, 3-5 scenarios per session, planner approve before master write</td>
-<td>MEASURED PRD</td>
-<td>Agentic_Store_Clustering_HLR_v1.1</td>
+<td>Agent probes: BigQuery 1–20s+ baseline vs CH p95 &lt;500ms target</td>
+<td>MEASURED / TARGET</td>
+<td>2817589251</td>
 </tr>
 </tbody>
 </table>
-<p>Do NOT claim: identical benchmark hardware (PG 32vCPU/256GB vs CH 16vCPU/64GB), full production cutover, authorship of pg2ch_cdc tool, shipped copilot (design approved, load test pending).</p>
+<p>Do NOT claim: identical benchmark hardware, full production CH cutover of <strong>legacy mtp-assort</strong>, authorship of pg2ch_cdc, shipped copilot to all tenants, PostHog/Datadog/LangSmith as sole personal ownership, or that ClickHouse beats Postgres at classic OLTP keyed UPDATE without the insert-only versioned model.</p>
 <h2 id="uber-frm-jul-2024-may-2026">Uber FRM (Jul 2024 - May 2026)</h2>
 <table>
 <thead>
@@ -740,11 +728,12 @@ strong{color:#fff}
 <p><strong>“BigQuery on your skills?”</strong><br>
 “Upstream historical source of truth. I own the ingest lane into ClickHouse (staging → <code>REPLACE PARTITION</code>, reconciliation). I don’t claim BigQuery warehouse optimization as my work.”</p>
 <p><strong>“Why drop Mongo/Cassandra/ES/DuckDB/gRPC/Rust from skills?”</strong><br>
-“Kept what’s evidenced on this resume’s Tech Used lines or the live IA/Uber stack. DuckDB was an earlier serving idea; July 2026 direction is ClickHouse end-to-end. Rust is an in-house escape hatch (CortexEye) — not something I claim as delivered on this PDF.”</p>
+“Kept what’s evidenced on this resume’s Tech Used lines or the live IA/Uber stack. DuckDB was an earlier serving idea; July 2026 <strong>agentic-assort</strong> direction is <strong>ClickHouse/GCS end-to-end</strong> for planning data via insert-only versioned writes (HLD doing layer → CH/GCS). The POC report’s hybrid verdict still applies to legacy OLTP-mutable surfaces and “no wholesale CH” for mtp-assort — tell the write-model evolution story. Rust is an in-house escape hatch (CortexEye) — not something I claim as delivered on this PDF.”</p>
 <p><strong>Menu 98% / $600K</strong><br>
 Same as original prep: offline-eval fidelity; finance-owned savings model — know the arithmetic before quoting.</p>
 <h2 id="role-families">Role families</h2>
-<p>Same lead stories as <code>../interview_prep/08_role_targeting_and_rapid_fire.md</code> — IA Go+ClickHouse, Uber Menu streaming, Masters quality/observability, FRM audit correctness.</p>
+<p>Same lead stories as <code>../interview_prep/08_role_targeting_and_rapid_fire.md</code> — IA ClickHouse/GCS planning store + FastAPI/Go agentic path, Uber Menu streaming, Masters quality/observability, FRM audit correctness.</p>
+<p><strong>IA 15-second lead (Jul 2026):</strong> “ClickHouse/GCS end-to-end planning store (insert-only versions). POC: 250M pivot <strong>189s→12.3s</strong> (~15× DISTINCT; typical ~2–3×); avoided <strong>12B</strong> store-week (<strong>100–450×</strong>). FastAPI chat + Go doing layer; Datadog / LangSmith / PostHog + OTEL. Legacy mtp-assort still hybrid / fix BQ first.”</p>
 <hr>
 <h1 id="metrics-derivations-resume-v2-java-tracks">Metrics Derivations (resume v2 + Java tracks)</h1>
 <p>Every TPS / RPS / from-to / money number on the <strong>current</strong> v2 and Java PDFs. Interview line: say <strong>"estimated, derived from X"</strong> for ESTIMATED and <strong>"measured / documented"</strong> for MEASURED or HISTORICAL. Do not invent finer precision than this table.</p>
@@ -813,7 +802,7 @@ Same as original prep: offline-eval fidelity; finance-owned savings model — kn
 </tbody>
 </table>
 <hr>
-<h2 id="1-impact-analytics-assortsmart-pgch-poc">1. Impact Analytics — AssortSmart + PG→CH POC</h2>
+<h2 id="1-impact-analytics-assortsmart-clickhouse-planning-store">1. Impact Analytics — AssortSmart + ClickHouse planning store</h2>
 <table>
 <thead>
 <tr>
@@ -826,46 +815,62 @@ Same as original prep: offline-eval fidelity; finance-owned savings model — kn
 <tr>
 <td>20 to 100 configs per plan vs 1 manual</td>
 <td>TARGET / design</td>
-<td>Copilot Phase 1 FRD (<code>2817589251</code>); batch eval goal</td>
+<td>Copilot Phase 1 FRD</td>
 </tr>
 <tr>
 <td>Turnaround under 1 hour (from days)</td>
 <td>TARGET</td>
-<td>Same FRD; say targeting</td>
+<td>Same FRD</td>
 </tr>
 <tr>
 <td>Failures under 2% from 8.5%</td>
 <td>MEASURED baseline / TARGET</td>
-<td>8.5% = 37/437 runs MEASURED; under 2% TARGET</td>
+<td>37/437 MEASURED</td>
 </tr>
 <tr>
 <td>100% reproducible clusters</td>
 <td>TARGET</td>
-<td>Config/seed persistence design</td>
+<td>Config/seed persistence</td>
 </tr>
 <tr>
 <td>p95 probes under 500ms vs 1 to 20s BigQuery</td>
 <td>MEASURED baseline / TARGET</td>
-<td>Shared BigQuery slots 1–20s+; CH target p95 &lt;500ms</td>
+<td>Slot variance vs dedicated CH</td>
 </tr>
 <tr>
-<td><strong>60x</strong> Order Batching; <strong>23.7M</strong> rows; <strong>3m 40s → 3.86s</strong></td>
-<td>MEASURED</td>
-<td><code>2707030040</code> / <code>BENCHMARK-NUMBERS.md</code>: 23,749,263 join rows; CH 3.857s; PG 3m40s UTC / 7m48s Melbourne TZ</td>
+<td>FastAPI owns chat; Go doing layer tools</td>
+<td>MEASURED design</td>
+<td><code>final_agenticassort.png</code> HLD</td>
 </tr>
 <tr>
-<td><strong>24x (250K → 5.9M rows/sec)</strong></td>
+<td>Datadog + LangSmith + PostHog + OTEL</td>
+<td>MEASURED design</td>
+<td>HLD dual-layer obs + product analytics</td>
+</tr>
+<tr>
+<td><strong>ClickHouse/GCS end-to-end planning store</strong> (insert-only versioned writes)</td>
+<td>MEASURED design</td>
+<td>Jul 2026 stack direction + HLD (doing layer → CH/GCS)</td>
+</tr>
+<tr>
+<td><strong>250M pivot 189s → 12.3s (~15×)</strong></td>
 <td>MEASURED</td>
-<td>CH 5,907,446 rows/s on 3.9B rows vs PG raw 250K (~23.6× → resume 24×). Also own ~14× vs PG detach/attach ~417K</td>
+<td>Pivot / consolidated POC; ~15.5× on DISTINCT grids; typical aggregates ~2–3× honest</td>
+</tr>
+<tr>
+<td><strong>Avoided materializing 12B store-week (100–450×)</strong></td>
+<td>MEASURED</td>
+<td>LinePlanning; aggregate ~25M; 12B often projected</td>
 </tr>
 <tr>
 <td>Hardware caveat</td>
 <td>MEASURED</td>
-<td>PG 32 vCPU / 256 GB tuned; CH 16 vCPU / 64 GB untuned. POC, not identical A/B, not full cutover</td>
+<td>PG 48 GB host vs CH 10 CPU / 3.3 GB VM (POC harness)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Rapid fire:</strong> Lead with hardware caveat. Cite both PG times. Defend 24× vs raw 250K; if challenged, also cite ~14× vs detach/attach.</p>
+<p><strong>Prep / decision history (not resume headline):</strong> POC hybrid verdict (PG keyed UPDATE &lt;1ms; CH large reads); legacy mtp-assort = no wholesale CH; Order Batching 60× / 23.7M / 3.86s. Interview close: "POCs said hybrid for legacy OLTP mutations; agentic-assort changed the write model to insert-only versions so planning data lives on ClickHouse end-to-end."</p>
+<p><strong>Rapid fire:</strong> Lead with CH/GCS planning store + insert-only versions. If challenged with POC hybrid slides, explain write-model unlock + thin PG metadata only.</p>
 <hr>
 <h2 id="2-uber-frm-scoping">2. Uber FRM Scoping</h2>
 <table>
@@ -1103,17 +1108,18 @@ Same as original prep: offline-eval fidelity; finance-owned savings model — kn
 <hr>
 <h1 id="impact-analytics-deep-dive-bullet-by-bullet-interview-defense">Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense</h1>
 <p><strong>Role:</strong> Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present<br>
-<strong>Project:</strong> Agentic AssortSmart Platform &amp; PostgreSQL → ClickHouse Data Migration<br>
-<strong>Sources of truth:</strong> <code>GROUND_TRUTH.md</code>, resume <code>experience.tex</code> IA bullets, ClickHouse POC dump, Agentic Cluster docs, AssortSmart clustering HLR v1.1<br>
-<strong>Honesty rule:</strong> Every number below is tagged MEASURED / TARGET / ESTIMATED / design-only. Do not invent. Hardware for insert/export POC was <strong>not</strong> identical.</p>
+<strong>Project:</strong> Agentic AssortSmart (FastAPI chat + Go doing layer) on <strong>ClickHouse/GCS</strong> (insert-only versioned planning store); POC evidence from Pivot / LinePlanning / consolidated CH-vs-PG report<br>
+<strong>Sources of truth:</strong> <code>GROUND_TRUTH.md</code>, resume IA bullets, Jul 2026 stack direction (<code>10_stack_direction_jul2026.md</code>), HLD <code>final_agenticassort.png</code>, POC source extracts <code>19</code>/<code>20</code>/<code>21</code><br>
+<strong>Honesty rule:</strong> Every number below is tagged MEASURED / TARGET / ESTIMATED / design-only. Do not invent. <strong>Resume direction = CH end-to-end for agentic planning data.</strong> POC hybrid slides are decision history (legacy OLTP / why the write model had to change), not a contradiction if you tell the evolution story.</p>
 <hr>
 <h2 id="0-role-framing-30-second-open">0. Role framing (30-second open)</h2>
 <p>I joined Impact Analytics as a Senior Software Engineer on 14 May 2026. My charter sits at the intersection of two workstreams:</p>
 <ol>
-<li><strong>Data platform:</strong> quantify where PostgreSQL breaks on retail OLAP workloads, then design a CQRS migration that keeps transactional writes on Postgres and moves aggregation-heavy reads to ClickHouse.</li>
-<li><strong>Agentic product:</strong> design the Cluster Recommendation Copilot for AssortSmart so an LLM orchestrates while a deterministic plane computes, with human approval before any write.</li>
+<li><strong>Agentic AssortSmart data plane:</strong> ClickHouse/GCS as the end-to-end planning store — insert-only versioned writes (<code>ReplacingMergeTree</code> + <code>argMax</code>) so the doing layer is not stuck on classic OLTP mutations. BigQuery stays upstream historical truth (BQ→CH ingest). Thin Postgres metadata only if asked.</li>
+<li><strong>Agentic product:</strong> Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL <code>trace_id</code>.</li>
 </ol>
-<p>I am an IC so far (no people lead at IA). CDC platform tooling (<code>pg2ch_cdc</code>) was authored by another engineer (Ashvin Sharma). I designed Order Batching migration against it and integrated with its SLOs and mirror patterns. The Cluster Recommendation Copilot is Phase 1 design approved (external review PASS); bring-up load test is still pending.</p>
+<p>I am an IC so far (no people lead at IA). CDC platform tooling (<code>pg2ch_cdc</code>) was authored by another engineer (Ashvin Sharma). Copilot: Phase 1 design approved (external review PASS); bring-up load test pending. Obs stack on the resume is <strong>MEASURED design / instrumentation</strong>, not sole SaaS ownership.</p>
+<p><strong>Source tension to own unprompted:</strong> The Jul 2026 POC report verdict is still <strong>hybrid per surface</strong> for assortment benchmarks and <strong>no wholesale CH</strong> for legacy mtp-assort. The <strong>agentic-assort</strong> build follows the Jul 2026 stack directive + HLD: planning data on ClickHouse end-to-end because we changed the write model. Do not collapse “no CH for legacy UPDATE/JSONB” into “no CH for agentic AssortSmart.”</p>
 <hr>
 <h2 id="1-end-to-end-architecture-order-batching-cqrs-edit-path">1. End-to-end architecture (Order Batching CQRS + edit path)</h2>
 <p>This is the picture I draw on a whiteboard when asked how Order Batching moves to ClickHouse without breaking saves, locks, or edit sessions.</p>
@@ -1432,12 +1438,12 @@ distribution_centres       ─daily─►  distribution_centres
 </table>
 <p><strong>Say in interview:</strong> "Phase 1 design is approved to bring-up. I am not claiming a production-shipped agent yet. Load test is the remaining gate."</p>
 <hr>
-<h2 id="5-resume-bullet-2-postgresql-vs-clickhouse-benchmarks">5. Resume bullet 2: PostgreSQL vs ClickHouse benchmarks</h2>
+<h2 id="5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</h2>
 <blockquote>
-<p>Benchmarked PostgreSQL vs ClickHouse on production retail workloads. The Order Batching metric over 23.7M joined rows ran in 3.86s on ClickHouse vs 3m 40s+ on PostgreSQL (60x), parallel bulk loads sustained 5.9M rows/sec vs 250K rows/sec, and query to CSV export throughput improved 43x (607 to 26,400 rows/sec).</p>
+<p><strong>Resume now leads with hybrid pivot/line-plan (189s→12.3s, cell &lt;1ms, 12B avoided).</strong> Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.</p>
 </blockquote>
 <h3 id="51-exact-story-with-numbers-memorize-these">5.1 Exact story with numbers (memorize these)</h3>
-<p>All MEASURED from POC docs. Infra was <strong>not</strong> identical.</p>
+<p>All MEASURED from older POC dump. Infra was <strong>not</strong> identical.</p>
 <p><strong>Hardware caveat (say this first if challenged):</strong></p>
 <table>
 <thead>
@@ -1557,7 +1563,7 @@ distribution_centres       ─daily─►  distribution_centres
 <li><strong>10× join cardinality:</strong> memory for join build/probe; need stricter partition pruning and pre-aggregation (see exploded batch OOM at <strong>133.7M</strong> rows in update-metrics doc).</li>
 <li><strong>10× insert parallelism:</strong> CH insert path still needs part-merge budget; uncontrolled small parts create merge storms.</li>
 <li><strong>Gotcha:</strong> do not claim identical hardware. Interviewers who know CH will ask.</li>
-<li><strong>Gotcha:</strong> resume says <strong>60x</strong> and <strong>3m 40s+</strong>: defend with both PG times (3m40s UTC and 7m48s TZ) and CH <strong>3.86s</strong>.</li>
+<li><strong>Gotcha:</strong> if they cite older <strong>60×</strong> / <strong>3m 40s+</strong> from prep or prior PDF: defend with both PG times (3m40s UTC and 7m48s TZ) and CH <strong>3.86s</strong>. Lead interviews with Jul 2026 hybrid numbers first.</li>
 <li><strong>Gotcha:</strong> export row counts differ (PG ~329K vs CH 1M in the recorded run). Defend on <strong>rows/sec</strong> and wall time methodology, not "same row count dump."</li>
 </ul>
 <h3 id="55-honesty-tags">5.5 Honesty tags</h3>
@@ -1838,7 +1844,7 @@ distribution_centres       ─daily─►  distribution_centres
 </table>
 <hr>
 <h2 id="8-cross-cutting-talking-track-2-minute-narrative">8. Cross-cutting talking track (2-minute narrative)</h2>
-<p>"PostgreSQL is fine for transactional Order Batching writes and locks, but at tens of millions of join rows the analytical metric path goes to minutes. We proved ClickHouse on real workloads: about <strong>60×</strong> on the Order Batching metric at <strong>23.7M</strong> join rows, about <strong>14–24×</strong> insert throughput, about <strong>43×</strong> export rows/sec, even though CH had half the vCPUs and a quarter of the RAM and was untuned. From that evidence I designed a CQRS migration: PG remains system of record for writes, CDC mirrors hot facts into ReplacingMergeTree, dims refresh daily, and Redis gives a <strong>30s</strong> read-your-writes window so planners still see their own saves. Separately, on update strategy, partition-scoped merges cut <strong>10K</strong> updates on a <strong>~29M</strong> row table from <strong>~39s</strong> to <strong>~7s</strong>, and we documented OOM modes for naive full-table deltas. On the product side I am building toward the Cluster Recommendation Copilot: LangGraph/MCP agent, <strong>14</strong> tools, deterministic clustering, human gates, targeting under <strong>1 hour</strong> plans and under <strong>2%</strong> failures from a measured <strong>8.5%</strong> baseline: Phase 1 design approved, load test pending."</p>
+<p>"On AssortSmart I am building the agentic path: FastAPI owns chat (LangGraph/MCP); Go owns the doing layer so manual REST and agent tools hit the same Hindsight/Clustering/Strategy APIs against <strong>ClickHouse/GCS</strong>; Datadog, LangSmith, and PostHog share an OTEL trace id. Planning data is <strong>ClickHouse end-to-end</strong> via insert-only versioned writes — that is the Jul 2026 stack + HLD, unlocked after POCs showed classic OLTP mutations are the wrong CH model. Evidence we measured: on a <strong>250M-row</strong> pivot harness ClickHouse cut heavy grids from <strong>189s to 12.3s</strong> (~<strong>15×</strong> on DISTINCT option-count; honest typical aggregates ~<strong>2–3×</strong>), and line-planning refused to materialize <strong>~12B</strong> store-week rows via a <strong>~25M</strong> aggregate (<strong>100–450×</strong>). Legacy mtp-assort stays off wholesale CH — fix BigQuery first. Copilot targets under <strong>1 hour</strong> and under <strong>2%</strong> failures from measured <strong>8.5%</strong>; Phase 1 design approved, load test pending."</p>
 <hr>
 <h2 id="9-rapid-fire-qa-12">9. Rapid-fire Q&amp;A (12+)</h2>
 <h3 id="q1-why-clickhouse-over-postgres-for-this">Q1. Why ClickHouse over Postgres for this?</h3>
@@ -2061,6 +2067,155 @@ distribution_centres       ─daily─►  distribution_centres
 <h3 id="q18-ownership-challenge-did-you-build-pg2ch_cdc-and-ship-the-copilot">Q18. Ownership challenge: did you build <code>pg2ch_cdc</code> and ship the copilot?</h3>
 <p><strong>A:</strong> No on both overclaims. <code>pg2ch_cdc</code> was authored by Ashvin Sharma; I designed Order Batching migration against its SLOs and mirror patterns and integrated with them. Copilot: Phase 1 design approved to bring-up; load test pending; L2 autopilot and L3 drift monitor are later phases. Correct ownership language: "designed / developing / designed against," not "I built the CDC platform end to end" or "shipped the copilot to all tenants."</p>
 <hr>
+<h2 id="new-poc-hld-mock-interview-jul-2026">New POC + HLD mock interview (Jul 2026)</h2>
+<p><strong>Sources:</strong> Pivot-Engine-Benchmark, LinePlanning-Benchmark, ClickHouse-vs-Postgres-POCs (consolidated v1.0), Agentic HLD (<code>final_agenticassort.png</code>).<br>
+<strong>Honesty rule:</strong> Every number is tagged <strong>MEASURED</strong> / <strong>TARGET</strong> / <strong>ESTIMATED</strong>. Adversarial pass corrected first-pass magnitudes downward — defend the corrected figures, not the raw scoreboard. Hardware was deliberately PG-favorable (PG native <strong>48 GB</strong> host; CH <strong>10 CPU / 3.3 GB</strong> Docker VM) — MEASURED harness config.</p>
+<hr>
+<h3 id="1-hybrid-pg-writes-ch-reads-corrected-magnitudes">1. Hybrid PG writes / CH reads (corrected magnitudes)</h3>
+<p><strong>Interviewer Q:</strong> Your first slide said ClickHouse was 15× faster on the pivot and Postgres was 80–90× faster on cell edits. Then you walked it back to 2–3× and 14×. Which story is real, and why isn't this just "stay on Postgres"?</p>
+<p><strong>Candidate A:</strong> Both stories are real; the second is the one you should hire me for. We ran a controlled, row-identical harness at <strong>5M / 50M / 250M</strong> (MEASURED). Raw heavy-grid wall-clock at 250M: PG <strong>189.4 s</strong> with <strong>42 GB</strong> spill vs CH <strong>12.3 s</strong> ⇒ <strong>~15.5×</strong> (MEASURED). Adversarial re-measure showed ~<strong>90%</strong> of that gap is <code>COUNT(DISTINCT)</code> / option-count: PG's grouped distinct cannot parallelize and spills; CH runs parallel <code>uniqExact</code>. Strip the distinct and the CH lead collapses to <strong>~2–3×</strong> on typical aggregates (MEASURED, adversarial). Keep option-count (wireframe 1.1.1) and you honestly cite <strong>~13–15×</strong> (MEASURED). So: <strong>2–3× typical, 13–15× only on DISTINCT grids</strong> — that is the corrected pitch.</p>
+<p><strong>Attack vector (recruiter/persona loop):</strong> "Is 12B measured or projected?" — answer: combinatorial product from <strong>4,800</strong> stores × levels × choices × <strong>52</strong> weeks; flat loads at ~1B already OOM'd the <strong>3.3 GB</strong> CH VM (MEASURED). "Targeting vs shipped?" — under 1h / under 2% are TARGET; 8.5% and BQ 1–20s are MEASURED. "Two POCs one bullet?" — pivot and line-plan are different surfaces under one hybrid design rule.</p>
+<p>On writes: raw single-cell edit cycle p50 at 250M was PG <strong>0.94 ms</strong> vs CH <strong>~77 ms</strong> ⇒ ~<strong>82×</strong> (MEASURED, untuned). ~<strong>62 ms</strong> of CH's cycle was CH 26.5's default <code>async_insert</code> buffer flush. With <code>async_insert=0</code> + fsync durability parity, CH drops to <strong>~16 ms</strong> ⇒ PG wins <strong>~14×</strong>, not 90× (MEASURED, adversarial). PG stays <strong>sub-millisecond and scale-flat</strong> across 5→250M (<strong>0.35 → 0.94 ms</strong>, MEASURED) — that is the interactive Wp-cell keyboard path. CH batch append inverts: at 250M / <strong>156k</strong> rows, PG <strong>31,989 ms</strong> vs CH <strong>13 ms</strong> ⇒ ~<strong>2,500×</strong> (MEASURED) — so bulk apply / reload belongs to CH.</p>
+<p><strong>Design decision:</strong> hybrid per surface, not a swap. Render grid / rollup / contribution-% from CH MergeTree sorted on pivot keys; authoritative cell write-back is keyed PG UPDATE; keep CH fresh via version-append into ReplacingMergeTree; after edit, either <code>argMax</code>/<code>FINAL</code> on CH or read just-edited cells from PG. Working POC: <code>GET /pivot</code> from CH, <code>POST /cell</code> → PG then mirror to CH RMT (MEASURED design, live against 250M harness).</p>
+<p><strong>Tradeoffs:</strong> two stores ⇒ sync lag + freshness window; CH pays <strong>~4× FINAL</strong> dedup tax when reading its own fresh parts (MEASURED). Storage first-pass <strong>50–138×</strong> was synthetic-modulo artifact; realistic high-entropy collapses to <strong>~1.6–2.6×</strong>, expect low-single-digits to <strong>~10×</strong> (MEASURED adversarial / ESTIMATED production band). Cheapest independent win: flatten JSONB fact — <strong>2.06×</strong> penalty on PG alone (<strong>2,779 ms</strong> flat vs <strong>5,719 ms</strong> JSONB, MEASURED); live Briscoes pivot <strong>11.3 s</strong> is mostly modeling, not PG's ceiling (MEASURED anchor).</p>
+<p><strong>Why not "stay on Postgres"?</strong> At Briscoes today <strong>~5M</strong>, selective screens still win on PG (MEASURED). At <strong>250M</strong> the heavy grid is <strong>3m9s</strong> and unusable for interactive planning (MEASURED). The recommendation must survive growth to multi-tenant <strong>50–250M+</strong>, not today's comfort zone. Decision rule: aggregates many rows → CH; mutates few cells with instant RYW → PG.</p>
+<hr>
+<h3 id="2-why-not-wholesale-clickhouse-for-mtp-assort">2. Why not wholesale ClickHouse for mtp-assort</h3>
+<p><strong>Interviewer Q:</strong> You just proved CH wins big reads. Why did POC 4 still say "No to ClickHouse now" for the shipping mtp-assort app? Isn't that inconsistent with adopting CH for agentic clustering?</p>
+<p><strong>Candidate A:</strong> Consistent once you separate <em>surface</em> from <em>product</em>. mtp-assort's edit model is OLTP-mutable: keyed UPDATE, JSONB <code>||</code> merge, scoped delete-where-<code>plan_code</code> + reinsert, upsert, soft-delete. ClickHouse is append-first; its mutation queue is the wrong hammer for that write model. The analytical scans <em>look</em> CH-shaped, but the live cost drivers we measured are BigQuery hygiene problems, not "wrong OLAP engine": one job billed <strong>38.8 TiB</strong> via <code>SELECT *</code> / LIMIT with no date filter (MEASURED live BQ evidence, briscoes-01082024 / australia-southeast1); recurring full-category rollups re-scan <strong>~2.9 TiB</strong> (MEASURED). Fix tiers inside BQ: (1) kill <code>SELECT *</code>, force <code>require_partition_filter=TRUE</code>; (2) point heavy reads at already-clustered <code>_assort</code> (~<strong>3×</strong> cheaper, MEASURED free win); (3) materialize one store × category × fiscal-week rollup → MB instead of <strong>2.9 TiB</strong> (~<strong>284×</strong> less, MEASURED/ESTIMATED from that rollup sizing). Adding CH now creates a <strong>third</strong> engine (BQ + CH + PG) plus sync + dialect translation, replacing neither SoR nor the batch plane.</p>
+<p><strong>Contrast — agentic clustering (POC 5):</strong> greenfield read plane, new dedicated CH instance, writes still land in PG (cluster results must join strategy-flow tables). Decision dated <strong>2026-07-06</strong> (MEASURED design). Same hybrid principle applied forward: CH where determinism + interactive probes matter; PG remains SoR. Wholesale swap of mtp-assort fails the "replace neither" test; gated CH for a new module passes it.</p>
+<p><strong>Tradeoff I own:</strong> saying "no" to CH on the legacy app while saying "yes" to CH on the copilot looks political. The defense is workload shape: mutate-heavy legacy vs read-only analytical probes with insert-only BQ→CH feed.</p>
+<hr>
+<h3 id="3-line-planning-why-not-materialize-12b-store-week-aggregate-explode-partition-of-unity">3. Line-planning: why not materialize 12B store-week; aggregate + explode; partition of unity</h3>
+<p><strong>Interviewer Q:</strong> KiK needs store-week. Your team already has <code>line_arch_store_week</code>. Why refuse to materialize <strong>~12B</strong> rows/plan? Isn't "derive on demand" just kicking the can — and won't explode latency kill allocation export?</p>
+<p><strong>Candidate A:</strong> <strong>~12B</strong> = <strong>4,800</strong> stores × final-levels × choices × <strong>52</strong> weeks per plan (MEASURED anchors / ESTIMATED combinatorial product for KiK). With <strong>~50</strong> plans, flat PG at rest is <strong>~70 TB</strong> (ESTIMATED from per-plan <strong>~1.4 TB</strong> × 50); even CH flat is <strong>~1.1 TB</strong> at 50 plans (ESTIMATED). Per operation: month view SUMs billions; a choice edit fires a <strong>249,600</strong>-row UPDATE on the flat path at the 10M-scale harness shape (MEASURED). At <strong>100M</strong> flat: month PG <strong>2,923 ms</strong> / CH <strong>1,335 ms</strong>; edit-one-choice PG <strong>1,454 ms</strong> / CH mutation <strong>1,823 ms</strong> (MEASURED). Projected to <strong>12B</strong>: flat month <strong>~380 s</strong> PG / <strong>~160 s</strong> CH; edits minutes (ESTIMATED linear projection — tagged PROJ in the POC).</p>
+<p><strong>What we store instead:</strong> editable truth at choice × cluster × week ≈ <strong>~25M</strong> for a 12B-flat plan (~<strong>427×</strong> smaller; MEASURED at 1B: flat PG <strong>115 GB</strong> vs agg <strong>276 MB</strong>). Formula (verbatim from <code>SCALE_LINE_ARCH_FROM_CHOICE_LAUNCH</code>):</p>
+<pre><code class="language-text">store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc
+</code></pre>
+<p>Each percentage is a <strong>partition of unity</strong> (sums to 1 on its dimension), so <code>SUM(store-week) ≡ choice aggregate</code>. We reconciled <code>SUM(flat)==SUM(agg)</code> <strong>to the cent</strong> at <strong>10M / 100M / 1B</strong> on both engines (MEASURED). Explode one choice to store-week on demand in <strong>~25 ms</strong> (MEASURED). Month view on the <strong>25M</strong> aggregate: PG <strong>690 ms</strong> / CH <strong>512 ms</strong> (MEASURED at 25M = 12B-plan equivalent). Single-cell edit on aggregate PG <strong>0.35–0.44 ms</strong> (MEASURED) — scale-flat.</p>
+<p><strong>Product reality check:</strong> users never edit a dense store-week grid. Backend <code>update_line_arch_store_week_cluster_data</code> writes at cluster × choice × delivery; <code>line_arch_store_week</code> is 100% re-derived. Finer edits are <strong>sparse overrides</strong> (base + exception). Effective = <code>COALESCE(override, derived)</code>; rollup = aggregate_rollup + Σ(override deltas) — never scan 12B. Override point-upsert PG <strong>0.15 ms</strong> flat from <strong>1M→50M</strong> overrides (MEASURED); correction rollup at <strong>1M</strong> overrides: CH <strong>5 ms</strong> / PG <strong>98 ms</strong> (MEASURED). At <strong>50M</strong> overrides (0.4% of 12B — stress, not typical): PG correction <strong>15.5 s</strong> vs CH <strong>52 ms</strong> (MEASURED) — then AMT/SummingMergeTree earns its keep because deltas are additive.</p>
+<p><strong>Tradeoffs:</strong> if a downstream truly needs full store-week, materialize a <strong>slice for export</strong>, not the SoR. Trying to load <strong>998M</strong> flat into CH on the <strong>3.3 GB</strong> VM OOM-killed the container (MEASURED) — even columnar engines punish explosions you do not need. Schema first: flat→aggregate is <strong>~140–200×</strong> at 100M on read/edit (MEASURED), larger than any engine swap (<strong>100–450×</strong> band across scales, MEASURED/ESTIMATED). Multi-plan: partition by <code>plan_code</code>; single-plan month with 10 plans resident stays constant (PG <strong>725 ms</strong> / CH <strong>33 ms</strong>, MEASURED). Clone-plan: aggregate PG <strong>67.7 s</strong> / CH <strong>0.85 s</strong> vs flat ~<strong>12 min</strong> (MEASURED / ESTIMATED from 1B copy <strong>60 s</strong> ×12).</p>
+<hr>
+<h3 id="4-clickhouse-edit-techniques-why-not-amt-for-set-a-cell-rmt-vs-lightweight-update-vs-embeddedrocksdb">4. ClickHouse edit techniques: why not AMT for set-a-cell; RMT vs lightweight UPDATE vs EmbeddedRocksDB</h3>
+<p><strong>Interviewer Q:</strong> ClickHouse 26.5 has lightweight UPDATE and AggregatingMergeTree. Why is your editable layer ReplacingMergeTree — and when would you actually use AMT or RocksDB?</p>
+<p><strong>Candidate A:</strong> Because a planner edit is <strong>SET cell = X</strong>, not <strong>ADD delta</strong>. AggregatingMergeTree / SummingMergeTree merge by summing states — the right tool for additive accumulation (override-delta rollups, pre-agg month views), the wrong tool for set-a-cell. Modelling SET as AMT forces compensating deltas — fragile under concurrent editors and undo.</p>
+<p><strong>Measured bake-off at ~1B granular (MEASURED, CH 26.5):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Latency / behavior</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Heavyweight <code>ALTER UPDATE</code> (274M MT)</td>
+<td><strong>1,618 ms</strong> p50, consistent</td>
+<td>Never for point edits — rewrites the part</td>
+</tr>
+<tr>
+<td>Lightweight UPDATE (patch parts, experimental)</td>
+<td><strong>4.4 ms</strong> issue, RYW correct only <strong>~11–22%</strong> (consolidated) / ~<strong>20%</strong> (lineplan)</td>
+<td>Unsafe for interactive write-back in 26.5</td>
+</tr>
+<tr>
+<td>ReplacingMergeTree append + <code>argMax</code>/<code>FINAL</code></td>
+<td><strong>~4.9–6.3 ms</strong> tuned, consistent</td>
+<td>Best MergeTree-family option for set-a-cell</td>
+</tr>
+<tr>
+<td>EmbeddedRocksDB upsert + point get</td>
+<td><strong>4.9 ms</strong>, consistent, no parts/FINAL</td>
+<td>Most PG-like KV editable layer; not for analytic scans</td>
+</tr>
+<tr>
+<td>Postgres keyed UPDATE (reference)</td>
+<td><strong>0.15–0.35 ms</strong>, consistent</td>
+<td>Nothing in CH family beats it</td>
+</tr>
+<tr>
+<td>AMT as editable layer</td>
+<td>—</td>
+<td>✗ wrong semantics (models "add")</td>
+</tr>
+<tr>
+<td>AMT / Projection for <em>read</em> rollup over 1B</td>
+<td>AMT <strong>2 ms</strong> (build <strong>2 s</strong>); Projection <strong>4 ms</strong> (build <strong>30 s</strong>) vs plain GROUP BY <strong>2,058 ms</strong></td>
+<td>Right when granular SoR must stay; ~<strong>1000×</strong> read win</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CH floor:</strong> ~<strong>5 ms</strong> is mostly HTTP round-trip + part creation (MEASURED / ESTIMATED split). So: interactive typing stays on PG (or EmbeddedRocksDB if you insist CH-native KV); pair RocksDB editable with MergeTree analytics. For editable aggregate in CH use <strong>RMT(version)</strong> — never AMT, never heavyweight mutation, avoid lightweight UPDATE until RYW is reliable. AMT belongs on <strong>additive override-delta</strong> MVs once override counts leave the human thousands–low-millions band where PG alone is already sub-100 ms (MEASURED design rule).</p>
+<p><strong>Deeper point:</strong> if you already stored the <strong>~2M–25M</strong> aggregate, plain GROUP BY is <strong>~17 ms</strong> (MEASURED on RMT aggregate) and you may not need AMT/projections at all. They earn keep when someone forces the 1B granular to remain SoR — which we refuse.</p>
+<hr>
+<h3 id="5-agentic-architecture-why-fastapi-owns-chat-go-is-doing-layer-dual-path-a-vs-path-m">5. Agentic architecture: why FastAPI owns chat, Go is doing layer, dual Path A vs Path M</h3>
+<p><strong>Interviewer Q:</strong> Why is chat FE → FastAPI directly? Why not put Go in front of everything like a normal BFF? And what are Path A and Path M actually for?</p>
+<p><strong>Candidate A:</strong> From the Jul 2026 Agentic HLD: <strong>chat is FE → FastAPI directly; Go is not the chat gateway.</strong> Two paths, one doing layer.</p>
+<p><strong>Path A — agent chat (FastAPI Agent Service):</strong>
+1. <strong>A1</strong> Chat UI → <code>POST /chat</code> (routing, reasoning, tool selection).
+2. <strong>A2</strong> Agent ↔ LLM (OpenAI / etc.) for reason / plan.
+3. <strong>A3</strong> Tool call → Go doing layer when an action needs product APIs / deterministic compute.
+4. <strong>A4</strong> Reply → Chat UI.</p>
+<p><strong>Path M — manual work:</strong> Manual screens → Go REST (<code>create</code> / <code>update</code> / <code>delete</code>) → same doing modules (Manual/REST, Hindsight, Clustering, Strategy) → ClickHouse / GCS. No LLM in the loop.</p>
+<p><strong>WHY FastAPI owns chat:</strong> agentic workflows are LLM-latency-shaped (LangGraph / MCP / prompt+tool loops, streaming tokens, run trees). Python owns that ecosystem; putting Go as a dumb chat proxy adds a hop without buying throughput. <strong>WHY Go is the doing layer:</strong> non-agentic work is throughput-shaped I/O — plan lifecycle, bulk saves, clustering/hindsight/strategy engines, CH/GCS access. Goroutine-per-request, static binary, boring code many engineers touch. Manual UI and agent tools <strong>converge on the same Go APIs</strong> (M1 and A3), so authorization, validation, and audit logic are not duplicated in the LLM path.</p>
+<p><strong>Design decisions / tradeoffs:</strong>
+- Dual language is a real tax; accepted because the service boundary already existed (agent tier vs core backend).
+- Agent never bypasses Go for mutations — tools call Go; DB profiles for agent probes stay read-only. Failure mode if skipped: prompt-drifted <code>INSERT</code> into cluster master.
+- Notification service sits beside FE for core-api hits; not on the chat critical path.
+- Do not claim MEASURED production RPS for this split — it is <strong>MEASURED design / stack direction</strong>. Scale story: agent replicas scale with LLM concurrency; Go replicas scale with request volume — independent axes.</p>
+<p><strong>Adversarial push — "why not one Python monolith?"</strong> Because Path M traffic (grid saves, strategy CRUD) should not share a GIL/async pool with multi-second LLM turns. Separating chat ownership from doing ownership is the load and blast-radius decision, not a fashion choice.</p>
+<hr>
+<h3 id="6-observability-split-langsmith-vs-datadog-vs-posthog-shared-otel-trace_id">6. Observability split: LangSmith vs Datadog vs PostHog; shared OTEL <code>trace_id</code></h3>
+<p><strong>Interviewer Q:</strong> Three observability products is vendor sprawl. Why not one Datadog for everything? How do you debug "agent said X but Go returned Y"?</p>
+<p><strong>Candidate A:</strong> They answer three different questions; collapsing them loses signal.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Owns</th>
+<th>Emits from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1 Agent quality</td>
+<td><strong>LangSmith</strong></td>
+<td>run trees, replay, evals, tokens, cost</td>
+<td>FastAPI Agent Service (Agent → L1)</td>
+</tr>
+<tr>
+<td>L2 Platform health</td>
+<td><strong>Datadog</strong></td>
+<td>HTTP/DB latency, errors, infra, Go doing-layer SLOs</td>
+<td>Agent → L2 <strong>and</strong> Go → L2 (HTTP/DB)</td>
+</tr>
+<tr>
+<td>Product analytics</td>
+<td><strong>PostHog</strong></td>
+<td>user behaviour (chat vs manual screens, funnel)</td>
+<td>Frontend</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Shared OTEL <code>trace_id</code></strong> stitches L1 ↔ L2: one planner utterance → LangSmith run tree (which tool, which prompt version, token/cost) ↔ Datadog spans (Go REST timing, CH query, GCS I/O). Without shared trace IDs you get two timelines that cannot be joined when the LLM "succeeded" but the tool timed out.</p>
+<p><strong>WHY not Datadog-only for agents:</strong> Datadog sees HTTP and infra; it does not natively give prompt replay, dataset evals, or token attribution the way LangSmith does for LangGraph runs. <strong>WHY not LangSmith-only:</strong> it will not page you on Go p99 or CH part merges. <strong>WHY PostHog:</strong> product questions ("did planners abandon chat for manual?") are neither span metrics nor prompt traces.</p>
+<p><strong>Tradeoffs:</strong> three bills, three UIs, discipline required to propagate <code>trace_id</code> on A3 tool calls into Go. Mitigation: OTEL middleware on FastAPI and Gin; reject tools that drop context. Alerting: Datadog pages on SLO burn; LangSmith feeds offline eval / regression; PostHog informs UX, not paging. This split is <strong>MEASURED design</strong> from the HLD — do not invent production MTTR numbers.</p>
+<hr>
+<h3 id="7-slot-determinism-why-dedicated-ch-vs-bigquery-for-agent-probes">7. Slot-determinism: why dedicated CH vs BigQuery for agent probes</h3>
+<p><strong>Interviewer Q:</strong> BigQuery is already your historical truth and you already pay for slots. Why stand up a dedicated ClickHouse just so an agent can run <code>SELECT</code>s?</p>
+<p><strong>Candidate A:</strong> Because interactive copilots need <strong>deterministic</strong> probe latency, and shared BQ STANDARD-edition slots make latency a function of <strong>org-wide</strong> load. Live audit of agent data-probe latency on shared BQ: <strong>1–20 s+</strong> with uncontrolled variance (MEASURED). Interactive UX + platform NFRs need agent probe <strong>p95 &lt; 500 ms</strong> on a dedicated CH read plane (TARGET). Nightly precompute aims to move <strong>≥80%</strong> of sessions cold→warm (TARGET). Cube reconciliation within <strong>0.1%</strong> of BigQuery (TARGET). Feed = existing BQ→CH ingestion lane (ItemSmart-proven pattern, MEASURED design reuse). BQ stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots or surprise finance with another <strong>TiB</strong>-scanned job.</p>
+<p><strong>WHY this is not a contradiction of "no CH for mtp-assort":</strong> Phase 1 FRD non-goal — do <strong>not</strong> move transactional/plan data to CH for this module. Read plane only; PG remains editable SoR for cluster write-back after human gates. Greenfield schema + new instance ≠ swapping the mutation-heavy legacy app.</p>
+<p><strong>Tradeoffs / failure modes:</strong> derived copy can rot → owned ingestion, freshness sentinel, <strong>data-as-of</strong> stamped on every recommendation. If load test on real kik extract misses p95, revisit precompute and concurrency quotas before claiming the TARGET. Slot-determinism is the buying criterion; raw CH-vs-BQ scan benchmarks are secondary.</p>
+<p><strong>One-liner under pressure:</strong> "BQ is truth with shared-slot variance; dedicated CH is a deterministic probe cache for the agent — hybrid again, not a religion."</p>
+<hr>
+<h3 id="cross-cutting-adversarial-closes-use-if-they-chain-topics">Cross-cutting adversarial closes (use if they chain topics)</h3>
+<p><strong>Q: Your Jul 2026 stack note said ClickHouse end-to-end with insert-only versions. The POC report says hybrid PG writes. Which is it?</strong><br>
+<strong>A:</strong> Both, at different scopes. The <strong>POC consolidated verdict</strong> is hybrid for <em>legacy assortment surfaces</em> and classic OLTP-mutable edits — and <strong>no wholesale CH</strong> for shipping mtp-assort (fix BQ first). The <strong>agentic-assort</strong> build follows the Jul 2026 stack directive + HLD: planning data on <strong>ClickHouse/GCS end-to-end</strong> because we changed the write model to insert-only versions (<code>mutations_used=0</code>). Thin Postgres metadata (auth/tenant/workflow) is fine to admit. I will not pretend CH beats PG at keyed UPDATE without that write-model unlock — that is exactly the mistake the adversarial pass prevents.</p>
+<p><strong>Q: Give me the corrected number card only.</strong><br>
+<strong>A:</strong> CH reads <strong>~2–3×</strong> typical; <strong>~13–15×</strong> on DISTINCT grids (MEASURED adversarial). PG single-cell <strong>&lt;1 ms</strong> (<strong>0.35–0.94 ms</strong>, MEASURED). PG vs tuned CH write <strong>~14×</strong> (MEASURED). Schema flat→agg <strong>100–450×</strong> (MEASURED/ESTIMATED). Agent probes BQ <strong>1–20 s+</strong> MEASURED → CH <strong>p95 &lt;500 ms</strong> TARGET. Storage real-world low-single-digits–<strong>~10×</strong>, not 50–138× (MEASURED adversarial).</p>
+<hr>
 <h2 id="confidence-audit">Confidence audit</h2>
 <table>
 <thead>
@@ -2072,9 +2227,9 @@ distribution_centres       ─daily─►  distribution_centres
 </thead>
 <tbody>
 <tr>
-<td>1. Building Agentic AssortSmart; agents draft clusters/plans for planner approval</td>
+<td>1. Architecting AssortSmart; gated write-back</td>
 <td><strong>SOLID</strong></td>
-<td>Product description of the agentic rebuild. Present-tense build; Phase 1 design PASS; not "already live for every tenant."</td>
+<td>Product framing + FRD non-goal (no silent auto-finalize). Present-tense; Phase 1 design PASS; not "already live for every tenant."</td>
 </tr>
 <tr>
 <td>2. Cluster Recommendation Copilot (FastAPI, LangGraph, MCP); 20–100 configs vs 1; days → under 1 hour</td>
@@ -2087,18 +2242,20 @@ distribution_centres       ─daily─►  distribution_centres
 <td><strong>8.5% (37/437)</strong> and <strong>0% reproducibility</strong> MEASURED. <strong>Under 2%</strong> and <strong>100% reproducible</strong> TARGET. Read-only profiles + gates MEASURED design. Phrase: "designed to cut failures from a measured 8.5% toward under 2%." Align "3 gates" with FRD confirm gates; mention grounding/write-back as bookends if asked.</td>
 </tr>
 <tr>
-<td>4. Go (Gin) microservices; plan lifecycle + bulk save; goroutine pools; JWT</td>
+<td>4. Go (Gin) microservices; manual REST + agent tools (Hindsight/Clustering/Strategy); Datadog + LangSmith + PostHog + OTEL</td>
 <td><strong>NEEDS CARE</strong></td>
-<td>Stack direction and concrete service shape (JWT middleware, worker pools, plan lifecycle APIs) are defensible as current design/build work. No MEASURED production RPS in <code>GROUND_TRUTH.md</code>. Do not invent throughput; describe architecture and trade-offs vs Python-only.</td>
+<td>HLD diagram design. Claim instrumentation model and dual Path A/M, not sole ownership of Datadog/PostHog/LangSmith products.</td>
 </tr>
 <tr>
-<td>5. 60× analytics; 23.7M rows 3m40s → 3.86s; 24× load 250K → 5.9M rows/s</td>
-<td><strong>SOLID</strong></td>
-<td>All MEASURED POC numbers. Lead with hardware caveat (PG 32/256 vs CH 16/64). Cite UTC <strong>3m40s</strong> and TZ <strong>7m48s</strong>. <strong>24×</strong> vs raw 250K; also own <strong>~14×</strong> vs detach/attach 417K. POC, not production cutover.</td>
+<td>5. ClickHouse/GCS end-to-end planning store; 250M 189s→12.3s (~15×); avoided 12B (100–450×)</td>
+<td><strong>SOLID with care</strong></td>
+<td>HLD + Jul 2026 stack = CH planning store (insert-only versions). Numbers MEASURED from POCs. Say <strong>~2–3× typical</strong> if they strip DISTINCT. Do <strong>not</strong> claim wholesale CH for legacy mtp-assort. If they wave the POC “hybrid” slide: that is decision history for OLTP mutations — agentic unlock was changing the write model.</td>
 </tr>
 </tbody>
 </table>
 <hr>
+<h2 id="order-batching-60-prep-depth-replaced-on-resume-headline">Order Batching 60× (prep depth — replaced on resume headline)</h2>
+<p>Still MEASURED and interview-ready: 23.7M join rows, CH <strong>3.86 s</strong> vs PG <strong>3m40s–7m48s</strong>, insert <strong>5.9M vs 250K rows/s</strong>. Prefer leading with the Jul 2026 hybrid pivot/line-plan story on the resume; keep Order Batching as deeper evidence when asked "what else did you measure?"</p>
 <hr>
 <h1 id="11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</h1>
 <p>Defense material for the four Uber FRM resume bullets. Every number here traces to <code>GROUND_TRUTH.md</code> or to the code in <code>KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/</code>. Tags: <strong>MEASURED</strong> (documented artifact or code), <strong>TARGET</strong> (design goal, say "targeting"), <strong>ESTIMATED</strong> (derived, say so). No number here is invented.</p>
@@ -4935,20 +5092,50 @@ India siblings often ask <strong>6-7+ years</strong> (e.g. Data Platform Bengalu
 <td>same</td>
 </tr>
 <tr>
-<td>60×; 23.7M rows; 3m40s → 3.86s</td>
-<td>Order Batching metric POC</td>
-<td>MEASURED</td>
-<td><code>BENCHMARK-NUMBERS.md</code> / <code>10_…</code></td>
+<td>Datadog / LangSmith / PostHog + OTEL</td>
+<td>L2 platform / L1 agent / product analytics; shared <code>trace_id</code></td>
+<td>MEASURED design</td>
+<td>HLD + <code>10_…</code> §6</td>
 </tr>
 <tr>
-<td>24×; 250K → 5.9M rows/s</td>
-<td>Insert POC; also own ~14× vs 417K detach/attach</td>
+<td><strong>ClickHouse/GCS end-to-end planning store</strong></td>
+<td>Insert-only versioned writes; HLD doing layer → CH/GCS</td>
+<td>MEASURED design</td>
+<td>stack direction + HLD</td>
+</tr>
+<tr>
+<td><strong>250M pivot 189s → 12.3s (~15×)</strong></td>
+<td>Heavy grid + option-count; ~15.5× DISTINCT; typical ~2–3×</td>
+<td>MEASURED</td>
+<td>Pivot + consolidated POC / <code>10_…</code></td>
+</tr>
+<tr>
+<td><strong>Avoided 12B store-week (100–450×)</strong></td>
+<td>Aggregate ~25M; explode ~25 ms; schema &gt; engine</td>
+<td>MEASURED</td>
+<td>LinePlanning / <code>10_…</code></td>
+</tr>
+<tr>
+<td>Hardware caveat (Jul 2026 POC)</td>
+<td>PG 48 GB host vs CH 10 CPU / 3.3 GB VM</td>
 <td>MEASURED</td>
 <td>same</td>
 </tr>
 <tr>
-<td>Hardware caveat</td>
-<td>PG 32/256 vs CH 16/64</td>
+<td>PG cell &lt;1ms / hybrid verdict</td>
+<td>POC decision history (legacy OLTP / why insert-only unlock)</td>
+<td>MEASURED prep</td>
+<td>consolidated POC</td>
+</tr>
+<tr>
+<td>60×; 23.7M; 3m40s → 3.86s</td>
+<td>Order Batching (<strong>prep depth</strong>)</td>
+<td>MEASURED</td>
+<td>older POC dump / <code>10_…</code> §5</td>
+</tr>
+<tr>
+<td>24×; 250K → 5.9M rows/s</td>
+<td>Insert POC (<strong>prep</strong>)</td>
 <td>MEASURED</td>
 <td>same</td>
 </tr>
@@ -5175,4 +5362,411 @@ India siblings often ask <strong>6-7+ years</strong> (e.g. Data Platform Bengalu
 </tbody>
 </table>
 <h2 id="explicit-non-claims-do-not-invent">Explicit non-claims (do not invent)</h2>
-<p>Pinot on current PDF · Terraform · multi-region ownership · K8s cluster ops · FRM 19M→300K · FRM measured 70% · identical CH hardware · full PG→CH production cutover · IA people leadership · Spark/Flink at Masters India or IA (Menu only)</p></main></div></body></html>
+<p>Pinot on current PDF · Terraform · multi-region ownership · K8s cluster ops · FRM 19M→300K · FRM measured 70% · identical CH hardware · full PG→CH production cutover · IA people leadership · Spark/Flink at Masters India or IA (Menu only)</p>
+<hr>
+<p>ASSORTMENT PLANNING · DATA PLATFORM · ENGINE EVALUATION</p>
+<p>ClickHouse vs PostgreSQL — POC Report</p>
+<p>A consolidation of the controlled benchmark POCs and live-data decisions run to answer one question: should the Assortment-Planning read/write surfaces move from PostgreSQL to ClickHouse? Every figure below was executed on row-identical data and verified adversarially — magnitudes are corrected down from first-pass, not headline-inflated.</p>
+<p>Verdict: HYBRID, per surface — not a wholesale swap  ·  Prepared from executed harnesses (pivot-poc, lineplan) + live BQ/PG evidence  ·  v1.0</p>
+<p>§ 0   Executive summary</p>
+<p>Across four POCs — two controlled engine benchmarks and two live-data architecture decisions — the answer is consistent: use both engines, one per surface. PostgreSQL owns interactive edits and system-of-record writes; ClickHouse owns large analytical reads. Neither replaces the other, and the biggest lever is not the engine at all — it is the schema.</p>
+<p>HEADLINE VERDICT</p>
+<p>Writes / interactive cell edits → PostgreSQL. Sub-millisecond keyed UPDATE, scale-flat. ClickHouse has a ~5 ms floor (HTTP round-trip) and is part-creation bound; it is append-first, not edit-first.</p>
+<p>Large analytical / full-grid reads at scale → ClickHouse. ~2–3× faster typically, up to ~13–15× when the grid needs COUNT(DISTINCT) (option counts) that spills to disk on Postgres.</p>
+<p>The schema is the real lever. Redesigning flat → aggregate + distribution profile + explode/derive-on-demand is a 100–450× win — larger than any engine swap. Don't materialize combinatorial explosions.</p>
+<p>Honest, adversarially-corrected magnitudes</p>
+<p>First-pass numbers overstated ClickHouse's edge. After tuning both engines fairly and using high-entropy (non-synthetic) data, the directions all held but the magnitudes came down:</p>
+<p>PG was given every hardware advantage (48 GB host); CH ran constrained (10 CPU / 3.3 GB Docker VM). The corrections make the case against the constrained engine — i.e. conservative.</p>
+<p>WHERE EACH POC LANDED</p>
+<p>PG  Pivot benchmark — hybrid per surface; writes to PG, grid reads to CH; use-case 1.1.1 runs better on PG today.</p>
+<p>PG  Line-planning benchmark — don't materialize the 12B store-week; store the small editable aggregate on PG, derive on demand; CH for cross-plan rollups.</p>
+<p>PG  mtp-assort (existing app) — No to ClickHouse now; the real cost drivers are cheaper to fix inside BigQuery.</p>
+<p>CH  Agentic clustering (new module) — ClickHouse chosen for the runtime read surface; writes still land in PG. This is where CH earns its place.</p>
+<p>§ 1   Test harness &amp; methodology</p>
+<p>Both benchmarks used the same controlled rig, deliberately biased toward PostgreSQL so any ClickHouse advantage is a floor, not a ceiling.</p>
+<p>Row-identical data across engines — aggregate fingerprints match; at 250M the float-derived sums reconcile to 2e-12.</p>
+<p>Real-schema anchor — data modeled on the live assort_smart.line_plan_choice_launch_ia layout, not toy tables.</p>
+<p>Adversarial verification — every headline magnitude was attacked and re-measured; overstatements were corrected downward before publication.</p>
+<p>Reproducible harnesses live in POC/pivot-poc/ (SQL, generators, benchmark scripts, an 11-endpoint FastAPI service) and POC/pivot-poc/lineplan/.</p>
+<p>§ 2   POC 1 — Assortment pivot engine benchmark</p>
+<p>The dominant Assortment-Planning surface is the pivot grid (choice × cluster × fiscal-week, measures joined to product dims). We benchmarked reads, writes and storage at 5M / 50M / 250M rows.</p>
+<p>Reads (warm median wall-clock, ms)</p>
+<p>R1 CH advantage ~13–15× (option-count spills PG). R2 flips: PG wins at 5M (1.8×), CH wins at 250M (18.5×). R3/R4 widen from ~2.5× to ~10× with scale.</p>
+<p>Writes</p>
+<p>PG single-cell is scale-independent (0.35→0.94 ms). The raw ~82–216× gap shrinks to ~14× against a tuned CH (~16 ms). CH batch-append instead widens with scale (12× → 2,520×). CH also carries a FINAL read-tax (~4× with multiple parts).</p>
+<p>Storage &amp; modeling</p>
+<p>The 54–138× is synthetic-favorable. Real-world anchor (briscoes PG ~5.3 GB vs arhaus CH ~112 MB, ~5M rows) ≈ 47×; high-entropy data collapses this to ~1.6–2.6×. JSONB modeling penalty = 2.06× (fact_flat 2,779 ms vs fact_json 5,719 ms); the live briscoes pivot at 11,298 ms is mostly modeling, not PG's ceiling. Bulk reload (5M): PG 19.3 s vs CH 6.0 s = 3.2×.</p>
+<p>POC 1 VERDICT</p>
+<p>Hybrid, per surface. ClickHouse for grid/aggregate reads at scale; PostgreSQL for interactive cell write-back. The advantage is real but not a landslide — CH reads ~2–3× typical (~13× on distinct-counts); PG writes ~14× vs a tuned CH.</p>
+<p>§ 3   POC 2 — Pivot POC (wireframe views 1.1.1 / 1.1.2 / 1.1.3)</p>
+<p>To validate the benchmark against real product interactions, we built a working POC — schema h111, 5.76M rows, an 11-endpoint FastAPI service (hindsight_api.py on :8090) serving all three wireframe views with live read grids + Wp write-back. Full artifact in POC/pivot-poc/.</p>
+<p>CROSS-VIEW FINDING</p>
+<p>Writes (Wp cells, thresholds) → PostgreSQL at every scale (sub-ms, scale-flat). Full-grid reads → ClickHouse at every scale (widening to 13–15×). Selective reads → PostgreSQL while small, flipping to ClickHouse as they grow. So 1.1.1 — today's dominant surface — runs better on Postgres; the ClickHouse case is the cross-cutting analytical views plus catalog growth.</p>
+<p>§ 4   POC 3 — Line-planning benchmark (store-week explosion)</p>
+<p>The Line-Planning module's line_arch_store_week explodes to ~12B rows per plan for KiK (4,800 stores) — and ~50 plans exist. We benchmarked month-view reads + cell/choice edits, PG vs CH and flat-table vs a redesigned schema.</p>
+<p>THE KEY INSIGHT — PARTITION OF UNITY</p>
+<p>Store-week is a deterministic explosion of the choice aggregate: store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc, where the percents sum to 1. So SUM(store-week) ≡ choice aggregate (reconciled to the cent at 10M/100M/1B on both engines). The editable truth is choice × cluster × week — ~25M rows for a 12B-flat plan, ~427× smaller. Store-week is derived on demand (~25 ms to explode one choice) and never materialized for editing. Users already edit at cluster × choice × delivery; there is no store-level edit path — finer edits are sparse per-week/per-store overrides.</p>
+<p>Reads, edits &amp; storage — flat vs aggregate</p>
+<p>Aggregate is ~140–457× faster to read than flat. 12B-flat is infeasible on PG (~2–4 TB/plan); flat editing is bad on both engines (PG bulk UPDATE of 249,600 rows; CH part-rewrite mutation). @50 plans: flat PG ~70 TB / CH ~1.1 TB vs aggregate PG ~155 GB / CH ~940 MB.</p>
+<p>ClickHouse technique deep-dive (@1B granular)</p>
+<p>Multi-plan &amp; sparse overrides</p>
+<p>Multi-plan is a storage-at-rest problem, not a per-op one. Users edit one plan at a time → single-plan read is constant regardless of N (partition-pruned: PG 725 ms / CH 33 ms). Must PARTITION BY plan_code.</p>
+<p>Clone-plan: aggregate PG 67.7 s / CH 0.85 s vs flat ~12 min/plan. Cross-plan portfolio rollup (rare, no pruning): PG 13.3 s / CH 0.19 s.</p>
+<p>Sparse overrides (per-week/per-store exceptions, 0.008–0.4% of a 12B plan): point-upsert WRITE PG 0.15 ms flat / CH ~2 ms. Correction rollup grows on PG (98 ms → 15.5 s at 50M) but deltas are additive → pre-aggregate with SummingMergeTree/AggregatingMergeTree. Table stays MB-scale — the 12B is never materialized.</p>
+<p>POC 3 VERDICT</p>
+<p>The schema (flat → aggregate + distribution profile + explode-on-demand, plus base + sparse-override) is the 100–450× lever, not the engine. Writes → Postgres (sub-ms keyed UPDATE, scale-flat). Big rollup reads → ClickHouse (or PG at the aggregate's ~25M size, already sub-second). For an editable aggregate in CH use ReplacingMergeTree(version) — never AggregatingMergeTree (it sums states, wrong for set-a-cell), never heavyweight mutation, and not lightweight UPDATE (unreliable in 26.5).</p>
+<p>§ 5   POC 4 — mtp-assort (existing app): should we move to ClickHouse?</p>
+<p>Beyond the synthetic benchmarks, we evaluated the live existing application against real BigQuery + Postgres evidence (briscoes-01082024, australia-southeast1). The question: does the shipping mtp-assort backend belong on ClickHouse?</p>
+<p>The edit model is fundamentally OLTP-mutable — keyed UPDATE, JSONB merge (||), scoped delete-where-plan_code + reinsert, upsert, soft-delete. ClickHouse (append-first, non-keyed async mutations) cannot replace this.</p>
+<p>The analytical scans are ClickHouse-shaped, but the real cost drivers — SELECT * / LIMIT with no date filter (one job billed 38.8 TiB), recurring full-category rollups re-scanning ~2.9 TiB — are cheaper to fix inside BigQuery.</p>
+<p>ClickHouse would become a third engine (BigQuery + CH + PG + sync + dialect translation), replacing neither.</p>
+<p>POC 4 VERDICT — NO, NOT NOW</p>
+<p>Fix it in BigQuery instead, in three tiers: (1) kill SELECT * and force a date filter (require_partition_filter=TRUE); (2) point heavy reads at the already-clustered _assort table (~3× cheaper, free win); (3) materialize one store × category × fiscal-week rollup → MB instead of 2.9 TiB (~284× less). ClickHouse only makes sense later if a high-concurrency, sub-second interactive BI product emerges.</p>
+<p>§ 6   POC 5 — Agentic clustering (new module): where ClickHouse wins</p>
+<p>For the greenfield Agentic Assort clustering module, the calculus is different — and this is where ClickHouse earns its place. The decision (2026-07-06) was to serve the entire runtime read surface (including clustering-job feature pulls) from a new dedicated ClickHouse instance.</p>
+<p>Rationale = slot-determinism. BigQuery's shared STANDARD-edition slots make latency depend on org-wide load; a dedicated ClickHouse gives deterministic response and near-zero marginal probe cost — exactly what an interactive, agentic copilot needs.</p>
+<p>Writes still land in PostgreSQL. Cluster results must join the strategy-flow tables, so the system of record stays PG; ClickHouse is the read/analytics plane only.</p>
+<p>Greenfield schema, new instance, reusing an existing BQ→CH ingestion pipeline. This is a new build with an analytical read plane, not a swap of a transactional system.</p>
+<p>POC 5 VERDICT — YES, FOR THE READ PLANE</p>
+<p>The same hybrid principle, applied forward: ClickHouse for the analytical/interactive read surface of a new module where determinism matters; PostgreSQL remains the system of record for edits. This is the natural conclusion of the benchmark arc — CH is adopted exactly where the POCs said it belongs.</p>
+<p>§ 7   Consolidated recommendations</p>
+<p>DESIGN RULES THAT OUTRANK THE ENGINE CHOICE</p>
+<ol>
+<li>
+<p>Schema first. Flat → aggregate + distribution profile + explode/derive-on-demand is 100–450×. Never materialize a combinatorial explosion (store-week, full grids) for editing.</p>
+</li>
+<li>
+<p>Base + sparse override. Store the derived base as a formula; persist only the exceptions; effective = COALESCE(override, derived). Keeps 12B-row plans at MB scale.</p>
+</li>
+<li>
+<p>If you do put an editable layer in ClickHouse: ReplacingMergeTree(version) for set-a-cell edits; AggregatingMergeTree/SummingMergeTree only for additive rollups &amp; override-deltas; EmbeddedRocksDB for a PG-like KV path; Projection/AMT for read rollups; never heavyweight ALTER UPDATE; avoid lightweight UPDATE until read-after-write is reliable.</p>
+</li>
+</ol>
+<p>Bottom line: the engine debate is real but secondary. Run PostgreSQL and ClickHouse side by side, each on the surface it wins — and invest first in the schema, which pays more than either engine ever could.</p>
+<h3 id="table-1">Table 1</h3>
+<p>DIMENSION | FIRST-PASS CLAIM | HONEST, CORRECTED FIGURE</p>
+<p>Aggregate / pivot reads | up to 138× | CH ~2–3× typical; ~13–15× only on COUNT(DISTINCT) grids that spill on PG</p>
+<p>Single-cell write-back | 90–283× (PG faster) | PG ~14× vs a tuned CH (async_insert=0+fsync → ~16 ms); raw gap was CH 26.5's untuned insert buffer</p>
+<p>Storage compression | 50–138× (CH smaller) | low single digits to ~10× on realistic high-entropy data; the 50–138× was a synthetic-modulo artifact</p>
+<p>Batch / bulk writes + reload | CH wins | Held — CH append beats PG in-place UPDATE, widening with scale</p>
+<h3 id="table-2">Table 2</h3>
+<p>ENGINE | CONFIGURATION | RESOURCING</p>
+<p>PG  PostgreSQL 14 (native) | 12 GB shared_buffers, 512 MB work_mem, 8 parallel workers; indexed + hash-partitioned facts | 48 GB host — every hardware advantage</p>
+<p>CH  ClickHouse 26.5 (Docker) | MergeTree family; tuned variants (async_insert, ReplacingMergeTree, AggregatingMergeTree, Projection, EmbeddedRocksDB) tested explicitly | 10 CPU / 3.3 GB VM — constrained</p>
+<h3 id="table-3">Table 3</h3>
+<p>WORKLOAD | 5M PG | 5M CH | 50M PG | 50M CH | 250M PG | 250M CH</p>
+<p>R1 · heavy grid + contrib% + option-count | 3,859 | 280 | 35,132 | 2,708 | 189,408 | 12,256</p>
+<p>R2 · selective drill (1 subclass × cluster) | 2.8 | 5.0 | 30 | 4.8 | 170 | 9.2</p>
+<p>R3 · wide pivot (channels → columns) | 175 | 73 | 1,726 | 650 | 29,235 | 2,963</p>
+<p>R4 · top-N treemap | 155 | 59 | 1,475 | 535 | 27,635 | 2,522</p>
+<h3 id="table-4">Table 4</h3>
+<p>WORKLOAD (PG / CH) | 5M | 50M | 250M</p>
+<p>W1 · single-cell edit cycle, p50 (ms) | 0.35 / 75.6 | 0.77 / 68.5 | 0.94 / 77.2</p>
+<p>W2 · batch block edit (ms) | 503 / 40 | 3,338 / 18.5 | 31,989 / 12.7</p>
+<p>W5 · concurrent 8-thread (edits/s) | 633 / 37 | 1,066 / 37 | 970 / 38</p>
+<h3 id="table-5">Table 5</h3>
+<p>SCALE | PG FLAT | PG JSONB | CH MERGETREE | CH SMALLER BY</p>
+<p>5M | 937 MB | 2,285 MB | 17.5 MB | ~54×</p>
+<p>50M | 9,334 MB | — | 173 MB | ~54×</p>
+<p>250M | 46 GB | — | 341 MB | ~138×</p>
+<h3 id="table-6">Table 6</h3>
+<p>VIEW | INTERACTION | WINNER &amp; CROSSOVER</p>
+<p>1.1.1 Hindsight-Item | One subclass slice + Wp cell edits (the dominant interaction) | PG  wins both — read 7.9× (1.3 ms vs 10.3 ms), write large. CH only wins the full-cluster cross-subclass slice (4.5×). Crossover ~50M.</p>
+<p>1.1.2 Hindsight-Attribute | Read-only attribute pivot + z_other threshold bucketing | Selective reads flip to  CH  ~250M (z_other collapses output to ~10 rows).</p>
+<p>1.1.3 Thresholds | Bounded config write | PG  — write is scale-independent; 250M is synthetic/irrelevant here.</p>
+<h3 id="table-7">Table 7</h3>
+<p>OPERATION | FLAT PG | FLAT CH | AGGREGATE PG | AGGREGATE CH</p>
+<p>Month READ @100M | 2,923 ms | 1,335 ms | 21 ms | 6.4 ms</p>
+<p>Month READ @1B | 31,510 ms | — | 69 ms | —</p>
+<p>Month READ @25M (=12B plan) | — | — | 690 ms | 512 ms</p>
+<p>EDIT one choice @1B | 4,618 ms | 1,823 ms | 9–13 ms | ~60–70 ms</p>
+<p>EDIT single cell | — | — | 0.35–0.44 ms | ~6 ms</p>
+<p>Storage @1B | 115 GB | 1.87 GiB | 276 MB | ~ tens MB</p>
+<h3 id="table-8">Table 8</h3>
+<p>TECHNIQUE | MONTH-ROLLUP READ | EDIT ONE VALUE | VERDICT</p>
+<p>Plain MergeTree GROUP BY | 2,058 ms | — | Baseline</p>
+<p>AggregatingMergeTree (sumState MV) | 2 ms | — | ~1000× on reads; but models "add", not "set = X"</p>
+<p>Projection | 4 ms | — | Best read path — transparent, same SQL auto-routes</p>
+<p>ReplacingMergeTree (FINAL) | 17 ms | 6.3 ms (tuned) | Right for editable/set-a-cell aggregate</p>
+<p>Flat mutation (ALTER UPDATE) | — | 10,000 ms | Never — rewrites the part</p>
+<p>Lightweight UPDATE (26.5) | — | 4.4 ms | Read-after-write unreliable (~11–22% correct) — unsafe</p>
+<p>EmbeddedRocksDB (upsert) | — | 4.9 ms | Most PG-like editable layer; no parts, no FINAL</p>
+<p>PG  keyed UPDATE (reference) | — | 0.15–0.35 ms | Nothing in the CH family beats it; ~5 ms CH floor is HTTP</p>
+<h3 id="table-9">Table 9</h3>
+<p>SURFACE | ENGINE | WHY</p>
+<p>Interactive cell / Wp write-back, config writes | PostgreSQL | Sub-ms keyed UPDATE, scale-flat; CH has a ~5 ms floor and is part-creation bound</p>
+<p>System of record / transactional edits | PostgreSQL | OLTP-mutable model (upsert, JSONB merge, soft-delete) that CH cannot express</p>
+<p>Large full-grid / aggregate reads at scale | ClickHouse | ~2–3× typical, up to ~13–15× on COUNT(DISTINCT) grids that spill on PG</p>
+<p>Cross-plan / portfolio rollups, analytical read plane | ClickHouse | No partition pruning needed; CH wins by ~70× on unpruned scans</p>
+<p>Existing BigQuery-backed batch workload | Fix in BQ | Cheaper to fix SELECT*/clustering/rollups in place than add a third engine</p>
+<hr>
+<p>RECOMMENDATION</p>
+<p>Don't store the explosion. Store the aggregate + a distribution profile.</p>
+<p>The store-week value is a deterministic partition-of-unity explosion of the choice aggregate: store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc, and those percentages sum to 1 — so SUM(store-week) ≡ choice aggregate (verified to the cent at every scale). The editable truth lives at choice × cluster × week (~25M for a 12B-flat plan); per-store-week is derived on demand, never materialized for editing.</p>
+<p>Engine split (under the good schema): Postgres owns the interactive edit (in-place keyed UPDATE, sub-ms, transactional); ClickHouse owns the big rollup reads and can even scan the flat 12B if you ever must. The flat materialization is the enemy — not the engine choice.</p>
+<p>THE TWO OPERATIONS THAT HURT</p>
+<p>Flat vs Aggregate, across scale</p>
+<p>Same logical plan, two storage models. "Month view" = SUM to final_level × fiscal_month. "Edit a choice" = rescale one choice's plan (the backend's SCALE_LINE_ARCH path). Medians, ms.</p>
+<p>At 100M the flat design already needs ~3 s to render a month and ~1.5 s to edit one choice; the aggregate does both in single-digit ms (~140–200× faster). The gap grows linearly with rows — at 12B the flat path is minutes-per-operation, the aggregate is unchanged.</p>
+<p>WHY IT'S SAFE TO NOT MATERIALIZE</p>
+<p>The explosion is lossless &amp; reversible</p>
+<p>The backend builds store-week by chaining four percentages onto the choice aggregate (verbatim from SCALE_LINE_ARCH_FROM_CHOICE_LAUNCH):</p>
+<p>Each percentage is a partition of unity (sums to 1 over its dimension), so summing store-week back up returns the choice aggregate exactly. We verified SUM(flat)==SUM(agg) to the cent at 10M / 100M / 1B, on both engines.</p>
+<p>So the aggregate loses nothing</p>
+<p>You can always rebuild any store-week cell as aggregate × stored percentages. Store:</p>
+<p>•  choice_agg — plan × final_level × choice × cluster × week (the editable layer; ~25M for a 12B plan)</p>
+<p>•  store_dist — store → cluster + cluster_store_perc (4,800 rows)</p>
+<p>•  (week/delivery percentages — small profiles)</p>
+<p>Explode to store-week only when a downstream truly needs it (allocation export), for one slice — ~25 ms/choice.</p>
+<p>WHAT USERS ACTUALLY EDIT · FROM THE CODEBASE</p>
+<p>It's all overrides — never a dense store-week grid</p>
+<p>The backend confirms it: the edit endpoint (update_line_arch_store_week_cluster_data) writes at cluster × choice × delivery, and line_arch_store_week is 100% re-derived from the cluster×choice aggregate via the exact percentage chain we hypothesized:</p>
+<p>Finer edits are per-week or per-store overrides — sparse manual exceptions, not a full grid. So the model is base + sparse override: the derived base (aggregate × percentages) is never stored; only the cells a human actually overrode are. The effective value is COALESCE(override, derived); a rollup is aggregate_rollup + Σ(override deltas) — so you never scan 12B, even with overrides.</p>
+<p>Override layer benchmark — sparse overrides at 1M / 10M / 50M (0.008%–0.4% of a 12B plan)</p>
+<p>Override write is sub-millisecond on Postgres at every density (0.15 ms keyed upsert, flat from 1M→50M) — this is the interactive path, and it never touches the 12B grid. The override-aware rollup correction is a scan of only the sparse overrides: fine on Postgres at realistic volumes (~98 ms at 1M) but it grows with override count (985 ms at 10M, 15 s at 50M), while ClickHouse stays in ms (5→52 ms).</p>
+<p>The fix for high override volumes — and where AggregatingMergeTree finally fits</p>
+<p>Override deltas are additive (unlike the base "set cell = X" edit). So the correction rollup can be pre-aggregated incrementally with a SummingMergeTree / AggregatingMergeTree MV (or a small PG rollup) → instant regardless of override count. This is the correct use of AMT in this system: RMT for the editable base, AMT for the additive override-delta rollup. In practice override counts are thousands–low-millions per plan (human-made), where Postgres alone is already sub-100 ms.</p>
+<p>RECOMMENDED SCHEMA</p>
+<p>Concrete design, per engine</p>
+<p>Why not AggregatingMergeTree for the editable layer?</p>
+<p>AMT/SummingMergeTree merge by summing states — built for additive accumulation, not "set this cell = X". A planner edit is a SET; modelling it as AMT means inserting compensating deltas (fragile). Use ReplacingMergeTree(version) for edits; reserve AMT for the read rollup if on-the-fly GROUP BY ever proves too slow.</p>
+<p>STORAGE</p>
+<p>Footprint at scale</p>
+<p>Postgres cannot realistically store the 12B flat table (~2–4 TB + indexes); ClickHouse can (columnar, ~100–250 GB) and scan it — but neither should, because the aggregate is ~427× smaller (measured: 115 GB flat vs 276 MB agg at 1B) and lossless. CH numbers ≥1B are projected from the real 10M/100M points: when we tried to ingest 998M flat rows into ClickHouse on the constrained 3.3 GB VM it OOM-killed the container — a fitting reminder that even columnar engines pay to materialize an explosion you never needed.</p>
+<p>CLICKHOUSE TECHNIQUE DEEP-DIVE · MEASURED AT 1B</p>
+<p>AggregatingMergeTree, or something better?</p>
+<p>We loaded the full 998.4M-row granular store-week into ClickHouse (1.87 GiB on disk; the same data is 115 GB in Postgres) and benchmarked every realistic technique for the two jobs: roll up to a month view, and edit a value.</p>
+<p>Read — month rollup over 1B granular</p>
+<p>Both AggregatingMergeTree and Projection turn the 2-second scan into a ~2–4 ms read (~1,000×). They're the right tools if you keep the 1B granular as source-of-truth and must roll it up.</p>
+<p>Edit — mutation techniques compared (point edit + immediate read-after-write)</p>
+<p>"Is there a better mutation technique?" — we benchmarked all of ClickHouse 26.5's options for a single-cell edit the user must see immediately.</p>
+<p>Better CH mutation technique? Yes — and no. The clearly worse options are heavyweight mutations (1.6 s, rewrites parts) and — surprisingly — the new lightweight UPDATE (fast to issue but read-after-write is unreliable in 26.5, so a planner wouldn't see their own edit). The two good CH options are ReplacingMergeTree (append+argMax) and EmbeddedRocksDB (point upsert+get) — both ~5 ms and immediately consistent. EmbeddedRocksDB is the most PG-like (keyed upsert, no parts, no FINAL) and is the best CH-native home for the editable/override layer; pair it with a MergeTree for analytics. But none beats Postgres's ~0.2 ms — the ~5 ms CH floor is mostly the HTTP round-trip. So: keep interactive edits in Postgres (or EmbeddedRocksDB if you want it CH-native); for the read rollup use Projection/AMT; for the editable base never use heavyweight mutation or AMT.</p>
+<p>And the deeper point still holds: if you store the 2M aggregate (not the 1B flat), a plain GROUP BY over it is already ~17 ms and edits are point ops — you don't need AMT or projections at all. They only earn their keep when the 1B granular store-week must remain the system of record.</p>
+<p>MULTI-PLAN · ~50 PLANS</p>
+<p>12B is per plan — and there are ~50</p>
+<p>A planner opens and edits one plan at a time, so multi-plan is a storage-at-rest problem, not a per-operation one: with the table partitioned by plan_code, an individual plan's read/edit is isolated and stays constant no matter how many plans exist. We verified all of it with 10 plans (250M aggregate) resident.</p>
+<p>Storage at rest — the real multi-plan cost</p>
+<p>The multi-plan verdict: performance per planner is unchanged by plan count (partition by plan_code); the only thing that scales with N is footprint — and the flat design becomes a ~70 TB Postgres table at 50 plans (infeasible), versus a ~155 GB aggregate (or ~940 MB in ClickHouse). Plus the one true multi-plan op — clone-a-plan — is seconds on the aggregate and ~12 min+ on the flat. Both reinforce the same conclusion: store the aggregate, not the explosion.</p>
+<p>UNBIASED HYPOTHESIS — CONFIRMED</p>
+<p>The honest read</p>
+<p>The schema, not the engine, is the 10–100× lever. Flat→aggregate is ~140–200× on both read and edit at 100M, and the gap grows linearly with stores/rows. Fix the schema first.</p>
+<p>Writes belong to Postgres — aggregate cell edit is sub-ms, transactional, scale-flat. ClickHouse's editable-aggregate path (ReplacingMergeTree append) is ~60–70 ms/edit (tunable) — fine for occasional saves, not for rapid cell-by-cell typing.</p>
+<p>Big rollup reads favor ClickHouse, but at the aggregate's modest size (~25M) Postgres is already sub-second — so a PG-only aggregate stack is viable for KiK today; ClickHouse earns its place as the read/rollup accelerator as plans/tenants multiply.</p>
+<p>Flat editing is bad on both engines — Postgres bulk-UPDATEs hundreds of thousands of rows; ClickHouse mutations rewrite parts (even slower). Don't edit the flat table on either.</p>
+<p>12B is a storage/write problem, not a read problem — ClickHouse can scan it; nobody can edit it interactively. The aggregate sidesteps it entirely.</p>
+<p>Bottom line: re-model line_arch_store_week as aggregate + distribution profile + explode-on-demand. Keep edits in Postgres (sub-ms), serve big rollups from ClickHouse (or PG at today's size), and treat the flat 12B as a derived export, never the system of record. This turns a multi-minute, multi-TB plan into a millisecond, few-GB one.</p>
+<p>All figures are real measurements on row-identical synthetic data modeled on assort_smart.line_arch_store_week (KiK-test schema; partition-of-unity reconciled). 12B rows shown as projection where local materialization is infeasible. Postgres native (full host RAM); ClickHouse in a 3.3 GB Docker VM — engine wins are conservative for ClickHouse.</p>
+<h3 id="table-1_1">Table 1</h3>
+<p>ASSORTMENT PLANNING · LINE PLANNING · LINE_ARCH_STORE_WEEK · ENGINE + SCHEMA BENCHMARK Line Planning at 12 billion rows KiK's store-week line architecture explodes to ~12B rows/plan (4,800 stores × final-levels × choices × weeks), yet planners edit at aggregated month/quarter grain. This benchmarks Postgres vs ClickHouse — and, more importantly, the flat store-week table vs a better schema — on the two operations that hurt: load an aggregated view, and edit an aggregated cell. ANCHORS 4,800 stores · 10 clusters · 52 weeks   ·   SCALES 10M · 100M · 1B · 12B(proj)   ·   DATA row-identical, reconciled   ·   PG 14 native · CH 26.5 / 3.3GB VM</p>
+<h3 id="table-2_1">Table 2</h3>
+<p>THE FLAT TABLE IS THE PROBLEM 12B is per plan, and there are ~50 plans → the flat table is ~600B rows / ~70 TB on Postgres at rest. Per plan, a month view SUM-s billions and a choice edit fires a billion-row UPDATE. It worsens linearly with stores and plans. | THE AGGREGATE IS THE FIX Same plan at ~25M aggregate: month view in ~0.5 s, edit a cell in sub-ms, explode one choice to store-week on demand in ~25 ms. Works on both engines.</p>
+<h3 id="table-3_1">Table 3</h3>
+<p>OPERATION | 10M | 100M | 1B | 12B (PROJ)</p>
+<p>LOAD AGGREGATED MONTH VIEW | LOAD AGGREGATED MONTH VIEW | LOAD AGGREGATED MONTH VIEW | LOAD AGGREGATED MONTH VIEW | LOAD AGGREGATED MONTH VIEW</p>
+<p>FLAT — Postgres | 280 | 2,923 | 31,510 | ~380,000</p>
+<p>FLAT — ClickHouse | 121 | 1,335 | ~13,400 (proj) | ~160,000</p>
+<p>AGGREGATE — Postgres | 3.3 | 21 | 69 | 690 (25M)</p>
+<p>AGGREGATE — ClickHouse | 3.0 | 6.4 | ~10 (proj) | 512 (25M)</p>
+<p>EDIT ONE CHOICE (RESCALE) | EDIT ONE CHOICE (RESCALE) | EDIT ONE CHOICE (RESCALE) | EDIT ONE CHOICE (RESCALE) | EDIT ONE CHOICE (RESCALE)</p>
+<p>FLAT — Postgres (249,600-row UPDATE) | 683 | 1,454 | 4,618 | seconds–min</p>
+<p>FLAT — ClickHouse (mutation) | 214 | 1,823 | ~18,000 (proj) | minutes</p>
+<p>AGGREGATE — Postgres (520-row UPDATE) | 9.3 | 10.4 | 13.3 | ~6</p>
+<p>AGGREGATE — Postgres (single cell) | 0.44 | 0.44 | 0.35 | 0.39</p>
+<h3 id="table-4_1">Table 4</h3>
+<p>-- per store-week row sales_units = choice_sales_units   × flow_cluster_perc      -- cluster share   × cluster_store_perc     -- = 1/stores_in_cluster   × store_week_perc        -- week share</p>
+<h3 id="table-5_1">Table 5</h3>
+<p>-- line_arch_propagation.py (verbatim) receipt_units = choice_receipt_units * flow_cluster_perc * cluster_store_perc * launch_delivery_perc sales_units   = choice_sales_units   * flow_cluster_perc * cluster_store_perc * store_week_perc</p>
+<h3 id="table-6_1">Table 6</h3>
+<p>OVERRIDE COUNT | WRITE (POINT UPSERT) P50 | ROLLUP CORRECTION (Σ DELTAS) | STORAGE</p>
+<p>1M overrides | PG 0.15 ms · CH 2.8 ms | CH 5 ms · PG 98 ms | PG 106 MB · CH 0.8 MB</p>
+<p>10M overrides | PG 0.16 ms · CH 2.1 ms | CH 12 ms · PG 985 ms | PG 1.0 GB · CH 4.2 MB</p>
+<p>50M overrides (0.4%) | PG 0.15 ms · CH 2.1 ms | CH 52 ms · PG 15.5 s | PG 5.2 GB · CH 20 MB</p>
+<h3 id="table-7_1">Table 7</h3>
+<p>LAYER | POSTGRES | CLICKHOUSE</p>
+<p>Editable aggregate (choice×cluster×week) | table partitioned by final_level, PK (final_level,choice,cluster,week); edit = keyed UPDATE | ReplacingMergeTree(version); edit = insert new version, read latest via argMax/FINAL</p>
+<p>Store-distribution profile | store_dist(store→cluster, perc) + week profiles | same, MergeTree / dictionary</p>
+<p>Month/quarter rollup (read) | GROUP BY over the aggregate (indexed) | on-the-fly GROUP BY (sub-second at 25M) — add an AggregatingMergeTree MV only on measured need</p>
+<p>Store-week | VIEW / on-demand join to store_dist — not stored | derived join; materialize a slice only for export</p>
+<h3 id="table-8_1">Table 8</h3>
+<p>MODEL | 100M | 1B | 12B (PROJ)</p>
+<p>FLAT — Postgres | ~12 GB | 115 GB | ~2–4 TB</p>
+<p>FLAT — ClickHouse | ~1.6 GB (proj) | ~16 GB (proj) | ~100–250 GB</p>
+<p>AGGREGATE (≈ flat/480) | 28 MB | 276 MB | ~few GB (25M)</p>
+<h3 id="table-9_1">Table 9</h3>
+<p>TECHNIQUE | READ | BUILD | EXTRA STORAGE | TRADE-OFF</p>
+<p>Plain MergeTree + GROUP BY | 2,058 ms | — | 0 | scans 1B every read</p>
+<p>AggregatingMergeTree (via MV / sumState) | 2 ms | 2 s | ~1 KiB | incremental on insert; needs sumState/sumMerge + explicit MV; query must use it</p>
+<p>Projection (on the base table) | 4 ms | 30 s | ~16 KiB | transparent — same GROUP BY auto-routes; auto-maintained on insert; heavier to materialize</p>
+<p>ReplacingMergeTree aggregate (2M, FINAL) | 17 ms | — | 4.9 MiB | the editable layer's own rollup — already fast, no pre-agg needed</p>
+<h3 id="table-10">Table 10</h3>
+<p>TECHNIQUE | LATENCY (P50) | READ-AFTER-WRITE | VERDICT</p>
+<p>Heavyweight ALTER…UPDATE (274M MT) | 1,618 ms | consistent | rewrites the whole part — never for point edits</p>
+<p>Lightweight UPDATE (patch parts, experimental) | 4.4 ms | unreliable (~20%) | fast to issue, but the edit isn't reliably visible on immediate read — unsafe for write-back in 26.5</p>
+<p>ReplacingMergeTree append + argMax | 4.9 ms | consistent | ✓ best MergeTree-family option; parts accrue → periodic merge; FINAL tax on big scans</p>
+<p>EmbeddedRocksDB upsert + point get | 4.9 ms | consistent | ✓ true key-value: no parts, no FINAL, PG-like upsert — but not for analytic scans</p>
+<p>Postgres keyed UPDATE (reference) | 0.15–0.35 ms | consistent | in-place MVCC update</p>
+<p>AggregatingMergeTree as the editable layer | — | — | ✗ wrong tool: AMT merges by summing states (models "add", not "set = X")</p>
+<h3 id="table-11">Table 11</h3>
+<p>MULTI-PLAN OPERATION | POSTGRES | CLICKHOUSE | NOTE</p>
+<p>Single-plan month read (10 plans resident) | 725 ms | 33 ms | = the 1-plan number → constant with N (partition-pruned)</p>
+<p>Single cell edit in one plan | sub-ms | ~6 ms | unaffected by other plans</p>
+<p>Copy / clone a plan (aggregate, 25M) | 67.7 s | 0.85 s | spawn a new plan from an existing one</p>
+<p>Copy / clone a plan (flat, 12B) | infeasible | ~12 min | CH anchor: 1B copy = 60 s → ×12</p>
+<p>Cross-plan / portfolio rollup (rare) | 13.3 s | 0.19 s | no partition pruning → CH columnar wins</p>
+<h3 id="table-12">Table 12</h3>
+<p>MODEL | PER PLAN | 10 PLANS (MEASURED) | ~50 PLANS (PROJ)</p>
+<p>FLAT — Postgres | ~1.4 TB | ~14 TB | ~70 TB ✗</p>
+<p>FLAT — ClickHouse | ~22 GB | ~220 GB | ~1.1 TB</p>
+<p>AGGREGATE — Postgres | ~3.1 GB | 31 GB | ~155 GB ✅</p>
+<p>AGGREGATE — ClickHouse | ~19 MB | 188 MB | ~940 MB ✅</p>
+<hr>
+<p>RECOMMENDATION</p>
+<p>Run the pivot as a hybrid, not a swap.</p>
+<p>Neither engine wins outright — the workload splits cleanly. ClickHouse owns every read / aggregate / pivot and crushes storage; Postgres owns the interactive single-cell write-back by two orders of magnitude. The right design serves the grid from ClickHouse and keeps cell edits authoritative in Postgres — exactly the split the existing MTP backend already half-implements (BigQuery reads + Postgres OLTP).</p>
+<p>The decision rule: if a surface aggregates many rows → ClickHouse. If it mutates a few cells and must read them back instantly → Postgres. The pivot needs both, so it needs both engines. (Headline magnitudes below are raw measurements; an adversarial pass corrected them — see Verification.)</p>
+<p>WHO WINS WHAT</p>
+<p>Scoreboard</p>
+<p>Measured at 250M rows (current Briscoes is ~5M; the recommendation must survive growth). Magnitudes are medians of repeated warm runs — raw figures; the adversarial pass corrects several downward (CH reads ~2–3× typical, PG writes ~14× tuned, storage low-single-digits realistic).</p>
+<p>THE READ CLIFF</p>
+<p>The heavy pivot grid, across scale</p>
+<p>The same query — pivot grid with contribution-% and option-count, joined across hierarchy, cluster, and calendar. Bars are log-scaled wall-clock; ClickHouse stays interactive while Postgres falls off a cliff.</p>
+<p>5M rows</p>
+<p>██████████████████  PG 3.86 s</p>
+<p>████████████  CH 0.28 s</p>
+<p>ClickHouse 13.8× faster</p>
+<p>50M rows</p>
+<p>██████████████████████  PG 35.1 s</p>
+<p>█████████████████  CH 2.71 s</p>
+<p>ClickHouse 13.0× faster</p>
+<p>250M rows</p>
+<p>██████████████████████████  PG 189 s · 42 GB spilled to disk</p>
+<p>████████████████████  CH 12.3 s</p>
+<p>ClickHouse 15.5× faster — Postgres is now unusable for an interactive grid</p>
+<p>At 250M the Postgres pivot takes 3 minutes 9 seconds and spills 42 GB of sort files to disk. ClickHouse answers the same question in 12 seconds on a 3.3 GB VM. Even the “selective drill” — Postgres’s one early win at 5M — flips to a ClickHouse win (18.5×) once each subclass holds more SKUs.</p>
+<p>THE WRITE SPLIT</p>
+<p>Why Postgres still owns the keyboard</p>
+<p>A planner tabbing through Wp cells does single-row edits and expects the value back instantly. That is the one thing a columnar append-store is built to be bad at — and the one thing a row store is built to be great at.</p>
+<p>Single-cell edit cycle (p50)</p>
+<p>5M</p>
+<p>██  0.35 ms</p>
+<p>████████████████  76 ms</p>
+<p>50M</p>
+<p>██  0.77 ms</p>
+<p>███████████████  68 ms</p>
+<p>250M</p>
+<p>███  0.94 ms</p>
+<p>█████████████████  77 ms</p>
+<p>Postgres is sub-millisecond and flat with scale (indexed point update). ClickHouse is ~70–100 ms because each edit creates a new part + read-modify-write + dedup-on-read.</p>
+<p>Batch block edit (one subclass×cluster)</p>
+<p>5M·3k rows</p>
+<p>██████████  503 ms</p>
+<p>█████  40 ms</p>
+<p>50M·31k</p>
+<p>███████████████████  3,338 ms</p>
+<p>████  18 ms</p>
+<p>250M·156k</p>
+<p>██████████████████████████  31,989 ms</p>
+<p>███  13 ms</p>
+<p>Inverts the story: ClickHouse append stays flat while Postgres in-place UPDATE scales with row count — CH ends up ~2,500× faster for bulk edits and reloads.</p>
+<p>Implication: single-cell edits → Postgres; “apply +10% to a whole subclass”, rollups, and full reloads → ClickHouse. The write side is also a split, not a one-engine answer.</p>
+<p>STORAGE &amp; THE MODELING TRAP</p>
+<p>Two findings that reframe the question</p>
+<p>Storage: ClickHouse is ~50× leaner</p>
+<p>Honest caveat (from verification): this synthetic data is wildly compressible — with realistic high-entropy measures, ClickHouse’s ratio collapses from 83.7× to ~1.6–2.6×. Postgres is genuinely not bloated (157.6 B/row = theoretical min). Expect a real-world storage edge of low-single-digits to ~10×, not 50× — still meaningful, not magical.</p>
+<p>The 11-second query is mostly a modeling bug</p>
+<p>The live Briscoes pivot takes 11.3 s on Postgres — but most of that is the JSONB layout, not Postgres itself. Same logical pivot, same data:</p>
+<p>2.06× penalty just from JSONB extraction per row. Flattening the fact is the cheapest win available — independent of any ClickHouse decision.</p>
+<p>HOW THIS WAS KEPT HONEST</p>
+<p>Methodology &amp; fairness</p>
+<p>Fair-model vs fair-model</p>
+<p>Row-identical data. Same deterministic row→(choice,cluster,week) mapping in both engines; aggregate fingerprints match exactly (250M float-derived sums agree to 2×10⁻¹²).</p>
+<p>Each engine’s best physical model. Postgres: flat, partitioned by week, indexed. ClickHouse: MergeTree sorted on the pivot keys. The slow JSONB layout is reported separately, not as “Postgres”.</p>
+<p>Realistic shape. The grid joins fact × hierarchy × cluster × calendar and computes contribution-% windows — not a toy single-table scan (joins are where ClickHouse is supposedly weak).</p>
+<p>Postgres got every advantage</p>
+<p>Postgres ran native on the host with 48 GB RAM, 12 GB shared buffers, 8 parallel workers, fast local NVMe.</p>
+<p>ClickHouse was boxed in a 10-CPU / 3.3 GB Docker VM — and still won every read.</p>
+<p>So the read wins are conservative; the Postgres-favorable findings (write-back, point reads) get full credit.</p>
+<p>Warm medians over repeated runs; the 250M heavy grid run once (it takes minutes on PG).</p>
+<p>Engines provisioned fresh and isolated for this study — the shared ClickHouse (Arhaus / ItemSmart) and read-only Briscoes Postgres were used only as real-world anchors, never as the head-to-head.</p>
+<p>WHAT THE CURRENT BACKEND DOES — AND WHAT TO FIX</p>
+<p>Reusing the existing pivot</p>
+<p>The MTP AssortSmart backend already runs a de-facto hybrid: it aggregates the heavy “hindsight” grid in BigQuery (GROUP BY + window contribution-%) and keeps plan state + write-back in Postgres (in-place keyed UPDATE, JSONB merge, TRUNCATE+COPY syncs). The pivot’s row/column rotation is largely shaped by the GROUP BY + the front-end, not a SQL PIVOT.</p>
+<p>Keep</p>
+<p>The read/write split is already correct in spirit. Write-back as keyed Postgres UPDATE is the right primitive and matches this benchmark’s winner.</p>
+<p>Optimise</p>
+<p>(1) Flatten the JSONB fact → 2× immediately. (2) Put the interactive pivot on a ClickHouse MergeTree refreshed from the plan store, instead of paying BigQuery latency/cost per grid. (3) Replace per-row UPDATE loops + full TRUNCATE+COPY with block appends.</p>
+<p>RECOMMENDED ARCHITECTURE</p>
+<p>The hybrid pivot, concretely</p>
+<p>A working POC of exactly this runs against the live 250M dataset: GET /pivot builds the grid from ClickHouse with contribution-%; POST /cell writes the edit to Postgres (authoritative) and mirrors it to the ClickHouse ReplacingMergeTree. The edited cell reads back correctly from both within one request.</p>
+<p>The cost of hybrid (don’t gloss over it)</p>
+<p>Two stores means a sync path and a freshness window between the Postgres edit and the ClickHouse copy. For a single editor this is invisible; for the grid’s correctness it must read the ClickHouse copy with dedup (argMax/FINAL) or read the just-edited cells from Postgres. This is the one real operational tax of the recommendation.</p>
+<p>ADVERSARIAL VERIFICATION</p>
+<p>We tried to break our own conclusions</p>
+<p>Independent skeptics ran counter-tests against the live 250M engines to refute each headline. They confirmed every direction — but caught three overstated magnitudes. The honest, corrected picture:</p>
+<p>Net: the recommendation (CH for reads/scale, PG for interactive write-back) holds — but the honest magnitudes are ClickHouse ~2–3× on typical aggregates (up to ~13× when grids include distinct-counts) and Postgres ~14× on tuned single-cell writes (not the eye-popping 90–283× from untuned defaults). The decision is real but less lopsided than raw numbers suggest.</p>
+<p>THREE REAL USE CASES AT SCALE</p>
+<p>Views 1.1.1 / 1.1.2 / 1.1.3 — where the verdict flips, and when</p>
+<p>We built three actual wireframe screens end-to-end (schema, API, row-identical data at 5.76M / 50M / 250M) to test the recommendation on real surfaces. The split is consistent — but the read crossover point depends on the screen.</p>
+<p>Full-cluster (cross-subclass) reads are ClickHouse at every scale on both views, widening to 13–15× at 250M. The selective read flips later when its output stays small (1.1.2’s threshold bucketing collapses to ~10 rows → Postgres holds to ~250M; 1.1.1 fetches thousands of rows + joins the growing product dim → flips at 50M).</p>
+<p>The honest cross-view read: writes belong to Postgres at every scale (sub-ms, flat). Reads belong to ClickHouse for anything cross-cutting, and for selective screens once they grow — the crossover is 50M (1.1.1) to ~250M (1.1.2), set by output size + joins, not the engine. At Briscoes’ current ~5M, the selective screens still run fine on Postgres; the ClickHouse case is the full-grid views and the road to 50M+. Pick the engine per surface, not per product.</p>
+<p>THREATS TO VALIDITY</p>
+<p>Where these numbers could mislead</p>
+<p>Synthetic data is compression-friendly. The 138× storage ratio at 250M is optimistic; trust the ~47–54× real-world anchor.</p>
+<p>ClickHouse single-row write latency can be tuned. async_insert / buffering narrows it — but at the cost of read-after-write immediacy, which is the whole point of write-back. (See adversarial.)</p>
+<p>The 5M “present” is small for OLAP. At today’s scale Postgres-only is survivable (4 s grid); the case for ClickHouse is about where Briscoes is heading (50–250M+ multi-tenant), where the grid becomes unusable on Postgres.</p>
+<p>Contribution-% / option-count drive the gap. COUNT(DISTINCT) spills hard on Postgres; it’s a real wireframe measure, so it stays — but a pre-aggregated rollup narrows specific grids.</p>
+<p>APPENDIX</p>
+<p>Full results &amp; reproducibility</p>
+<p>Postgres 14.21 native (shared_buffers 12 GB, work_mem 512 MB, 8 workers). ClickHouse 26.5 in Docker (10 CPU / 3.3 GB). Fact grain: choice × cluster(8) × fiscal_week(52); measures flat float8/Float64; dims joined for the grid. Bulk reload (5M, 324 MB CSV): PG 19.3 s vs CH 6.0 s.</p>
+<p>Benchmark executed on row-identical synthetic data modeled on assort_smart.line_plan_choice_launch_ia . All figures are real measurements from this run, not estimates. Postgres deliberately over-resourced and ClickHouse deliberately constrained, so engine wins are conservative in ClickHouse’s favor and generous to Postgres where it leads.</p>
+<h3 id="table-1_2">Table 1</h3>
+<p>ASSORTMENT PLANNING · PIVOT FUNCTIONALITY · ENGINE BENCHMARK Postgres vs ClickHouse for the pivot grid A controlled, row-identical head-to-head across read, write-back, and storage — built to answer one question without bias: which engine should power the assortment-planning pivot, and at what scale. SCALES 5M · 50M · 250M rows   ·   DATA row-identical, fingerprint-verified   ·   PG 14.21 native · 48 GB host   ·   CH 26.5 · 10 CPU / 3.3 GB VM   ·   STATUS all numbers executed</p>
+<h3 id="table-2_2">Table 2</h3>
+<p>CLICKHOUSE HANDLES   The pivot grid, rollups, contribution-%, treemaps, hindsight scans, bulk reloads. ~2–3× faster on typical aggregates (up to ~13× when grids include distinct-counts), far leaner storage, and the gap widens with scale. | POSTGRES HANDLES   Interactive cell edits / write-back and plan state. ~14× faster single-cell edit cycle (vs a tuned ClickHouse; ~90× vs its untuned default), transactional, sub-millisecond, instant read-after-write.</p>
+<h3 id="table-3_2">Table 3</h3>
+<p>HEAVY PIVOT GRID · READ ● ClickHouse Group-by + contribution-% + option-count over the full fact, joined to hierarchy / cluster / calendar. 15.5× faster | SINGLE-CELL WRITE-BACK · WRITE ● Postgres Edit one Wp cell → persist → read it back. The core planning interaction. ~82× faster</p>
+<p>STORAGE FOOTPRINT ● ClickHouse Same rows, columnar + compressed vs row-store + indexes. ~50–138× smaller | BULK / BATCH WRITE ● ClickHouse Append a whole edited block or reload the fact (the sync path). 3×–2,500× faster</p>
+<p>CONCURRENT CELL EDITS ● Postgres 8 planners editing at once — MVCC row updates vs part-creation. ~26× higher throughput | READ-AFTER-WRITE CORRECTNESS ● Postgres CH pays a ~4× FINAL dedup tax to read its own fresh edits. instant &amp; exact</p>
+<h3 id="table-4_2">Table 4</h3>
+<p>SCALE | PG FLAT+IDX | CLICKHOUSE | RATIO</p>
+<p>5M | 937 MB | 17.5 MB | 54×</p>
+<p>50M | 9.3 GB | 173 MB | 54×</p>
+<p>250M | 46 GB | 341 MB | 138×</p>
+<h3 id="table-5_2">Table 5</h3>
+<p>POSTGRES LAYOUT | TIME</p>
+<p>Flat numeric columns | 2,779 ms</p>
+<p>JSONB measures (today’s table) | 5,719 ms</p>
+<h3 id="table-6_2">Table 6</h3>
+<p>PATH | ENGINE | MECHANISM | WHY</p>
+<p>Render grid / rollup / contribution-% | ClickHouse | MergeTree, sorted on pivot keys | 10–18× faster, 50× smaller, scales</p>
+<p>Edit a Wp cell (write-back) | Postgres | keyed in-place UPDATE | sub-ms, transactional, exact read-back</p>
+<p>Keep grid fresh after edits | ClickHouse | version-append → ReplacingMergeTree | cheap append; dedup on read</p>
+<p>“Refresh rollup” / batch apply / reload | ClickHouse | INSERT…SELECT block append | 3×–2,500× faster than PG bulk UPDATE</p>
+<h3 id="table-7_2">Table 7</h3>
+<p>CLAIM | VERDICT | WHAT THE REFUTATION FOUND</p>
+<p>CH wins heavy read ~13× | HOLDS | Reproduced at 250M against PG's best flat layout (query-log proves CH scans all 249.6M rows, no caching). ~90% of the 13× is one thing: PG's grouped COUNT(DISTINCT) (Option Count) can't parallelize, while CH runs parallel uniqExact. Strip the distinct → CH lead is ~2–3× (pure columnar scan). 1.1.1's grid includes Option Count, so the larger figure applies to it; a PG rollup can't materialize around distinct (non-additive).</p>
+<p>PG wins single-cell write ~90× | OVERSTATED | ~62 ms of CH's 77 ms was the untuned async_insert buffer-flush (CH 26.5 default). With async_insert=0 + fsync durability parity, the CH cycle drops to ~16 ms → PG wins ~14×, not 90× (still a clear PG win, still correct read-after-write).</p>
+<p>Storage CH ~50–138× | OVERSTATED | PG is not bloated (157.6 B/row = theoretical minimum). But the synthetic measures are wildly compressible: with realistic high-entropy data, CH compression collapses from 83.7× to ~1.6–2.6×. Real-world advantage is low-single-digits to ~10×, not 50×.</p>
+<p>Architecture should be hybrid | HOLDS<em> | The read/write split is real and survives tuning; hybrid stands. </em>Caveat: a tuned ClickHouse narrows both gaps, so a ClickHouse-only design (async_insert off, ReplacingMergeTree) is more viable than the raw numbers implied — at the cost of read-after-write complexity and concurrency (tuned CH still ~6.5× below PG on concurrent edits).</p>
+<h3 id="table-8_2">Table 8</h3>
+<p>INTERACTIVE READ (THE SELECTIVE SLICE) | 5.76M | 50M | 250M</p>
+<p>1.1.1 item grid (rows fetched + product join) | PG 5.5× | CH 3.8× | CH 4.3×</p>
+<p>1.1.2 attribute grid (z_other → ~10 rows out) | PG 10× | PG 6.2× | CH 2.0×</p>
+<h3 id="table-9_2">Table 9</h3>
+<p>WRITE-BACK | 5.76M | 50M | 250M</p>
+<p>1.1.1 Wp cell edit (p50) — PG / CH | 0.25 / 69 PG | 0.83 / 76 PG | 0.75 / 71 PG</p>
+<p>1.1.3 threshold edit (p50) — PG / CH | 0.21 / 66.6 ms → PG ~300×, scale-independent (config table; 250M not meaningful) | 0.21 / 66.6 ms → PG ~300×, scale-independent (config table; 250M not meaningful) | 0.21 / 66.6 ms → PG ~300×, scale-independent (config table; 250M not meaningful)</p>
+<h3 id="table-10_1">Table 10</h3>
+<p>WORKLOAD (WALL-CLOCK MS UNLESS NOTED) | 5M PG | 5M CH | 50M PG | 50M CH | 250M PG | 250M CH</p>
+<p>READS | READS | READS | READS | READS | READS | READS</p>
+<p>Heavy grid + contrib% + option-count | 3,859 | 280 | 35,132 | 2,708 | 189,408 | 12,256</p>
+<p>Selective drill (1 subclass×cluster) | 2.8 | 5.0 | 30 | 4.8 | 170 | 9.2</p>
+<p>Wide pivot (channels→columns) | 175 | 73 | 1,726 | 650 | 29,235 | 2,963</p>
+<p>Top-N treemap | 155 | 59 | 1,475 | 535 | 27,635 | 2,522</p>
+<p>WRITES | WRITES | WRITES | WRITES | WRITES | WRITES | WRITES</p>
+<p>Single-cell edit cycle (p50) | 0.35 | 76 | 0.77 | 68 | 0.94 | 77</p>
+<p>Batch block edit | 503 | 40 | 3,338 | 18 | 31,989 | 13</p>
+<p>Concurrent 8-thread (edits/sec) | 633 | 37 | 1,066 | 37 | 970 | 38</p>
+<p>CH FINAL read-tax (×) | — | 4.2× | — | 4.2× | — | 4.1×</p>
+<p>STORAGE / FOOTPRINT | STORAGE / FOOTPRINT | STORAGE / FOOTPRINT | STORAGE / FOOTPRINT | STORAGE / FOOTPRINT | STORAGE / FOOTPRINT | STORAGE / FOOTPRINT</p>
+<p>Fact size on disk | 937 MB | 17.5 MB | 9.3 GB | 173 MB | 46 GB | 341 MB</p></main></div></body></html>

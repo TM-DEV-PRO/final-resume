@@ -11,9 +11,14 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | 8.5% → under 2% failures | 37/437 measured baseline; under 2% target | MEASURED / TARGET | same |
 | 100% reproducible | Persist winning config + seed | TARGET | same |
 | p95 probes <500ms vs 1–20s BQ | Shared BigQuery variance vs dedicated CH | MEASURED / TARGET | same |
-| 60×; 23.7M rows; 3m40s → 3.86s | Order Batching metric POC | MEASURED | `BENCHMARK-NUMBERS.md` / `10_…` |
-| 24×; 250K → 5.9M rows/s | Insert POC; also own ~14× vs 417K detach/attach | MEASURED | same |
-| Hardware caveat | PG 32/256 vs CH 16/64 | MEASURED | same |
+| Datadog / LangSmith / PostHog + OTEL | L2 platform / L1 agent / product analytics; shared `trace_id` | MEASURED design | HLD + `10_…` §6 |
+| **ClickHouse/GCS end-to-end planning store** | Insert-only versioned writes; HLD doing layer → CH/GCS | MEASURED design | stack direction + HLD |
+| **250M pivot 189s → 12.3s (~15×)** | Heavy grid + option-count; ~15.5× DISTINCT; typical ~2–3× | MEASURED | Pivot + consolidated POC / `10_…` |
+| **Avoided 12B store-week (100–450×)** | Aggregate ~25M; explode ~25 ms; schema &gt; engine | MEASURED | LinePlanning / `10_…` |
+| Hardware caveat (Jul 2026 POC) | PG 48 GB host vs CH 10 CPU / 3.3 GB VM | MEASURED | same |
+| PG cell &lt;1ms / hybrid verdict | POC decision history (legacy OLTP / why insert-only unlock) | MEASURED prep | consolidated POC |
+| 60×; 23.7M; 3m40s → 3.86s | Order Batching (**prep depth**) | MEASURED | older POC dump / `10_…` §5 |
+| 24×; 250K → 5.9M rows/s | Insert POC (**prep**) | MEASURED | same |
 
 ## Uber FRM
 

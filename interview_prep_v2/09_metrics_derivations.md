@@ -23,20 +23,25 @@ Every TPS / RPS / from-to / money number on the **current** v2 and Java PDFs. In
 
 ---
 
-## 1. Impact Analytics — AssortSmart + PG→CH POC
+## 1. Impact Analytics — AssortSmart + ClickHouse planning store
 
 | Claim on resume | Tag | Derivation / source |
 |---|---|---|
-| 20 to 100 configs per plan vs 1 manual | TARGET / design | Copilot Phase 1 FRD (`2817589251`); batch eval goal |
-| Turnaround under 1 hour (from days) | TARGET | Same FRD; say targeting |
-| Failures under 2% from 8.5% | MEASURED baseline / TARGET | 8.5% = 37/437 runs MEASURED; under 2% TARGET |
-| 100% reproducible clusters | TARGET | Config/seed persistence design |
-| p95 probes under 500ms vs 1 to 20s BigQuery | MEASURED baseline / TARGET | Shared BigQuery slots 1–20s+; CH target p95 <500ms |
-| **60x** Order Batching; **23.7M** rows; **3m 40s → 3.86s** | MEASURED | `2707030040` / `BENCHMARK-NUMBERS.md`: 23,749,263 join rows; CH 3.857s; PG 3m40s UTC / 7m48s Melbourne TZ |
-| **24x (250K → 5.9M rows/sec)** | MEASURED | CH 5,907,446 rows/s on 3.9B rows vs PG raw 250K (~23.6× → resume 24×). Also own ~14× vs PG detach/attach ~417K |
-| Hardware caveat | MEASURED | PG 32 vCPU / 256 GB tuned; CH 16 vCPU / 64 GB untuned. POC, not identical A/B, not full cutover |
+| 20 to 100 configs per plan vs 1 manual | TARGET / design | Copilot Phase 1 FRD |
+| Turnaround under 1 hour (from days) | TARGET | Same FRD |
+| Failures under 2% from 8.5% | MEASURED baseline / TARGET | 37/437 MEASURED |
+| 100% reproducible clusters | TARGET | Config/seed persistence |
+| p95 probes under 500ms vs 1 to 20s BigQuery | MEASURED baseline / TARGET | Slot variance vs dedicated CH |
+| FastAPI owns chat; Go doing layer tools | MEASURED design | `final_agenticassort.png` HLD |
+| Datadog + LangSmith + PostHog + OTEL | MEASURED design | HLD dual-layer obs + product analytics |
+| **ClickHouse/GCS end-to-end planning store** (insert-only versioned writes) | MEASURED design | Jul 2026 stack direction + HLD (doing layer → CH/GCS) |
+| **250M pivot 189s → 12.3s (~15×)** | MEASURED | Pivot / consolidated POC; ~15.5× on DISTINCT grids; typical aggregates ~2–3× honest |
+| **Avoided materializing 12B store-week (100–450×)** | MEASURED | LinePlanning; aggregate ~25M; 12B often projected |
+| Hardware caveat | MEASURED | PG 48 GB host vs CH 10 CPU / 3.3 GB VM (POC harness) |
 
-**Rapid fire:** Lead with hardware caveat. Cite both PG times. Defend 24× vs raw 250K; if challenged, also cite ~14× vs detach/attach.
+**Prep / decision history (not resume headline):** POC hybrid verdict (PG keyed UPDATE &lt;1ms; CH large reads); legacy mtp-assort = no wholesale CH; Order Batching 60× / 23.7M / 3.86s. Interview close: "POCs said hybrid for legacy OLTP mutations; agentic-assort changed the write model to insert-only versions so planning data lives on ClickHouse end-to-end."
+
+**Rapid fire:** Lead with CH/GCS planning store + insert-only versions. If challenged with POC hybrid slides, explain write-model unlock + thin PG metadata only.
 
 ---
 

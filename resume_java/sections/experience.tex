@@ -17,12 +17,12 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building Agentic AssortSmart, a merchandise planning SaaS where AI agents draft store clusters and plans for planner approval.
-    \item Developing the \textbf{Cluster Recommendation Copilot (Python, LangGraph, MCP)} that turns planner chat into evidence backed cluster recommendations, batch evaluating \textbf{20 to 100 configurations per plan vs 1 manual attempt}, targeting turnaround \textbf{under 1 hour} (from days).
+    \item Architecting Agentic AssortSmart: AI-drafted store clusters and plans for planner approval under gated write-back.
+    \item Developing the \textbf{Cluster Recommendation Copilot (Python, LangGraph, MCP)} that owns chat and calls a \textbf{Spring Boot doing layer} as tools, batch evaluating \textbf{20 to 100 configurations per plan vs 1 manual attempt}, targeting turnaround \textbf{under 1 hour} (from days).
     \item Enforcing \textbf{read only agent tools and 3 approval gates}, targeting failures under 2\% from \textbf{8.5\%}, \textbf{100\% reproducible} clusters, and \textbf{p95 probes under 500ms} vs 1 to 20s on BigQuery.
-    \item Designing \textbf{Java (Spring Boot) microservices} for plan lifecycle and bulk save REST APIs with async executors, connection pooling, and JWT auth.
-    \item Proved a \textbf{60x analytics speedup} in the \textbf{PostgreSQL to ClickHouse POC}, cutting the \textbf{23.7M row} Order Batching metric from 3m 40s to \textbf{3.86s} and raising bulk load throughput \textbf{24x (250K to 5.9M rows/sec)}.
-    \item \textbf{Tech Used}: Java, Spring Boot, Python, LangGraph, MCP, ClickHouse, PostgreSQL, BigQuery, Redis, Docker.
+    \item Designing \textbf{Java (Spring Boot) microservices} for manual REST and agent tool paths (Hindsight, Clustering, Strategy) with JWT auth, plus \textbf{Datadog}, \textbf{LangSmith}, and \textbf{PostHog} under a shared OTEL trace id.
+    \item Building Agentic AssortSmart on \textbf{ClickHouse/GCS} as the end-to-end planning store (insert-only versioned writes): POC cut \textbf{250M-row} pivot grids from \textbf{189s to 12.3s} ($\sim$15x) and a line-plan aggregate avoided materializing \textbf{12B} store-week rows (\textbf{100 to 450x}).
+    \item \textbf{Tech Used}: Java, Spring Boot, Python, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, Docker.
 \end{zitemize}
 
 %====================

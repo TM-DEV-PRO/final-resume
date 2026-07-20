@@ -38,24 +38,21 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 | Claim | Tag | Source |
 |---|---|---|
-| PG vs CH POC on retail workloads (promo loaders, aggregation MVs, Order Batching metric SP) | MEASURED | POC dump 2612625411, 2707030040 |
-| Order Batching metric, 23.7M join rows: CH **3.86s** vs PG **3m40s - 7m48s** (~60x) | MEASURED | 2707030040 |
-| CH insert ~**5.9M rows/s** (3.9B rows, 30 parallel promos) vs PG 250K raw / 417K detach-attach (~14-24x) at ~30 vs 280 connections | MEASURED | 2612625411 |
-| Export path 541s / 607 rows/s (PG) to 38s / 26.4K rows/s (CH), ~43x | MEASURED | 2612625411 |
-| Incremental CH MV 0.65s per 100K insert vs PG full refresh ~4s over 1.69M rows (~85% faster) | MEASURED | 2701262897, 2702934024 |
-| 10K updates on ~29M-row CARFG: full rewrite 36-39s, partition-scoped ~7s, delta join 6.7s/partition, full-table delta OOM at 14.4 GiB | MEASURED | 2780954663 |
-| Fact table 17.15M rows, 432.81 MiB compressed vs 3.31 GiB raw (~7.8x compression) | MEASURED | 2642608187 |
-| Order Batching migration architecture: **CQRS** (PG writes / CH reads), CDC mirrors for CARFG + plan_master + dc_pack_reserve, daily full refresh for low-churn dims, Redis read-your-writes flag TTL ~30s falling back to PG post-save. Resume phrases this plainly ("keeping writes on PostgreSQL, syncing hot fact tables in near real time"); use the CQRS/CDC terms verbally in interviews | MEASURED design doc | 2764046370 |
-| CDC platform SLOs (PG commit to CH visible p95 <= 10s, snapshot >= 25K rows/s) | MEASURED (tool by Ashvin Sharma; say "designed against / integrated with", NOT "built") | 2727084070 |
-| Cluster Recommendation Copilot: LLM orchestrates, deterministic plane computes, 14 audited tools, agent cannot write, human approval gates | MEASURED design (Phase 1, external review PASS, load test pending) | 2817589251, 2816999437 |
-| Copilot baselines: run failures 8.5% (37/437), median clustering job ~20s, reproducibility 0% | MEASURED | 2817589251 |
-| Copilot targets: hierarchy-to-finalized-plan days to <1h, configs 1 to >=20, failures <2%, reproducibility 100%, CH read plane sub-second | TARGET | 2817589251 |
-| Agent data probe latency: baseline 1-20s+ on shared BigQuery slots (measured, variance uncontrolled), target p95 <500ms deterministic on dedicated ClickHouse. Resume gates bullet cites this as "p95 probes under 500ms vs 1 to 20s on BigQuery" | MEASURED baseline / TARGET | 2817589251 s6 |
-| Agentic cluster DDL: 63 tables / 8 layers / 624 columns, partition-swapped facts, append-only events, zero row-level mutations | MEASURED design | 2816606240 |
-| Grid p95 <500ms, cell edit <80ms, History Opt <30s, 3 scenarios <60s | TARGET (platform NFRs) | Planning_Platform_Architecture_v5-2 |
-| Clustering agent flow: auto feature select + k via elbow+silhouette, 3-5 scenarios per session, planner approve before master write | MEASURED PRD | Agentic_Store_Clustering_HLR_v1.1 |
+| **Agentic AssortSmart store (resume headline):** ClickHouse/GCS end-to-end planning store via **insert-only versioned writes** (`ReplacingMergeTree` + `argMax` / version watermark); HLD doing layer → ClickHouse/GCS only. Thin Postgres metadata (auth/tenant/workflow) may remain — not the planning SoR on this resume | MEASURED design (Jul 2026 stack direction + HLD) | `10_stack_direction_jul2026.md`, `final_agenticassort.png` |
+| **POC evidence (numbers on resume):** CH cut **250M-row** pivot grids from **189.4s to 12.3s** (~15.5× COUNT DISTINCT; typical aggs ~**2–3×**); line-plan flat→aggregate avoided **~12B** store-week (**100–450×** / ~140–457×). Hardware: PG 48 GB host advantaged; CH 10 CPU / 3.3 GB Docker | MEASURED | Pivot + LinePlanning + consolidated POC |
+| **POC hybrid verdict (prep / decision history):** PG wins interactive keyed UPDATE (~0.35–0.94 ms); CH wins large reads; **no wholesale CH** for legacy mtp-assort (fix BQ first). Unlocked agentic CH writes by changing write model to insert-only versions — not by claiming CH beats PG at OLTP mutations | MEASURED | consolidated POC; stack direction evolution story |
+| Agentic clustering POC 5 (2026-07-06): dedicated CH for runtime **read** plane (slot-determinism vs BQ); early note said writes still PG for strategy-flow join — **superseded for agentic-assort** by Jul 2026 CH end-to-end planning-store directive | MEASURED decision → superseded for greenfield | POC §6 vs stack direction §10 |
+| Existing mtp-assort: **NO** wholesale CH move now; fix BigQuery SELECT*/clustering/rollups first | MEASURED decision | consolidated POC §5 |
+| **HLD Agentic System (`final_agenticassort.png`):** Path A FE→FastAPI Agent (`POST /chat` DIRECT)→LLM→tools→Go Doing Layer; Path M FE→Go REST manual; Go domains Hindsight/Clustering/Strategy; stores **ClickHouse + GCS**; obs LangSmith (L1) + Datadog (L2) + PostHog linked by OTEL `trace_id` | MEASURED design | diagram |
+| Order Batching metric, 23.7M join rows: CH **3.86s** vs PG **3m40s - 7m48s** (~60x) | MEASURED (**prep depth**) | POC dump 2707030040 |
+| CH insert ~**5.9M rows/s** vs PG 250K raw (~14-24x) | MEASURED (prep) | 2612625411 |
+| Order Batching CQRS / CDC design (PG writes / CH reads, Redis RYW TTL ~30s) | MEASURED design (legacy/Order Batching path) | 2764046370 |
+| CDC platform SLOs (p95 ≤ 10s visible; tool by Ashvin Sharma) | MEASURED | 2727084070 |
+| Cluster Recommendation Copilot: LLM orchestrates, deterministic plane, 14 tools, human gates | MEASURED design (Phase 1 PASS, load test pending) | 2817589251 |
+| Copilot baselines: failures 8.5% (37/437), reproducibility 0%; targets under 2%, 100% reproducible, under 1h, ≥20 configs | MEASURED / TARGET | 2817589251 |
+| Agent probes: BigQuery 1–20s+ baseline vs CH p95 <500ms target | MEASURED / TARGET | 2817589251 |
 
-Do NOT claim: identical benchmark hardware (PG 32vCPU/256GB vs CH 16vCPU/64GB), full production cutover, authorship of pg2ch_cdc tool, shipped copilot (design approved, load test pending).
+Do NOT claim: identical benchmark hardware, full production CH cutover of **legacy mtp-assort**, authorship of pg2ch_cdc, shipped copilot to all tenants, PostHog/Datadog/LangSmith as sole personal ownership, or that ClickHouse beats Postgres at classic OLTP keyed UPDATE without the insert-only versioned model.
 
 ## Uber FRM (Jul 2024 - May 2026)
 

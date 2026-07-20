@@ -14,11 +14,13 @@ Use with `resume_v2/` / `Tarun_Mittal_SSE_5yr_v2.pdf`.
 “Upstream historical source of truth. I own the ingest lane into ClickHouse (staging → `REPLACE PARTITION`, reconciliation). I don’t claim BigQuery warehouse optimization as my work.”
 
 **“Why drop Mongo/Cassandra/ES/DuckDB/gRPC/Rust from skills?”**  
-“Kept what’s evidenced on this resume’s Tech Used lines or the live IA/Uber stack. DuckDB was an earlier serving idea; July 2026 direction is ClickHouse end-to-end. Rust is an in-house escape hatch (CortexEye) — not something I claim as delivered on this PDF.”
+“Kept what’s evidenced on this resume’s Tech Used lines or the live IA/Uber stack. DuckDB was an earlier serving idea; July 2026 **agentic-assort** direction is **ClickHouse/GCS end-to-end** for planning data via insert-only versioned writes (HLD doing layer → CH/GCS). The POC report’s hybrid verdict still applies to legacy OLTP-mutable surfaces and “no wholesale CH” for mtp-assort — tell the write-model evolution story. Rust is an in-house escape hatch (CortexEye) — not something I claim as delivered on this PDF.”
 
 **Menu 98% / $600K**  
 Same as original prep: offline-eval fidelity; finance-owned savings model — know the arithmetic before quoting.
 
 ## Role families
 
-Same lead stories as `../interview_prep/08_role_targeting_and_rapid_fire.md` — IA Go+ClickHouse, Uber Menu streaming, Masters quality/observability, FRM audit correctness.
+Same lead stories as `../interview_prep/08_role_targeting_and_rapid_fire.md` — IA ClickHouse/GCS planning store + FastAPI/Go agentic path, Uber Menu streaming, Masters quality/observability, FRM audit correctness.
+
+**IA 15-second lead (Jul 2026):** “ClickHouse/GCS end-to-end planning store (insert-only versions). POC: 250M pivot **189s→12.3s** (~15× DISTINCT; typical ~2–3×); avoided **12B** store-week (**100–450×**). FastAPI chat + Go doing layer; Datadog / LangSmith / PostHog + OTEL. Legacy mtp-assort still hybrid / fix BQ first.”

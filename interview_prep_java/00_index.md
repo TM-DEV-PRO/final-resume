@@ -34,7 +34,7 @@ Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. N
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics (14 May 2026–) | Same CH/CQRS/copilot numbers as v2 (Python) |
+| Impact Analytics | ClickHouse/GCS planning store + pivot/line-plan POC numbers; FastAPI agent + Spring doing layer; Datadog/LangSmith/PostHog |
 | Uber FRM | Spring Boot + JPA framing; owned platform + layered architecture + recon v2 (18 files); led 3; targeting 70% |
 | Uber Menu | Python Selenium→Kafka→Flink→Spark (no Spring); same numbers as v2 |
 | Masters India | Spring Boot + Spring Batch framing; owned strangler; Kafka TPS/RPS; idempotency/DLQ; on-call alerting |

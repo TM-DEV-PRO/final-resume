@@ -1,57 +1,57 @@
 # Impact Analytics — Agentic AssortSmart (Java / Spring track)
 
-**Role:** Senior Software Engineer · June 2026 – Present · Bangalore  
-**Resume header tech:** Java · Spring Boot · Hibernate · Python (FastAPI, LangGraph, MCP) · ClickHouse · PostgreSQL · Redis · Kafka · GCP · Docker
+**Role:** Senior Software Engineer · 14 May 2026 – Present · Bangalore  
+**Resume tech:** Java · Spring Boot · Python (FastAPI, LangGraph, MCP) · ClickHouse · BigQuery · GCS · Datadog · LangSmith · PostHog · Docker  
 
-> Same product, metrics, and architecture as `interview_prep/projects/01_impact_analytics_agentic_assort.md` and the agentic playbook. This file is the **Java/Spring telling** for interviews targeting Java backend roles — **agentic / AI tier stays Python**.
+> Same facts as `interview_prep_v2/10_impact_analytics_deep_dive.md` and `GROUND_TRUTH.md`. This file is the **Java/Spring telling**. Agentic / AI tier stays **Python**.
 
 ---
 
 ## 1. Elevator pitch (30 seconds)
 
-"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. AI agents draft store clusters and plans; planners review, override, and approve. Architecturally it's one Python agentic microservice (FastAPI, LangGraph, MCP) that runs agentic workflows, and a Spring Boot (Java) core backend exposing REST APIs for plan lifecycle, reference data, and bulk saves. I own the store-clustering agent: it grounds a plain-language request into hierarchy, season, and store scopes, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for planner approval — turnaround from days to under an hour. Under both sits ClickHouse with an append-only versioned write model — every planner override is an insert — giving version diff, undo/redo, and an immutable audit trail."
+"I work on AssortSmart's agentic rebuild. FastAPI owns chat (LangGraph/MCP); Spring Boot is the doing layer for Hindsight, Clustering, and Strategy — manual REST and agent tools hit the same APIs against **ClickHouse/GCS**. We instrumented Datadog, LangSmith, and PostHog under a shared OTEL trace id. Planning data is **ClickHouse end-to-end** via insert-only versioned writes — unlocked after POCs showed classic OLTP mutations are the wrong CH model. Evidence: on a **250M-row** pivot harness CH cut heavy grids from **189s to 12.3s** (~**15×** on DISTINCT grids; typical aggregates ~**2–3×**), and line-planning avoided materializing **~12B** store-week rows via a **~25M** aggregate (**100–450×**). Copilot targets under **1 hour** and under **2%** failures from measured **8.5%**; Phase 1 design PASS, load test pending."
 
 ## 2. Service split (say it exactly)
 
-"One Python microservice (FastAPI, LangGraph, MCP) runs all agentic workflows — agents, tools, LLM orchestration. The core backend is Spring Boot (Java): REST controllers for plan lifecycle, tenant config, and bulk saves, secured with Spring Security JWT. The two talk over versioned API contracts. The split is a natural deployment boundary — the agent tier scales with LLM latency; the API tier scales with request volume."
+"Path A: FE → FastAPI `POST /chat` → LLM → tools → **Spring Boot doing layer** → CH/GCS. Path M: FE → Spring REST → **same** doing modules — no LLM. FastAPI owns chat because agent loops are LLM-latency-shaped. Spring owns doing because Path M is throughput I/O. Agent never bypasses Spring for mutations; probe DB profiles stay read-only."
 
-## 3. Spring Boot core backend — defend the bullet
+## 3. Spring Boot doing layer — defend the resume bullet
 
-Resume: *"Spring Boot microservices covering plan lifecycle, tenant configuration, and bulk save REST APIs, with ExecutorService worker pools and bounded queues for concurrent writes, request-scoped timeouts, and JWT auth via Spring Security."*
+Resume: *Designing Java (Spring Boot) microservices for manual REST and agent tool paths (Hindsight, Clustering, Strategy) with JWT auth, plus Datadog, LangSmith, and PostHog under a shared OTEL trace id.*
 
-- **Plan lifecycle** — `@RestController` endpoints: create/copy/finalize/soft-delete; state machine in a `@Service` (draft → in-review → finalized); finalize enforces role + confirmation token.
-- **Reference data** — hierarchy trees, fiscal calendars, store masters, tenant config. Concurrent reads via `CompletableFuture` / virtual threads with a shared timeout; partial-safe composites.
-- **Bulk save** — grid save arrives as a batch of cell edits; service assigns one `version = epoch-ms`, validates with Bean Validation (`@Valid` + custom validators), fans batched ClickHouse inserts through a **bounded `ExecutorService`** (fixed pool + `ArrayBlockingQueue` / `ThreadPoolExecutor` rejection policy). Idempotency: batch id + content hash.
-- **Spring Security** — JWT resource server; tenant + role claims; filter chain for correlation IDs, validation, rate limits.
-- **Timeouts** — `@Transactional` boundaries for Postgres metadata; ClickHouse clients with request deadlines; graceful shutdown drains the pool (`DisposableBean` / `@PreDestroy`).
-- **Why Spring here:** "This tier is bind → validate → authorize → fan-out I/O → return. Spring Boot gives me production defaults (Actuator, metrics, config), Hibernate for the thin Postgres metadata plane, and a boring enough codebase that the team can own it."
+- **Hindsight / Clustering / Strategy** — `@RestController` + `@Service` modules shared by Path M and Path A tool calls.
+- **JWT** — Spring Security resource server; tenant + role claims.
+- **Bulk / tool I/O** — bounded `ExecutorService` / virtual threads for fan-out; request deadlines on CH clients; idempotency via batch id + content hash; versioned batch INSERT into ClickHouse.
+- **Obs** — OTEL `trace_id` into Datadog (L2 platform). Claim **instrumentation design**, not sole SaaS ownership. LangSmith stays on the Python agent tier (L1); PostHog on product/FE.
 
-## 4. Agentic microservice — defend the clustering bullet
+## 4. Agentic microservice (Python — unchanged ownership)
 
-Same product behavior as the main playbook (HLR-AG-001…006): autonomous feature selection, k optimization via silhouette, top 3 scenarios with evidence, approval gating, <1 h turnaround.
+Same FRD targets: 20–100 configs vs 1; under 1h (TARGET); 8.5% → under 2% (MEASURED/TARGET); 100% reproducible (TARGET); p95 probes under 500ms vs BQ 1–20s (MEASURED/TARGET).
 
-**Python framing (unchanged from main track):**
-- Orchestration graph in LangGraph (nodes = tool calls + LLM steps; state in a typed conversation object).
-- Tools call ClickHouse / Postgres / Redis via Python clients / MCP — not ad-hoc SQL from prompts.
-- Streaming progress to the UI via SSE.
-- **Why Python for agents, Java for core:** "LLM tooling, LangGraph, and RAG ecosystems are strongest in Python; the request/response API tier is throughput-shaped Java/Spring the team owns long-term."
+## 5. ClickHouse end-to-end + POC numbers
 
-## 5. ClickHouse append-only store
+| Claim | Tag | Defense |
+|---|---|---|
+| ClickHouse/GCS planning store (insert-only versions) | MEASURED design | HLD + Jul 2026 stack direction |
+| 250M pivot **189s → 12.3s** (~15×) | MEASURED | DISTINCT/option-count cliff; typical ~2–3× if stripped |
+| Avoided **12B** flat (**100–450×**) | MEASURED / projected 12B | Aggregate ~25M; explode ~25 ms |
+| Hardware | MEASURED | PG 48 GB host vs CH 10 CPU / 3.3 GB VM |
+| POC hybrid / PG cell &lt;1ms | MEASURED prep | Decision history — why insert-only unlock, not resume headline |
+| Legacy mtp-assort no wholesale CH | MEASURED | Fix BigQuery first |
+| Order Batching 60× | MEASURED prep | Offer if asked |
 
-Unchanged from main track: `ReplacingMergeTree(version)`, `argMax` / latest-state views, `REPLACE PARTITION` seeds, never-erase inserts, Postgres for true ACID metadata (auth, tenant config, workflow state).
+**Interview close:** "POCs said hybrid for legacy keyed UPDATE. Agentic AssortSmart changed the write model — planning facts are ClickHouse end-to-end."
 
-**Precision:** planning-grid transactionality ≠ bank-ledger OLTP. Say this unprompted.
+## 6. Stack evolution (correct order)
 
-## 6. Stack evolution story (senior narrative)
-
-1. Live audit said "no ClickHouse" for legacy in-place UPDATEs — correct for that write model.
-2. Verdict: objection is write-model, not engine → gated PoC on insert-only semantics.
-3. PoC passed → org committed ClickHouse end-to-end; Spring Boot for the non-agentic API tier; Python/LangGraph for the agent tier; ClickHouse for planning facts.
+1. Live audit: no wholesale CH for legacy in-place UPDATEs — correct for that write model.
+2. Pivot + line-plan POCs → CH wins large reads; schema flat→agg is the bigger lever; hybrid for classic OLTP.
+3. Insert-only / versioned write PoC → `mutations_used = 0`.
+4. Jul 2026: agentic-assort commits ClickHouse end-to-end for planning data; HLD shows doing layer → ClickHouse/GCS.
 
 ## 7. Q&A (Java-flavored)
 
-- **"Why Spring Boot over Quarkus/Micronaut?"** Team familiarity, Actuator/observability ecosystem, Spring Data + Security maturity; Quarkus wins on cold start for serverless — not our deployment model.
-- **"Hibernate on ClickHouse?"** No — ClickHouse via native JDBC / clickhouse-java client. Hibernate/JPA only on PostgreSQL metadata.
-- **"Why not Spring AI for agents?"** Agent tooling (LangGraph, MCP, RAG) stays Python by design on this resume; Java owns the Spring Boot core APIs.
-- **"Virtual threads?"** Prefer virtual threads for blocking I/O fan-out on Java 21+; keep a bounded platform-thread pool for CPU-bound scoring if needed.
-- **"How do you test?"** JUnit 5 + Mockito for services; `@SpringBootTest` + Testcontainers for Postgres/Redis integration; contract tests on REST with MockMvc / WebTestClient.
+- **"Hibernate on ClickHouse?"** No — clickhouse-java / JDBC. JPA only if a thin metadata plane stays on Postgres.
+- **"Why not Spring AI for agents?"** LangGraph/MCP stay Python on this resume; Java owns Spring doing-layer APIs.
+- **"Virtual threads?"** Prefer for blocking I/O fan-out on Java 21+; bound pools by CH connection budget.
+- **"What shipped vs POC?"** CH planning-store direction = MEASURED design (HLD/stack). Pivot/line-plan numbers = MEASURED harness. Copilot = Phase 1 design PASS, load test pending.

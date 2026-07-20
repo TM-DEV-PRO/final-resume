@@ -44,10 +44,10 @@ strong{color:#fff}
 <a class="lvl1" href="#impact-analytics-agentic-assortsmart-java-spring-track">Impact Analytics — Agentic AssortSmart (Java / Spring track)</a>
 <a class="lvl2" href="#1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</a>
 <a class="lvl2" href="#2-service-split-say-it-exactly">2. Service split (say it exactly)</a>
-<a class="lvl2" href="#3-spring-boot-core-backend-defend-the-bullet">3. Spring Boot core backend — defend the bullet</a>
-<a class="lvl2" href="#4-agentic-microservice-defend-the-clustering-bullet">4. Agentic microservice — defend the clustering bullet</a>
-<a class="lvl2" href="#5-clickhouse-append-only-store">5. ClickHouse append-only store</a>
-<a class="lvl2" href="#6-stack-evolution-story-senior-narrative">6. Stack evolution story (senior narrative)</a>
+<a class="lvl2" href="#3-spring-boot-doing-layer-defend-the-resume-bullet">3. Spring Boot doing layer — defend the resume bullet</a>
+<a class="lvl2" href="#4-agentic-microservice-python-unchanged-ownership">4. Agentic microservice (Python — unchanged ownership)</a>
+<a class="lvl2" href="#5-clickhouse-end-to-end-poc-numbers">5. ClickHouse end-to-end + POC numbers</a>
+<a class="lvl2" href="#6-stack-evolution-correct-order">6. Stack evolution (correct order)</a>
 <a class="lvl2" href="#7-qa-java-flavored">7. Q&amp;A (Java-flavored)</a>
 <a class="lvl1" href="#uber-via-epam-frm-scoping-platform-java-spring-track">Uber (via EPAM) — FRM Scoping Platform (Java / Spring track)</a>
 <a class="lvl2" href="#1-elevator-pitch">1. Elevator pitch</a>
@@ -95,7 +95,7 @@ strong{color:#fff}
 <a class="lvl2" href="#2-clickhouse-planning-agentic-schema-sketch">2. ClickHouse planning / agentic schema sketch</a>
 <a class="lvl2" href="#3-clustering-copilot-user-flow-what-i-walk-through">3. Clustering copilot user flow (what I walk through)</a>
 <a class="lvl2" href="#4-resume-bullet-1-cluster-recommendation-copilot">4. Resume bullet 1: Cluster Recommendation Copilot</a>
-<a class="lvl2" href="#5-resume-bullet-2-postgresql-vs-clickhouse-benchmarks">5. Resume bullet 2: PostgreSQL vs ClickHouse benchmarks</a>
+<a class="lvl2" href="#5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</a>
 <a class="lvl2" href="#6-resume-bullet-3-cqrs-migration-order-batching">6. Resume bullet 3: CQRS migration (Order Batching)</a>
 <a class="lvl2" href="#7-resume-bullet-4-update-strategies-replacingmergetree-compression">7. Resume bullet 4: Update strategies, ReplacingMergeTree, compression</a>
 <a class="lvl2" href="#8-cross-cutting-talking-track-2-minute-narrative">8. Cross-cutting talking track (2-minute narrative)</a>
@@ -104,7 +104,9 @@ strong{color:#fff}
 <a class="lvl2" href="#11-phrases-to-use-avoid">11. Phrases to use / avoid</a>
 <a class="lvl2" href="#12-suggested-45-minute-drill-order">12. Suggested 45-minute drill order</a>
 <a class="lvl2" href="#mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#new-poc-hld-mock-interview-jul-2026">New POC + HLD mock interview (Jul 2026)</a>
 <a class="lvl2" href="#confidence-audit">Confidence audit</a>
+<a class="lvl2" href="#order-batching-60-prep-depth-replaced-on-resume-headline">Order Batching 60× (prep depth — replaced on resume headline)</a>
 <a class="lvl1" href="#11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</a>
 <a class="lvl2" href="#0-the-four-bullets-i-am-defending-jul-2026-hardened-wording">0. The four bullets I am defending (Jul 2026 hardened wording)</a>
 <a class="lvl2" href="#1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</a>
@@ -217,8 +219,8 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>Impact Analytics (14 May 2026–)</td>
-<td>Same CH/CQRS/copilot numbers as v2 (Python)</td>
+<td>Impact Analytics</td>
+<td>ClickHouse/GCS planning store + pivot/line-plan POC numbers; FastAPI agent + Spring doing layer; Datadog/LangSmith/PostHog</td>
 </tr>
 <tr>
 <td>Uber FRM</td>
@@ -291,49 +293,87 @@ mv ../output/resume.pdf ../output/Tarun_Mittal_SSE_Java_5yr.pdf
 </ul>
 <hr>
 <h1 id="impact-analytics-agentic-assortsmart-java-spring-track">Impact Analytics — Agentic AssortSmart (Java / Spring track)</h1>
-<p><strong>Role:</strong> Senior Software Engineer · June 2026 – Present · Bangalore<br>
-<strong>Resume header tech:</strong> Java · Spring Boot · Hibernate · Python (FastAPI, LangGraph, MCP) · ClickHouse · PostgreSQL · Redis · Kafka · GCP · Docker</p>
+<p><strong>Role:</strong> Senior Software Engineer · 14 May 2026 – Present · Bangalore<br>
+<strong>Resume tech:</strong> Java · Spring Boot · Python (FastAPI, LangGraph, MCP) · ClickHouse · BigQuery · GCS · Datadog · LangSmith · PostHog · Docker  </p>
 <blockquote>
-<p>Same product, metrics, and architecture as <code>interview_prep/projects/01_impact_analytics_agentic_assort.md</code> and the agentic playbook. This file is the <strong>Java/Spring telling</strong> for interviews targeting Java backend roles — <strong>agentic / AI tier stays Python</strong>.</p>
+<p>Same facts as <code>interview_prep_v2/10_impact_analytics_deep_dive.md</code> and <code>GROUND_TRUTH.md</code>. This file is the <strong>Java/Spring telling</strong>. Agentic / AI tier stays <strong>Python</strong>.</p>
 </blockquote>
 <hr>
 <h2 id="1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</h2>
-<p>"I work on the agentic rebuild of AssortSmart — a merchandise planning SaaS where enterprise retailers decide what products to buy, in what quantities, for which stores, a season ahead. AI agents draft store clusters and plans; planners review, override, and approve. Architecturally it's one Python agentic microservice (FastAPI, LangGraph, MCP) that runs agentic workflows, and a Spring Boot (Java) core backend exposing REST APIs for plan lifecycle, reference data, and bulk saves. I own the store-clustering agent: it grounds a plain-language request into hierarchy, season, and store scopes, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for planner approval — turnaround from days to under an hour. Under both sits ClickHouse with an append-only versioned write model — every planner override is an insert — giving version diff, undo/redo, and an immutable audit trail."</p>
+<p>"I work on AssortSmart's agentic rebuild. FastAPI owns chat (LangGraph/MCP); Spring Boot is the doing layer for Hindsight, Clustering, and Strategy — manual REST and agent tools hit the same APIs against <strong>ClickHouse/GCS</strong>. We instrumented Datadog, LangSmith, and PostHog under a shared OTEL trace id. Planning data is <strong>ClickHouse end-to-end</strong> via insert-only versioned writes — unlocked after POCs showed classic OLTP mutations are the wrong CH model. Evidence: on a <strong>250M-row</strong> pivot harness CH cut heavy grids from <strong>189s to 12.3s</strong> (~<strong>15×</strong> on DISTINCT grids; typical aggregates ~<strong>2–3×</strong>), and line-planning avoided materializing <strong>~12B</strong> store-week rows via a <strong>~25M</strong> aggregate (<strong>100–450×</strong>). Copilot targets under <strong>1 hour</strong> and under <strong>2%</strong> failures from measured <strong>8.5%</strong>; Phase 1 design PASS, load test pending."</p>
 <h2 id="2-service-split-say-it-exactly">2. Service split (say it exactly)</h2>
-<p>"One Python microservice (FastAPI, LangGraph, MCP) runs all agentic workflows — agents, tools, LLM orchestration. The core backend is Spring Boot (Java): REST controllers for plan lifecycle, tenant config, and bulk saves, secured with Spring Security JWT. The two talk over versioned API contracts. The split is a natural deployment boundary — the agent tier scales with LLM latency; the API tier scales with request volume."</p>
-<h2 id="3-spring-boot-core-backend-defend-the-bullet">3. Spring Boot core backend — defend the bullet</h2>
-<p>Resume: <em>"Spring Boot microservices covering plan lifecycle, tenant configuration, and bulk save REST APIs, with ExecutorService worker pools and bounded queues for concurrent writes, request-scoped timeouts, and JWT auth via Spring Security."</em></p>
+<p>"Path A: FE → FastAPI <code>POST /chat</code> → LLM → tools → <strong>Spring Boot doing layer</strong> → CH/GCS. Path M: FE → Spring REST → <strong>same</strong> doing modules — no LLM. FastAPI owns chat because agent loops are LLM-latency-shaped. Spring owns doing because Path M is throughput I/O. Agent never bypasses Spring for mutations; probe DB profiles stay read-only."</p>
+<h2 id="3-spring-boot-doing-layer-defend-the-resume-bullet">3. Spring Boot doing layer — defend the resume bullet</h2>
+<p>Resume: <em>Designing Java (Spring Boot) microservices for manual REST and agent tool paths (Hindsight, Clustering, Strategy) with JWT auth, plus Datadog, LangSmith, and PostHog under a shared OTEL trace id.</em></p>
 <ul>
-<li><strong>Plan lifecycle</strong> — <code>@RestController</code> endpoints: create/copy/finalize/soft-delete; state machine in a <code>@Service</code> (draft → in-review → finalized); finalize enforces role + confirmation token.</li>
-<li><strong>Reference data</strong> — hierarchy trees, fiscal calendars, store masters, tenant config. Concurrent reads via <code>CompletableFuture</code> / virtual threads with a shared timeout; partial-safe composites.</li>
-<li><strong>Bulk save</strong> — grid save arrives as a batch of cell edits; service assigns one <code>version = epoch-ms</code>, validates with Bean Validation (<code>@Valid</code> + custom validators), fans batched ClickHouse inserts through a <strong>bounded <code>ExecutorService</code></strong> (fixed pool + <code>ArrayBlockingQueue</code> / <code>ThreadPoolExecutor</code> rejection policy). Idempotency: batch id + content hash.</li>
-<li><strong>Spring Security</strong> — JWT resource server; tenant + role claims; filter chain for correlation IDs, validation, rate limits.</li>
-<li><strong>Timeouts</strong> — <code>@Transactional</code> boundaries for Postgres metadata; ClickHouse clients with request deadlines; graceful shutdown drains the pool (<code>DisposableBean</code> / <code>@PreDestroy</code>).</li>
-<li><strong>Why Spring here:</strong> "This tier is bind → validate → authorize → fan-out I/O → return. Spring Boot gives me production defaults (Actuator, metrics, config), Hibernate for the thin Postgres metadata plane, and a boring enough codebase that the team can own it."</li>
+<li><strong>Hindsight / Clustering / Strategy</strong> — <code>@RestController</code> + <code>@Service</code> modules shared by Path M and Path A tool calls.</li>
+<li><strong>JWT</strong> — Spring Security resource server; tenant + role claims.</li>
+<li><strong>Bulk / tool I/O</strong> — bounded <code>ExecutorService</code> / virtual threads for fan-out; request deadlines on CH clients; idempotency via batch id + content hash; versioned batch INSERT into ClickHouse.</li>
+<li><strong>Obs</strong> — OTEL <code>trace_id</code> into Datadog (L2 platform). Claim <strong>instrumentation design</strong>, not sole SaaS ownership. LangSmith stays on the Python agent tier (L1); PostHog on product/FE.</li>
 </ul>
-<h2 id="4-agentic-microservice-defend-the-clustering-bullet">4. Agentic microservice — defend the clustering bullet</h2>
-<p>Same product behavior as the main playbook (HLR-AG-001…006): autonomous feature selection, k optimization via silhouette, top 3 scenarios with evidence, approval gating, &lt;1 h turnaround.</p>
-<p><strong>Python framing (unchanged from main track):</strong>
-- Orchestration graph in LangGraph (nodes = tool calls + LLM steps; state in a typed conversation object).
-- Tools call ClickHouse / Postgres / Redis via Python clients / MCP — not ad-hoc SQL from prompts.
-- Streaming progress to the UI via SSE.
-- <strong>Why Python for agents, Java for core:</strong> "LLM tooling, LangGraph, and RAG ecosystems are strongest in Python; the request/response API tier is throughput-shaped Java/Spring the team owns long-term."</p>
-<h2 id="5-clickhouse-append-only-store">5. ClickHouse append-only store</h2>
-<p>Unchanged from main track: <code>ReplacingMergeTree(version)</code>, <code>argMax</code> / latest-state views, <code>REPLACE PARTITION</code> seeds, never-erase inserts, Postgres for true ACID metadata (auth, tenant config, workflow state).</p>
-<p><strong>Precision:</strong> planning-grid transactionality ≠ bank-ledger OLTP. Say this unprompted.</p>
-<h2 id="6-stack-evolution-story-senior-narrative">6. Stack evolution story (senior narrative)</h2>
+<h2 id="4-agentic-microservice-python-unchanged-ownership">4. Agentic microservice (Python — unchanged ownership)</h2>
+<p>Same FRD targets: 20–100 configs vs 1; under 1h (TARGET); 8.5% → under 2% (MEASURED/TARGET); 100% reproducible (TARGET); p95 probes under 500ms vs BQ 1–20s (MEASURED/TARGET).</p>
+<h2 id="5-clickhouse-end-to-end-poc-numbers">5. ClickHouse end-to-end + POC numbers</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Tag</th>
+<th>Defense</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClickHouse/GCS planning store (insert-only versions)</td>
+<td>MEASURED design</td>
+<td>HLD + Jul 2026 stack direction</td>
+</tr>
+<tr>
+<td>250M pivot <strong>189s → 12.3s</strong> (~15×)</td>
+<td>MEASURED</td>
+<td>DISTINCT/option-count cliff; typical ~2–3× if stripped</td>
+</tr>
+<tr>
+<td>Avoided <strong>12B</strong> flat (<strong>100–450×</strong>)</td>
+<td>MEASURED / projected 12B</td>
+<td>Aggregate ~25M; explode ~25 ms</td>
+</tr>
+<tr>
+<td>Hardware</td>
+<td>MEASURED</td>
+<td>PG 48 GB host vs CH 10 CPU / 3.3 GB VM</td>
+</tr>
+<tr>
+<td>POC hybrid / PG cell &lt;1ms</td>
+<td>MEASURED prep</td>
+<td>Decision history — why insert-only unlock, not resume headline</td>
+</tr>
+<tr>
+<td>Legacy mtp-assort no wholesale CH</td>
+<td>MEASURED</td>
+<td>Fix BigQuery first</td>
+</tr>
+<tr>
+<td>Order Batching 60×</td>
+<td>MEASURED prep</td>
+<td>Offer if asked</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Interview close:</strong> "POCs said hybrid for legacy keyed UPDATE. Agentic AssortSmart changed the write model — planning facts are ClickHouse end-to-end."</p>
+<h2 id="6-stack-evolution-correct-order">6. Stack evolution (correct order)</h2>
 <ol>
-<li>Live audit said "no ClickHouse" for legacy in-place UPDATEs — correct for that write model.</li>
-<li>Verdict: objection is write-model, not engine → gated PoC on insert-only semantics.</li>
-<li>PoC passed → org committed ClickHouse end-to-end; Spring Boot for the non-agentic API tier; Python/LangGraph for the agent tier; ClickHouse for planning facts.</li>
+<li>Live audit: no wholesale CH for legacy in-place UPDATEs — correct for that write model.</li>
+<li>Pivot + line-plan POCs → CH wins large reads; schema flat→agg is the bigger lever; hybrid for classic OLTP.</li>
+<li>Insert-only / versioned write PoC → <code>mutations_used = 0</code>.</li>
+<li>Jul 2026: agentic-assort commits ClickHouse end-to-end for planning data; HLD shows doing layer → ClickHouse/GCS.</li>
 </ol>
 <h2 id="7-qa-java-flavored">7. Q&amp;A (Java-flavored)</h2>
 <ul>
-<li><strong>"Why Spring Boot over Quarkus/Micronaut?"</strong> Team familiarity, Actuator/observability ecosystem, Spring Data + Security maturity; Quarkus wins on cold start for serverless — not our deployment model.</li>
-<li><strong>"Hibernate on ClickHouse?"</strong> No — ClickHouse via native JDBC / clickhouse-java client. Hibernate/JPA only on PostgreSQL metadata.</li>
-<li><strong>"Why not Spring AI for agents?"</strong> Agent tooling (LangGraph, MCP, RAG) stays Python by design on this resume; Java owns the Spring Boot core APIs.</li>
-<li><strong>"Virtual threads?"</strong> Prefer virtual threads for blocking I/O fan-out on Java 21+; keep a bounded platform-thread pool for CPU-bound scoring if needed.</li>
-<li><strong>"How do you test?"</strong> JUnit 5 + Mockito for services; <code>@SpringBootTest</code> + Testcontainers for Postgres/Redis integration; contract tests on REST with MockMvc / WebTestClient.</li>
+<li><strong>"Hibernate on ClickHouse?"</strong> No — clickhouse-java / JDBC. JPA only if a thin metadata plane stays on Postgres.</li>
+<li><strong>"Why not Spring AI for agents?"</strong> LangGraph/MCP stay Python on this resume; Java owns Spring doing-layer APIs.</li>
+<li><strong>"Virtual threads?"</strong> Prefer for blocking I/O fan-out on Java 21+; bound pools by CH connection budget.</li>
+<li><strong>"What shipped vs POC?"</strong> CH planning-store direction = MEASURED design (HLD/stack). Pivot/line-plan numbers = MEASURED harness. Copilot = Phase 1 design PASS, load test pending.</li>
 </ul>
 <hr>
 <h1 id="uber-via-epam-frm-scoping-platform-java-spring-track">Uber (via EPAM) — FRM Scoping Platform (Java / Spring track)</h1>
@@ -696,17 +736,18 @@ This Java resume is a <strong>positioning track</strong> for Spring roles — sa
 <hr>
 <h1 id="impact-analytics-deep-dive-bullet-by-bullet-interview-defense">Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense</h1>
 <p><strong>Role:</strong> Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present<br>
-<strong>Project:</strong> Agentic AssortSmart Platform &amp; PostgreSQL → ClickHouse Data Migration<br>
-<strong>Sources of truth:</strong> <code>GROUND_TRUTH.md</code>, resume <code>experience.tex</code> IA bullets, ClickHouse POC dump, Agentic Cluster docs, AssortSmart clustering HLR v1.1<br>
-<strong>Honesty rule:</strong> Every number below is tagged MEASURED / TARGET / ESTIMATED / design-only. Do not invent. Hardware for insert/export POC was <strong>not</strong> identical.</p>
+<strong>Project:</strong> Agentic AssortSmart (FastAPI chat + Go doing layer) on <strong>ClickHouse/GCS</strong> (insert-only versioned planning store); POC evidence from Pivot / LinePlanning / consolidated CH-vs-PG report<br>
+<strong>Sources of truth:</strong> <code>GROUND_TRUTH.md</code>, resume IA bullets, Jul 2026 stack direction (<code>10_stack_direction_jul2026.md</code>), HLD <code>final_agenticassort.png</code>, POC source extracts <code>19</code>/<code>20</code>/<code>21</code><br>
+<strong>Honesty rule:</strong> Every number below is tagged MEASURED / TARGET / ESTIMATED / design-only. Do not invent. <strong>Resume direction = CH end-to-end for agentic planning data.</strong> POC hybrid slides are decision history (legacy OLTP / why the write model had to change), not a contradiction if you tell the evolution story.</p>
 <hr>
 <h2 id="0-role-framing-30-second-open">0. Role framing (30-second open)</h2>
 <p>I joined Impact Analytics as a Senior Software Engineer on 14 May 2026. My charter sits at the intersection of two workstreams:</p>
 <ol>
-<li><strong>Data platform:</strong> quantify where PostgreSQL breaks on retail OLAP workloads, then design a CQRS migration that keeps transactional writes on Postgres and moves aggregation-heavy reads to ClickHouse.</li>
-<li><strong>Agentic product:</strong> design the Cluster Recommendation Copilot for AssortSmart so an LLM orchestrates while a deterministic plane computes, with human approval before any write.</li>
+<li><strong>Agentic AssortSmart data plane:</strong> ClickHouse/GCS as the end-to-end planning store — insert-only versioned writes (<code>ReplacingMergeTree</code> + <code>argMax</code>) so the doing layer is not stuck on classic OLTP mutations. BigQuery stays upstream historical truth (BQ→CH ingest). Thin Postgres metadata only if asked.</li>
+<li><strong>Agentic product:</strong> Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL <code>trace_id</code>.</li>
 </ol>
-<p>I am an IC so far (no people lead at IA). CDC platform tooling (<code>pg2ch_cdc</code>) was authored by another engineer (Ashvin Sharma). I designed Order Batching migration against it and integrated with its SLOs and mirror patterns. The Cluster Recommendation Copilot is Phase 1 design approved (external review PASS); bring-up load test is still pending.</p>
+<p>I am an IC so far (no people lead at IA). CDC platform tooling (<code>pg2ch_cdc</code>) was authored by another engineer (Ashvin Sharma). Copilot: Phase 1 design approved (external review PASS); bring-up load test pending. Obs stack on the resume is <strong>MEASURED design / instrumentation</strong>, not sole SaaS ownership.</p>
+<p><strong>Source tension to own unprompted:</strong> The Jul 2026 POC report verdict is still <strong>hybrid per surface</strong> for assortment benchmarks and <strong>no wholesale CH</strong> for legacy mtp-assort. The <strong>agentic-assort</strong> build follows the Jul 2026 stack directive + HLD: planning data on ClickHouse end-to-end because we changed the write model. Do not collapse “no CH for legacy UPDATE/JSONB” into “no CH for agentic AssortSmart.”</p>
 <hr>
 <h2 id="1-end-to-end-architecture-order-batching-cqrs-edit-path">1. End-to-end architecture (Order Batching CQRS + edit path)</h2>
 <p>This is the picture I draw on a whiteboard when asked how Order Batching moves to ClickHouse without breaking saves, locks, or edit sessions.</p>
@@ -1025,12 +1066,12 @@ distribution_centres       ─daily─►  distribution_centres
 </table>
 <p><strong>Say in interview:</strong> "Phase 1 design is approved to bring-up. I am not claiming a production-shipped agent yet. Load test is the remaining gate."</p>
 <hr>
-<h2 id="5-resume-bullet-2-postgresql-vs-clickhouse-benchmarks">5. Resume bullet 2: PostgreSQL vs ClickHouse benchmarks</h2>
+<h2 id="5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</h2>
 <blockquote>
-<p>Benchmarked PostgreSQL vs ClickHouse on production retail workloads. The Order Batching metric over 23.7M joined rows ran in 3.86s on ClickHouse vs 3m 40s+ on PostgreSQL (60x), parallel bulk loads sustained 5.9M rows/sec vs 250K rows/sec, and query to CSV export throughput improved 43x (607 to 26,400 rows/sec).</p>
+<p><strong>Resume now leads with hybrid pivot/line-plan (189s→12.3s, cell &lt;1ms, 12B avoided).</strong> Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.</p>
 </blockquote>
 <h3 id="51-exact-story-with-numbers-memorize-these">5.1 Exact story with numbers (memorize these)</h3>
-<p>All MEASURED from POC docs. Infra was <strong>not</strong> identical.</p>
+<p>All MEASURED from older POC dump. Infra was <strong>not</strong> identical.</p>
 <p><strong>Hardware caveat (say this first if challenged):</strong></p>
 <table>
 <thead>
@@ -1150,7 +1191,7 @@ distribution_centres       ─daily─►  distribution_centres
 <li><strong>10× join cardinality:</strong> memory for join build/probe; need stricter partition pruning and pre-aggregation (see exploded batch OOM at <strong>133.7M</strong> rows in update-metrics doc).</li>
 <li><strong>10× insert parallelism:</strong> CH insert path still needs part-merge budget; uncontrolled small parts create merge storms.</li>
 <li><strong>Gotcha:</strong> do not claim identical hardware. Interviewers who know CH will ask.</li>
-<li><strong>Gotcha:</strong> resume says <strong>60x</strong> and <strong>3m 40s+</strong>: defend with both PG times (3m40s UTC and 7m48s TZ) and CH <strong>3.86s</strong>.</li>
+<li><strong>Gotcha:</strong> if they cite older <strong>60×</strong> / <strong>3m 40s+</strong> from prep or prior PDF: defend with both PG times (3m40s UTC and 7m48s TZ) and CH <strong>3.86s</strong>. Lead interviews with Jul 2026 hybrid numbers first.</li>
 <li><strong>Gotcha:</strong> export row counts differ (PG ~329K vs CH 1M in the recorded run). Defend on <strong>rows/sec</strong> and wall time methodology, not "same row count dump."</li>
 </ul>
 <h3 id="55-honesty-tags">5.5 Honesty tags</h3>
@@ -1431,7 +1472,7 @@ distribution_centres       ─daily─►  distribution_centres
 </table>
 <hr>
 <h2 id="8-cross-cutting-talking-track-2-minute-narrative">8. Cross-cutting talking track (2-minute narrative)</h2>
-<p>"PostgreSQL is fine for transactional Order Batching writes and locks, but at tens of millions of join rows the analytical metric path goes to minutes. We proved ClickHouse on real workloads: about <strong>60×</strong> on the Order Batching metric at <strong>23.7M</strong> join rows, about <strong>14–24×</strong> insert throughput, about <strong>43×</strong> export rows/sec, even though CH had half the vCPUs and a quarter of the RAM and was untuned. From that evidence I designed a CQRS migration: PG remains system of record for writes, CDC mirrors hot facts into ReplacingMergeTree, dims refresh daily, and Redis gives a <strong>30s</strong> read-your-writes window so planners still see their own saves. Separately, on update strategy, partition-scoped merges cut <strong>10K</strong> updates on a <strong>~29M</strong> row table from <strong>~39s</strong> to <strong>~7s</strong>, and we documented OOM modes for naive full-table deltas. On the product side I am building toward the Cluster Recommendation Copilot: LangGraph/MCP agent, <strong>14</strong> tools, deterministic clustering, human gates, targeting under <strong>1 hour</strong> plans and under <strong>2%</strong> failures from a measured <strong>8.5%</strong> baseline: Phase 1 design approved, load test pending."</p>
+<p>"On AssortSmart I am building the agentic path: FastAPI owns chat (LangGraph/MCP); Go owns the doing layer so manual REST and agent tools hit the same Hindsight/Clustering/Strategy APIs against <strong>ClickHouse/GCS</strong>; Datadog, LangSmith, and PostHog share an OTEL trace id. Planning data is <strong>ClickHouse end-to-end</strong> via insert-only versioned writes — that is the Jul 2026 stack + HLD, unlocked after POCs showed classic OLTP mutations are the wrong CH model. Evidence we measured: on a <strong>250M-row</strong> pivot harness ClickHouse cut heavy grids from <strong>189s to 12.3s</strong> (~<strong>15×</strong> on DISTINCT option-count; honest typical aggregates ~<strong>2–3×</strong>), and line-planning refused to materialize <strong>~12B</strong> store-week rows via a <strong>~25M</strong> aggregate (<strong>100–450×</strong>). Legacy mtp-assort stays off wholesale CH — fix BigQuery first. Copilot targets under <strong>1 hour</strong> and under <strong>2%</strong> failures from measured <strong>8.5%</strong>; Phase 1 design approved, load test pending."</p>
 <hr>
 <h2 id="9-rapid-fire-qa-12">9. Rapid-fire Q&amp;A (12+)</h2>
 <h3 id="q1-why-clickhouse-over-postgres-for-this">Q1. Why ClickHouse over Postgres for this?</h3>
@@ -1654,6 +1695,155 @@ distribution_centres       ─daily─►  distribution_centres
 <h3 id="q18-ownership-challenge-did-you-build-pg2ch_cdc-and-ship-the-copilot">Q18. Ownership challenge: did you build <code>pg2ch_cdc</code> and ship the copilot?</h3>
 <p><strong>A:</strong> No on both overclaims. <code>pg2ch_cdc</code> was authored by Ashvin Sharma; I designed Order Batching migration against its SLOs and mirror patterns and integrated with them. Copilot: Phase 1 design approved to bring-up; load test pending; L2 autopilot and L3 drift monitor are later phases. Correct ownership language: "designed / developing / designed against," not "I built the CDC platform end to end" or "shipped the copilot to all tenants."</p>
 <hr>
+<h2 id="new-poc-hld-mock-interview-jul-2026">New POC + HLD mock interview (Jul 2026)</h2>
+<p><strong>Sources:</strong> Pivot-Engine-Benchmark, LinePlanning-Benchmark, ClickHouse-vs-Postgres-POCs (consolidated v1.0), Agentic HLD (<code>final_agenticassort.png</code>).<br>
+<strong>Honesty rule:</strong> Every number is tagged <strong>MEASURED</strong> / <strong>TARGET</strong> / <strong>ESTIMATED</strong>. Adversarial pass corrected first-pass magnitudes downward — defend the corrected figures, not the raw scoreboard. Hardware was deliberately PG-favorable (PG native <strong>48 GB</strong> host; CH <strong>10 CPU / 3.3 GB</strong> Docker VM) — MEASURED harness config.</p>
+<hr>
+<h3 id="1-hybrid-pg-writes-ch-reads-corrected-magnitudes">1. Hybrid PG writes / CH reads (corrected magnitudes)</h3>
+<p><strong>Interviewer Q:</strong> Your first slide said ClickHouse was 15× faster on the pivot and Postgres was 80–90× faster on cell edits. Then you walked it back to 2–3× and 14×. Which story is real, and why isn't this just "stay on Postgres"?</p>
+<p><strong>Candidate A:</strong> Both stories are real; the second is the one you should hire me for. We ran a controlled, row-identical harness at <strong>5M / 50M / 250M</strong> (MEASURED). Raw heavy-grid wall-clock at 250M: PG <strong>189.4 s</strong> with <strong>42 GB</strong> spill vs CH <strong>12.3 s</strong> ⇒ <strong>~15.5×</strong> (MEASURED). Adversarial re-measure showed ~<strong>90%</strong> of that gap is <code>COUNT(DISTINCT)</code> / option-count: PG's grouped distinct cannot parallelize and spills; CH runs parallel <code>uniqExact</code>. Strip the distinct and the CH lead collapses to <strong>~2–3×</strong> on typical aggregates (MEASURED, adversarial). Keep option-count (wireframe 1.1.1) and you honestly cite <strong>~13–15×</strong> (MEASURED). So: <strong>2–3× typical, 13–15× only on DISTINCT grids</strong> — that is the corrected pitch.</p>
+<p><strong>Attack vector (recruiter/persona loop):</strong> "Is 12B measured or projected?" — answer: combinatorial product from <strong>4,800</strong> stores × levels × choices × <strong>52</strong> weeks; flat loads at ~1B already OOM'd the <strong>3.3 GB</strong> CH VM (MEASURED). "Targeting vs shipped?" — under 1h / under 2% are TARGET; 8.5% and BQ 1–20s are MEASURED. "Two POCs one bullet?" — pivot and line-plan are different surfaces under one hybrid design rule.</p>
+<p>On writes: raw single-cell edit cycle p50 at 250M was PG <strong>0.94 ms</strong> vs CH <strong>~77 ms</strong> ⇒ ~<strong>82×</strong> (MEASURED, untuned). ~<strong>62 ms</strong> of CH's cycle was CH 26.5's default <code>async_insert</code> buffer flush. With <code>async_insert=0</code> + fsync durability parity, CH drops to <strong>~16 ms</strong> ⇒ PG wins <strong>~14×</strong>, not 90× (MEASURED, adversarial). PG stays <strong>sub-millisecond and scale-flat</strong> across 5→250M (<strong>0.35 → 0.94 ms</strong>, MEASURED) — that is the interactive Wp-cell keyboard path. CH batch append inverts: at 250M / <strong>156k</strong> rows, PG <strong>31,989 ms</strong> vs CH <strong>13 ms</strong> ⇒ ~<strong>2,500×</strong> (MEASURED) — so bulk apply / reload belongs to CH.</p>
+<p><strong>Design decision:</strong> hybrid per surface, not a swap. Render grid / rollup / contribution-% from CH MergeTree sorted on pivot keys; authoritative cell write-back is keyed PG UPDATE; keep CH fresh via version-append into ReplacingMergeTree; after edit, either <code>argMax</code>/<code>FINAL</code> on CH or read just-edited cells from PG. Working POC: <code>GET /pivot</code> from CH, <code>POST /cell</code> → PG then mirror to CH RMT (MEASURED design, live against 250M harness).</p>
+<p><strong>Tradeoffs:</strong> two stores ⇒ sync lag + freshness window; CH pays <strong>~4× FINAL</strong> dedup tax when reading its own fresh parts (MEASURED). Storage first-pass <strong>50–138×</strong> was synthetic-modulo artifact; realistic high-entropy collapses to <strong>~1.6–2.6×</strong>, expect low-single-digits to <strong>~10×</strong> (MEASURED adversarial / ESTIMATED production band). Cheapest independent win: flatten JSONB fact — <strong>2.06×</strong> penalty on PG alone (<strong>2,779 ms</strong> flat vs <strong>5,719 ms</strong> JSONB, MEASURED); live Briscoes pivot <strong>11.3 s</strong> is mostly modeling, not PG's ceiling (MEASURED anchor).</p>
+<p><strong>Why not "stay on Postgres"?</strong> At Briscoes today <strong>~5M</strong>, selective screens still win on PG (MEASURED). At <strong>250M</strong> the heavy grid is <strong>3m9s</strong> and unusable for interactive planning (MEASURED). The recommendation must survive growth to multi-tenant <strong>50–250M+</strong>, not today's comfort zone. Decision rule: aggregates many rows → CH; mutates few cells with instant RYW → PG.</p>
+<hr>
+<h3 id="2-why-not-wholesale-clickhouse-for-mtp-assort">2. Why not wholesale ClickHouse for mtp-assort</h3>
+<p><strong>Interviewer Q:</strong> You just proved CH wins big reads. Why did POC 4 still say "No to ClickHouse now" for the shipping mtp-assort app? Isn't that inconsistent with adopting CH for agentic clustering?</p>
+<p><strong>Candidate A:</strong> Consistent once you separate <em>surface</em> from <em>product</em>. mtp-assort's edit model is OLTP-mutable: keyed UPDATE, JSONB <code>||</code> merge, scoped delete-where-<code>plan_code</code> + reinsert, upsert, soft-delete. ClickHouse is append-first; its mutation queue is the wrong hammer for that write model. The analytical scans <em>look</em> CH-shaped, but the live cost drivers we measured are BigQuery hygiene problems, not "wrong OLAP engine": one job billed <strong>38.8 TiB</strong> via <code>SELECT *</code> / LIMIT with no date filter (MEASURED live BQ evidence, briscoes-01082024 / australia-southeast1); recurring full-category rollups re-scan <strong>~2.9 TiB</strong> (MEASURED). Fix tiers inside BQ: (1) kill <code>SELECT *</code>, force <code>require_partition_filter=TRUE</code>; (2) point heavy reads at already-clustered <code>_assort</code> (~<strong>3×</strong> cheaper, MEASURED free win); (3) materialize one store × category × fiscal-week rollup → MB instead of <strong>2.9 TiB</strong> (~<strong>284×</strong> less, MEASURED/ESTIMATED from that rollup sizing). Adding CH now creates a <strong>third</strong> engine (BQ + CH + PG) plus sync + dialect translation, replacing neither SoR nor the batch plane.</p>
+<p><strong>Contrast — agentic clustering (POC 5):</strong> greenfield read plane, new dedicated CH instance, writes still land in PG (cluster results must join strategy-flow tables). Decision dated <strong>2026-07-06</strong> (MEASURED design). Same hybrid principle applied forward: CH where determinism + interactive probes matter; PG remains SoR. Wholesale swap of mtp-assort fails the "replace neither" test; gated CH for a new module passes it.</p>
+<p><strong>Tradeoff I own:</strong> saying "no" to CH on the legacy app while saying "yes" to CH on the copilot looks political. The defense is workload shape: mutate-heavy legacy vs read-only analytical probes with insert-only BQ→CH feed.</p>
+<hr>
+<h3 id="3-line-planning-why-not-materialize-12b-store-week-aggregate-explode-partition-of-unity">3. Line-planning: why not materialize 12B store-week; aggregate + explode; partition of unity</h3>
+<p><strong>Interviewer Q:</strong> KiK needs store-week. Your team already has <code>line_arch_store_week</code>. Why refuse to materialize <strong>~12B</strong> rows/plan? Isn't "derive on demand" just kicking the can — and won't explode latency kill allocation export?</p>
+<p><strong>Candidate A:</strong> <strong>~12B</strong> = <strong>4,800</strong> stores × final-levels × choices × <strong>52</strong> weeks per plan (MEASURED anchors / ESTIMATED combinatorial product for KiK). With <strong>~50</strong> plans, flat PG at rest is <strong>~70 TB</strong> (ESTIMATED from per-plan <strong>~1.4 TB</strong> × 50); even CH flat is <strong>~1.1 TB</strong> at 50 plans (ESTIMATED). Per operation: month view SUMs billions; a choice edit fires a <strong>249,600</strong>-row UPDATE on the flat path at the 10M-scale harness shape (MEASURED). At <strong>100M</strong> flat: month PG <strong>2,923 ms</strong> / CH <strong>1,335 ms</strong>; edit-one-choice PG <strong>1,454 ms</strong> / CH mutation <strong>1,823 ms</strong> (MEASURED). Projected to <strong>12B</strong>: flat month <strong>~380 s</strong> PG / <strong>~160 s</strong> CH; edits minutes (ESTIMATED linear projection — tagged PROJ in the POC).</p>
+<p><strong>What we store instead:</strong> editable truth at choice × cluster × week ≈ <strong>~25M</strong> for a 12B-flat plan (~<strong>427×</strong> smaller; MEASURED at 1B: flat PG <strong>115 GB</strong> vs agg <strong>276 MB</strong>). Formula (verbatim from <code>SCALE_LINE_ARCH_FROM_CHOICE_LAUNCH</code>):</p>
+<pre><code class="language-text">store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc
+</code></pre>
+<p>Each percentage is a <strong>partition of unity</strong> (sums to 1 on its dimension), so <code>SUM(store-week) ≡ choice aggregate</code>. We reconciled <code>SUM(flat)==SUM(agg)</code> <strong>to the cent</strong> at <strong>10M / 100M / 1B</strong> on both engines (MEASURED). Explode one choice to store-week on demand in <strong>~25 ms</strong> (MEASURED). Month view on the <strong>25M</strong> aggregate: PG <strong>690 ms</strong> / CH <strong>512 ms</strong> (MEASURED at 25M = 12B-plan equivalent). Single-cell edit on aggregate PG <strong>0.35–0.44 ms</strong> (MEASURED) — scale-flat.</p>
+<p><strong>Product reality check:</strong> users never edit a dense store-week grid. Backend <code>update_line_arch_store_week_cluster_data</code> writes at cluster × choice × delivery; <code>line_arch_store_week</code> is 100% re-derived. Finer edits are <strong>sparse overrides</strong> (base + exception). Effective = <code>COALESCE(override, derived)</code>; rollup = aggregate_rollup + Σ(override deltas) — never scan 12B. Override point-upsert PG <strong>0.15 ms</strong> flat from <strong>1M→50M</strong> overrides (MEASURED); correction rollup at <strong>1M</strong> overrides: CH <strong>5 ms</strong> / PG <strong>98 ms</strong> (MEASURED). At <strong>50M</strong> overrides (0.4% of 12B — stress, not typical): PG correction <strong>15.5 s</strong> vs CH <strong>52 ms</strong> (MEASURED) — then AMT/SummingMergeTree earns its keep because deltas are additive.</p>
+<p><strong>Tradeoffs:</strong> if a downstream truly needs full store-week, materialize a <strong>slice for export</strong>, not the SoR. Trying to load <strong>998M</strong> flat into CH on the <strong>3.3 GB</strong> VM OOM-killed the container (MEASURED) — even columnar engines punish explosions you do not need. Schema first: flat→aggregate is <strong>~140–200×</strong> at 100M on read/edit (MEASURED), larger than any engine swap (<strong>100–450×</strong> band across scales, MEASURED/ESTIMATED). Multi-plan: partition by <code>plan_code</code>; single-plan month with 10 plans resident stays constant (PG <strong>725 ms</strong> / CH <strong>33 ms</strong>, MEASURED). Clone-plan: aggregate PG <strong>67.7 s</strong> / CH <strong>0.85 s</strong> vs flat ~<strong>12 min</strong> (MEASURED / ESTIMATED from 1B copy <strong>60 s</strong> ×12).</p>
+<hr>
+<h3 id="4-clickhouse-edit-techniques-why-not-amt-for-set-a-cell-rmt-vs-lightweight-update-vs-embeddedrocksdb">4. ClickHouse edit techniques: why not AMT for set-a-cell; RMT vs lightweight UPDATE vs EmbeddedRocksDB</h3>
+<p><strong>Interviewer Q:</strong> ClickHouse 26.5 has lightweight UPDATE and AggregatingMergeTree. Why is your editable layer ReplacingMergeTree — and when would you actually use AMT or RocksDB?</p>
+<p><strong>Candidate A:</strong> Because a planner edit is <strong>SET cell = X</strong>, not <strong>ADD delta</strong>. AggregatingMergeTree / SummingMergeTree merge by summing states — the right tool for additive accumulation (override-delta rollups, pre-agg month views), the wrong tool for set-a-cell. Modelling SET as AMT forces compensating deltas — fragile under concurrent editors and undo.</p>
+<p><strong>Measured bake-off at ~1B granular (MEASURED, CH 26.5):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Technique</th>
+<th>Latency / behavior</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Heavyweight <code>ALTER UPDATE</code> (274M MT)</td>
+<td><strong>1,618 ms</strong> p50, consistent</td>
+<td>Never for point edits — rewrites the part</td>
+</tr>
+<tr>
+<td>Lightweight UPDATE (patch parts, experimental)</td>
+<td><strong>4.4 ms</strong> issue, RYW correct only <strong>~11–22%</strong> (consolidated) / ~<strong>20%</strong> (lineplan)</td>
+<td>Unsafe for interactive write-back in 26.5</td>
+</tr>
+<tr>
+<td>ReplacingMergeTree append + <code>argMax</code>/<code>FINAL</code></td>
+<td><strong>~4.9–6.3 ms</strong> tuned, consistent</td>
+<td>Best MergeTree-family option for set-a-cell</td>
+</tr>
+<tr>
+<td>EmbeddedRocksDB upsert + point get</td>
+<td><strong>4.9 ms</strong>, consistent, no parts/FINAL</td>
+<td>Most PG-like KV editable layer; not for analytic scans</td>
+</tr>
+<tr>
+<td>Postgres keyed UPDATE (reference)</td>
+<td><strong>0.15–0.35 ms</strong>, consistent</td>
+<td>Nothing in CH family beats it</td>
+</tr>
+<tr>
+<td>AMT as editable layer</td>
+<td>—</td>
+<td>✗ wrong semantics (models "add")</td>
+</tr>
+<tr>
+<td>AMT / Projection for <em>read</em> rollup over 1B</td>
+<td>AMT <strong>2 ms</strong> (build <strong>2 s</strong>); Projection <strong>4 ms</strong> (build <strong>30 s</strong>) vs plain GROUP BY <strong>2,058 ms</strong></td>
+<td>Right when granular SoR must stay; ~<strong>1000×</strong> read win</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CH floor:</strong> ~<strong>5 ms</strong> is mostly HTTP round-trip + part creation (MEASURED / ESTIMATED split). So: interactive typing stays on PG (or EmbeddedRocksDB if you insist CH-native KV); pair RocksDB editable with MergeTree analytics. For editable aggregate in CH use <strong>RMT(version)</strong> — never AMT, never heavyweight mutation, avoid lightweight UPDATE until RYW is reliable. AMT belongs on <strong>additive override-delta</strong> MVs once override counts leave the human thousands–low-millions band where PG alone is already sub-100 ms (MEASURED design rule).</p>
+<p><strong>Deeper point:</strong> if you already stored the <strong>~2M–25M</strong> aggregate, plain GROUP BY is <strong>~17 ms</strong> (MEASURED on RMT aggregate) and you may not need AMT/projections at all. They earn keep when someone forces the 1B granular to remain SoR — which we refuse.</p>
+<hr>
+<h3 id="5-agentic-architecture-why-fastapi-owns-chat-go-is-doing-layer-dual-path-a-vs-path-m">5. Agentic architecture: why FastAPI owns chat, Go is doing layer, dual Path A vs Path M</h3>
+<p><strong>Interviewer Q:</strong> Why is chat FE → FastAPI directly? Why not put Go in front of everything like a normal BFF? And what are Path A and Path M actually for?</p>
+<p><strong>Candidate A:</strong> From the Jul 2026 Agentic HLD: <strong>chat is FE → FastAPI directly; Go is not the chat gateway.</strong> Two paths, one doing layer.</p>
+<p><strong>Path A — agent chat (FastAPI Agent Service):</strong>
+1. <strong>A1</strong> Chat UI → <code>POST /chat</code> (routing, reasoning, tool selection).
+2. <strong>A2</strong> Agent ↔ LLM (OpenAI / etc.) for reason / plan.
+3. <strong>A3</strong> Tool call → Go doing layer when an action needs product APIs / deterministic compute.
+4. <strong>A4</strong> Reply → Chat UI.</p>
+<p><strong>Path M — manual work:</strong> Manual screens → Go REST (<code>create</code> / <code>update</code> / <code>delete</code>) → same doing modules (Manual/REST, Hindsight, Clustering, Strategy) → ClickHouse / GCS. No LLM in the loop.</p>
+<p><strong>WHY FastAPI owns chat:</strong> agentic workflows are LLM-latency-shaped (LangGraph / MCP / prompt+tool loops, streaming tokens, run trees). Python owns that ecosystem; putting Go as a dumb chat proxy adds a hop without buying throughput. <strong>WHY Go is the doing layer:</strong> non-agentic work is throughput-shaped I/O — plan lifecycle, bulk saves, clustering/hindsight/strategy engines, CH/GCS access. Goroutine-per-request, static binary, boring code many engineers touch. Manual UI and agent tools <strong>converge on the same Go APIs</strong> (M1 and A3), so authorization, validation, and audit logic are not duplicated in the LLM path.</p>
+<p><strong>Design decisions / tradeoffs:</strong>
+- Dual language is a real tax; accepted because the service boundary already existed (agent tier vs core backend).
+- Agent never bypasses Go for mutations — tools call Go; DB profiles for agent probes stay read-only. Failure mode if skipped: prompt-drifted <code>INSERT</code> into cluster master.
+- Notification service sits beside FE for core-api hits; not on the chat critical path.
+- Do not claim MEASURED production RPS for this split — it is <strong>MEASURED design / stack direction</strong>. Scale story: agent replicas scale with LLM concurrency; Go replicas scale with request volume — independent axes.</p>
+<p><strong>Adversarial push — "why not one Python monolith?"</strong> Because Path M traffic (grid saves, strategy CRUD) should not share a GIL/async pool with multi-second LLM turns. Separating chat ownership from doing ownership is the load and blast-radius decision, not a fashion choice.</p>
+<hr>
+<h3 id="6-observability-split-langsmith-vs-datadog-vs-posthog-shared-otel-trace_id">6. Observability split: LangSmith vs Datadog vs PostHog; shared OTEL <code>trace_id</code></h3>
+<p><strong>Interviewer Q:</strong> Three observability products is vendor sprawl. Why not one Datadog for everything? How do you debug "agent said X but Go returned Y"?</p>
+<p><strong>Candidate A:</strong> They answer three different questions; collapsing them loses signal.</p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Owns</th>
+<th>Emits from</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1 Agent quality</td>
+<td><strong>LangSmith</strong></td>
+<td>run trees, replay, evals, tokens, cost</td>
+<td>FastAPI Agent Service (Agent → L1)</td>
+</tr>
+<tr>
+<td>L2 Platform health</td>
+<td><strong>Datadog</strong></td>
+<td>HTTP/DB latency, errors, infra, Go doing-layer SLOs</td>
+<td>Agent → L2 <strong>and</strong> Go → L2 (HTTP/DB)</td>
+</tr>
+<tr>
+<td>Product analytics</td>
+<td><strong>PostHog</strong></td>
+<td>user behaviour (chat vs manual screens, funnel)</td>
+<td>Frontend</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Shared OTEL <code>trace_id</code></strong> stitches L1 ↔ L2: one planner utterance → LangSmith run tree (which tool, which prompt version, token/cost) ↔ Datadog spans (Go REST timing, CH query, GCS I/O). Without shared trace IDs you get two timelines that cannot be joined when the LLM "succeeded" but the tool timed out.</p>
+<p><strong>WHY not Datadog-only for agents:</strong> Datadog sees HTTP and infra; it does not natively give prompt replay, dataset evals, or token attribution the way LangSmith does for LangGraph runs. <strong>WHY not LangSmith-only:</strong> it will not page you on Go p99 or CH part merges. <strong>WHY PostHog:</strong> product questions ("did planners abandon chat for manual?") are neither span metrics nor prompt traces.</p>
+<p><strong>Tradeoffs:</strong> three bills, three UIs, discipline required to propagate <code>trace_id</code> on A3 tool calls into Go. Mitigation: OTEL middleware on FastAPI and Gin; reject tools that drop context. Alerting: Datadog pages on SLO burn; LangSmith feeds offline eval / regression; PostHog informs UX, not paging. This split is <strong>MEASURED design</strong> from the HLD — do not invent production MTTR numbers.</p>
+<hr>
+<h3 id="7-slot-determinism-why-dedicated-ch-vs-bigquery-for-agent-probes">7. Slot-determinism: why dedicated CH vs BigQuery for agent probes</h3>
+<p><strong>Interviewer Q:</strong> BigQuery is already your historical truth and you already pay for slots. Why stand up a dedicated ClickHouse just so an agent can run <code>SELECT</code>s?</p>
+<p><strong>Candidate A:</strong> Because interactive copilots need <strong>deterministic</strong> probe latency, and shared BQ STANDARD-edition slots make latency a function of <strong>org-wide</strong> load. Live audit of agent data-probe latency on shared BQ: <strong>1–20 s+</strong> with uncontrolled variance (MEASURED). Interactive UX + platform NFRs need agent probe <strong>p95 &lt; 500 ms</strong> on a dedicated CH read plane (TARGET). Nightly precompute aims to move <strong>≥80%</strong> of sessions cold→warm (TARGET). Cube reconciliation within <strong>0.1%</strong> of BigQuery (TARGET). Feed = existing BQ→CH ingestion lane (ItemSmart-proven pattern, MEASURED design reuse). BQ stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots or surprise finance with another <strong>TiB</strong>-scanned job.</p>
+<p><strong>WHY this is not a contradiction of "no CH for mtp-assort":</strong> Phase 1 FRD non-goal — do <strong>not</strong> move transactional/plan data to CH for this module. Read plane only; PG remains editable SoR for cluster write-back after human gates. Greenfield schema + new instance ≠ swapping the mutation-heavy legacy app.</p>
+<p><strong>Tradeoffs / failure modes:</strong> derived copy can rot → owned ingestion, freshness sentinel, <strong>data-as-of</strong> stamped on every recommendation. If load test on real kik extract misses p95, revisit precompute and concurrency quotas before claiming the TARGET. Slot-determinism is the buying criterion; raw CH-vs-BQ scan benchmarks are secondary.</p>
+<p><strong>One-liner under pressure:</strong> "BQ is truth with shared-slot variance; dedicated CH is a deterministic probe cache for the agent — hybrid again, not a religion."</p>
+<hr>
+<h3 id="cross-cutting-adversarial-closes-use-if-they-chain-topics">Cross-cutting adversarial closes (use if they chain topics)</h3>
+<p><strong>Q: Your Jul 2026 stack note said ClickHouse end-to-end with insert-only versions. The POC report says hybrid PG writes. Which is it?</strong><br>
+<strong>A:</strong> Both, at different scopes. The <strong>POC consolidated verdict</strong> is hybrid for <em>legacy assortment surfaces</em> and classic OLTP-mutable edits — and <strong>no wholesale CH</strong> for shipping mtp-assort (fix BQ first). The <strong>agentic-assort</strong> build follows the Jul 2026 stack directive + HLD: planning data on <strong>ClickHouse/GCS end-to-end</strong> because we changed the write model to insert-only versions (<code>mutations_used=0</code>). Thin Postgres metadata (auth/tenant/workflow) is fine to admit. I will not pretend CH beats PG at keyed UPDATE without that write-model unlock — that is exactly the mistake the adversarial pass prevents.</p>
+<p><strong>Q: Give me the corrected number card only.</strong><br>
+<strong>A:</strong> CH reads <strong>~2–3×</strong> typical; <strong>~13–15×</strong> on DISTINCT grids (MEASURED adversarial). PG single-cell <strong>&lt;1 ms</strong> (<strong>0.35–0.94 ms</strong>, MEASURED). PG vs tuned CH write <strong>~14×</strong> (MEASURED). Schema flat→agg <strong>100–450×</strong> (MEASURED/ESTIMATED). Agent probes BQ <strong>1–20 s+</strong> MEASURED → CH <strong>p95 &lt;500 ms</strong> TARGET. Storage real-world low-single-digits–<strong>~10×</strong>, not 50–138× (MEASURED adversarial).</p>
+<hr>
 <h2 id="confidence-audit">Confidence audit</h2>
 <table>
 <thead>
@@ -1665,9 +1855,9 @@ distribution_centres       ─daily─►  distribution_centres
 </thead>
 <tbody>
 <tr>
-<td>1. Building Agentic AssortSmart; agents draft clusters/plans for planner approval</td>
+<td>1. Architecting AssortSmart; gated write-back</td>
 <td><strong>SOLID</strong></td>
-<td>Product description of the agentic rebuild. Present-tense build; Phase 1 design PASS; not "already live for every tenant."</td>
+<td>Product framing + FRD non-goal (no silent auto-finalize). Present-tense; Phase 1 design PASS; not "already live for every tenant."</td>
 </tr>
 <tr>
 <td>2. Cluster Recommendation Copilot (FastAPI, LangGraph, MCP); 20–100 configs vs 1; days → under 1 hour</td>
@@ -1680,18 +1870,20 @@ distribution_centres       ─daily─►  distribution_centres
 <td><strong>8.5% (37/437)</strong> and <strong>0% reproducibility</strong> MEASURED. <strong>Under 2%</strong> and <strong>100% reproducible</strong> TARGET. Read-only profiles + gates MEASURED design. Phrase: "designed to cut failures from a measured 8.5% toward under 2%." Align "3 gates" with FRD confirm gates; mention grounding/write-back as bookends if asked.</td>
 </tr>
 <tr>
-<td>4. Go (Gin) microservices; plan lifecycle + bulk save; goroutine pools; JWT</td>
+<td>4. Go (Gin) microservices; manual REST + agent tools (Hindsight/Clustering/Strategy); Datadog + LangSmith + PostHog + OTEL</td>
 <td><strong>NEEDS CARE</strong></td>
-<td>Stack direction and concrete service shape (JWT middleware, worker pools, plan lifecycle APIs) are defensible as current design/build work. No MEASURED production RPS in <code>GROUND_TRUTH.md</code>. Do not invent throughput; describe architecture and trade-offs vs Python-only.</td>
+<td>HLD diagram design. Claim instrumentation model and dual Path A/M, not sole ownership of Datadog/PostHog/LangSmith products.</td>
 </tr>
 <tr>
-<td>5. 60× analytics; 23.7M rows 3m40s → 3.86s; 24× load 250K → 5.9M rows/s</td>
-<td><strong>SOLID</strong></td>
-<td>All MEASURED POC numbers. Lead with hardware caveat (PG 32/256 vs CH 16/64). Cite UTC <strong>3m40s</strong> and TZ <strong>7m48s</strong>. <strong>24×</strong> vs raw 250K; also own <strong>~14×</strong> vs detach/attach 417K. POC, not production cutover.</td>
+<td>5. ClickHouse/GCS end-to-end planning store; 250M 189s→12.3s (~15×); avoided 12B (100–450×)</td>
+<td><strong>SOLID with care</strong></td>
+<td>HLD + Jul 2026 stack = CH planning store (insert-only versions). Numbers MEASURED from POCs. Say <strong>~2–3× typical</strong> if they strip DISTINCT. Do <strong>not</strong> claim wholesale CH for legacy mtp-assort. If they wave the POC “hybrid” slide: that is decision history for OLTP mutations — agentic unlock was changing the write model.</td>
 </tr>
 </tbody>
 </table>
 <hr>
+<h2 id="order-batching-60-prep-depth-replaced-on-resume-headline">Order Batching 60× (prep depth — replaced on resume headline)</h2>
+<p>Still MEASURED and interview-ready: 23.7M join rows, CH <strong>3.86 s</strong> vs PG <strong>3m40s–7m48s</strong>, insert <strong>5.9M vs 250K rows/s</strong>. Prefer leading with the Jul 2026 hybrid pivot/line-plan story on the resume; keep Order Batching as deeper evidence when asked "what else did you measure?"</p>
 <hr>
 <h1 id="11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</h1>
 <p>Defense material for the four Uber FRM resume bullets. Every number here traces to <code>GROUND_TRUTH.md</code> or to the code in <code>KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/</code>. Tags: <strong>MEASURED</strong> (documented artifact or code), <strong>TARGET</strong> (design goal, say "targeting"), <strong>ESTIMATED</strong> (derived, say so). No number here is invented.</p>
@@ -2904,20 +3096,50 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 <td>same</td>
 </tr>
 <tr>
-<td>60×; 23.7M rows; 3m40s → 3.86s</td>
-<td>Order Batching metric POC</td>
-<td>MEASURED</td>
-<td><code>BENCHMARK-NUMBERS.md</code> / <code>10_…</code></td>
+<td>Datadog / LangSmith / PostHog + OTEL</td>
+<td>L2 platform / L1 agent / product analytics; shared <code>trace_id</code></td>
+<td>MEASURED design</td>
+<td>HLD + <code>10_…</code> §6</td>
 </tr>
 <tr>
-<td>24×; 250K → 5.9M rows/s</td>
-<td>Insert POC; also own ~14× vs 417K detach/attach</td>
+<td><strong>ClickHouse/GCS end-to-end planning store</strong></td>
+<td>Insert-only versioned writes; HLD doing layer → CH/GCS</td>
+<td>MEASURED design</td>
+<td>stack direction + HLD</td>
+</tr>
+<tr>
+<td><strong>250M pivot 189s → 12.3s (~15×)</strong></td>
+<td>Heavy grid + option-count; ~15.5× DISTINCT; typical ~2–3×</td>
+<td>MEASURED</td>
+<td>Pivot + consolidated POC / <code>10_…</code></td>
+</tr>
+<tr>
+<td><strong>Avoided 12B store-week (100–450×)</strong></td>
+<td>Aggregate ~25M; explode ~25 ms; schema &gt; engine</td>
+<td>MEASURED</td>
+<td>LinePlanning / <code>10_…</code></td>
+</tr>
+<tr>
+<td>Hardware caveat (Jul 2026 POC)</td>
+<td>PG 48 GB host vs CH 10 CPU / 3.3 GB VM</td>
 <td>MEASURED</td>
 <td>same</td>
 </tr>
 <tr>
-<td>Hardware caveat</td>
-<td>PG 32/256 vs CH 16/64</td>
+<td>PG cell &lt;1ms / hybrid verdict</td>
+<td>POC decision history (legacy OLTP / why insert-only unlock)</td>
+<td>MEASURED prep</td>
+<td>consolidated POC</td>
+</tr>
+<tr>
+<td>60×; 23.7M; 3m40s → 3.86s</td>
+<td>Order Batching (<strong>prep depth</strong>)</td>
+<td>MEASURED</td>
+<td>older POC dump / <code>10_…</code> §5</td>
+</tr>
+<tr>
+<td>24×; 250K → 5.9M rows/s</td>
+<td>Insert POC (<strong>prep</strong>)</td>
 <td>MEASURED</td>
 <td>same</td>
 </tr>
