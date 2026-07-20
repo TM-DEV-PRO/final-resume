@@ -36,6 +36,6 @@ Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. N
 |---|---|
 | Impact Analytics (14 May 2026–) | Same CH/CQRS/copilot numbers as v2 (Python) |
 | Uber FRM | Spring Boot + JPA framing; owned platform + layered architecture + recon v2 (18 files); led 3; targeting 70% |
-| Uber Menu | Python scraping/RAG (no Spring) |
+| Uber Menu | Python Selenium→Kafka→Flink→Spark (no Spring); same numbers as v2 |
 | Masters India | Spring Boot + Spring Batch framing; owned strangler; Kafka TPS/RPS; idempotency/DLQ; on-call alerting |
 | GeeksforGeeks | Spring Boot framing; 10K+ daily queries |

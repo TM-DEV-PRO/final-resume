@@ -95,3 +95,12 @@ Source: PyMuPDF text extract of `Tarun_Mittal_SSE_5yr_v2.pdf` and `Tarun_Mittal_
 | Spark/Flink absent from PDFs | PASS. Decision log + study-only prep present. |
 | Every resume number catalogued | PASS via `18_resume_number_catalog.md` + rewritten `09_metrics_derivations.md`. |
 | AI markers / CGPA / one page | PASS. |
+
+## Loop 8 Spark + Flink restore
+
+| Check | Result |
+|---|---|
+| Placement | Uber Menu (best fit) |
+| Both PDFs one page with Flink+Spark | PASS |
+| Prep depth | `14_uber_menu_deep_dive.md` rewritten |
+| Contradictions cleared in GT evidence matrix | PASS |

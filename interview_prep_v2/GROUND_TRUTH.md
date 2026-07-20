@@ -15,10 +15,10 @@ Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA 
 | On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
 | Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | Skills | FRM code + Masters migration |
 | Fault Tolerance keyword | 85% | Skills | Masters idempotency / DLQ / retries |
-| Kubernetes skills list | 60% ATS | Skills only | Listed historically; no cluster-ops proof |
+| Kafka + Flink + Spark on Uber Menu (Selenium→Kafka→Flink online→Spark backfills) | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Original event-driven resume + ops numbers; peak events/sec ESTIMATED |
 | Multi-region / active-active / DR ownership | <5% | **OMIT resume** | CDC DR doc authored by Ashvin Sharma; no personal ownership |
 | Kubernetes cluster operations (kubectl/helm/operators) | <5% | **OMIT resume experience**; STUDY ONLY prep | Zero manifests / ops narrative |
-| Spark / Flink production ownership | <25% | **OMIT resume** (retracted) | 4yr Menu stack is Python + Selenium + GCP |
+| Spark / Flink production ownership on Uber Menu | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Restored Jul 2026; see Menu decision above. Not at Masters/IA. |
 | Terraform / IaC production ownership | <5% | **OMIT resume**; STUDY ONLY prep | Keyword blob only on old PDF |
 | CGPA 7.7/10 | MEASURED | **Removed from resume PDFs** (kept here for reference) | Education record |
 
@@ -76,9 +76,9 @@ Do NOT claim: identical benchmark hardware (PG 32vCPU/256GB vs CH 16vCPU/64GB), 
 
 ## Uber Menu Ingestion (same employment)
 
-All HISTORICAL from 4yr resume + prep: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved.
+All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved.
 
-RESUME DECISION (Jul 2026): Kafka/Flink/Spark/Pinot claims REMOVED from resume bullets. The 4yr resume (source of truth) describes a **Python + Selenium + GCP scraping pipeline**, not a streaming platform. Resume now matches that stack exactly; Kafka remains in skills, justified by Masters India (AsyncIOKafka messaging, per 2.5yr resume). If asked about streaming, speak to Kafka at Masters India, not Uber Menu.
+**RESUME DECISION (Jul 2026, restored):** Menu bullet is **Selenium scrapers on GCP → Kafka (~200–500 peak events/sec ESTIMATED) → Flink online normalize/dedupe → Spark backfills**, plus RAG/Gemini and ANZ. Best fit for Flink/Spark on this resume is Uber Menu (not Masters, not IA). Peak event rate and Spark ~1–2M backfill rows are ESTIMATED. Pinot stays off the one-pager. Kafka on Masters India remains a separate claim (e-invoicing).
 
 ## Masters India (Dec 2022 - Jun 2024)
 

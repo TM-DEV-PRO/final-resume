@@ -160,44 +160,43 @@ No Terraform modules, state files, or IaC ownership in your material.
 
 ---
 
-## 7. Spark (`STUDY ONLY - NOT RESUME EXPERIENCE`)
+## 7. Spark (RESUME on Uber Menu; study extras below)
 
-### Why off the resume
-Explicitly retracted. Uber Menu source of truth is Python + Selenium + GCP, not a Spark batch platform. Do not re-add Spark to skills or experience.
+### Resume claim
+Uber Menu: Spark for **batch backfills / reprocess** after Selenium→Kafka→Flink online path. Volume ~1–2M item rows ESTIMATED per typical reprocess window. See `14_uber_menu_deep_dive.md`.
 
-### Study topics (Databricks / data-platform interviews)
+### Extra study (beyond resume bullet)
 - Driver vs executors, partitions, shuffle, skew, AQE.
-- Narrow vs wide transformations.
-- Structured Streaming micro-batches vs continuous.
-- When Spark beats a warehouse OLAP engine and when ClickHouse wins for interactive analytics.
+- Structured Streaming micro-batches vs continuous (on this resume Flink owns online).
+- When Spark beats a warehouse OLAP engine and when ClickHouse wins for interactive analytics (IA story).
 
-### Bridge from your real work
-"I proved a 60x analytics speedup moving Order Batching aggregation from PostgreSQL to ClickHouse. That is OLAP engineering adjacent to Spark jobs, but I did not own a Spark production pipeline."
+### Bridge
+"Menu Spark is ETL/backfill. IA ClickHouse is interactive OLAP POC. Databricks pure runtime roles: lead Menu Spark + CH judgment; do not invent Delta Lake ownership."
 
 ### Official references
-- [Spark overview](https://spark.apache.org/docs/latest/cluster-overview.html)
-- [Structured Streaming](https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html)
+- https://spark.apache.org/docs/latest/cluster-overview.html
+- https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html
 
 ---
 
-## 8. Flink (`STUDY ONLY - NOT RESUME EXPERIENCE`)
+## 8. Flink (RESUME on Uber Menu; study extras below)
 
-### Why off the resume
-Same retraction as Spark for Menu. Kafka remains justified by Masters India only.
+### Resume claim
+Uber Menu: Flink for **online normalize / dedupe / route** on Kafka (~200–500 peak events/sec ESTIMATED). Event-time, keyed state, checkpoints. See `14_uber_menu_deep_dive.md`.
 
-### Study topics
+### Extra study
 - Event time vs processing time, watermarks, keyed state.
-- Checkpoints (Chandy-Lamport style), savepoints, exactly-once sinks.
+- Checkpoints, savepoints, exactly-once sinks.
 - Backpressure and operator chaining.
 - Flink vs Kafka Streams vs Spark Structured Streaming trade-offs.
 
-### Bridge from your real work
-"At Masters India I used Kafka for ordered, replayable compliance events with consumer groups. If the interview needs stream processing beyond Kafka consumers, I can discuss Flink concepts as study knowledge, not as my production ownership."
+### Bridge
+"Masters India Kafka is e-invoice async without a Flink claim. Menu is where Flink sits."
 
 ### Official references
-- [Flink docs](https://nightlies.apache.org/flink/flink-docs-stable/)
-- [Flink HA overview](https://nightlies.apache.org/flink/flink-docs-stable/docs/deployment/ha/overview/)
-- [Stateful stream processing](https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/)
+- https://nightlies.apache.org/flink/flink-docs-stable/
+- https://nightlies.apache.org/flink/flink-docs-stable/docs/deployment/ha/overview/
+- https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/
 
 ---
 

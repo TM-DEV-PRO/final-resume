@@ -57,9 +57,8 @@ strong{color:#fff}
 <a class="lvl2" href="#5-qa">5. Q&amp;A</a>
 <a class="lvl1" href="#uber-menu-ingestion-java-track-note">Uber Menu Ingestion (Java track note)</a>
 <a class="lvl2" href="#elevator-pitch">Elevator pitch</a>
-<a class="lvl2" href="#spark-flink-decision">Spark / Flink decision</a>
+<a class="lvl2" href="#why-flink-spark-here-not-masters-ia">Why Flink + Spark here (not Masters / IA)</a>
 <a class="lvl2" href="#money-math">Money math</a>
-<a class="lvl2" href="#qa">Q&amp;A</a>
 <a class="lvl1" href="#masters-india-gst-e-invoicing-java-spring-track">Masters India — GST &amp; E-Invoicing (Java / Spring track)</a>
 <a class="lvl2" href="#1-elevator-pitch_1">1. Elevator pitch</a>
 <a class="lvl2" href="#2-migration-story-strangler">2. Migration story (strangler)</a>
@@ -129,13 +128,13 @@ strong{color:#fff}
 <a class="lvl2" href="#leadership-star-fragments-use-real-headcounts">Leadership STAR fragments (use real headcounts)</a>
 <a class="lvl2" href="#amazon-lp-mapping-short">Amazon LP mapping (short)</a>
 <a class="lvl2" href="#netflix-culture-style-one-liners">Netflix / culture style one liners</a>
-<a class="lvl1" href="#uber-menu-ingestion-deep-dive-v2-resume-defense">Uber Menu Ingestion Deep Dive (v2 resume defense)</a>
-<a class="lvl2" href="#what-the-system-does">What the system does</a>
+<a class="lvl1" href="#uber-menu-ingestion-deep-dive-v2-java-tracks">Uber Menu Ingestion Deep Dive (v2 + Java tracks)</a>
+<a class="lvl2" href="#why-this-project-is-the-best-fit-for-flink-and-spark">Why this project is the best fit for Flink and Spark</a>
 <a class="lvl2" href="#bullet-defenses">Bullet defenses</a>
-<a class="lvl2" href="#end-to-end-flow-resume-aligned">End to end flow (resume-aligned)</a>
-<a class="lvl2" href="#rapid-fire-menu-stack-only">Rapid fire (Menu stack only)</a>
-<a class="lvl2" href="#streaming-context-do-not-claim-on-resume">Streaming context (DO NOT CLAIM ON RESUME)</a>
-<a class="lvl2" href="#mock-interview-hardest-questions-with-answers_3">Mock interview: hardest questions with answers</a>
+<a class="lvl2" href="#flink-deep-dive-must-know-for-interviews">Flink deep dive (must-know for interviews)</a>
+<a class="lvl2" href="#spark-deep-dive-must-know-for-interviews">Spark deep dive (must-know for interviews)</a>
+<a class="lvl2" href="#money-and-rate-math-rapid-fire">Money and rate math (rapid fire)</a>
+<a class="lvl2" href="#mock-interview-hardest-questions">Mock interview: hardest questions</a>
 <a class="lvl2" href="#confidence-audit_3">Confidence audit</a>
 <a class="lvl1" href="#senior-systems-deep-dive-ownership-reliability-data-infra">Senior Systems Deep Dive (Ownership, Reliability, Data Infra)</a>
 <a class="lvl2" href="#1-ownership-and-software-design-architecture-resume-safe">1. Ownership and software design / architecture (RESUME-SAFE)</a>
@@ -144,15 +143,15 @@ strong{color:#fff}
 <a class="lvl2" href="#4-multi-region-ha-dr-study-only-not-resume-experience">4. Multi-region / HA / DR (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
 <a class="lvl2" href="#5-kubernetes-operational-depth-study-only-beyond-skills-keyword">5. Kubernetes operational depth (STUDY ONLY beyond skills keyword)</a>
 <a class="lvl2" href="#6-terraform-iac-study-only-not-resume-experience">6. Terraform / IaC (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
-<a class="lvl2" href="#7-spark-study-only-not-resume-experience">7. Spark (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
-<a class="lvl2" href="#8-flink-study-only-not-resume-experience">8. Flink (STUDY ONLY - NOT RESUME EXPERIENCE)</a>
+<a class="lvl2" href="#7-spark-resume-on-uber-menu-study-extras-below">7. Spark (RESUME on Uber Menu; study extras below)</a>
+<a class="lvl2" href="#8-flink-resume-on-uber-menu-study-extras-below">8. Flink (RESUME on Uber Menu; study extras below)</a>
 <a class="lvl2" href="#9-design-patterns-resume-skill-verbal-depth">9. Design patterns (RESUME SKILL + verbal depth)</a>
 <a class="lvl2" href="#10-mock-interviewer-loop-hardest-combined-questions">10. Mock interviewer loop (hardest combined questions)</a>
 <a class="lvl2" href="#11-company-targeting-cheat-sheet">11. Company targeting cheat sheet</a>
 <a class="lvl1" href="#resume-number-catalog-every-pdf-metric-money-and-rationale">Resume Number Catalog (every PDF metric, money, and rationale)</a>
 <a class="lvl2" href="#impact-analytics">Impact Analytics</a>
 <a class="lvl2" href="#uber-frm">Uber FRM</a>
-<a class="lvl2" href="#uber-menu-money">Uber Menu (money)</a>
+<a class="lvl2" href="#uber-menu-money-streaming">Uber Menu (money + streaming)</a>
 <a class="lvl2" href="#masters-india_1">Masters India</a>
 <a class="lvl2" href="#geeksforgeeks-achievements">GeeksforGeeks + Achievements</a>
 <a class="lvl2" href="#explicit-non-claims-do-not-invent">Explicit non-claims (do not invent)</a></nav>
@@ -227,7 +226,7 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>Uber Menu</td>
-<td>Python scraping/RAG (no Spring)</td>
+<td>Python Selenium→Kafka→Flink→Spark (no Spring); same numbers as v2</td>
 </tr>
 <tr>
 <td>Masters India</td>
@@ -382,15 +381,15 @@ Oracle HFM
 </ul>
 <hr>
 <h1 id="uber-menu-ingestion-java-track-note">Uber Menu Ingestion (Java track note)</h1>
-<p><strong>Resume tech:</strong> Python, Selenium, Gemini, RAG, SFT, GCP, Docker<br>
-<strong>No Spring / Kafka / Flink / Spark / Pinot claim on this project.</strong></p>
+<p><strong>Resume tech:</strong> Python, Selenium, Kafka, Flink, Spark, Gemini, RAG, SFT, GCP, Docker<br>
+<strong>No Spring claim.</strong> Same stack as v2.</p>
 <blockquote>
-<p>Same facts as <code>../interview_prep_v2/14_uber_menu_deep_dive.md</code>. Menu stays Python on the Java resume.</p>
+<p>Full defense: <code>../interview_prep_v2/14_uber_menu_deep_dive.md</code>.</p>
 </blockquote>
 <h2 id="elevator-pitch">Elevator pitch</h2>
-<p>"Uber Eats onboarding from partner-authorized vendor sites was slow and expensive. I built a Python + Selenium ingestion fleet on GCP with proxy rotation, plus a RAG + Gemini 2.5 Pro extraction path for PDFs and images. Onboarding fell from 24 hours to about 2 hours at 30K+ menus/month. Killing a roughly $2/menu third-party tool saved $600K+ a year (30K × $2 × 12 = $720K list; resume floors at $600K+). Offline eval hit 98% fidelity and 100% schema consistency. Separately, ANZ driver document automation reached 99.9% compliance and saved about 20 hours/week."</p>
-<h2 id="spark-flink-decision">Spark / Flink decision</h2>
-<p>Deliberately <strong>not</strong> on the resume. Earlier drafts overclaimed a streaming platform. The 4yr resume source of truth is scraping + extraction. Kafka production depth for interviews is <strong>Masters India</strong>, not Menu. Study-only Spark/Flink material: <code>../interview_prep_v2/17_senior_systems_study_only.md</code>.</p>
+<p>"Uber Eats menu onboarding used Selenium scrapers on GCP publishing into Kafka (~200–500 peak events/sec estimated during fleet runs). Flink normalized, deduped, and routed online; Spark handled backfills and reprocess windows. RAG + Gemini covered PDF/image menus. Onboarding fell from 24h to 2h at 30K+ menus/month. Killing a ~$2/menu tool saved $600K+/yr ($720K list). Offline eval hit 98% fidelity and 100% schema consistency."</p>
+<h2 id="why-flink-spark-here-not-masters-ia">Why Flink + Spark here (not Masters / IA)</h2>
+<p>Menu has bursty scrape ingress and both online freshness and historical rewrite shapes. Masters already claims Kafka for e-invoice. IA is ClickHouse POC.</p>
 <h2 id="money-math">Money math</h2>
 <table>
 <thead>
@@ -401,32 +400,23 @@ Oracle HFM
 </thead>
 <tbody>
 <tr>
-<td>Third-party unit cost</td>
+<td>Unit cost</td>
 <td>~$2 / menu</td>
 </tr>
 <tr>
 <td>Volume</td>
-<td>30,000+ menus / month</td>
-</tr>
-<tr>
-<td>Monthly list</td>
-<td>$60,000</td>
+<td>30,000+ / month</td>
 </tr>
 <tr>
 <td>Annual list</td>
 <td>$720,000</td>
 </tr>
 <tr>
-<td>Resume claim</td>
-<td><strong>$600K+</strong> (conservative floor)</td>
+<td>Resume</td>
+<td><strong>$600K+</strong> floor</td>
 </tr>
 </tbody>
 </table>
-<h2 id="qa">Q&amp;A</h2>
-<ul>
-<li><strong>"Why no Kafka here?"</strong> Menu was Selenium on GCP. My Kafka ownership is Masters India e-invoicing.</li>
-<li><strong>"Is $600K finance-signed?"</strong> HISTORICAL resume arithmetic from unit cost × volume; use the conservative floor and show $720K list if pressed.</li>
-</ul>
 <hr>
 <h1 id="masters-india-gst-e-invoicing-java-spring-track">Masters India — GST &amp; E-Invoicing (Java / Spring track)</h1>
 <p><strong>Role:</strong> Software Development Engineer 2 · December 2022 – June 2024 · Noida<br>
@@ -700,7 +690,7 @@ This Java resume is a <strong>positioning track</strong> for Spring roles — sa
 <hr>
 <h1 id="metrics-derivations-java-track">Metrics Derivations (Java track)</h1>
 <p>Same numbers and honesty tags as <a href="../interview_prep_v2/09_metrics_derivations.md"><code>../interview_prep_v2/09_metrics_derivations.md</code></a> and the catalog <a href="../interview_prep_v2/18_resume_number_catalog.md"><code>../interview_prep_v2/18_resume_number_catalog.md</code></a>.</p>
-<p>Stack framing only differs (Spring Boot / JPA / Spring Batch). Menu stays Python. Spark/Flink stay <strong>off</strong> the resume.</p>
+<p>Stack framing only differs (Spring Boot / JPA / Spring Batch). Menu stays Python with <strong>Kafka + Flink + Spark</strong>.</p>
 <p><strong>Money:</strong> Menu $600K+ = ~$2/menu × 30K × 12 = $720K list → conservative floor.</p>
 <p><strong>FRM 70%:</strong> targeting; brackets (~2 weeks to ~3–4 days) are ESTIMATED baseline.</p>
 <hr>
@@ -2290,112 +2280,259 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 <li>Ownership: Recon v2 branch under my username, end to end from design to cutover.</li>
 </ul>
 <hr>
-<h1 id="uber-menu-ingestion-deep-dive-v2-resume-defense">Uber Menu Ingestion Deep Dive (v2 resume defense)</h1>
+<h1 id="uber-menu-ingestion-deep-dive-v2-java-tracks">Uber Menu Ingestion Deep Dive (v2 + Java tracks)</h1>
 <p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Rates tagged ESTIMATED where derived.</p>
 <blockquote>
-<p><strong>RESUME ALIGNMENT (Jul 2026, mandatory):</strong> Kafka, Flink, Spark, and Pinot were deliberately REMOVED from the Menu Ingestion resume bullets. The 4yr resume is the source of truth: <strong>Python + Selenium + GCP scraping</strong>, RAG + Gemini 2.5 Pro + SFT extraction, IP rotation / dynamic proxy pools, and ANZ compliance automation (99.9%, 20h/week). Do NOT say you built or owned a Kafka/Flink/Spark/Pinot pipeline at Uber Menu. Kafka stays on the skills line because of Masters India (<code>AsyncIOKafka</code> messaging on the 2.5yr resume). If an interviewer asks about streaming at Uber, redirect: "Menu work was Selenium on GCP; my Kafka production experience is Masters India e-invoicing."</p>
+<p><strong>RESUME ALIGNMENT (Jul 2026):</strong> Menu stack is <strong>Selenium scrapers on GCP → Kafka → Flink (online) → Spark (backfills)</strong>, plus RAG/Gemini extraction and ANZ compliance. Best fit for Flink/Spark on this resume is <strong>Uber Menu</strong>, not Masters India (Kafka there is already claimed for e-invoice async) and not IA (ClickHouse POC lane). Pinot stays off the one-pager unless space returns.</p>
 </blockquote>
 <hr>
-<h2 id="what-the-system-does">What the system does</h2>
-<p>Uber Eats onboards restaurant menus from partner-authorized third-party platforms and unstructured PDFs/images into the catalog. A Python fleet on GCP drives Selenium scrapers through proxy pools, persists raw and normalized menu payloads, and routes messy PDFs/images through a RAG plus Gemini 2.5 Pro path with supervised fine tuning and schema validation. A separate Python automation track keeps ANZ driver and vehicle documents compliant. Success criteria: time to onboard, ingestion success rate, extraction fidelity, and ops hours saved on compliance.</p>
-<hr>
-<h2 id="bullet-defenses">Bullet defenses</h2>
-<h3 id="1-python-selenium-gcp-30k-menusmonth-24h-to-2h-600kyr">1. Python + Selenium + GCP, 30K menus/month, 24h to 2h, $600K+/yr</h3>
-<p><strong>Stack (HISTORICAL, 4yr resume).</strong> Python workers on GCP run Selenium against JS-heavy vendor sites, write structured catalogs, and retry with proxy rotation. Not a streaming platform claim.</p>
-<p><strong>Impact.</strong> Onboarding 24h to 2h (90%). Eliminated a $2 per menu third-party tool at 30K menus/month = $600K+/yr (HISTORICAL arithmetic: 30K x $2 x 12 = $720K list; resume says $600K+).</p>
-<h3 id="2-rag-gemini-98-fidelity-100-schema-consistency">2. RAG + Gemini, 98% fidelity, 100% schema consistency</h3>
-<p>Unstructured PDFs and images defeat rule-based parsers. Pipeline: chunk menu, retrieve similar labeled menus, generate structured items with Gemini, validate against schema (prices, currency, locale), low confidence goes to human review. SFT enforces schema. 98% fidelity and 100% schema consistency are offline/eval numbers. Say that.</p>
-<h3 id="3-95-success-about-60-to-95-anti-bot">3. +95% success (about 60% to 95%+), anti-bot</h3>
-<p>Anti bot: IP rotation, user agent spoofing, dynamic proxy pools, per source retry budgets. Baseline from about 60 to 65% to 95%+ (baseline ESTIMATED).</p>
-<h3 id="4-anz-compliance-999-20hweek-saved">4. ANZ compliance 99.9%, 20h/week saved</h3>
-<p>Python automation checks driver and vehicle document freshness against local authority rules for Uber earners in ANZ. 99.9% compliance and 20 hours/week of manual verification saved (HISTORICAL, 4yr resume).</p>
-<hr>
-<h2 id="end-to-end-flow-resume-aligned">End to end flow (resume-aligned)</h2>
-<pre><code>Partner-authorized vendor sites / PDF+image menus
+<h2 id="why-this-project-is-the-best-fit-for-flink-and-spark">Why this project is the best fit for Flink and Spark</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Verdict</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Uber Menu</strong></td>
+<td><strong>Selected</strong></td>
+<td>Burst scrapers need a durable bus (Kafka), online normalize/dedupe (Flink), and large reprocess/backfill jobs (Spark). Matches original resume claim and production pattern used at Uber-scale ingestion teams.</td>
+</tr>
+<tr>
+<td>Masters India</td>
+<td>Rejected for Flink/Spark</td>
+<td>Already has Kafka + Celery/Spring Batch for IRP bulk. Adding Flink/Spark there duplicates without stronger evidence.</td>
+</tr>
+<tr>
+<td>Impact Analytics</td>
+<td>Rejected</td>
+<td>Analytics path is ClickHouse POC / CQRS, not a Spark/Flink job you owned.</td>
+</tr>
+<tr>
+<td>Skills-only</td>
+<td>Too weak</td>
+<td>Big-tech data/backend screens (Databricks, Airbnb data, Netflix data platform) want experience bullets, not only a skills chip.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="role-split-defend-this-whiteboard">Role split (defend this whiteboard)</h3>
+<pre><code>Partner sites / PDF+image menus
         |
         v
-Selenium scrapers on GCP (proxy pool, UA rotation, retries)
+Selenium scrapers (GCP) + proxy pools     ← acquire HTML / files
         |
-        +--&gt; Structured catalog upsert (idempotent by vendor+menu version)
+        v
+Kafka (keyed by vendor_id)                ← buffer, replay, fan-out
         |
-        +--&gt; RAG + Gemini 2.5 Pro + SFT --&gt; Pydantic/JSON schema validate
+        +--&gt; Flink (event-time)           ← normalize, validate, dedupe, route
         |         |
-        |         +--&gt; human review on low confidence
+        |         +--&gt; catalog upsert (idempotent)
+        |         +--&gt; low-confidence → RAG/Gemini path
         |
-        +--&gt; ANZ document compliance automation (separate track)
+        +--&gt; Spark (batch / micro-batch)  ← backfills, reprocess windows, joins
+        |
+        +--&gt; ANZ compliance jobs (separate Python track)
 </code></pre>
+<p><strong>Flink why not Spark for the hot path:</strong> scrapes are bursty; you need keyed state for per-vendor dedupe, event-time ordering when late pages arrive, and lower latency than Spark micro-batches so catalog freshness stays minutes not hours.<br>
+<strong>Spark why not Flink for backfills:</strong> reprocessing 90 days of item rows is batch-shaped (large shuffle, SQL joins, replay from object storage). Spark’s DataFrame API and existing batch ops fit; spinning Flink state for a one-shot backfill is the wrong cost curve.<br>
+<strong>Kafka why not direct HTTP to catalog:</strong> scrapers must not block on slow catalog writes; replay after a bad parser deploy; multiple consumers (Flink online, Spark backfill, audit) share one log.</p>
+<p>Industry grounding (interview citations, not personal claims): Flink for true stream / stateful Kafka consumers; Spark for unified batch + near-real-time and lakehouse ETL (<a href="https://www.confluent.io/compare/spark-streaming-vs-flink/">Confluent Flink vs Spark</a>, <a href="https://estuary.dev/blog/apache-spark-vs-flink/">Estuary comparison</a>).</p>
 <hr>
-<h2 id="rapid-fire-menu-stack-only">Rapid fire (Menu stack only)</h2>
+<h2 id="bullet-defenses">Bullet defenses</h2>
+<h3 id="1-selenium-kafka-200500-peak-eventssec-flink-spark-30k-menusmo-24h2h-600k">1. Selenium → Kafka (~200–500 peak events/sec) → Flink + Spark, 30K menus/mo, 24h→2h, $600K+</h3>
+<p><strong>Acquire (HISTORICAL).</strong> Python Selenium on GCP hits JS-heavy vendor sites through proxy pools; emits menu/item/scrape-health events.</p>
+<p><strong>Bus (ESTIMATED rate).</strong> Kafka topic(s) keyed by <code>vendor_id</code> for per-vendor ordering. Peak <strong>~200–500 events/sec</strong> during fleet runs (ESTIMATED): 30K menus/mo ≈ 1K menus/day; item-level events + retries + health amplify bursts. Steady-state much lower. Consumer lag is the primary SLO.</p>
+<p><strong>Flink online (HISTORICAL role / ESTIMATED load).</strong> Consume Kafka; keyed process by vendor; schema validate; dedupe by content hash / menu version; route structured items to catalog upsert; route unstructured payloads to RAG/Gemini. Checkpoints for restart; at-least-once from Kafka plus idempotent sinks.</p>
+<p><strong>Spark batch (HISTORICAL role / ESTIMATED volume).</strong> Nightly or on-demand backfills and reprocess windows (~<strong>1–2M item rows</strong> ESTIMATED for a typical 90-day reprocess). Same normalize logic as Flink where possible (shared libraries / dual path) to avoid online/offline drift.</p>
+<p><strong>Impact.</strong> Onboarding <strong>24h → 2h</strong> (90%). Money: kill ~<strong>$2/menu</strong> third-party tool → 30K × $2 × 12 = <strong>$720K</strong> list → resume <strong>$600K+</strong> conservative floor.</p>
+<h3 id="2-rag-gemini-98-fidelity-100-schema-consistency">2. RAG + Gemini, 98% fidelity, 100% schema consistency</h3>
+<p>Unstructured PDFs/images. Chunk → retrieve similar labeled menus → Gemini generate → schema validate → low confidence to human review. SFT for schema. <strong>Offline/eval</strong> numbers. Say that.</p>
+<h3 id="3-95-success-about-60-95-anti-bot">3. +95% success (about 60% → 95%+), anti-bot</h3>
+<p>IP rotation, UA spoofing, dynamic proxies, per-source retry budgets. Baseline ESTIMATED ~60–65% → mid-90s.</p>
+<h3 id="4-anz-compliance-999-20hweek-saved">4. ANZ compliance 99.9%, 20h/week saved</h3>
+<p>Separate Python automation for driver/vehicle docs. HISTORICAL.</p>
+<hr>
+<h2 id="flink-deep-dive-must-know-for-interviews">Flink deep dive (must-know for interviews)</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>What you say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API</td>
+<td>DataStream or Table API; keyed by <code>vendor_id</code></td>
+</tr>
+<tr>
+<td>Time</td>
+<td>Event time from scrape timestamp; watermarks with bounded out-of-orderness (late pages)</td>
+</tr>
+<tr>
+<td>State</td>
+<td>Keyed dedupe state (last content hash / menu version) in RocksDB state backend</td>
+</tr>
+<tr>
+<td>Fault tolerance</td>
+<td>Checkpoint barriers; restore from last successful checkpoint on TaskManager loss</td>
+</tr>
+<tr>
+<td>Delivery</td>
+<td>Kafka source at-least-once or exactly-once with transactional sink if required; catalog sink idempotent either way</td>
+</tr>
+<tr>
+<td>Backpressure</td>
+<td>Slow catalog → Flink network buffers → Kafka consumer lag rises (that is the alert)</td>
+</tr>
+<tr>
+<td>Failure mode</td>
+<td>Bad deploy of normalizer → rewind Kafka offsets to before bad watermark, reprocess, Spark backfill for gaps</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Q: Why not Kafka Streams?</strong><br>
+Kafka Streams is an option for lighter transforms. Flink chosen for richer event-time + larger keyed state and clearer ops story for a dedicated processing cluster at Uber-shaped platforms. Admit Kafka Streams could work at this event rate if the team standard was Streams-only.</p>
+<p><strong>Q: Exactly-once end to end?</strong><br>
+Across Selenium + Kafka + Flink + external catalog you usually get <strong>at-least-once + idempotent upsert</strong>. Exactly-once needs transactional sinks and a store that participates; do not claim two-phase commit across Gemini or third-party sites.</p>
+<h3 id="official-flink-refs">Official Flink refs</h3>
 <ul>
-<li>Why Selenium not requests+BS4? Vendor pages are JS-rendered SPAs; HTML fetch returns empty shells.</li>
-<li>Why not Playwright? Existing Uber/EPAM Selenium grid and fleet already ran; rewrites were risk without measured flake wins. Acknowledge Playwright is often better for greenfield.</li>
-<li>Ethics of scraping? Partner-authorized catalog sync under Uber partnership agreements, not open-web scraping.</li>
-<li>What breaks at 10x? Proxy pool capacity and per-source rate limits first.</li>
-<li>How is 98% fidelity measured? Offline labeled eval set (item name, price, category match), not live A/B.</li>
-<li>What is 100% schema consistency? Every accepted payload passes Pydantic/JSON Schema before catalog write.</li>
+<li>https://nightlies.apache.org/flink/flink-docs-stable/</li>
+<li>https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/</li>
+<li>https://nightlies.apache.org/flink/flink-docs-stable/docs/deployment/ha/overview/</li>
 </ul>
 <hr>
-<h2 id="streaming-context-do-not-claim-on-resume">Streaming context (DO NOT CLAIM ON RESUME)</h2>
-<p>Background only if an interviewer asks how Uber typically wires scrapers into catalog systems. Do not present this as your Menu ownership. For Kafka experience, use Masters India.</p>
-<pre><code>Scrapers --&gt; (platform bus) --&gt; normalize/dedup --&gt; catalog
-                          \--&gt; health dashboards / backfills
-</code></pre>
-<p>If pressed on personal streaming work: "I did not own Kafka/Flink on Menu. My production Kafka is AsyncIOKafka at Masters India for e-invoice fan-out and replay."</p>
-<h2 id="mock-interview-hardest-questions-with-answers_3">Mock interview: hardest questions with answers</h2>
-<p><strong>Interviewer:</strong> You claim Selenium on GCP for 30K menus a month. Why not Playwright, and why not plain <code>requests</code> plus BeautifulSoup?</p>
-<p><strong>Candidate:</strong> Vendor menu pages were JS-heavy SPAs. A bare HTTP GET returned an empty shell, so BeautifulSoup alone could not see items or prices. Selenium was already the paved path in the Uber/EPAM automation fleet: shared grids, Chrome drivers, and ops runbooks. Playwright is often better for greenfield (auto-wait, lightweight contexts, native network interception), and I would pick it for a new scraper today. Rewriting a working fleet mid-onboarding would have burned weeks for unproven flake gains. So the choice was existing infra plus real browser rendering, not ideology.</p>
-<p><strong>Interviewer:</strong> Scraping at Uber sounds legally risky. How do you defend IP rotation and proxy pools without sounding like a bot farm?</p>
-<p><strong>Candidate:</strong> This was partner-authorized catalog sync under Uber Eats partnership agreements, not open-web scraping of random restaurants. Proxies and IP rotation existed because partner platforms still run anti-bot defenses that throttle datacenter IPs even for legitimate integrations. The pool rotated exit IPs, stuck sessions per vendor when needed, and backed off on 403/429 with per-source budgets. Ethics line I say out loud: we only hit sources we were contracted to ingest, logged every run, and respected rate limits we negotiated. Anti-bot work raised successful ingestions about 95% relative (HISTORICAL), from a rough 60 to 65% baseline (ESTIMATED) to 95%+.</p>
-<p><strong>Interviewer:</strong> Walk the $600K savings math. I will poke holes if the arithmetic is soft.</p>
-<p><strong>Candidate:</strong> Third-party menu tool cost was about $2 per menu. At 30K+ menus per month that is 30,000 x $2 = $60,000 per month, or $720,000 per year list. Resume says $600K+ annually, which is the conservative floor after volume mix and partial cutover months. Onboarding time fell from 24 hours to 2 hours (90%) because scrapers plus extraction replaced a slow manual or vendor-tool loop. Numbers are HISTORICAL from the 4yr resume; I do not invent a different unit cost.</p>
-<p><strong>Interviewer:</strong> Why Gemini 2.5 Pro with supervised fine tuning instead of prompt-only extraction?</p>
-<p><strong>Candidate:</strong> Prompt-only drifted on layout variants: multi-column PDFs, handwritten specials, mixed currencies, and image-only menus. RAG pulled similar labeled menus so the model saw the right shape before generating. SFT on schema-shaped examples forced field names, types, and required keys so the model stopped inventing columns. Prompt-only might hit high fidelity on easy PDFs and still fail schema validation; SFT is what pushed accepted outputs to 100% schema consistency on the eval set. Cost and latency of Gemini mattered less than catalog write failures from malformed JSON.</p>
-<p><strong>Interviewer:</strong> Define 98% fidelity and 100% schema consistency precisely. How were they measured?</p>
-<p><strong>Candidate:</strong> Schema consistency means every accepted payload passes Pydantic or JSON Schema validation before catalog write: required fields present, types correct, currency codes valid, price non-negative. That gate is binary, so we report 100% for accepted rows; rejects go to human review and do not count as consistent writes. Fidelity is offline eval against a labeled set: item name, price, and category matched within defined tolerances, about 98% on that set. I say offline eval out loud so nobody hears it as a live A/B or production SLA. Live traffic still has a review queue for low-confidence cases.</p>
-<p><strong>Interviewer:</strong> How does dynamic proxy pool rotation actually work at fleet scale?</p>
-<p><strong>Candidate:</strong> Workers pull a proxy lease from a pool service keyed by source and geography. Sticky leases keep one exit IP for a short vendor session so login or pagination cookies stay valid. On hard blocks we release the lease, mark the IP cool-down, and retry with a different residential or partner IP. User-agent rotation and human-like pacing sit on top. The failure mode at 10x is pool exhaustion and source rate limits, not CPU on the scraper box.</p>
-<p><strong>Interviewer:</strong> Why is Kafka missing from your Menu bullets when older prep talked about Flink and Pinot?</p>
-<p><strong>Candidate:</strong> Deliberate resume correction. The 4yr resume documents Python, Selenium, and GCP for Menu, not a streaming platform I owned. Kafka, Flink, Spark, and Pinot were removed so the bullets match what I can defend. If you want Kafka production experience, Masters India used AsyncIOKafka for e-invoice messaging with ordering and replay. I will not claim I built Uber's Menu bus.</p>
-<p><strong>Interviewer:</strong> ANZ compliance to 99.9% and 20 hours a week saved. What did the automation actually check?</p>
-<p><strong>Candidate:</strong> Python jobs validated driver and vehicle document status against local authority rules for Uber earners in Australia and New Zealand: expiry, document type presence, and mismatch flags. Failures opened ops queues; successes auto-cleared. 99.9% compliance is the measured clear rate after automation (HISTORICAL). Manual verification dropped about 20 hours per week because humans only touched exceptions. I do not claim I wrote the government systems; I owned the Uber-side automation and reporting.</p>
-<p><strong>Interviewer:</strong> RAG retrieval for menus: what is indexed, and what happens on a retrieval miss?</p>
-<p><strong>Candidate:</strong> We embedded chunked labeled menus and catalog exemplars (cuisine, layout family, locale) in a vector store. At inference we retrieved nearest neighbors, stuffed them into the Gemini context, then generated structured items. On miss or low similarity we fell back to a stricter prompt, raised the confidence threshold, and routed more rows to human review instead of writing garbage. Retrieval quality mattered as much as the generator for fidelity.</p>
-<p><strong>Interviewer:</strong> Idempotent catalog writes: how do you avoid double-ingesting the same vendor menu during retries?</p>
-<p><strong>Candidate:</strong> Upsert key is vendor id plus menu version or content hash of the normalized item set. Scrapers retry freely; the write path is idempotent. Partial failures mark a run checkpoint so the next attempt resumes without duplicating already-written items. That pattern is what made aggressive proxy retries safe at 30K menus per month.</p>
-<p><strong>Interviewer:</strong> If Playwright is better today, what would you change in a redesign without rewriting everything?</p>
-<p><strong>Candidate:</strong> Pilot Playwright on the flakiest JS sources first, keep Selenium on stable sources, share the same proxy lease API and idempotent upsert contract. Measure flake rate, wall-clock per menu, and proxy burn before a fleet cutover. Greenfield preference for Playwright does not erase that Selenium plus proxies already delivered the 24h to 2h and $600K+ outcomes.</p>
+<h2 id="spark-deep-dive-must-know-for-interviews">Spark deep dive (must-know for interviews)</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>What you say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Role</td>
+<td>Backfill / reprocess / large joins — not the hot online path</td>
+</tr>
+<tr>
+<td>API</td>
+<td>Spark SQL / DataFrames on object storage dumps or Kafka batch read</td>
+</tr>
+<tr>
+<td>Why Spark</td>
+<td>Unified batch, shuffle-friendly joins, team familiarity for large historical rewrites</td>
+</tr>
+<tr>
+<td>Skew</td>
+<td>Hot vendors (huge menus) → salt keys or isolate whale vendors</td>
+</tr>
+<tr>
+<td>AQE</td>
+<td>Adaptive query execution for skew and partition coalescing on backfills</td>
+</tr>
+<tr>
+<td>Structured Streaming</td>
+<td>Optional near-real-time path; on this resume Flink owns online, Spark owns batch — do not claim both for the same hot path without a clear reason</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Q: Why not only Spark Structured Streaming?</strong><br>
+Micro-batch latency (seconds) is weaker for live catalog freshness under scrape bursts; Flink fits online. Spark still wins for multi-million-row historical reprocess.</p>
+<p><strong>Q: Spark vs ClickHouse (if they mix IA and Menu)?</strong><br>
+Different problems. Menu backfill = ETL over scrape history. IA Order Batching = interactive OLAP metric (measured CH 3.86s vs PG minutes). Do not merge the stories.</p>
+<h3 id="official-spark-refs">Official Spark refs</h3>
+<ul>
+<li>https://spark.apache.org/docs/latest/cluster-overview.html</li>
+<li>https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html</li>
+</ul>
+<hr>
+<h2 id="money-and-rate-math-rapid-fire">Money and rate math (rapid fire)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Arithmetic</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$600K+/yr</td>
+<td>$2/menu × 30K × 12 = $720K list → floor $600K+</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>~200–500 peak events/sec</td>
+<td>Menus/day × items × retries in fleet windows</td>
+<td>ESTIMATED</td>
+</tr>
+<tr>
+<td>~1–2M Spark backfill rows</td>
+<td>~1K menus/day × items × multi-day reprocess window</td>
+<td>ESTIMATED</td>
+</tr>
+<tr>
+<td>24h → 2h</td>
+<td>Onboarding cycle</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>+95% ingestions</td>
+<td>~60–65% → 95%+ after proxies</td>
+<td>HISTORICAL / EST. baseline</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="mock-interview-hardest-questions">Mock interview: hardest questions</h2>
+<p><strong>Interviewer:</strong> You previously said Menu was only Selenium. Which is it?<br>
+<strong>Candidate:</strong> Both layers. Selenium acquires pages. Kafka/Flink/Spark process and land catalog data. An earlier one-pager dropped streaming to save space and reduce risk; the fuller claim matches the original event-driven resume bullet and is what I defend now. Kafka at Masters India is a separate product (e-invoice).</p>
+<p><strong>Interviewer:</strong> Derive 200–500 events/sec.<br>
+<strong>Candidate:</strong> 30K menus/month ≈ 1K/day. Each menu emits many item and retry/health events during a fleet run. Bursts concentrate into short windows → hundreds of events/sec peak. Steady-state is much lower. Order-of-magnitude estimate, not a Grafana screenshot.</p>
+<p><strong>Interviewer:</strong> Flink checkpoint fails mid-fleet. What happens?<br>
+<strong>Candidate:</strong> Job restores from last checkpoint; Kafka offsets rewind to the checkpointed positions; idempotent catalog upserts prevent duplicate items; lag alert fires until catch-up. If a whole window is corrupt, Spark backfill repairs from raw object storage.</p>
+<p><strong>Interviewer:</strong> Why both Flink and Spark — is that overkill at 30K menus/month?<br>
+<strong>Candidate:</strong> Volume is moderate; the architecture is about <strong>shape</strong>, not only QPS. Online path needs event-time dedupe under scrape jitter. Offline path needs large historical rewrites after schema changes. At this scale a single consumer could work, but splitting online vs batch matches Uber-style paved roads and keeps blast radius small when reprocessing.</p>
+<p><strong>Interviewer:</strong> Databricks asks about Spark depth. How far do you go?<br>
+<strong>Candidate:</strong> Production role on Menu was batch/backfill oriented: DataFrames, reprocess jobs, skew handling. I do not claim Spark kernel or Delta Lake ownership. For Databricks pure runtime roles I still lead with Menu Spark plus IA ClickHouse analytics judgment.</p>
+<hr>
 <h2 id="confidence-audit_3">Confidence audit</h2>
 <table>
 <thead>
 <tr>
 <th>Resume bullet</th>
 <th>Rating</th>
-<th>Fallback wording if pressed</th>
+<th>Fallback</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Python + Selenium + GCP, 30K+ menus/month, 24h to 2h, $600K+/yr</td>
-<td>SOLID</td>
-<td>Keep $2/menu and 30K/month arithmetic; say "$600K+ after partial cutover" if they want exact finance sign-off.</td>
+<td>Selenium + Kafka + Flink + Spark, 30K+, 24h→2h, $600K+</td>
+<td>NEEDS CARE on peak events/sec and Spark row counts</td>
+<td>Call rates ESTIMATED; money uses $720K list / $600K+ floor</td>
 </tr>
 <tr>
-<td>RAG + Gemini 2.5 Pro + SFT, 98% fidelity, 100% schema consistency</td>
-<td>NEEDS CARE</td>
-<td>Always say "offline eval / accepted payloads." Fallback: "about 98% item match on a labeled set; 100% of writes that pass schema validation."</td>
+<td>RAG/Gemini 98%/100%</td>
+<td>SOLID if offline eval stated</td>
+<td>Always say offline/eval</td>
 </tr>
 <tr>
-<td>IP rotation + proxy pools, +95% successful ingestions</td>
-<td>NEEDS CARE</td>
-<td>+95% is relative lift (HISTORICAL); baseline ~60-65% is ESTIMATED. Fallback: "roughly doubled successful ingestions once proxies and rotation stabilized."</td>
+<td>+95% ingestions</td>
+<td>NEEDS CARE on baseline</td>
+<td>Give ~60–65% → 95%+ as estimated baseline</td>
 </tr>
 <tr>
-<td>ANZ compliance 99.9%, 20h/week saved</td>
-<td>SOLID</td>
-<td>Stick to automation of document checks and exception queues; do not invent regulator API details.</td>
+<td>ANZ 99.9% / 20h</td>
+<td>SOLID HISTORICAL</td>
+<td>Separate track from streaming</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Honesty:</strong> Do not claim Pinot on the current PDF. Do not claim Spark at IA. Do not claim Flink at Masters India.</p>
 <hr>
 <h1 id="senior-systems-deep-dive-ownership-reliability-data-infra">Senior Systems Deep Dive (Ownership, Reliability, Data Infra)</h1>
 <p><strong>Purpose:</strong> Interview fluency for big-tech senior screens.<br>
@@ -2587,41 +2724,40 @@ Selenium scrapers on GCP (proxy pool, UA rotation, retries)
 <li><a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/container_cluster">GKE Terraform resource</a></li>
 </ul>
 <hr>
-<h2 id="7-spark-study-only-not-resume-experience">7. Spark (<code>STUDY ONLY - NOT RESUME EXPERIENCE</code>)</h2>
-<h3 id="why-off-the-resume_1">Why off the resume</h3>
-<p>Explicitly retracted. Uber Menu source of truth is Python + Selenium + GCP, not a Spark batch platform. Do not re-add Spark to skills or experience.</p>
-<h3 id="study-topics-databricks-data-platform-interviews">Study topics (Databricks / data-platform interviews)</h3>
+<h2 id="7-spark-resume-on-uber-menu-study-extras-below">7. Spark (RESUME on Uber Menu; study extras below)</h2>
+<h3 id="resume-claim">Resume claim</h3>
+<p>Uber Menu: Spark for <strong>batch backfills / reprocess</strong> after Selenium→Kafka→Flink online path. Volume ~1–2M item rows ESTIMATED per typical reprocess window. See <code>14_uber_menu_deep_dive.md</code>.</p>
+<h3 id="extra-study-beyond-resume-bullet">Extra study (beyond resume bullet)</h3>
 <ul>
 <li>Driver vs executors, partitions, shuffle, skew, AQE.</li>
-<li>Narrow vs wide transformations.</li>
-<li>Structured Streaming micro-batches vs continuous.</li>
-<li>When Spark beats a warehouse OLAP engine and when ClickHouse wins for interactive analytics.</li>
+<li>Structured Streaming micro-batches vs continuous (on this resume Flink owns online).</li>
+<li>When Spark beats a warehouse OLAP engine and when ClickHouse wins for interactive analytics (IA story).</li>
 </ul>
-<h3 id="bridge-from-your-real-work">Bridge from your real work</h3>
-<p>"I proved a 60x analytics speedup moving Order Batching aggregation from PostgreSQL to ClickHouse. That is OLAP engineering adjacent to Spark jobs, but I did not own a Spark production pipeline."</p>
+<h3 id="bridge">Bridge</h3>
+<p>"Menu Spark is ETL/backfill. IA ClickHouse is interactive OLAP POC. Databricks pure runtime roles: lead Menu Spark + CH judgment; do not invent Delta Lake ownership."</p>
 <h3 id="official-references_6">Official references</h3>
 <ul>
-<li><a href="https://spark.apache.org/docs/latest/cluster-overview.html">Spark overview</a></li>
-<li><a href="https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html">Structured Streaming</a></li>
+<li>https://spark.apache.org/docs/latest/cluster-overview.html</li>
+<li>https://spark.apache.org/docs/latest/structured-streaming-programming-guide.html</li>
 </ul>
 <hr>
-<h2 id="8-flink-study-only-not-resume-experience">8. Flink (<code>STUDY ONLY - NOT RESUME EXPERIENCE</code>)</h2>
-<h3 id="why-off-the-resume_2">Why off the resume</h3>
-<p>Same retraction as Spark for Menu. Kafka remains justified by Masters India only.</p>
-<h3 id="study-topics_1">Study topics</h3>
+<h2 id="8-flink-resume-on-uber-menu-study-extras-below">8. Flink (RESUME on Uber Menu; study extras below)</h2>
+<h3 id="resume-claim_1">Resume claim</h3>
+<p>Uber Menu: Flink for <strong>online normalize / dedupe / route</strong> on Kafka (~200–500 peak events/sec ESTIMATED). Event-time, keyed state, checkpoints. See <code>14_uber_menu_deep_dive.md</code>.</p>
+<h3 id="extra-study">Extra study</h3>
 <ul>
 <li>Event time vs processing time, watermarks, keyed state.</li>
-<li>Checkpoints (Chandy-Lamport style), savepoints, exactly-once sinks.</li>
+<li>Checkpoints, savepoints, exactly-once sinks.</li>
 <li>Backpressure and operator chaining.</li>
 <li>Flink vs Kafka Streams vs Spark Structured Streaming trade-offs.</li>
 </ul>
-<h3 id="bridge-from-your-real-work_1">Bridge from your real work</h3>
-<p>"At Masters India I used Kafka for ordered, replayable compliance events with consumer groups. If the interview needs stream processing beyond Kafka consumers, I can discuss Flink concepts as study knowledge, not as my production ownership."</p>
+<h3 id="bridge_1">Bridge</h3>
+<p>"Masters India Kafka is e-invoice async without a Flink claim. Menu is where Flink sits."</p>
 <h3 id="official-references_7">Official references</h3>
 <ul>
-<li><a href="https://nightlies.apache.org/flink/flink-docs-stable/">Flink docs</a></li>
-<li><a href="https://nightlies.apache.org/flink/flink-docs-stable/docs/deployment/ha/overview/">Flink HA overview</a></li>
-<li><a href="https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/">Stateful stream processing</a></li>
+<li>https://nightlies.apache.org/flink/flink-docs-stable/</li>
+<li>https://nightlies.apache.org/flink/flink-docs-stable/docs/deployment/ha/overview/</li>
+<li>https://nightlies.apache.org/flink/flink-docs-stable/docs/concepts/stateful-stream-processing/</li>
 </ul>
 <hr>
 <h2 id="9-design-patterns-resume-skill-verbal-depth">9. Design patterns (RESUME SKILL + verbal depth)</h2>
@@ -2836,7 +2972,7 @@ Selenium scrapers on GCP (proxy pool, UA rotation, retries)
 </tr>
 </tbody>
 </table>
-<h2 id="uber-menu-money">Uber Menu (money)</h2>
+<h2 id="uber-menu-money-streaming">Uber Menu (money + streaming)</h2>
 <table>
 <thead>
 <tr>
@@ -2864,6 +3000,24 @@ Selenium scrapers on GCP (proxy pool, UA rotation, retries)
 <td>Kill ~$2/menu tool: 30K×$2×12=$720K list → floor $600K+</td>
 <td>HISTORICAL</td>
 <td>same + <code>09_…</code></td>
+</tr>
+<tr>
+<td>Kafka ~200–500 peak events/sec</td>
+<td>Fleet-run item/retry amplification</td>
+<td>ESTIMATED</td>
+<td>same</td>
+</tr>
+<tr>
+<td>Flink online normalize/dedupe</td>
+<td>Event-time keyed state; best-fit project for Flink</td>
+<td>HISTORICAL role</td>
+<td>same</td>
+</tr>
+<tr>
+<td>Spark backfills (~1–2M rows)</td>
+<td>Historical reprocess / joins</td>
+<td>HISTORICAL / EST.</td>
+<td>same</td>
 </tr>
 <tr>
 <td>+95% ingestions</td>
@@ -2990,4 +3144,4 @@ Selenium scrapers on GCP (proxy pool, UA rotation, retries)
 </tbody>
 </table>
 <h2 id="explicit-non-claims-do-not-invent">Explicit non-claims (do not invent)</h2>
-<p>Spark, Flink, Pinot on Menu · Terraform · multi-region ownership · K8s cluster ops · FRM 19M→300K · FRM measured 70% · identical CH hardware · full PG→CH production cutover · IA people leadership</p></main></div></body></html>
+<p>Pinot on current PDF · Terraform · multi-region ownership · K8s cluster ops · FRM 19M→300K · FRM measured 70% · identical CH hardware · full PG→CH production cutover · IA people leadership · Spark/Flink at Masters India or IA (Menu only)</p></main></div></body></html>

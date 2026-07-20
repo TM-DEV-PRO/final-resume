@@ -29,6 +29,6 @@ Original playbook still useful for agentic Assort depth: `../interview_prep/agen
 |---|---|
 | Impact Analytics (14 May 2026–) | CH Order Batching 3.86s vs PG 3m40s+ (60x); 5.9M rows/s insert; CQRS + CDC + Redis RYW; update 39s to 7s; copilot targets days to under 1h |
 | Uber FRM | Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks to ~3–4 days) |
-| Uber Menu | 30K menus/mo, 24h to 2h, $600K+/yr ($2/menu × 30K × 12 = $720K list), +95% ingest, RAG/Gemini 98% fidelity (Python + Selenium + GCP; **no Spark/Flink**) |
+| Uber Menu | Selenium→Kafka→Flink→Spark; 30K menus/mo; 24h to 2h; $600K+/yr; +95% ingest; RAG/Gemini 98% fidelity |
 | Masters India | Owned strangler + mentored 2; Kafka/sharding TPS/RPS; idempotency/DLQ fault tolerance; on-call alerting; 1M+ txn/day |
 | GeeksforGeeks | 10K+ daily queries; +15–20% premium; +30% courses; +70% ops efficiency |

@@ -26,13 +26,16 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | 18 files recon v2 | `RECON_API_MIGRATION.md` | MEASURED | same |
 | Led 3 engineers | User-confirmed EPAM pod | Confirmed | same |
 
-## Uber Menu (money)
+## Uber Menu (money + streaming)
 
 | Resume number | Why / how | Tag | Defense file |
 |---|---|---|---|
 | 30K+ menus/mo | Historical volume | HISTORICAL | `14_uber_menu_deep_dive.md` |
 | 24h → 2h | Onboarding cycle | HISTORICAL | same |
 | **$600K+/yr** | Kill ~$2/menu tool: 30K×$2×12=$720K list → floor $600K+ | HISTORICAL | same + `09_…` |
+| Kafka ~200–500 peak events/sec | Fleet-run item/retry amplification | ESTIMATED | same |
+| Flink online normalize/dedupe | Event-time keyed state; best-fit project for Flink | HISTORICAL role | same |
+| Spark backfills (~1–2M rows) | Historical reprocess / joins | HISTORICAL / EST. | same |
 | +95% ingestions | Proxy/IP rotation; baseline ~60–65% EST. | HISTORICAL | same |
 | 98% / 100% schema | Offline SFT eval | HISTORICAL | same |
 | 99.9% / 20h week | ANZ compliance automation | HISTORICAL | same |
@@ -62,4 +65,4 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 
 ## Explicit non-claims (do not invent)
 
-Spark, Flink, Pinot on Menu · Terraform · multi-region ownership · K8s cluster ops · FRM 19M→300K · FRM measured 70% · identical CH hardware · full PG→CH production cutover · IA people leadership
+Pinot on current PDF · Terraform · multi-region ownership · K8s cluster ops · FRM 19M→300K · FRM measured 70% · identical CH hardware · full PG→CH production cutover · IA people leadership · Spark/Flink at Masters India or IA (Menu only)

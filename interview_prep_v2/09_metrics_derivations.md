@@ -15,12 +15,11 @@ Every TPS / RPS / from-to / money number on the **current** v2 and Java PDFs. In
 
 | Tech | Resume decision | Why |
 |---|---|---|
-| **Spark / Flink / Pinot on Uber Menu** | **REMOVED** from experience and skills | 4yr resume source of truth is Python + Selenium + GCP. Streaming stack was overclaimed earlier and retracted Jul 2026. |
-| **Kafka** | Keep on skills + Masters bullets | Justified by Masters India AsyncIOKafka / e-invoicing, not Menu. |
+| **Spark + Flink on Uber Menu** | **ON resume (restored Jul 2026)** | Best fit: scrapers → Kafka → Flink online → Spark backfills. Matches original event-driven Menu bullet. Peak events/sec and Spark row counts ESTIMATED. |
+| **Pinot** | Off one-pager | Space + weaker need vs Flink/Spark for ATS; keep verbal if asked about health dashboards. |
+| **Kafka** | Skills + Menu + Masters | Menu bus + Masters e-invoice async. |
 | **Terraform / multi-region / K8s cluster ops** | **OMIT** experience; STUDY ONLY in `17_senior_systems_study_only.md` | No 95%+ personal ownership evidence. Kubernetes stays skills-listed only. |
 | **ClickHouse** | Keep as **POC** bullet | MEASURED benchmarks; not a full production cutover claim. |
-
-Study depth for Spark/Flink remains in `17_senior_systems_study_only.md` labeled **STUDY ONLY - NOT RESUME EXPERIENCE**.
 
 ---
 
@@ -58,20 +57,23 @@ Study depth for Spark/Flink remains in `17_senior_systems_study_only.md` labeled
 
 ---
 
-## 3. Uber Menu Ingestion (Python + Selenium + GCP)
+## 3. Uber Menu Ingestion (Selenium → Kafka → Flink → Spark)
 
 | Claim on resume | Tag | Derivation / source |
 |---|---|---|
-| **30K+** menus/month | HISTORICAL | 4yr resume |
-| Onboarding **24h → 2h** (90%) | HISTORICAL | 4yr resume |
-| **$600K+** annually | HISTORICAL arithmetic | Third-party tool ~**$2/menu**. 30,000 × $2 × 12 = **$720K** list. Resume uses conservative **$600K+** after partial cutover / volume mix. |
-| +**95%** successful ingestions | HISTORICAL; baseline ESTIMATED | From ~60–65% to 95%+ after proxy/IP rotation |
-| **98%** fidelity, **100%** schema consistency | HISTORICAL offline eval | Say "offline evaluation / SFT eval" |
-| ANZ **99.9%**, **20 h/week** saved | HISTORICAL | Separate compliance automation track |
+| **30K+** menus/month | HISTORICAL | Original / 4yr resume |
+| Onboarding **24h → 2h** (90%) | HISTORICAL | Same |
+| **$600K+** annually | HISTORICAL arithmetic | ~$2/menu × 30K × 12 = $720K list → floor $600K+ |
+| Kafka **~200–500 peak events/sec** | ESTIMATED | Fleet-run amplification of menu/item/retry events |
+| **Flink** normalize/dedupe online | HISTORICAL role | Event-time keyed processing; load ESTIMATED at Kafka peak |
+| **Spark** backfills | HISTORICAL role / ESTIMATED volume | ~1–2M item rows for typical reprocess window |
+| +**95%** successful ingestions | HISTORICAL; baseline ESTIMATED | ~60–65% → 95%+ |
+| **98%** fidelity, **100%** schema consistency | HISTORICAL offline eval | Say offline/eval |
+| ANZ **99.9%**, **20 h/week** saved | HISTORICAL | Separate track |
 
-**Money deep dive:** Unit cost killed = external menu tool at about $2 per menu. Monthly burn at 30K menus = $60K. Annual list = $720K. Resume floors at $600K+ to stay conservative. Onboarding hours are a separate ops win (24h→2h), not double-counted into the $600K unless finance attributed both.
+**Money deep dive:** Unit cost killed ≈ $2/menu. Monthly $60K. Annual list $720K. Resume floors at $600K+.
 
-**Rapid fire:** Redirect streaming questions to Masters India Kafka. Do not re-introduce Spark/Flink/Pinot.
+**Rapid fire:** Flink = online path; Spark = backfill. Masters India Kafka is a different product. Deep defense: `14_uber_menu_deep_dive.md`.
 
 ---
 
