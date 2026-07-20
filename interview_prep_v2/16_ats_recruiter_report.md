@@ -572,6 +572,16 @@ Chaseable with referral (BORDERLINE): Google, Amazon, Airbnb (Py/Go), Databricks
 |---|---|
 | IA PG→CH POC | **VERIFIED** against `ClickHouse-POC-Dump/_SYNTHESIS/BENCHMARK-NUMBERS.md`: 23.7M join rows, CH 3.86s vs PG 3m40s–7m48s (~60×), insert 5.91M vs 250K (~24×). Hardware caveat required in interview. |
 | FRM 70% brackets | Resume now shows **targeting 70% (~2 weeks to ~3–4 days)**. 70% = TDD TARGET; from-to ESTIMATED. |
-| Spark / Flink / Pinot | **Decision: stay OFF resumes.** Menu = Python + Selenium + GCP. Kafka justified by Masters only. Study-only in `17_…` + decision log in `09_…` / `18_…`. |
+| Spark / Flink / Pinot | **Superseded by Loop 8** — Spark+Flink restored on Uber Menu; Pinot still off PDF. |
 | Money deep dive | Menu $600K+ = $2/menu × 30K × 12 = $720K list → conservative floor. Catalogued in `18_resume_number_catalog.md`. |
-| Big-tech company skim (Google, Amazon, Microsoft, Airbnb, PlanetScale, Databricks, Roku, Rubrik, Netflix) | Unchanged structural PASS map: Microsoft + PlanetScale (Py/Go); Microsoft + Airbnb (Java). Ownership/architecture/fault-tolerance/on-call alerting improve BORDERLINE skim. YoE hard fails (Roku 8+, Rubrik 9+) unchanged. Databricks still weak without Spark ownership (correct omission). |
+| Big-tech company skim (Google, Amazon, Microsoft, Airbnb, PlanetScale, Databricks, Roku, Rubrik, Netflix) | Microsoft + PlanetScale (Py/Go); Microsoft + Airbnb (Java). Databricks skim improves with Spark on Menu. YoE hard fails (Roku 8+, Rubrik 9+) unchanged. |
+
+## Loop 8: Spark + Flink restored on Uber Menu
+
+| Check | Result |
+|---|---|
+| Placement judgment | **Uber Menu** best fit (not Masters, not IA). |
+| Resume wording | Selenium→Kafka (~200–500 peak events/sec)→Flink→Spark; skills updated both tracks. |
+| Prep depth | `14_uber_menu_deep_dive.md` rewritten with architecture, why Flink vs Spark, Q&A, money/rate math. |
+| Databricks skim | Improves from Spark MISS to HIT on experience; still not a Delta/runtime specialist claim. |
+| Honesty | Peak events/sec and Spark row counts ESTIMATED; Pinot still off PDF; no Spark/Flink at Masters or IA. |
