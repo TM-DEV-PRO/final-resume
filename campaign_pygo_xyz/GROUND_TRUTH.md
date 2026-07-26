@@ -16,13 +16,14 @@ Canonical facts for the Python/Go XYZ MNC campaign resume. Mirrors `interview_pr
 | Fault tolerance: idempotency keys, retries, DLQ replay on bulk IRP path | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
 | On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
 | Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | Skills | FRM code + Masters migration |
-| Fault Tolerance keyword | 85% | Skills | Masters idempotency / DLQ / retries |
-| Kafka + Flink + Spark on Uber Menu (Selenium→Kafka→Flink online→Spark backfills) | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Original event-driven resume + ops numbers; peak events/sec ESTIMATED |
+| Fault Tolerance / HA / Operational Excellence / On-call skill keywords | n/a | **OMIT from Skills** (Jul 2026) — experience-only via Masters idempotency/DLQ + ELK | User skills trim; Core = Multithreading + Concurrency |
+| Kafka + Flink on Uber Menu (Selenium→Kafka→Flink keyed normalize/dedupe/replay) | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Restored Jul 2026; Spark verbal/study only |
 | Multi-region / active-active / DR ownership | <5% | **OMIT resume** | CDC DR doc authored by Ashvin Sharma; no personal ownership |
 | Kubernetes cluster operations (kubectl/helm/operators) | <5% | **OMIT resume experience**; STUDY ONLY prep | Zero manifests / ops narrative |
-| Spark / Flink production ownership on Uber Menu | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Restored Jul 2026; see Menu decision above. Not at Masters/IA. |
+| Spark production ownership on Uber Menu | <50% verbal/study | **OMIT resume** | Not on PDF |
 | Terraform / IaC production ownership | <5% | **OMIT resume**; STUDY ONLY prep | Keyword blob only on old PDF |
 | CGPA 7.7/10 | MEASURED | **Removed from resume PDFs** (kept here for reference) | Education record |
+| Go (Gin) write/doing path at IA; quarter-sharded PostgreSQL + idempotent sinks at Masters | MEASURED design / HISTORICAL | Resume experience | Packaging lift Jul 2026 |
 
 ## Career timeline (canonical)
 

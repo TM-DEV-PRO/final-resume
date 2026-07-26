@@ -17,12 +17,12 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI-Powered Retail Merchandise Planning)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building the AssortSmart planner copilot (\textbf{FastAPI, LangGraph, MCP}) on a shared \textbf{Go (Gin)} doing layer so retailers can decide \textbf{what to buy, how much, and which stores}, targeting turnaround from days to \textbf{under 1 hour} and \textbf{$\geq$20 configs} explored per plan.
+    \item Building AssortSmart behind a \textbf{Go (Gin)} write/doing path and planner copilot (\textbf{FastAPI, LangGraph, MCP}) so retailers can decide \textbf{what to buy, how much, and which stores}, targeting turnaround from days to \textbf{under 1 hour} and \textbf{$\geq$20 configs} explored per plan.
     \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited tools that only \textbf{read} planning data and \textbf{3} human confirm gates before any write-back.
     \item Building \textbf{Hindsight} as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration \textbf{checked against computed metrics}, and tenant metric catalogs that go live \textbf{without a code deploy}.
     \item Keeping plan edits at \textbf{$\sim$0.4\,ms} and month rollups \textbf{sub-second} via choice-cluster-week aggregates (\textbf{$\sim$25M} rows) instead of a flat store-week grid.
     \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, append-only) after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
-    \item \textbf{Tech} -- Python, FastAPI, LangGraph, MCP, Go, Gin, Kafka, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
+    \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, MCP, Kafka, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -49,7 +49,7 @@
 \textcolor{Project}{\textbf{Menu Ingestion and Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Cut menu onboarding from \textbf{24h to 2h} and saved \textbf{\$600K+ annually} on \textbf{30K+ menus/month} by shipping \textbf{Selenium} scrapers on GCP with \textbf{Kafka} ingest and \textbf{Flink} normalize/dedupe.
+    \item Cut menu onboarding from \textbf{24h to 2h} and saved \textbf{\$600K+ annually} on \textbf{30K+ menus/month} by shipping \textbf{Selenium} scrapers on GCP with \textbf{Kafka} ingest and \textbf{Flink} keyed normalize/dedupe and replay.
     \item Hit \textbf{98\% fidelity and 100\% schema consistency} (offline eval) by building a \textbf{RAG and Gemini 2.5 Pro} extraction pipeline plus supervised fine-tuning.
     \item Raised successful ingestions to \textbf{95\%+} by handling anti-bot defenses with IP rotation, dynamic proxy pools, and adaptive backoff.
     \item Automated \textbf{ANZ driver document compliance to 99.9\%}, saving \textbf{20 hours/week} of manual verification.
@@ -70,8 +70,8 @@
 \vspace{-1ex}
 \begin{zitemize}
     \item Owned the PHP to \textbf{FastAPI microservices} strangler for \textbf{1,500+ clients}, cutting p95 latency from \textbf{1.2s to 300ms} and \mbox{mentoring \textbf{2 engineers}}.
-    \item Built an event-driven bulk e-invoicing platform on \textbf{Kafka} and \textbf{PostgreSQL} quarter sharding processing \textbf{1M+ IRP submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
-    \item Hardened the IRP path for safe replay with \textbf{idempotency keys, retries, and DLQ}, cutting redundant database reads \textbf{30\%} with Redis.
+    \item Built an event-driven bulk e-invoicing platform on \textbf{Kafka} and \textbf{quarter-sharded PostgreSQL} processing \textbf{1M+ IRP submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
+    \item Hardened the IRP path for safe replay with \textbf{idempotent sinks} (\textbf{idempotency keys, retries, and DLQ}), cutting redundant database reads \textbf{30\%} with Redis.
     \item Cut incident triage \textbf{70\%} with \textbf{ELK and New Relic} on-call alerting and raised coverage from \textbf{35\% to 82\%} at \textbf{98\%} deployment success.
     \item \textbf{Tech} -- Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}

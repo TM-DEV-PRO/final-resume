@@ -9,8 +9,8 @@ Stack framing only:
 - IA services tier bullet ("Designing Java (Spring Boot) microservices for plan lifecycle and bulk save REST APIs"): positioning variant of the same services tier the v2 resume frames as Go (Gin). The platform services tier is being designed now; on the Java track you present the design in Spring Boot terms (async executors, HikariCP connection pooling, JWT auth filter). If pressed on implementation detail, discuss the design honestly: service boundaries, worker pool sizing, timeout budgets, and idempotent bulk save semantics are language independent. Never claim shipped Java services in production at IA.
 
 Evidence boundary (same as v2 `GROUND_TRUTH.md` evidence matrix):
-- Resume-safe: FRM ownership + layered architecture, Masters strangler + Kafka scale + idempotency/DLQ fault tolerance + ELK/New Relic on-call alerting, Design Patterns / Fault Tolerance skills.
-- Omit from resume experience: multi-region, Kubernetes cluster ops, Spark, Flink, Terraform. Study those in `../interview_prep_v2/17_senior_systems_study_only.md`.
+- Resume-safe: FRM ownership + layered architecture, Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call alerting (experience), Design Patterns in Skills. **Core omits** Fault Tolerance / HA / On-call skill keywords (use Multithreading + Concurrency).
+- Menu has Kafka + Flink (keyed normalize/dedupe/replay) on PDF. Omit Spark, multi-region, K8s ops, Terraform from resume; study in `../interview_prep_v2/17_senior_systems_study_only.md`.
 - CGPA removed from Java resume PDF (kept in shared ground truth for reference).
 
 Deep dives to study (shared with v2):
