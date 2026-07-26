@@ -880,7 +880,7 @@ Each percentage is a **partition of unity** (sums to 1 on its dimension), so `SU
 | 2. 8.5% (37/437 kik) → under 2% (target) via 14 tools + 3 gates | **SOLID with care** | 8.5% MEASURED. under 2% TARGET. |
 | 3. 12B→~25M with sub-second rollup + ~0.4ms cell edit | **SOLID with care** | 12B PROJECTED; ~0.4ms / sub-second MEASURED on aggregate. |
 | 4. ONE CH bullet: 63/8 + 250M 189s→12.3s (~15.5×, measured) | **SOLID with care** | Store = design. Pivot = MEASURED. Verbal: typical aggs ~2–3×. |
-| Tech | **SOLID** | No Flink/Spark; Kafka on Masters. |
+| Tech | **SOLID** | Kafka on IA/Menu/Masters; Flink on Menu |
 
 ---
 

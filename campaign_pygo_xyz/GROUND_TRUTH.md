@@ -79,7 +79,7 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved.
 
-**RESUME DECISION (campaign_pygo_xyz):** Menu is **Selenium + Kafka ingest bus + RAG/Gemini + ANZ**. Flink/Spark stay off the PDF (verbal/study). Masters keeps Kafka e-invoice ownership (1M+/day, 700→4,000 req/min, idempotency/DLQ). IA Tech lists Kafka for async embedding jobs.
+**RESUME DECISION (campaign_pygo_xyz):** Menu is **Selenium + Kafka ingest + Flink normalize/dedupe + RAG/Gemini + ANZ**. Spark/Pinot stay verbal/study. Masters keeps Kafka e-invoice ownership (1M+/day, 700→4,000 req/min, idempotency/DLQ). IA Tech lists Kafka for async embedding jobs.
 
 ## Masters India (Dec 2022 - Jun 2024)
 

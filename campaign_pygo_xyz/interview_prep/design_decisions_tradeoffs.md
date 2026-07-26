@@ -47,7 +47,7 @@ Every major decision on the campaign resume with how / why / what / alternatives
 ## Uber Menu
 ### Selenium + Kafka ingest bus + RAG/Gemini
 Scrapers on GCP cut 24h→2h and $600K+/yr on 30K+ menus/month. Kafka holds replayable ordered scrape events before downstream extract/catalog write-back (HISTORICAL streaming path from prior resume materials / prep). RAG + Gemini + SFT for unstructured menus (98%/100% offline).
-**Flink/Spark:** Study/verbal only unless a specific JD needs them. Not on this PDF.
+**Flink:** On Menu PDF (hot-path normalize/dedupe after Kafka). **Spark:** Study/verbal backfill only unless a JD needs it on the PDF.
 
 ## Masters India
 ### PHP → FastAPI strangler + Kafka IRP + on-call

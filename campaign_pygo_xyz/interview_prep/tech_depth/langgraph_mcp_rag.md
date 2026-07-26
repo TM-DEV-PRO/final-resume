@@ -17,3 +17,6 @@ Autonomy vs safety. Gated human confirm beats fully autonomous writes for money 
 
 ## Likely questions
 Why LangGraph vs plain LangChain chains? How do MCP tools stay read-only? How do you evaluate RAG? What is SFT vs prompt-only?
+
+## Full agentic flow / evals / guardrails
+See [../projects/01d_agentic_evals_guardrails_flow.md](../projects/01d_agentic_evals_guardrails_flow.md) — production load-test honesty, LangSmith vs Datadog, 14 tools + 3 gates.

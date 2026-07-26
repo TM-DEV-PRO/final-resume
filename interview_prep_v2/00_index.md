@@ -14,7 +14,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
 6. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
 7. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html`
-8. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
+8. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · **[`24_job_listings_5x_ats_scorecard.md`](24_job_listings_5x_ats_scorecard.md)** (5 JDs × 13 companies) · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
 9. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — STUDY ONLY (multi-region, K8s ops, Spark, Flink, Terraform)
 
 ## Resume at a glance (v2 grounded)

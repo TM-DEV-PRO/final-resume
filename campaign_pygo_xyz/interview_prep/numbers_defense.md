@@ -37,10 +37,9 @@ Single interview sheet for the **PyGo XYZ campaign** PDF (same metrics as v2 hon
 | Resume number | Why / how | Tag | Defense file |
 |---|---|---|---|
 | 30K+ menus/mo · 24h→2h · $600K+/yr | Historical ops | HISTORICAL | Menu deep dive |
-| Kafka ingest bus | Replayable ordered scrape events | HISTORICAL | prior resume materials + Menu prep |
-| 98% fidelity / 100% schema | Offline eval | HISTORICAL | same |
-| 95%+ ingest / ANZ 99.9% / 20h/week | Anti-bot + compliance | HISTORICAL | same |
-| Flink/Spark | Not on this PDF | STUDY / verbal | `17_senior_systems_study_only` pattern |
+| Kafka ingest bus | Replayable ordered scrape events; burst + fan-out | HISTORICAL | `tech_depth/kafka_flink_scale_defense.md` |
+| Flink normalize/dedupe | Keyed state + event-time after Kafka | HISTORICAL architecture | same |
+| Menu peak events/sec | Do not invent; defend burst/replay not vanity TPS | ESTIMATED if asked | same |
 
 ## Masters India (consensus across past resumes)
 

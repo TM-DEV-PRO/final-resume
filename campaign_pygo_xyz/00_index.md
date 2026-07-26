@@ -17,6 +17,7 @@ Python/Go XYZ Senior MNC pack for Amazon Google Microsoft LinkedIn Apple Netflix
 
 ## ATS (10 loops)
 - [Master scorecard](ats/00_ats_master_scorecard.md)
+- [5× job listings scorecard (13 companies)](../interview_prep_v2/24_job_listings_5x_ats_scorecard.md)
 - [Keyword bank](ats/keyword_bank.md)
 - Loops [01](ats/loop_01.md) [02](ats/loop_02.md) [03](ats/loop_03.md) [04](ats/loop_04.md) [05](ats/loop_05.md) [06](ats/loop_06.md) [07](ats/loop_07.md) [08](ats/loop_08.md) [09](ats/loop_09.md) [10](ats/loop_10.md)
 

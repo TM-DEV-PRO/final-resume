@@ -27,7 +27,7 @@ Updated after 10 judge loops. Verdicts are honest.
 - No fake 5+ years of architecture leadership for Amazon SDE3 cold screen
 - FRM 70% stays targeting
 - No IA TPS/RPM
-- Menu has no Kafka/Flink/Spark
+- Menu has Kafka + Flink (Spark verbal)
 
 ## Overall campaign ATS goal
 Keyword and ownership scan maximized for major ATS softwares. Company senior bars that require more years of design leadership remain BORDERLINE by design.

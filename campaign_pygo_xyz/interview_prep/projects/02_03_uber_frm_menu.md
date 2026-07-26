@@ -1,4 +1,4 @@
-> Canonical interviewer packs for current resume_v2 FRM + Menu bullets. Menu PDF has NO Kafka/Flink/Spark. Synced Jul 2026.
+> Canonical packs for FRM + Menu. Menu PDF includes **Kafka + Flink** (not Spark). Synced Jul 2026.
 
 # Uber FRM — Interview Pack
 
@@ -201,7 +201,7 @@ flowchart LR
 | Human loop | Low-confidence review | Protect catalog quality | Throughput bound by review capacity |
 | Money model | Kill ~$2/menu vendor tool | In-house scrapers at 30K+/mo | Own ops/reliability burden |
 | ANZ | Separate Python automation | Different domain (driver docs), same employment | Don't merge into menu architecture story |
-| Resume stack | Selenium + RAG/Gemini + ANZ only | Matches PDF; Kafka ownership lives on Masters GST | Don't revive Flink/Spark/Kafka on Menu in interview |
+| Resume stack | Selenium + Kafka + Flink + RAG/Gemini + ANZ | Matches campaign PDF | Spark stays verbal backfill |
 
 ---
 

@@ -4,7 +4,7 @@
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium scrapers + RAG/Gemini + ANZ only** — **no Kafka / Flink / Spark** on the one-pager. Kafka ownership lives on **Masters India** GST e-invoice (Mayank-style event platform). Use [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Menu as the canonical interviewer pack. Sections below that still mention Kafka/Flink/Spark are **prep depth / historical architecture options** — do not put them on the PDF or lead the interview story with them unless the interviewer asks about streaming elsewhere.
+> **RESUME ALIGNMENT:** Menu PDF is **Selenium + Kafka ingest + Flink normalize/dedupe + RAG/Gemini + ANZ**. Spark/Pinot stay prep/verbal. Kafka at **Masters** remains the IRP e-invoice platform (different product). Use architecture `03_uber_menu.md` + `tech_depth/flink.md` as canonical.
 
 ---
 
