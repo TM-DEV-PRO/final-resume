@@ -1,5 +1,7 @@
 # 11. Uber FRM Risk Scoping Platform: Deep Dive
 
+> **Start here for interviews:** [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Uber FRM.
+
 Defense material for the four Uber FRM resume bullets. Every number here traces to `GROUND_TRUTH.md` or to the code in `KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/`. Tags: **MEASURED** (documented artifact or code), **TARGET** (design goal, say "targeting"), **ESTIMATED** (derived, say so). No number here is invented.
 
 Role framing: Software Development Engineer 2 at Uber Finance via EPAM Systems, Jul 2024 to May 2026. This was Uber's internal monorepo (Bazel, Fusion.js, SOADB MySQL, langfx FastAPI framework).

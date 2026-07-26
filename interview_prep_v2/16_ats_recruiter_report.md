@@ -585,3 +585,39 @@ Chaseable with referral (BORDERLINE): Google, Amazon, Airbnb (Py/Go), Databricks
 | Prep depth | `14_uber_menu_deep_dive.md` rewritten with architecture, why Flink vs Spark, Q&A, money/rate math. |
 | Databricks skim | Improves from Spark MISS to HIT on experience; still not a Delta/runtime specialist claim. |
 | Honesty | Peak events/sec and Spark row counts ESTIMATED; Pinot still off PDF; no Spark/Flink at Masters or IA. |
+
+## Loop 9: Evidence rewrite + fresh 5y Py/Go listings (Jul 2026)
+
+### What changed on the PDF
+- IA: product-first AssortSmart; **building** not shipping; **8.5% (37/437)** explicit; line-plan **~0.4 ms / sub-second** measured ops; **ONE** CH bullet (63/8 + 189s→12.3s)
+- Summary: ATS phrases — `5 years professional software development`, `software design and architecture`, `building and operating`, `on-call`, `throughput (req/min)`
+- Skills: `SOA`, `Operational Excellence`, `On-call / Incident Response`
+- Masters: `Designed, built, and operated`; clean **700→4,000 requests/min** (no ~TPS/~RPS)
+- Menu: no Kafka/Flink/Spark; Kafka ownership on Masters (Mayank-aligned)
+
+### Fresh listing gates (~5y Python / Golang senior)
+| Apply aggressively (JD ~4–5y) | Structural skip unless waived |
+|---|---|
+| Google SSE (**5y** + 1y design) | Amazon Senior posts with **8+** non-internship |
+| Databricks Backend (**5+**) | Airbnb GenAI / Staff (**8+**) |
+| PlanetScale Vitess/Neki (**5+** Go) | Meta Staff Systems (**8+**) |
+| Microsoft SSE (required **4+**) | Rubrik **9+**, Roku **8+** |
+| Stripe Core Technology (wide band) | Cloudflare mirrors **7–10y** |
+
+### Updated cold-screen scorecard (after Loop 9)
+
+| Company | Py/Go | Java | Margin note |
+|---|---|---|---|
+| Microsoft | **PASS (good)** | **PASS (good)** | On-call + design/architecture + latency/RPM explicit |
+| Google SSE (5y JD) | **PASS (thin→good)** | BORDERLINE | Hits 5y + design phrase; EPAM still a human discount |
+| Databricks Backend | **PASS (thin)** | BORDERLINE | Distributed + SaaS + Kafka/CH; Spark off PDF (honest) |
+| PlanetScale (Go) | **PASS (thin→good)** | FAIL language | Go elevated in summary; sharding + on-call present |
+| Airbnb (5y backend/infra) | BORDERLINE | **PASS (thin→good)** | Prefer Java PDF |
+| Stripe Core Tech | **PASS (thin)** | BORDERLINE | Operate + alerting language |
+| Amazon Sr (5y design JD only) | BORDERLINE | BORDERLINE | Claim ~3y design ownership, not 5y leading architecture |
+| Amazon Sr (8y JD) | **FAIL** | **FAIL** | Structural YoE |
+| Netflix L5 | BORDERLINE | BORDERLINE | Referral recommended |
+| Roku / Rubrik | **FAIL** | **FAIL** | YoE hard gates |
+
+**Chase with margin:** Microsoft, Google SSE (5y), PlanetScale, Databricks, Stripe Core, Airbnb (Java).  
+**Not auto-pass:** Amazon 8y, Netflix L5, Staff/8y+ — referral or skip.

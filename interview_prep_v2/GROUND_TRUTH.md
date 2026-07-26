@@ -36,23 +36,24 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 ## Impact Analytics (May 2026 - Present)
 
+**Source scope:** Only files **directly** under `KNOWLEDGE-MATERIAL/Impact-Analytics-work/` (incl. `pivot-poc/`) plus `PRD'S/`. **Ignore** nested `ASSORTSMART-OLD-KNOWLEDGE/` and `ClickHouse-POC-Dump/`.
+
 | Claim | Tag | Source |
 |---|---|---|
-| **Agentic AssortSmart store (resume headline):** ClickHouse/GCS end-to-end planning store via **insert-only versioned writes** (`ReplacingMergeTree` + `argMax` / version watermark); HLD doing layer → ClickHouse/GCS only. Thin Postgres metadata (auth/tenant/workflow) may remain — not the planning SoR on this resume | MEASURED design (Jul 2026 stack direction + HLD) | `10_stack_direction_jul2026.md`, `final_agenticassort.png` |
-| **POC evidence (numbers on resume):** CH cut **250M-row** pivot grids from **189.4s to 12.3s** (~15.5× COUNT DISTINCT; typical aggs ~**2–3×**); line-plan flat→aggregate avoided **~12B** store-week (**100–450×** / ~140–457×). Hardware: PG 48 GB host advantaged; CH 10 CPU / 3.3 GB Docker | MEASURED | Pivot + LinePlanning + consolidated POC |
-| **POC hybrid verdict (prep / decision history):** PG wins interactive keyed UPDATE (~0.35–0.94 ms); CH wins large reads; **no wholesale CH** for legacy mtp-assort (fix BQ first). Unlocked agentic CH writes by changing write model to insert-only versions — not by claiming CH beats PG at OLTP mutations | MEASURED | consolidated POC; stack direction evolution story |
-| Agentic clustering POC 5 (2026-07-06): dedicated CH for runtime **read** plane (slot-determinism vs BQ); early note said writes still PG for strategy-flow join — **superseded for agentic-assort** by Jul 2026 CH end-to-end planning-store directive | MEASURED decision → superseded for greenfield | POC §6 vs stack direction §10 |
-| Existing mtp-assort: **NO** wholesale CH move now; fix BigQuery SELECT*/clustering/rollups first | MEASURED decision | consolidated POC §5 |
-| **HLD Agentic System (`final_agenticassort.png`):** Path A FE→FastAPI Agent (`POST /chat` DIRECT)→LLM→tools→Go Doing Layer; Path M FE→Go REST manual; Go domains Hindsight/Clustering/Strategy; stores **ClickHouse + GCS**; obs LangSmith (L1) + Datadog (L2) + PostHog linked by OTEL `trace_id` | MEASURED design | diagram |
-| Order Batching metric, 23.7M join rows: CH **3.86s** vs PG **3m40s - 7m48s** (~60x) | MEASURED (**prep depth**) | POC dump 2707030040 |
-| CH insert ~**5.9M rows/s** vs PG 250K raw (~14-24x) | MEASURED (prep) | 2612625411 |
-| Order Batching CQRS / CDC design (PG writes / CH reads, Redis RYW TTL ~30s) | MEASURED design (legacy/Order Batching path) | 2764046370 |
-| CDC platform SLOs (p95 ≤ 10s visible; tool by Ashvin Sharma) | MEASURED | 2727084070 |
-| Cluster Recommendation Copilot: LLM orchestrates, deterministic plane, 14 tools, human gates | MEASURED design (Phase 1 PASS, load test pending) | 2817589251 |
-| Copilot baselines: failures 8.5% (37/437), reproducibility 0%; targets under 2%, 100% reproducible, under 1h, ≥20 configs | MEASURED / TARGET | 2817589251 |
-| Agent probes: BigQuery 1–20s+ baseline vs CH p95 <500ms target | MEASURED / TARGET | 2817589251 |
+| Product: AssortSmart helps retailers decide **what to buy / how much / which stores** | MEASURED product framing | Overview §1 + Copilot FRD |
+| Copilot targets: days → under **1 hour**; **1 → ≥20** (design batch **20–100**) configs/plan | TARGET | Copilot FRD §0 / §2 |
+| Failures **8.5%** = **37/437** (kik); **>80%** input-boundary | MEASURED | Copilot FRD §1 |
+| Failures toward **under 2%**; reproducibility **0→100%** | TARGET | Copilot FRD §0 / §6 |
+| **14** audited read-only tools; **3** human confirm gates; agent never writes SQL | DESIGN | Overview + Copilot FRD |
+| Per-tenant **ClickHouse**: **63 tables / 8 layers**, append-only; agent **read-only** | MEASURED design | Overview + DDL Model |
+| External review **PASS**; load test remaining — say **building**, not shipped | MEASURED design status | Overview |
+| HLD stack: FastAPI + **LangGraph/MCP**; Go doing layer; CH + GCS; LangSmith/Datadog/PostHog | DESIGN + confirmed | `final_agenticassort.png` |
+| **ONE resume CH bullet:** store adoption + **250M** pivot **189.4s → 12.3s** (~**15.5×**) | MEASURED | `pivot-poc/results/MASTER_RESULTS.md` |
+| Line-plan: projected **~12B** → **~25M** aggregate; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured) | PROJECTED 12B / MEASURED ops | `LinePlanning-Benchmark.docx` |
+| HLR scenario cap **3–5** | DESIGN | `PRD'S/…HLR_v1.1.docx` |
+| Agent probes: BQ **1–20s+** → CH **p95 <500ms** | MEASURED / TARGET | Copilot FRD |
 
-Do NOT claim: identical benchmark hardware, full production CH cutover of **legacy mtp-assort**, authorship of pg2ch_cdc, shipped copilot to all tenants, PostHog/Datadog/LangSmith as sole personal ownership, or that ClickHouse beats Postgres at classic OLTP keyed UPDATE without the insert-only versioned model.
+**Resume wording (Jul 2026):** building not shipping; under 2% marked (target); ONE CH speed claim; no IA TPS/RPM (none measured); hybrid PG write-back is prep-only history.
 
 ## Uber FRM (Jul 2024 - May 2026)
 
@@ -75,7 +76,7 @@ Do NOT claim: identical benchmark hardware, full production CH cutover of **lega
 
 All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved.
 
-**RESUME DECISION (Jul 2026, restored):** Menu bullet is **Selenium scrapers on GCP → Kafka (~200–500 peak events/sec ESTIMATED) → Flink online normalize/dedupe → Spark backfills**, plus RAG/Gemini and ANZ. Best fit for Flink/Spark on this resume is Uber Menu (not Masters, not IA). Peak event rate and Spark ~1–2M backfill rows are ESTIMATED. Pinot stays off the one-pager. Kafka on Masters India remains a separate claim (e-invoicing).
+**RESUME DECISION (Jul 2026, updated):** Menu is **Selenium scrapers + RAG/Gemini + ANZ** (no Kafka/Flink/Spark on PDF — Mayank-style streaming belongs on event platforms). **Kafka ownership lives on Masters India GST e-invoice** (1M+/day, 700→4,000 req/min, idempotency/DLQ). Flink/Spark stay off skills until a real owned bullet exists. Do not put ~200–500 events/sec or ~12 TPS / ~67 RPS parentheticals on the PDF.
 
 ## Masters India (Dec 2022 - Jun 2024)
 

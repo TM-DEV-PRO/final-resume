@@ -1,3 +1,5 @@
+> **Canonical folder (Jul 2026):** `KNOWLEDGE-MATERIAL/Impact-Analytics-work/pivot-poc/` — `results/MASTER_RESULTS.md`, `docs/report.html`, FastAPI `service/hindsight_api.py`. Numbers below match that harness (also mirrored in `Pivot-Engine-Benchmark.docx`).
+
 RECOMMENDATION
 
 Run the pivot as a hybrid, not a swap.

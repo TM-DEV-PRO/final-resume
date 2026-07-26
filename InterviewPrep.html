@@ -857,10 +857,10 @@ frm-scoping-db           frm-collaboration-db             │
 <h2 id="8-the-migration-nobody-could-pause-the-business-for-deliver-results">8. The migration nobody could pause the business for (deliver results)</h2>
 <p><strong>Use for:</strong> "Delivering under pressure / leading a project end-to-end."</p>
 <ul>
-<li><strong>S:</strong> Masters India's PHP monolith was collapsing during monthly GST deadline peaks — worker pools exhausted by blocking government-portal calls — while 2,500+ enterprise clients kept filing.</li>
+<li><strong>S:</strong> Masters India's PHP monolith was collapsing during monthly GST deadline peaks — worker pools exhausted by blocking government-portal calls — while <strong>1,500+</strong> enterprise clients kept filing.</li>
 <li><strong>T:</strong> Lead the migration to async FastAPI microservices with zero downtime tolerance during deadline windows.</li>
-<li><strong>A:</strong> Strangler pattern per endpoint behind the gateway; shadow traffic on read paths first; moved bulk/async paths before interactive filing; kept data in place (PostgreSQL) to avoid a risky data migration during cutover; froze cutovers during deadline weeks.</li>
-<li><strong>R:</strong> p95 1.2 s → 300 ms (75%), 1M+ transactions/day, no deadline-window outage during the migration, bulk imports scaled to 100K+ transactions.</li>
+<li><strong>A:</strong> Strangler pattern per endpoint behind the gateway; shadow traffic on read paths first; moved bulk/async Kafka paths before interactive filing; kept data in place (PostgreSQL quarter sharding) to avoid a risky data migration during cutover; froze cutovers during deadline weeks; hardened bulk IRP with idempotency keys, retries, and DLQ.</li>
+<li><strong>R:</strong> p95 <strong>1.2 s → 300 ms</strong>, <strong>1M+ IRP submissions/day</strong>, <strong>100K+/import</strong>, throughput <strong>700 → 4,000 requests/min</strong>, no deadline-window outage during the migration.</li>
 <li><strong>Lesson:</strong> sequencing is the risk-management tool — the migration plan mattered more than the target architecture.</li>
 </ul>
 <h2 id="9-the-anti-bot-arms-race-learn-and-be-curious">9. The anti-bot arms race (learn and be curious)</h2>
@@ -868,8 +868,8 @@ frm-scoping-db           frm-collaboration-db             │
 <ul>
 <li><strong>S:</strong> Uber menu scrapers were being blocked — success rates dropped as source platforms rotated their bot defenses.</li>
 <li><strong>T:</strong> Get ingestion reliability up without an unbounded proxy budget.</li>
-<li><strong>A:</strong> Treated it as an experiment loop, not a one-off fix: instrumented per-source block signatures, iterated countermeasures (IP rotation, user-agent/fingerprint management, dynamic proxy pools), set retry budgets per source, and fed block-rate metrics into the same Pinot health dashboards as parse failures so regressions surfaced in minutes.</li>
-<li><strong>R:</strong> Successful ingestions up 95%; the measurement loop meant new defenses were detected and countered in days, not weeks.</li>
+<li><strong>A:</strong> Treated it as an experiment loop, not a one-off fix: instrumented per-source block signatures, iterated countermeasures (IP rotation, user-agent/fingerprint management, dynamic proxy pools), set retry budgets per source, and fed block-rate metrics into the same ops dashboards as parse failures so regressions surfaced in minutes.</li>
+<li><strong>R:</strong> Successful ingestions up to <strong>95%+</strong>; the measurement loop meant new defenses were detected and countered in days, not weeks.</li>
 <li><strong>Lesson:</strong> against an adversarial moving target, the asset is the feedback loop, not any single countermeasure.</li>
 </ul>
 <h2 id="10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust / do the right thing)</h2>

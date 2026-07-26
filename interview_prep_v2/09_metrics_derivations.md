@@ -69,7 +69,7 @@ Every TPS / RPS / from-to / money number on the **current** v2 and Java PDFs. In
 | **30K+** menus/month | HISTORICAL | Original / 4yr resume |
 | Onboarding **24h → 2h** (90%) | HISTORICAL | Same |
 | **$600K+** annually | HISTORICAL arithmetic | ~$2/menu × 30K × 12 = $720K list → floor $600K+ |
-| Kafka **~200–500 peak events/sec** | ESTIMATED | Fleet-run amplification of menu/item/retry events |
+| Kafka **~200–500 peak events/sec** | ESTIMATED (**prep only — off PDF**) | Fleet-run amplification of menu/item/retry events; confusing next to 30K menus/mo on a one-pager |
 | **Flink** normalize/dedupe online | HISTORICAL role | Event-time keyed processing; load ESTIMATED at Kafka peak |
 | **Spark** backfills | HISTORICAL role / ESTIMATED volume | ~1–2M item rows for typical reprocess window |
 | +**95%** successful ingestions | HISTORICAL; baseline ESTIMATED | ~60–65% → 95%+ |

@@ -1,5 +1,7 @@
 # Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense
 
+> **Start here for interviews:** [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) — 30s/2min, architecture, design decisions, bullet defenses, 12 mock Q&As, Do NOT say. This file is deeper background + source extracts.
+
 **Role:** Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present  
 **Project:** Agentic AssortSmart (FastAPI chat + Go doing layer) on **ClickHouse/GCS** (insert-only versioned planning store); POC evidence from Pivot / LinePlanning / consolidated CH-vs-PG report  
 **Sources of truth:** `GROUND_TRUTH.md`, resume IA bullets, Jul 2026 stack direction (`10_stack_direction_jul2026.md`), HLD `final_agenticassort.png`, POC source extracts `19`/`20`/`21`  
@@ -510,7 +512,8 @@ Note: the resume now carries only ONE ClickHouse point, the PG to ClickHouse mig
 
 ## 8. Cross-cutting talking track (2-minute narrative)
 
-"I raised AssortSmart planner throughput by targeting **20 to 100** cluster configs per plan versus 1 and turnaround under **1 hour**, building the Copilot on FastAPI/LangGraph/MCP over a Go doing layer. We drove failures toward under **2%** from a measured **8.5%** with read-only tools and three approval gates, and stitch Datadog, LangSmith, and PostHog on one OTEL trace. On storage we cut **250M-row** pivot grids from **189s to 12.3s** (~**15×**) and avoided materializing **12B** store-week rows (**100–450×**) by adopting ClickHouse/GCS insert-only versioned planning storage. Legacy mtp-assort stays off wholesale CH. Phase 1 design approved, load test pending."
+"Sources are the agentic module Overview, Copilot FRD, ClickHouse DDL, HLD, PRDs, and `pivot-poc/` plus line-plan POC — not the old AssortSmart dump. Copilot cuts clustering from days toward under **1 hour** and from **1 to 20–100** configs — FastAPI agent over a Go doing layer. Safety moves failures from measured **8.5%** toward under **2%** with **14** audited read-only tools and three confirm gates. The store is per-tenant ClickHouse — **63 tables / 8 layers**, append-only, agent locked read-only. Pivot hybrid cuts **250M** Hindsight grids **189s→12.3s** (~**15.5×**) on ClickHouse reads while Postgres keeps cell edits sub-ms; line-plan shrinks **12B→~25M** (**100–450×**). Design PASS; load test pending."
+
 
 ---
 
@@ -873,11 +876,11 @@ Each percentage is a **partition of unity** (sums to 1 on its dimension), so `SU
 
 | Resume bullet | Verdict | If pushed, say exactly |
 |---|---|---|
-| 1. Raised throughput via 20–100 configs vs 1 and under 1h by Copilot (FastAPI/LangGraph/MCP) over Go doing layer | **NEEDS CARE** | Batch **20–100** and **under 1 hour** are TARGET. Stack MEASURED design. Say "targeting," not shipped prod SLA. |
-| 2. Under 2% from 8.5%, 100% reproducible, p95 &lt;500ms vs 1–20s BQ via read-only tools + 3 gates | **NEEDS CARE** | **8.5% (37/437)** and BQ **1–20s+** MEASURED. Under 2%, 100% reproducible, p95 &lt;500ms TARGET. |
-| 3. Go (Gin) Hindsight/Clustering/Strategy + Datadog/LangSmith/PostHog + OTEL | **NEEDS CARE** | HLD design. Claim instrumentation model, not SaaS ownership. |
-| 4. 250M 189s→12.3s (~15×); avoided 12B (100–450×) via ClickHouse/GCS insert-only store | **SOLID with care** | Numbers MEASURED. CH end-to-end = Jul 2026 stack + HLD. Typical aggs ~2–3× if DISTINCT stripped. No wholesale CH for legacy mtp-assort. |
-| Tech line | **SOLID** | Matches HLD stack. |
+| 1. Building AssortSmart (what-to-buy / how-much / which-stores) via copilot — TARGET under 1h and ≥20 configs/plan | **NEEDS CARE** | Product-first. under 1h / ≥20 = TARGET. Say **building** (load test pending). |
+| 2. 8.5% (37/437 kik) → under 2% (target) via 14 tools + 3 gates | **SOLID with care** | 8.5% MEASURED. under 2% TARGET. |
+| 3. 12B→~25M with sub-second rollup + ~0.4ms cell edit | **SOLID with care** | 12B PROJECTED; ~0.4ms / sub-second MEASURED on aggregate. |
+| 4. ONE CH bullet: 63/8 + 250M 189s→12.3s (~15.5×, measured) | **SOLID with care** | Store = design. Pivot = MEASURED. Verbal: typical aggs ~2–3×. |
+| Tech | **SOLID** | No Flink/Spark; Kafka on Masters. |
 
 ---
 

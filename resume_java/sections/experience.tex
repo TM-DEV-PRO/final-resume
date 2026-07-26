@@ -14,14 +14,14 @@
 \end{tabularx}
 \vspace{-2ex}
 
-\textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
+\textcolor{Project}{\textbf{Agentic AssortSmart (AI-Powered Retail Merchandise Planning)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Raised planner throughput by targeting \textbf{20 to 100 cluster configs per plan vs 1} and turnaround \textbf{under 1 hour} (from days) by building the \textbf{Cluster Recommendation Copilot (Python, LangGraph, MCP)} over a \textbf{Spring Boot doing layer}.
-    \item Drove failure rate toward \textbf{under 2\% from 8.5\%} with \textbf{100\% reproducible} clusters and \textbf{p95 probes under 500ms} vs 1 to 20s BigQuery via \textbf{read-only agent tools and 3 approval gates}.
-    \item Unified manual REST and agent tool paths for Hindsight, Clustering, and Strategy in \textbf{Java (Spring Boot)} with JWT auth and \textbf{Datadog}, \textbf{LangSmith}, and \textbf{PostHog} on a shared OTEL trace id.
-    \item Cut \textbf{250M-row} pivot grids from \textbf{189s to 12.3s} ($\sim$15x) and avoided materializing \textbf{12B} store-week rows (\textbf{100 to 450x}) by adopting \textbf{ClickHouse/GCS} insert-only versioned planning storage.
-    \item \textbf{Tech} -- Java, Spring Boot, Python, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, Docker.
+    \item Building \textbf{AssortSmart} so retailers decide \textbf{what to buy, how much, and for which stores} via a planner copilot (\textbf{Python, LangGraph, MCP}) on a \textbf{Spring Boot} doing layer, targeting plan turnaround from days toward \textbf{under 1 hour} and search from \textbf{1 to $\geq$20 configs/plan}.
+    \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited read-only tools and \textbf{3} human confirm gates so the agent never writes SQL.
+    \item Replacing a projected \textbf{12B}-row store-week design with a \textbf{$\sim$25M}-row aggregate so month rollups stay \textbf{sub-second} and cell edits stay \textbf{$\sim$0.4\,ms} (measured) without materializing the explosion.
+    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, append-only, agent read-only) as the agentic planning store after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
+    \item \textbf{Tech} -- Java, Spring Boot, Python, FastAPI, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, Docker.
 \end{zitemize}
 
 %====================
@@ -37,8 +37,8 @@
 \textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Owned Uber's \textbf{FRM Risk Scoping platform (Spring Boot, MySQL, React)} across \textbf{8 screens and 30+ REST APIs}, automating quarterly scoping at \textbf{\$340M group materiality} and targeting a \textbf{70\% cut} in manual reconciliation (\textbf{$\sim$2 weeks to $\sim$3--4 days}).
-    \item Designed an \textbf{11-table MySQL} architecture on Spring Data JPA/Hibernate with controller, service, and repository layers that auto-flags material items across \textbf{55 line items and 14 entities}.
+    \item Owned design and architecture for Uber's \textbf{FRM Risk Scoping platform (Spring Boot, MySQL, React)} across \textbf{8 screens and 30+ REST APIs}, automating quarterly scoping at \textbf{\$340M group materiality} and targeting a \textbf{70\%} cut in manual reconciliation (\textbf{$\sim$2 weeks to $\sim$3--4 days}).
+    \item Designed an \textbf{11-table MySQL} schema on Spring Data JPA/Hibernate with controller, service, and repository layers that auto-flags material items across \textbf{55 line items and 14 entities}.
     \item Owned Sheets to \textbf{MySQL v2 recon migration} across \textbf{18 files}, validating HFM extracts against public \textbf{10-Q} filings and fixing a latent column-aliasing bug.
     \item \textbf{Led 3 engineers} through design reviews, API contracts, and CI quality gates for releases feeding PwC audit work papers.
     \item \textbf{Tech} -- Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Docker.
@@ -48,11 +48,11 @@
 \textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Cut menu onboarding from \textbf{24h to 2h} and saved \textbf{\$600K+ annually} on \textbf{30K+ menus/month} by shipping \textbf{Selenium} scrapers on GCP into \textbf{Kafka ($\sim$200--500 peak events/sec)} with \textbf{Flink} normalize/dedupe and \textbf{Spark} backfills.
-    \item Hit \textbf{98\% fidelity and 100\% schema consistency} (offline eval) with a \textbf{RAG and Gemini 2.5 Pro} pipeline plus supervised fine-tuning.
-    \item Raised successful ingestions \textbf{95\%} by defeating anti-bot defenses with IP rotation and dynamic proxy pools.
+    \item Cut menu onboarding from \textbf{24h to 2h} and saved \textbf{\$600K+ annually} on \textbf{30K+ menus/month} by shipping \textbf{Selenium} scrapers on GCP.
+    \item Hit \textbf{98\% fidelity and 100\% schema consistency} (offline eval) with a \textbf{RAG and Gemini 2.5 Pro} extraction pipeline plus supervised fine-tuning.
+    \item Raised successful ingestions to \textbf{95\%+} by handling anti-bot defenses with IP rotation, dynamic proxy pools, and adaptive backoff.
     \item Automated \textbf{ANZ driver document compliance to 99.9\%}, saving \textbf{20 hours/week} of manual verification.
-    \item \textbf{Tech} -- Python, Selenium, Kafka, Flink, Spark, Gemini, RAG, SFT, GCP, Docker.
+    \item \textbf{Tech} -- Python, Selenium, Gemini, RAG, SFT, GCP, Docker.
 \end{zitemize}
 
 %====================
@@ -68,9 +68,9 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Cut p95 latency from \textbf{1.2s to 300ms} for \textbf{1,500+ clients} by leading the PHP monolith to \textbf{Spring Boot microservices} strangler migration and mentoring \textbf{2 engineers}.
-    \item Scaled bulk e-invoicing to \textbf{100K+ per import and 1M+ daily} (\textbf{$\sim$12 TPS} avg, \textbf{100+} peak) and lifted throughput from \textbf{700 to 4,000 requests/min} (\textbf{$\sim$67 RPS}) via async Kafka and PostgreSQL quarter sharding.
-    \item Cut redundant database reads \textbf{30\%} with Redis caching while hardening bulk paths with \textbf{idempotency keys, retries, and DLQ replay}.
+    \item Designed, built, and operated the PHP to \textbf{Spring Boot microservices} strangler for \textbf{1,500+ clients}, cutting p95 latency from \textbf{1.2s to 300ms} and mentoring \textbf{2 engineers}.
+    \item Built an event-driven bulk e-invoicing platform on \textbf{Kafka} and \textbf{PostgreSQL} quarter sharding processing \textbf{1M+ IRP submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
+    \item Hardened the IRP path for safe replay with \textbf{idempotency keys, retries, and DLQ}, cutting redundant database reads \textbf{30\%} with Redis.
     \item Cut incident triage \textbf{70\%} with \textbf{ELK and New Relic} on-call alerting and raised coverage from \textbf{35\% to 82\%} at \textbf{98\%} deployment success.
     \item \textbf{Tech} -- Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Spring Batch, Docker, ELK, New Relic, AWS.
 \end{zitemize}
@@ -85,7 +85,7 @@
 \end{tabularx}
 \vspace{-3ex}
 \begin{zitemize}
-    \item Improved reliability for \textbf{10K+ daily queries and 10x contest spikes} by migrating the doubt-support backend from PHP to \textbf{Spring Boot (Java)}.
-    \item Lifted \textbf{premium subscriptions 15 to 20\%} by designing voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch.
-    \item Raised \textbf{course sales 30\%} and operational efficiency \textbf{70\%} by launching an influencer analytics dashboard and scheduled jobs for video processing.
+    \item Improved reliability for \textbf{10K+ daily queries} and \textbf{10x} contest spikes by migrating the doubt-support backend from PHP to \textbf{Spring Boot (Java)}.
+    \item Lifted premium subscriptions \textbf{15--20\%} by designing voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch.
+    \item Raised course sales \textbf{30\%} and operational efficiency \textbf{70\%} by launching an influencer analytics dashboard and cron pipelines for video processing.
 \end{zitemize}

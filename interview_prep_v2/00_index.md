@@ -7,29 +7,29 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 ## Study order (do this)
 
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) — every shippable number and honesty tag
-2. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — Agentic AssortSmart, hybrid PG/CH POCs, HLD, mock interview Q&A
-   - Source extracts: [`19_ia_ch_pg_poc_source.md`](19_ia_ch_pg_poc_source.md), [`20_ia_lineplanning_benchmark_source.md`](20_ia_lineplanning_benchmark_source.md), [`21_ia_pivot_benchmark_source.md`](21_ia_pivot_benchmark_source.md)
-0. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) — big tech ATS/recruiter scorecards per company (which resume to send where)
-3. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) — real schema, routes, recon migration
-4. [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) — Kafka/Flink/Spark/Pinot
-5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md) — strangler migration, caching, GFG
-6. [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md) — intro, every switch, IA 14 May 2026 exit
-7. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — ownership, on-call/SLOs, fault tolerance; STUDY ONLY for multi-region, K8s ops, Spark, Flink, Terraform
-8. [`09_metrics_derivations.md`](09_metrics_derivations.md) + [`18_resume_number_catalog.md`](18_resume_number_catalog.md) — every resume number, money math, Spark/Flink decision log
-9. [`15_judge_loop_report.md`](15_judge_loop_report.md) / [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md)
-
-Original playbook still useful for agentic Assort depth: `../interview_prep/agentic_assort_playbook/`.
-
-<div class="callout warn">
-<b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. CDC tool authorship is not yours. Copilot is Phase 1 design approved, load test pending. Benchmark hardware was not identical (PG 32 vCPU / 256 GB vs CH 16 vCPU / 64 GB).
-</div>
+2. **[`23_project_interview_packs.md`](23_project_interview_packs.md)** — interviewer packs for every project (start here before loops)
+   - [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) · [`23c_masters_gfg_interview_packs.md`](23c_masters_gfg_interview_packs.md)
+3. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — AssortSmart extra depth + source extracts `19`/`20`/`21`
+4. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
+5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
+6. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
+7. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html`
+8. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
+9. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — STUDY ONLY (multi-region, K8s ops, Spark, Flink, Terraform)
 
 ## Resume at a glance (v2 grounded)
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | XYZ bullets — Copilot 20–100/under 1h TARGET; 8.5%→under 2% / p95&lt;500ms; Go/Spring + Datadog/LangSmith/PostHog; CH/GCS 189s→12.3s + avoided 12B |
-| Uber FRM | Owned platform; designed layered architecture; owned recon v2 (18 files); led 3; 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks to ~3–4 days) |
-| Uber Menu | Selenium→Kafka→Flink→Spark; 30K menus/mo; 24h to 2h; $600K+/yr; +95% ingest; RAG/Gemini 98% fidelity |
-| Masters India | Owned strangler + mentored 2; Kafka/sharding TPS/RPS; idempotency/DLQ fault tolerance; on-call alerting; 1M+ txn/day |
-| GeeksforGeeks | 10K+ daily queries; +15–20% premium; +30% courses; +70% ops efficiency |
+| Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ~0.4ms edits; ONE CH (63/8 + 189s→12.3s) |
+| Uber FRM | Design+architecture ownership; 8 screens, 30+ APIs, $340M, targeting 70%; led 3 |
+| Uber Menu | Selenium + RAG/Gemini + ANZ; 30K+/mo, 24h→2h, $600K+ (no Kafka/Flink/Spark) |
+| Masters India | Designed/built/operated FastAPI strangler; Kafka event platform; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day |
+| GeeksforGeeks | 10K+ daily / 10× spikes; premium +15–20%; course sales +30%; ops +70% |
+
+Original playbook still useful for agentic Assort depth: `../interview_prep/agentic_assort_playbook/`.
+
+<div class="callout warn">
+<b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. Copilot is Phase 1 design-approved, load test pending — say <b>building</b>, not shipped. No IA TPS/RPM (none measured). Kafka ownership is Masters, not Menu.
+</div>
+

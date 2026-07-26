@@ -1,5 +1,7 @@
 # Masters India and GeeksforGeeks Deep Dive (v2 resume defense)
 
+> **Start here for interviews:** [`23c_masters_gfg_interview_packs.md`](23c_masters_gfg_interview_packs.md).
+
 Every number here traces to `GROUND_TRUTH.md`. Tags: HISTORICAL (from past resume claims, own experience), ESTIMATED (derived, say "estimated").
 
 ---

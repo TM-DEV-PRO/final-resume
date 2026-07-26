@@ -2,18 +2,19 @@
 
 **Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026**
 
-Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu streaming, and ClickHouse work stay Python.
+Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu, and ClickHouse work stay Python.
 
 ## Study order
 
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) then [`../interview_prep_v2/GROUND_TRUTH.md`](../interview_prep_v2/GROUND_TRUTH.md)
-2. [`../interview_prep_v2/10_impact_analytics_deep_dive.md`](../interview_prep_v2/10_impact_analytics_deep_dive.md)
-3. [`../interview_prep_v2/11_uber_frm_deep_dive.md`](../interview_prep_v2/11_uber_frm_deep_dive.md) — map FastAPI layers to Spring controller / service / repository
-4. [`../interview_prep_v2/14_uber_menu_deep_dive.md`](../interview_prep_v2/14_uber_menu_deep_dive.md) — no Spring claim
-5. [`../interview_prep_v2/12_masters_gfg_deep_dive.md`](../interview_prep_v2/12_masters_gfg_deep_dive.md) — Celery → Spring Batch
-6. [`../interview_prep_v2/13_behavioral_why_switch.md`](../interview_prep_v2/13_behavioral_why_switch.md)
-7. [`../interview_prep_v2/17_senior_systems_study_only.md`](../interview_prep_v2/17_senior_systems_study_only.md) — STUDY ONLY for multi-region, K8s ops, Spark, Flink, Terraform
-8. Local: [`06_tech_deep_dives.md`](06_tech_deep_dives.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md), [`09_metrics_derivations.md`](09_metrics_derivations.md)
+2. **[`../interview_prep_v2/23_project_interview_packs.md`](../interview_prep_v2/23_project_interview_packs.md)** — all project interviewer packs (map Spring verbally)
+3. [`../interview_prep_v2/10_impact_analytics_deep_dive.md`](../interview_prep_v2/10_impact_analytics_deep_dive.md)
+4. [`../interview_prep_v2/11_uber_frm_deep_dive.md`](../interview_prep_v2/11_uber_frm_deep_dive.md) — map FastAPI layers to Spring controller / service / repository
+5. [`../interview_prep_v2/14_uber_menu_deep_dive.md`](../interview_prep_v2/14_uber_menu_deep_dive.md) — no Spring claim; PDF has no Kafka/Flink/Spark
+6. [`../interview_prep_v2/12_masters_gfg_deep_dive.md`](../interview_prep_v2/12_masters_gfg_deep_dive.md) — Celery → Spring Batch
+7. [`../interview_prep_v2/13_behavioral_why_switch.md`](../interview_prep_v2/13_behavioral_why_switch.md) · [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md)
+8. [`../interview_prep_v2/22_application_questions.md`](../interview_prep_v2/22_application_questions.md)
+9. Local: [`06_tech_deep_dives.md`](06_tech_deep_dives.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md)
 
 ## Stack mapping
 
@@ -27,15 +28,15 @@ Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. N
 | LangGraph / Menu / ClickHouse | Unchanged Python |
 
 <div class="callout warn">
-<b>Honesty.</b> Same as v2 GROUND_TRUTH. Do not invent Spring for Menu or Hibernate for ClickHouse. FRM 70% is a TDD target. Endpoint count is 30+, not 36.
+<b>Honesty.</b> Same as v2 GROUND_TRUTH. Do not invent Spring for Menu or Hibernate for ClickHouse. FRM 70% is a TDD target. Endpoint count is 30+, not 36. Menu PDF has no Kafka/Flink/Spark.
 </div>
 
 ## Resume at a glance (Java grounded)
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | XYZ bullets — Copilot TARGETS; CH/GCS 189s→12.3s + avoided 12B; Spring doing layer + Datadog/LangSmith/PostHog |
-| Uber FRM | Spring Boot + JPA framing; owned platform + layered architecture + recon v2 (18 files); led 3; targeting 70% |
-| Uber Menu | Python Selenium→Kafka→Flink→Spark (no Spring); same numbers as v2 |
-| Masters India | Spring Boot + Spring Batch framing; owned strangler; Kafka TPS/RPS; idempotency/DLQ; on-call alerting |
-| GeeksforGeeks | Spring Boot framing; 10K+ daily queries |
+| Impact Analytics | Product-first AssortSmart; Spring doing layer; ONE CH bullet; see `23a` pack |
+| Uber FRM | Spring Boot + JPA; 30+ APIs; targeting 70%; led 3; see `23b` |
+| Uber Menu | Python Selenium + RAG/Gemini + ANZ (no streaming on PDF); see `23b` |
+| Masters India | Spring Boot strangler; Kafka event platform; 700→4,000 req/min; see `23c` |
+| GeeksforGeeks | Spring Boot telling; 10K+ daily; see `23c` |

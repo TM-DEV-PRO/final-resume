@@ -1,8 +1,10 @@
 # Uber Menu Ingestion Deep Dive (v2 + Java tracks)
 
+> **Start here for interviews:** [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Menu.
+
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Jul 2026):** Menu stack is **Selenium scrapers on GCP → Kafka → Flink (online) → Spark (backfills)**, plus RAG/Gemini extraction and ANZ compliance. Best fit for Flink/Spark on this resume is **Uber Menu**, not Masters India (Kafka there is already claimed for e-invoice async) and not IA (ClickHouse POC lane). Pinot stays off the one-pager unless space returns.
+> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium scrapers + RAG/Gemini + ANZ only** — **no Kafka / Flink / Spark** on the one-pager. Kafka ownership lives on **Masters India** GST e-invoice (Mayank-style event platform). Use [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Menu as the canonical interviewer pack. Sections below that still mention Kafka/Flink/Spark are **prep depth / historical architecture options** — do not put them on the PDF or lead the interview story with them unless the interviewer asks about streaming elsewhere.
 
 ---
 
@@ -46,15 +48,17 @@ Industry grounding (interview citations, not personal claims): Flink for true st
 
 ## Bullet defenses
 
-### 1. Selenium → Kafka (~200–500 peak events/sec) → Flink + Spark, 30K menus/mo, 24h→2h, $600K+
+### 1. Selenium → Kafka → Flink + Spark, 30K menus/mo, 24h→2h, $600K+
+
+**Resume wording (Jul 2026):** no peak events/sec on the PDF. Kafka is the ingest bus; Flink online normalize/dedupe; Spark backfills. Outcomes stay **24h→2h**, **30K+ menus/month**, **$600K+/yr**.
 
 **Acquire (HISTORICAL).** Python Selenium on GCP hits JS-heavy vendor sites through proxy pools; emits menu/item/scrape-health events.
 
-**Bus (ESTIMATED rate).** Kafka topic(s) keyed by `vendor_id` for per-vendor ordering. Peak **~200–500 events/sec** during fleet runs (ESTIMATED): 30K menus/mo ≈ 1K menus/day; item-level events + retries + health amplify bursts. Steady-state much lower. Consumer lag is the primary SLO.
+**Bus.** Kafka topic(s) keyed by `vendor_id` for per-vendor ordering, replay, and fan-out. **Verbal only if asked:** peak **~200–500 events/sec** during fleet runs (ESTIMATED) — 30K menus/mo ≈ 1K menus/day; item-level events + retries + health amplify bursts. Steady-state much lower. Consumer lag is the primary SLO.
 
-**Flink online (HISTORICAL role / ESTIMATED load).** Consume Kafka; keyed process by vendor; schema validate; dedupe by content hash / menu version; route structured items to catalog upsert; route unstructured payloads to RAG/Gemini. Checkpoints for restart; at-least-once from Kafka plus idempotent sinks.
+**Flink online (HISTORICAL role / ESTIMATED load).** Consume Kafka; keyed process by vendor; schema validate; dedupe by content hash / menu version; route structured items to catalog upsert; route unstructured payloads to RAG/Gemini.
 
-**Spark batch (HISTORICAL role / ESTIMATED volume).** Nightly or on-demand backfills and reprocess windows (~**1–2M item rows** ESTIMATED for a typical 90-day reprocess). Same normalize logic as Flink where possible (shared libraries / dual path) to avoid online/offline drift.
+**Spark batch (HISTORICAL role / ESTIMATED volume).** Nightly or on-demand backfills (~**1–2M item rows** ESTIMATED for a typical 90-day reprocess).
 
 **Impact.** Onboarding **24h → 2h** (90%). Money: kill ~**$2/menu** third-party tool → 30K × $2 × 12 = **$720K** list → resume **$600K+** conservative floor.
 
@@ -155,7 +159,7 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 
 | Resume bullet | Rating | Fallback |
 |---|---|---|
-| Selenium + Kafka + Flink + Spark, 30K+, 24h→2h, $600K+ | NEEDS CARE on peak events/sec and Spark row counts | Call rates ESTIMATED; money uses $720K list / $600K+ floor |
+| Selenium + Kafka + Flink + Spark, 30K+, 24h→2h, $600K+ | SOLID on outcomes; peak events/sec **off PDF** | Money uses $720K list / $600K+ floor; defend Kafka rate verbally only if asked |
 | RAG/Gemini 98%/100% | SOLID if offline eval stated | Always say offline/eval |
 | +95% ingestions | NEEDS CARE on baseline | Give ~60–65% → 95%+ as estimated baseline |
 | ANZ 99.9% / 20h | SOLID HISTORICAL | Separate track from streaming |

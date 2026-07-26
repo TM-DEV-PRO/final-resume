@@ -9,7 +9,7 @@
 
 ## 1. Elevator pitch (30 seconds)
 
-"I raised AssortSmart planner throughput by targeting 20 to 100 cluster configs per plan versus 1 and under-one-hour turnaround with a Python Copilot over a Spring Boot doing layer. We drove failures toward under 2% from a measured 8.5% with read-only tools and approval gates, and instrumented Datadog, LangSmith, and PostHog on a shared OTEL trace. On storage we cut 250M-row pivot grids from 189s to 12.3s and avoided materializing 12B store-week rows by adopting ClickHouse/GCS insert-only versioned planning storage. Phase 1 design PASS, load test pending."
+"Four stories on AssortSmart. Copilot cuts clustering from days toward under one hour and from one to 20–100 configs — Python LangGraph owns chat, Spring Boot is the doing layer. Safety moves failures from a measured 8.5% toward under 2% with read-only tools and three human gates. The same Spring Hindsight/Clustering/Strategy APIs serve agents and manual screens, with Datadog, LangSmith, and PostHog on one OTEL trace. Pivot hybrid cuts 250M Hindsight grids from 189s to 12.3s on ClickHouse reads while Postgres keeps cell edits; line-plan avoided 12B store-week rows via a ~25M aggregate; agentic planning store is ClickHouse insert-only. Phase 1 design PASS, load test pending."
 
 ## 2. Service split (say it exactly)
 
@@ -33,10 +33,10 @@ Same FRD targets: 20–100 configs vs 1; under 1h (TARGET); 8.5% → under 2% (M
 | Claim | Tag | Defense |
 |---|---|---|
 | ClickHouse/GCS planning store (insert-only versions) | MEASURED design | HLD + Jul 2026 stack direction |
-| 250M pivot **189s → 12.3s** (~15×) | MEASURED | DISTINCT/option-count cliff; typical ~2–3× if stripped |
+| 250M Hindsight pivot **189s → 12.3s** (~15×) via CH reads + PG cell edits | MEASURED | `pivot-poc/`; ~15.5× with option-count; typical ~2–3×; PG write ~14× tuned |
 | Avoided **12B** flat (**100–450×**) | MEASURED / projected 12B | Aggregate ~25M; explode ~25 ms |
 | Hardware | MEASURED | PG 48 GB host vs CH 10 CPU / 3.3 GB VM |
-| POC hybrid / PG cell &lt;1ms | MEASURED prep | Decision history — why insert-only unlock, not resume headline |
+| Hybrid decision rule (aggregate→CH, cell edit→PG) | MEASURED | Same rule as line-plan POC; agentic store still insert-only CH |
 | Legacy mtp-assort no wholesale CH | MEASURED | Fix BigQuery first |
 | Order Batching 60× | MEASURED prep | Offer if asked |
 
