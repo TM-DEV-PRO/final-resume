@@ -1,0 +1,92 @@
+%============================================================================%
+%  COLUMN & LIST DEFINITIONS
+%============================================================================%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+%====================
+% EXPERIENCE A — IMPACT ANALYTICS
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{May 2026 -- Present}\\
+\end{tabularx}
+\vspace{-2ex}
+
+\textcolor{Project}{\textbf{Agentic AssortSmart (AI-Powered Retail Merchandise Planning)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Building the AssortSmart planner copilot (\textbf{FastAPI, LangGraph, MCP}) on a shared \textbf{Go (Gin)} doing layer so retailers can decide \textbf{what to buy, how much, and which stores}, targeting turnaround from days to \textbf{under 1 hour} and \textbf{$\geq$20 configs} explored per plan.
+    \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited tools that only \textbf{read} planning data and \textbf{3} human confirm gates before any write-back.
+    \item Building \textbf{Hindsight} as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration \textbf{checked against computed metrics}, and tenant metric catalogs that go live \textbf{without a code deploy}.
+    \item Keeping plan edits at \textbf{$\sim$0.4\,ms} and month rollups \textbf{sub-second} via choice-cluster-week aggregates (\textbf{$\sim$25M} rows) instead of a flat store-week grid.
+    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, append-only) after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
+    \item \textbf{Tech} -- Python, FastAPI, LangGraph, MCP, Go, Gin, Kafka, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
+\end{zitemize}
+
+%====================
+% EXPERIENCE B — UBER
+%====================
+\vspace{0.2ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
+\end{tabularx}
+\vspace{-2ex}
+
+\textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Owned design and architecture for Uber's \textbf{FRM Risk Scoping} platform (\textbf{FastAPI, MySQL, React}) across \textbf{8 screens and 30+ REST APIs}, automating quarterly scoping at \textbf{\$340M group materiality} and targeting a \textbf{70\%} cut in manual reconciliation (\textbf{$\sim$2 weeks to $\sim$3--4 days}).
+    \item Replaced the Google Sheets quarterly close with a \textbf{MySQL system of record} that ties \textbf{Oracle HFM} extracts to public \textbf{10-Q} filings so scoping feeds \textbf{PwC} audit work papers with a durable line-level audit trail.
+    \item Automated group and component scoping with residual-risk and EMI workflows that auto-flag material items across \textbf{55 financial line items and 14 entities} against materiality and residual thresholds (\textbf{\$340M / \$170M} sample).
+    \item \textbf{Led 3 engineers} through design reviews, API contracts, and CI quality gates, growing the Bazel pytest suite to \textbf{1,100+ tests} for PwC-facing releases.
+    \item \textbf{Tech} -- Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, Docker.
+\end{zitemize}
+\vspace{0.3ex}
+
+\textcolor{Project}{\textbf{Menu Ingestion and Automation Platform (Uber Eats)}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Cut menu onboarding from \textbf{24h to 2h} and saved \textbf{\$600K+ annually} on \textbf{30K+ menus/month} by shipping \textbf{Selenium} scrapers on GCP with \textbf{Kafka} as the replayable ingest bus.
+    \item Hit \textbf{98\% fidelity and 100\% schema consistency} (offline eval) by building a \textbf{RAG and Gemini 2.5 Pro} extraction pipeline plus supervised fine-tuning.
+    \item Raised successful ingestions to \textbf{95\%+} by handling anti-bot defenses with IP rotation, dynamic proxy pools, and adaptive backoff.
+    \item Automated \textbf{ANZ driver document compliance to 99.9\%}, saving \textbf{20 hours/week} of manual verification.
+    \item \textbf{Tech} -- Python, Selenium, Kafka, Gemini, RAG, SFT, GCP, Docker.
+\end{zitemize}
+
+%====================
+% EXPERIENCE C — MASTERS INDIA
+%====================
+\vspace{0.2ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
+\end{tabularx}
+\vspace{-2ex}
+
+\textcolor{Project}{\textbf{GST Compliance and E-Invoicing Platform}}
+\vspace{-1ex}
+\begin{zitemize}
+    \item Owned the PHP to \textbf{FastAPI microservices} strangler for \textbf{1,500+ clients}, cutting p95 latency from \textbf{1.2s to 300ms} and \mbox{mentoring \textbf{2 engineers}}.
+    \item Built an event-driven bulk e-invoicing platform on \textbf{Kafka} and \textbf{PostgreSQL} quarter sharding processing \textbf{1M+ IRP submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
+    \item Hardened the IRP path for safe replay with \textbf{idempotency keys, retries, and DLQ}, cutting redundant database reads \textbf{30\%} with Redis.
+    \item Cut incident triage \textbf{70\%} with \textbf{ELK and New Relic} on-call alerting and raised coverage from \textbf{35\% to 82\%} at \textbf{98\%} deployment success.
+    \item \textbf{Tech} -- Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
+\end{zitemize}
+
+%====================
+% EXPERIENCE D — GEEKSFORGEEKS
+%====================
+\vspace{0.2ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
+\end{tabularx}
+\vspace{-3ex}
+\begin{zitemize}
+    \item Improved reliability for \textbf{10K+ daily queries} and \textbf{10x} contest spikes by migrating the doubt-support backend from PHP to \textbf{Django (Python)}.
+    \item Lifted premium subscriptions \textbf{15--20\%} by designing voting and pinning APIs on MySQL, MongoDB, Redis, and Elasticsearch.
+    \item Raised course sales \textbf{30\%} and operational efficiency \textbf{70\%} by launching an influencer analytics dashboard and cron pipelines for video processing.
+\end{zitemize}
