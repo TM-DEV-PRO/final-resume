@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_uber_menu — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../index.html">← Hub</a><a href="../../../CampaignPyGo.html">Campaign</a><a href="../../../InterviewPrepV2.html">Prep v2</a><a href="../../../ApplicationKit.html">Application Kit</a><span class="path">campaign_pygo_xyz/interview_prep/architecture/03_uber_menu.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-uber-eats-menu-ingestion">Architecture — Uber Eats Menu Ingestion</a>
+<a class="lvl2" href="#1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</a>
+<a class="lvl2" href="#2-data-design-logical">2. Data design (logical)</a>
+<a class="lvl2" href="#3-architecture-diagram">3. Architecture diagram</a>
+<a class="lvl2" href="#4-end-to-end-flow">4. End-to-end flow</a>
+<a class="lvl2" href="#5-why-kafka-here-vs-masters-kafka">5. Why Kafka here vs Masters Kafka</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="architecture-uber-eats-menu-ingestion">Architecture — Uber Eats Menu Ingestion</h1>
+<h2 id="1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python</strong></td>
+<td>Scrapers, extraction workers, orchestration</td>
+<td>Primary language for automation + AI glue</td>
+</tr>
+<tr>
+<td><strong>Selenium</strong></td>
+<td>Browser scrape of third-party menu pages</td>
+<td>Needed when partner APIs incomplete / HTML-only sources</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Replayable <strong>ingest bus</strong> after scrape</td>
+<td>Decouple bursty scrapers from downstream; ordered per vendor key; replay on parser bugs</td>
+</tr>
+<tr>
+<td><strong>Flink</strong></td>
+<td>Hot-path validate / keyed dedupe / route</td>
+<td>Stateful stream processing; event-time for late pages; fresher than Spark micro-batches</td>
+</tr>
+<tr>
+<td><strong>RAG + Gemini 2.5 Pro</strong></td>
+<td>Unstructured menus (PDF/image/messy HTML) → structured fields</td>
+<td>LLM+retrieval beats brittle regex on wild menus</td>
+</tr>
+<tr>
+<td><strong>SFT</strong></td>
+<td>Schema adherence for extraction</td>
+<td>Offline eval: <strong>100%</strong> schema consistency, <strong>98%</strong> fidelity</td>
+</tr>
+<tr>
+<td><strong>GCP</strong></td>
+<td>Hosting scrapers / jobs / storage</td>
+<td>Uber Eats automation footprint on GCP in this workstream</td>
+</tr>
+<tr>
+<td><strong>Docker</strong></td>
+<td>Package workers</td>
+<td>Repeatable deploys for scraper fleet</td>
+</tr>
+<tr>
+<td><strong>IP rotation / proxies / backoff</strong></td>
+<td>Anti-bot layer</td>
+<td>Raise successful ingestions to <strong>95%+</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Verbal / study only:</strong> Spark backfills, Pinot ops dashboards — not required on PDF.</p>
+<h2 id="2-data-design-logical">2. Data design (logical)</h2>
+<table>
+<thead>
+<tr>
+<th>Store / topic</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kafka topics</td>
+<td>Raw scrape events, retries, health signals keyed by vendor/menu</td>
+</tr>
+<tr>
+<td>Flink keyed state</td>
+<td>Dedupe / ordering state per vendor key</td>
+</tr>
+<tr>
+<td>Object storage</td>
+<td>Raw HTML/PDF/image payloads</td>
+</tr>
+<tr>
+<td>Structured menu records</td>
+<td>Normalized items, prices, modifiers after extract</td>
+</tr>
+<tr>
+<td>Eval sets</td>
+<td>Offline fidelity / schema fixtures for RAG+SFT</td>
+</tr>
+<tr>
+<td>Compliance docs store</td>
+<td>ANZ driver/vehicle documents workflow (sibling automation)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-architecture-diagram">3. Architecture diagram</h2>
+<pre><code class="language-mermaid">flowchart TB
+  SRC[Third-party menu sites]
+  SEL[Selenium scrapers on GCP]
+  KF[Kafka ingest bus]
+  FL[Flink normalize dedupe route]
+  RAG[RAG + Gemini + SFT]
+  CAT[Uber Eats catalog / downstream]
+  OPS[Ops metrics / alerts]
+  ANZ[ANZ doc compliance jobs]
+
+  SRC --&gt; SEL --&gt; KF --&gt; FL
+  FL --&gt;|structured| CAT
+  FL --&gt;|unstructured| RAG --&gt; CAT
+  KF --&gt; OPS
+  ANZ --&gt; CAT
+</code></pre>
+<h2 id="4-end-to-end-flow">4. End-to-end flow</h2>
+<ol>
+<li>Scraper fleet pulls vendor menus (Selenium), handles anti-bot (rotation, proxies, backoff).</li>
+<li>Events land on <strong>Kafka</strong> for ordered, replayable ingest (<strong>30K+ menus/month</strong>).</li>
+<li><strong>Flink</strong> validates, dedupes (keyed state), routes structured vs unstructured.</li>
+<li>Structured path → catalog upsert.</li>
+<li>Unstructured path: <strong>RAG + Gemini + SFT</strong> → schema-valid menu JSON (offline <strong>98% / 100%</strong>).</li>
+<li>Catalog write-back; ops watch success rate (<strong>95%+</strong>).</li>
+<li>Outcome: onboarding <strong>24h → 2h</strong>, <strong>$600K+/yr</strong> saved vs ~$2/menu third-party tooling (HISTORICAL).</li>
+<li>Parallel: ANZ document compliance automation to <strong>99.9%</strong>, <strong>20 h/week</strong> saved.</li>
+</ol>
+<h2 id="5-why-kafka-here-vs-masters-kafka">5. Why Kafka here vs Masters Kafka</h2>
+<ul>
+<li><strong>Menu:</strong> absorb scraper bursts + replay bad parses + Flink consumer.</li>
+<li><strong>Masters:</strong> compliance IRP pipeline with multi-consumer replay and per-GSTIN ordering (no Flink claim).
+Same Kafka, different domain contracts — be ready to compare.</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../tech_depth/flink.html">../tech_depth/flink.md</a></li>
+<li><a href="../deployment_and_scale.html">../deployment_and_scale.md</a></li>
+</ul></main>
+</div>
+</body>
+</html>

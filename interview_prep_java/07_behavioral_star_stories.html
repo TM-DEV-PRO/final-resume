@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>07_behavioral_star_stories — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← Hub</a><a href="../CampaignPyGo.html">Campaign</a><a href="../InterviewPrepV2.html">Prep v2</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">interview_prep_java/07_behavioral_star_stories.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#behavioral-star-stories-java-track">Behavioral / STAR stories — Java track</a></nav>
+<main><h1 id="behavioral-star-stories-java-track">Behavioral / STAR stories — Java track</h1>
+<p>Outcomes, leadership signals, and story structure are <strong>identical</strong> to <code>interview_prep/07_behavioral_star_stories.md</code>. Use that file as the canonical bank (10 stories). Below are <strong>stack wording swaps</strong> so you don't say FastAPI/Gin/pytest when interviewing on the Java resume.</p>
+<table>
+<thead>
+<tr>
+<th>Story</th>
+<th>Keep as-is</th>
+<th>Swap in conversation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. ClickHouse verdict</td>
+<td>Decision process, PoC gates</td>
+<td>Implementation plane: Spring Boot services + ClickHouse client</td>
+</tr>
+<tr>
+<td>2. BQ→CH ingestion</td>
+<td>Freshness, REPLACE PARTITION</td>
+<td>Scheduler/job in Java (Batch/cron service) if asked "who runs the job"</td>
+</tr>
+<tr>
+<td>3. Malformed-plan validator</td>
+<td>Product failure mode</td>
+<td>Bean Validation / schema checks before agent commit</td>
+</tr>
+<tr>
+<td>4. Clustering copilot</td>
+<td>HLR behavior, &lt;1 h</td>
+<td>Python FastAPI/LangGraph agent microservice</td>
+</tr>
+<tr>
+<td>5. Constants-refactor regression</td>
+<td>Owning mistakes</td>
+<td>JUnit gate; "tests that would have caught it"</td>
+</tr>
+<tr>
+<td>6. Coverage-gap fix</td>
+<td>Test where code lives</td>
+<td>JUnit/Mockito; CI coverage on changed modules</td>
+</tr>
+<tr>
+<td>7. ORM-vs-repository</td>
+<td>Disagree &amp; commit</td>
+<td>Hibernate/JPA repository boundaries vs raw SQL</td>
+</tr>
+<tr>
+<td>8. Masters India migration</td>
+<td>Deadline pressure; p95 <strong>1.2s→300ms</strong>; <strong>700→4,000 req/min</strong>; <strong>1,500+</strong> clients</td>
+<td>Spring Boot strangler; Spring Batch bulk; Kafka + PG quarter sharding</td>
+</tr>
+<tr>
+<td>9. Anti-bot arms race</td>
+<td>Persistence</td>
+<td>Same; Selenium + proxy pools</td>
+</tr>
+<tr>
+<td>10. Double-filing / idempotency</td>
+<td>Earn trust</td>
+<td>Idempotency keys in Batch writers / DB constraints</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rapid-fire quality answers (Java wording):</strong></p>
+<ul>
+<li><strong>CI gating:</strong> pipeline blocks merge if JUnit fails or changed-module coverage drops; Testcontainers for DB-backed tests.</li>
+<li><strong>Testability:</strong> constructor-injected ports (repositories, clients); pure domain functions for tax/dedup rules; DTO validation at the boundary.</li>
+<li><strong>Idempotent retries:</strong> <code>importId + chunkIndex + contentHash</code> recognized on replay — same as main track.</li>
+<li><strong>Observability:</strong> Actuator + Micrometer metrics, ELK correlation IDs, New Relic APM — Masters India triage 70% story unchanged.</li>
+</ul></main>
+</div>
+</body>
+</html>

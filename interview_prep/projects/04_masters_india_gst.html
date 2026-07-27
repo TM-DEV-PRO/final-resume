@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>04_masters_india_gst — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← Hub</a><a href="../../CampaignPyGo.html">Campaign</a><a href="../../InterviewPrepV2.html">Prep v2</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">interview_prep/projects/04_masters_india_gst.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#masters-india-gst-compliance-e-invoicing-saas-platform">Masters India — GST Compliance &amp; E-Invoicing SaaS Platform</a>
+<a class="lvl2" href="#1-elevator-pitch">1. Elevator pitch</a>
+<a class="lvl2" href="#2-the-migration-story-your-strongest-system-design-narrative-here">2. The migration story (your strongest system-design narrative here)</a>
+<a class="lvl2" href="#3-bulk-processing-at-100k-transactionsimport">3. Bulk processing at 100K+ transactions/import</a>
+<a class="lvl2" href="#4-security-compliance-financial-data">4. Security &amp; compliance (financial data)</a>
+<a class="lvl2" href="#5-observability">5. Observability</a>
+<a class="lvl2" href="#6-qa-bank">6. Q&amp;A bank</a></nav>
+<main><h1 id="masters-india-gst-compliance-e-invoicing-saas-platform">Masters India — GST Compliance &amp; E-Invoicing SaaS Platform</h1>
+<p><strong>Role:</strong> Software Development Engineer 2 · December 2022 – June 2024 · Noida
+<strong>Resume tech line:</strong> Python, FastAPI, PostgreSQL, Redis, Celery, Docker, ELK, New Relic, AWS</p>
+<hr>
+<h2 id="1-elevator-pitch">1. Elevator pitch</h2>
+<p>"Masters India is a GST Suvidha Provider — enterprises file GST returns and generate e-invoices/e-way bills through our APIs. I led the migration of the core compliance APIs from a legacy PHP (Laravel) monolith to async Python (FastAPI) microservices: p95 latency went from 1.2 s to 300 ms, and the platform scaled to 1M+ daily transactions for 2,500+ enterprise clients. The bulk e-invoicing path — 100K+ transactions per import — was the company's chief revenue driver."</p>
+<h2 id="2-the-migration-story-your-strongest-system-design-narrative-here">2. The migration story (your strongest system-design narrative here)</h2>
+<p><strong>Why migrate at all:</strong> the Laravel monolith was synchronous per-request PHP-FPM — every government-portal call (NIC/IRP e-invoice registration) blocked a worker for its full round-trip (500ms–3s). Peak filing windows (monthly GSTR deadlines) exhausted worker pools; latency and error rates spiked exactly when clients needed the system most.</p>
+<p><strong>Approach — strangler pattern, not big-bang:</strong>
+1. Carved bounded contexts out of the monolith: e-invoice generation, e-way bill, returns filing, reconciliation, client dashboard.
+2. New FastAPI services fronted by the same gateway; routes cut over per-endpoint with shadow traffic first.
+3. Async I/O (httpx + asyncio) for government-portal calls — a worker no longer blocks during the IRP round-trip; concurrency comes from the event loop, not from more PHP-FPM processes.
+4. Celery + Redis for the heavy async work: bulk imports, scheduled retries against flaky government endpoints, report generation.
+5. Data stayed in place (PostgreSQL) — services shared the DB initially, then split hot tables; avoided a risky data migration during cutover.</p>
+<p><strong>Results:</strong> p95 1.2 s → 300 ms (75%); additional 40% backend-routine latency cut from query optimization + Redis caching; 1M+ transactions/day; 30% infra-load reduction.</p>
+<h2 id="3-bulk-processing-at-100k-transactionsimport">3. Bulk processing at 100K+ transactions/import</h2>
+<ul>
+<li>Chunked ingestion: file upload → validate + split into batches → Celery fan-out → per-batch idempotency keys (client_id + file hash + batch index) so retries never double-file an invoice.</li>
+<li>Set-based SQL writes (multi-row INSERT ... ON CONFLICT) instead of per-row ORM saves — the single biggest throughput lever.</li>
+<li>Rate-limit-aware outbound queue to the government IRP (token bucket per GSTIN) with circuit breaker; failed batches park in a dead-letter state with operator replay.</li>
+<li>Progress tracking per batch surfaced to the client dashboard (reduced "where is my import" support tickets 35%).</li>
+</ul>
+<h2 id="4-security-compliance-financial-data">4. Security &amp; compliance (financial data)</h2>
+<p>Encryption at rest + TLS in transit; RBAC with JWT (short-lived access + refresh); audit logs on every mutating call (who/what/when/before-after); IP allowlisting for enterprise clients; secrets in AWS KMS. Framing: "compliance data (GSTINs, invoices, turnover) — we treated auditability as a feature, not an afterthought."</p>
+<h2 id="5-observability">5. Observability</h2>
+<p>Centralized ELK (structured JSON logs, correlation IDs propagated through Celery) + New Relic APM (transaction traces, DB time breakdown). Incident triage accelerated ~70%: before, engineers grepped per-box logs; after, one Kibana query by correlation ID. Test coverage 35% → 82% (pytest, factory fixtures, contract tests on government-API adapters) → 98% deployment success.</p>
+<h2 id="6-qa-bank">6. Q&amp;A bank</h2>
+<ul>
+<li><strong>"Why FastAPI over Django/Flask?"</strong> Async-native (the workload is outbound-I/O-bound), Pydantic validation at the boundary (malformed invoice payloads are the #1 client error class), OpenAPI docs for enterprise client integration teams for free.</li>
+<li><strong>"How did you cut over without downtime?"</strong> Per-endpoint strangler cutover behind the gateway; shadow traffic comparison on read paths; bulk/async paths moved first (lowest user-facing risk), interactive filing last.</li>
+<li><strong>"Biggest incident?"</strong> Government IRP flakiness during deadline peaks — fixed with retry-with-jitter + circuit breaker + client-visible degraded-mode status instead of silent failures.</li>
+<li><strong>"Why Celery not Kafka?"</strong> Task semantics (retries, rate limits, scheduled jobs), not stream semantics; team already ran Redis; volumes fit comfortably. I'd reach for Kafka when multiple independent consumers need replayable history.</li>
+<li><strong>"What would you do differently?"</strong> Split the shared database earlier — schema coupling slowed independent deploys near the end; and introduce idempotency keys from day one instead of retrofitting them after a double-filing near-miss.</li>
+</ul></main>
+</div>
+</body>
+</html>

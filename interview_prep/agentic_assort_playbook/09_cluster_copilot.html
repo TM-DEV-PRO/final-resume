@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>09_cluster_copilot — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← Hub</a><a href="../../CampaignPyGo.html">Campaign</a><a href="../../InterviewPrepV2.html">Prep v2</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">interview_prep/agentic_assort_playbook/09_cluster_copilot.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#9-the-cluster-recommendation-copilot-the-module-you-are-building-right-now">9. The Cluster Recommendation Copilot — the module you are building right now</a>
+<a class="lvl2" href="#91-what-in-one-breath">9.1 WHAT — in one breath</a>
+<a class="lvl2" href="#92-why-the-measured-problem-all-live-audit-numbers">9.2 WHY — the measured problem (all live-audit numbers)</a>
+<a class="lvl2" href="#93-how-the-workflow-inversion">9.3 HOW — the workflow inversion</a>
+<a class="lvl2" href="#94-the-architecture-positions-and-why">9.4 The architecture positions (and why)</a>
+<a class="lvl2" href="#95-the-strategy-doorway-22-of-the-frd-best-cross-module-story">9.5 The strategy doorway (§2.2 of the FRD — best cross-module story)</a>
+<a class="lvl2" href="#96-targets-rollout-know-these-cold">9.6 Targets &amp; rollout (know these cold)</a>
+<a class="lvl2" href="#97-interview-qa-for-this-module">9.7 Interview Q&amp;A for this module</a></nav>
+<main><hr>
+<h1 id="9-the-cluster-recommendation-copilot-the-module-you-are-building-right-now">9. The Cluster Recommendation Copilot — the module you are building right now</h1>
+<div class="stage-badge stage-c">Source: Agentic Cluster FRD v1.8 (PM edition, 2026-07-06) + companion HLD/LLD · live tenant audits (kik, briscoes)</div>
+
+<p>This is the <strong>current, concrete build</strong> — the strongest thing on the résumé because it is present-tense ownership: a full agentic module from measured problem → architecture → phased rollout. Everything below is what/why/how at interview depth. When asked <em>"what are you working on right now?"</em>, this chapter is the answer.</p>
+<h2 id="91-what-in-one-breath">9.1 WHAT — in one breath</h2>
+<blockquote>
+<p>"A conversational + structured copilot for store clustering. The planner states <em>what</em> to cluster and <em>for when</em> — a dedicated agent handles store scoping, attribute selection, exploration and scoring on a dedicated ClickHouse read plane; the planner reviews evidence, adjusts stores with consequences shown, and approves. The existing product consumes the result completely unchanged."</p>
+</blockquote>
+<p>Two entry modes, one agent: the <strong>manual wizard with inline recommendations</strong> (Mode A) and <strong>chat-native</strong> (Mode B — "cluster Small Appliances for SS27"). The <strong>convergence rule</strong> is non-negotiable: whichever door you enter, the flow converges before execution — same config document, same search plan, same three gates, same write-back. A session started in one mode can continue in the other; the modes are two surfaces on one agent, never two implementations.</p>
+<h2 id="92-why-the-measured-problem-all-live-audit-numbers">9.2 WHY — the measured problem (all live-audit numbers)</h2>
+<p>Store clustering is the foundation every strategy plan is built on — and the least assisted step in the product:</p>
+<table>
+<thead>
+<tr>
+<th>Measured reality (today)</th>
+<th>Number</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Configurations evaluated per plan</td>
+<td><strong>exactly 1</strong> (search space: 12 algorithms × k 3–10 × any attribute subset)</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Run failure rate</td>
+<td><strong>8.5%</strong> (37/437 runs, kik) — <strong>&gt;80% are input mistakes</strong> at the data boundary</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Reproducibility of shipped clusterings</td>
+<td><strong>0%</strong> — algorithm/params/seed never persisted</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Manual store swaps surviving a re-run</td>
+<td><strong>0%</strong> — silently erased</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Significance scores (the hardest signal)</td>
+<td>computed, then <strong>ignored</strong> — user picks from raw score lists</td>
+<td>code + UX audit</td>
+</tr>
+<tr>
+<td>Median clustering job</td>
+<td><strong>≈20 s</strong> (370 live runs; max 463 s)</td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Agent data-probe latency on shared BQ</td>
+<td><strong>1–20 s+, variance uncontrolled</strong></td>
+<td>live audit</td>
+</tr>
+<tr>
+<td>Strategy-create help choosing a cluster plan</td>
+<td><strong>zero</strong> — and 1 in 5 finalized kik plans has <strong>zero stores attached</strong>; briscoes' finalized inventory is 100% <strong>&gt;17 months stale</strong></td>
+<td>live audit</td>
+</tr>
+</tbody>
+</table>
+<p>The one-line diagnosis for interviews: <strong>"the compute is fast (~20 s median); the bottleneck is everything around the machine"</strong> — expert choices made blind up-front, one shot per try, knowledge thrown away after.</p>
+<h2 id="93-how-the-workflow-inversion">9.3 HOW — the workflow inversion</h2>
+<p>Today's flow asks the human for four expert choices up front, blind, then runs once. The agentic flow inverts it:</p>
+<pre><code>TODAY:   human picks hierarchy → period → store groups → attributes → submit(1 config) → eyeball → hand-fix → finalize
+AGENTIC: human states INTENT (hierarchy + period — the only 2 non-derivable inputs)
+           → agent proposes store scope        (active stores, sister-store subs, sample-size guards)   [Gate ~ confirm]
+           → agent proposes attribute sets     (significance + coverage + redundancy gates, ranked)     [Gate 1: search plan]
+           → agent explores 20–100 pruned configs on an isolated scratch plan (results stream)
+           → top-3 with evidence packs (driving attributes, separation, stability, size balance,
+             churn-vs-current-live-clusters)
+           → human reviews, what-ifs (≤10 s warm), moves/pins stores with impact shown                  [Gate 2]
+           → explicit approval → write-back into today's tables                                          [Gate 3]
+</code></pre>
+<p>Key definitions you must own in the room:</p>
+<ul>
+<li><strong>Intent</strong> = hierarchy scope + reference period — the only two inputs that are business strategy rather than derivable from data. Everything else (store cohort, attributes, algorithm, k, tuning) the agent derives. Pins/moves are <em>not</em> intent — they're <strong>business-knowledge injection</strong> during review. The invariant: <em>intent is always human-owned; the agent may ground, expand, execute or queue it — never invent or auto-resolve one.</em></li>
+<li><strong>Config document</strong> = the unit of record: algorithm, k, hyperparameters, seed, features, windows, pins, data watermark, scorer version — persisted and <strong>content-addressed</strong>. "Re-run" reproduces membership on the same watermark or explains drift.</li>
+<li><strong>Pins</strong> = durable constraints with reason codes; honored by every subsequent re-run and refresh. This kills the silent-loss-of-swaps failure (0% → 100% survival).</li>
+<li><strong>Three delegation levels:</strong> <strong>L1 copilot</strong> (proposes every step, executes on confirmation — launch) → <strong>L2 autopilot-with-approval</strong> (one intent runs the whole flow unattended; one review, one approval) → <strong>L3 standing monitor</strong> (nightly drift detection — "12 stores no longer fit, stability dropped 0.18" — raises a proposal). Nothing at any level auto-finalizes; system-originated work surfaces as <strong>pending intents</strong> unless the tenant grants a recorded, one-time standing pre-approval.</li>
+</ul>
+<h2 id="94-the-architecture-positions-and-why">9.4 The architecture positions (and why)</h2>
+<ol>
+<li><strong>Deterministic tools compute; the LLM orchestrates and explains.</strong> Every number in an evidence pack traces to a tool call; same inputs + same scorer version ⇒ identical ranking. The LLM never invents a metric. This is the anti-hallucination stance <em>and</em> what makes recommendations auditable.</li>
+<li><strong>Deterministic grounding for chat.</strong> Department mentions are backtracked to full hierarchy paths via catalog search (ambiguity → clarifying question, never a guess); season labels resolve via the tenant's fiscal calendar (seasons differ per tenant and hemisphere); the <strong>grounding card</strong> (scope, cohort, attributes, each with a reason) must be confirmed before any compute.</li>
+<li><strong>A dedicated ClickHouse read plane.</strong> Agent probes need p95 &lt; 500 ms deterministic (vs 1–20 s+ on shared BigQuery slots). Fed by the org's existing BQ→CH ingestion pipeline (proven on ItemSmart); <strong>agent access is read-only enforced by database profile, not convention</strong>; exploration writes only to isolated scratch plans; nightly precompute makes active hierarchies feel instant (≥80% cold→warm target). This is the gated ClickHouse adoption from the reconciled DB verdict actually happening — read plane only; BigQuery stays truth; Postgres stays the editable SoR (explicit FRD non-goal).</li>
+<li><strong>Write-back compatibility.</strong> Approved results land in the existing <code>plan_cluster_final</code> / <code>plan_cluster_store_final</code> tables — strategy, budget, wedge, line consume them with <strong>zero product changes</strong>. The legacy wizard keeps working untouched in parallel (adoption de-risk).</li>
+<li><strong>Safe editing of consumed plans.</strong> Editing a plan referenced by strategies defaults to <strong>clone-and-version with lineage</strong> (in-place edits would silently invalidate downstream budgets/wedges); rebinding is explicit per-strategy; an edit-impact card shows consumers <em>before</em> any change.</li>
+<li><strong>Every flow closes.</strong> A 19-workflow audit produced a <strong>terminal-states contract</strong>: every flow defines success / rejection / failure / abandonment-expiry. Degraded batches (&lt;3 viable candidates) surface partials + a failure taxonomy + retry; capacity is a queue with a position banner, not an error; rejection returns to comparison and is captured as a learning event.</li>
+<li><strong>Honest learning loops.</strong> Deviations (attribute removed, store moved, non-top pick, dismissal) are captured with reason chips: (a) deterministic memory — never blindly re-recommend what this scope rejected; (b) human-approved calibration of tenant metric weights (versioned, never silently self-tuned); (c) a labeled recommended-vs-chosen corpus for any future learned ranker, shipped only as an explicit scorer-version release to preserve determinism.</li>
+</ol>
+<h2 id="95-the-strategy-doorway-22-of-the-frd-best-cross-module-story">9.5 The strategy doorway (§2.2 of the FRD — best cross-module story)</h2>
+<p>Every strategy plan binds to exactly one cluster plan at creation; today there's zero help and the audit found strategies pointing at cluster plans that <strong>no longer exist</strong>. The fix, three tiers:</p>
+<ul>
+<li><strong>Hard eligibility gate before scoring:</strong> finalized ∧ not deleted ∧ non-empty membership ∧ recoverable scope. (1 in 5 finalized kik plans has zero stores — binding one silently breaks every downstream step. Unusable plans are listed, never scored.)</li>
+<li><strong>FitScore ≤2 s, deterministic:</strong> cheap terms rank all candidates; the expensive variance-explained term ("these clusters explain X% of store-revenue variance in your scope") runs top-5-only, computed on the <strong>last comparable season</strong> (a future window has no sales yet), <strong>penalized for cluster count</strong> (so many-tiny-clusters can't game it) and <strong>weighted by store coverage</strong>. Bands Green/Yellow/Red <strong>calibrated by backtesting against 467 historical bindings</strong> (363 kik + 104 briscoes).</li>
+<li><strong>Always a top-3 shortlist</strong> with explain cards + pairwise deltas ("#2 covers your scope but is 9 months staler"); padded with a <strong>spawn card</strong> when fewer exist — never an empty dropdown. Spawn runs the full recommendation pipeline inline, writes at the pre-finalize step, promotes only on human confirmation (or parks as a <strong>pending intent</strong> where tenant governance requires a cluster-owner sign-off), records <code>created_via</code> + full scope keys for future dedup, and the create API now validates bindings are live + finalized — eliminating the dangling-reference class.</li>
+</ul>
+<h2 id="96-targets-rollout-know-these-cold">9.6 Targets &amp; rollout (know these cold)</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Baseline (measured)</th>
+<th>Target (6 mo)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hierarchy → finalized plan</td>
+<td>hours–days</td>
+<td><strong>&lt; 1 h</strong> (&lt;10 min precomputed)</td>
+</tr>
+<tr>
+<td>Configs evaluated per plan</td>
+<td>1</td>
+<td><strong>≥ 20</strong></td>
+</tr>
+<tr>
+<td>Run failure rate</td>
+<td>8.5%</td>
+<td><strong>&lt; 2%</strong></td>
+</tr>
+<tr>
+<td>Top-3 contains shipped config</td>
+<td>n/a</td>
+<td><strong>≥ 60%</strong></td>
+</tr>
+<tr>
+<td>Store corrections surviving re-run</td>
+<td>0%</td>
+<td><strong>100%</strong></td>
+</tr>
+<tr>
+<td>Agent probe latency</td>
+<td>1–20 s+</td>
+<td><strong>p95 &lt; 500 ms</strong></td>
+</tr>
+<tr>
+<td>Reproducible shipped clusterings</td>
+<td>0%</td>
+<td><strong>100%</strong></td>
+</tr>
+<tr>
+<td>Strategy plans using a suggested cluster</td>
+<td>0%</td>
+<td><strong>≥ 40%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Phases:</strong> P0 read-only copilot (CH instance + cubes + significance/explain tools; exit: p95 &lt;500 ms, cube reconciles to BQ within 0.1%) → P1 recommendation engine (batch exploration + what-if + config documents; exit: top-3 ≤60 s cold, deterministic re-rank) → P2 approve &amp; write-back (gates, pins with impact preview, doorway point-at-existing; exit: end-to-end consumption in staging) → P3 scale-out (nightly precompute, L2/L3, spawn, kik at 6,040 stores — gated on kik's BQ env cutover).</p>
+<p><strong>Top risks + mitigations (one-liners):</strong> derived-data rot → owned ingestion + freshness sentinel + data-as-of quoted in every rec; metric gaming → hard gates before scoring, stability as pass/fail, full metric vector always shown; trust gap → evidence packs + churn-vs-current + P0 ships read-only value first; compute tail (463 s max) → async batches with streamed partials + nightly precompute for heavy hierarchies.</p>
+<h2 id="97-interview-qa-for-this-module">9.7 Interview Q&amp;A for this module</h2>
+<p><strong>Q: Why an agent at all — isn't this just AutoML for clustering?</strong>
+A: AutoML optimizes a loss; this optimizes a <em>decision</em> a human must own. The agent's job is search + evidence + explanation; the human's job is intent, business-knowledge injection (pins), and accountability (<code>is_final</code> is a human signature). The measured problem wasn't model quality — it was 1 config tried per plan, 8.5% avoidable failures, zero reproducibility. Those are workflow failures, so the fix is a workflow agent with hard governance, not a better optimizer.</p>
+<p><strong>Q: How do you stop the LLM from hallucinating a recommendation?</strong>
+A: It structurally can't — deterministic tools compute every number, the LLM only orchestrates and narrates, and every figure in an evidence pack traces to a tool call. Scope grounding is catalog search, season resolution is the fiscal calendar, and ranking is a versioned deterministic scorer: same inputs ⇒ identical order.</p>
+<p><strong>Q: Why ClickHouse here when the earlier audit said no?</strong>
+A: The audit's "no" was about the <em>legacy editable</em> workload (in-place OLTP mutations). This is the opposite shape: a <strong>read-only</strong> analytical plane for agent probes, insert-only ingestion from BigQuery, isolated from the product's write path. It's exactly the gated forward option my reconciled verdict defined — and the FRD non-goals pin it: no transactional data moves, BigQuery stays truth.</p>
+<p><strong>Q: What happens when the agent is wrong or the batch degrades?</strong>
+A: Defined outcomes everywhere (the terminal-states contract): &lt;3 viable candidates → partial results + failure taxonomy + one-tap retry; autopilot ambiguity → parked as a pending intent, never auto-resolved; capacity → queue with a position banner; rejection → back to comparison, reason captured as a learning event. Nothing accumulates silently; sessions expire at the tenant retention boundary.</p>
+<p><strong>Q: How does it learn without becoming non-deterministic?</strong>
+A: Three honest loops — deterministic memory (never re-recommend what this scope rejected, acknowledged in-session), human-approved calibration (aggregated deviations inform the next <em>versioned</em> weight set), and a labeled corpus for a future ranker shipped only as an explicit scorer-version release. No silent self-tuning, ever.</p>
+<p><strong>Q: Multi-tenancy?</strong>
+A: Per-tenant everything: ingestion lanes, quotas/concurrency budgets, k-ranges and algorithm allow-lists, metric weights (versioned, actually consumed — fixing a known ignored-weightage defect), default-hierarchy registries with draft vs standing-pre-approval governance, and ClickHouse placement per tenant (briscoes = AU, kik = EU) as a config decision, not a redesign. kik launch gates on its BigQuery environment cutover — its prod dataset is an empty shell today.</p>
+<p><strong>Q: What did you deliberately not build?</strong>
+A: Four explicit non-goals: no auto-finalize without human approval; no replacement of the existing wizard (parallel, untouched); no transactional/plan data on ClickHouse and no replacing BigQuery as truth; no attempt to make the ML itself faster (~9 s/config median is accepted physics — we parallelize and precompute around it).</p></main>
+</div>
+</body>
+</html>

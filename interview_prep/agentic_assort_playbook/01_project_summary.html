@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>01_project_summary — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← Hub</a><a href="../../CampaignPyGo.html">Campaign</a><a href="../../InterviewPrepV2.html">Prep v2</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">interview_prep/agentic_assort_playbook/01_project_summary.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#1-project-summary-paste-ready">1. Project summary (paste-ready)</a></nav>
+<main><hr>
+<h1 id="1-project-summary-paste-ready">1. Project summary (paste-ready)</h1>
+<p><strong>One-liner (résumé project header):</strong></p>
+<blockquote>
+<p><strong>Agentic Assort Planner</strong> — AI-assisted, multi-agent retail merchandise-planning platform (Impact Analytics). <em>Python (FastAPI, LangGraph, FastMCP) · Go (Gin) · Rust (Axum) · ClickHouse (insert-only versioned, end-to-end) · BigQuery · pgvector · GCP.</em> <em>(Stack per the July 2026 direction — see §10.)</em></p>
+</blockquote>
+<p><strong>2–3 line summary (top of the project block):</strong></p>
+<blockquote>
+<p>Designed and built the AI and data backbone of a next-generation assortment-planning product: a <strong>router→orchestrator→specialist multi-agent system</strong> that turns natural-language planning questions into a validated execution DAG, and a <strong>three-tier data architecture</strong> (BigQuery source-of-truth → Postgres editable system-of-record → ClickHouse/DuckDB OLAP serving) with a <strong>tenant-unified schema at the derived grain</strong>. Currently building its first shipping module — an <strong>agentic store-clustering copilot</strong> (deterministic tools on a dedicated ClickHouse read plane, LLM orchestration, three human confirm-gates) targeting &lt;1 h to a finalized plan (from days), ≥20 configurations explored (from 1) and &lt;2% run failures (from a measured 8.5%). Drove the ClickHouse decision via a runnable PoC and a cost/perf audit that cut recurring BigQuery scan cost by up to ~280×.</p>
+</blockquote>
+<p><strong>Current-work one-liner (for "what are you doing right now?"):</strong></p>
+<blockquote>
+<p>"I'm building the clustering module of the agentic planner — a copilot where the planner states <em>what to cluster and for when</em>, and a dedicated agent handles store scoping, attribute selection and batch exploration on a dedicated ClickHouse read plane, with evidence packs and three human approval gates; approved clusters write back into the existing product unchanged. We spec'd it against live-audit baselines — 8.5% run failures, zero reproducibility, one configuration tried per plan — and the targets are &lt;1 hour to a finalized plan, ≥20 configs explored, and p95 sub-500 ms agent data probes." <em>(Full depth: §9.)</em></p>
+</blockquote>
+<p><strong>How to describe the product in one breath (for interviews):</strong></p>
+<blockquote>
+<p>"It's the agentic rebuild of our assortment planner. A merchant works a plan through a staged pipeline — hindsight → strategy → clustering → line plan → buy plan — and a fleet of specialist AI agents runs alongside: surfacing issues as <em>Signals</em>, proposing scenarios, and acting autonomously overnight within approval thresholds. Under the hood it's a multi-agent orchestrator plus a three-tier data spine designed so a pivot-heavy, editable planning grid and scan-heavy hindsight analytics each run on the engine that's best at them."</p>
+</blockquote>
+<p><strong>Where to place it on the résumé:</strong> flagship project under Impact Analytics. Lead the project with 2 AI/agentic bullets and 2 data-architecture bullets (the most senior, best-evidenced work), then 1–2 cost/perf or leadership bullets depending on the JD (§7 has tailoring guidance).</p></main>
+</div>
+</body>
+</html>

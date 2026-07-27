@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>06_tech_deep_dives — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← Hub</a><a href="../CampaignPyGo.html">Campaign</a><a href="../InterviewPrepV2.html">Prep v2</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">interview_prep_java/06_tech_deep_dives.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#tech-deep-dives-java-spring-resume-track">Tech deep-dives — Java / Spring resume track</a>
+<a class="lvl2" href="#1-java-language-concurrency">1. Java (language + concurrency)</a>
+<a class="lvl2" href="#2-spring-boot-spring-mvc">2. Spring Boot + Spring MVC</a>
+<a class="lvl2" href="#3-hibernate-spring-data-jpa">3. Hibernate / Spring Data JPA</a>
+<a class="lvl2" href="#4-spring-security-jwt">4. Spring Security (JWT)</a>
+<a class="lvl2" href="#5-spring-batch-async-workers">5. Spring Batch + async workers</a>
+<a class="lvl2" href="#6-bean-validation-jackson">6. Bean Validation + Jackson</a>
+<a class="lvl2" href="#7-python-agent-tier-fastapi-langgraph-mcp">7. Python agent tier (FastAPI + LangGraph + MCP)</a>
+<a class="lvl2" href="#8-apache-kafka-java-client-spring-kafka">8. Apache Kafka (Java client / Spring Kafka)</a>
+<a class="lvl2" href="#9-flink-spark-pinot">9. Flink / Spark / Pinot</a>
+<a class="lvl2" href="#10-redis-mysql-postgresql-clickhouse">10. Redis / MySQL / PostgreSQL / ClickHouse</a>
+<a class="lvl2" href="#11-cloud-build-observability">11. Cloud, build, observability</a>
+<a class="lvl2" href="#12-one-line-why-for-the-rest">12. One-line "why" for the rest</a></nav>
+<main><h1 id="tech-deep-dives-java-spring-resume-track">Tech deep-dives — Java / Spring resume track</h1>
+<p>Every technology on <code>resume_java</code>. Fundamentals → internals → why we used it → interview gotchas. Streaming (Kafka/Flink/Spark/Pinot) and ClickHouse/cloud overlap with the main track — abbreviated here with Java integration notes.</p>
+<hr>
+<h2 id="1-java-language-concurrency">1. Java (language + concurrency)</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Statically typed, JVM bytecode, GC'd. Memory: heap + metaspace; escape analysis; generations (young/old) — know G1 vs ZGC at a high level for latency talk.</li>
+<li><strong>Concurrency.</strong> Threads → <code>ExecutorService</code> / <code>ThreadPoolExecutor</code> (core/max/queue/rejection). <code>CompletableFuture</code> for fan-out. <strong>Virtual threads (Java 21+)</strong> = cheap blocking concurrency without reactive complexity. <code>synchronized</code> / <code>ReentrantLock</code> / concurrent collections; happens-before via <code>volatile</code> / atomics.</li>
+<li><strong>Gotchas.</strong> Thread-pool leaks (unbounded queues); <code>HashMap</code> in concurrent use → <code>ConcurrentHashMap</code>; equals/hashCode contracts; checked exceptions at API boundaries; autoboxing + identity (<code>==</code> on Integer); string concat in hot loops → <code>StringBuilder</code>.</li>
+</ul>
+<h2 id="2-spring-boot-spring-mvc">2. Spring Boot + Spring MVC</h2>
+<ul>
+<li><strong>Boot.</strong> Auto-config + starters + embedded server + Actuator. Externalized config (<code>application.yml</code>, profiles, <code>@ConfigurationProperties</code>). Fat JAR deploy.</li>
+<li><strong>MVC.</strong> DispatcherServlet → HandlerMapping → Controller → View/HttpMessageConverter. <code>@RestController</code> + Jackson. Filter / <code>HandlerInterceptor</code> / <code>ControllerAdvice</code> chain.</li>
+<li><strong>Why.</strong> Fast production path for REST microservices; ecosystem for Security, Data, Batch, Kafka.</li>
+<li><strong>Gotchas.</strong> Component-scan boundaries; circular deps; <code>@Transactional</code> self-invocation (proxy); blocking calls on Tomcat threads under load (scale threads or go WebFlux/virtual threads).</li>
+</ul>
+<h2 id="3-hibernate-spring-data-jpa">3. Hibernate / Spring Data JPA</h2>
+<ul>
+<li><strong>JPA.</strong> ORM standard; Hibernate = implementation. Entity = persistent identity; <code>EntityManager</code> / persistence context; flush vs commit.</li>
+<li><strong>Spring Data.</strong> <code>JpaRepository</code>, derived queries, <code>@Query</code>, Specifications/Criteria for dynamic filters, <code>@EntityGraph</code>.</li>
+<li><strong>Gotchas.</strong> N+1 lazy loads; Open Session In View (often disable in APIs); dirty checking surprises; <code>@OneToMany</code> default fetch; equals/hashCode on entities (prefer business key or don't put entities in Sets across sessions); 2nd-level cache only with clear invalidation story.</li>
+<li><strong>Do not claim:</strong> Hibernate against ClickHouse — planning facts use the ClickHouse Java/JDBC client; JPA is for MySQL/Postgres OLTP metadata only.</li>
+</ul>
+<h2 id="4-spring-security-jwt">4. Spring Security (JWT)</h2>
+<ul>
+<li><strong>Resource server.</strong> Validate JWT signature/issuer; map claims → <code>Authentication</code>; method security (<code>@PreAuthorize</code>) for roles/tenants.</li>
+<li><strong>Filter chain.</strong> Stateless session; CORS; CSRF off for pure bearer APIs.</li>
+<li><strong>Gotchas.</strong> Wrong order of filters; mixing session + JWT; leaking stack traces; not validating <code>aud</code>/<code>iss</code>.</li>
+</ul>
+<h2 id="5-spring-batch-async-workers">5. Spring Batch + async workers</h2>
+<ul>
+<li><strong>Batch.</strong> Job → Step → chunk-oriented reader/processor/writer; JobRepository for restartability; skip/retry policies.</li>
+<li><strong>vs Celery (main track).</strong> Same product need (bulk imports, retries); Spring Batch = first-class job semantics on JVM.</li>
+<li><strong>Idempotency.</strong> Business keys in writers; restart from failed chunk without double side effects.</li>
+<li><strong>Gotchas.</strong> Wrong chunk size; stateful processors; not making readers restartable.</li>
+</ul>
+<h2 id="6-bean-validation-jackson">6. Bean Validation + Jackson</h2>
+<ul>
+<li>Boundary validation (<code>@NotNull</code>, custom constraints) on DTOs — never trust clients.</li>
+<li>Jackson: <code>ObjectMapper</code> config, <code>@JsonIgnore</code>, unknown properties policy; record/DTO preference over exposing entities.</li>
+</ul>
+<h2 id="7-python-agent-tier-fastapi-langgraph-mcp">7. Python agent tier (FastAPI + LangGraph + MCP)</h2>
+<ul>
+<li><strong>Role on this resume.</strong> All agentic / RAG / LLM orchestration stays Python — FastAPI service, LangGraph workflows, LangChain tools, MCP integrations. Spring Boot does not run the agents.</li>
+<li><strong>Why Python here.</strong> Mature agent graphs, tool-calling, RAG, and eval loops; pairs cleanly with a Java API tier over versioned HTTP contracts.</li>
+<li><strong>Gotchas.</strong> Prompt injection; schema validation of tool args; timeout/budget per turn; never let the model write raw SQL without a guarded text-to-SQL layer.</li>
+<li>Defenses for LangGraph/RAG/MCP: same depth as main <code>interview_prep/agentic_assort_playbook/05_tech_deep_dives.md</code>.</li>
+</ul>
+<h2 id="8-apache-kafka-java-client-spring-kafka">8. Apache Kafka (Java client / Spring Kafka)</h2>
+<ul>
+<li>Same fundamentals as main track (partitions, consumer groups, exactly-once story).</li>
+<li><strong>Java:</strong> <code>KafkaProducer</code>/<code>KafkaConsumer</code>; <code>spring-kafka</code> <code>@KafkaListener</code>; error handlers + DLT; idempotent producer config.</li>
+<li><strong>Gotchas.</strong> Listener concurrency vs partition count; blocking work in listeners; committing offsets too early.</li>
+</ul>
+<h2 id="9-flink-spark-pinot">9. Flink / Spark / Pinot</h2>
+<p>Same depth as main <code>interview_prep/06_tech_deep_dives.md</code> §§3–6 (now includes ESTIMATED rates). Flink/Spark jobs are often Java/Scala at Uber; this resume's Menu <strong>Tech Used</strong> line stays Python + streaming (matches live stack) — do not invent a Spring control-plane bullet you cannot defend.</p>
+<p><strong>Numbers to memorize (ESTIMATED):</strong> Kafka peak ~200–500 events/sec · Flink keeps pace · Spark backfills ~1–2M item rows · Pinot sub-second health queries · +95% ingest success (~60–65% → 95%+). Full derivation: <code>09_metrics_derivations.md</code>.</p>
+<h2 id="10-redis-mysql-postgresql-clickhouse">10. Redis / MySQL / PostgreSQL / ClickHouse</h2>
+<ul>
+<li><strong>Redis:</strong> cache, rate limits, Batch/broker adjacent state; eviction + stampede.</li>
+<li><strong>MySQL (FRM):</strong> normalized 8-table schema; ETL aggregation.</li>
+<li><strong>PostgreSQL:</strong> IA metadata ACID plane; Masters India primary store.</li>
+<li><strong>ClickHouse:</strong> insert-only / partition-swapped planning facts (agent <code>readonly=1</code>) — <strong>not</strong> via Hibernate.</li>
+</ul>
+<h2 id="11-cloud-build-observability">11. Cloud, build, observability</h2>
+<ul>
+<li><strong>GCP/AWS, Docker, K8s</strong> — same stories as main track.</li>
+<li><strong>Maven/Gradle</strong> — reproducible builds; dependency BOM (Spring Boot parent).</li>
+<li><strong>ELK / New Relic / Grafana / Sentry / Actuator</strong> — RED metrics, correlation IDs, alerts on user symptoms.</li>
+<li><strong>JUnit 5 / Mockito / Testcontainers</strong> — unit vs slice (<code>@WebMvcTest</code>, <code>@DataJpaTest</code>) vs full integration.</li>
+</ul>
+<h2 id="12-one-line-why-for-the-rest">12. One-line "why" for the rest</h2>
+<ul>
+<li><strong>WebSockets/SSE:</strong> agent progress streaming (Python agent tier / UI).</li>
+<li><strong>Bazel:</strong> Uber monorepo build — prefer this over inventing Maven on FRM.</li>
+<li><strong>Maven:</strong> fine for Spring Boot services outside Uber.</li>
+</ul></main>
+</div>
+</body>
+</html>

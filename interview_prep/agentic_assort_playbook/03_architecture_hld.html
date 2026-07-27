@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_architecture_hld — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← Hub</a><a href="../../CampaignPyGo.html">Campaign</a><a href="../../InterviewPrepV2.html">Prep v2</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">interview_prep/agentic_assort_playbook/03_architecture_hld.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#3-product-architecture-hld-how-the-agentic-planner-is-built">3. Product architecture (HLD) — how the agentic planner is built</a>
+<a class="lvl2" href="#31-the-planning-workspace-front-door">3.1 The planning workspace (front door)</a>
+<a class="lvl2" href="#32-cascade-aware-staged-planning">3.2 Cascade-aware staged planning</a>
+<a class="lvl2" href="#33-agent-orchestration-the-backend-shape">3.3 Agent orchestration (the backend shape)</a>
+<a class="lvl2" href="#34-the-pivot-planning-grid-edit-surface">3.4 The pivot planning grid (edit surface)</a>
+<a class="lvl2" href="#35-the-first-shipping-module-the-cluster-recommendation-copilot">3.5 The first shipping module — the Cluster Recommendation Copilot</a>
+<a class="lvl2" href="#36-the-wider-cortexeye-agentic-platform-context-you-can-speak-to">3.6 The wider CortexEye agentic platform (context you can speak to)</a></nav>
+<main><hr>
+<h1 id="3-product-architecture-hld-how-the-agentic-planner-is-built">3. Product architecture (HLD) — how the agentic planner is built</h1>
+<h2 id="31-the-planning-workspace-front-door">3.1 The planning workspace (front door)</h2>
+<p>Four surfaces sit over the staged pipeline:</p>
+<ul>
+<li><strong>Signals</strong> — the agent worklist: issues/opportunities/proposals, each Accept / Skip / Edit / Dismiss with a <strong>reason code</strong>.</li>
+<li><strong>Pipeline</strong> — the staged plan workflow with <strong>cascade warnings</strong> when an upstream edit invalidates downstream work.</li>
+<li><strong>Log</strong> — the immutable <strong>audit trail</strong> (who/what/when) for every agent action + human decision.</li>
+<li><strong>Ask</strong> — the natural-language assistant; the UX front door to the multi-agent decomposition backend.</li>
+</ul>
+<p>Plus a <strong>Today</strong> triage bucket (Attention / Resolved / Dismissed) and <strong>overnight</strong> autonomous-action summaries.</p>
+<h2 id="32-cascade-aware-staged-planning">3.2 Cascade-aware staged planning</h2>
+<pre><code>Hindsight ─▶ Strategy ─▶ Clustering ─▶ Line plan / Architecture ─▶ Buy plan ─▶ Review &amp; approve
+(last season)  (targets)   (store groups)   (option counts/depth)      (qty/receipts/flow)
+        │ editing an upstream stage raises a cascade warning: downstream stages recompute/invalidate
+</code></pre>
+<p>Each stage is agent-assisted; <code>getDownstreamStages()</code> + <code>showCascadeWarning()</code> enforce that changing, say, clustering flags that the buy plan must be recomputed.</p>
+<h2 id="33-agent-orchestration-the-backend-shape">3.3 Agent orchestration (the backend shape)</h2>
+<p>Concrete pattern: <strong>Router → Orchestrator (supervisor) → specialist agents</strong>, executing a <strong>planner-executor DAG</strong>. In the product this runs on <strong>LangGraph</strong> (Planner → Executor → Solver nodes) with a <strong>FastMCP (Model Context Protocol)</strong> tool layer so agents discover/execute tools safely; the offline <code>agentic_assort_multiagent</code> PoC re-implements the same shape deterministically for testability (see §8.1).</p>
+<pre><code>NL query
+  │
+  ▼
+[Semantic cache]──hit──▶ cached answer
+  │ miss
+  ▼
+ROUTER (LLM intent classify)  ── single ──▶ one specialist agent ─▶ answer
+  │ orchestrate
+  ▼
+DECOMPOSER ─▶ Plan{sub_queries[], path[][]}  ─▶  plan_schema.validate()
+  │                                                   │ invalid
+  │                                                   ▼
+  │                                          self-repair (re-prompt once)
+  ▼
+ORCHESTRATOR executes path stage-by-stage:
+   stage 0:  [agentA ‖ agentB]      ← parallel within a stage (ThreadPoolExecutor)
+   stage 1:  [agentC(&lt;A0&gt;)]         ← &lt;A_n&gt; placeholder rephrased with prior answers
+   ...
+  ▼
+_synthesize()  ─▶  final answer (+ status: ok | partial | rejected | generic)
+</code></pre>
+<p><strong>Specialist fleet (5 agents), each <code>validate→fetch→analyze→narrate</code>:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Store</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AssortmentData</td>
+<td>BigQuery <code>fact_sales</code></td>
+<td>KPI snapshots, top/bottom-N</td>
+</tr>
+<tr>
+<td>Clustering</td>
+<td>Postgres <code>store_cluster</code></td>
+<td>cluster membership / tier / profile</td>
+</tr>
+<tr>
+<td>Hindsight</td>
+<td>BigQuery <code>causal_drivers</code></td>
+<td>rank KPI drivers by contribution (causal DAG "why")</td>
+</tr>
+<tr>
+<td>LinePlan</td>
+<td>Postgres <code>line_plan</code></td>
+<td>option counts / depth / phasing, Δ vs LY</td>
+</tr>
+<tr>
+<td>Recommendation</td>
+<td>BigQuery <code>ros_recommendations</code></td>
+<td>ROS-based option-count uplift + gap flags</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Resilience:</strong> <code>BaseAgent.answer()</code> never raises → <code>AgentResult(status="error")</code> → orchestrator still synthesizes a <strong>partial</strong> answer; transient <code>fetch()</code> wrapped in exponential-backoff retries.</p>
+<h2 id="34-the-pivot-planning-grid-edit-surface">3.4 The pivot planning grid (edit surface)</h2>
+<p>A React grid (<code>planning-grid-3.jsx</code>) with: drag <strong>dimension tiles</strong> into Row/Column/Filter axes (<code>PivotPanel</code>/<code>AxisZone</code>/<code>DimTile</code>); <strong>Override / Variance / Diff</strong> cells (<code>OvCell</code>/<code>VarCell</code>/<code>DiffCell</code>); <strong>BulkEdit</strong> (apply %, set, spread); <strong>reason capture</strong>; <strong>downstream impact</strong> panel; <strong>version drawer</strong> (compare/restore); and a custom <strong><code>useUndoRedo</code></strong> history. This grid is <em>why</em> the persistence layer must support versions/variance/diff — which is exactly what the insert-only ClickHouse model (below) provides natively.</p>
+<h2 id="35-the-first-shipping-module-the-cluster-recommendation-copilot">3.5 The first shipping module — the Cluster Recommendation Copilot</h2>
+<p>The agentic pattern above is now being instantiated for real in the <strong>clustering module</strong> (FRD v1.8): one dedicated agent, two entry surfaces (manual wizard with inline recommendations + chat-native), <strong>deterministic tools on a dedicated ClickHouse read plane</strong> (p95 &lt;500 ms target vs 1–20 s on shared BigQuery slots), an LLM that orchestrates and explains but never computes, <strong>three confirm gates</strong>, and write-back into the existing product tables unchanged. Delegation ladder: <strong>L1 copilot → L2 autopilot-with-approval → L3 standing drift monitor</strong> — nothing auto-finalizes. Full what/why/how, measured baselines, targets, rollout phases and module-specific Q&amp;A: <strong>§9</strong>.</p>
+<h2 id="36-the-wider-cortexeye-agentic-platform-context-you-can-speak-to">3.6 The wider CortexEye agentic platform (context you can speak to)</h2>
+<p>The agentic backend descends from CortexEye — a <strong>4-service</strong> system:
+- <strong>Frontend</strong> — React + Redux, <strong>Socket.IO</strong> streaming, AG Grid, Highcharts.
+- <strong>Data API</strong> — <strong>Rust (Axum / Tokio / SQLx)</strong>, <code>gcp-bigquery-client</code> — the deterministic data layer (no LLM).
+- <strong><code>genai</code></strong> — Python + <strong>LangGraph</strong> + FastAPI: intent classification (<code>causal &gt; data &gt; insights</code>), entity extraction (parallel via <code>asyncio.gather</code>), <strong>text-to-SQL</strong> (LlamaIndex RAG + GPT-4o) on BigQuery, <strong>confidence scoring</strong> (rules + LLM logprobs).
+- <strong><code>cortexeye-ai</code></strong> (Deep Research) — Python + LangGraph: the strong <strong>sub-query decomposer</strong> (<code>{question[], path[][]}</code> + <code>&lt;A_n&gt;</code> dependency rephrasing + reflection loop), hybrid <strong>BM25 + dense (pgvector) retrieval + Cohere rerank</strong>, semantic cache.
+Cross-cutting: <strong>Redis</strong> (chat history, semantic cache, abort flags across Cloud Run replicas), <strong>Postgres via PgBouncer</strong> (<code>aiopg</code>), <strong>GCS</strong> (audio/images), progress streamed over <strong>WSS</strong>.</p></main>
+</div>
+</body>
+</html>

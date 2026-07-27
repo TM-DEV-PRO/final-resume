@@ -57,6 +57,7 @@ def build(order, out_name, title, brand):
         raw = raw.replace(d, d[:-1] + ' markdown="1">')
     md = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "fenced_code"], output_format="html5")
     html = md.convert(raw)
+    html = rewrite_md_hrefs_text(html)
     nav = "\n".join(
         f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
         for m in re.finditer(r'<h([12]) id="([^"]+)">(.*?)</h\1>', html, flags=re.DOTALL)
@@ -69,6 +70,34 @@ def build(order, out_name, title, brand):
     out = os.path.join(BASE, out_name)
     open(out, "w", encoding="utf-8").write(page)
     print("wrote", out, "| nav entries:", nav.count("lvl"), "| bytes:", len(page))
+
+
+def rewrite_md_hrefs_text(text):
+    """Point links at HTML mirrors (Pages serves .md as raw text)."""
+    text = re.sub(
+        r'(href=["\'])([^"\']+?)\.md(#[^"\']*)?(["\'])',
+        lambda m: f"{m.group(1)}{m.group(2)}.html{m.group(3) or ''}{m.group(4)}",
+        text,
+    )
+    text = re.sub(
+        r"(\[[^\]]*\]\()([^)\s]+?)\.md(#[^)]*)?(\))",
+        lambda m: f"{m.group(1)}{m.group(2)}.html{m.group(3) or ''}{m.group(4)}",
+        text,
+    )
+    return text
+
+
+def rewrite_md_hrefs(path):
+    if not os.path.isfile(path):
+        return
+    text = open(path, encoding="utf-8").read()
+    new = rewrite_md_hrefs_text(text)
+    if new != text:
+        open(path, "w", encoding="utf-8").write(new)
+        print("rewrote links:", os.path.relpath(path, BASE))
+
+
+# Run after all hubs are written (see bottom).
 
 
 IP = os.path.join(BASE, "interview_prep")
@@ -157,3 +186,18 @@ build(
     "Tarun Mittal — Python/Go v2 · Interview Prep",
     "Python/Go v2 · Interview Prep",
 )
+
+for hub in (
+    "CampaignPyGo.html",
+    "ApplicationKit.html",
+    "InterviewPrep.html",
+    "InterviewPrepV2.html",
+    "InterviewPrepJava.html",
+    "index.html",
+):
+    rewrite_md_hrefs(os.path.join(BASE, hub))
+
+# Also mirror every prep/campaign .md → .html for GitHub Pages.
+import build_pages_html  # noqa: E402
+
+build_pages_html.main()

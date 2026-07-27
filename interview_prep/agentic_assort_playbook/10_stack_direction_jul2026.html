@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>10_stack_direction_jul2026 — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← Hub</a><a href="../../CampaignPyGo.html">Campaign</a><a href="../../InterviewPrepV2.html">Prep v2</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">interview_prep/agentic_assort_playbook/10_stack_direction_jul2026.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#10-engineering-stack-direction-july-2026-authoritative">10. Engineering stack direction — July 2026 (authoritative)</a>
+<a class="lvl2" href="#101-the-directive-verbatim-intent">10.1 The directive (verbatim intent)</a>
+<a class="lvl2" href="#102-why-each-choice-holds-up-interview-defense">10.2 Why each choice holds up (interview defense)</a>
+<a class="lvl2" href="#103-resume-phrasing-paste-ready">10.3 Résumé phrasing (paste-ready)</a>
+<a class="lvl2" href="#104-qa-for-this-directive">10.4 Q&amp;A for this directive</a></nav>
+<main><hr>
+<h1 id="10-engineering-stack-direction-july-2026-authoritative">10. Engineering stack direction — July 2026 (authoritative)</h1>
+<div class="stage-badge stage-obs">Manager directive, agentic-assort · July 2026 · supersedes earlier "Postgres-SoR + gated ClickHouse" framing in §4/§5 where they conflict</div>
+
+<p>This is the <strong>current, committed technology direction</strong> for the agentic-assort build. Use this when describing the stack on the résumé and in interviews. Earlier chapters (§2 D1–D2, §4, §5) remain correct as the <strong>decision history</strong> that led here — and that history is exactly what makes this defensible.</p>
+<h2 id="101-the-directive-verbatim-intent">10.1 The directive (verbatim intent)</h2>
+<ol>
+<li><strong>All non-agentic flows → GoLang.</strong> Traditional backend services (plan lifecycle CRUD, reference-data reads, scoping/write-back APIs, tenant config) are built in <strong>Go</strong>, using <strong>Gin</strong> as the HTTP framework.</li>
+<li><strong>Agentic workflows → unchanged.</strong> Python 3.11+ · FastAPI · <strong>LangGraph</strong> (Planner→Executor→Solver) · <strong>FastMCP</strong> tool discovery · multi-provider LLMs (OpenAI/Gemini/Claude). Nothing about the agent brain moves.</li>
+<li><strong>Performance-critical APIs that Go cannot satisfy → Rust.</strong> Where a specific endpoint needs performance Go can't reach (allocation-heavy hot loops, large columnar result shaping, very high fan-out concurrency), that endpoint is built in <strong>Rust</strong> (Axum on Tokio). Precedent exists in-house: the CortexEye backend is already Rust/Axum.</li>
+<li><strong>ClickHouse end-to-end — both transactional and analytical.</strong> ClickHouse is the platform's operational <strong>and</strong> analytical engine for planning data: the OLAP pivot/hindsight serving layer <strong>and</strong> the transactional-style planning store, made safe by the <strong>insert-only / versioned write model</strong> (§2 D2): every edit is an INSERT with <code>version = epoch-ms</code>, reads take <code>argMax(value, version)</code>, deletes are tombstones, bulk re-seeds are atomic <code>REPLACE PARTITION</code> — the async-mutation queue stays at <strong>zero</strong>.</li>
+</ol>
+<h2 id="102-why-each-choice-holds-up-interview-defense">10.2 Why each choice holds up (interview defense)</h2>
+<h3 id="go-gin-for-non-agentic-flows">Go + Gin for non-agentic flows</h3>
+<ul>
+<li><strong>Why Go:</strong> the non-agentic surface is high-QPS, low-logic I/O plumbing — auth, validation, fan-out reads, write-back orchestration. Go gives a small static binary, fast cold start, goroutine-per-request concurrency without an async framework, and a single obvious way to do things — right for a service tier many engineers touch.</li>
+<li><strong>Why Gin specifically:</strong> the most battle-tested Go HTTP framework (radix-tree router, middleware chain, <code>c.ShouldBindJSON</code> validation); boring in the good way. Alternatives considered: <strong>chi</strong> (closer to stdlib, but less batteries), <strong>Echo</strong> (comparable; Gin chosen for team familiarity + ecosystem), <strong>fiber</strong> (fasthttp-based — non-standard <code>net/http</code> semantics, rejected).</li>
+<li><strong>Supporting kit:</strong> <code>clickhouse-go</code> v2 (native protocol, columnar blocks) for ClickHouse; <code>pgx</code> where Postgres metadata remains; <code>sqlc</code> for typed queries; OpenTelemetry middleware; golangci-lint.</li>
+<li><strong>The tradeoff to admit:</strong> Python had all the team's data tooling; Go splits the codebase into two languages. Accepted because the agentic and non-agentic tiers were already separate deployables with an API contract between them — the language boundary lands on an existing service boundary.</li>
+</ul>
+<h3 id="rust-for-the-hot-paths-exception-not-default">Rust for the hot paths (exception, not default)</h3>
+<ul>
+<li><strong>Scope discipline:</strong> Rust is <em>not</em> the default backend language — it's the escape hatch for endpoints where profiling shows Go's GC/allocation profile or FFI overhead is the bottleneck (e.g. wide pivot-grid assembly over millions of versioned cells, evidence-pack aggregation under fan-out).</li>
+<li><strong>Why Rust when needed:</strong> no GC pauses, zero-cost abstractions, fearless concurrency (Tokio), <code>Arrow</code>/<code>polars</code> ecosystem for columnar shaping; Axum shares the tower middleware ecosystem.</li>
+<li><strong>The one-liner:</strong> "Go by default, Rust by measurement — an endpoint earns Rust with a profile, not a preference."</li>
+</ul>
+<h3 id="clickhouse-end-to-end-the-big-one">ClickHouse end-to-end (the big one)</h3>
+<ul>
+<li><strong>The evolution story (tell it in this order):</strong>
+  1. Live audit of the legacy backend said <strong>"no ClickHouse"</strong> — correct, because the legacy planner does in-place OLTP mutations (keyed UPDATE, jsonb-merge, delete+reinsert), which ClickHouse mutations are genuinely bad at (async, degrade &gt;500 queued, stall &gt;1,000).
+  2. My reconciled verdict (§2 L1): that objection is a property of the <em>legacy write model</em>, not of planning — so ClickHouse stayed a <strong>gated option</strong> behind a versioned-write PoC.
+  3. The PoC proved the gate: <strong>insert-only/versioned</strong> semantics (<code>ReplacingMergeTree(version)</code>, <code>argMax</code> reads, tombstones, <code>REPLACE PARTITION</code>) hold <code>mutations_used = 0</code> at 1× and 10× scale with correct read-after-write.
+  4. <strong>July 2026: the org committed</strong> — ClickHouse end-to-end for both transactional and analytical planning workloads. The versioned model is no longer a proposal; it's the adopted write contract, and it natively powers overrides, version-diff and undo/redo that the product grid needs anyway.</li>
+<li><strong>What "transactional" means here (be precise):</strong> not bank-ledger OLTP — it's <strong>planning-grid transactionality</strong>: atomic multi-row saves (batch INSERT of one version), read-after-write within a session (client-side <code>version</code> watermark + <code>argMax</code>), idempotent replays (deterministic version keys), and audit-grade history for free. Cross-entity invariants that truly need ACID multi-statement transactions (auth, tenant config, workflow state) stay on a thin Postgres metadata plane — say this unprompted; it shows judgment.</li>
+<li><strong>What we gave up:</strong> engine-enforced constraints/FKs (moved to service-layer validation in Go), instant hard deletes (tombstones + TTL merges instead), and storage amplification until background merges collapse versions. All accepted consciously.</li>
+<li><strong>BigQuery stays upstream</strong> as the historical source of truth feeding ClickHouse through the proven BQ→CH ingestion lane (§2 C2); the read plane and the planning store are now the same engine, which kills a whole class of cross-engine reconciliation.</li>
+</ul>
+<h2 id="103-resume-phrasing-paste-ready">10.3 Résumé phrasing (paste-ready)</h2>
+<ul>
+<li><em>Stack line for the IA project header:</em> *<em>Python (FastAPI, LangGraph, FastMCP) · Go (Gin) · Rust (Axum) · ClickHouse (insert-only versioned) · BigQuery · pgvector · GCP.</em></li>
+<li><em>Bullet (stack architecture):</em> "Defined the platform's polyglot service architecture — Go/Gin for all non-agentic backend flows, Rust for profile-proven hot-path APIs, Python/LangGraph unchanged for agent orchestration — and led the adoption of ClickHouse as the end-to-end transactional + analytical planning store by designing an insert-only/versioned write model (<code>ReplacingMergeTree</code> + <code>argMax</code> reads + <code>REPLACE PARTITION</code>) that keeps the async-mutation queue at zero while natively powering overrides, version-diff and undo/redo."</li>
+</ul>
+<h2 id="104-qa-for-this-directive">10.4 Q&amp;A for this directive</h2>
+<ul>
+<li><strong>"Why not keep everything Python?"</strong> The agent tier stays Python — that's where the ecosystem lives. The non-agentic tier is throughput-shaped, not ML-shaped; Go halves its infra footprint and removes the async-framework tax.</li>
+<li><strong>"Why not everything Rust?"</strong> Team throughput. Rust's compile-time rigor pays on hot paths; on CRUD it just slows delivery. Hence "Rust by measurement."</li>
+<li><strong>"Isn't ClickHouse for analytics only?"</strong> Classically yes — and I authored the audit position saying exactly that for the legacy mutation-heavy code. The unlock is changing the write model, not the engine: insert-only versions turn edits into what ClickHouse is best at (appends + background merges). We proved the mutation queue stays at zero before committing.</li>
+<li><strong>"Where's Postgres now?"</strong> A thin metadata/auth/config plane and pgvector for the semantic cache. Planning data — writes and reads — is ClickHouse.</li>
+</ul></main>
+</div>
+</body>
+</html>

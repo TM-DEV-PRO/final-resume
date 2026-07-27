@@ -37,7 +37,9 @@ interview_prep/
   07_behavioral_star_stories.md  10 STAR stories (Amazon LPs × Googliness) + rapid-fire answers
   agentic_assort_playbook/   the full Impact Analytics playbook (§0–§10), incl. the
                              July 2026 stack direction (Go + Rust + ClickHouse end-to-end)
-build_interview_prep.py      regenerates InterviewPrep.html from the markdown
+build_interview_prep.py      regenerates InterviewPrep*.html from the markdown
+build_pages_html.py          mirrors every prep/campaign .md → structured .html for GitHub Pages
+                             (run via build_interview_prep.py; keep .md as source of truth)
 ```
 
 ## Rebuild
