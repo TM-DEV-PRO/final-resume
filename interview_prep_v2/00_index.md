@@ -14,7 +14,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 5. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
 6. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
 7. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
-8. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html`
+8. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html` + **[`32_common_interview_qa.md`](32_common_interview_qa.md)** (21 classic Q&As, filled)
 9. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · [`24_job_listings_5x_ats_scorecard.md`](24_job_listings_5x_ats_scorecard.md) · [`25_panel_ats_rescore_post_flink.md`](25_panel_ats_rescore_post_flink.md) · [`26_python_job_listings_ats.md`](26_python_job_listings_ats.md) · [`27_epam_scope_validation.md`](27_epam_scope_validation.md) · **[`28_fresh_smts_genai_python_go_scorecard.md`](28_fresh_smts_genai_python_go_scorecard.md)** · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
 10. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — STUDY ONLY (multi-region, K8s ops, Spark, Flink, Terraform)
 
