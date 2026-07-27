@@ -11,7 +11,7 @@ Canonical facts for the Python/Go XYZ MNC campaign resume. Mirrors `interview_pr
 | Owned Uber FRM recon v1 Sheets to MySQL v2 (18 files, +1,268 LOC) | 95% MEASURED | Resume experience | `RECON_API_MIGRATION.md`, FRM code |
 | Designed layered handler / service / repository / ORM architecture (11 models, 30+ APIs) | 95% MEASURED | Resume experience | `frm_scoping_service/` |
 | Led 3 engineers (EPAM pod) via design reviews, API contracts, CI gates | 90% user-confirmed | Resume experience | User confirm + code conventions |
-| Led Masters PHP monolith to microservices (strangler), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
+| Led Masters PHP monolith to microservices step by step (strangler verbally), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
 | Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS) | 85% HISTORICAL / ESTIMATED peaks | Resume experience | Past resumes + metrics derivations |
 | Fault tolerance: idempotency keys, retries, DLQ replay on bulk IRP path | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
 | On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
@@ -23,7 +23,7 @@ Canonical facts for the Python/Go XYZ MNC campaign resume. Mirrors `interview_pr
 | Spark production ownership on Uber Menu | <50% verbal/study | **OMIT resume** | Not on PDF |
 | Terraform / IaC production ownership | <5% | **OMIT resume**; STUDY ONLY prep | Keyword blob only on old PDF |
 | CGPA 7.7/10 | MEASURED | **Removed from resume PDFs** (kept here for reference) | Education record |
-| Go (Gin) write/doing path at IA; quarter-sharded PostgreSQL + idempotent sinks at Masters | MEASURED design / HISTORICAL | Resume experience | Packaging lift Jul 2026 |
+| Go (Gin) write APIs at IA; PostgreSQL by tax quarter + idempotency/retries/DLQ at Masters | MEASURED design / HISTORICAL | Resume experience | Simple-language PDF pass Jul 2026 |
 
 ## Career timeline (canonical)
 

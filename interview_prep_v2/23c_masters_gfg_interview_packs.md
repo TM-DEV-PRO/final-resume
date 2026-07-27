@@ -11,14 +11,14 @@
 ## 1. 30s / 2min explain
 
 **30 seconds**  
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We strangled a PHP Laravel monolith into FastAPI microservices and built an event-driven bulk IRP pipeline on Kafka and PostgreSQL quarter sharding. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency, retries, and DLQ so we never double-register with the government.
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices step by step and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.
 
 **2 minutes**  
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.
 
-The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. I led a strangler: FastAPI services cut over behind the gateway endpoint-by-endpoint with canaries, shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.
+The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. We cut over FastAPI services behind the gateway endpoint-by-endpoint with canaries (interviewers may call this a strangler migration), shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.
 
-The bulk path is where Kafka earns its keep. Import file → object storage → chunk validate → Kafka topics for IRP submit / signed-response persistence / webhook fan-out → PostgreSQL quarter shards for hot-quarter writes. Partition key by client GSTIN for per-taxpayer ordering. Idempotency keys (`client + fileHash + batchIndex`), exponential backoff, and DLQ replay for poison batches. Redis cache-aside cut redundant DB reads ~30%. Ops: ELK + New Relic request-ID correlation cut triage ~70%; pytest coverage 35% → 82%; 98% deployment success.
+The bulk path is where Kafka earns its keep. Import file → object storage → chunk validate → Kafka topics for IRP submit / signed-response persistence / webhook fan-out → PostgreSQL quarter tables for hot-quarter writes. Partition key by client GSTIN for per-taxpayer ordering. Idempotency keys (`client + fileHash + batchIndex`), exponential backoff, and DLQ replay for poison batches. Redis caching cut redundant DB reads ~30%. Ops: ELK + New Relic request-ID correlation cut triage ~70%; pytest coverage 35% → 82%; 98% deployment success.
 
 If they ask “why Kafka?” — ordering, durable replay for GST disputes, and independent consumer groups on the same log. Admit RabbitMQ could dispatch work at our scale; replay and multi-consumer audit won.
 
@@ -56,7 +56,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 
 | Decision | Chose | Rejected | Why |
 |---|---|---|---|
-| Migration shape | Strangler + gateway canaries | Big-bang rewrite | Filing-day zero-tolerance; rollback = config flip |
+| Migration shape | Step-by-step cutover + gateway canaries (strangler) | Big-bang rewrite | Filing-day zero-tolerance; rollback = config flip |
 | Async runtime | FastAPI + workers | Django sync / keep PHP | IRP fan-out must not pin workers |
 | Event bus | Kafka | SQS / RabbitMQ alone | Per-GSTIN ordering, durable replay, multi consumer groups |
 | Partition key | Client GSTIN (± doc type) | Random / invoice id | Per-taxpayer order for submit → callback → webhook |
@@ -69,16 +69,17 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 
 ## 4. Bullet-by-bullet defense
 
-### Bullet 1 — PHP → FastAPI strangler · 1,500+ clients · p95 1.2s → 300ms · mentored 2
+### Bullet 1 — PHP → FastAPI step-by-step · 1,500+ clients · p95 1.2s → 300ms · mentored 2
 
 | Probe | Defense |
 |---|---|
 | What did you own? | Design + cutover playbook + conventions; two juniors extracted services under review |
 | Why not rewrite? | Compliance; per-endpoint canary with instant rollback |
+| “Strangler”? | Same idea as PDF “step by step” — endpoint canaries behind gateway |
 | Latency sources? | Async IRP (no blocked PHP-FPM), pooling, composite indexes `(client_id, invoice_date)`, N+1 kill; Redis moved p50, async/query fixes moved p95 |
 | Client count? | **1,500+** always — never 2,500+ |
 | Mentoring day-to-day? | Router/service/repository + Pydantic + idempotency helpers; paired first canary |
-| Resume XYZ | Cut p95 **1.2s→300ms** for **1,500+** by Laravel→FastAPI strangler + mentoring **2** |
+| Resume XYZ | Cut p95 **1.2s→300ms** for **1,500+** by Laravel→FastAPI step-by-step + mentoring **2** |
 
 ### Bullet 2 — Kafka + PG quarter sharding · 1M+/day · 100K+/import · 700 → 4,000 req/min
 
@@ -89,7 +90,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 | TPS/RPS on PDF? | **Do not put on resume.** Verbal only if asked: ~12 TPS avg from 1M/86400; 4,000/min ≈ 67 RPS |
 | Quarter sharding? | Hot writes in current quarter; archive cold quarters; app routes by invoice date |
 | 100K import? | Chunk validate → bounded IRP concurrency → progress stream |
-| Resume XYZ | Lifted **700→4,000 req/min** and **1M+/day** by Kafka + quarter-sharded PostgreSQL |
+| Resume XYZ | Lifted **700→4,000 req/min** and **1M+/day** by Kafka + PostgreSQL split by tax quarter |
 
 ### Bullet 3 — Idempotency, retries, DLQ · Redis −30%
 
@@ -100,7 +101,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 | 30% reads? | Same config/GSTIN hit on every row of a 100K import — cache removes fan-out |
 | Stampede? | TTL jitter + SETNX singleflight |
 | Circuit breaker? | Verbal prep only — not a resume metric |
-| Resume XYZ | Cut redundant reads **30%** and made IRP replay safe via idempotent sinks + Redis |
+| Resume XYZ | Cut repeat DB reads **30%** and made IRP retries safe via idempotency keys, retries, DLQ + Redis |
 
 ### Bullet 4 — ELK + New Relic · triage −70% · support tickets −35% · coverage 35→82 · 98% deploy
 

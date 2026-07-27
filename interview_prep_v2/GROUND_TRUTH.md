@@ -9,9 +9,9 @@ Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA 
 | Owned Uber FRM recon v1 Sheets to MySQL v2 (18 files, +1,268 LOC) | 95% MEASURED | Resume experience | `RECON_API_MIGRATION.md`, FRM code |
 | Designed layered handler / service / repository / ORM architecture (11 models, 30+ APIs) | 95% MEASURED | Resume experience | `frm_scoping_service/` |
 | Led 3 engineers (EPAM pod) via design reviews, API contracts, CI gates | 90% user-confirmed | Resume experience | User confirm + code conventions |
-| Led Masters PHP monolith to microservices (strangler), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
+| Led Masters PHP monolith to microservices step by step (strangler verbally), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
 | Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS) | 85% HISTORICAL / ESTIMATED peaks | Resume experience | Past resumes + metrics derivations |
-| Fault tolerance: idempotency keys, retries, DLQ replay on bulk IRP path | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
+| Fault tolerance: idempotency keys, retries, DLQ on bulk IRP path (PDF: plain English, not “idempotent sinks”) | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
 | On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
 | Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | Skills | FRM code + Masters migration |
 | Fault Tolerance / High Availability / Operational Excellence / On-call skill keywords | n/a | **OMIT from Skills** (Jul 2026) — keep only as Masters **experience** (idempotency/DLQ + ELK alerting) | User skills trim; Core uses Multithreading + Concurrency instead |
@@ -21,7 +21,7 @@ Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA 
 | Spark production ownership on Uber Menu | <50% verbal/study | **OMIT resume**; STUDY ONLY / interview depth | Not on PDF |
 | Terraform / IaC production ownership | <5% | **OMIT resume**; STUDY ONLY prep | Keyword blob only on old PDF |
 | CGPA 7.7/10 | MEASURED | **Removed from resume PDFs** (kept here for reference) | Education record |
-| Go (Gin) write/doing path at IA; quarter-sharded PostgreSQL + idempotent sinks at Masters | MEASURED design / HISTORICAL | Resume experience | Packaging lift Jul 2026 (summary unchanged) |
+| Go (Gin) write APIs at IA; PostgreSQL by tax quarter + idempotency/retries/DLQ at Masters | MEASURED design / HISTORICAL | Resume experience | Simple-language PDF pass Jul 2026 |
 
 ## Career timeline (canonical)
 
@@ -46,12 +46,12 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | Failures **8.5%** = **37/437** (kik); **>80%** input-boundary | MEASURED | Copilot FRD §1 |
 | Failures toward **under 2%**; reproducibility **0→100%** | TARGET | Copilot FRD §0 / §6 |
 | **14** audited read-only tools; **3** human confirm gates; agent never writes SQL | DESIGN | Overview + Copilot FRD |
-| Per-tenant **ClickHouse**: **63 tables / 8 layers** (incl. 7 stage twins), insert-only / partition-swapped; agent **`readonly=1`**; service roles **INSERT-only** | MEASURED design | Confluence DDL Phase-1 v1.5 (`29_ia_ch_ddl_phase1_source.md`) |
+| Per-tenant **ClickHouse**: **63 tables / 8 layers** (incl. 7 stage twins), insert-only / refresh by swapping partitions (PDF wording); agent **`readonly=1`**; service roles **INSERT-only** | MEASURED design | Confluence DDL Phase-1 v1.5 (`29_ia_ch_ddl_phase1_source.md`) |
 | **5** dictionaries · **19** argMax views · **4/3/2** roles/profiles/quotas · **58** ops mapped; syntax PASS on CH **25.12** | MEASURED design | same |
 | Overview inventory “**60** tables” vs DDL “**63**” — default **63**; do **not** recite **624 columns** (not on Phase-1 page) | Honesty | same |
 | External review **PASS**; **zero runtime evidence** on this schema — load test at bring-up; say **building**, not shipped | MEASURED design status | Overview + DDL Phase-1 |
 | HLD stack: FastAPI + **LangGraph/MCP**; Go doing layer; CH + GCS; LangSmith/Datadog/PostHog | DESIGN + confirmed | `final_agenticassort.png` |
-| **ONE resume CH bullet:** insert-only / partition-swapped store + **250M** pivot **189.4s → 12.3s** (~**15.5×**) | MEASURED design + MEASURED POC | DDL Phase-1 + `pivot-poc/results/MASTER_RESULTS.md` |
+| **ONE resume CH bullet:** insert-only + swap partitions + **250M** pivot **189.4s → 12.3s** (~**15.5×**) | MEASURED design + MEASURED POC | DDL Phase-1 + `pivot-poc/results/MASTER_RESULTS.md` |
 | Line-plan: projected **~12B** → **~25M** aggregate; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured) | PROJECTED 12B / MEASURED ops | `LinePlanning-Benchmark.docx` |
 | HLR scenario cap **3–5** | DESIGN | `PRD'S/…HLR_v1.1.docx` |
 | Agent probes: BQ **1–20s+** → CH **p95 <500ms** | MEASURED / TARGET | Copilot FRD |

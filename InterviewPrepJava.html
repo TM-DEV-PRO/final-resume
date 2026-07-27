@@ -249,10 +249,11 @@ strong{color:#fff}
 <h2 id="study-order">Study order</h2>
 <ol>
 <li><a href="GROUND_TRUTH.md"><code>GROUND_TRUTH.md</code></a> then <a href="../interview_prep_v2/GROUND_TRUTH.md"><code>../interview_prep_v2/GROUND_TRUTH.md</code></a></li>
+<li><strong><a href="../interview_prep_v2/31_resume_deep_explain_map.md"><code>../interview_prep_v2/31_resume_deep_explain_map.md</code></a></strong> — every PDF tech / flow / number</li>
 <li><strong><a href="../interview_prep_v2/23_project_interview_packs.md"><code>../interview_prep_v2/23_project_interview_packs.md</code></a></strong> — all project interviewer packs (map Spring verbally)</li>
 <li><a href="../interview_prep_v2/10_impact_analytics_deep_dive.md"><code>../interview_prep_v2/10_impact_analytics_deep_dive.md</code></a></li>
 <li><a href="../interview_prep_v2/11_uber_frm_deep_dive.md"><code>../interview_prep_v2/11_uber_frm_deep_dive.md</code></a> — map FastAPI layers to Spring controller / service / repository</li>
-<li><a href="../interview_prep_v2/14_uber_menu_deep_dive.md"><code>../interview_prep_v2/14_uber_menu_deep_dive.md</code></a> — no Spring claim; PDF has no Kafka/Flink/Spark</li>
+<li><a href="../interview_prep_v2/14_uber_menu_deep_dive.md"><code>../interview_prep_v2/14_uber_menu_deep_dive.md</code></a> — no Spring claim; Menu stays Python</li>
 <li><a href="../interview_prep_v2/12_masters_gfg_deep_dive.md"><code>../interview_prep_v2/12_masters_gfg_deep_dive.md</code></a> — Celery → Spring Batch</li>
 <li><a href="../interview_prep_v2/13_behavioral_why_switch.md"><code>../interview_prep_v2/13_behavioral_why_switch.md</code></a> · <a href="07_behavioral_star_stories.md"><code>07_behavioral_star_stories.md</code></a></li>
 <li><a href="../interview_prep_v2/22_application_questions.md"><code>../interview_prep_v2/22_application_questions.md</code></a></li>
@@ -307,7 +308,7 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>Impact Analytics</td>
-<td>Product-first AssortSmart; Spring doing layer; ONE CH bullet; see <code>23a</code> pack</td>
+<td>Product-first AssortSmart; Spring write APIs; ONE CH bullet; see <code>23a</code> + <code>31</code></td>
 </tr>
 <tr>
 <td>Uber FRM</td>
@@ -315,7 +316,11 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>Uber Menu</td>
-<td>Python Selenium + RAG/Gemini + ANZ (no streaming on PDF); see <code>23b</code></td>
+<td>Python Selenium→Kafka→Flink + RAG/Gemini/Milvus + ANZ Mobility; see <code>23b</code></td>
+</tr>
+<tr>
+<td>Masters India</td>
+<td>Step-by-step Laravel→Spring Boot; Kafka + PG by tax quarter; see <code>23c</code></td>
 </tr>
 <tr>
 <td>Masters India</td>
@@ -3498,7 +3503,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 <tr>
 <td>Masters India GST</td>
 <td><a href="23c_masters_gfg_interview_packs.md"><code>23c_masters_gfg_interview_packs.md</code></a> § Masters</td>
-<td>Strangler · Kafka event platform · idempotency/DLQ · tickets −35%</td>
+<td>Step-by-step monolith→services · Kafka bulk IRP · idempotency/DLQ · tickets −35%</td>
 </tr>
 <tr>
 <td>GeeksforGeeks</td>
@@ -3508,7 +3513,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 </tbody>
 </table>
 <p>Each pack includes: <strong>30s / 2min explain · architecture · design decisions · bullet-by-bullet defense · mock Q&amp;A · Do NOT say</strong>.</p>
-<p><strong>Study order:</strong> <code>GROUND_TRUTH.md</code> → pack for the role you're interviewing on → older deep dive (<code>10</code>/<code>11</code>/<code>12</code>/<code>14</code>) for extra depth → STAR stories.</p>
+<p><strong>Study order:</strong> <code>GROUND_TRUTH.md</code> → <a href="31_resume_deep_explain_map.md"><code>31_resume_deep_explain_map.md</code></a> → pack for the role → deep dive (<code>10</code>/<code>11</code>/<code>12</code>/<code>14</code>) → STAR stories.</p>
 <p><strong>Java track:</strong> Same packs. Swap FastAPI→Spring Boot / SQLAlchemy→JPA / Django→Spring / Celery→Spring Batch verbally. Menu + LangGraph + ClickHouse stay Python.</p>
 <hr>
 <blockquote>
@@ -4188,11 +4193,11 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 <hr>
 <h2 id="1-30s-2min-explain_2">1. 30s / 2min explain</h2>
 <p><strong>30 seconds</strong><br>
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We strangled a PHP Laravel monolith into FastAPI microservices and built an event-driven bulk IRP pipeline on Kafka and PostgreSQL quarter sharding. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency, retries, and DLQ so we never double-register with the government.</p>
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices step by step and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.</p>
 <p><strong>2 minutes</strong><br>
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.</p>
-<p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. I led a strangler: FastAPI services cut over behind the gateway endpoint-by-endpoint with canaries, shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
-<p>The bulk path is where Kafka earns its keep. Import file → object storage → chunk validate → Kafka topics for IRP submit / signed-response persistence / webhook fan-out → PostgreSQL quarter shards for hot-quarter writes. Partition key by client GSTIN for per-taxpayer ordering. Idempotency keys (<code>client + fileHash + batchIndex</code>), exponential backoff, and DLQ replay for poison batches. Redis cache-aside cut redundant DB reads ~30%. Ops: ELK + New Relic request-ID correlation cut triage ~70%; pytest coverage 35% → 82%; 98% deployment success.</p>
+<p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. We cut over FastAPI services behind the gateway endpoint-by-endpoint with canaries (interviewers may call this a strangler migration), shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
+<p>The bulk path is where Kafka earns its keep. Import file → object storage → chunk validate → Kafka topics for IRP submit / signed-response persistence / webhook fan-out → PostgreSQL quarter tables for hot-quarter writes. Partition key by client GSTIN for per-taxpayer ordering. Idempotency keys (<code>client + fileHash + batchIndex</code>), exponential backoff, and DLQ replay for poison batches. Redis caching cut redundant DB reads ~30%. Ops: ELK + New Relic request-ID correlation cut triage ~70%; pytest coverage 35% → 82%; 98% deployment success.</p>
 <p>If they ask “why Kafka?” — ordering, durable replay for GST disputes, and independent consumer groups on the same log. Admit RabbitMQ could dispatch work at our scale; replay and multi-consumer audit won.</p>
 <hr>
 <h2 id="2-architecture_2">2. Architecture</h2>
@@ -4231,7 +4236,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 <tbody>
 <tr>
 <td>Migration shape</td>
-<td>Strangler + gateway canaries</td>
+<td>Step-by-step cutover + gateway canaries (strangler)</td>
 <td>Big-bang rewrite</td>
 <td>Filing-day zero-tolerance; rollback = config flip</td>
 </tr>
@@ -4281,7 +4286,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </table>
 <hr>
 <h2 id="4-bullet-by-bullet-defense_3">4. Bullet-by-bullet defense</h2>
-<h3 id="bullet-1-php-fastapi-strangler-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → FastAPI strangler · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
+<h3 id="bullet-1-php-fastapi-step-by-step-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → FastAPI step-by-step · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
 <table>
 <thead>
 <tr>
@@ -4299,6 +4304,10 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 <td>Compliance; per-endpoint canary with instant rollback</td>
 </tr>
 <tr>
+<td>“Strangler”?</td>
+<td>Same idea as PDF “step by step” — endpoint canaries behind gateway</td>
+</tr>
+<tr>
 <td>Latency sources?</td>
 <td>Async IRP (no blocked PHP-FPM), pooling, composite indexes <code>(client_id, invoice_date)</code>, N+1 kill; Redis moved p50, async/query fixes moved p95</td>
 </tr>
@@ -4312,7 +4321,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 <tr>
 <td>Resume XYZ</td>
-<td>Cut p95 <strong>1.2s→300ms</strong> for <strong>1,500+</strong> by Laravel→FastAPI strangler + mentoring <strong>2</strong></td>
+<td>Cut p95 <strong>1.2s→300ms</strong> for <strong>1,500+</strong> by Laravel→FastAPI step-by-step + mentoring <strong>2</strong></td>
 </tr>
 </tbody>
 </table>
@@ -4347,7 +4356,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 <tr>
 <td>Resume XYZ</td>
-<td>Lifted <strong>700→4,000 req/min</strong> and <strong>1M+/day</strong> by Kafka + quarter-sharded PostgreSQL</td>
+<td>Lifted <strong>700→4,000 req/min</strong> and <strong>1M+/day</strong> by Kafka + PostgreSQL split by tax quarter</td>
 </tr>
 </tbody>
 </table>
@@ -4382,7 +4391,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 <tr>
 <td>Resume XYZ</td>
-<td>Cut redundant reads <strong>30%</strong> and made IRP replay safe via idempotent sinks + Redis</td>
+<td>Cut repeat DB reads <strong>30%</strong> and made IRP retries safe via idempotency keys, retries, DLQ + Redis</td>
 </tr>
 </tbody>
 </table>

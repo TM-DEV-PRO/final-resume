@@ -4,11 +4,11 @@
 
 | Tech | Where | Why |
 |---|---|---|
-| **Python / FastAPI** | Microservices strangler replacing PHP Laravel | Async-friendly APIs, faster delivery than growing the monolith |
+| **Python / FastAPI** | Microservices replacing PHP Laravel step by step | Async-friendly APIs; filing-day safe canary cutover |
 | **Kafka** | Bulk e-invoice / IRP async stages | Ordering per taxpayer, durable replay, multiple consumer groups |
-| **PostgreSQL** | Transactional data with **quarter sharding** | Hot/cold by fiscal quarter; query and retention fit GST |
+| **PostgreSQL** | Transactional data split by **tax quarter** | Hot/cold by fiscal quarter; query and retention fit GST |
 | **MongoDB** | Document snapshots of signed IRP responses | Flexible payload storage for IRN/QR artifacts |
-| **Redis** | Cache-aside for hot reads | Cut redundant DB reads **~30%** |
+| **Redis** | Caching for hot reads | Cut repeat DB reads **~30%** |
 | **Elasticsearch** | Search / log analytics with ELK | Incident triage and support lookups |
 | **Celery** | Scheduled/background tasks | Cron-like work that is not stream semantics |
 | **ELK + New Relic** | On-call alerting and APM | Triage **~70%** faster; production visibility |
@@ -55,5 +55,5 @@ flowchart LR
 5. Idempotency + DLQ prevent double-filing and allow replay.
 6. Outcomes: **1M+ IRP/day**, **100K+/import**, throughput **700 → 4,000 req/min**, p95 **1.2s → 300ms** for **1,500+** clients; mentored **2**; coverage **35% → 82%**; deploy success **98%** (HISTORICAL).
 
-## 5. Strangler note
-PHP monolith remains temporarily behind gateway while FastAPI services cut over by domain — classic strangler with canaries.
+## 5. Step-by-step migration note (strangler verbally)
+PHP monolith stays behind the gateway while FastAPI services cut over by domain with canaries — same idea interviewers call *strangler*; PDF says “step by step.”

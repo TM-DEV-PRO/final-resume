@@ -151,6 +151,7 @@ build(
      os.path.join(IPV2, "28_fresh_smts_genai_python_go_scorecard.md"),
      os.path.join(IPV2, "29_ia_ch_ddl_phase1_source.md"),
      os.path.join(IPV2, "30_panel_menu_anz_milvus.md"),
+     os.path.join(IPV2, "31_resume_deep_explain_map.md"),
      os.path.join(IPV2, "07_behavioral_star_stories.md")],
     "InterviewPrepV2.html",
     "Tarun Mittal — Python/Go v2 · Interview Prep",

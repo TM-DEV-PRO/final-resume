@@ -28,7 +28,7 @@ Open to Senior Software Engineer / SDE2+ backend platform and agentic systems ro
 ## Experience blurbs
 
 ### Impact Analytics — Senior Software Engineer (May 2026 – Present)
-Building AssortSmart so retailers decide what to buy how much and which stores. Planner copilot on FastAPI LangGraph MCP with a shared Go Gin doing layer targeting under 1 hour plans and ≥20 configs. Cutting clustering failures from 8.5% (37/437) toward under 2% with 14 read-only tools and 3 human gates. Driving per-tenant ClickHouse (63 tables / 8 layers) after a 250M-row pivot POC ~15.5× faster (189s to 12.3s).
+Building AssortSmart so retailers decide what to buy how much and which stores. Planner chat on FastAPI LangGraph MCP with shared Go Gin write APIs targeting under 1 hour plans and ≥20 configs. Cutting clustering failures from 8.5% (37/437) toward under 2% with 14 read-only tools and 3 human confirm steps. Driving per-tenant ClickHouse (63 tables / 8 layers, insert-only) after a 250M-row pivot POC ~15.5× faster (189s to 12.3s).
 
 ### Uber via EPAM — SDE2 (Jul 2024 – May 2026)
 **FRM:** Owned design and architecture for Financial Risk Scoping (FastAPI MySQL React) 8 screens 30+ APIs $340M materiality targeting 70% recon cut. Designed 11-table SQLAlchemy schema. Owned Sheets→MySQL recon v2 (18 files). Led 3 engineers.
@@ -36,7 +36,7 @@ Building AssortSmart so retailers decide what to buy how much and which stores. 
 **ANZ (Uber Mobility):** Automated Uber driver/vehicle document checks for ANZ to 99.9% with local authorities, removing ~20h/week manual verification (HISTORICAL).
 
 ### Masters India — SDE2 (Dec 2022 – Jun 2024)
-Cut p95 1.2s→300ms for 1500+ clients by Laravel→FastAPI strangler; mentored 2. Lifted 700→4000 req/min and 1M+ IRP/day on Kafka + quarter-sharded PostgreSQL. Idempotent sinks + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35→82% at 98% deploy.
+Cut p95 1.2s→300ms for 1500+ clients by migrating Laravel→FastAPI microservices step by step; mentored 2. Lifted 700→4000 req/min and 1M+ IRP/day on Kafka + PostgreSQL split by tax quarter. Idempotency keys, retries, DLQ + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35→82% at 98% deploy.
 
 ### GeeksforGeeks — SDE (Aug 2021 – Nov 2022)
 Stabilized doubt-support for 10K+ daily queries and 10× contest spikes via PHP→Django. Voting/pinning/locking APIs lifted premium 15–20%. Influencer earnings dashboard raised course sales 30%. Separate cron pipelines for video/reminders/cleanup raised ops efficiency 70%.
