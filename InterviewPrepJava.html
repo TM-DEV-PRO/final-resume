@@ -261,7 +261,16 @@ strong{color:#fff}
 <a class="lvl2" href="#3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</a>
 <a class="lvl2" href="#4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</a>
 <a class="lvl2" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
-<a class="lvl2" href="#whiteboard-checklist">Whiteboard checklist</a></nav>
+<a class="lvl2" href="#whiteboard-checklist">Whiteboard checklist</a>
+<a class="lvl1" href="#er-diagrams-table-design-why-each-tech-all-resume-projects">ER diagrams · table design · why each tech (all resume projects)</a>
+<a class="lvl2" href="#how-to-answer-in-interviews">How to answer in interviews</a>
+<a class="lvl1" href="#1-impact-analytics-assortsmart-clickhouse-thin-pg">1. Impact Analytics — AssortSmart (ClickHouse + thin PG)</a>
+<a class="lvl1" href="#2-uber-frm-mysql-scoping-service-11-models">2. Uber FRM — MySQL scoping service (11 models)</a>
+<a class="lvl1" href="#3-uber-eats-menu-anz-mobility-separate_1">3. Uber Eats Menu (+ ANZ Mobility separate)</a>
+<a class="lvl1" href="#4-masters-india-gst-e-invoicing_1">4. Masters India — GST / E-Invoicing</a>
+<a class="lvl1" href="#5-geeksforgeeks_1">5. GeeksforGeeks</a>
+<a class="lvl2" href="#cheat-sheet-one-problem-per-project">Cheat sheet — one problem per project</a>
+<a class="lvl2" href="#study-checklist">Study checklist</a></nav>
 <main><h1 id="java-track-interview-prep-hub-grounded-rewrite">Java Track — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026</strong></p>
 <p>Backs <code>resume_java/</code> (PDF: <code>Tarun_Mittal_SSE_Java_5yr.pdf</code>). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu, and ClickHouse work stay Python.</p>
@@ -8414,6 +8423,651 @@ Key: client + fileHash + batchIndex  (no double register with gov)
 <li>[ ] Draw Menu Selenium→Kafka→Flink with RAG branch; say ANZ ≠ Eats  </li>
 <li>[ ] Draw Masters gateway canary + Kafka IRP + quarter PG  </li>
 <li>[ ] Name one rejected alternative per critical box  </li>
+</ul>
+<p><strong>ER + full table catalogs + why/problem per tech:</strong> <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a></p>
+<hr>
+<h1 id="er-diagrams-table-design-why-each-tech-all-resume-projects">ER diagrams · table design · why each tech (all resume projects)</h1>
+<p>One place to whiteboard <strong>database shape</strong> and <strong>tech justification</strong> for every project on the current PDFs.<br>
+Honesty: MEASURED design / MEASURED code / HISTORICAL / DESIGN. Do not invent IA TPS.</p>
+<p><strong>Sources:</strong> FRM ORM (<code>11_uber_frm_deep_dive</code>), CH DDL Phase-1 (<code>29_…</code>), Masters/GFG packs, Menu packs.<br>
+<strong>Industry alignment (not your metrics):</strong> ClickHouse docs on ReplacingMergeTree / partition swaps; Flink keyed-state dedupe + Kafka ingest (common production pattern).</p>
+<p>HTML: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.html</code></a></p>
+<hr>
+<h2 id="how-to-answer-in-interviews">How to answer in interviews</h2>
+<ol>
+<li>Draw the <strong>ER / store map</strong> first (boxes + join keys).  </li>
+<li>Name <strong>2–3 critical tables</strong> and their PK / natural key.  </li>
+<li>For each major tech: <strong>problem → why this tech → rejected alternative</strong>.  </li>
+<li>Tag numbers MEASURED / TARGET / HISTORICAL.</li>
+</ol>
+<hr>
+<h1 id="1-impact-analytics-assortsmart-clickhouse-thin-pg">1. Impact Analytics — AssortSmart (ClickHouse + thin PG)</h1>
+<p><strong>Status:</strong> building (load test pending). Schema = MEASURED design (DDL Phase-1).</p>
+<h3 id="problem-we-faced">Problem we faced</h3>
+<ul>
+<li>Planner probes on shared BigQuery: <strong>1–20s+</strong> variance — too jittery for agent tools.  </li>
+<li>Incumbent product <strong>updates/deletes in place</strong>; ClickHouse <strong>mutations</strong> are async and degrade under many small UPDATEs (industry: CH mutations are not OLTP).  </li>
+<li>Need version history / undo semantics for planning without mutation queues.</li>
+</ul>
+<h3 id="why-each-tech">Why each tech</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Problem</th>
+<th>Why chosen</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ClickHouse</strong> (per-tenant)</td>
+<td>Slow / variance-heavy agent reads; huge pivots</td>
+<td>Columnar OLAP; pivot POC <strong>250M 189s→12.3s</strong> (~15.5× MEASURED)</td>
+<td>PG-only for heavy grids; CH <code>ALTER UPDATE</code> per cell</td>
+</tr>
+<tr>
+<td><strong>Insert-only + partition swap</strong></td>
+<td>Mutations pile up</td>
+<td>Facts/cubes: stage twin → <code>REPLACE PARTITION</code>; decisions append-only; latest via <strong>argMax views</strong></td>
+<td>Row UPDATE / DELETE on hot path</td>
+</tr>
+<tr>
+<td><strong>Agent <code>readonly=1</code></strong></td>
+<td>LLM inventing SQL / silent writes</td>
+<td>DB profile physically SELECT-only; <strong>14</strong> audited tools</td>
+<td>Prompt-only “don’t write”</td>
+</tr>
+<tr>
+<td><strong>Go Gin write APIs</strong></td>
+<td>Agent and Manual UI diverging auth</td>
+<td>One doing layer for Clustering / Hindsight / Strategy</td>
+<td>Agent-owned writes</td>
+</tr>
+<tr>
+<td><strong>FastAPI + LangGraph + MCP</strong></td>
+<td>Multi-step explore needs a state machine</td>
+<td>Explicit graph + typed tools</td>
+<td>Single opaque prompt chain</td>
+</tr>
+<tr>
+<td><strong>BigQuery</strong></td>
+<td>Company historical truth</td>
+<td>Upstream feed into CH; <strong>not</strong> runtime agent SoR</td>
+<td>CH as sole company warehouse</td>
+</tr>
+<tr>
+<td><strong>Thin PostgreSQL</strong></td>
+<td>Need real ACID for identity/UAM</td>
+<td>Auth, tenant, workflow metadata</td>
+<td>Putting all planner facts in PG forever</td>
+</tr>
+<tr>
+<td><strong>LangSmith / Datadog / PostHog</strong></td>
+<td>Different debug questions</td>
+<td>Agent quality vs platform vs product</td>
+<td>One tool for everything</td>
+</tr>
+</tbody>
+</table>
+<h3 id="store-design-8-layers-draw-this">Store design (8 layers — draw this)</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Pattern</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L0 facts + ledger</td>
+<td>P1 partition-swap + P4 ledger</td>
+<td>Ingested facts, watermarks</td>
+</tr>
+<tr>
+<td>Grounding dims</td>
+<td>P2 RMT + dictionaries</td>
+<td>Store / hierarchy / fiscal</td>
+</tr>
+<tr>
+<td>L1 cubes + caches</td>
+<td>P1 / P2</td>
+<td>Planner rollups</td>
+</tr>
+<tr>
+<td>PG mirrors (transitional)</td>
+<td>EXCHANGE / swap</td>
+<td>Bridge while migrating</td>
+</tr>
+<tr>
+<td>Decision plane</td>
+<td>P2/P3/P4</td>
+<td>Cluster configs, approvals (append events)</td>
+</tr>
+<tr>
+<td>Outcome loop</td>
+<td>P4 / P1</td>
+<td>Immutable outcomes</td>
+</tr>
+<tr>
+<td>Write-back (transitional)</td>
+<td>P3 status</td>
+<td>Wire to incumbent</td>
+</tr>
+<tr>
+<td>Telemetry</td>
+<td>P4</td>
+<td>Probe logs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inventory (MEASURED design):</strong> <strong>63</strong> tables (incl. 7 stage twins) · <strong>8</strong> layers · <strong>5</strong> dictionaries · <strong>19</strong> views · agent R/O · services INSERT-only. Omit <strong>624 columns</strong>.</p>
+<h3 id="er-relationship-sketch-logical">ER / relationship sketch (logical)</h3>
+<pre><code> tenant_db (one CH database per retailer)
+   │
+   ├─ fact_* / cube_*  ──P1──  stage twin → REPLACE PARTITION
+   ├─ dim_* / dict_*   ──P2──  ReplacingMergeTree(version) + FINAL/argMax
+   ├─ decision_event_* ──P3──  append-only; v_* views = argMax(event_seq)
+   ├─ approval_snapshot──P4──  immutable
+   └─ telemetry_*      ──P4──  append-only
+
+ thin Postgres (separate):
+   user ──&lt; membership &gt;── tenant
+   tenant ──&lt; workflow_state / feature_flags
+</code></pre>
+<h3 id="mermaid-er-conceptual">Mermaid ER (conceptual)</h3>
+<div class="mermaid">erDiagram
+  TENANT ||--o{ CH_DATABASE : "one DB per tenant"
+  CH_DATABASE ||--|{ FACT_LAYER : "P1 swap"
+  CH_DATABASE ||--|{ DIM_LAYER : "P2 RMT"
+  CH_DATABASE ||--|{ DECISION_EVENTS : "P3 append"
+  DECISION_EVENTS ||--o{ ARGMAX_VIEW : "latest state"
+  PG_META ||--o{ USER : "identity"
+  PG_META ||--o{ WORKFLOW : "ACID metadata"
+</div>
+<p><strong>Industry note (web):</strong> ReplacingMergeTree dedupes on <code>ORDER BY</code> during merges; correctness at query time needs <code>FINAL</code> or <code>argMax</code> — matches our “views over history” doctrine (<a href="https://clickhouse.com/docs/guides/replacing-merge-tree">ClickHouse RMT guide</a>).</p>
+<hr>
+<h1 id="2-uber-frm-mysql-scoping-service-11-models">2. Uber FRM — MySQL scoping service (11 models)</h1>
+<p><strong>Status:</strong> shipped platform work. Schema = MEASURED from ORM code.</p>
+<h3 id="problem-we-faced_1">Problem we faced</h3>
+<ul>
+<li>Quarterly scoping lived in <strong>Google Sheets</strong>: no stable line IDs, no audit trail, overwrite risk, cannot attach comments.  </li>
+<li>SOX-adjacent / <strong>PwC</strong> work papers need durable identity.  </li>
+<li>Join bug: shared column names → silent wrong UUID (column-aliasing).</li>
+</ul>
+<h3 id="why-each-tech_1">Why each tech</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Problem</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>Sheets not SoR</td>
+<td>Durable UUIDs, period keys, audit columns</td>
+<td>Keep Sheets; move straight to warehouse-only</td>
+</tr>
+<tr>
+<td><strong>FastAPI + SQLAlchemy 2.0</strong></td>
+<td>Need typed APIs + nested trees</td>
+<td>Uber Python service norms; <code>Mapped</code> + <code>.label()</code></td>
+<td>Flask ad-hoc; raw SQL everywhere</td>
+</tr>
+<tr>
+<td><strong>Handler / service / repository</strong></td>
+<td>Parallelize 3 engineers</td>
+<td>Clean seams for PR ownership</td>
+<td>Fat handlers</td>
+</tr>
+<tr>
+<td><strong>React</strong></td>
+<td>Finance interactive grids</td>
+<td>8 screens over REST</td>
+<td>Server-rendered only</td>
+</tr>
+<tr>
+<td><strong>Bazel + pytest</strong></td>
+<td>Gate PwC-facing merges</td>
+<td>Monorepo CI; <strong>1,100+</strong> tests</td>
+<td>Ad-hoc scripts</td>
+</tr>
+<tr>
+<td><strong>Header auth</strong> (<code>x-auth-params-email</code>)</td>
+<td>Edge already authenticates</td>
+<td>Audit <code>created_by</code> / <code>updated_by</code></td>
+<td>Re-implement SSO in service</td>
+</tr>
+</tbody>
+</table>
+<h3 id="table-catalog-11-sqlalchemy-models-scoping-service-only">Table catalog (11 SQLAlchemy models — scoping service only)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Table</th>
+<th>Purpose</th>
+<th>Keys / joins</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>balance_sheet</code></td>
+<td>BS FSLI facts + significance</td>
+<td>PK <code>uuid</code>; <code>level_id</code> → <code>level_mapping</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>income_statement</code></td>
+<td>IS FSLI facts</td>
+<td>same</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>emi_data</code></td>
+<td>Equity-method investees</td>
+<td>PK <code>uuid</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>frm_metrics_table</code></td>
+<td>materiality / benchmarks</td>
+<td><code>metric_key</code> (e.g. materiality <strong>$340M</strong>)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>scoping_questions</code></td>
+<td>qualitative questions</td>
+<td>deterministic uuid from text+page</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>scoping_assessments</code></td>
+<td>answers per line</td>
+<td><code>line_id</code>, <code>question_id</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>threshold_table_v2</code></td>
+<td>legal-entity significance</td>
+<td><code>legal_entity</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>level_mapping</code></td>
+<td>FSLI hierarchy spine</td>
+<td>PK <code>uuid</code> = join target <code>level_id</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>component_entity</code></td>
+<td>component amounts</td>
+<td><code>level_id</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>recon_balance_sheet</code></td>
+<td>HFM vs 10-Q BS</td>
+<td><code>difference = HFM − filed</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>recon_income_statement</code></td>
+<td>HFM vs 10-Q IS</td>
+<td>same</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Say:</strong> “<strong>11 models in the scoping service</strong>” — collaboration/comments live elsewhere (16+ in full <code>schema.uql</code>).</p>
+<h3 id="ascii-er">ASCII ER</h3>
+<pre><code>                    level_mapping (uuid = level_id)
+                         ▲              ▲
+         level_id+period │              │ level_id+period
+                         │              │
+              balance_sheet /     component_entity
+              income_statement
+                         │
+              line_id = fact.uuid
+                         ▼
+              scoping_assessments ──question_id──► scoping_questions
+
+ frm_metrics_table     threshold_table_v2     emi_data
+ recon_balance_sheet / recon_income_statement  (HFM vs 10-Q leaves)
+</code></pre>
+<h3 id="mermaid-er">Mermaid ER</h3>
+<div class="mermaid">erDiagram
+  LEVEL_MAPPING ||--o{ BALANCE_SHEET : "level_id"
+  LEVEL_MAPPING ||--o{ INCOME_STATEMENT : "level_id"
+  LEVEL_MAPPING ||--o{ COMPONENT_ENTITY : "level_id"
+  BALANCE_SHEET ||--o{ SCOPING_ASSESSMENTS : "line_id"
+  INCOME_STATEMENT ||--o{ SCOPING_ASSESSMENTS : "line_id"
+  SCOPING_QUESTIONS ||--o{ SCOPING_ASSESSMENTS : "question_id"
+  LEVEL_MAPPING ||--o{ RECON_BALANCE_SHEET : "level_id"
+  LEVEL_MAPPING ||--o{ RECON_INCOME_STATEMENT : "level_id"
+</div>
+<p>Period key on facts: <code>(fiscal_quarter, fiscal_year)</code>. Joins AND active flags.</p>
+<hr>
+<h1 id="3-uber-eats-menu-anz-mobility-separate_1">3. Uber Eats Menu (+ ANZ Mobility separate)</h1>
+<h3 id="problem-we-faced_2">Problem we faced</h3>
+<ul>
+<li>Manual / third-party menu onboarding slow and expensive (~<strong>$2/menu</strong>, <strong>24h</strong>).  </li>
+<li>Scrapers are <strong>bursty and flaky</strong>; anti-bot blocks.  </li>
+<li>Unstructured <strong>PDF/image</strong> menus defeat regex.  </li>
+<li>Need replay when parsers break.</li>
+</ul>
+<h3 id="why-each-tech_2">Why each tech</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Problem</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Selenium</strong></td>
+<td>JS-heavy partner sites</td>
+<td>Real browser fetch</td>
+<td>Static curl-only</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Burst + need replay</td>
+<td>Ordered per vendor key; durable log</td>
+<td>Sync HTTP into catalog</td>
+</tr>
+<tr>
+<td><strong>Flink</strong></td>
+<td>Per-event validate/dedupe/route</td>
+<td>Keyed state + event-time; hot path</td>
+<td>Spark micro-batch for every page</td>
+</tr>
+<tr>
+<td><strong>Milvus + LangChain RAG + Gemini</strong></td>
+<td>Multilingual PDF/image</td>
+<td>Retrieve similar labeled menus → generate → schema gate</td>
+<td>Pure OCR/regex; inventing Pinecone</td>
+</tr>
+<tr>
+<td><strong>IP rotation / proxies / retries</strong></td>
+<td>Anti-bot</td>
+<td>Lift success to <strong>95%+</strong></td>
+<td>Fixed IP fleet</td>
+</tr>
+<tr>
+<td><strong>GCP / Docker</strong></td>
+<td>Host scrapers/workers</td>
+<td>Org footprint</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Industry note (web):</strong> Flink keyed state + TTL for dedupe, Kafka as ingest bus, idempotent sink upsert is a standard stream pattern (aligns with our keyed menu-hash dedupe story).</p>
+<h3 id="logical-data-design-not-a-single-rdbms-er">Logical data design (not a single RDBMS ER)</h3>
+<table>
+<thead>
+<tr>
+<th>Store</th>
+<th>Contents</th>
+<th>Key</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kafka topics</td>
+<td>raw scrape events, retries, health</td>
+<td>vendor / menu key</td>
+</tr>
+<tr>
+<td>Flink keyed state</td>
+<td>seen content hashes</td>
+<td>vendor+hash</td>
+</tr>
+<tr>
+<td>Object storage</td>
+<td>raw HTML/PDF/image</td>
+<td>content hash</td>
+</tr>
+<tr>
+<td><strong>Milvus</strong></td>
+<td>chunk embeddings of labeled menus</td>
+<td>vector + menu_id metadata</td>
+</tr>
+<tr>
+<td>Catalog records</td>
+<td>normalized items/prices/modifiers</td>
+<td>vendor+item (upsert)</td>
+</tr>
+<tr>
+<td>Eval fixtures</td>
+<td>offline fidelity/schema cases</td>
+<td>HISTORICAL <strong>98%/100%</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="flow-er-style">Flow ER-style</h3>
+<pre><code>site ──► scrape_event ──► kafka ──► flink_state(dedupe)
+                              │
+                    ┌─────────┴─────────┐
+                    ▼                   ▼
+              catalog_row         rag_chunk ──► milvus
+                                      │
+                                      ▼
+                              extracted_menu ──schema──► catalog_row
+</code></pre>
+<h3 id="anz-mobility-separate-product">ANZ (Mobility — separate product)</h3>
+<p>Logical entities: <code>driver</code>, <code>vehicle</code>, <code>document</code>, <code>compliance_check</code>, <code>authority_rule</code>.<br>
+Outcome HISTORICAL: <strong>99.9%</strong>, <strong>~20h/week</strong>. Do <strong>not</strong> mix into Eats Kafka/Flink ER.</p>
+<hr>
+<h1 id="4-masters-india-gst-e-invoicing_1">4. Masters India — GST / E-Invoicing</h1>
+<h3 id="problem-we-faced_3">Problem we faced</h3>
+<ul>
+<li>PHP Laravel <strong>sync IRP</strong> blocked workers on filing spikes.  </li>
+<li>Big-bang rewrite risk on compliance product.  </li>
+<li>Double IRP registration is <strong>not recoverable</strong>.  </li>
+<li>Hot quarter writes vs cold history.</li>
+</ul>
+<h3 id="why-each-tech_3">Why each tech</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Problem</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FastAPI microservices</strong></td>
+<td>Monolith deploy/scale</td>
+<td>Async IRP; canary cutover</td>
+<td>Big-bang rewrite</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Ordering + replay + fan-out</td>
+<td>Per-GSTIN order; DLQ; multi consumers</td>
+<td>Sync-only; Rabbit alone (admit possible for dispatch)</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL by tax quarter</strong></td>
+<td>GST is quarter-scoped</td>
+<td>Hot writes isolated; archive cold</td>
+<td>One fat table forever</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>IRN/QR payloads vary</td>
+<td>Snapshot signed responses</td>
+<td>Force all into rigid PG JSON only</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>Same GSTIN/config on every bulk row</td>
+<td>Cache-aside; <strong>−30%</strong> reads HISTORICAL</td>
+<td>Hit DB every row</td>
+</tr>
+<tr>
+<td><strong>Idempotency + retries + DLQ</strong></td>
+<td>Poison batches / retries</td>
+<td>Key <code>client+fileHash+batchIndex</code></td>
+<td>Fire-and-forget</td>
+</tr>
+<tr>
+<td><strong>ELK + New Relic</strong></td>
+<td>SSH/grep triage</td>
+<td>Request-id correlation; <strong>−70%</strong> triage HISTORICAL</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="logical-er-tables">Logical ER / tables</h3>
+<pre><code> client (GSTIN) 1──* invoice_header (period_quarter, invoice_date)
+ invoice_header 1──* invoice_line
+ invoice_header 1──0..1 irp_registration (irn, qr, status)
+ bulk_import 1──* bulk_chunk (file_hash, batch_index) ──idempotency──► irp_job
+ irp_job *──► dlq_message (poison)
+ mongo: invoice_payload_snapshot (flexible IRP response)
+ redis: gstin_master, client_config, irp_token (TTL)
+</code></pre>
+<p>Quarter routing: derive quarter from <code>invoice_date</code> at API; reject mismatch. Physical: quarter tables/schemas (HISTORICAL narrative).</p>
+<h3 id="mermaid-er_1">Mermaid ER</h3>
+<div class="mermaid">erDiagram
+  CLIENT ||--o{ INVOICE_HEADER : "GSTIN"
+  INVOICE_HEADER ||--|{ INVOICE_LINE : "lines"
+  INVOICE_HEADER ||--o| IRP_REGISTRATION : "IRN/QR"
+  BULK_IMPORT ||--|{ BULK_CHUNK : "chunks"
+  BULK_CHUNK ||--o{ IRP_JOB : "submit"
+  IRP_JOB ||--o| DLQ : "poison"
+</div>
+<hr>
+<h1 id="5-geeksforgeeks_1">5. GeeksforGeeks</h1>
+<h3 id="problem-we-faced_4">Problem we faced</h3>
+<ul>
+<li>PHP backend struggled under <strong>10K+</strong> daily doubts and <strong>10×</strong> contest spikes.  </li>
+<li>Need votes/pins/locks without melting hot rows.  </li>
+<li>Search and flexible content shapes.</li>
+</ul>
+<h3 id="why-each-tech_4">Why each tech</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Problem</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Django</strong></td>
+<td>PHP velocity/reliability</td>
+<td>ORM, auth, faster features</td>
+<td>Keep PHP forever</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>Relational truth</td>
+<td>Users, votes, subscriptions</td>
+<td>Everything in Mongo</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Variable content payloads</td>
+<td>Flexible docs</td>
+<td>Rigid migrations for every field</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>Contest spikes / hot counters</td>
+<td>Cache + async reconcile votes</td>
+<td>Sync MySQL increment only</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>Findability</td>
+<td>Full-text beyond <code>LIKE</code></td>
+<td>SQL only</td>
+</tr>
+<tr>
+<td><strong>Crons</strong></td>
+<td>Video/reminder ops</td>
+<td>Batch efficiency <strong>+70%</strong> HISTORICAL</td>
+<td>Manual ops</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logical-er">Logical ER</h3>
+<pre><code> user 1──* vote (unique user_id+content_id)
+ user 1──* subscription
+ content 1──* pin / lock
+ content ── indexed ──► elasticsearch_doc
+ influencer_account 1──* earning_txn / coupon  (dashboard → +30% course sales HISTORICAL)
+ cron_job → video_asset / reminder / cleanup
+</code></pre>
+<h3 id="mermaid-er_2">Mermaid ER</h3>
+<div class="mermaid">erDiagram
+  USER ||--o{ VOTE : "casts"
+  CONTENT ||--o{ VOTE : "receives"
+  USER ||--o{ SUBSCRIPTION : "premium"
+  CONTENT ||--o{ PIN : "pinned"
+  INFLUENCER ||--o{ EARNING : "dashboard"
+</div>
+<hr>
+<h2 id="cheat-sheet-one-problem-per-project">Cheat sheet — one problem per project</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Core data problem</th>
+<th>Core tech fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IA</td>
+<td>Mutation-hostile planner scale + agent safety</td>
+<td>CH insert-only 63/8 + R/O agent + Go writes</td>
+</tr>
+<tr>
+<td>FRM</td>
+<td>Sheets not audit-safe</td>
+<td>11-table MySQL SSOT + labeled joins</td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>Burst scrape + unstructured menus</td>
+<td>Kafka→Flink + RAG/Milvus/Gemini</td>
+</tr>
+<tr>
+<td>Masters</td>
+<td>Filing-day IRP + no double file</td>
+<td>Kafka + quarter PG + idempotency/DLQ</td>
+</tr>
+<tr>
+<td>GFG</td>
+<td>Spikes + engagement features</td>
+<td>Django + MySQL/Mongo/Redis/ES</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="study-checklist">Study checklist</h2>
+<ul>
+<li>[ ] Draw FRM <code>level_mapping</code> spine and name all 11 tables  </li>
+<li>[ ] Draw IA 8 layers and say P1 vs P3 in one sentence each  </li>
+<li>[ ] Draw Masters invoice → IRP → Mongo snapshot with idempotency key  </li>
+<li>[ ] Draw Menu Kafka→Flink branches; say ANZ ≠ Eats  </li>
+<li>[ ] For any tech on the PDF: problem → why → rejected  </li>
 </ul></main></div>
 <script type="module">
 import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';

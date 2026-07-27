@@ -270,3 +270,5 @@ flowchart TB
 - [ ] Draw Menu Selenium→Kafka→Flink with RAG branch; say ANZ ≠ Eats  
 - [ ] Draw Masters gateway canary + Kafka IRP + quarter PG  
 - [ ] Name one rejected alternative per critical box  
+
+**ER + full table catalogs + why/problem per tech:** [`34_er_tables_tech_why.md`](34_er_tables_tech_why.md)
