@@ -11,7 +11,7 @@
 ## 1. 30s / 2min explain
 
 **30 seconds**  
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices step by step and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.
 
 **2 minutes**  
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.
@@ -69,17 +69,17 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 
 ## 4. Bullet-by-bullet defense
 
-### Bullet 1 — PHP → FastAPI step-by-step · 1,500+ clients · p95 1.2s → 300ms · mentored 2
+### Bullet 1 — PHP → FastAPI microservices · 1,500+ clients · p95 1.2s → 300ms · mentored 2
 
 | Probe | Defense |
 |---|---|
 | What did you own? | Design + cutover playbook + conventions; two juniors extracted services under review |
 | Why not rewrite? | Compliance; per-endpoint canary with instant rollback |
-| “Strangler”? | Same idea as PDF “step by step” — endpoint canaries behind gateway |
+| “Strangler”? | Endpoint canaries behind gateway — gradual cutover, not big-bang |
 | Latency sources? | Async IRP (no blocked PHP-FPM), pooling, composite indexes `(client_id, invoice_date)`, N+1 kill; Redis moved p50, async/query fixes moved p95 |
 | Client count? | **1,500+** always — never 2,500+ |
 | Mentoring day-to-day? | Router/service/repository + Pydantic + idempotency helpers; paired first canary |
-| Resume XYZ | Cut p95 **1.2s→300ms** for **1,500+** by Laravel→FastAPI step-by-step + mentoring **2** |
+| Resume XYZ | Cut p95 **1.2s→300ms** for **1,500+** by Laravel→FastAPI microservices + mentoring **2** |
 
 ### Bullet 2 — Kafka + PG quarter sharding · 1M+/day · 100K+/import · 700 → 4,000 req/min
 

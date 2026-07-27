@@ -45,7 +45,7 @@ Obs: LangSmith (agent) · Datadog (platform) · PostHog (product) · shared trac
 | **14 read-only tools + 3 confirm steps** | Agent safety | Stop bad clustering inputs before engine | Silent auto-finalize | Failures **8.5% (37/437 kik) → under 2%** MEASURED→TARGET |
 | **ClickHouse 63/8** | Planning store | Fast pivots + versioned inserts; agent SELECT only | Postgres-only OLAP; CH `ALTER UPDATE` | **189s→12.3s** on **250M** MEASURED POC; **63/8** from DDL Phase-1 (`29`) |
 | **Insert-only + swap partitions** | Facts/cubes refresh | Avoid mutation queue; atomic refresh | Row UPDATEs | Say “refresh by swapping partitions” on PDF; `argMax`/`FINAL` verbally |
-| **~25M aggregate vs 12B store-week** | Line-plan grain | Avoid table explosion | Flat store-week | **~0.4 ms** edits MEASURED; month rollups sub-second |
+| **~25M aggregate vs 12B store-week** | Line-plan grain (**not on PDF**) | Avoid table explosion | Flat store-week | **~0.4 ms** edits MEASURED; month rollups sub-second — verbal only |
 | **BigQuery / GCS** | Upstream truth / files | Warehouse + object store for feeds | CH as sole system of record for all company data | Design |
 | **Datadog / LangSmith / PostHog** | Ops / agent quality / product | Different questions each answers | One tool for everything | Design |
 
@@ -122,7 +122,7 @@ Gateway canary (% FastAPI|Spring | fallback PHP)
 Obs: ELK + New Relic
 ```
 
-**Plain English for “strangler” (PDF says “step by step”):** migrate endpoint-by-endpoint behind the gateway with canaries so filing day never goes dark; rollback = traffic flip. Interviewers may still say *strangler fig* — same idea.
+**Plain English for “strangler”:** migrate endpoint-by-endpoint behind the gateway with canaries so filing day never goes dark; rollback = traffic flip. PDF just says migrated Laravel → microservices.
 
 ### Tech on PDF
 
@@ -180,7 +180,7 @@ Diagrams: `architecture/05_geeksforgeeks.md` · pack `23c`.
 - [ ] Defend 8.5% and 189s→12.3s without saying “shipped under 2%”  
 - [ ] FRM 8 screens + materiality rules + join-bug story  
 - [ ] Menu Selenium→Kafka→Flink vs RAG path; ANZ ≠ Eats  
-- [ ] Masters step-by-step migration + IRP idempotency key shape  
+- [ ] Masters migration cutover + IRP idempotency key shape  
 - [ ] GFG: sales dashboard vs video crons are **two** claims  
 
 When PDF wording changes, update this file + packs’ “Resume XYZ” lines in the same PR.

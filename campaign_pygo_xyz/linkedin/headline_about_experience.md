@@ -36,7 +36,7 @@ Building AssortSmart so retailers decide what to buy how much and which stores. 
 **ANZ (Uber Mobility):** Automated Uber driver/vehicle document checks for ANZ to 99.9% with local authorities, removing ~20h/week manual verification (HISTORICAL).
 
 ### Masters India — SDE2 (Dec 2022 – Jun 2024)
-Cut p95 1.2s→300ms for 1500+ clients by migrating Laravel→FastAPI microservices step by step; mentored 2. Lifted 700→4000 req/min and 1M+ IRP/day on Kafka + PostgreSQL split by tax quarter. Idempotency keys, retries, DLQ + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35→82% at 98% deploy.
+Cut p95 1.2s→300ms for 1500+ clients by migrating Laravel→FastAPI microservices; mentored 2. Lifted 700→4000 req/min and 1M+ IRP/day on Kafka + PostgreSQL split by tax quarter. Idempotency keys, retries, DLQ + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35→82% at 98% deploy.
 
 ### GeeksforGeeks — SDE (Aug 2021 – Nov 2022)
 Stabilized doubt-support for 10K+ daily queries and 10× contest spikes via PHP→Django. Voting/pinning/locking APIs lifted premium 15–20%. Influencer earnings dashboard raised course sales 30%. Separate cron pipelines for video/reminders/cleanup raised ops efficiency 70%.

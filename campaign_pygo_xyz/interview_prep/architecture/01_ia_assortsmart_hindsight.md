@@ -29,8 +29,8 @@ Defend every Tech line item: where used, why chosen, DB shape, end-to-end flow.
 - **Why layers:** separate fact, rollup, planning, and serving shapes so planners get sub-second probes without rewriting OLTP.
 
 ### Line-plan interactive path
-- **Editable grain:** choice × cluster × week aggregates (**~25M**), not flat store-week.
-- **Measured:** cell edit **~0.4 ms**, month rollup **sub-second** on aggregate path.
+- **Editable grain (verbal/study, not on PDF):** choice × cluster × week aggregates (**~25M**), not flat store-week.
+- **Measured (verbal/study):** cell edit **~0.4 ms**, month rollup **sub-second** on aggregate path.
 - **Verbal only if asked:** flat store-week combinatorial projection (~12B) is why flat SoR was rejected — **not on PDF**.
 
 ### Hindsight config (FRD)

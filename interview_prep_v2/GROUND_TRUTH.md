@@ -9,7 +9,7 @@ Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA 
 | Owned Uber FRM recon v1 Sheets to MySQL v2 (18 files, +1,268 LOC) | 95% MEASURED | Resume experience | `RECON_API_MIGRATION.md`, FRM code |
 | Designed layered handler / service / repository / ORM architecture (11 models, 30+ APIs) | 95% MEASURED | Resume experience | `frm_scoping_service/` |
 | Led 3 engineers (EPAM pod) via design reviews, API contracts, CI gates | 90% user-confirmed | Resume experience | User confirm + code conventions |
-| Led Masters PHP monolith to microservices step by step (strangler verbally), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
+| Led Masters PHP monolith to microservices (strangler verbally), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
 | Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS) | 85% HISTORICAL / ESTIMATED peaks | Resume experience | Past resumes + metrics derivations |
 | Fault tolerance: idempotency keys, retries, DLQ on bulk IRP path (PDF: plain English, not “idempotent sinks”) | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
 | On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
@@ -52,7 +52,7 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | External review **PASS**; **zero runtime evidence** on this schema — load test at bring-up; say **building**, not shipped | MEASURED design status | Overview + DDL Phase-1 |
 | HLD stack: FastAPI + **LangGraph/MCP**; Go doing layer; CH + GCS; LangSmith/Datadog/PostHog | DESIGN + confirmed | `final_agenticassort.png` |
 | **ONE resume CH bullet:** insert-only + swap partitions + **250M** pivot **189.4s → 12.3s** (~**15.5×**) | MEASURED design + MEASURED POC | DDL Phase-1 + `pivot-poc/results/MASTER_RESULTS.md` |
-| Line-plan: projected **~12B** → **~25M** aggregate; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured) | PROJECTED 12B / MEASURED ops | `LinePlanning-Benchmark.docx` |
+| Line-plan: projected **~12B** → **~25M** aggregate; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured) | PROJECTED 12B / MEASURED ops | **OMIT from PDF** (Jul 2026) — verbal/study via `20_…` / pack `23a` |
 | HLR scenario cap **3–5** | DESIGN | `PRD'S/…HLR_v1.1.docx` |
 | Agent probes: BQ **1–20s+** → CH **p95 <500ms** | MEASURED / TARGET | Copilot FRD |
 

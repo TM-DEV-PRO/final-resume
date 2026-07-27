@@ -136,12 +136,12 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 | **Attack vector** | “You already cut to under 2%?” / “Overview lists four stops — why resume says three?” / “Why not trust the prompt?” |
 | **Candidate reply** | “Correct phrase: **designed to cut from measured 8.5% toward under 2%** — I will not claim under 2% until post-load-test metrics. Three FRD confirm gates after intent; grounding and write-back are bookends — agent physically cannot write. Prompts are not a control plane; R/O profile is.” |
 
-### Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit
+### Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit (**OMIT from PDF** — verbal/study)
 
 | | |
 |---|---|
 | **Claim** | Replace projected **12B**-row store-week with **~25M**-row aggregate so month rollups stay **sub-second** and cell edits **~0.4 ms** without materializing the explosion |
-| **Tag** | 12B **PROJECTED**; ~25M / sub-second / ~0.4 ms **MEASURED** on aggregate path |
+| **Tag** | 12B **PROJECTED**; ~25M / sub-second / ~0.4 ms **MEASURED** — **not on current PDF** |
 | **Exact defense** | 12B ≈ 4,800 stores × final-levels × choices × 52 weeks. Flat at 100M already: month PG **2,923 ms**, edit **1,454 ms**. Projected flat at 12B: minutes. Editable truth = choice×cluster×week **~25M** (~**427×** smaller; at 1B: flat PG **115 GB** vs agg **276 MB**). Partition of unity: `store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc`; `SUM(flat)==SUM(agg)` to the cent at 10M/100M/1B. Month @25M: PG **690 ms** / CH **512 ms**. Cell on agg: PG **0.35–0.44 ms**. Explode one choice **~25 ms**. Sparse overrides, not a dense store-week grid. |
 | **Attack vector** | “Is 12B measured?” / “Won’t explode kill export?” / “Why not just use ClickHouse on the flat table?” |
 | **Candidate reply** | “12B is a **combinatorial projection** from KiK anchors — say PROJECTED. We reconciled aggregates to the cent; flat loads near 1B OOM’d a **3.3 GB** CH VM. Export gets a **slice**, not SoR. Schema flat→agg is the **100–450×** lever; engine swap is secondary. At ~25M, PG month is already sub-second — CH earns keep as tenants/plans multiply.” |

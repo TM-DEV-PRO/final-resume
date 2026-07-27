@@ -320,7 +320,7 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>Masters India</td>
-<td>Step-by-step Laravel→Spring Boot; Kafka + PG by tax quarter; see <code>23c</code></td>
+<td>Laravel→Spring Boot microservices; Kafka + PG by tax quarter; see <code>23c</code></td>
 </tr>
 <tr>
 <td>Masters India</td>
@@ -3483,7 +3483,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 <tr>
 <td>Impact Analytics — AssortSmart</td>
 <td><a href="23a_ia_interview_pack.md"><code>23a_ia_interview_pack.md</code></a></td>
-<td>Product / copilot · 8.5% · 12B→25M · ONE ClickHouse POC</td>
+<td>Product / copilot · 8.5% · ONE ClickHouse POC</td>
 </tr>
 <tr>
 <td>Uber FRM</td>
@@ -3503,7 +3503,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 <tr>
 <td>Masters India GST</td>
 <td><a href="23c_masters_gfg_interview_packs.md"><code>23c_masters_gfg_interview_packs.md</code></a> § Masters</td>
-<td>Step-by-step monolith→services · Kafka bulk IRP · idempotency/DLQ · tickets −35%</td>
+<td>Monolith→services · Kafka bulk IRP · idempotency/DLQ · tickets −35%</td>
 </tr>
 <tr>
 <td>GeeksforGeeks</td>
@@ -3721,7 +3721,7 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </tr>
 </tbody>
 </table>
-<h3 id="bullet-3-projected-12b-store-week-25m-aggregate-sub-second-month-04-ms-cell-edit">Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit</h3>
+<h3 id="bullet-3-projected-12b-store-week-25m-aggregate-sub-second-month-04-ms-cell-edit-omit-from-pdf-verbalstudy">Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit (<strong>OMIT from PDF</strong> — verbal/study)</h3>
 <table>
 <thead>
 <tr>
@@ -3736,7 +3736,7 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </tr>
 <tr>
 <td><strong>Tag</strong></td>
-<td>12B <strong>PROJECTED</strong>; ~25M / sub-second / ~0.4 ms <strong>MEASURED</strong> on aggregate path</td>
+<td>12B <strong>PROJECTED</strong>; ~25M / sub-second / ~0.4 ms <strong>MEASURED</strong> — <strong>not on current PDF</strong></td>
 </tr>
 <tr>
 <td><strong>Exact defense</strong></td>
@@ -4193,7 +4193,7 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 <hr>
 <h2 id="1-30s-2min-explain_2">1. 30s / 2min explain</h2>
 <p><strong>30 seconds</strong><br>
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices step by step and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.</p>
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.</p>
 <p><strong>2 minutes</strong><br>
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.</p>
 <p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. We cut over FastAPI services behind the gateway endpoint-by-endpoint with canaries (interviewers may call this a strangler migration), shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
@@ -4286,7 +4286,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </table>
 <hr>
 <h2 id="4-bullet-by-bullet-defense_3">4. Bullet-by-bullet defense</h2>
-<h3 id="bullet-1-php-fastapi-step-by-step-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → FastAPI step-by-step · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
+<h3 id="bullet-1-php-fastapi-microservices-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → FastAPI microservices · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
 <table>
 <thead>
 <tr>
@@ -4305,7 +4305,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 <tr>
 <td>“Strangler”?</td>
-<td>Same idea as PDF “step by step” — endpoint canaries behind gateway</td>
+<td>Endpoint canaries behind gateway — gradual cutover, not big-bang</td>
 </tr>
 <tr>
 <td>Latency sources?</td>
@@ -4321,7 +4321,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 <tr>
 <td>Resume XYZ</td>
-<td>Cut p95 <strong>1.2s→300ms</strong> for <strong>1,500+</strong> by Laravel→FastAPI step-by-step + mentoring <strong>2</strong></td>
+<td>Cut p95 <strong>1.2s→300ms</strong> for <strong>1,500+</strong> by Laravel→FastAPI microservices + mentoring <strong>2</strong></td>
 </tr>
 </tbody>
 </table>

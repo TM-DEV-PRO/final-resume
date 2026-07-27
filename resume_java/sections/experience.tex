@@ -19,7 +19,6 @@
 \begin{zitemize}
     \item Building \textbf{AssortSmart} so retailers decide \textbf{what to buy, how much, and for which stores} with a planner chat (\textbf{Python, LangGraph, MCP}) and shared \textbf{Spring Boot} write APIs, targeting plan turnaround from days toward \textbf{under 1 hour} and search from \textbf{1 to $\geq$20 configs/plan}.
     \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited read-only tools and \textbf{3} human confirm steps so the agent never writes SQL.
-    \item Replacing a projected \textbf{12B}-row store-week design with a \textbf{$\sim$25M}-row aggregate so month rollups stay \textbf{sub-second} and cell edits stay \textbf{$\sim$0.4\,ms} (measured) without exploding the table.
     \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, insert-only, refresh by swapping partitions, agent read-only) as the planning store after a same-rows POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
     \item \textbf{Tech} -- Java, Spring Boot, Python, FastAPI, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, Docker.
 \end{zitemize}
@@ -74,7 +73,7 @@
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Migrated a PHP (\textbf{Laravel}) monolith to \textbf{Spring Boot microservices} step by step for \textbf{1,500+ clients}, bringing p95 from \textbf{1.2s to 300ms} while mentoring \textbf{2 engineers}.
+    \item Migrated a PHP (\textbf{Laravel}) monolith to \textbf{Spring Boot microservices} for \textbf{1,500+ clients}, bringing p95 from \textbf{1.2s to 300ms} while mentoring \textbf{2 engineers}.
     \item Built a bulk e-invoice path on \textbf{Kafka} and \textbf{PostgreSQL} (tables split by tax quarter) that processed \textbf{1M+ government submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
     \item Made IRP retries safe with \textbf{idempotency keys, retries, and a dead-letter queue}, and used Redis caching to lower repeat DB reads by \textbf{30\%}.
     \item Set up \textbf{ELK and New Relic} alerting plus a client usage dashboard that lowered incident triage \textbf{70\%} and support tickets \textbf{35\%}, raising coverage \textbf{35\% to 82\%} at \textbf{98\%} deploy success.

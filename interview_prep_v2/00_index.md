@@ -22,10 +22,10 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ~0.4ms edits; ONE CH (63/8 insert-only, swap partitions + 189s→12.3s) |
+| Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ONE CH (63/8 insert-only, swap partitions + 189s→12.3s) |
 | Uber FRM | Design+architecture ownership; 8 screens, 30+ APIs, $340M, targeting 70%; led 3 |
 | Uber Menu | Selenium + Kafka/Flink + LangChain RAG/Gemini/Milvus; ANZ is **Mobility** (not Eats) |
-| Masters India | Step-by-step Laravel→FastAPI microservices; Kafka bulk e-invoice; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day; support tickets −35% |
+| Masters India | Laravel→FastAPI microservices; Kafka bulk e-invoice; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day; support tickets −35% |
 | GeeksforGeeks | 10K+ daily / 10× spikes; premium +15–20% (votes/pins/locks); course sales +30% (dashboard); ops +70% (crons, separate) |
 
 Original playbook still useful for agentic Assort depth: `../interview_prep/agentic_assort_playbook/`.

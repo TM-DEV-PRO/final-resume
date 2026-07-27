@@ -39,6 +39,6 @@ Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. N
 | Impact Analytics | Product-first AssortSmart; Spring write APIs; ONE CH bullet; see `23a` + `31` |
 | Uber FRM | Spring Boot + JPA; 30+ APIs; targeting 70%; led 3; see `23b` |
 | Uber Menu | Python Selenium→Kafka→Flink + RAG/Gemini/Milvus + ANZ Mobility; see `23b` |
-| Masters India | Step-by-step Laravel→Spring Boot; Kafka + PG by tax quarter; see `23c` |
+| Masters India | Laravel→Spring Boot microservices; Kafka + PG by tax quarter; see `23c` |
 | Masters India | Spring Boot strangler; Kafka event platform; 700→4,000 req/min; see `23c` |
 | GeeksforGeeks | Spring Boot telling; 10K+ daily; see `23c` |

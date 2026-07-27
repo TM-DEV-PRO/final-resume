@@ -1,4 +1,4 @@
-> **PDF sync (campaign_pygo_xyz):** Resume no longer says "never writes SQL" or "projected 12B". Use **read-scoped tools + human gates** and **~25M aggregates / ~0.4 ms edits**. Hindsight bullet is defended in `01b_hindsight_defense.md`. 12B stays verbal-only if probed. Kafka appears on IA Tech, Menu ingest, and Masters.
+> **PDF sync (campaign_pygo_xyz):** No plan-edits / 12B→25M / ~0.4 ms bullet on PDF. Defend line-plan aggregate verbally via pack `23a` / `20_…` if probed. Hindsight bullet is defended in `01b_hindsight_defense.md`.
 
 Canonical interviewer pack for campaign IA bullets. Synced Jul 2026.
 

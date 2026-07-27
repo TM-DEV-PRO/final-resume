@@ -4,7 +4,7 @@
 
 | Tech | Where | Why |
 |---|---|---|
-| **Python / FastAPI** | Microservices replacing PHP Laravel step by step | Async-friendly APIs; filing-day safe canary cutover |
+| **Python / FastAPI** | Microservices replacing PHP Laravel (gradual cutover) | Async-friendly APIs; filing-day safe canary cutover |
 | **Kafka** | Bulk e-invoice / IRP async stages | Ordering per taxpayer, durable replay, multiple consumer groups |
 | **PostgreSQL** | Transactional data split by **tax quarter** | Hot/cold by fiscal quarter; query and retention fit GST |
 | **MongoDB** | Document snapshots of signed IRP responses | Flexible payload storage for IRN/QR artifacts |
@@ -55,5 +55,5 @@ flowchart LR
 5. Idempotency + DLQ prevent double-filing and allow replay.
 6. Outcomes: **1M+ IRP/day**, **100K+/import**, throughput **700 → 4,000 req/min**, p95 **1.2s → 300ms** for **1,500+** clients; mentored **2**; coverage **35% → 82%**; deploy success **98%** (HISTORICAL).
 
-## 5. Step-by-step migration note (strangler verbally)
-PHP monolith stays behind the gateway while FastAPI services cut over by domain with canaries — same idea interviewers call *strangler*; PDF says “step by step.”
+## 5. Gradual migration note (strangler verbally)
+PHP monolith stays behind the gateway while FastAPI services cut over by domain with canaries — interviewers may call this *strangler*; PDF says migrated to microservices.

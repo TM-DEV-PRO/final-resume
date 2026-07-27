@@ -20,7 +20,6 @@
     \item Building AssortSmart with a planner chat (\textbf{FastAPI, LangGraph, MCP}) and shared \textbf{Go (Gin)} write APIs so retailers decide \textbf{what to buy, how much, and which stores}, targeting turnaround from days to \textbf{under 1 hour} and \textbf{$\geq$20 configs} explored per plan.
     \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited tools that only \textbf{read} planning data and \textbf{3} human confirm steps before any write-back.
     \item Building \textbf{Hindsight} as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration \textbf{checked against computed metrics}, and tenant metric catalogs that go live \textbf{without a code deploy}.
-    \item Keeping plan edits at \textbf{$\sim$0.4\,ms} and month rollups \textbf{sub-second} via choice-cluster-week aggregates (\textbf{$\sim$25M} rows) instead of a flat store-week grid.
     \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, insert-only, refresh by swapping partitions, agent read-only) after a same-rows POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
     \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, MCP, Kafka, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
 \end{zitemize}
@@ -75,7 +74,7 @@
 \textcolor{Project}{\textbf{GST Compliance and E-Invoicing Platform}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Migrated a PHP (\textbf{Laravel}) monolith to \textbf{FastAPI microservices} step by step for \textbf{1,500+ clients}, bringing p95 from \textbf{1.2s to 300ms} while mentoring \textbf{2 engineers}.
+    \item Migrated a PHP (\textbf{Laravel}) monolith to \textbf{FastAPI microservices} for \textbf{1,500+ clients}, bringing p95 from \textbf{1.2s to 300ms} while mentoring \textbf{2 engineers}.
     \item Built a bulk e-invoice path on \textbf{Kafka} and \textbf{PostgreSQL} (tables split by tax quarter) that processed \textbf{1M+ government submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
     \item Made IRP retries safe with \textbf{idempotency keys, retries, and a dead-letter queue}, and used Redis caching to lower repeat DB reads by \textbf{30\%}.
     \item Set up \textbf{ELK and New Relic} alerting plus a client usage dashboard that lowered incident triage \textbf{70\%} and support tickets \textbf{35\%}, raising coverage \textbf{35\% to 82\%} at \textbf{98\%} deploy success.
