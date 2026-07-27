@@ -77,35 +77,43 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 ## Uber Menu Ingestion (same employment)
 
-All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval), ANZ compliance 99.9% / 20h week saved.
+All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval).
 
-**RESUME DECISION (Jul 2026, updated):** Menu is **Selenium scrapers + RAG/Gemini + ANZ** (no Kafka/Flink/Spark on PDF — Mayank-style streaming belongs on event platforms). **Kafka ownership lives on Masters India GST e-invoice** (1M+/day, 700→4,000 req/min, idempotency/DLQ). Flink/Spark stay off skills until a real owned bullet exists. Do not put ~200–500 events/sec or ~12 TPS / ~67 RPS parentheticals on the PDF.
+**Resume PDF (Jul 2026):** Menu = **Selenium + Kafka + Flink + RAG/Gemini** (Uber Eats). Do not put ~200–500 events/sec parentheticals on the PDF.
+
+## ANZ Driver Document Compliance (Uber Mobility — same employment, NOT Eats)
+
+| Claim | Tag | Source |
+|---|---|---|
+| Python automation for **driver and vehicle documents** vs local authorities for **Uber main-app drivers / earners in ANZ** | HISTORICAL | 4yr resume exact wording |
+| **99.9%** compliance · **20 hours/week** manual verification removed | HISTORICAL | same |
+| Separate project under Uber Mobility — **not** Menu / Uber Eats | Resume decision Jul 2026 | Past resumes listed it under Uber EPAM alongside Menu, not as Eats catalog work |
 
 ## Masters India (Dec 2022 - Jun 2024)
 
 | Claim | Tag |
 |---|---|
-| Led PHP (Laravel) monolith to Python FastAPI microservices migration; mentored **2 engineers** | HISTORICAL + user |
+| Led PHP (**Laravel**) monolith to Python FastAPI microservices migration; mentored **2 engineers** | HISTORICAL + user |
 | p95 latency 1.2s to 300ms (75%) for enterprise clients | HISTORICAL (all resumes agree at 1000-1200 to 300-400ms) |
 | Throughput **700 to 4,000 RPM** under peak load | HISTORICAL (2.5yr resume) |
 | Redis caching cut redundant DB queries ~30% | HISTORICAL (2.5yr) |
-| Audit Logs feature reduced client churn ~15% | HISTORICAL (2.5yr) |
-| Bulk e-invoicing 100K+ txns/import, **1M+ daily txns** (~12 TPS avg, 100+ TPS peak ESTIMATED), **1,500+ clients** (use 1500+, drop 2500+ which appears only once) | HISTORICAL |
+| Audit Logs feature reduced client churn ~15% | HISTORICAL (2.5yr) — prep depth; not required on PDF |
+| Bulk e-invoicing 100K+ txns/import, **1M+ daily** IRP submissions (~12 TPS avg, 100+ TPS peak ESTIMATED), **1,500+ clients** (use 1500+, drop 2500+ which appears only once) | HISTORICAL |
 | Coverage 35% to 82%, 98% deployment success | HISTORICAL |
 | ELK + New Relic on-call alerting, triage -70% (~30 min to <10 min ESTIMATED baseline) | HISTORICAL |
+| Client usage dashboard / log downloads cut support tickets **~35%** | HISTORICAL (4yr) — on PDF with triage bullet |
 | Fault tolerance on bulk IRP path: idempotency keys (client + file hash + batch index), exponential backoff retries, dead-letter replay | HISTORICAL (prep + past narratives) |
-| KMS encryption, RBAC, JWT, audit logging for compliance | HISTORICAL |
-| Client usage dashboard, support tickets -35% | HISTORICAL |
+| KMS encryption, RBAC, JWT, audit logging for compliance | HISTORICAL — prep depth; off PDF unless space |
 
 ## GeeksforGeeks (Aug 2021 - Nov 2022)
 
 | Claim | Tag |
 |---|---|
 | PHP to Django migration, **10,000+ daily queries** (user-chosen scale; old resumes said 1000+ doubts/day, 4yr said 100K, we standardize 10K+) | User decision |
-| Voting/pinning REST APIs, +15-20% premium subscriptions (relative) | HISTORICAL |
-| Influencer dashboard with real-time analytics, +30% course sales | HISTORICAL |
+| Voting / pinning / **locking** REST APIs, +15-20% premium subscriptions (relative) | HISTORICAL (1yr/2.5yr include locking) |
+| Influencer dashboard (earnings, transactions, coupons, filters), +30% course sales | HISTORICAL |
 | Cron orchestration (video processing, reminders, recording cleanup), +70% ops efficiency | HISTORICAL |
-| Email/SMTP optimization 50% faster sends, rate limiting | HISTORICAL (1yr/2.5yr) |
+| Email/SMTP optimization 50% faster sends, rate limiting | HISTORICAL (1yr/2.5yr) — prep depth |
 
 ## Achievements / education
 

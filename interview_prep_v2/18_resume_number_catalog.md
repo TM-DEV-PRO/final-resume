@@ -37,8 +37,14 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 |---|---|---|---|
 | 30K+ menus/mo · 24h→2h · $600K+/yr | Historical ops | HISTORICAL | `14_uber_menu_deep_dive.md` |
 | 98% fidelity / 100% schema | Offline eval | HISTORICAL | same |
-| 95%+ ingest / ANZ 99.9% / 20h/week | Anti-bot + compliance | HISTORICAL | same |
-| No Kafka/Flink/Spark on Menu PDF | Mayank-style streaming → Masters | Decision | `GROUND_TRUTH.md` |
+| 95%+ ingest · Kafka + Flink on Menu PDF | Anti-bot + streaming path | HISTORICAL | `23b` |
+
+## ANZ Driver Docs (Uber Mobility)
+
+| Resume number | Why / how | Tag | Defense file |
+|---|---|---|---|
+| 99.9% compliance · 20h/week | Driver **and vehicle** docs for **main-app drivers in ANZ** vs local authorities | HISTORICAL | 4yr resume + `23b` |
+| Not Uber Eats | Separate Mobility project on PDF | Decision | `GROUND_TRUTH.md` |
 
 ## Masters India (consensus across past resumes)
 
@@ -46,9 +52,8 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 |---|---|---|
 | p95 **1.2s → 300ms** | All past resumes | HISTORICAL |
 | **1,500+ clients** (not 2,500+) | Consensus | HISTORICAL |
-| **1M+/day** · **100K+/import** | 4yr+ resumes | HISTORICAL |
-| **700 → 4,000 requests/min** | 2.5yr + current | HISTORICAL |
-| Redis −30% · triage −70% · coverage 35→82% · 98% deploy | HISTORICAL |
+| **1M+/day** · **100K+/import** · **700 → 4,000 req/min** | 4yr + current | HISTORICAL |
+| Redis −30% · triage −70% · support tickets −35% · coverage 35→82% · 98% deploy | HISTORICAL |
 | No ~12 TPS / ~67 RPS on PDF | ESTIMATED derivations — verbal only | ESTIMATED |
 
 ## GeeksforGeeks
@@ -56,4 +61,4 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | Resume number | Why / how | Tag |
 |---|---|---|
 | **10K+ daily queries · 10× contest spikes** | Standardized (not 1K / not 100K) | HISTORICAL / user |
-| Premium +15–20% · course sales +30% · ops +70% | HISTORICAL |
+| Premium +15–20% (voting / pinning / **locking**) · course sales +30% · ops +70% | HISTORICAL |

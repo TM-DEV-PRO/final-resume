@@ -32,13 +32,14 @@ Building AssortSmart so retailers decide what to buy how much and which stores. 
 
 ### Uber via EPAM — SDE2 (Jul 2024 – May 2026)
 **FRM:** Owned design and architecture for Financial Risk Scoping (FastAPI MySQL React) 8 screens 30+ APIs $340M materiality targeting 70% recon cut. Designed 11-table SQLAlchemy schema. Owned Sheets→MySQL recon v2 (18 files). Led 3 engineers.
-**Menu:** Selenium scrapers + RAG/Gemini cut onboarding 24h→2h saved $600K+/yr on 30K+ menus/month. 98% fidelity / 100% schema (offline). ANZ compliance 99.9%.
+**Menu (Uber Eats):** Selenium scrapers + Kafka/Flink + RAG/Gemini cut onboarding 24h→2h saved $600K+/yr on 30K+ menus/month. 98% fidelity / 100% schema (offline).
+**ANZ (Uber Mobility):** Automated driver and vehicle document compliance to 99.9% for main-app drivers in ANZ vs local authorities — saved 20 hours/week. Not Eats catalog work.
 
 ### Masters India — SDE2 (Dec 2022 – Jun 2024)
-Owned PHP→FastAPI strangler for 1500+ clients (p95 1.2s→300ms) mentored 2. Built Kafka + PostgreSQL quarter-shard e-invoicing 1M+/day 100K+/import 700→4000 req/min. Idempotency retries DLQ. On-call ELK/New Relic triage −70% coverage 35→82%.
+Cut p95 1.2s→300ms for 1500+ clients by Laravel→FastAPI strangler; mentored 2. Lifted 700→4000 req/min and 1M+ IRP/day on Kafka + quarter-sharded PostgreSQL. Idempotent sinks + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35→82% at 98% deploy.
 
 ### GeeksforGeeks — SDE (Aug 2021 – Nov 2022)
-Migrated doubt-support PHP→Django for 10K+ daily queries and 10× contest spikes. Voting/pinning APIs lifted premium 15–20%. Influencer analytics + video crons raised course sales 30% and ops efficiency 70%.
+Stabilized doubt-support for 10K+ daily queries and 10× contest spikes via PHP→Django. Voting/pinning/locking APIs lifted premium 15–20%. Influencer earnings dashboard raised course sales 30%; video/reminder/cleanup crons raised ops efficiency 70%.
 
 ## Featured section
 - Resume PDF (campaign PyGo XYZ)

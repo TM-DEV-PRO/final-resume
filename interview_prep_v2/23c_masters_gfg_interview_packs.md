@@ -78,6 +78,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 | Latency sources? | Async IRP (no blocked PHP-FPM), pooling, composite indexes `(client_id, invoice_date)`, N+1 kill; Redis moved p50, async/query fixes moved p95 |
 | Client count? | **1,500+** always — never 2,500+ |
 | Mentoring day-to-day? | Router/service/repository + Pydantic + idempotency helpers; paired first canary |
+| Resume XYZ | Cut p95 **1.2s→300ms** for **1,500+** by Laravel→FastAPI strangler + mentoring **2** |
 
 ### Bullet 2 — Kafka + PG quarter sharding · 1M+/day · 100K+/import · 700 → 4,000 req/min
 
@@ -88,6 +89,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 | TPS/RPS on PDF? | **Do not put on resume.** Verbal only if asked: ~12 TPS avg from 1M/86400; 4,000/min ≈ 67 RPS |
 | Quarter sharding? | Hot writes in current quarter; archive cold quarters; app routes by invoice date |
 | 100K import? | Chunk validate → bounded IRP concurrency → progress stream |
+| Resume XYZ | Lifted **700→4,000 req/min** and **1M+/day** by Kafka + quarter-sharded PostgreSQL |
 
 ### Bullet 3 — Idempotency, retries, DLQ · Redis −30%
 
@@ -98,16 +100,19 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 | 30% reads? | Same config/GSTIN hit on every row of a 100K import — cache removes fan-out |
 | Stampede? | TTL jitter + SETNX singleflight |
 | Circuit breaker? | Verbal prep only — not a resume metric |
+| Resume XYZ | Cut redundant reads **30%** and made IRP replay safe via idempotent sinks + Redis |
 
-### Bullet 4 — ELK + New Relic · triage −70% · coverage 35→82 · 98% deploy
+### Bullet 4 — ELK + New Relic · triage −70% · support tickets −35% · coverage 35→82 · 98% deploy
 
 | Probe | Defense |
 |---|---|
 | What changed? | SSH/grep → structured JSON + request ID across API/consumer/worker |
 | 70% math? | ~30 min → <10 min ESTIMATED baseline behind HISTORICAL cut |
+| Support −35%? | Client usage dashboard + log downloads (4yr resume) — HISTORICAL ops attribution |
 | Own on-call title? | Claim **alerting + triage**, not invented SEV commander |
 | Coverage focus? | Money paths first: register, recon, import |
 | 98%? | HISTORICAL deploy success under CI gates |
+| Resume XYZ | Cut triage **70%** and tickets **35%** via ELK/New Relic + usage dashboard; coverage **35→82** at **98%** deploy |
 
 ### Tech line — defend if pressed
 
@@ -219,24 +224,28 @@ Learners / influencers
 | What improved? | ORM transactions, request validation, read/write separation, review/staging |
 | Spike story? | Contest days ~10×; design for burst without melting write path |
 | Avg RPS? | Order of ten thousand/day ≪ 1 RPS average (ESTIMATED) |
+| Resume XYZ | Stabilized doubt-support for **10K+/10×** by PHP→Django |
 
-### Bullet 2 — Voting/pinning · premium +15–20%
+### Bullet 2 — Voting / pinning / locking · premium +15–20%
 
 | Probe | Defense |
 |---|---|
 | Idempotency? | Unique constraint; second vote is no-op/update, not double count |
+| Locking? | Moderation lock on a doubt thread (past resumes: voting, pinning, **locking**) |
 | Hot row? | Redis counter for badge/UI; reconcile to MySQL |
 | Data split? | MySQL relational SoT; Mongo flexible bodies; ES search; Redis hot reads |
 | +15–20%? | Relative lift attributed by growth — own APIs/reliability, not causal monopoly |
+| Resume XYZ | Lifted premium **15–20%** by shipping voting/pinning/locking REST APIs |
 
 ### Bullet 3 — Influencer dashboard + crons · sales +30% · ops +70%
 
 | Probe | Defense |
 |---|---|
-| Dashboard? | Redis near-real-time + cron daily rollups for partners |
+| Dashboard? | Earnings, transactions, coupons, filters/CSV (past resumes); Redis near-real-time + cron rollups |
 | Cron jobs? | Video handoff, reminders, recording cleanup |
 | Reliability? | Host lease, idempotent keys, success/fail logs, retry/partial-batch handling |
 | Metrics? | HISTORICAL business attribution; engineer the system, attribute carefully |
+| Resume XYZ | Raised course sales **30%** via influencer dashboard; ops **70%** via video/reminder/cleanup crons |
 
 ---
 

@@ -23,13 +23,13 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 |---|---|
 | Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ~0.4ms edits; ONE CH (63/8 insert-only/partition-swapped + 189s→12.3s) |
 | Uber FRM | Design+architecture ownership; 8 screens, 30+ APIs, $340M, targeting 70%; led 3 |
-| Uber Menu | Selenium + RAG/Gemini + ANZ; 30K+/mo, 24h→2h, $600K+ (no Kafka/Flink/Spark) |
-| Masters India | Designed/built/operated FastAPI strangler; Kafka event platform; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day |
-| GeeksforGeeks | 10K+ daily / 10× spikes; premium +15–20%; course sales +30%; ops +70% |
+| Uber Menu | Selenium + Kafka/Flink + RAG/Gemini; ANZ is **Mobility** (not Eats) |
+| Masters India | Designed/built/operated FastAPI strangler; Kafka event platform; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day; support tickets −35% |
+| GeeksforGeeks | 10K+ daily / 10× spikes; premium +15–20% (votes/pins/locks); course sales +30%; ops +70% |
 
 Original playbook still useful for agentic Assort depth: `../interview_prep/agentic_assort_playbook/`.
 
 <div class="callout warn">
-<b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. Copilot is Phase 1 design-approved, load test pending — say <b>building</b>, not shipped. No IA TPS/RPM (none measured). Kafka ownership is Masters, not Menu.
+<b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. Copilot is Phase 1 design-approved, load test pending — say <b>building</b>, not shipped. No IA TPS/RPM (none measured). Menu Kafka/Flink is Eats ingest; Masters Kafka is GST IRP — different products. ANZ is Uber <b>Mobility</b> drivers, not Eats.
 </div>
 

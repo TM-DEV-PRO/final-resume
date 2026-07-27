@@ -54,12 +54,13 @@ GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoice
 - Invalidation on write for config data; TTL-only for slowly changing masters.
 - Caching mostly helped p50 and read-heavy endpoints; async IO and query fixes drove the p95 tail.
 
-### Bullet 4. ELK + New Relic on-call alerting, triage 70 percent faster, coverage 35 to 82, 98 percent deploy success
+### Bullet 4. ELK + New Relic on-call alerting, triage 70 percent faster, support tickets −35%, coverage 35 to 82, 98 percent deploy success
 
-**Resume XYZ:** Established ELK and New Relic on-call alerting (X/Y), cutting incident triage 70% and raising coverage 35% to 82% with 98% deployment success (Z).
+**Resume XYZ:** Cut incident triage **70%** and support tickets **35%** (X) by shipping ELK/New Relic on-call alerting plus a client usage dashboard (Y), raising coverage 35%→82% at 98% deploy success (Z).
 
 - Before: SSH into boxes and grep. After: structured JSON logs with request IDs shipped to ELK, New Relic APM traces, alert rules on error rate and latency SLOs.
 - Triage went from about 30 minutes to under 10 (baseline ESTIMATED, the 70 percent cut is HISTORICAL). The win is correlation: one request ID follows a transaction across services and workers.
+- Support tickets −35%: client usage tracking + log downloads (4yr resume) — HISTORICAL ops attribution; own the dashboard engineering, not a causal monopoly over all tickets.
 - Honesty: claim on-call **alerting** and faster triage. Do not invent a formal pager rotation or SEV commander title without proof.
 - Coverage 35 to 82 percent with pytest, enforced as a CI gate. Focus was on money paths first (registration, reconciliation, imports). Deployment success rate reached 98 percent (HISTORICAL).
 

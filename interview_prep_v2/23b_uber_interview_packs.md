@@ -144,7 +144,7 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 
 ## 1. 30s / 2min explain
 
-**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with proxy/backoff defenses that raised successful ingestions to 95%+. For messy PDFs/images I built a RAG + Gemini 2.5 Pro extraction path with SFT—98% fidelity and 100% schema consistency on offline eval. Separately, ANZ driver-document automation hit 99.9% compliance and saved ~20 hours/week.
+**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. For messy PDFs/images I built a RAG + Gemini 2.5 Pro extraction path with SFT—98% fidelity and 100% schema consistency on offline eval. Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **main-app drivers in ANZ** to 99.9% and saved ~20 hours/week.
 
 **2min:** Partner menus arrive as JS-heavy sites, PDFs, and images. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s instead of failing half the time. Structured HTML paths land in catalog; unstructured payloads go through chunk → retrieve similar labeled menus → Gemini 2.5 Pro generate → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. Eval numbers (98% fidelity, 100% schema consistency) are offline—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Python compliance track for driver/vehicle docs (99.9%, 20h/week)—not the menu pipeline. Stack on the resume: Python, Selenium, Gemini, RAG, SFT, GCP, Docker—no streaming claim on this PDF.
 
@@ -223,10 +223,11 @@ flowchart LR
 - **Baseline:** ~60–65% → 95%+ is **ESTIMATED** pre-hardening—say so if pressed.
 - **Mechanics:** rotate egress IPs, refresh proxy pools under ban signals, backoff/retry budgets per source so one hostile site doesn't burn the fleet.
 
-### Bullet 4 — ANZ compliance 99.9%; 20 hours/week saved
-- **Separate track** from menu scraping. Driver/vehicle document verification automation.
+### Bullet 4 — ANZ Mobility (separate project): 99.9% compliance; 20 hours/week saved
+- **Not Uber Eats.** Own PDF project: **ANZ Driver Document Compliance (Uber Mobility)**.
+- Past 4yr wording: Python automation for **driver and vehicle documents** with local authorities for **Uber earners / main-app drivers in the ANZ region**.
 - HISTORICAL: 99.9% automated compliance, ~20h/week manual verification removed.
-- Don't force-fit into RAG or Selenium menu architecture.
+- Do not fold into menu Selenium/RAG architecture.
 
 ---
 
@@ -253,11 +254,11 @@ IP bans, CAPTCHA walls, soft 403s → success collapses. Rotation + dynamic pool
 **Q7. Idempotent landing—how do you avoid duplicate menus?**  
 Upsert keyed by vendor/menu version or content hash so retries after partial scrape don't double-write items.
 
-**Q8. Why is ANZ on the same project block?**  
-Same Uber employment, different automation product. Lead with "separate compliance track" so interviewers don't hunt for Kafka in ANZ.
+**Q8. Is ANZ part of Uber Eats?**  
+No. Same Uber/EPAM employment, **Uber Mobility** — main-app drivers in ANZ. Driver + vehicle docs vs local authorities. Separate project on the PDF.
 
-**Q9. Where is Kafka / Flink / Spark on this resume?**  
-Not on the Menu PDF. Streaming ownership is framed on Masters India GST e-invoice. Menu story is Selenium + RAG/Gemini + ANZ.
+**Q9. Where is Kafka / Flink on Menu?**  
+On the Menu PDF: Kafka ingest + Flink keyed normalize/dedupe/replay for bursty scrapes. Masters also has Kafka for GST IRP bulk — different product.
 
 **Q10. Biggest silent failure mode?**  
 DOM change or CAPTCHA shift that green-lights empty/partial menus. Defend with scrape-health checks, schema validation, and human review on low confidence—not "we never failed."
@@ -266,9 +267,10 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus. Defend with s
 
 ## 6. Do NOT say
 
-- **Kafka / Flink / Spark** on Menu (PDF and verbal story: Selenium + RAG/Gemini + ANZ only).
-- **~200–500 events/sec** or streaming SLOs on Menu.
+- ANZ as an **Uber Eats / menu catalog** feature (it is **Mobility drivers** in ANZ).
+- Invented ANZ stack (Selenium menu stack ≠ doc compliance automation).
+- **~200–500 events/sec** or streaming SLOs as measured Menu facts.
 - **98%/100% as live SLA** without saying **offline eval**.
 - **Baseline 60%** as measured fact (call it **estimated**).
-- **Pinot**, or merging Menu with IA ClickHouse / Masters Kafka stories.
+- **Pinot** / Spark as Menu PDF claims unless asked.
 - Claiming you owned all of Uber Eats catalog platform end-to-end.

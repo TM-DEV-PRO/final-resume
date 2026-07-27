@@ -4,7 +4,7 @@
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT:** Menu PDF is **Selenium + Kafka ingest + Flink normalize/dedupe + RAG/Gemini + ANZ**. Spark/Pinot stay prep/verbal. Kafka at **Masters** remains the IRP e-invoice platform (different product). Use architecture `03_uber_menu.md` + `tech_depth/flink.md` as canonical.
+> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium + Kafka + Flink + RAG/Gemini** (Uber Eats). **ANZ is a separate Uber Mobility project** — main-app drivers/earners, driver+vehicle docs vs local authorities — **not** Eats catalog. Masters also owns Kafka for GST IRP (different product). Use [`23b_uber_interview_packs.md`](../../interview_prep_v2/23b_uber_interview_packs.md) § Menu / ANZ as the canonical pack.
 
 ---
 
@@ -70,9 +70,9 @@ Unstructured PDFs/images. Chunk → retrieve similar labeled menus → Gemini ge
 
 IP rotation, UA spoofing, dynamic proxies, per-source retry budgets. Baseline ESTIMATED ~60–65% → mid-90s.
 
-### 4. ANZ compliance 99.9%, 20h/week saved
+### 4. ANZ driver/vehicle compliance 99.9%, 20h/week saved (Uber Mobility)
 
-Separate Python automation for driver/vehicle docs. HISTORICAL.
+**Not Uber Eats.** Separate PDF project under **Uber Mobility**: automate **driver and vehicle documents** for **main-app drivers / earners in ANZ** against local authorities. HISTORICAL from 4yr resume. Do not invent Selenium/RAG for this path.
 
 ---
 

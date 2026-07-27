@@ -4,7 +4,7 @@
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium scrapers + RAG/Gemini + ANZ only** — **no Kafka / Flink / Spark** on the one-pager. Kafka ownership lives on **Masters India** GST e-invoice (Mayank-style event platform). Use [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Menu as the canonical interviewer pack. Sections below that still mention Kafka/Flink/Spark are **prep depth / historical architecture options** — do not put them on the PDF or lead the interview story with them unless the interviewer asks about streaming elsewhere.
+> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium + Kafka + Flink + RAG/Gemini** (Uber Eats). **ANZ is a separate Uber Mobility project** — main-app drivers/earners, driver+vehicle docs vs local authorities — **not** Eats catalog. Masters also owns Kafka for GST IRP (different product). Use [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Menu / ANZ as the canonical pack.
 
 ---
 
@@ -70,9 +70,9 @@ Unstructured PDFs/images. Chunk → retrieve similar labeled menus → Gemini ge
 
 IP rotation, UA spoofing, dynamic proxies, per-source retry budgets. Baseline ESTIMATED ~60–65% → mid-90s.
 
-### 4. ANZ compliance 99.9%, 20h/week saved
+### 4. ANZ driver/vehicle compliance 99.9%, 20h/week saved (Uber Mobility)
 
-Separate Python automation for driver/vehicle docs. HISTORICAL.
+**Not Uber Eats.** Separate PDF project under **Uber Mobility**: automate **driver and vehicle documents** for **main-app drivers / earners in ANZ** against local authorities. HISTORICAL from 4yr resume. Do not invent Selenium/RAG for this path.
 
 ---
 
