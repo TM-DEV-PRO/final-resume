@@ -30,6 +30,7 @@ Python/Go XYZ Senior MNC pack for Amazon Google Microsoft LinkedIn Apple Netflix
 
 ## Behavioral
 - [STAR bank](behavioral/star_bank.md)
+- [21 classic interview Q&As (filled)](../interview_prep_v2/32_common_interview_qa.md)
 - [Company behavior guides](behavioral/company_behavior_guides.md)
 - [Why hire you](behavioral/why_hire_you.md)
 - [Intros short/long](behavioral/intros_short_long.md)
