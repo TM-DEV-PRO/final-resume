@@ -32,8 +32,8 @@ Building AssortSmart so retailers decide what to buy how much and which stores. 
 
 ### Uber via EPAM — SDE2 (Jul 2024 – May 2026)
 **FRM:** Owned design and architecture for Financial Risk Scoping (FastAPI MySQL React) 8 screens 30+ APIs $340M materiality targeting 70% recon cut. Designed 11-table SQLAlchemy schema. Owned Sheets→MySQL recon v2 (18 files). Led 3 engineers.
-**Menu (Uber Eats):** Selenium scrapers + Kafka/Flink + LangChain RAG/Gemini over a vector store of labeled menus converted multilingual PDFs/images into Uber Eats schema (98% fidelity / 100% schema offline + SFT). Cut onboarding 24h→2h saved $600K+/yr on 30K+ menus/month.
-**ANZ (Uber Mobility):** Automated driver and vehicle document compliance to 99.9% for Uber drivers in ANZ vs local authorities — saved 20 hours/week (HISTORICAL past-resume claim). Not Eats catalog work.
+**Menu (Uber Eats):** Built Selenium→Kafka→Flink pipeline; LangChain RAG + Gemini over Milvus for multilingual PDF/image → Uber Eats schema (98%/100% offline). Onboarding 24h→2h, $600K+/yr on 30K+ menus/month.
+**ANZ (Uber Mobility):** Automated Uber driver/vehicle document checks for ANZ to 99.9% with local authorities, removing ~20h/week manual verification (HISTORICAL).
 
 ### Masters India — SDE2 (Dec 2022 – Jun 2024)
 Cut p95 1.2s→300ms for 1500+ clients by Laravel→FastAPI strangler; mentored 2. Lifted 700→4000 req/min and 1M+ IRP/day on Kafka + quarter-sharded PostgreSQL. Idempotent sinks + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35→82% at 98% deploy.

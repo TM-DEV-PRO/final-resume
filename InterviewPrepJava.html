@@ -241,7 +241,8 @@ strong{color:#fff}
 <a class="lvl2" href="#eight-layers-names-to-draw">Eight layers (names to draw)</a>
 <a class="lvl2" href="#four-physical-patterns-ddl-doctrine">Four physical patterns (DDL doctrine)</a>
 <a class="lvl2" href="#platform-sizing-honesty-verbal-ok">Platform / sizing honesty (verbal OK)</a>
-<a class="lvl2" href="#how-this-maps-to-the-resume-bullet">How this maps to the resume bullet</a></nav>
+<a class="lvl2" href="#how-this-maps-to-the-resume-bullet">How this maps to the resume bullet</a>
+<a class="lvl1" href="#multi-agent-resume-panel-menu-anz-masters-28-jul-2026">Multi-agent resume panel — Menu / ANZ / Masters (28 Jul 2026)</a></nav>
 <main><h1 id="java-track-interview-prep-hub-grounded-rewrite">Java Track — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026</strong></p>
 <p>Backs <code>resume_java/</code> (PDF: <code>Tarun_Mittal_SSE_Java_5yr.pdf</code>). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu, and ClickHouse work stay Python.</p>
@@ -2562,7 +2563,7 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 </blockquote>
 <p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Rates tagged ESTIMATED where derived.</p>
 <blockquote>
-<p><strong>RESUME ALIGNMENT (Jul 2026):</strong> Menu PDF is <strong>Selenium + Kafka + Flink + LangChain RAG / Gemini / vector store / SFT</strong> converting multilingual PDFs/images into Uber Eats schema (98%/100% offline). <strong>ANZ is a separate Uber Mobility project</strong> — Uber drivers in ANZ, driver+vehicle docs vs local authorities — <strong>not</strong> Eats; 20h/week is HISTORICAL past-resume only. Masters also owns Kafka for GST IRP (different product). Use <a href="23b_uber_interview_packs.md"><code>23b_uber_interview_packs.md</code></a> § Menu / ANZ as the canonical pack.</p>
+<p><strong>RESUME ALIGNMENT (Jul 2026):</strong> Menu PDF is <strong>Selenium + Kafka + Flink + LangChain RAG / Gemini / </strong>Milvus<strong> converting multilingual PDFs/images into Uber Eats schema (98%/100% offline; no SFT). </strong>ANZ is a separate Uber Mobility project<strong> — Uber drivers in ANZ, driver+vehicle docs vs local authorities — </strong>not** Eats; 20h/week is HISTORICAL past-resume only. Masters also owns Kafka for GST IRP (different product). Use <a href="23b_uber_interview_packs.md"><code>23b_uber_interview_packs.md</code></a> § Menu / ANZ as the canonical pack.</p>
 </blockquote>
 <hr>
 <h2 id="why-this-project-is-the-best-fit-for-flink-and-spark">Why this project is the best fit for Flink and Spark</h2>
@@ -3289,7 +3290,7 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 <td><code>14_uber_menu_deep_dive.md</code></td>
 </tr>
 <tr>
-<td>98% fidelity / 100% schema · LangChain RAG + Gemini + vector store + SFT</td>
+<td>98% fidelity / 100% schema · LangChain RAG + Gemini + Milvus (no SFT)</td>
 <td>Multilingual PDFs/images → Uber Eats schema</td>
 <td>HISTORICAL offline eval</td>
 <td><code>23b</code></td>
@@ -4004,8 +4005,8 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 <hr>
 <h1 id="uber-menu-interview-pack">Uber Menu — Interview Pack</h1>
 <h2 id="1-30s-2min-explain_1">1. 30s / 2min explain</h2>
-<p><strong>30s:</strong> At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. Unstructured multilingual menus arrive as PDFs and images — I built a LangChain RAG + Gemini 2.5 Pro pipeline over a vector store of labeled menus, with SFT for schema adherence, hitting 98% fidelity and 100% schema consistency on offline eval into Uber Eats catalog shape. Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document compliance for <strong>Uber drivers in ANZ</strong> to 99.9% and saved ~20 hours/week (HISTORICAL from prior resume — not re-measured here).</p>
-<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from a <strong>vector store</strong> (LangChain RAG) → <strong>Gemini 2.5 Pro</strong> generate Uber Eats schema fields → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend <em>your</em> LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are <strong>offline</strong>—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, vector DB, SFT, GCP, Docker.</p>
+<p><strong>30s:</strong> At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. Unstructured multilingual menus arrive as PDFs and images — I built a LangChain RAG + Gemini 2.5 Pro extractor over <strong>Milvus</strong> (labeled-menu embeddings), hitting 98% fidelity / 100% schema consistency on offline eval into Uber Eats catalog shape (schema gate; no SFT on PDF). Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document compliance for <strong>Uber drivers in ANZ</strong> to 99.9% and saved ~20 hours/week (HISTORICAL from prior resume — not re-measured here).</p>
+<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → <strong>Gemini 2.5 Pro</strong> generate Uber Eats schema fields → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend <em>your</em> LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are <strong>offline</strong>—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
 <hr>
 <h2 id="2-architecture_1">2. Architecture</h2>
 <pre><code>Partner sites (JS)          PDFs / images (multilingual)
@@ -4118,11 +4119,11 @@ Separate track (not on hot menu path):
 <li><strong>How:</strong> Ship in-house Selenium scrapers on GCP + Kafka ingest + Flink keyed normalize/dedupe/replay vs paid third-party menu tool.</li>
 <li><strong>Own:</strong> Acquisition + reliability of scrape fleet landing catalogs faster—not a claim of owning all Eats catalog infra.</li>
 </ul>
-<h3 id="bullet-2-multilingual-pdfsimages-uber-eats-schema-langchain-rag-gemini-vector-store-sft-98100-offline">Bullet 2 — Multilingual PDFs/images → Uber Eats schema; LangChain RAG + Gemini + vector store + SFT; 98%/100% offline</h3>
+<h3 id="bullet-2-multilingual-pdfsimages-uber-eats-schema-langchain-rag-gemini-milvus-98100-offline-no-sft">Bullet 2 — Multilingual PDFs/images → Uber Eats schema; LangChain RAG + Gemini + Milvus; 98%/100% offline (no SFT)</h3>
 <ul>
 <li><strong>Always say offline / eval.</strong> Not a live production SLA unless you instrumented one.</li>
 <li><strong>Why LLM:</strong> unstructured menus (PDFs, images, different languages) defeat regex/HTML parsers; need schema-shaped Uber Eats catalog rows.</li>
-<li><strong>Pipeline:</strong> parse/chunk → retrieve similar labeled menus from <strong>vector store</strong> (LangChain RAG) → Gemini generate → schema validate → SFT for schema adherence → human review on low confidence.</li>
+<li><strong>Pipeline:</strong> parse/chunk → retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → Gemini generate → schema validate → human review on low confidence. (SFT removed from PDF; 100% schema = validation gate.)</li>
 <li><strong>100% schema:</strong> validation gate rejects malformed structures; fidelity is content correctness vs ground-truth labels.</li>
 <li><strong>Industry parallel:</strong> DoorDash menu transcription uses OCR→LLM structure + confidence/human gate; RAG retrieves similar items for grounding. Cite pattern, not their proprietary stack.</li>
 <li><strong>Do not invent:</strong> Pinecone/Weaviate product name, OCR vendor, or live MTTR numbers.</li>
@@ -4168,7 +4169,7 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 <li>ANZ as an <strong>Uber Eats / menu catalog</strong> feature (it is <strong>Mobility drivers</strong> in ANZ).</li>
 <li>“<strong>main-app</strong>” wording on ANZ.</li>
 <li>Invented ANZ stack (Selenium menu stack ≠ doc compliance automation).</li>
-<li>Named vector vendor (Pinecone/etc.) you cannot defend — say <strong>vector store</strong>.</li>
+<li>Invent Pinecone/Weaviate if you only owned <strong>Milvus</strong> (4yr resume).</li>
 <li><strong>~200–500 events/sec</strong> or streaming SLOs as measured Menu facts.</li>
 <li><strong>98%/100% as live SLA</strong> without saying <strong>offline eval</strong>.</li>
 <li><strong>Baseline 60%</strong> as measured fact (call it <strong>estimated</strong>).</li>
@@ -7624,4 +7625,41 @@ Doubt support is the Q&amp;A layer on articles and courses — high read volume,
 </tr>
 </tbody>
 </table>
-<p><strong>Do not say:</strong> “DDL load-tested,” “624 columns,” “CH mutations_used=0 in prod,” or invent TPS/RPM from this schema.</p></main></div></body></html>
+<p><strong>Do not say:</strong> “DDL load-tested,” “624 columns,” “CH mutations_used=0 in prod,” or invent TPS/RPM from this schema.</p>
+<hr>
+<h1 id="multi-agent-resume-panel-menu-anz-masters-28-jul-2026">Multi-agent resume panel — Menu / ANZ / Masters (28 Jul 2026)</h1>
+<p>Personas: Recruiter · EM · Technical interviewer · Honesty auditor.<br>
+Sources: current <code>experience.tex</code> (v2 / java / pygo) + <code>GROUND_TRUTH.md</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Persona</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recruiter</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>EM</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Technical interviewer</td>
+<td>PASS</td>
+</tr>
+<tr>
+<td>Honesty auditor</td>
+<td>PASS</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Consensus:</strong> Publishable.</p>
+<p><strong>Checked</strong>
+- ANZ: Uber Mobility drivers/vehicle docs in ANZ; 99.9%; ~20h/week HISTORICAL; no “main-app.”
+- Menu architecture on PDF: <code>Selenium → Kafka → Flink</code> + <code>LangChain RAG + Gemini over Milvus</code>.
+- SFT removed; 98%/100% = offline eval HISTORICAL; 100% schema = validation gate.
+- Milvus named from 4yr resume Databases line (not invented Pinecone).</p>
+<p><strong>Optional polish applied after panel:</strong> ANZ → “achieving 99.9% … eliminating about 20 hours/week.”</p></main></div></body></html>

@@ -79,13 +79,13 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot).
 
-**Unstructured → structured extraction (PDF claim):** multilingual / multi-format menus (**PDFs, images**, etc.) → Uber Eats catalog schema via **LangChain RAG + Gemini 2.5 Pro** over a **vector store of labeled menus** + **SFT** for schema adherence → **98% fidelity / 100% schema consistency** (**offline eval**). Skills line on 4yr resume explicitly listed LangChain, RAG, Vector Databases, Gemini, SFT. Do **not** name a specific vector product (Pinecone/Weaviate/etc.) unless you can defend ownership — say **vector store**.
+**Unstructured → structured extraction (PDF claim):** multilingual / multi-format menus (**PDFs, images**) → Uber Eats catalog schema via **LangChain RAG + Gemini 2.5 Pro** over **Milvus** (labeled-menu embeddings) → schema validation gate → **98% fidelity / 100% schema consistency** (**offline eval**, HISTORICAL from 4yr resume). **No SFT on PDF** (removed Jul 2026 — 100% schema is the validation gate, not fine-tune).
 
-**Production framing (interview, not inventing Uber internals):** industry pattern matches DoorDash-style menu transcription (OCR/parse → LLM structure → confidence/human gate) and retrieval of similar labeled menus for grounding (RAG). Your owned story is the LangChain RAG + Gemini + vector-store + SFT path on the resume — not Uber INCA internals.
+**Why Milvus:** Named on 4yr resume Databases line (`Milvus` + “Vector Databases” under GenAI). Fits production RAG with LangChain better than unnamed “vector store”; self-hosted/scale path vs Pinecone managed. Do not invent Pinecone/Weaviate ownership.
 
-**Resume PDF:** Menu = **Selenium + Kafka + Flink + LangChain RAG/Gemini/vector store + SFT**. Do not put ~200–500 events/sec parentheticals on the PDF.
+**Fidelity:** 4yr exact: “increasing extraction fidelity by 98%” + “100% data consistency for menus.” Tag **HISTORICAL offline eval** — not a live SLA.
 
-## ANZ Driver Document Compliance (Uber Mobility — same employment, NOT Eats)
+**Resume PDF:** Menu = **Selenium → Kafka → Flink** + **LangChain RAG / Gemini / Milvus** (no SFT). Do not put ~200–500 events/sec parentheticals on the PDF.
 
 | Claim | Tag | Source |
 |---|---|---|

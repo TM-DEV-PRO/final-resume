@@ -36,7 +36,7 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | Resume number | Why / how | Tag | Defense file |
 |---|---|---|---|
 | 30K+ menus/mo · 24h→2h · $600K+/yr | Historical ops | HISTORICAL | `14_uber_menu_deep_dive.md` |
-| 98% fidelity / 100% schema · LangChain RAG + Gemini + vector store + SFT | Multilingual PDFs/images → Uber Eats schema | HISTORICAL offline eval | `23b` |
+| 98% fidelity / 100% schema · LangChain RAG + Gemini + Milvus (no SFT) | Multilingual PDFs/images → Uber Eats schema | HISTORICAL offline eval | `23b` |
 | 95%+ ingest · Kafka + Flink on Menu PDF | Anti-bot + streaming path | HISTORICAL | `23b` |
 
 ## ANZ Driver Docs (Uber Mobility)

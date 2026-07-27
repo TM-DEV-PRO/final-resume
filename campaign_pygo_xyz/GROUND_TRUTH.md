@@ -82,9 +82,9 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot).
 
-**Unstructured → structured:** multilingual PDFs/images → Uber Eats schema via **LangChain RAG + Gemini 2.5 Pro** over a **vector store** of labeled menus + **SFT** → **98%/100%** offline eval. No named vector vendor on PDF.
+**Unstructured → structured:** multilingual PDFs/images → Uber Eats schema via **LangChain RAG + Gemini 2.5 Pro** over **Milvus** → schema gate → **98%/100%** offline eval. **No SFT** on PDF.
 
-**Resume PDF:** Menu = **Selenium + Kafka + Flink + LangChain RAG/Gemini/vector store + SFT**. Masters also owns Kafka for GST e-invoice (different product).
+**Resume PDF:** Menu = **Selenium → Kafka → Flink** + **LangChain RAG / Gemini / Milvus** (no SFT). Masters also owns Kafka for GST e-invoice (different product).
 
 ## ANZ Driver Document Compliance (Uber Mobility — same employment, NOT Eats)
 

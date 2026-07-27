@@ -144,9 +144,9 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 
 ## 1. 30s / 2min explain
 
-**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. Unstructured multilingual menus arrive as PDFs and images — I built a LangChain RAG + Gemini 2.5 Pro pipeline over a vector store of labeled menus, with SFT for schema adherence, hitting 98% fidelity and 100% schema consistency on offline eval into Uber Eats catalog shape. Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **Uber drivers in ANZ** to 99.9% and saved ~20 hours/week (HISTORICAL from prior resume — not re-measured here).
+**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. Unstructured multilingual menus arrive as PDFs and images — I built a LangChain RAG + Gemini 2.5 Pro extractor over **Milvus** (labeled-menu embeddings), hitting 98% fidelity / 100% schema consistency on offline eval into Uber Eats catalog shape (schema gate; no SFT on PDF). Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **Uber drivers in ANZ** to 99.9% and saved ~20 hours/week (HISTORICAL from prior resume — not re-measured here).
 
-**2min:** Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from a **vector store** (LangChain RAG) → **Gemini 2.5 Pro** generate Uber Eats schema fields → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend *your* LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are **offline**—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, vector DB, SFT, GCP, Docker.
+**2min:** Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from **Milvus** (LangChain RAG) → **Gemini 2.5 Pro** generate Uber Eats schema fields → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend *your* LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are **offline**—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
 
 ---
 
@@ -215,10 +215,10 @@ flowchart LR
 - **How:** Ship in-house Selenium scrapers on GCP + Kafka ingest + Flink keyed normalize/dedupe/replay vs paid third-party menu tool.
 - **Own:** Acquisition + reliability of scrape fleet landing catalogs faster—not a claim of owning all Eats catalog infra.
 
-### Bullet 2 — Multilingual PDFs/images → Uber Eats schema; LangChain RAG + Gemini + vector store + SFT; 98%/100% offline
+### Bullet 2 — Multilingual PDFs/images → Uber Eats schema; LangChain RAG + Gemini + Milvus; 98%/100% offline (no SFT)
 - **Always say offline / eval.** Not a live production SLA unless you instrumented one.
 - **Why LLM:** unstructured menus (PDFs, images, different languages) defeat regex/HTML parsers; need schema-shaped Uber Eats catalog rows.
-- **Pipeline:** parse/chunk → retrieve similar labeled menus from **vector store** (LangChain RAG) → Gemini generate → schema validate → SFT for schema adherence → human review on low confidence.
+- **Pipeline:** parse/chunk → retrieve similar labeled menus from **Milvus** (LangChain RAG) → Gemini generate → schema validate → human review on low confidence. (SFT removed from PDF; 100% schema = validation gate.)
 - **100% schema:** validation gate rejects malformed structures; fidelity is content correctness vs ground-truth labels.
 - **Industry parallel:** DoorDash menu transcription uses OCR→LLM structure + confidence/human gate; RAG retrieves similar items for grounding. Cite pattern, not their proprietary stack.
 - **Do not invent:** Pinecone/Weaviate product name, OCR vendor, or live MTTR numbers.
@@ -275,7 +275,7 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 - ANZ as an **Uber Eats / menu catalog** feature (it is **Mobility drivers** in ANZ).
 - “**main-app**” wording on ANZ.
 - Invented ANZ stack (Selenium menu stack ≠ doc compliance automation).
-- Named vector vendor (Pinecone/etc.) you cannot defend — say **vector store**.
+- Invent Pinecone/Weaviate if you only owned **Milvus** (4yr resume).
 - **~200–500 events/sec** or streaming SLOs as measured Menu facts.
 - **98%/100% as live SLA** without saying **offline eval**.
 - **Baseline 60%** as measured fact (call it **estimated**).
