@@ -3,6 +3,8 @@
 One place to whiteboard **database shape** and **tech justification** for every project on the current PDFs.  
 Honesty: MEASURED design / MEASURED code / HISTORICAL / DESIGN. Do not invent IA TPS.
 
+**Need columns + API contracts?** → [`35_table_schemas_api_design.md`](35_table_schemas_api_design.md) (IA CH DDL columns, FRM ORM/routes, Menu/Masters/GFG payloads).
+
 **Sources:** FRM ORM (`11_uber_frm_deep_dive`), CH DDL Phase-1 (`29_…`), Masters/GFG packs, Menu packs.  
 **Industry alignment (not your metrics):** ClickHouse docs on ReplacingMergeTree / partition swaps; Flink keyed-state dedupe + Kafka ingest (common production pattern).
 

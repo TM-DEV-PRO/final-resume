@@ -10,15 +10,16 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 2. **[`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)** — every PDF tech: where / why / flow / numbers
 3. **[`33_architecture_diagrams.md`](33_architecture_diagrams.md)** — ASCII + mermaid flows for every project
 4. **[`34_er_tables_tech_why.md`](34_er_tables_tech_why.md)** — ER diagrams, table catalogs, why each tech / problem faced
-5. **[`23_project_interview_packs.md`](23_project_interview_packs.md)** — interviewer packs for every project
+5. **[`35_table_schemas_api_design.md`](35_table_schemas_api_design.md)** — column-level schemas + API contracts (IA CH DDL, FRM ORM/routes, Menu/Masters/GFG)
+6. **[`23_project_interview_packs.md`](23_project_interview_packs.md)** — interviewer packs for every project
    - [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) · [`23c_masters_gfg_interview_packs.md`](23c_masters_gfg_interview_packs.md)
-6. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — AssortSmart extra depth + source extracts `19`/`20`/`21`/`29` (CH DDL Phase-1)
-7. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
-8. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
-9. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
-10. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html` + **[`32_common_interview_qa.md`](32_common_interview_qa.md)** (21 classic Q&As, filled)
-11. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · [`24_job_listings_5x_ats_scorecard.md`](24_job_listings_5x_ats_scorecard.md) · [`25_panel_ats_rescore_post_flink.md`](25_panel_ats_rescore_post_flink.md) · [`26_python_job_listings_ats.md`](26_python_job_listings_ats.md) · [`27_epam_scope_validation.md`](27_epam_scope_validation.md) · **[`28_fresh_smts_genai_python_go_scorecard.md`](28_fresh_smts_genai_python_go_scorecard.md)** · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
-12. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — STUDY ONLY (multi-region, K8s ops, Spark, Flink, Terraform)
+7. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — AssortSmart extra depth + source extracts `19`/`20`/`21`/`29` (CH DDL Phase-1)
+8. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
+9. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
+10. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
+11. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html` + **[`32_common_interview_qa.md`](32_common_interview_qa.md)** (21 classic Q&As, filled)
+12. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · [`24_job_listings_5x_ats_scorecard.md`](24_job_listings_5x_ats_scorecard.md) · [`25_panel_ats_rescore_post_flink.md`](25_panel_ats_rescore_post_flink.md) · [`26_python_job_listings_ats.md`](26_python_job_listings_ats.md) · [`27_epam_scope_validation.md`](27_epam_scope_validation.md) · **[`28_fresh_smts_genai_python_go_scorecard.md`](28_fresh_smts_genai_python_go_scorecard.md)** · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
+13. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — STUDY ONLY (multi-region, K8s ops, Spark, Flink, Terraform)
 
 ## Resume at a glance (v2 grounded)
 

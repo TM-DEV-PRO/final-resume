@@ -5,7 +5,8 @@
 **Honesty:** MEASURED / TARGET / HISTORICAL / ESTIMATED — see [`GROUND_TRUTH.md`](GROUND_TRUTH.md).
 
 **Packs:** [`23a`](23a_ia_interview_pack.md) · [`23b`](23b_uber_interview_packs.md) · [`23c`](23c_masters_gfg_interview_packs.md)  
-**Diagrams:** `campaign_pygo_xyz/interview_prep/architecture/` · deep dives `10`/`11`/`12`/`14`/`29`
+**Diagrams:** `campaign_pygo_xyz/interview_prep/architecture/` · deep dives `10`/`11`/`12`/`14`/`29`  
+**Schemas + APIs:** [`34`](34_er_tables_tech_why.md) (ER/why) · [`35`](35_table_schemas_api_design.md) (columns + contracts)
 
 ---
 
