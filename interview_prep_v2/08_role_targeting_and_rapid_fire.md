@@ -23,4 +23,4 @@ Same as original prep: offline-eval fidelity; finance-owned savings model — kn
 
 Same lead stories as `../interview_prep/08_role_targeting_and_rapid_fire.md` — IA ClickHouse/GCS planning store + FastAPI/Go agentic path, Uber Menu streaming, Masters quality/observability, FRM audit correctness.
 
-**IA 15-second lead (Jul 2026):** “Raised planner throughput toward **20–100 configs vs 1** and under **1 hour** with Copilot over Go. ClickHouse/GCS insert-only store cut **250M** grids **189s→12.3s** (~15×) and avoided **12B** store-week (**100–450×**). Obs via Datadog / LangSmith / PostHog + OTEL.”
+**IA 15-second lead (Jul 2026):** “Raised planner throughput toward **20–100 configs vs 1** and under **1 hour** with Copilot over Go. ClickHouse/GCS insert-only / partition-swapped store (**63/8**, agent `readonly=1`) cut **250M** grids **189s→12.3s** (~15×) and avoided **12B** store-week (**100–450×**). Obs via Datadog / LangSmith / PostHog + OTEL.”

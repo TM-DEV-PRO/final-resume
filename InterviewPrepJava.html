@@ -233,7 +233,14 @@ strong{color:#fff}
 <a class="lvl2" href="#d-full-apply-now-shortlist-deduped-this-week">D. Full apply-now shortlist (deduped, this week)</a>
 <a class="lvl2" href="#e-keyword-ats-post-lift-unchanged-banks">E. Keyword ATS (post-lift, unchanged banks)</a>
 <a class="lvl2" href="#f-honest-interview-guardrails-same-as-panel">F. Honest interview guardrails (same as panel)</a>
-<a class="lvl2" href="#related_2">Related</a></nav>
+<a class="lvl2" href="#related_2">Related</a>
+<a class="lvl1" href="#ia-agentic-cluster-clickhouse-ddl-model-phase-1-source">IA — Agentic Cluster ClickHouse DDL Model (Phase-1) source</a>
+<a class="lvl2" href="#resume-safe-inventory-recite-these">Resume-safe inventory (recite these)</a>
+<a class="lvl2" href="#the-one-idea-never-erase">The one idea: never erase</a>
+<a class="lvl2" href="#eight-layers-names-to-draw">Eight layers (names to draw)</a>
+<a class="lvl2" href="#four-physical-patterns-ddl-doctrine">Four physical patterns (DDL doctrine)</a>
+<a class="lvl2" href="#platform-sizing-honesty-verbal-ok">Platform / sizing honesty (verbal OK)</a>
+<a class="lvl2" href="#how-this-maps-to-the-resume-bullet">How this maps to the resume bullet</a></nav>
 <main><h1 id="java-track-interview-prep-hub-grounded-rewrite">Java Track — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026</strong></p>
 <p>Backs <code>resume_java/</code> (PDF: <code>Tarun_Mittal_SSE_Java_5yr.pdf</code>). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu, and ClickHouse work stay Python.</p>
@@ -658,7 +665,7 @@ Oracle HFM
 <li><strong>Redis:</strong> cache, rate limits, Batch/broker adjacent state; eviction + stampede.</li>
 <li><strong>MySQL (FRM):</strong> normalized 8-table schema; ETL aggregation.</li>
 <li><strong>PostgreSQL:</strong> IA metadata ACID plane; Masters India primary store.</li>
-<li><strong>ClickHouse:</strong> append-only planning facts — <strong>not</strong> via Hibernate.</li>
+<li><strong>ClickHouse:</strong> insert-only / partition-swapped planning facts (agent <code>readonly=1</code>) — <strong>not</strong> via Hibernate.</li>
 </ul>
 <h2 id="11-cloud-build-observability">11. Cloud, build, observability</h2>
 <ul>
@@ -788,7 +795,7 @@ Oracle HFM
 <p><strong>"Spring Boot microservices with worker pools — how?"</strong><br>
 Bulk-save handler validates the batch, assigns a version, submits chunk insert tasks to a fixed <code>ThreadPoolExecutor</code> with a bounded queue and <code>CallerRunsPolicy</code> (or abort + 429). Each task uses the ClickHouse batch API; futures collected with a per-request deadline. Pool sized from DB/ClickHouse connection budget, not "CPU cores × 200."</p>
 <p><strong>"Why Hibernate then also ClickHouse?"</strong><br>
-Different workloads. Hibernate/JPA on PostgreSQL/MySQL for OLTP metadata and FRM CRUD. ClickHouse for append-only analytical/planning facts — mutations are the wrong model there; we insert versions and read latest state. Never claim Hibernate→ClickHouse.</p>
+Different workloads. Hibernate/JPA on PostgreSQL/MySQL for OLTP metadata and FRM CRUD. ClickHouse for insert-only / partition-swapped analytical/planning facts — mutations are the wrong model there; we insert versions (or swap partitions) and read latest state via views. Never claim Hibernate→ClickHouse.</p>
 <p><strong>"100% changed-module coverage — how enforced?"</strong><br>
 CI computes coverage for files touched in the PR; merge blocked under threshold. Encourages tests with the code, not a heroic end-of-quarter push.</p>
 <p><strong>"Did you really build Uber FRM / Masters / GFG in Spring?"</strong><br>
@@ -940,57 +947,45 @@ distribution_centres       ─daily─►  distribution_centres
 </code></pre>
 <p>Pattern for hot facts: <strong>insert-only updates</strong> into ReplacingMergeTree; version column (e.g. <code>_cdc_synced_at</code>) collapses duplicates on merge. Soft deletes via <code>_cdc_deleted</code>. Reads that need exact latest may use <code>FINAL</code> (costly) or partition-scoped queries + application-level version awareness.</p>
 <h3 id="2b-agentic-cluster-clickhouse-model-copilot-read-plane">2b. Agentic Cluster ClickHouse model (copilot read plane)</h3>
-<p><strong>Summary (MEASURED design):</strong> <strong>63 tables / 8 layers / 624 columns</strong>, one database per tenant, validated against ClickHouse 25.12. Zero row-level mutations by doctrine.</p>
-<pre><code>LAYER MAP (simplified)
+<p><strong>Source of truth:</strong> Confluence <a href="https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240">DDL Model Phase-1</a> v1.5 — full extract in <a href="29_ia_ch_ddl_phase1_source.md"><code>29_ia_ch_ddl_phase1_source.md</code></a>.</p>
+<p><strong>Summary (MEASURED design):</strong> <strong>63 tables / 8 layers</strong> (incl. <strong>7</strong> stage twins), <strong>5</strong> dictionaries, <strong>19</strong> argMax views, one database per tenant, <code>formatQuery</code>-validated on ClickHouse <strong>25.12</strong>. Doctrine: <strong>never erase</strong> on the hot path. <strong>Zero runtime evidence</strong> on this schema yet — load test at bring-up. <strong>Do not recite 624 columns</strong> (not on Phase-1 page).</p>
+<pre><code>LAYER MAP (Phase-1 names)
 
-1. FACTS (partition-swapped, never mutated in place)
-   ┌─────────────────────────────────────────────────────────┐
-   │ sales_fact / store_kpi_fact / attribute_coverage_fact   │
-   │ PARTITION BY (season_or_week_key)                       │
-   │ writer swaps whole partition atomically                 │
-   └─────────────────────────────────────────────────────────┘
+1. L0 FACTS + LEDGER (P1 swap · P4 watermark)
+   fact_sales / fact_inventory_wk / fact_forecast_wk (+ stage twins)
+   ingest_watermark  ← reproducibility anchor for every run
 
-2. DIMS / REGISTRIES (tiny, versioned)
-   ┌─────────────────────────────────────────────────────────┐
-   │ hierarchy_registry · season_registry · store_dim        │
-   │ metric_weight_policy_v{n}  (content-addressed versions) │
-   └─────────────────────────────────────────────────────────┘
+2. GROUNDING DIMS (P2 RMT + FINAL-sourced dictionaries)
+   dim_store / dim_hierarchy / dim_fiscal / dim_sister_store / dim_channel
+   season_registry · attribute_registry → 5 in-memory dicts
 
-3. SERVING CUBES (pre-aggregations, also partition-swapped)
-   ┌─────────────────────────────────────────────────────────┐
-   │ significance_cube · store×attribute matrices            │
-   └─────────────────────────────────────────────────────────┘
+3. L1 CUBES + CACHES (P1 swap · P2 caches)
+   cube_store_attr_week / cube_store_kpi_week (+ stages)
+   significance_cache · precomputed_candidates · feature_matrix_cache
 
-4. LIVE-PLAN MIRRORS (read projection of incumbent plans)
-   ┌─────────────────────────────────────────────────────────┐
-   │ cluster_plan_membership_mirror · strategy_binding_view  │
-   └─────────────────────────────────────────────────────────┘
+4. PG MIRRORS — transitional (EXCHANGE TABLES / P1 plan lines)
+   mirror_plan · membership · strategy_consumer · plan_line(+stage)
 
-5. DECISION PLANE (append-only events + immutable snapshots)
-   ┌─────────────────────────────────────────────────────────┐
-   │ session_events · recommendation_runs                    │
-   │ config_snapshot  (hash of recipe + data watermark)      │
-   │ pin_events · approval_events                            │
-   │ is_optimal (engine) ≠ is_final (human)                  │
-   └─────────────────────────────────────────────────────────┘
+5. DECISION PLANE (20 tables — P2/P3/P4)
+   cluster_config (content-addressed) · cluster_run · *_event streams
+   pin · approval_event · session · feedback · recommendation_log …
+   latest state = argMax views (event_seq first tiebreak), not overwrites
 
-6. OUTCOME LOOP (plan vs actuals)
-   ┌─────────────────────────────────────────────────────────┐
-   │ variance_cube  (plan-not-followed / re-planned /        │
-   │                 world-changed / recommendation-wrong)   │
-   └─────────────────────────────────────────────────────────┘
+6. OUTCOME LOOP (immutable snapshots + variance cube)
+   plan_snapshot + snapshot_*  minted at approval before the approval event
 
-7. WRITE-BACK STAGING → transitional adapter → incumbent PG tables
-8. TELEMETRY (tool calls, quotas, agent guardrail hits)
+7. WRITE-BACK — transitional → incumbent PG (retire on timeline)
+8. TELEMETRY — append-only, never expires (run_telemetry · probe_log)
 </code></pre>
-<p><strong>Four physical patterns to recite:</strong></p>
+<p><strong>Four physical patterns (DDL labels):</strong></p>
 <ol>
-<li><strong>Partition-swapped facts/cubes</strong>: never <code>ALTER UPDATE</code> a cell; rebuild and swap the partition.</li>
-<li><strong>Versioned registries</strong>: policy/config rows are immutable versions; readers pin a version id.</li>
-<li><strong>Append-only events</strong>: decisions, pins, approvals; latest-state via views, not overwrites.</li>
-<li><strong>Content-addressed configs</strong>: hash of the clustering recipe + data watermark ⇒ bit-for-bit reproducibility (TARGET for product; schema supports it by design).</li>
+<li><strong>P1 partition-swapped MergeTree</strong> — stage twin → <code>REPLACE PARTITION</code>; no mutations / no <code>FINAL</code> / no MVs on hot paths.</li>
+<li><strong>P2 RMT(version) + FINAL</strong> — <strong>only tiny</strong> dims/registries/caches.</li>
+<li><strong>P3 append-only event streams</strong> — status/intent/approval; claim-token winner check.</li>
+<li><strong>P4 ledgers / immutable snapshots / telemetry</strong> — watermarks, approval quadruple, probe logs.</li>
 </ol>
-<p>Agent DB profiles are <strong>read-only</strong>. The LLM never writes SQL ad-hoc; it calls <strong>14 audited tools</strong>. Human gates: grounding → search plan → approval → write-back.</p>
+<p><strong>Privilege enforcement:</strong> agent profile <code>readonly=1</code> (SELECT + <code>dictGet</code> only). Service roles are <strong>INSERT-only</strong> on owned tables — no <code>ALTER</code> below sync ⇒ “no UPDATE path” is a grant, not a convention. LLM never writes SQL ad-hoc; it calls <strong>14 audited tools</strong>. Human gates: grounding → search plan → approval → write-back.</p>
+<p><strong>Feed honesty:</strong> land nonzero slim extract (~<strong>10⁸</strong> rows/tenant), not the raw <strong>46.9B</strong>/43 TB BQ spine. At runtime agent probes do not hit BigQuery.</p>
 <hr>
 <h2 id="3-clustering-copilot-user-flow-what-i-walk-through">3. Clustering copilot user flow (what I walk through)</h2>
 <p>Aligned to AssortSmart HLR v1.1 (behavioral + constraints) and Copilot Phase-1 FRD.</p>
@@ -1043,7 +1038,7 @@ distribution_centres       ─daily─►  distribution_centres
 </blockquote>
 <h3 id="41-exact-story-with-numbers">4.1 Exact story with numbers</h3>
 <p><strong>Problem:</strong> Store clustering is the foundation for assortment strategy, but today the planner does four expert choices blind, then runs <strong>one</strong> configuration. The system already computes significance scores and then ignores them for recommendation. Measured on live tenant data: <strong>8.5% of runs fail (37 of 437)</strong>; most failures are avoidable input-boundary mistakes. Winning algorithm/hyperparameters/seed are not saved ⇒ <strong>reproducibility 0%</strong>. Compute itself is fine (median job <strong>~20s</strong>); the bottleneck is everything around the machine.</p>
-<p><strong>Solution design:</strong> Two planes. An <strong>LLM (LangGraph + MCP)</strong> orchestrates and explains. A <strong>deterministic engine</strong> does feature selection, k search (elbow + silhouette), clustering, and scoring via <strong>14 audited tools</strong>. The agent <strong>cannot write</strong>. Humans confirm at grounding, search-plan, approval, and write-back gates. Schema is agentic-first: <strong>63 tables / 8 layers / 624 columns</strong>, partition-swapped facts, append-only decisions, content-addressed configs.</p>
+<p><strong>Solution design:</strong> Two planes. An <strong>LLM (LangGraph + MCP)</strong> orchestrates and explains. A <strong>deterministic engine</strong> does feature selection, k search (elbow + silhouette), clustering, and scoring via <strong>14 audited tools</strong>. The agent <strong>cannot write</strong>. Humans confirm at grounding, search-plan, approval, and write-back gates. Schema is agentic-first: <strong>63 tables / 8 layers</strong>, partition-swapped facts, INSERT-only / append-only decisions, content-addressed configs (<code>readonly=1</code> agent).</p>
 <p><strong>Targets (TARGET):</strong> under <strong>1 hour</strong> turnaround (from days), <strong>≥20</strong> configs per run (from 1), failures <strong>under 2%</strong> (from 8.5%), reproducibility <strong>100%</strong>, CH read plane sub-second.</p>
 <h3 id="42-how-it-was-done-step-by-step">4.2 How it was done step by step</h3>
 <ol>
@@ -1051,7 +1046,7 @@ distribution_centres       ─daily─►  distribution_centres
 <li>Wrote Phase-1 FRD: intent → grounding → search plan → batch compute → top recommendations → pins → approval → write-back.</li>
 <li>Locked product constraints from HLR v1.1: <strong>3–5 scenarios</strong>, mandatory distinctness, baseline inclusion, child cluster cap default <strong>10</strong>.</li>
 <li>Split responsibility: LLM plans/narrates; tools compute; DB profiles enforce read-only for the agent.</li>
-<li>Designed CH DDL (63/8/624) with zero row-level mutations; validated statements on CH <strong>25.12</strong>.</li>
+<li>Designed CH DDL (63/8, 5 dicts, 19 views) with zero row-level mutations; <code>formatQuery</code>-validated on CH <strong>25.12</strong> (load test pending).</li>
 <li>Ran adversarial design reviews (engine idiom, concurrency, operation coverage, scale) + external pricing-team playbook review → <strong>PASS</strong>.</li>
 <li>Remaining: bring-up load test before implementation cutover claims.</li>
 </ol>
@@ -1132,8 +1127,8 @@ distribution_centres       ─daily─►  distribution_centres
 <td><strong>TARGET</strong></td>
 </tr>
 <tr>
-<td>63 tables / 8 layers / 624 columns, zero row-level mutations</td>
-<td>MEASURED design (DDL validated on CH 25.12)</td>
+<td>63 tables / 8 layers (7 stage twins), INSERT-only services + agent <code>readonly=1</code>, zero row-level mutations</td>
+<td>MEASURED design (DDL Phase-1 on CH 25.12; no runtime evidence yet)</td>
 </tr>
 <tr>
 <td>External review PASS</td>
@@ -1553,7 +1548,7 @@ distribution_centres       ─daily─►  distribution_centres
 </table>
 <hr>
 <h2 id="8-cross-cutting-talking-track-2-minute-narrative">8. Cross-cutting talking track (2-minute narrative)</h2>
-<p>"Sources are the agentic module Overview, Copilot FRD, ClickHouse DDL, HLD, PRDs, and <code>pivot-poc/</code> plus line-plan POC — not the old AssortSmart dump. Copilot cuts clustering from days toward under <strong>1 hour</strong> and from <strong>1 to 20–100</strong> configs — FastAPI agent over a Go doing layer. Safety moves failures from measured <strong>8.5%</strong> toward under <strong>2%</strong> with <strong>14</strong> audited read-only tools and three confirm gates. The store is per-tenant ClickHouse — <strong>63 tables / 8 layers</strong>, append-only, agent locked read-only. Pivot hybrid cuts <strong>250M</strong> Hindsight grids <strong>189s→12.3s</strong> (~<strong>15.5×</strong>) on ClickHouse reads while Postgres keeps cell edits sub-ms; line-plan shrinks <strong>12B→~25M</strong> (<strong>100–450×</strong>). Design PASS; load test pending."</p>
+<p>"Sources are the agentic module Overview, Copilot FRD, ClickHouse DDL Phase-1 (Confluence v1.5), HLD, PRDs, and <code>pivot-poc/</code> plus line-plan POC — not the old AssortSmart dump. Copilot cuts clustering from days toward under <strong>1 hour</strong> and from <strong>1 to 20–100</strong> configs — FastAPI agent over a Go doing layer. Safety moves failures from measured <strong>8.5%</strong> toward under <strong>2%</strong> with <strong>14</strong> audited read-only tools and three confirm gates. The store is per-tenant ClickHouse — <strong>63 tables / 8 layers</strong>, insert-only / partition-swapped, agent <code>readonly=1</code>. Pivot hybrid cuts <strong>250M</strong> Hindsight grids <strong>189s→12.3s</strong> (~<strong>15.5×</strong>) on ClickHouse reads while Postgres keeps cell edits sub-ms; line-plan shrinks <strong>12B→~25M</strong> (<strong>100–450×</strong>). DDL syntax PASS on CH 25.12; load test pending — say building, not shipped."</p>
 <hr>
 <h2 id="9-rapid-fire-qa-12">9. Rapid-fire Q&amp;A (12+)</h2>
 <h3 id="q1-why-clickhouse-over-postgres-for-this">Q1. Why ClickHouse over Postgres for this?</h3>
@@ -1680,9 +1675,9 @@ distribution_centres       ─daily─►  distribution_centres
 </tr>
 <tr>
 <td>14</td>
-<td>63 / 8 / 624</td>
+<td>63 / 8 (+ 5 dict / 19 views)</td>
 <td>Agentic CH schema</td>
-<td>MEASURED design</td>
+<td>MEASURED design (omit 624)</td>
 </tr>
 <tr>
 <td>15</td>
@@ -1752,7 +1747,7 @@ distribution_centres       ─daily─►  distribution_centres
 <h3 id="q6-why-only-three-human-approval-gates-overview-docs-mention-grounding-search-plan-approval-and-write-back">Q6. Why only three human approval gates? Overview docs mention grounding, search plan, approval, and write-back.</h3>
 <p><strong>A:</strong> The Phase-1 FRD product story is <strong>three confirm gates</strong> after intent: Gate 1 search plan (attributes + 20–100 config plan), Gate 2 approve the winning recommendation, Gate 3 governance sign-off where required; write-back then lands in today's tables. The grounding card is the confirm-what-was-understood step before compute (Mode B clubs cohort + attributes on that card). Module overview language lists grounding → search plan → approval → write-back as the consequential human stops. In the room I say: "Three product confirm gates plus write-back that never happens without an approved config; the agent physically cannot write." Resume "3 human approval gates" maps to the FRD's three confirms. If pressed on four stops, acknowledge grounding and write-back as the bookends without inventing a fourth numbered gate beyond the FRD.</p>
 <h3 id="q7-why-read-only-agent-tools-at-the-database-profile-not-just-a-prompt-that-says-dont-write">Q7. Why read-only agent tools at the database profile, not just a prompt that says "don't write"?</h3>
-<p><strong>A:</strong> Prompts are not a control plane. The agent runs with a <strong>read-only DB profile</strong>; exploration writes only to isolated scratch plans; write-back is a separate path after human approval. That matches the FRD non-goal: no silent auto-finalize, and <code>is_optimal</code> (engine) never overwrites <code>is_final</code> (human). Schema reinforces it: <strong>63 tables / 8 layers / 624 columns</strong>, partition-swapped facts, append-only events, zero row-level mutations by doctrine (MEASURED design, DDL validated on ClickHouse 25.12). Failure mode if you skip this: an LLM tool that can <code>INSERT</code> into cluster master under prompt drift. Trade-off: new capability needs a new audited tool, not a prompt tweak.</p>
+<p><strong>A:</strong> Prompts are not a control plane. The agent runs with a <strong><code>readonly=1</code> DB profile</strong> (SELECT + <code>dictGet</code> only); service writers are <strong>INSERT-only</strong> on owned tables; exploration never mutates facts. Write-back is a separate path after human approval. That matches the FRD non-goal: no silent auto-finalize, and <code>is_optimal</code> (engine) never overwrites <code>is_final</code> (human). Schema reinforces it: <strong>63 tables / 8 layers</strong>, partition-swapped facts, append-only events, zero row-level mutations by doctrine (MEASURED design, DDL Phase-1 on ClickHouse 25.12 — load test still pending). Failure mode if you skip this: an LLM tool that can <code>INSERT</code> into cluster master under prompt drift. Trade-off: new capability needs a new audited tool, not a prompt tweak.</p>
 <h3 id="q8-why-dedicated-clickhouse-for-agent-probes-instead-of-shared-bigquery">Q8. Why dedicated ClickHouse for agent probes instead of shared BigQuery?</h3>
 <p><strong>A:</strong> Measured agent data-probe latency on shared BigQuery slots is <strong>1–20s+</strong> with uncontrolled variance (MEASURED live audit). Interactive copilot UX and platform NFRs need deterministic probes; design target is agent probe <strong>p95 under 500ms</strong> on a dedicated ClickHouse read plane (TARGET), with nightly precompute aiming to move <strong>≥80%</strong> of sessions cold→warm (TARGET). Feed is the org's existing BQ→CH ingestion lane (ItemSmart-proven pattern): BigQuery stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots. Cube reconciliation target within <strong>0.1%</strong> of BigQuery (TARGET). Explicit FRD non-goal: not moving transactional/plan data to ClickHouse for this module's Phase 1 read plane. Trade-off: a derived copy can rot; mitigate with owned ingestion, freshness sentinel, and data-as-of stamped on every recommendation.</p>
 <h3 id="q9-why-go-gin-for-plan-lifecycle-and-bulk-save-instead-of-keeping-everything-in-python-fastapi">Q9. Why Go (Gin) for plan lifecycle and bulk save instead of keeping everything in Python FastAPI?</h3>
@@ -3199,10 +3194,10 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 <td>same</td>
 </tr>
 <tr>
-<td><strong>ONE CH bullet:</strong> 63/8 append-only + <strong>250M 189s→12.3s (~15.5×)</strong></td>
+<td><strong>ONE CH bullet:</strong> 63/8 insert-only / partition-swapped + agent R/O + <strong>250M 189s→12.3s (~15.5×)</strong></td>
 <td>Store design + pivot POC</td>
 <td>MEASURED design + MEASURED</td>
-<td><code>pivot-poc/</code> + DDL</td>
+<td>DDL Phase-1 (<code>29_…</code>) + <code>pivot-poc/</code></td>
 </tr>
 <tr>
 <td>Typical CH aggs ~2–3× if DISTINCT stripped</td>
@@ -3509,7 +3504,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 <p>AssortSmart is merchandise planning SaaS: buy depth × store placement for the next season. Clustering is the binding step — wrong clusters poison every downstream strategy.</p>
 <p><strong>Pain (MEASURED on kik):</strong> <strong>8.5%</strong> clustering-run failures (<strong>37/437</strong>), <strong>&gt;80%</strong> input-boundary mistakes; reproducibility <strong>0%</strong> (winning config/seed never persisted); one manual config in a huge search space; agent probes on shared BigQuery <strong>1–20s+</strong> variance.</p>
 <p><strong>Product inversion:</strong> planner states hierarchy + reference period → agent grounds scope → batch evaluates many configs (design <strong>20–100</strong>, success bar <strong>≥20</strong>) → UI shows <strong>3–5</strong> distinct scenarios → human gates → write-back. LLM plans and narrates; a <strong>deterministic engine</strong> via <strong>14 audited read-only tools</strong> computes; agent <strong>never writes SQL</strong>.</p>
-<p><strong>Stack (DESIGN / HLD):</strong> Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a <strong>Go (Gin) doing layer</strong> (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant <strong>ClickHouse, 63 tables / 8 layers</strong>, append-only / partition-swapped, agent locked read-only. Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL <code>trace_id</code>.</p>
+<p><strong>Stack (DESIGN / HLD):</strong> Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a <strong>Go (Gin) doing layer</strong> (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant <strong>ClickHouse, 63 tables / 8 layers</strong>, insert-only / partition-swapped, agent <code>readonly=1</code> (service roles INSERT-only). Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL <code>trace_id</code>.</p>
 <p><strong>Evidence that unlocked the store:</strong>
 - Pivot POC, row-identical at <strong>250M</strong>: heavy grid <strong>189.4s → 12.3s</strong> (~<strong>15.5×</strong>, MEASURED). Verbal honesty: strip <code>COUNT(DISTINCT)</code> and typical aggs fall to <strong>~2–3×</strong>; keep option-count and cite <strong>~13–15×</strong>.
 - Line-plan: refuse projected <strong>~12B</strong> store-week (4,800 stores × levels × choices × 52 weeks); editable truth at choice×cluster×week <strong>~25M</strong>; month rollup <strong>sub-second</strong>, cell edit <strong>~0.4 ms</strong> on aggregate (MEASURED). Schema win <strong>100–450×</strong>, not “engine magic.”</p>
@@ -3537,7 +3532,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
   end
 
   subgraph Data[&quot;Data plane&quot;]
-    CH[&quot;Per-tenant ClickHouse&lt;br/&gt;63 tables / 8 layers&lt;br/&gt;append-only · agent R/O&quot;]
+    CH[&quot;Per-tenant ClickHouse&lt;br/&gt;63 tables / 8 layers&lt;br/&gt;insert-only · partition-swap · agent R/O&quot;]
     GCS[&quot;GCS parquet / snapshots&quot;]
     BQ[&quot;BigQuery&lt;br/&gt;historical truth → CH ingest&quot;]
     PG[&quot;Thin PG metadata&lt;br/&gt;auth / tenant / workflow&quot;]
@@ -3568,7 +3563,7 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
                          │                              ▲
                          │ LLM reason/plan              │
 Manual UI ───────────────┴────── REST ──────────────────┘
-BigQuery (truth) ──ingest──► CH (63/8, append-only, agent R/O)
+BigQuery (truth) ──ingest──► CH (63/8, insert-only / partition-swapped, agent R/O)
 Human gates: grounding → search plan → approval → write-back
 Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </code></pre>
@@ -3604,9 +3599,9 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 <td>Dual-language tax; Path M must not share a GIL/async pool with multi-second LLM turns</td>
 </tr>
 <tr>
-<td><strong>ClickHouse append-only</strong> (partition swap / RMT / events), zero row-level mutations</td>
+<td><strong>ClickHouse insert-only / partition-swapped</strong> (P1 swap / RMT / events), zero row-level mutations; agent <code>readonly=1</code></td>
 <td>PG OLTP mutations; CH <code>ALTER UPDATE</code>; lightweight UPDATE (26.5)</td>
-<td>Interactive planning + CDC-shaped feeds hate mutation queues; facts/cubes swap partitions; decisions are append-only events; agent probes need deterministic OLAP</td>
+<td>Interactive planning + CDC-shaped feeds hate mutation queues; facts/cubes swap partitions; decisions are append-only events; privileges ban UPDATE below sync</td>
 <td>Readers need <code>argMax</code>/<code>FINAL</code>/prune-first shapes; eventual consistency until merge; not a keyed-UPDATE keyboard path without a write-model change</td>
 </tr>
 <tr>
@@ -3730,7 +3725,7 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </tr>
 </tbody>
 </table>
-<h3 id="bullet-4-per-tenant-ch-638-append-only-after-250m-pivot-189s-123s-155">Bullet 4 — Per-tenant CH 63/8 append-only after 250M pivot 189s → 12.3s (~15.5×)</h3>
+<h3 id="bullet-4-per-tenant-ch-638-insert-only-partition-swapped-after-250m-pivot-189s-123s-155">Bullet 4 — Per-tenant CH 63/8 insert-only / partition-swapped after 250M pivot 189s → 12.3s (~15.5×)</h3>
 <table>
 <thead>
 <tr>
@@ -3741,15 +3736,15 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 <tbody>
 <tr>
 <td><strong>Claim</strong></td>
-<td>Adopt per-tenant ClickHouse (<strong>63 tables / 8 layers</strong>, append-only, agent R/O) after row-identical POC cut <strong>250M</strong> pivots <strong>189s → 12.3s</strong> (~<strong>15.5×</strong>, measured)</td>
+<td>Adopt per-tenant ClickHouse (<strong>63 tables / 8 layers</strong>, insert-only / partition-swapped, agent R/O) after row-identical POC cut <strong>250M</strong> pivots <strong>189s → 12.3s</strong> (~<strong>15.5×</strong>, measured)</td>
 </tr>
 <tr>
 <td><strong>Tag</strong></td>
-<td>63/8 append-only <strong>MEASURED design</strong> (DDL on CH 25.12); 189.4s→12.3s <strong>MEASURED</strong>; store adoption = design direction for agentic</td>
+<td>63/8 insert-only <strong>MEASURED design</strong> (DDL Phase-1 on CH 25.12; zero runtime evidence on schema); 189.4s→12.3s <strong>MEASURED</strong>; store adoption = design direction for agentic</td>
 </tr>
 <tr>
 <td><strong>Exact defense</strong></td>
-<td>ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native <strong>48 GB</strong> host vs CH <strong>10 CPU / 3.3 GB</strong> Docker — CH still won reads. At 250M PG spills <strong>42 GB</strong>, <strong>3m9s</strong> grid; CH <strong>12.3s</strong>. Working hybrid POC: <code>GET /pivot</code> from CH, <code>POST /cell</code> → PG then mirror RMT. Agentic schema: facts/cubes partition-swapped, registries versioned, decisions append-only, agent R/O.</td>
+<td>ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native <strong>48 GB</strong> host vs CH <strong>10 CPU / 3.3 GB</strong> Docker — CH still won reads. At 250M PG spills <strong>42 GB</strong>, <strong>3m9s</strong> grid; CH <strong>12.3s</strong>. Working hybrid POC: <code>GET /pivot</code> from CH, <code>POST /cell</code> → PG then mirror RMT. Agentic schema (Confluence v1.5): facts/cubes P1 partition-swapped, dims P2 RMT, decisions P3/P4 append-only + argMax views, agent <code>readonly=1</code>, services INSERT-only. Omit <strong>624 columns</strong>.</td>
 </tr>
 <tr>
 <td><strong>Attack vector</strong></td>
@@ -7344,4 +7339,194 @@ Doubt support is the Q&amp;A layer on articles and courses — high read volume,
 <h2 id="related_2">Related</h2>
 <ul>
 <li><a href="24_job_listings_5x_ats_scorecard.md"><code>24_job_listings_5x_ats_scorecard.md</code></a> · <a href="25_panel_ats_rescore_post_flink.md"><code>25_panel_ats_rescore_post_flink.md</code></a> · <a href="26_python_job_listings_ats.md"><code>26_python_job_listings_ats.md</code></a> · <a href="27_epam_scope_validation.md"><code>27_epam_scope_validation.md</code></a></li>
-</ul></main></div></body></html>
+</ul>
+<hr>
+<h1 id="ia-agentic-cluster-clickhouse-ddl-model-phase-1-source">IA — Agentic Cluster ClickHouse DDL Model (Phase-1) source</h1>
+<p><strong>Fetched:</strong> 27 Jul 2026 via Atlassian MCP (authenticated).<br>
+<strong>Page:</strong> <a href="https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240/Agentic+Cluster+Module+ClickHouse+DDL+Model+Phase-1">Agentic Cluster Module — ClickHouse DDL Model (Phase-1)</a><br>
+<strong>Status on page:</strong> v1.5 · 2026-07-15 · <code>formatQuery</code>-validated on CH <strong>25.12</strong> · optimization review <strong>PASS</strong><br>
+<strong>Machine SoT:</strong> <code>Plans/agentic-clustering/ch-schema/</code> (<code>DDL.sql</code> · <code>DESIGN_NOTES.md</code> · <code>OPERATIONS.md</code>)</p>
+<p>Use this note when defending the <strong>ONE resume CH bullet</strong> (63/8 + insert-only / partition-swapped + agent R/O + pivot 189s→12.3s). Pivot latency is <strong>not</strong> from this page — it is from <code>21_ia_pivot_benchmark_source.md</code>.</p>
+<hr>
+<h2 id="resume-safe-inventory-recite-these">Resume-safe inventory (recite these)</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Count / claim</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tables</td>
+<td><strong>63</strong> (incl. <strong>7</strong> stage twins for partition swaps)</td>
+<td>MEASURED design (DDL footer + §3)</td>
+</tr>
+<tr>
+<td>Layers</td>
+<td><strong>8</strong> (one-directional)</td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Dictionaries</td>
+<td><strong>5</strong> (store / hierarchy / fiscal / channel / sister-store; + <code>dict_user</code> at bring-up)</td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Views</td>
+<td><strong>19</strong> (argMax latest-state, generation guards, eligibility)</td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Roles / profiles / quotas</td>
+<td><strong>4 / 3 / 2</strong></td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Agent DB profile</td>
+<td><code>readonly=1</code> — exploring surface <strong>physically cannot write</strong></td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Service roles</td>
+<td><strong>INSERT-only</strong> on owned tables — no <code>ALTER</code> below sync role ⇒ no UPDATE path in privileges</td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Operations mapped</td>
+<td><strong>58</strong> named SQL paths (<code>OPERATIONS.md</code>)</td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>Syntax-complete on live CH <strong>25.12.8.9</strong>; 4 adversarial review passes</td>
+<td>MEASURED design</td>
+</tr>
+<tr>
+<td>Runtime latency on this schema</td>
+<td><strong>Zero runtime evidence yet</strong> — load test at bring-up</td>
+<td>Honesty: do <strong>not</strong> claim prod CH latency from DDL</td>
+</tr>
+</tbody>
+</table>
+<p><strong>60 vs 63:</strong> Overview inventory table says <strong>60</strong> tables; §3 / table catalog / DDL footer say <strong>63</strong> including stage twins. <strong>Resume + interview default = 63.</strong> If challenged: “Overview abbreviated; DDL.sql creates 63 objects including the seven stage twins.”</p>
+<p><strong>624 columns:</strong> <strong>OMIT.</strong> That number does <strong>not</strong> appear on the Phase-1 Confluence page (earlier prep recycled it). Do not recite 624 unless you personally recount <code>DDL.sql</code>.</p>
+<hr>
+<h2 id="the-one-idea-never-erase">The one idea: never erase</h2>
+<p>Incumbent product updates/deletes in place. This model bans that on the hot path:</p>
+<ul>
+<li>Facts/cubes arrive as <strong>atomic partition swaps</strong> (<code>REPLACE PARTITION</code> via stage twins)</li>
+<li>Decisions arrive as <strong>append-only events</strong></li>
+<li>Approvals mint <strong>immutable snapshots</strong></li>
+<li>“Current state” is always a <strong>view</strong> over history</li>
+<li>Writer races: both rows land; deterministic <strong>argMax</strong> / claim-token tiebreak picks the winner; loser stays as audit</li>
+</ul>
+<hr>
+<h2 id="eight-layers-names-to-draw">Eight layers (names to draw)</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>~Tables</th>
+<th>Physical pattern</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>L0 facts + ledger</strong></td>
+<td>7</td>
+<td>P1 swap · P4 ledger (<code>ingest_watermark</code>)</td>
+</tr>
+<tr>
+<td><strong>Grounding dims</strong></td>
+<td>7 + 5 dicts</td>
+<td>P2 RMT + FINAL-sourced dictionaries</td>
+</tr>
+<tr>
+<td><strong>L1 cubes + caches</strong></td>
+<td>7</td>
+<td>P1 swap · P2 caches</td>
+</tr>
+<tr>
+<td><strong>PG mirrors</strong> (transitional)</td>
+<td>5</td>
+<td>full-swap <code>EXCHANGE TABLES</code> · plan lines P1</td>
+</tr>
+<tr>
+<td><strong>Decision plane</strong></td>
+<td>20</td>
+<td>P2 / P3 / P4 per table</td>
+</tr>
+<tr>
+<td><strong>Outcome loop</strong></td>
+<td>9</td>
+<td>P4 immutable · P1 weekly swap</td>
+</tr>
+<tr>
+<td><strong>Write-back</strong> (transitional)</td>
+<td>3</td>
+<td>incumbent wire-shape + P3 status stream</td>
+</tr>
+<tr>
+<td><strong>Telemetry</strong></td>
+<td>2</td>
+<td>P4 append-only, never expires</td>
+</tr>
+</tbody>
+</table>
+<p>End state (§9): <strong>Postgres = identity / UAM only</strong>. Write-back + PG mirrors retire on a defined timeline; neither gains new features.</p>
+<hr>
+<h2 id="four-physical-patterns-ddl-doctrine">Four physical patterns (DDL doctrine)</h2>
+<ol>
+<li><strong>P1 — Immutable partition-swapped MergeTree</strong> — facts, cubes, variance. Build <code>_stage</code> twin → <code>REPLACE PARTITION</code>. No mutations, no <code>FINAL</code>, no MVs on hot paths.</li>
+<li><strong>P2 — ReplacingMergeTree(version) + FINAL</strong> — <strong>only tiny</strong> dims/registries/caches where last-write-wins is the semantic.</li>
+<li><strong>P3 — Append-only event streams</strong> — status / intent / approval / writeback events; latest via <strong>argMax views</strong> (not wall-clock alone; <code>event_seq</code> is first tiebreak).</li>
+<li><strong>P4 — Append-only ledgers / immutable snapshots / telemetry</strong> — watermarks, approval snapshots, probe logs; never rewritten.</li>
+</ol>
+<p><strong>Lock-free claim:</strong> runner inserts <code>claimed</code> with a <code>claim_token</code>, reads <code>v_run_status*</code> back, proceeds <strong>only if its token won</strong> the argMax tiebreak.</p>
+<hr>
+<h2 id="platform-sizing-honesty-verbal-ok">Platform / sizing honesty (verbal OK)</h2>
+<ul>
+<li>One CH database <strong>per tenant</strong> (e.g. <code>cluster_briscoes</code>); kik identical shape.</li>
+<li>Fact feed = platform BQ→CH lane; module lands <strong>nonzero slim extract</strong> (~<strong>10⁸</strong> real rows / briscoes), <strong>not</strong> the raw <strong>46.9B</strong>-row / <strong>43 TB</strong> BQ spine (~99.8% zeros).</li>
+<li>At runtime <strong>nothing reads BigQuery</strong> for agent probes.</li>
+<li>PG cortex for decisions is <strong>superseded</strong> — decision plane lives in CH.</li>
+</ul>
+<hr>
+<h2 id="how-this-maps-to-the-resume-bullet">How this maps to the resume bullet</h2>
+<table>
+<thead>
+<tr>
+<th>Resume phrase</th>
+<th>Confluence backing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>per-tenant ClickHouse</td>
+<td>One DB per tenant</td>
+</tr>
+<tr>
+<td>63 tables / 8 layers</td>
+<td>§3 + DDL footer</td>
+</tr>
+<tr>
+<td>insert-only</td>
+<td>Service roles INSERT-only; hot path bans UPDATE/DELETE</td>
+</tr>
+<tr>
+<td>partition-swapped</td>
+<td>P1 stage twin + <code>REPLACE PARTITION</code></td>
+</tr>
+<tr>
+<td>agent read-only</td>
+<td><code>readonly=1</code> / <code>agent_ro_*</code> SELECT-only</td>
+</tr>
+<tr>
+<td>189s → 12.3s (~15.5×)</td>
+<td><strong>Pivot POC only</strong> — separate source; not this page</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Do not say:</strong> “DDL load-tested,” “624 columns,” “CH mutations_used=0 in prod,” or invent TPS/RPM from this schema.</p></main></div></body></html>

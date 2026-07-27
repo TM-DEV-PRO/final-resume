@@ -9,7 +9,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) — every shippable number and honesty tag
 2. **[`23_project_interview_packs.md`](23_project_interview_packs.md)** — interviewer packs for every project (start here before loops)
    - [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) · [`23c_masters_gfg_interview_packs.md`](23c_masters_gfg_interview_packs.md)
-3. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — AssortSmart extra depth + source extracts `19`/`20`/`21`
+3. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — AssortSmart extra depth + source extracts `19`/`20`/`21`/`29` (CH DDL Phase-1)
 4. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
 5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
 6. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
@@ -21,7 +21,7 @@ This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Original `resu
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ~0.4ms edits; ONE CH (63/8 + 189s→12.3s) |
+| Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ~0.4ms edits; ONE CH (63/8 insert-only/partition-swapped + 189s→12.3s) |
 | Uber FRM | Design+architecture ownership; 8 screens, 30+ APIs, $340M, targeting 70%; led 3 |
 | Uber Menu | Selenium + RAG/Gemini + ANZ; 30K+/mo, 24h→2h, $600K+ (no Kafka/Flink/Spark) |
 | Masters India | Designed/built/operated FastAPI strangler; Kafka event platform; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day |

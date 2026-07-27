@@ -24,7 +24,7 @@ AssortSmart is merchandise planning SaaS: buy depth × store placement for the n
 
 **Product inversion:** planner states hierarchy + reference period → agent grounds scope → batch evaluates many configs (design **20–100**, success bar **≥20**) → UI shows **3–5** distinct scenarios → human gates → write-back. LLM plans and narrates; a **deterministic engine** via **14 audited read-only tools** computes; agent **never writes SQL**.
 
-**Stack (DESIGN / HLD):** Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a **Go (Gin) doing layer** (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant **ClickHouse, 63 tables / 8 layers**, append-only / partition-swapped, agent locked read-only. Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL `trace_id`.
+**Stack (DESIGN / HLD):** Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a **Go (Gin) doing layer** (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant **ClickHouse, 63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1` (service roles INSERT-only). Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL `trace_id`.
 
 **Evidence that unlocked the store:**
 - Pivot POC, row-identical at **250M**: heavy grid **189.4s → 12.3s** (~**15.5×**, MEASURED). Verbal honesty: strip `COUNT(DISTINCT)` and typical aggs fall to **~2–3×**; keep option-count and cite **~13–15×**.
@@ -58,7 +58,7 @@ flowchart TB
   end
 
   subgraph Data["Data plane"]
-    CH["Per-tenant ClickHouse<br/>63 tables / 8 layers<br/>append-only · agent R/O"]
+    CH["Per-tenant ClickHouse<br/>63 tables / 8 layers<br/>insert-only · partition-swap · agent R/O"]
     GCS["GCS parquet / snapshots"]
     BQ["BigQuery<br/>historical truth → CH ingest"]
     PG["Thin PG metadata<br/>auth / tenant / workflow"]
@@ -92,7 +92,7 @@ Planner ──chat──► FastAPI (LangGraph/MCP) ──tools──► Go doin
                          │                              ▲
                          │ LLM reason/plan              │
 Manual UI ───────────────┴────── REST ──────────────────┘
-BigQuery (truth) ──ingest──► CH (63/8, append-only, agent R/O)
+BigQuery (truth) ──ingest──► CH (63/8, insert-only / partition-swapped, agent R/O)
 Human gates: grounding → search plan → approval → write-back
 Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 ```
@@ -108,7 +108,7 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 | **LangGraph** over ad-hoc FastAPI tool loop | Plain `while` + function-calling; single-shot ReAct | Clustering is stateful: ground → search plan → batch → pins → approval interrupts that must survive reconnect; same graph for wizard Mode A and chat Mode B | Framework surface; harder than a one-shot loop — payoff is checkpointable gates, not prompt spaghetti |
 | **MCP** tool delivery on top of LangGraph | Embed OpenAI function schemas in the graph process | LangGraph = *when* to call / pause; MCP = fixed registry of **14** tools with runtime schemas, versioning, read-only enforcement across clients | Extra process boundary + discovery handshake; hard wall between “LLM may select” and “only these tools run” |
 | **Go (Gin) doing layer**; FastAPI owns chat only | One Python monolith; Go as BFF in front of chat | Chat is LLM-latency-shaped (streaming, run trees); plan lifecycle / bulk save / clustering / hindsight are throughput I/O — goroutine-per-request, static binary; Manual + agent converge on same APIs | Dual-language tax; Path M must not share a GIL/async pool with multi-second LLM turns |
-| **ClickHouse append-only** (partition swap / RMT / events), zero row-level mutations | PG OLTP mutations; CH `ALTER UPDATE`; lightweight UPDATE (26.5) | Interactive planning + CDC-shaped feeds hate mutation queues; facts/cubes swap partitions; decisions are append-only events; agent probes need deterministic OLAP | Readers need `argMax`/`FINAL`/prune-first shapes; eventual consistency until merge; not a keyed-UPDATE keyboard path without a write-model change |
+| **ClickHouse insert-only / partition-swapped** (P1 swap / RMT / events), zero row-level mutations; agent `readonly=1` | PG OLTP mutations; CH `ALTER UPDATE`; lightweight UPDATE (26.5) | Interactive planning + CDC-shaped feeds hate mutation queues; facts/cubes swap partitions; decisions are append-only events; privileges ban UPDATE below sync | Readers need `argMax`/`FINAL`/prune-first shapes; eventual consistency until merge; not a keyed-UPDATE keyboard path without a write-model change |
 | **3 human confirm gates** (+ write-back bookend) | Autopilot finalize; prompt-only “ask user”; 6–10 soft confirms | Clustering ships into strategy plans; silent auto-finalize unacceptable; FRD: search plan → approve winner → governance where required | Human-in-the-loop latency; UX must make gates crisp; L2 autopilot / L3 drift are later phases — do not claim |
 | **14 audited read-only tools**; agent never writes SQL | Free-form SQL tool; fewer mega-tools; prompt “don’t write” | Numbers must be deterministic and auditable; DB profile is R/O; new capability = new tool, not a prompt tweak | Slower feature velocity; every evidence number must trace to a tool call |
 | **~25M aggregate** instead of materializing **~12B** store-week | Flat `line_arch_store_week` SoR; CH-only flat scan; explode-always-in-DB | **~12B** = 4,800 stores × levels × choices × 52 weeks (PROJECTED product); users edit cluster×choice×delivery; `store_week = choice × %s` (partition of unity); explode on demand **~25 ms**; month on 25M: PG **690 ms** / CH **512 ms**; cell **0.35–0.44 ms** | Export slices still need materialization when downstream demands full store-week; override-delta rollups grow with override count |
@@ -148,13 +148,13 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 | **Attack vector** | “Is 12B measured?” / “Won’t explode kill export?” / “Why not just use ClickHouse on the flat table?” |
 | **Candidate reply** | “12B is a **combinatorial projection** from KiK anchors — say PROJECTED. We reconciled aggregates to the cent; flat loads near 1B OOM’d a **3.3 GB** CH VM. Export gets a **slice**, not SoR. Schema flat→agg is the **100–450×** lever; engine swap is secondary. At ~25M, PG month is already sub-second — CH earns keep as tenants/plans multiply.” |
 
-### Bullet 4 — Per-tenant CH 63/8 append-only after 250M pivot 189s → 12.3s (~15.5×)
+### Bullet 4 — Per-tenant CH 63/8 insert-only / partition-swapped after 250M pivot 189s → 12.3s (~15.5×)
 
 | | |
 |---|---|
-| **Claim** | Adopt per-tenant ClickHouse (**63 tables / 8 layers**, append-only, agent R/O) after row-identical POC cut **250M** pivots **189s → 12.3s** (~**15.5×**, measured) |
-| **Tag** | 63/8 append-only **MEASURED design** (DDL on CH 25.12); 189.4s→12.3s **MEASURED**; store adoption = design direction for agentic |
-| **Exact defense** | ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native **48 GB** host vs CH **10 CPU / 3.3 GB** Docker — CH still won reads. At 250M PG spills **42 GB**, **3m9s** grid; CH **12.3s**. Working hybrid POC: `GET /pivot` from CH, `POST /cell` → PG then mirror RMT. Agentic schema: facts/cubes partition-swapped, registries versioned, decisions append-only, agent R/O. |
+| **Claim** | Adopt per-tenant ClickHouse (**63 tables / 8 layers**, insert-only / partition-swapped, agent R/O) after row-identical POC cut **250M** pivots **189s → 12.3s** (~**15.5×**, measured) |
+| **Tag** | 63/8 insert-only **MEASURED design** (DDL Phase-1 on CH 25.12; zero runtime evidence on schema); 189.4s→12.3s **MEASURED**; store adoption = design direction for agentic |
+| **Exact defense** | ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native **48 GB** host vs CH **10 CPU / 3.3 GB** Docker — CH still won reads. At 250M PG spills **42 GB**, **3m9s** grid; CH **12.3s**. Working hybrid POC: `GET /pivot` from CH, `POST /cell` → PG then mirror RMT. Agentic schema (Confluence v1.5): facts/cubes P1 partition-swapped, dims P2 RMT, decisions P3/P4 append-only + argMax views, agent `readonly=1`, services INSERT-only. Omit **624 columns**. |
 | **Attack vector** | “15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?” / “Did you author CDC?” |
 | **Candidate reply** | “Both true: raw heavy grid with option-count is **~15.5×**; strip DISTINCT and typical aggs are **~2–3×**; keep wireframe option-count and cite **~13–15×**. POC verdict is hybrid for **legacy OLTP-mutable** assortment and **no wholesale CH** for shipping mtp-assort. Agentic AssortSmart **changed the write model** to insert-only versions — CH/GCS end-to-end for planning data, thin PG for auth/workflow. I did **not** build `pg2ch_cdc` (Ashvin Sharma); I design against its patterns where relevant.” |
 

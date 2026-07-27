@@ -13,7 +13,7 @@ Single interview sheet for the **PyGo XYZ campaign** PDF (same metrics as v2 hon
 | 14 audited **read** tools + 3 confirm gates | Tools only read planning data; writes gated | DESIGN | `projects/01c_agent_read_tools_defense.md` |
 | Hindsight prior-season decision layer (carry-forward, Keep/Shop/Drop, grounded narration, no-code-deploy catalogs) | Hindsight FRD FR-6.1, FR-16.5, FR-8.1, FR-1.3 | DESIGN / building | `projects/01b_hindsight_defense.md` |
 | **~0.4 ms** cell edit + **sub-second** month rollup on **~25M** aggregates | Line-plan aggregate path (measured) | MEASURED | LinePlanning / `20_…` (12B flat is verbal-only, **not on PDF**) |
-| **ONE CH bullet:** 63/8 append-only + **250M 189s→12.3s (~15.5×)** | Store design + pivot POC | MEASURED | `pivot-poc/` + DDL |
+| **ONE CH bullet:** 63/8 insert-only / partition-swapped + agent R/O + **250M 189s→12.3s (~15.5×)** | Store design + pivot POC | MEASURED | DDL Phase-1 + `pivot-poc/` |
 | Kafka on IA Tech line | Async embedding jobs in product stack | DESIGN / product | playbook §5 / §8 |
 | building not shipping | Phase 1 design PASS; load test pending | DESIGN status | Overview |
 

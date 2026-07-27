@@ -18,7 +18,7 @@ Use this when applying with `resume_java` / `Tarun_Mittal_SSE_Java_5yr.pdf`. Lea
 Bulk-save handler validates the batch, assigns a version, submits chunk insert tasks to a fixed `ThreadPoolExecutor` with a bounded queue and `CallerRunsPolicy` (or abort + 429). Each task uses the ClickHouse batch API; futures collected with a per-request deadline. Pool sized from DB/ClickHouse connection budget, not "CPU cores × 200."
 
 **"Why Hibernate then also ClickHouse?"**  
-Different workloads. Hibernate/JPA on PostgreSQL/MySQL for OLTP metadata and FRM CRUD. ClickHouse for append-only analytical/planning facts — mutations are the wrong model there; we insert versions and read latest state. Never claim Hibernate→ClickHouse.
+Different workloads. Hibernate/JPA on PostgreSQL/MySQL for OLTP metadata and FRM CRUD. ClickHouse for insert-only / partition-swapped analytical/planning facts — mutations are the wrong model there; we insert versions (or swap partitions) and read latest state via views. Never claim Hibernate→ClickHouse.
 
 **"100% changed-module coverage — how enforced?"**  
 CI computes coverage for files touched in the PR; merge blocked under threshold. Encourages tests with the code, not a heroic end-of-quarter push.

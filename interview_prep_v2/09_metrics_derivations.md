@@ -34,7 +34,7 @@ Every TPS / RPS / from-to / money number on the **current** v2 and Java PDFs. In
 | p95 probes under 500ms vs 1 to 20s BigQuery | MEASURED baseline / TARGET | Slot variance vs dedicated CH |
 | FastAPI owns chat; Go doing layer tools | MEASURED design | `final_agenticassort.png` HLD |
 | Datadog + LangSmith + PostHog + OTEL | MEASURED design | HLD dual-layer obs + product analytics |
-| **ClickHouse/GCS end-to-end planning store** (insert-only versioned writes) | MEASURED design | Jul 2026 stack direction + HLD (doing layer → CH/GCS) |
+| **ClickHouse/GCS end-to-end planning store** (63/8, insert-only / partition-swapped, agent `readonly=1`) | MEASURED design | Confluence DDL Phase-1 v1.5 + HLD (doing layer → CH/GCS) |
 | **250M pivot 189s → 12.3s (~15×)** | MEASURED | Pivot / consolidated POC; ~15.5× on DISTINCT grids; typical aggregates ~2–3× honest |
 | **Avoided materializing 12B store-week (100–450×)** | MEASURED | LinePlanning; aggregate ~25M; 12B often projected |
 | Hardware caveat | MEASURED | PG 48 GB host vs CH 10 CPU / 3.3 GB VM (POC harness) |

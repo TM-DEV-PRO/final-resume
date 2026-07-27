@@ -20,7 +20,7 @@
     \item Building \textbf{AssortSmart} so retailers decide \textbf{what to buy, how much, and for which stores} via a planner copilot (\textbf{Python, LangGraph, MCP}) on a \textbf{Spring Boot} doing layer, targeting plan turnaround from days toward \textbf{under 1 hour} and search from \textbf{1 to $\geq$20 configs/plan}.
     \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited read-only tools and \textbf{3} human confirm gates so the agent never writes SQL.
     \item Replacing a projected \textbf{12B}-row store-week design with a \textbf{$\sim$25M}-row aggregate so month rollups stay \textbf{sub-second} and cell edits stay \textbf{$\sim$0.4\,ms} (measured) without materializing the explosion.
-    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, append-only, agent read-only) as the agentic planning store after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
+    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, insert-only / partition-swapped, agent read-only) as the agentic planning store after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
     \item \textbf{Tech} -- Java, Spring Boot, Python, FastAPI, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, Docker.
 \end{zitemize}
 

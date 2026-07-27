@@ -66,7 +66,7 @@ Same depth as main `interview_prep/06_tech_deep_dives.md` §§3–6 (now include
 - **Redis:** cache, rate limits, Batch/broker adjacent state; eviction + stampede.
 - **MySQL (FRM):** normalized 8-table schema; ETL aggregation.
 - **PostgreSQL:** IA metadata ACID plane; Masters India primary store.
-- **ClickHouse:** append-only planning facts — **not** via Hibernate.
+- **ClickHouse:** insert-only / partition-swapped planning facts (agent `readonly=1`) — **not** via Hibernate.
 
 ## 11. Cloud, build, observability
 

@@ -13,7 +13,7 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | 14 read-only tools + 3 confirm gates | Agent never writes SQL | DESIGN | Overview / FRD |
 | **~0.4 ms** cell edit + **sub-second** month rollup | Line-plan aggregate on PG (measured) | MEASURED | LinePlanning / `20_…` |
 | Projected **12B** → **~25M** aggregate | Schema win; 12B PROJECTED | PROJECTED / MEASURED | same |
-| **ONE CH bullet:** 63/8 append-only + **250M 189s→12.3s (~15.5×)** | Store design + pivot POC | MEASURED design + MEASURED | `pivot-poc/` + DDL |
+| **ONE CH bullet:** 63/8 insert-only / partition-swapped + agent R/O + **250M 189s→12.3s (~15.5×)** | Store design + pivot POC | MEASURED design + MEASURED | DDL Phase-1 (`29_…`) + `pivot-poc/` |
 | Typical CH aggs ~2–3× if DISTINCT stripped | Adversarial correction — verbal only | MEASURED | `21_…` |
 | p95 probes <500ms vs 1–20s BQ | Shared BQ variance vs dedicated CH | MEASURED / TARGET | Copilot FRD |
 | building not shipping | Phase 1 design PASS; load test pending | DESIGN status | Overview |

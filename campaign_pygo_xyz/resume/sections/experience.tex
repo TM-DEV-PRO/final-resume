@@ -21,7 +21,7 @@
     \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited tools that only \textbf{read} planning data and \textbf{3} human confirm gates before any write-back.
     \item Building \textbf{Hindsight} as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration \textbf{checked against computed metrics}, and tenant metric catalogs that go live \textbf{without a code deploy}.
     \item Keeping plan edits at \textbf{$\sim$0.4\,ms} and month rollups \textbf{sub-second} via choice-cluster-week aggregates (\textbf{$\sim$25M} rows) instead of a flat store-week grid.
-    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, append-only) after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
+    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, insert-only / partition-swapped, agent read-only) after a row-identical POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
     \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, MCP, Kafka, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
 \end{zitemize}
 
