@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -87,16 +88,16 @@ strong{color:#fff}
 │  → PwC work papers   │     │  (separate — do not claim)  │
 └──────────────────────┘     └─────────────────────────────┘
 </code></pre>
-<pre><code class="language-mermaid">flowchart TB
-  HFM[Oracle HFM] --&gt; ETL[Shared ETL]
-  ETL --&gt; MySQL[(MySQL SOADB)]
-  MySQL --&gt; Repo[Repository]
-  Repo --&gt; Svc[Service: rules + L1-L3 trees]
-  Svc --&gt; H[Handler FastAPI]
-  UI[React 8 screens] --&gt; H
-  H --&gt;|30+ APIs| UI
-  UI --&gt; PwC[PwC audit work papers]
-</code></pre>
+<div class="mermaid">flowchart TB
+  HFM[Oracle HFM] --> ETL[Shared ETL]
+  ETL --> MySQL[(MySQL SOADB)]
+  MySQL --> Repo[Repository]
+  Repo --> Svc[Service: rules + L1-L3 trees]
+  Svc --> H[Handler FastAPI]
+  UI[React 8 screens] --> H
+  H -->|30+ APIs| UI
+  UI --> PwC[PwC audit work papers]
+</div>
 <hr>
 <h2 id="3-design-decisions">3. Design decisions</h2>
 <table>
@@ -250,15 +251,15 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 Separate track (not on hot menu path):
   ANZ driver/vehicle docs → Python automation → 99.9% compliance
 </code></pre>
-<pre><code class="language-mermaid">flowchart LR
-  Sites[Partner sites] --&gt; Se[Selenium on GCP]
-  Se --&gt;|proxies / backoff| Raw[HTML / files]
-  PDFs[PDFs / images] --&gt; RAG[RAG + Gemini 2.5 Pro + SFT]
-  Raw --&gt; Cat[Catalog upsert]
-  RAG --&gt; Cat
-  Cat --&gt; Onboard[Onboarding 24h→2h]
-  Docs[ANZ driver docs] --&gt; Comp[Compliance automation 99.9%]
-</code></pre>
+<div class="mermaid">flowchart LR
+  Sites[Partner sites] --> Se[Selenium on GCP]
+  Se -->|proxies / backoff| Raw[HTML / files]
+  PDFs[PDFs / images] --> RAG[RAG + Gemini 2.5 Pro + SFT]
+  Raw --> Cat[Catalog upsert]
+  RAG --> Cat
+  Cat --> Onboard[Onboarding 24h→2h]
+  Docs[ANZ driver docs] --> Comp[Compliance automation 99.9%]
+</div>
 <hr>
 <h2 id="3-design-decisions_1">3. Design decisions</h2>
 <table>
@@ -382,5 +383,11 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus. Defend with s
 <li>Claiming you owned all of Uber Eats catalog platform end-to-end.</li>
 </ul></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

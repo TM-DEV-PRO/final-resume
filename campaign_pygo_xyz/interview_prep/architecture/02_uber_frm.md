@@ -40,6 +40,24 @@ If asked “how many tables?”: “About **11 SQLAlchemy models** in the scopin
 
 ## 3. Architecture diagram
 
+### ASCII (whiteboard)
+
+```
+ React 8 screens ──30+ REST──► FastAPI (handler → service → repository)
+                                      │
+                                      ▼
+                               MySQL system of record
+                               (~11 models · 55 lines · 14 entities)
+                                      ▲
+                    Oracle HFM ───────┤
+                    public 10-Q ──────┘  (recon validate)
+                                      │
+                                      ▼
+                               PwC audit work papers
+```
+
+### Mermaid
+
 ```mermaid
 flowchart LR
   subgraph UI[React 8 screens]

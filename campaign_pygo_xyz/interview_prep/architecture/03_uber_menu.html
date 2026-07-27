@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -75,17 +76,12 @@ strong{color:#fff}
 <tr>
 <td><strong>Flink</strong></td>
 <td>Hot-path validate / keyed dedupe / route</td>
-<td>Stateful stream processing; event-time for late pages; fresher than Spark micro-batches</td>
+<td>Stateful stream processing; event-time for late pages</td>
 </tr>
 <tr>
-<td><strong>RAG + Gemini 2.5 Pro</strong></td>
-<td>Unstructured menus (PDF/image/messy HTML) → structured fields</td>
-<td>LLM+retrieval beats brittle regex on wild menus</td>
-</tr>
-<tr>
-<td><strong>SFT</strong></td>
-<td>Schema adherence for extraction</td>
-<td>Offline eval: <strong>100%</strong> schema consistency, <strong>98%</strong> fidelity</td>
+<td><strong>LangChain RAG + Gemini 2.5 Pro + Milvus</strong></td>
+<td>Unstructured menus (PDF/image) → Uber Eats schema</td>
+<td>Retrieval grounds extraction; Gemini generates; Milvus holds similar labeled menus</td>
 </tr>
 <tr>
 <td><strong>GCP</strong></td>
@@ -98,13 +94,13 @@ strong{color:#fff}
 <td>Repeatable deploys for scraper fleet</td>
 </tr>
 <tr>
-<td><strong>IP rotation / proxies / backoff</strong></td>
+<td><strong>IP rotation / proxies / retries</strong></td>
 <td>Anti-bot layer</td>
 <td>Raise successful ingestions to <strong>95%+</strong></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Verbal / study only:</strong> Spark backfills, Pinot ops dashboards — not required on PDF.</p>
+<p><strong>Honesty:</strong> <strong>98% fidelity / 100% schema</strong> = offline eval. <strong>ANZ</strong> is Mobility docs — not the Eats menu pipeline.</p>
 <h2 id="2-data-design-logical">2. Data design (logical)</h2>
 <table>
 <thead>
@@ -127,52 +123,77 @@ strong{color:#fff}
 <td>Raw HTML/PDF/image payloads</td>
 </tr>
 <tr>
+<td>Milvus</td>
+<td>Embeddings of labeled menu chunks for RAG</td>
+</tr>
+<tr>
 <td>Structured menu records</td>
-<td>Normalized items, prices, modifiers after extract</td>
+<td>Normalized items, prices, modifiers after extract + schema gate</td>
 </tr>
 <tr>
-<td>Eval sets</td>
-<td>Offline fidelity / schema fixtures for RAG+SFT</td>
-</tr>
-<tr>
-<td>Compliance docs store</td>
-<td>ANZ driver/vehicle documents workflow (sibling automation)</td>
+<td>ANZ docs store</td>
+<td>Driver/vehicle compliance (sibling automation)</td>
 </tr>
 </tbody>
 </table>
 <h2 id="3-architecture-diagram">3. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart TB
+<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
+<pre><code> 3rd-party platforms (HTML, PDF, images)
+        │  Selenium + IP rotation / proxies / retries
+        ▼
+ ┌─────────────────────┐
+ │   Kafka (ingest bus)│◄──────── replay / backfill
+ └─────────┬───────────┘
+           ▼
+ ┌───────────────────────────┐
+ │ Flink normalization       │
+ │ · schema validate         │
+ │ · keyed dedupe            │
+ │ · route structured vs not │
+ └─────┬───────────────┬─────┘
+       │ structured    │ unstructured (PDF/image)
+       ▼               ▼
+ catalog upsert   ┌────────────────────────┐
+                  │ LangChain RAG          │
+                  │ Gemini 2.5 Pro         │
+                  │ Milvus retrieve        │
+                  │ schema gate → human?   │
+                  └──────────┬─────────────┘
+                             ▼
+                      Uber Eats catalog
+
+ ANZ Mobility (separate): driver/vehicle docs → 99.9% · ~20h/week HISTORICAL
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart TB
   SRC[Third-party menu sites]
   SEL[Selenium scrapers on GCP]
   KF[Kafka ingest bus]
   FL[Flink normalize dedupe route]
-  RAG[RAG + Gemini + SFT]
-  CAT[Uber Eats catalog / downstream]
-  OPS[Ops metrics / alerts]
-  ANZ[ANZ doc compliance jobs]
+  RAG[RAG + Gemini + Milvus]
+  CAT[Uber Eats catalog]
+  ANZ[ANZ Mobility doc jobs]
 
-  SRC --&gt; SEL --&gt; KF --&gt; FL
-  FL --&gt;|structured| CAT
-  FL --&gt;|unstructured| RAG --&gt; CAT
-  KF --&gt; OPS
-  ANZ --&gt; CAT
-</code></pre>
+  SRC --> SEL --> KF --> FL
+  FL -->|structured| CAT
+  FL -->|unstructured| RAG --> CAT
+  ANZ -.->|not Eats path| ANZ
+</div>
 <h2 id="4-end-to-end-flow">4. End-to-end flow</h2>
 <ol>
-<li>Scraper fleet pulls vendor menus (Selenium), handles anti-bot (rotation, proxies, backoff).</li>
-<li>Events land on <strong>Kafka</strong> for ordered, replayable ingest (<strong>30K+ menus/month</strong>).</li>
-<li><strong>Flink</strong> validates, dedupes (keyed state), routes structured vs unstructured.</li>
-<li>Structured path → catalog upsert.</li>
-<li>Unstructured path: <strong>RAG + Gemini + SFT</strong> → schema-valid menu JSON (offline <strong>98% / 100%</strong>).</li>
-<li>Catalog write-back; ops watch success rate (<strong>95%+</strong>).</li>
-<li>Outcome: onboarding <strong>24h → 2h</strong>, <strong>$600K+/yr</strong> saved vs ~$2/menu third-party tooling (HISTORICAL).</li>
-<li>Parallel: ANZ document compliance automation to <strong>99.9%</strong>, <strong>20 h/week</strong> saved.</li>
+<li>Scraper fleet pulls vendor menus (Selenium), handles anti-bot.</li>
+<li>Events land on <strong>Kafka</strong> (<strong>30K+ menus/month</strong>).</li>
+<li><strong>Flink</strong> validates, dedupes, routes structured vs unstructured.</li>
+<li>Structured → catalog upsert.</li>
+<li>Unstructured: <strong>RAG + Gemini + Milvus</strong> → schema-valid JSON (offline <strong>98%/100%</strong>).</li>
+<li>Ops watch success (<strong>95%+</strong>). Outcome: <strong>24h → 2h</strong>, <strong>$600K+/yr</strong>.</li>
+<li>Parallel: ANZ document compliance (<strong>Mobility</strong>).</li>
 </ol>
 <h2 id="5-why-kafka-here-vs-masters-kafka">5. Why Kafka here vs Masters Kafka</h2>
 <ul>
 <li><strong>Menu:</strong> absorb scraper bursts + replay bad parses + Flink consumer.</li>
-<li><strong>Masters:</strong> compliance IRP pipeline with multi-consumer replay and per-GSTIN ordering (no Flink claim).
-Same Kafka, different domain contracts — be ready to compare.</li>
+<li><strong>Masters:</strong> compliance IRP pipeline with multi-consumer replay and per-GSTIN ordering.
+Same Kafka, different domain contracts.</li>
 </ul>
 <h2 id="related">Related</h2>
 <ul>
@@ -180,5 +201,11 @@ Same Kafka, different domain contracts — be ready to compare.</li>
 <li><a href="../deployment_and_scale.html">../deployment_and_scale.md</a></li>
 </ul></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

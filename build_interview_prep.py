@@ -31,6 +31,7 @@ a{color:var(--acc)}
 code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
 pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
 pre code{background:none;padding:0}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.6px}
 th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
 th{background:#1a1f2b;color:var(--acc)}
@@ -46,6 +47,33 @@ strong{color:#fff}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>"""
 
+MERMAID_BOOT = """
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+"""
+
+
+def promote_mermaid(html: str) -> str:
+    """Turn fenced mermaid code blocks into renderable <div class="mermaid">."""
+    def repl(m):
+        body = m.group(1)
+        body = (
+            body.replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("&quot;", '"')
+        )
+        return f'<div class="mermaid">{body}</div>'
+
+    return re.sub(
+        r'<pre><code class="language-mermaid">(.*?)</code></pre>',
+        repl,
+        html,
+        flags=re.DOTALL,
+    )
+
 
 def build(order, out_name, title, brand):
     parts = []
@@ -58,6 +86,7 @@ def build(order, out_name, title, brand):
     md = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "fenced_code"], output_format="html5")
     html = md.convert(raw)
     html = rewrite_md_hrefs_text(html)
+    html = promote_mermaid(html)
     nav = "\n".join(
         f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
         for m in re.finditer(r'<h([12]) id="([^"]+)">(.*?)</h\1>', html, flags=re.DOTALL)
@@ -66,7 +95,7 @@ def build(order, out_name, title, brand):
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>{title}</title>{CSS}</head><body>
 <div class="layout"><nav class="toc"><div class="brand">{brand}</div>{nav}</nav>
-<main>{html}</main></div></body></html>"""
+<main>{html}</main></div>{MERMAID_BOOT}</body></html>"""
     out = os.path.join(BASE, out_name)
     open(out, "w", encoding="utf-8").write(page)
     print("wrote", out, "| nav entries:", nav.count("lvl"), "| bytes:", len(page))
@@ -141,7 +170,10 @@ build(
      os.path.join(IPV2, "27_epam_scope_validation.md"),
      os.path.join(IPV2, "28_fresh_smts_genai_python_go_scorecard.md"),
      os.path.join(IPV2, "29_ia_ch_ddl_phase1_source.md"),
-     os.path.join(IPV2, "30_panel_menu_anz_milvus.md")],
+     os.path.join(IPV2, "30_panel_menu_anz_milvus.md"),
+     os.path.join(IPV2, "31_resume_deep_explain_map.md"),
+     os.path.join(IPV2, "32_common_interview_qa.md"),
+     os.path.join(IPV2, "33_architecture_diagrams.md")],
     "InterviewPrepJava.html",
     "Tarun Mittal — Java/Spring · Interview Prep Hub",
     "Java/Spring · Interview Prep",
@@ -182,14 +214,74 @@ build(
      os.path.join(IPV2, "30_panel_menu_anz_milvus.md"),
      os.path.join(IPV2, "31_resume_deep_explain_map.md"),
      os.path.join(IPV2, "32_common_interview_qa.md"),
+     os.path.join(IPV2, "33_architecture_diagrams.md"),
      os.path.join(IPV2, "07_behavioral_star_stories.md")],
     "InterviewPrepV2.html",
     "Tarun Mittal — Python/Go v2 · Interview Prep",
     "Python/Go v2 · Interview Prep",
 )
 
-for hub in (
+# Campaign PyGo XYZ — one-page hub (same pattern as InterviewPrep / V2 / Java)
+CP = os.path.join(BASE, "campaign_pygo_xyz")
+CPA = os.path.join(CP, "interview_prep", "architecture")
+CPP = os.path.join(CP, "interview_prep")
+build(
+    [
+        os.path.join(CP, "00_index.md"),
+        os.path.join(CP, "GROUND_TRUTH.md"),
+        os.path.join(CPA, "00_index.md"),
+        os.path.join(CPA, "01_ia_assortsmart_hindsight.md"),
+        os.path.join(CPA, "02_uber_frm.md"),
+        os.path.join(CPA, "03_uber_menu.md"),
+        os.path.join(CPA, "04_masters_gst.md"),
+        os.path.join(CPA, "05_geeksforgeeks.md"),
+        os.path.join(CPP, "00_index.md"),
+        os.path.join(CPP, "design_decisions_tradeoffs.md"),
+        os.path.join(CPP, "numbers_defense.md"),
+        os.path.join(CPP, "deployment_and_scale.md"),
+        os.path.join(CPP, "tech_depth", "00_index.md"),
+        os.path.join(CPP, "tech_depth", "skills_fundamentals_map.md"),
+        os.path.join(CPP, "tech_depth", "auth_tenancy_rate_limits.md"),
+        os.path.join(CPP, "tech_depth", "kafka_flink_scale_defense.md"),
+        os.path.join(CPP, "tech_depth", "clickhouse.md"),
+        os.path.join(CPP, "tech_depth", "go_gin.md"),
+        os.path.join(CPP, "tech_depth", "python_fastapi.md"),
+        os.path.join(CPP, "tech_depth", "langgraph_mcp_rag.md"),
+        os.path.join(CPP, "tech_depth", "kafka_streaming.md"),
+        os.path.join(CPP, "tech_depth", "flink.md"),
+        os.path.join(CPP, "tech_depth", "selenium_scraping.md"),
+        os.path.join(CPP, "tech_depth", "postgres_mysql_redis.md"),
+        os.path.join(CPP, "tech_depth", "observability_cloud.md"),
+        os.path.join(CPP, "projects", "01_impact_analytics.md"),
+        os.path.join(CPP, "projects", "01b_hindsight_defense.md"),
+        os.path.join(CPP, "projects", "01c_agent_read_tools_defense.md"),
+        os.path.join(CPP, "projects", "01d_agentic_evals_guardrails_flow.md"),
+        os.path.join(CPP, "projects", "02_03_uber_frm_menu.md"),
+        os.path.join(CPP, "projects", "04_05_masters_gfg.md"),
+        os.path.join(IPV2, "23a_ia_interview_pack.md"),
+        os.path.join(IPV2, "23b_uber_interview_packs.md"),
+        os.path.join(IPV2, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(IPV2, "31_resume_deep_explain_map.md"),
+        os.path.join(IPV2, "32_common_interview_qa.md"),
+        os.path.join(IPV2, "33_architecture_diagrams.md"),
+        os.path.join(CP, "linkedin", "headline_about_experience.md"),
+        os.path.join(CP, "ApplicationKit.md"),
+        os.path.join(CP, "behavioral", "star_bank.md"),
+        os.path.join(CP, "behavioral", "why_hire_you.md"),
+        os.path.join(CP, "behavioral", "intros_short_long.md"),
+        os.path.join(CP, "outreach", "recruiter_cold_email.md"),
+        os.path.join(CP, "outreach", "referrals_short_long.md"),
+        os.path.join(CP, "agents", "01_senior_expectations_web.md"),
+        os.path.join(CP, "ats", "00_ats_master_scorecard.md"),
+    ]
+    + sorted(glob.glob(os.path.join(CP, "agents", "company_recruiters", "*.md"))),
     "CampaignPyGo.html",
+    "Tarun Mittal — Campaign PyGo XYZ · Interview Prep Hub",
+    "Campaign PyGo XYZ · Full Hub",
+)
+
+for hub in (
+    "CampaignPyGoCards.html",
     "ApplicationKit.html",
     "InterviewPrep.html",
     "InterviewPrepV2.html",

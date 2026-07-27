@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -69,53 +70,53 @@ strong{color:#fff}
 <p><strong>Status:</strong> Phase 1 adversarial + external review <strong>PASS, approve to bring-up</strong>. Remaining gate: bring-up load test on real kik extract. I own design and build work in continuous present — not “shipped to all tenants.”</p>
 <hr>
 <h2 id="2-architecture-diagram">2. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart TB
-  subgraph FE[&quot;Frontend&quot;]
-    Chat[&quot;Chat UI&quot;]
-    Manual[&quot;Manual screens&quot;]
+<div class="mermaid">flowchart TB
+  subgraph FE["Frontend"]
+    Chat["Chat UI"]
+    Manual["Manual screens"]
   end
 
-  subgraph PathA[&quot;Path A — Agent chat&quot;]
-    FA[&quot;FastAPI Agent Service&lt;br/&gt;LangGraph · MCP · LLM&quot;]
+  subgraph PathA["Path A — Agent chat"]
+    FA["FastAPI Agent Service<br/>LangGraph · MCP · LLM"]
   end
 
-  subgraph PathM[&quot;Path M — Manual&quot;]
-    GoREST[&quot;Go Gin REST&lt;br/&gt;create / update / delete&quot;]
+  subgraph PathM["Path M — Manual"]
+    GoREST["Go Gin REST<br/>create / update / delete"]
   end
 
-  subgraph Doing[&quot;Go doing layer — shared&quot;]
-    H[&quot;Hindsight&quot;]
-    C[&quot;Clustering engine&quot;]
-    S[&quot;Strategy&quot;]
+  subgraph Doing["Go doing layer — shared"]
+    H["Hindsight"]
+    C["Clustering engine"]
+    S["Strategy"]
   end
 
-  subgraph Data[&quot;Data plane&quot;]
-    CH[&quot;Per-tenant ClickHouse&lt;br/&gt;63 tables / 8 layers&lt;br/&gt;insert-only · partition-swap · agent R/O&quot;]
-    GCS[&quot;GCS parquet / snapshots&quot;]
-    BQ[&quot;BigQuery&lt;br/&gt;historical truth → CH ingest&quot;]
-    PG[&quot;Thin PG metadata&lt;br/&gt;auth / tenant / workflow&quot;]
+  subgraph Data["Data plane"]
+    CH["Per-tenant ClickHouse<br/>63 tables / 8 layers<br/>insert-only · partition-swap · agent R/O"]
+    GCS["GCS parquet / snapshots"]
+    BQ["BigQuery<br/>historical truth → CH ingest"]
+    PG["Thin PG metadata<br/>auth / tenant / workflow"]
   end
 
-  subgraph Obs[&quot;Observability&quot;]
-    LS[&quot;LangSmith&quot;]
-    DD[&quot;Datadog&quot;]
-    PH[&quot;PostHog&quot;]
+  subgraph Obs["Observability"]
+    LS["LangSmith"]
+    DD["Datadog"]
+    PH["PostHog"]
   end
 
-  Chat --&gt;|POST /chat| FA
-  FA &lt;--&gt;|reason / plan| LLM[&quot;OpenAI / etc.&quot;]
-  FA --&gt;|A3 tool call| Doing
-  Manual --&gt; GoREST --&gt; Doing
-  Doing --&gt; CH
-  Doing --&gt; GCS
-  BQ --&gt;|BQ→CH feed| CH
-  FA -.-&gt;|read-only tools| CH
-  FA --&gt; LS
-  FA --&gt; DD
-  Doing --&gt; DD
-  Chat --&gt; PH
-  Manual --&gt; PH
-</code></pre>
+  Chat -->|POST /chat| FA
+  FA <-->|reason / plan| LLM["OpenAI / etc."]
+  FA -->|A3 tool call| Doing
+  Manual --> GoREST --> Doing
+  Doing --> CH
+  Doing --> GCS
+  BQ -->|BQ→CH feed| CH
+  FA -.->|read-only tools| CH
+  FA --> LS
+  FA --> DD
+  Doing --> DD
+  Chat --> PH
+  Manual --> PH
+</div>
 <p><strong>ASCII (whiteboard fallback):</strong></p>
 <pre><code>Planner ──chat──► FastAPI (LangGraph/MCP) ──tools──► Go doing layer ──► ClickHouse/GCS
                          │                              ▲
@@ -371,5 +372,11 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 <li>Past-tense “built and shipped the agentic store last quarter” — use <strong>continuous present</strong> for ongoing work</li>
 </ul></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

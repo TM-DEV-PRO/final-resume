@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -116,7 +117,23 @@ strong{color:#fff}
 </tbody>
 </table>
 <h2 id="3-architecture-diagram">3. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart TB
+<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
+<pre><code> Web / app
+    │
+    ▼
+ Django REST  (after PHP → Django)
+    │
+ ┌──┼────┬───────┬──────────┐
+ ▼  ▼    ▼       ▼          │
+MySQL Mongo Redis Elasticsearch
+    │
+    ▼
+ Cron: video · reminders · cleanup     (+70% ops)
+ Influencer dashboard                   (+30% course sales)
+ Votes / pins / locks                   (+15–20% premium)
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart TB
   WEB[Web / app clients]
   DJ[Django APIs]
   MY[(MySQL)]
@@ -125,14 +142,14 @@ strong{color:#fff}
   ES[(Elasticsearch)]
   CRON[Cron workers]
 
-  WEB --&gt; DJ
-  DJ --&gt; MY
-  DJ --&gt; MO
-  DJ --&gt; RE
-  DJ --&gt; ES
-  CRON --&gt; MO
-  CRON --&gt; MY
-</code></pre>
+  WEB --> DJ
+  DJ --> MY
+  DJ --> MO
+  DJ --> RE
+  DJ --> ES
+  CRON --> MO
+  CRON --> MY
+</div>
 <h2 id="4-end-to-end-flows">4. End-to-end flows</h2>
 <h3 id="doubt-reliability">Doubt reliability</h3>
 <p>PHP → Django migration stabilized <strong>10K+ daily queries</strong> and <strong>10×</strong> contest spikes (standardized scale).</p>
@@ -143,5 +160,11 @@ strong{color:#fff}
 <h2 id="5-interview-tip">5. Interview tip</h2>
 <p>Keep GFG as early-career ownership: migration + APIs + crons. Do not oversell scale vs Masters/Uber/IA.</p></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

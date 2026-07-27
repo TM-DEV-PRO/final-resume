@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -111,27 +112,49 @@ strong{color:#fff}
 <li><strong>Redis:</strong> cache frequently read master/config data; accept invalidation complexity.</li>
 </ul>
 <h2 id="3-architecture-diagram">3. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart LR
+<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
+<pre><code> Client ERP / Dashboard
+        │
+ ┌──────▼────────────────────────────────┐
+ │ Gateway canary (% FastAPI | PHP)      │
+ └──────┬────────────────────────────────┘
+        ▼
+ FastAPI services (submit · bulk · recon)
+        │
+   ┌────┼──────────┬────────────┐
+   ▼    ▼          ▼            ▼
+  PG   Redis    Kafka        MongoDB
+ (by   cache   (chunks ·     (IRN/QR
+ tax          IRP · hooks)   snapshots)
+ qtr)
+        │
+        ▼
+ Workers ── idempotency + retries + DLQ ──► Government IRP
+        │
+   ELK + New Relic
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart LR
   ERP[Client ERP]
   API[FastAPI APIs]
   KF[Kafka]
   W1[IRP submit workers]
   W2[Callback / webhook consumers]
-  PG[(PostgreSQL quarter shards)]
+  PG[(PostgreSQL by tax quarter)]
   MG[(Mongo signed snapshots)]
   RD[(Redis)]
   IRP[Government IRP]
   OBS[ELK + New Relic]
 
-  ERP --&gt; API --&gt; KF
-  KF --&gt; W1 --&gt; IRP
-  IRP --&gt; W2 --&gt; MG
-  W2 --&gt; PG
-  API --&gt; PG
-  API --&gt; RD
-  API --&gt; OBS
-  W1 --&gt; OBS
-</code></pre>
+  ERP --> API --> KF
+  KF --> W1 --> IRP
+  IRP --> W2 --> MG
+  W2 --> PG
+  API --> PG
+  API --> RD
+  API --> OBS
+  W1 --> OBS
+</div>
 <h2 id="4-end-to-end-flow">4. End-to-end flow</h2>
 <ol>
 <li>Client posts invoice JSON (or bulk file) to FastAPI.</li>
@@ -144,5 +167,11 @@ strong{color:#fff}
 <h2 id="5-gradual-migration-note-strangler-verbally">5. Gradual migration note (strangler verbally)</h2>
 <p>PHP monolith stays behind the gateway while FastAPI services cut over by domain with canaries — interviewers may call this <em>strangler</em>; PDF says migrated to microservices.</p></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

@@ -18,6 +18,7 @@ a{color:var(--acc)}
 code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
 pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
 pre code{background:none;padding:0}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.6px}
 th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
 th{background:#1a1f2b;color:var(--acc)}
@@ -259,6 +260,13 @@ strong{color:#fff}
 <a class="lvl2" href="#study-checklist-can-you-whiteboard-this">Study checklist (can you whiteboard this?)</a>
 <a class="lvl1" href="#common-interview-questions-filled-answers-your-experience">Common interview questions — filled answers (your experience)</a>
 <a class="lvl2" href="#quick-tips">Quick tips</a>
+<a class="lvl1" href="#architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</a>
+<a class="lvl2" href="#2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</a>
+<a class="lvl2" href="#3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</a>
+<a class="lvl2" href="#4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</a>
+<a class="lvl2" href="#5-geeksforgeeks_1">5. GeeksforGeeks</a>
+<a class="lvl2" href="#whiteboard-checklist">Whiteboard checklist</a>
 <a class="lvl1" href="#behavioral-managerial-rounds-10-star-stories">Behavioral / managerial rounds — 10 STAR stories</a>
 <a class="lvl2" href="#1-the-reconciled-database-verdict-disagreement-between-two-expert-camps">1. The reconciled database verdict (disagreement between two expert camps)</a>
 <a class="lvl2" href="#2-the-bigqueryclickhouse-ingestion-lane-freshness-as-a-feature">2. The BigQuery→ClickHouse ingestion lane (freshness as a feature)</a>
@@ -277,8 +285,9 @@ strong{color:#fff}
 <h2 id="study-order-do-this">Study order (do this)</h2>
 <ol>
 <li><a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a> — every shippable number and honesty tag</li>
-<li><strong><a href="31_resume_deep_explain_map.html"><code>31_resume_deep_explain_map.md</code></a></strong> — every PDF tech: where / why / flow / numbers (plain English + depth)</li>
-<li><strong><a href="23_project_interview_packs.html"><code>23_project_interview_packs.md</code></a></strong> — interviewer packs for every project (start here before loops)
+<li><strong><a href="31_resume_deep_explain_map.html"><code>31_resume_deep_explain_map.md</code></a></strong> — every PDF tech: where / why / flow / numbers</li>
+<li><strong><a href="33_architecture_diagrams.html"><code>33_architecture_diagrams.md</code></a></strong> — ASCII + mermaid for every project (whiteboard)</li>
+<li><strong><a href="23_project_interview_packs.html"><code>23_project_interview_packs.md</code></a></strong> — interviewer packs for every project
    - <a href="23a_ia_interview_pack.html"><code>23a_ia_interview_pack.md</code></a> · <a href="23b_uber_interview_packs.html"><code>23b_uber_interview_packs.md</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c_masters_gfg_interview_packs.md</code></a></li>
 <li><a href="10_impact_analytics_deep_dive.html"><code>10_impact_analytics_deep_dive.md</code></a> — AssortSmart extra depth + source extracts <code>19</code>/<code>20</code>/<code>21</code>/<code>29</code> (CH DDL Phase-1)</li>
 <li><a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a> · <a href="14_uber_menu_deep_dive.html"><code>14_uber_menu_deep_dive.md</code></a></li>
@@ -6123,53 +6132,53 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 <p><strong>Status:</strong> Phase 1 adversarial + external review <strong>PASS, approve to bring-up</strong>. Remaining gate: bring-up load test on real kik extract. I own design and build work in continuous present — not “shipped to all tenants.”</p>
 <hr>
 <h2 id="2-architecture-diagram">2. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart TB
-  subgraph FE[&quot;Frontend&quot;]
-    Chat[&quot;Chat UI&quot;]
-    Manual[&quot;Manual screens&quot;]
+<div class="mermaid">flowchart TB
+  subgraph FE["Frontend"]
+    Chat["Chat UI"]
+    Manual["Manual screens"]
   end
 
-  subgraph PathA[&quot;Path A — Agent chat&quot;]
-    FA[&quot;FastAPI Agent Service&lt;br/&gt;LangGraph · MCP · LLM&quot;]
+  subgraph PathA["Path A — Agent chat"]
+    FA["FastAPI Agent Service<br/>LangGraph · MCP · LLM"]
   end
 
-  subgraph PathM[&quot;Path M — Manual&quot;]
-    GoREST[&quot;Go Gin REST&lt;br/&gt;create / update / delete&quot;]
+  subgraph PathM["Path M — Manual"]
+    GoREST["Go Gin REST<br/>create / update / delete"]
   end
 
-  subgraph Doing[&quot;Go doing layer — shared&quot;]
-    H[&quot;Hindsight&quot;]
-    C[&quot;Clustering engine&quot;]
-    S[&quot;Strategy&quot;]
+  subgraph Doing["Go doing layer — shared"]
+    H["Hindsight"]
+    C["Clustering engine"]
+    S["Strategy"]
   end
 
-  subgraph Data[&quot;Data plane&quot;]
-    CH[&quot;Per-tenant ClickHouse&lt;br/&gt;63 tables / 8 layers&lt;br/&gt;insert-only · partition-swap · agent R/O&quot;]
-    GCS[&quot;GCS parquet / snapshots&quot;]
-    BQ[&quot;BigQuery&lt;br/&gt;historical truth → CH ingest&quot;]
-    PG[&quot;Thin PG metadata&lt;br/&gt;auth / tenant / workflow&quot;]
+  subgraph Data["Data plane"]
+    CH["Per-tenant ClickHouse<br/>63 tables / 8 layers<br/>insert-only · partition-swap · agent R/O"]
+    GCS["GCS parquet / snapshots"]
+    BQ["BigQuery<br/>historical truth → CH ingest"]
+    PG["Thin PG metadata<br/>auth / tenant / workflow"]
   end
 
-  subgraph Obs[&quot;Observability&quot;]
-    LS[&quot;LangSmith&quot;]
-    DD[&quot;Datadog&quot;]
-    PH[&quot;PostHog&quot;]
+  subgraph Obs["Observability"]
+    LS["LangSmith"]
+    DD["Datadog"]
+    PH["PostHog"]
   end
 
-  Chat --&gt;|POST /chat| FA
-  FA &lt;--&gt;|reason / plan| LLM[&quot;OpenAI / etc.&quot;]
-  FA --&gt;|A3 tool call| Doing
-  Manual --&gt; GoREST --&gt; Doing
-  Doing --&gt; CH
-  Doing --&gt; GCS
-  BQ --&gt;|BQ→CH feed| CH
-  FA -.-&gt;|read-only tools| CH
-  FA --&gt; LS
-  FA --&gt; DD
-  Doing --&gt; DD
-  Chat --&gt; PH
-  Manual --&gt; PH
-</code></pre>
+  Chat -->|POST /chat| FA
+  FA <-->|reason / plan| LLM["OpenAI / etc."]
+  FA -->|A3 tool call| Doing
+  Manual --> GoREST --> Doing
+  Doing --> CH
+  Doing --> GCS
+  BQ -->|BQ→CH feed| CH
+  FA -.->|read-only tools| CH
+  FA --> LS
+  FA --> DD
+  Doing --> DD
+  Chat --> PH
+  Manual --> PH
+</div>
 <p><strong>ASCII (whiteboard fallback):</strong></p>
 <pre><code>Planner ──chat──► FastAPI (LangGraph/MCP) ──tools──► Go doing layer ──► ClickHouse/GCS
                          │                              ▲
@@ -6459,16 +6468,16 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 │  → PwC work papers   │     │  (separate — do not claim)  │
 └──────────────────────┘     └─────────────────────────────┘
 </code></pre>
-<pre><code class="language-mermaid">flowchart TB
-  HFM[Oracle HFM] --&gt; ETL[Shared ETL]
-  ETL --&gt; MySQL[(MySQL SOADB)]
-  MySQL --&gt; Repo[Repository]
-  Repo --&gt; Svc[Service: rules + L1-L3 trees]
-  Svc --&gt; H[Handler FastAPI]
-  UI[React 8 screens] --&gt; H
-  H --&gt;|30+ APIs| UI
-  UI --&gt; PwC[PwC audit work papers]
-</code></pre>
+<div class="mermaid">flowchart TB
+  HFM[Oracle HFM] --> ETL[Shared ETL]
+  ETL --> MySQL[(MySQL SOADB)]
+  MySQL --> Repo[Repository]
+  Repo --> Svc[Service: rules + L1-L3 trees]
+  Svc --> H[Handler FastAPI]
+  UI[React 8 screens] --> H
+  H -->|30+ APIs| UI
+  UI --> PwC[PwC audit work papers]
+</div>
 <hr>
 <h2 id="3-design-decisions_1">3. Design decisions</h2>
 <table>
@@ -6622,16 +6631,16 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 Separate track (not on hot menu path):
   ANZ driver/vehicle docs → Python automation → 99.9% compliance
 </code></pre>
-<pre><code class="language-mermaid">flowchart LR
-  Sites[Partner sites] --&gt; Se[Selenium on GCP]
-  Se --&gt;|proxies / backoff| Raw[HTML / files]
-  PDFs[PDFs / images multilingual] --&gt; VS[Vector store labeled menus]
-  VS --&gt; LC[LangChain RAG + Gemini 2.5 Pro + SFT]
-  Raw --&gt; Cat[Catalog upsert Uber Eats schema]
-  LC --&gt; Cat
-  Cat --&gt; Onboard[Onboarding 24h→2h]
-  Docs[ANZ driver docs] --&gt; Comp[Compliance automation 99.9%]
-</code></pre>
+<div class="mermaid">flowchart LR
+  Sites[Partner sites] --> Se[Selenium on GCP]
+  Se -->|proxies / backoff| Raw[HTML / files]
+  PDFs[PDFs / images multilingual] --> VS[Vector store labeled menus]
+  VS --> LC[LangChain RAG + Gemini 2.5 Pro + SFT]
+  Raw --> Cat[Catalog upsert Uber Eats schema]
+  LC --> Cat
+  Cat --> Onboard[Onboarding 24h→2h]
+  Docs[ANZ driver docs] --> Comp[Compliance automation 99.9%]
+</div>
 <hr>
 <h2 id="3-design-decisions_2">3. Design decisions</h2>
 <table>
@@ -10748,6 +10757,240 @@ I handle tight deadlines with ruthless prioritization and visible risk. I scope 
 <li>For Q20, research the company’s latest product/eng blog the night before.</li>
 </ul>
 <hr>
+<h1 id="architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</h1>
+<p>Whiteboard-ready diagrams for every project on the current PDFs. Style inspired by the original prep’s ASCII box-arrow clarity, plus mermaid for Pages rendering. Facts match <code>GROUND_TRUTH.md</code> — not copied from original resume narratives.</p>
+<p><strong>How to use:</strong> Sketch the ASCII in interviews; open the HTML hub for live mermaid. Java track: swap FastAPI→Spring Boot / Gin→Spring verbally.</p>
+<hr>
+<h2 id="1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</h2>
+<h3 id="architecture-ascii">Architecture (ASCII)</h3>
+<pre><code> Planner (Chat UI)          Planner (Manual / Hindsight UI)
+        │                              │
+        ▼                              ▼
+ ┌──────────────────────┐     ┌─────────────────────────┐
+ │ FastAPI + LangGraph  │     │ Go Gin write APIs       │
+ │ + MCP (agent plane)  │     │ (shared doing layer)    │
+ │ 14 read-only tools   │────►│ Clustering / Hindsight  │
+ │ 3 human confirm steps│     │ / Strategy              │
+ └──────────┬───────────┘     └───────────┬─────────────┘
+            │ read-only                    │ INSERT / approve path
+            ▼                              ▼
+ ┌──────────────────────────────────────────────────────┐
+ │ Per-tenant ClickHouse  (63 tables / 8 layers)        │
+ │ insert-only · refresh by swapping partitions         │
+ │ agent profile: SELECT only                           │
+ └──────────▲───────────────────────────────┬───────────┘
+            │ BQ → CH ingest                │
+     ┌──────┴──────┐                 ┌──────▼──────┐
+     │  BigQuery   │                 │ GCS / snaps │
+     │ (historical)│                 └─────────────┘
+     └─────────────┘
+ Obs: LangSmith (agent) · Datadog (platform) · PostHog (product)
+      ── shared OTEL trace_id ──
+</code></pre>
+<h3 id="user-flow-clustering-copilot">User flow (clustering copilot)</h3>
+<pre><code>Intent → Ground scope (tools) → Confirm search plan → Batch explore configs
+      → Present 3–5 scenarios → Human approve → Write via Go APIs → Grid refresh
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Chat[Chat UI] --> FA[FastAPI LangGraph MCP]
+  Manual[Manual UI] --> Go[Go Gin doing layer]
+  FA -->|14 R/O tools| Go
+  FA -.->|SELECT only| CH[(ClickHouse 63/8)]
+  Go -->|INSERT / approve| CH
+  BQ[BigQuery] -->|ingest| CH
+  FA --> LS[LangSmith]
+  Go --> DD[Datadog]
+</div>
+<h3 id="why-each-box">Why each box</h3>
+<table>
+<thead>
+<tr>
+<th>Box</th>
+<th>Problem it solves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LangGraph/MCP</td>
+<td>Sequence audited tools; no free-form SQL from the LLM</td>
+</tr>
+<tr>
+<td>Go doing layer</td>
+<td>Same write path as Manual UI — one auth surface</td>
+</tr>
+<tr>
+<td>CH insert-only</td>
+<td>Avoid mutation queue; pivots stay fast (189s→12.3s POC)</td>
+</tr>
+<tr>
+<td>Human gates</td>
+<td>Agent never silently finalizes plans</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</h2>
+<h3 id="architecture-ascii_1">Architecture (ASCII)</h3>
+<pre><code> React (8 screens)
+   Recon · Materiality · EMI · Group · Component · Residual · Summary · …
+        │  30+ REST
+        ▼
+ ┌─────────────────────────────────────────┐
+ │ FastAPI  (or Spring Boot on Java track) │
+ │  handler / controller                   │
+ │       ▼                                 │
+ │  service  (materiality rules, trees)    │
+ │       ▼                                 │
+ │  repository  (SQLAlchemy 2.0 / JPA)     │
+ └──────────────────┬──────────────────────┘
+                    ▼
+            ┌───────────────┐
+            │ MySQL SSOT    │  ~11 models
+            │ facts · EMI   │  55 FSLIs / 14 entities
+            │ recon leaves  │  $340M / $170M sample
+            └───────▲───────┘
+                    │
+     Oracle HFM ────┘──── public 10-Q (validate)
+                    │
+                    ▼
+              PwC work papers
+</code></pre>
+<h3 id="quarterly-user-flow">Quarterly user flow</h3>
+<pre><code>Load HFM → Recon vs 10-Q → Set materiality → Group/Component scope
+  → Residual / EMI flags → Summary → Export to audit
+</code></pre>
+<h3 id="logical-er-say-this-dont-invent-extra-tables">Logical ER (say this, don’t invent extra tables)</h3>
+<pre><code>fiscal_period 1──* fslib_fact (BS/IS lines)
+entity 1──* component_assessment
+fslib_fact *──* scoping_decision (material / qualitative)
+emi_investee 1──* emi_assessment
+recon_leaf (HFM amt, filed amt, difference, line_id)
+metrics_table (materiality, residual threshold)
+</code></pre>
+<h3 id="mermaid_1">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  UI[React 8 screens] --> API[FastAPI layered service]
+  API --> DB[(MySQL SSOT)]
+  HFM[Oracle HFM] --> API
+  API --> TQ[10-Q checks]
+  DB --> PwC[PwC papers]
+</div>
+<hr>
+<h2 id="3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</h2>
+<h3 id="architecture-ascii_2">Architecture (ASCII)</h3>
+<pre><code> Third-party menu sites (HTML / PDF / image)
+        │  Selenium + IP rotate / proxies / retries
+        ▼
+ ┌─────────────────┐
+ │ Kafka ingest bus│  ordered per vendor key · replayable
+ └────────┬────────┘
+          ▼
+ ┌─────────────────┐
+ │ Flink normalize │  validate · keyed dedupe · route
+ └────┬────────┬───┘
+      │        │ unstructured
+      │        ▼
+      │   ┌──────────────────────────────┐
+      │   │ LangChain RAG + Gemini 2.5   │
+      │   │ Pro over Milvus              │
+      │   │ schema gate → human if low   │
+      │   └──────────────┬───────────────┘
+      │ structured       │
+      ▼                  ▼
+ ┌────────────────────────────┐
+ │ Uber Eats catalog upsert   │
+ └────────────────────────────┘
+
+ ANZ (Mobility — NOT Eats):
+ Driver/vehicle docs → compliance checks → 99.9% · ~20h/week HISTORICAL
+</code></pre>
+<h3 id="user-ops-flow">User / ops flow</h3>
+<pre><code>Scrape → Kafka → Flink → (catalog | RAG/Milvus/Gemini) → validate → live menu
+Success target 95%+ · onboarding 24h→2h · $600K+/yr · 30K+ menus/mo
+</code></pre>
+<h3 id="mermaid_2">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Sites --> Selenium --> Kafka --> Flink
+  Flink -->|structured| Catalog
+  Flink -->|PDF/image| RAG[RAG + Gemini + Milvus] --> Catalog
+</div>
+<hr>
+<h2 id="4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</h2>
+<h3 id="architecture-ascii_3">Architecture (ASCII)</h3>
+<pre><code> Client ERP / Dashboard
+        │
+ ┌──────▼──────────────────────────────┐
+ │ API Gateway  (canary % → FastAPI)   │
+ │              (fallback → PHP)       │
+ └──────┬──────────────────────────────┘
+        ▼
+ FastAPI microservices (auth · submit · bulk · recon)
+        │
+   ┌────┼────────────┬──────────────┐
+   ▼    ▼            ▼              ▼
+  PG   Redis      Kafka topics    MongoDB
+  (by  (hot       (chunks · IRP   (IRN/QR
+  tax  config)     jobs · hooks)   snapshots)
+  qtr)
+        │
+        ▼
+  Workers ──idempotency + retries + DLQ──► Government IRP
+        │
+   ELK + New Relic (request-id correlation)
+</code></pre>
+<h3 id="bulk-irp-flow">Bulk IRP flow</h3>
+<pre><code>File → validate chunks → Kafka → IRP workers → signed response → webhook/dashboard
+Key: client + fileHash + batchIndex  (no double register with gov)
+</code></pre>
+<h3 id="mermaid_3">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  ERP --> GW[Gateway canary]
+  GW --> API[FastAPI]
+  API --> KF[Kafka]
+  KF --> W[IRP workers] --> IRP[Gov IRP]
+  API --> PG[(PG by quarter)]
+  API --> Redis
+  W --> Mongo[(Mongo snapshots)]
+</div>
+<hr>
+<h2 id="5-geeksforgeeks_1">5. GeeksforGeeks</h2>
+<h3 id="architecture-ascii_4">Architecture (ASCII)</h3>
+<pre><code> Learners / influencers
+        │
+        ▼
+ ┌──────────────────┐
+ │ Django REST APIs │  (PHP → Django migration)
+ └────────┬─────────┘
+     ┌────┼────┬────────┐
+     ▼    ▼    ▼        ▼
+   MySQL Mongo Redis  Elasticsearch
+     │
+     ▼
+ Cron workers — video · reminders · cleanup   (+70% ops, separate from sales)
+ Influencer dashboard — earnings / coupons     (+30% course sales)
+ Votes / pins / locks                           (+15–20% premium)
+</code></pre>
+<h3 id="mermaid_4">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Clients --> Django
+  Django --> MySQL
+  Django --> MongoDB
+  Django --> Redis
+  Django --> ES[Elasticsearch]
+  Cron --> MySQL
+  Cron --> MongoDB
+</div>
+<hr>
+<h2 id="whiteboard-checklist">Whiteboard checklist</h2>
+<ul>
+<li>[ ] Draw AssortSmart agent vs doing layer split and where SQL is forbidden  </li>
+<li>[ ] Draw FRM handler→service→repo→MySQL and HFM/10-Q inputs  </li>
+<li>[ ] Draw Menu Selenium→Kafka→Flink with RAG branch; say ANZ ≠ Eats  </li>
+<li>[ ] Draw Masters gateway canary + Kafka IRP + quarter PG  </li>
+<li>[ ] Name one rejected alternative per critical box  </li>
+</ul>
+<hr>
 <h1 id="behavioral-managerial-rounds-10-star-stories">Behavioral / managerial rounds — 10 STAR stories</h1>
 <p>Each story is mapped to <strong>Amazon Leadership Principles (LP)</strong> and <strong>Googliness signals</strong> (intellectual humility, bias to action, collaboration, comfort with ambiguity, doing the right thing). Tell them in 60–90 seconds: one line of Situation, one of Task, 3–4 concrete Actions, quantified Result, and a one-line Lesson. Never share the same story twice in one loop — this bank gives you coverage.</p>
 <p><strong>Coverage matrix</strong></p>
@@ -10911,4 +11154,9 @@ I handle tight deadlines with ruthless prioritization and visible risk. I scope 
 <li><strong>"Conflict with a manager?"</strong> Use story 7 (rulebook disagreement), framed upward.</li>
 <li><strong>"A time you failed?"</strong> Story 5 (refactor regression) or story 10 (near-miss) — both end in process fixes.</li>
 <li><strong>"What are you most proud of?"</strong> Story 1 — turning an org-level disagreement into a gated, evidence-based decision that later became the committed direction.</li>
-</ul></main></div></body></html>
+</ul></main></div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+</body></html>

@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -48,8 +49,9 @@ strong{color:#fff}
 <h2 id="study-order-do-this">Study order (do this)</h2>
 <ol>
 <li><a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a> — every shippable number and honesty tag</li>
-<li><strong><a href="31_resume_deep_explain_map.html"><code>31_resume_deep_explain_map.md</code></a></strong> — every PDF tech: where / why / flow / numbers (plain English + depth)</li>
-<li><strong><a href="23_project_interview_packs.html"><code>23_project_interview_packs.md</code></a></strong> — interviewer packs for every project (start here before loops)
+<li><strong><a href="31_resume_deep_explain_map.html"><code>31_resume_deep_explain_map.md</code></a></strong> — every PDF tech: where / why / flow / numbers</li>
+<li><strong><a href="33_architecture_diagrams.html"><code>33_architecture_diagrams.md</code></a></strong> — ASCII + mermaid for every project (whiteboard)</li>
+<li><strong><a href="23_project_interview_packs.html"><code>23_project_interview_packs.md</code></a></strong> — interviewer packs for every project
    - <a href="23a_ia_interview_pack.html"><code>23a_ia_interview_pack.md</code></a> · <a href="23b_uber_interview_packs.html"><code>23b_uber_interview_packs.md</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c_masters_gfg_interview_packs.md</code></a></li>
 <li><a href="10_impact_analytics_deep_dive.html"><code>10_impact_analytics_deep_dive.md</code></a> — AssortSmart extra depth + source extracts <code>19</code>/<code>20</code>/<code>21</code>/<code>29</code> (CH DDL Phase-1)</li>
 <li><a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a> · <a href="14_uber_menu_deep_dive.html"><code>14_uber_menu_deep_dive.md</code></a></li>
@@ -95,5 +97,11 @@ strong{color:#fff}
 <p><b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. Copilot is Phase 1 design-approved, load test pending — say <b>building</b>, not shipped. No IA TPS/RPM (none measured). Menu Kafka/Flink is Eats ingest; Masters Kafka is GST IRP — different products. ANZ is Uber <b>Mobility</b> drivers, not Eats.</p>
 </div></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

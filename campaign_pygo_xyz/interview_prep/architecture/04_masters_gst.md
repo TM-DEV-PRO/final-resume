@@ -23,6 +23,32 @@
 
 ## 3. Architecture diagram
 
+### ASCII (whiteboard)
+
+```
+ Client ERP / Dashboard
+        │
+ ┌──────▼────────────────────────────────┐
+ │ Gateway canary (% FastAPI | PHP)      │
+ └──────┬────────────────────────────────┘
+        ▼
+ FastAPI services (submit · bulk · recon)
+        │
+   ┌────┼──────────┬────────────┐
+   ▼    ▼          ▼            ▼
+  PG   Redis    Kafka        MongoDB
+ (by   cache   (chunks ·     (IRN/QR
+ tax          IRP · hooks)   snapshots)
+ qtr)
+        │
+        ▼
+ Workers ── idempotency + retries + DLQ ──► Government IRP
+        │
+   ELK + New Relic
+```
+
+### Mermaid
+
 ```mermaid
 flowchart LR
   ERP[Client ERP]
@@ -30,7 +56,7 @@ flowchart LR
   KF[Kafka]
   W1[IRP submit workers]
   W2[Callback / webhook consumers]
-  PG[(PostgreSQL quarter shards)]
+  PG[(PostgreSQL by tax quarter)]
   MG[(Mongo signed snapshots)]
   RD[(Redis)]
   IRP[Government IRP]

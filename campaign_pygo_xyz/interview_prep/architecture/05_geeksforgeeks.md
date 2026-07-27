@@ -22,6 +22,26 @@
 
 ## 3. Architecture diagram
 
+### ASCII (whiteboard)
+
+```
+ Web / app
+    │
+    ▼
+ Django REST  (after PHP → Django)
+    │
+ ┌──┼────┬───────┬──────────┐
+ ▼  ▼    ▼       ▼          │
+MySQL Mongo Redis Elasticsearch
+    │
+    ▼
+ Cron: video · reminders · cleanup     (+70% ops)
+ Influencer dashboard                   (+30% course sales)
+ Votes / pins / locks                   (+15–20% premium)
+```
+
+### Mermaid
+
 ```mermaid
 flowchart TB
   WEB[Web / app clients]

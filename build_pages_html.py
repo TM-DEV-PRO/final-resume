@@ -46,8 +46,35 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>"""
+
+MERMAID_BOOT = """
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+"""
+
+
+def promote_mermaid(html: str) -> str:
+    def repl(m):
+        body = (
+            m.group(1)
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&amp;", "&")
+            .replace("&quot;", '"')
+        )
+        return f'<div class="mermaid">{body}</div>'
+
+    return re.sub(
+        r'<pre><code class="language-mermaid">(.*?)</code></pre>',
+        repl,
+        html,
+        flags=re.DOTALL,
+    )
 
 ROOTS = [
     "campaign_pygo_xyz",
@@ -101,6 +128,7 @@ def convert_file(md_path: str) -> str:
     )
     body = md.convert(raw)
     body = md_to_html_links(body)
+    body = promote_mermaid(body)
     nav = "\n".join(
         f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">'
         f'{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
@@ -122,6 +150,7 @@ def convert_file(md_path: str) -> str:
 <nav class="toc"><div class="brand">On this page</div>{nav or '<span style="color:var(--mut);font-size:12px">No sections</span>'}</nav>
 <main>{body}</main>
 </div>
+{MERMAID_BOOT}
 </body>
 </html>
 """

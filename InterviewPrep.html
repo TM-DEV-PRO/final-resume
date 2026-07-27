@@ -18,6 +18,7 @@ a{color:var(--acc)}
 code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
 pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
 pre code{background:none;padding:0}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.6px}
 th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
 th{background:#1a1f2b;color:var(--acc)}
@@ -2033,4 +2034,9 @@ A: Four explicit non-goals: no auto-finalize without human approval; no replacem
 <li><strong>"Why not everything Rust?"</strong> Team throughput. Rust's compile-time rigor pays on hot paths; on CRUD it just slows delivery. Hence "Rust by measurement."</li>
 <li><strong>"Isn't ClickHouse for analytics only?"</strong> Classically yes — and I authored the audit position saying exactly that for the legacy mutation-heavy code. The unlock is changing the write model, not the engine: insert-only versions turn edits into what ClickHouse is best at (appends + background merges). We proved the mutation queue stays at zero before committing.</li>
 <li><strong>"Where's Postgres now?"</strong> A thin metadata/auth/config plane and pgvector for the semantic cache. Planning data — writes and reads — is ClickHouse.</li>
-</ul></main></div></body></html>
+</ul></main></div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+</body></html>

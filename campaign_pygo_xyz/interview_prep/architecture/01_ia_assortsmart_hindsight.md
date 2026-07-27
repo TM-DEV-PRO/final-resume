@@ -43,6 +43,30 @@ Defend every Tech line item: where used, why chosen, DB shape, end-to-end flow.
 
 ## 3. Architecture diagram
 
+### ASCII (whiteboard)
+
+```
+ Planner Chat                    Manual / Hindsight UI
+      │                                 │
+      ▼                                 ▼
+ ┌────────────────────┐        ┌──────────────────────┐
+ │ FastAPI+LangGraph  │        │ Go Gin doing layer   │
+ │ MCP · 14 R/O tools │───────►│ Clustering/Hindsight │
+ │ 3 human confirms   │        │ Strategy write APIs  │
+ └─────────┬──────────┘        └──────────┬───────────┘
+           │ SELECT only                  │ INSERT after approve
+           ▼                              ▼
+      ┌────────────────────────────────────────┐
+      │ ClickHouse per-tenant · 63 tables/8    │
+      │ insert-only · partition-swap refresh   │
+      └──────────▲───────────────────┬─────────┘
+                 │                   │
+            BigQuery              GCS
+ Obs: LangSmith · Datadog · PostHog (shared trace_id)
+```
+
+### Mermaid
+
 ```mermaid
 flowchart TB
   subgraph FE[Frontend]

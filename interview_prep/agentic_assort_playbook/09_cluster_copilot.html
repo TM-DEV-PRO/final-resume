@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -217,5 +218,11 @@ A: Per-tenant everything: ingestion lanes, quotas/concurrency budgets, k-ranges 
 <p><strong>Q: What did you deliberately not build?</strong>
 A: Four explicit non-goals: no auto-finalize without human approval; no replacement of the existing wizard (parallel, untouched); no transactional/plan data on ClickHouse and no replacing BigQuery as truth; no attempt to make the ML itself faster (~9 s/config median is accepted physics — we parallelize and precompute around it).</p></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

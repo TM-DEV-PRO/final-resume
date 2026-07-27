@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -74,5 +75,11 @@ strong{color:#fff}
 <p><b>Final-resume alignment (July 2026).</b> The shipped resume diverges from this playbook in three deliberate ways: (1) the <b>BigQuery cost program (§2 P1–P2) is NOT on the resume</b> — treat it as platform history/context only, never claim it as your delivery; the resume bullet is the <b>BigQuery→ClickHouse ingestion pipeline</b> (see the final-resume project file §3c). (2) <b>Rust appears on the resume only in the Skills line</b> (Languages: Python, Go, Java, C, C++, Rust, SQL) — there is no Rust project bullet; if asked, frame it as the team's designated escape hatch for perf-critical APIs that Go can't hit, per the July 2026 stack direction. (3) The resume shows <b>one project block</b> ("Agentic AssortSmart") with four content bullets: agentic rebuild overview; agentic microservice whose conversational agent grounds plain-language scope, batch-evaluates ~100 silhouette-scored candidate clusterings, and presents the top 3 with evidence (days to &lt;1 h); Go (Gin) core backend (worker pools, bounded channels, context timeouts, JWT); ClickHouse per-tenant append-only never-erase planning store (atomic partition swaps, inserts resolved via latest-state views, lock-free writes). The planning-grid p95 bullet is currently commented out of the resume. When a playbook talking track conflicts with these, the resume framing wins.</p>
 </div></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

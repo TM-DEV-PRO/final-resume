@@ -33,6 +33,7 @@ tr:nth-child(even){background:#141822}
 blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
 hr{border:none;border-top:1px solid var(--line);margin:28px 0}
 strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 @media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
 </style>
 </head>
@@ -153,7 +154,21 @@ strong{color:#fff}
 <p><strong>Q4 2025 sample (MEASURED):</strong> group materiality <strong>$340M</strong>, residual <strong>$170M</strong>, ~<strong>55</strong> line items, <strong>14</strong> entities.</p>
 <p>If asked “how many tables?”: “About <strong>11 SQLAlchemy models</strong> in the scoping service; collaboration/comments live in a separate service — I do not claim those.”</p>
 <h2 id="3-architecture-diagram">3. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart LR
+<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
+<pre><code> React 8 screens ──30+ REST──► FastAPI (handler → service → repository)
+                                      │
+                                      ▼
+                               MySQL system of record
+                               (~11 models · 55 lines · 14 entities)
+                                      ▲
+                    Oracle HFM ───────┤
+                    public 10-Q ──────┘  (recon validate)
+                                      │
+                                      ▼
+                               PwC audit work papers
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart LR
   subgraph UI[React 8 screens]
     Rec[Reconciliation]
     Mat[Materiality]
@@ -181,13 +196,13 @@ strong{color:#fff}
     PwC[PwC audit work papers]
   end
 
-  UI --&gt; H --&gt; S --&gt; R --&gt; Facts
-  R --&gt; Recon
-  HFM --&gt; S
-  S --&gt; TQ
-  Facts --&gt; PwC
-  Recon --&gt; PwC
-</code></pre>
+  UI --> H --> S --> R --> Facts
+  R --> Recon
+  HFM --> S
+  S --> TQ
+  Facts --> PwC
+  Recon --> PwC
+</div>
 <h2 id="4-end-to-end-quarterly-flow">4. End-to-end quarterly flow</h2>
 <ol>
 <li>HFM extracts land in MySQL fact tables for the fiscal period.</li>
@@ -206,5 +221,11 @@ strong{color:#fff}
 <h3 id="why-not-claim-collaboration-service">Why not claim collaboration service</h3>
 <p>Comments/Slack live in <code>frm-collaboration-service</code>. Scope your ownership to the <strong>scoping service</strong>.</p></main>
 </div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
 </body>
 </html>

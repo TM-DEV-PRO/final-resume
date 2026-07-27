@@ -1,6 +1,8 @@
 # Architecture index (campaign_pygo_xyz)
 
-One doc per resume project: **tech → where used → why**, **DB design**, **architecture diagram**, **flow**.
+One doc per resume project: **tech → where used → why**, **DB design**, **ASCII + mermaid architecture**, **flow**.
+
+Also: [`../../interview_prep_v2/33_architecture_diagrams.md`](../../interview_prep_v2/33_architecture_diagrams.md) — all five projects on one whiteboard page.
 
 | Project | File |
 |---|---|

@@ -18,6 +18,7 @@ a{color:var(--acc)}
 code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
 pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
 pre code{background:none;padding:0}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
 table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.6px}
 th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
 th{background:#1a1f2b;color:var(--acc)}
@@ -242,7 +243,25 @@ strong{color:#fff}
 <a class="lvl2" href="#four-physical-patterns-ddl-doctrine">Four physical patterns (DDL doctrine)</a>
 <a class="lvl2" href="#platform-sizing-honesty-verbal-ok">Platform / sizing honesty (verbal OK)</a>
 <a class="lvl2" href="#how-this-maps-to-the-resume-bullet">How this maps to the resume bullet</a>
-<a class="lvl1" href="#multi-agent-resume-panel-menu-anz-masters-28-jul-2026">Multi-agent resume panel — Menu / ANZ / Masters (28 Jul 2026)</a></nav>
+<a class="lvl1" href="#multi-agent-resume-panel-menu-anz-masters-28-jul-2026">Multi-agent resume panel — Menu / ANZ / Masters (28 Jul 2026)</a>
+<a class="lvl1" href="#resume-deep-explain-map-study-this-before-loops">Resume deep-explain map (study this before loops)</a>
+<a class="lvl2" href="#how-to-answer-any-tech-template">How to answer any tech (template)</a>
+<a class="lvl2" href="#impact-analytics-assortsmart-building-not-shipped">Impact Analytics — AssortSmart (building, not shipped)</a>
+<a class="lvl2" href="#uber-frm-finance">Uber FRM (Finance)</a>
+<a class="lvl2" href="#uber-menu-eats-anz-mobility-separate">Uber Menu (Eats) + ANZ (Mobility — separate)</a>
+<a class="lvl2" href="#masters-india-gst">Masters India GST</a>
+<a class="lvl2" href="#geeksforgeeks_2">GeeksforGeeks</a>
+<a class="lvl2" href="#quick-why-this-tech-cheat-sheet">Quick “why this tech” cheat sheet</a>
+<a class="lvl2" href="#study-checklist-can-you-whiteboard-this">Study checklist (can you whiteboard this?)</a>
+<a class="lvl1" href="#common-interview-questions-filled-answers-your-experience">Common interview questions — filled answers (your experience)</a>
+<a class="lvl2" href="#quick-tips">Quick tips</a>
+<a class="lvl1" href="#architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</a>
+<a class="lvl2" href="#2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</a>
+<a class="lvl2" href="#3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</a>
+<a class="lvl2" href="#4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</a>
+<a class="lvl2" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
+<a class="lvl2" href="#whiteboard-checklist">Whiteboard checklist</a></nav>
 <main><h1 id="java-track-interview-prep-hub-grounded-rewrite">Java Track — Interview Prep Hub (grounded rewrite)</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026</strong></p>
 <p>Backs <code>resume_java/</code> (PDF: <code>Tarun_Mittal_SSE_Java_5yr.pdf</code>). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu, and ClickHouse work stay Python.</p>
@@ -3538,53 +3557,53 @@ Principle I ship with: the LLM proposes; validators and humans dispose. RAG impr
 <p><strong>Status:</strong> Phase 1 adversarial + external review <strong>PASS, approve to bring-up</strong>. Remaining gate: bring-up load test on real kik extract. I own design and build work in continuous present — not “shipped to all tenants.”</p>
 <hr>
 <h2 id="2-architecture-diagram">2. Architecture diagram</h2>
-<pre><code class="language-mermaid">flowchart TB
-  subgraph FE[&quot;Frontend&quot;]
-    Chat[&quot;Chat UI&quot;]
-    Manual[&quot;Manual screens&quot;]
+<div class="mermaid">flowchart TB
+  subgraph FE["Frontend"]
+    Chat["Chat UI"]
+    Manual["Manual screens"]
   end
 
-  subgraph PathA[&quot;Path A — Agent chat&quot;]
-    FA[&quot;FastAPI Agent Service&lt;br/&gt;LangGraph · MCP · LLM&quot;]
+  subgraph PathA["Path A — Agent chat"]
+    FA["FastAPI Agent Service<br/>LangGraph · MCP · LLM"]
   end
 
-  subgraph PathM[&quot;Path M — Manual&quot;]
-    GoREST[&quot;Go Gin REST&lt;br/&gt;create / update / delete&quot;]
+  subgraph PathM["Path M — Manual"]
+    GoREST["Go Gin REST<br/>create / update / delete"]
   end
 
-  subgraph Doing[&quot;Go doing layer — shared&quot;]
-    H[&quot;Hindsight&quot;]
-    C[&quot;Clustering engine&quot;]
-    S[&quot;Strategy&quot;]
+  subgraph Doing["Go doing layer — shared"]
+    H["Hindsight"]
+    C["Clustering engine"]
+    S["Strategy"]
   end
 
-  subgraph Data[&quot;Data plane&quot;]
-    CH[&quot;Per-tenant ClickHouse&lt;br/&gt;63 tables / 8 layers&lt;br/&gt;insert-only · partition-swap · agent R/O&quot;]
-    GCS[&quot;GCS parquet / snapshots&quot;]
-    BQ[&quot;BigQuery&lt;br/&gt;historical truth → CH ingest&quot;]
-    PG[&quot;Thin PG metadata&lt;br/&gt;auth / tenant / workflow&quot;]
+  subgraph Data["Data plane"]
+    CH["Per-tenant ClickHouse<br/>63 tables / 8 layers<br/>insert-only · partition-swap · agent R/O"]
+    GCS["GCS parquet / snapshots"]
+    BQ["BigQuery<br/>historical truth → CH ingest"]
+    PG["Thin PG metadata<br/>auth / tenant / workflow"]
   end
 
-  subgraph Obs[&quot;Observability&quot;]
-    LS[&quot;LangSmith&quot;]
-    DD[&quot;Datadog&quot;]
-    PH[&quot;PostHog&quot;]
+  subgraph Obs["Observability"]
+    LS["LangSmith"]
+    DD["Datadog"]
+    PH["PostHog"]
   end
 
-  Chat --&gt;|POST /chat| FA
-  FA &lt;--&gt;|reason / plan| LLM[&quot;OpenAI / etc.&quot;]
-  FA --&gt;|A3 tool call| Doing
-  Manual --&gt; GoREST --&gt; Doing
-  Doing --&gt; CH
-  Doing --&gt; GCS
-  BQ --&gt;|BQ→CH feed| CH
-  FA -.-&gt;|read-only tools| CH
-  FA --&gt; LS
-  FA --&gt; DD
-  Doing --&gt; DD
-  Chat --&gt; PH
-  Manual --&gt; PH
-</code></pre>
+  Chat -->|POST /chat| FA
+  FA <-->|reason / plan| LLM["OpenAI / etc."]
+  FA -->|A3 tool call| Doing
+  Manual --> GoREST --> Doing
+  Doing --> CH
+  Doing --> GCS
+  BQ -->|BQ→CH feed| CH
+  FA -.->|read-only tools| CH
+  FA --> LS
+  FA --> DD
+  Doing --> DD
+  Chat --> PH
+  Manual --> PH
+</div>
 <p><strong>ASCII (whiteboard fallback):</strong></p>
 <pre><code>Planner ──chat──► FastAPI (LangGraph/MCP) ──tools──► Go doing layer ──► ClickHouse/GCS
                          │                              ▲
@@ -3874,16 +3893,16 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 │  → PwC work papers   │     │  (separate — do not claim)  │
 └──────────────────────┘     └─────────────────────────────┘
 </code></pre>
-<pre><code class="language-mermaid">flowchart TB
-  HFM[Oracle HFM] --&gt; ETL[Shared ETL]
-  ETL --&gt; MySQL[(MySQL SOADB)]
-  MySQL --&gt; Repo[Repository]
-  Repo --&gt; Svc[Service: rules + L1-L3 trees]
-  Svc --&gt; H[Handler FastAPI]
-  UI[React 8 screens] --&gt; H
-  H --&gt;|30+ APIs| UI
-  UI --&gt; PwC[PwC audit work papers]
-</code></pre>
+<div class="mermaid">flowchart TB
+  HFM[Oracle HFM] --> ETL[Shared ETL]
+  ETL --> MySQL[(MySQL SOADB)]
+  MySQL --> Repo[Repository]
+  Repo --> Svc[Service: rules + L1-L3 trees]
+  Svc --> H[Handler FastAPI]
+  UI[React 8 screens] --> H
+  H -->|30+ APIs| UI
+  UI --> PwC[PwC audit work papers]
+</div>
 <hr>
 <h2 id="3-design-decisions_1">3. Design decisions</h2>
 <table>
@@ -4037,16 +4056,16 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 Separate track (not on hot menu path):
   ANZ driver/vehicle docs → Python automation → 99.9% compliance
 </code></pre>
-<pre><code class="language-mermaid">flowchart LR
-  Sites[Partner sites] --&gt; Se[Selenium on GCP]
-  Se --&gt;|proxies / backoff| Raw[HTML / files]
-  PDFs[PDFs / images multilingual] --&gt; VS[Vector store labeled menus]
-  VS --&gt; LC[LangChain RAG + Gemini 2.5 Pro + SFT]
-  Raw --&gt; Cat[Catalog upsert Uber Eats schema]
-  LC --&gt; Cat
-  Cat --&gt; Onboard[Onboarding 24h→2h]
-  Docs[ANZ driver docs] --&gt; Comp[Compliance automation 99.9%]
-</code></pre>
+<div class="mermaid">flowchart LR
+  Sites[Partner sites] --> Se[Selenium on GCP]
+  Se -->|proxies / backoff| Raw[HTML / files]
+  PDFs[PDFs / images multilingual] --> VS[Vector store labeled menus]
+  VS --> LC[LangChain RAG + Gemini 2.5 Pro + SFT]
+  Raw --> Cat[Catalog upsert Uber Eats schema]
+  LC --> Cat
+  Cat --> Onboard[Onboarding 24h→2h]
+  Docs[ANZ driver docs] --> Comp[Compliance automation 99.9%]
+</div>
 <hr>
 <h2 id="3-design-decisions_2">3. Design decisions</h2>
 <table>
@@ -7671,4 +7690,733 @@ Sources: current <code>experience.tex</code> (v2 / java / pygo) + <code>GROUND_T
 - Menu architecture on PDF: <code>Selenium → Kafka → Flink</code> + <code>LangChain RAG + Gemini over Milvus</code>.
 - SFT removed; 98%/100% = offline eval HISTORICAL; 100% schema = validation gate.
 - Milvus named from 4yr resume Databases line (not invented Pinecone).</p>
-<p><strong>Optional polish applied after panel:</strong> ANZ → “achieving 99.9% … eliminating about 20 hours/week.”</p></main></div></body></html>
+<p><strong>Optional polish applied after panel:</strong> ANZ → “achieving 99.9% … eliminating about 20 hours/week.”</p>
+<hr>
+<h1 id="resume-deep-explain-map-study-this-before-loops">Resume deep-explain map (study this before loops)</h1>
+<p><strong>Purpose:</strong> Anything on the PDF you can defend in depth — each tech (where / why / problem solved), numbers, user flows, architecture, ER-ish schema notes. Prep keeps jargon; <strong>PDF uses simple English</strong>.</p>
+<p><strong>Honesty:</strong> MEASURED / TARGET / HISTORICAL / ESTIMATED — see <a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>.</p>
+<p><strong>Packs:</strong> <a href="23a_ia_interview_pack.html"><code>23a</code></a> · <a href="23b_uber_interview_packs.html"><code>23b</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c</code></a><br>
+<strong>Diagrams:</strong> <code>campaign_pygo_xyz/interview_prep/architecture/</code> · deep dives <code>10</code>/<code>11</code>/<code>12</code>/<code>14</code>/<code>29</code></p>
+<hr>
+<h2 id="how-to-answer-any-tech-template">How to answer any tech (template)</h2>
+<ol>
+<li><strong>Where</strong> — which product + which path (user click → API → store).  </li>
+<li><strong>Why</strong> — the failure mode it fixed (not “industry standard”).  </li>
+<li><strong>Rejected</strong> — one alternative you didn’t pick and why.  </li>
+<li><strong>Number</strong> — MEASURED vs TARGET vs HISTORICAL; never invent TPS for IA.  </li>
+<li><strong>Failure</strong> — what still breaks if this piece dies.</li>
+</ol>
+<hr>
+<h2 id="impact-analytics-assortsmart-building-not-shipped">Impact Analytics — AssortSmart (building, not shipped)</h2>
+<h3 id="user-flow">User flow</h3>
+<p>Planner opens AssortSmart → chat asks for cluster / assortment help → agent calls <strong>audited tools only</strong> (read) → shows search plan → <strong>human confirms</strong> → write APIs apply approved changes → grid/Hindsight refresh from planning store.</p>
+<h3 id="architecture-flow">Architecture flow</h3>
+<pre><code>Planner UI (chat + grid)
+    │
+FastAPI + LangGraph + MCP (agent plane: sequence tools, explain)
+    │  read-only tools (14) + 3 confirm steps
+Go Gin / Spring Boot write APIs (doing layer: Manual UI + agent share same auth)
+    │
+ClickHouse planning store (per tenant) ← ingest ← BigQuery / GCS
+Obs: LangSmith (agent) · Datadog (platform) · PostHog (product) · shared trace_id
+</code></pre>
+<h3 id="tech-on-pdf">Tech on PDF</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where used</th>
+<th>Why / problem solved</th>
+<th>Rejected / trade-off</th>
+<th>Number defense</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FastAPI + LangGraph + MCP</strong></td>
+<td>Planner chat / copilot</td>
+<td>Orchestrate tool calls + prompts; MCP = typed tool surface</td>
+<td>Raw LLM SQL → agent invents queries</td>
+<td>Turnaround <strong>days → under 1h</strong>, configs <strong>1 → ≥20</strong> = <strong>TARGET</strong></td>
+</tr>
+<tr>
+<td><strong>Go Gin</strong> (v2/PyGo) / <strong>Spring Boot</strong> (Java)</td>
+<td>Write/doing APIs</td>
+<td>Same write path as Manual UI; auth once; not “LLM writes DB”</td>
+<td>Agent-only writes</td>
+<td>Design; load test pending</td>
+</tr>
+<tr>
+<td><strong>14 read-only tools + 3 confirm steps</strong></td>
+<td>Agent safety</td>
+<td>Stop bad clustering inputs before engine</td>
+<td>Silent auto-finalize</td>
+<td>Failures <strong>8.5% (37/437 kik) → under 2%</strong> MEASURED→TARGET</td>
+</tr>
+<tr>
+<td><strong>ClickHouse 63/8</strong></td>
+<td>Planning store</td>
+<td>Fast pivots + versioned inserts; agent SELECT only</td>
+<td>Postgres-only OLAP; CH <code>ALTER UPDATE</code></td>
+<td><strong>189s→12.3s</strong> on <strong>250M</strong> MEASURED POC; <strong>63/8</strong> from DDL Phase-1 (<code>29</code>)</td>
+</tr>
+<tr>
+<td><strong>Insert-only + swap partitions</strong></td>
+<td>Facts/cubes refresh</td>
+<td>Avoid mutation queue; atomic refresh</td>
+<td>Row UPDATEs</td>
+<td>Say “refresh by swapping partitions” on PDF; <code>argMax</code>/<code>FINAL</code> verbally</td>
+</tr>
+<tr>
+<td><strong>~25M aggregate vs 12B store-week</strong></td>
+<td>Line-plan grain (<strong>not on PDF</strong>)</td>
+<td>Avoid table explosion</td>
+<td>Flat store-week</td>
+<td><strong>~0.4 ms</strong> edits MEASURED; month rollups sub-second — verbal only</td>
+</tr>
+<tr>
+<td><strong>BigQuery / GCS</strong></td>
+<td>Upstream truth / files</td>
+<td>Warehouse + object store for feeds</td>
+<td>CH as sole system of record for all company data</td>
+<td>Design</td>
+</tr>
+<tr>
+<td><strong>Datadog / LangSmith / PostHog</strong></td>
+<td>Ops / agent quality / product</td>
+<td>Different questions each answers</td>
+<td>One tool for everything</td>
+<td>Design</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ER / schema talk track:</strong> 8 layers (stage twins, facts, dims, cubes, decisions/events…); agent <code>readonly=1</code>; services INSERT-only. Detail: <a href="29_ia_ch_ddl_phase1_source.html"><code>29_ia_ch_ddl_phase1_source.md</code></a>, pack <code>23a</code>, deep dive <code>10</code>.</p>
+<hr>
+<h2 id="uber-frm-finance">Uber FRM (Finance)</h2>
+<h3 id="user-flow_1">User flow</h3>
+<p>Finance opens Recon → loads HFM lines → Materiality / EMI / Group &amp; Component Scoping / Residual Risk / Summary → flags material lines → exports feed PwC work papers.</p>
+<h3 id="architecture-flow_1">Architecture flow</h3>
+<pre><code>React (8 screens) → FastAPI or Spring Boot (30+ REST)
+    → handler/controller → service → repository
+    → MySQL (11 tables, SQLAlchemy 2.0 or JPA)
+Auth: gateway email header · Bazel/JUnit CI · PwC-facing releases
+</code></pre>
+<h3 id="tech-on-pdf_1">Tech on PDF</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+<th>Rejected</th>
+<th>Numbers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FastAPI / Spring Boot + React</strong></td>
+<td>Whole FRM app</td>
+<td>Replace Sheets; API + UI ownership</td>
+<td>Keep Sheets</td>
+<td><strong>8 screens, 30+ APIs</strong></td>
+</tr>
+<tr>
+<td><strong>MySQL + 11-table schema</strong></td>
+<td>System of record</td>
+<td>Durable line IDs + audit trail</td>
+<td>Sheets forever</td>
+<td><strong>55 lines / 14 entities</strong>; <strong>$340M</strong> materiality sample</td>
+</tr>
+<tr>
+<td><strong>SQLAlchemy 2.0 / JPA</strong></td>
+<td>ORM + joins</td>
+<td>Typed models; explicit column labels</td>
+<td>Raw SQL everywhere</td>
+<td>Join bug: two columns same name → wrong identity (<strong>HISTORICAL</strong> fix story)</td>
+</tr>
+<tr>
+<td><strong>HFM + 10-Q</strong></td>
+<td>Recon truth</td>
+<td>Internal extract vs public filing</td>
+<td>Trust one source</td>
+<td>Recon v2 <strong>18 files</strong></td>
+</tr>
+<tr>
+<td><strong>Led 3</strong></td>
+<td>Delivery</td>
+<td>Design reviews, contracts, CI</td>
+<td>IC-only</td>
+<td>Leadership claim</td>
+</tr>
+</tbody>
+</table>
+<p>Diagrams: <code>architecture/02_uber_frm.md</code> · pack <code>23b</code> · deep dive <code>11</code>.</p>
+<hr>
+<h2 id="uber-menu-eats-anz-mobility-separate">Uber Menu (Eats) + ANZ (Mobility — separate)</h2>
+<h3 id="user-flow-menu">User flow (Menu)</h3>
+<p>Partner menu URL/PDF/image → Selenium fetch → Kafka → Flink normalize → structured catalog <strong>or</strong> RAG/Milvus + Gemini extract → schema gate → low confidence human review → live menu.</p>
+<h3 id="architecture-flow_2">Architecture flow</h3>
+<pre><code>Selenium fleet (IP rotate, proxies, retries)
+    → Kafka → Flink
+         ├─ structured HTML → catalog
+         └─ PDF/image → chunk → Milvus retrieve → Gemini → validate → review
+</code></pre>
+<h3 id="tech-on-pdf_2">Tech on PDF</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+<th>Rejected</th>
+<th>Numbers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Selenium</strong></td>
+<td>Acquisition</td>
+<td>JS-heavy partner sites</td>
+<td>Static curl only</td>
+<td>Part of <strong>24h→2h</strong>, <strong>30K+/mo</strong>, <strong>$600K+</strong>/yr</td>
+</tr>
+<tr>
+<td><strong>Kafka + Flink</strong></td>
+<td>Ingest pipeline</td>
+<td>Buffer spikes; stream transform</td>
+<td>Sync batch only</td>
+<td>Same economics; don’t mix with Masters Kafka story</td>
+</tr>
+<tr>
+<td><strong>LangChain RAG + Gemini + Milvus</strong></td>
+<td>Unstructured menus</td>
+<td>Multilingual PDF/image → schema</td>
+<td>Pure regex OCR</td>
+<td><strong>98% fidelity / 100% schema</strong> = <strong>offline HISTORICAL eval</strong>; 100% = validation gate</td>
+</tr>
+<tr>
+<td><strong>IP rotation / proxies / retries</strong></td>
+<td>Anti-bot</td>
+<td>Sites block scrapers</td>
+<td>Fixed IP</td>
+<td><strong>95%+</strong> success</td>
+</tr>
+<tr>
+<td><strong>ANZ docs</strong></td>
+<td><strong>Mobility</strong> drivers/vehicles</td>
+<td>Compliance automation</td>
+<td>Manual checks</td>
+<td><strong>99.9%</strong>; <strong>~20h/week</strong> HISTORICAL past-resume only — <strong>not Eats</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Diagrams: <code>architecture/03_uber_menu.md</code> · pack <code>23b</code> · deep dive <code>14</code> · panel <code>30</code>.</p>
+<hr>
+<h2 id="masters-india-gst">Masters India GST</h2>
+<h3 id="user-flow_2">User flow</h3>
+<p>Client ERP/dashboard → submit or bulk import invoices → validate → register with government IRP → IRN/QR back → webhook / dashboard progress.</p>
+<h3 id="architecture-flow_3">Architecture flow</h3>
+<pre><code>Gateway canary (% FastAPI|Spring | fallback PHP)
+    → microservices
+    → Kafka (bulk chunks, IRP jobs, webhooks)
+    → PostgreSQL (tables by tax quarter) + Redis + MongoDB payloads
+    → IRP (gov) with idempotency keys, retries, DLQ
+Obs: ELK + New Relic
+</code></pre>
+<p><strong>Plain English for “strangler”:</strong> migrate endpoint-by-endpoint behind the gateway with canaries so filing day never goes dark; rollback = traffic flip. PDF just says migrated Laravel → microservices.</p>
+<h3 id="tech-on-pdf_3">Tech on PDF</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+<th>Rejected</th>
+<th>Numbers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Laravel → FastAPI / Spring</strong></td>
+<td>Gradual cutover</td>
+<td>Unblock PHP-FPM; ship services</td>
+<td>Big-bang rewrite</td>
+<td><strong>p95 1.2s→300ms</strong>; <strong>1,500+</strong> clients; mentored <strong>2</strong></td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Bulk IRP path</td>
+<td>Ordering, replay, fan-out</td>
+<td>Sync-only / Rabbit alone</td>
+<td><strong>1M+/day</strong>, <strong>100K+/import</strong>, <strong>700→4,000 req/min</strong> HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL by tax quarter</strong></td>
+<td>Hot writes</td>
+<td>GST is quarter-scoped; archive cold</td>
+<td>One fat table</td>
+<td>Same throughput story</td>
+</tr>
+<tr>
+<td><strong>Idempotency + retries + DLQ</strong></td>
+<td>Safe IRP retry</td>
+<td>Double-register with gov is bad</td>
+<td>Fire-and-forget</td>
+<td>Narrative HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>Redis caching</strong></td>
+<td>Hot GSTIN/config</td>
+<td>Cut repeat reads on bulk</td>
+<td>Hit DB every row</td>
+<td><strong>−30%</strong> reads</td>
+</tr>
+<tr>
+<td><strong>ELK + New Relic + usage dashboard</strong></td>
+<td>Ops</td>
+<td>Faster triage; fewer tickets</td>
+<td>SSH/grep only</td>
+<td>Triage <strong>−70%</strong>, tickets <strong>−35%</strong>, coverage <strong>35→82</strong>, deploy <strong>98%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Diagrams: <code>architecture/04_masters_gst.md</code> · pack <code>23c</code> · deep dive <code>12</code>.</p>
+<hr>
+<h2 id="geeksforgeeks_2">GeeksforGeeks</h2>
+<h3 id="user-flow_3">User flow</h3>
+<p>Learner asks doubt / votes / pins → APIs → dashboards for influencers → crons process video/reminders offline.</p>
+<h3 id="tech-on-pdf_4">Tech on PDF</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+<th>Numbers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Django / Spring Boot</strong></td>
+<td>Backend rewrite</td>
+<td>Survive <strong>10K+</strong> daily + <strong>10×</strong> contest spikes</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>MySQL / MongoDB / Redis / ES</strong></td>
+<td>Votes, pins, locks, search</td>
+<td>Premium features</td>
+<td>Premium <strong>+15–20%</strong></td>
+</tr>
+<tr>
+<td><strong>Influencer dashboard</strong></td>
+<td>Sales</td>
+<td>Earnings/coupons/filters</td>
+<td>Course sales <strong>+30%</strong> (not video cron)</td>
+</tr>
+<tr>
+<td><strong>Scheduled jobs</strong></td>
+<td>Video / reminders / cleanup</td>
+<td>Ops automation</td>
+<td>Ops <strong>+70%</strong> — <strong>separate</strong> from sales bullet</td>
+</tr>
+</tbody>
+</table>
+<p>Diagrams: <code>architecture/05_geeksforgeeks.md</code> · pack <code>23c</code>.</p>
+<hr>
+<h2 id="quick-why-this-tech-cheat-sheet">Quick “why this tech” cheat sheet</h2>
+<table>
+<thead>
+<tr>
+<th>If they point at…</th>
+<th>One-line why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go/Spring write APIs</td>
+<td>Agent never owns writes; Manual UI and chat share one auth surface</td>
+</tr>
+<tr>
+<td>LangGraph/MCP</td>
+<td>Sequence audited tools; MCP keeps tools typed and reviewable</td>
+</tr>
+<tr>
+<td>ClickHouse</td>
+<td>Pivot/grid speed + insert-only planning; agent read-only</td>
+</tr>
+<tr>
+<td>Kafka (Menu)</td>
+<td>Decouple scrape from transform at menu volume</td>
+</tr>
+<tr>
+<td>Kafka (Masters)</td>
+<td>Ordered durable IRP work with replay for disputes</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>Similar labeled menus for RAG before Gemini extract</td>
+</tr>
+<tr>
+<td>Flink</td>
+<td>Stream normalize after Kafka</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>Hot lookups on bulk paths</td>
+</tr>
+<tr>
+<td>DLQ</td>
+<td>Poison batch doesn’t poison the whole import</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="study-checklist-can-you-whiteboard-this">Study checklist (can you whiteboard this?)</h2>
+<ul>
+<li>[ ] AssortSmart user flow + where agent stops (no SQL write)  </li>
+<li>[ ] CH 63/8 layers + why insert-only / partition swap (plain English)  </li>
+<li>[ ] Defend 8.5% and 189s→12.3s without saying “shipped under 2%”  </li>
+<li>[ ] FRM 8 screens + materiality rules + join-bug story  </li>
+<li>[ ] Menu Selenium→Kafka→Flink vs RAG path; ANZ ≠ Eats  </li>
+<li>[ ] Masters migration cutover + IRP idempotency key shape  </li>
+<li>[ ] GFG: sales dashboard vs video crons are <strong>two</strong> claims  </li>
+</ul>
+<p>When PDF wording changes, update this file + packs’ “Resume XYZ” lines in the same PR.</p>
+<hr>
+<h1 id="common-interview-questions-filled-answers-your-experience">Common interview questions — filled answers (your experience)</h1>
+<p>Format matches the “90 toughest interview questions” style: <strong>numbered question</strong>, <strong>Answer:</strong>, horizontal rule.<br>
+Honesty: MEASURED / TARGET / HISTORICAL per <code>GROUND_TRUTH.md</code>. Company-specific Q20 — customize per employer.</p>
+<p>HTML: <a href="32_common_interview_qa.html"><code>32_common_interview_qa.html</code></a> · Hub: <a href="../ApplicationKit.html"><code>ApplicationKit.html</code></a></p>
+<hr>
+<p><strong>1. Tell me about yourself.</strong></p>
+<p><strong>Answer:</strong><br>
+I am a Senior Software Engineer with about 5 years building backend and data platforms in Python and Go. I have worked across Impact Analytics, Uber via EPAM, Masters India, and GeeksforGeeks. At Uber I owned design for the FRM Risk Scoping platform (FastAPI, MySQL, React — 8 screens, 30+ APIs) at $340M group materiality, and I worked on Uber Eats menu automation that cut onboarding from 24 hours to 2 hours and saved $600K+ a year on 30K+ menus a month. At Masters India I migrated a PHP Laravel GST platform to FastAPI microservices for 1,500+ clients, cutting p95 from 1.2s to 300ms, and scaled bulk e-invoicing on Kafka to 1M+ government submissions a day. Now at Impact Analytics I am building AssortSmart’s planner copilot with LangGraph, MCP, and ClickHouse — say building, not fully shipped. I care about honest metrics, clear design tradeoffs, and owning systems end to end.</p>
+<hr>
+<p><strong>2. Why should we hire you?</strong></p>
+<p><strong>Answer:</strong><br>
+I bring architecture ownership, production discipline, and mentorship — not only ticket delivery. With my background in distributed backends and event-driven systems, I have successfully owned Uber Finance FRM design while leading 3 engineers, cut Uber Eats menu ops cost by $600K+ a year, and scaled Masters India IRP traffic from 700 to 4,000 requests/min with Kafka while mentoring 2 engineers. I am skilled in Python, FastAPI, Go, Kafka, and agentic systems (LangGraph/MCP), and adaptable across product domains from GST compliance to retail planning. My ability to defend every resume number with MEASURED vs TARGET honesty lets me drive results without overclaiming. I am committed to adding value to your team and aligning with how you ship reliable systems at scale.</p>
+<hr>
+<p><strong>3. What is your greatest strength?</strong></p>
+<p><strong>Answer:</strong><br>
+My greatest strength is turning messy production constraints into clear system designs and shipping them safely. I thrive when correctness, latency, and ownership collide. For example, at Uber Finance we still ran quarterly FRM scoping on Google Sheets with no durable line IDs or audit trail. I designed a layered FastAPI + MySQL platform, owned the Sheets→MySQL recon v2 migration across 18 files, and fixed a join bug where two columns shared the same name so identity mapping stayed correct for PwC-facing work. That helped Finance move from a fragile workbook close toward a system of record targeting a large cut in manual reconciliation. It shows I can handle pressure and think in both product and engineering terms.</p>
+<hr>
+<p><strong>4. What is your greatest weakness?</strong></p>
+<p><strong>Answer:</strong><br>
+One area I continuously improve is delegating earlier when I own the critical path. Earlier in my career I took too many recon and cutover tasks myself to “guarantee quality,” which slowed mentoring. At Masters India and later at EPAM/Uber I changed that: I set API contracts and CI gates, paired juniors on the first canary or recon slice, then stepped back so others owned services. Leading 3 engineers on FRM and mentoring 2 on the FastAPI migration forced that habit. Clear expectations and review cadence now beat doing everything myself.</p>
+<hr>
+<p><strong>5. Tell me about a time you failed.</strong></p>
+<p><strong>Answer:</strong><br>
+At Masters India, early in the PHP→FastAPI cutover, I set API timeouts too aggressively compared with the old PHP path. Some legitimate IRP government calls needed longer round trips, so the first canary showed timeouts and risked filing-day pain. I owned the miscalculation, moved those calls fully async (202 + progress), aligned timeouts with real IRP behavior, and added idempotency keys, retries, and a dead-letter queue so safe replay was possible. The lesson stuck: for third-party compliance APIs, design for latency variance and idempotent retry up front, not after the first canary scare.</p>
+<hr>
+<p><strong>6. Describe a time when you had to deal with a difficult team member.</strong></p>
+<p><strong>Answer:</strong><br>
+At Uber via EPAM on FRM, a teammate kept slipping on API contract and test gates, which blocked Finance-facing releases. Instead of escalating first, I scheduled a one-on-one. They were overloaded across UI and backend spikes. We re-sliced ownership — I kept schema and recon v2 critical path, they owned a bounded screen/API set with clearer Definition of Done — and I paired on the first PR using our handler/service/repository pattern. Delivery stabilized, CI stayed green, and we hit the release bar for PwC work papers without burning the relationship.</p>
+<hr>
+<p><strong>7. Where do you see yourself in five years?</strong></p>
+<p><strong>Answer:</strong><br>
+In five years I see myself as a senior/staff-leaning backend or platform engineer who owns a multi-service domain end to end — design, reliability, and mentoring. My goal is to keep deepening distributed systems, data platforms, and production agentic systems, while helping others ship safely behind clear contracts. I want the next role to be a multi-year build where scope compounds, not a short hop.</p>
+<hr>
+<p><strong>8. Why do you want to leave your current job?</strong></p>
+<p><strong>Answer:</strong><br>
+I have learned and grown at Impact Analytics — especially around ClickHouse, LangGraph/MCP, and agentic planning safety — but I am seeking a role whose day-to-day ownership matches a multi-year backend/platform charter. I am particularly interested in deeper production ownership of distributed systems and data platforms at scale, which this role offers. I closed open work professionally and I am interviewing carefully for fit. I believe my skills will add value here while I keep developing.</p>
+<hr>
+<p><strong>9. How do you handle pressure and stress?</strong></p>
+<p><strong>Answer:</strong><br>
+I treat pressure as a signal to prioritize and communicate, not to panic. I break work into milestones, protect the critical path, and keep stakeholders aligned on risk. For instance, during Uber FRM quarterly close windows and Masters India GST filing spikes, I stayed calm, sequenced recon/IRP work, and used observability (ELK/New Relic, CI gates) so we did not guess under load. Time-boxing, clear owner lists, and honest status updates keep me composed.</p>
+<hr>
+<p><strong>10. What motivates you?</strong></p>
+<p><strong>Answer:</strong><br>
+I am motivated by hard systems problems with real business or compliance impact — fixing a broken close process, making filing-day IRP traffic safe, or making an agent that cannot silently write bad plans. I like designing the tradeoff, shipping it, and defending the numbers. Teamwork matters too: mentoring engineers through a strangler cutover or FRM pod delivery is as satisfying as the metric itself.</p>
+<hr>
+<p><strong>11. How do you handle constructive criticism?</strong></p>
+<p><strong>Answer:</strong><br>
+I treat constructive criticism as free design review. I listen, clarify the failure mode, and change the system — not just the slide. At Impact Analytics, design reviews pushed harder on agent write safety and ClickHouse mutation risk; I tightened the story to read-only tools, human confirm steps, and insert-only / partition-swap refreshes, and I keep saying “building / load test pending” instead of “shipped.” That feedback made the architecture more interview- and production-honest.</p>
+<hr>
+<p><strong>12. Tell me about a time you led a team.</strong></p>
+<p><strong>Answer:</strong><br>
+I led a pod of 3 engineers at Uber via EPAM on the FRM Risk Scoping backend. I set the layered architecture (handler/service/repository), API contracts, and Bazel/pytest quality gates, and I personally owned the Sheets→MySQL recon v2 migration. Through design reviews and clear ownership slices we delivered 8 screens and 30+ APIs feeding PwC work papers, with a large unit-test suite for release confidence. At Masters India I also mentored 2 engineers through the FastAPI migration with the same pattern: pair first, then hand off.</p>
+<hr>
+<p><strong>13. Tell me about a time you disagreed with a technical decision.</strong></p>
+<p><strong>Answer:</strong><br>
+On AssortSmart analytics, a natural instinct is “just put the planner grid on Postgres forever” or “use ClickHouse with row UPDATEs.” I disagreed with row-level CH mutations for interactive planning because ClickHouse mutation queues are a known footgun. I backed an insert-only model with partition swaps for refresh, agent read-only privileges, and a measured pivot POC (250M rows, 189s → 12.3s). I presented the evidence, accepted that load test is still pending, and kept the claim honest: adopting the store design after POC proof, not “fully shipped to every tenant.”</p>
+<hr>
+<p><strong>14. Tell me about a time you had to decide with incomplete information.</strong></p>
+<p><strong>Answer:</strong><br>
+On Uber Eats menu ingestion, partner sites and anti-bot behavior change without notice. We could not wait for perfect catalogs of every failure mode. I pushed IP rotation, proxy pools, and retries, raised successful ingestions toward 95%+, and kept unstructured PDF/image menus on a LangChain RAG + Gemini + Milvus path with schema validation and human review for low confidence. We decided with partial information by measuring success rate and offline fidelity (98%/100% schema offline eval) instead of freezing delivery.</p>
+<hr>
+<p><strong>15. What are you most proud of?</strong></p>
+<p><strong>Answer:</strong><br>
+Two threads: (1) Replacing a fragile Finance Sheets close with a real FRM platform and owning recon correctness under audit pressure. (2) Making bulk GST IRP traffic durable with Kafka, quarter-split PostgreSQL, and idempotent retries so 1M+ submissions/day did not mean double-registration with the government. Both combined systems design with accountability.</p>
+<hr>
+<p><strong>16. Tell me about a time you went above and beyond.</strong></p>
+<p><strong>Answer:</strong><br>
+At Uber Finance, recon v2 was not “just another API.” I went beyond ticket scope: validated HFM extracts against public 10-Q filings line by line, hunted a silent identity bug from duplicate join column names, and kept v1 running in parallel until trust was earned. That protected PwC-facing work papers and Finance’s quarterly close — more than shipping an endpoint.</p>
+<hr>
+<p><strong>17. How do you handle conflict in the workplace?</strong></p>
+<p><strong>Answer:</strong><br>
+I handle conflict by separating people from the design argument and forcing a shared success metric. For example, at Masters India, opinions split between big-bang rewrite vs gradual FastAPI cutover. I facilitated around filing-day risk: canary per endpoint behind the gateway, shared DB during traffic move, instant rollback. We picked gradual migration, mentored two engineers on the pattern, and still hit p95 1.2s → 300ms without a dark launch.</p>
+<hr>
+<p><strong>18. What is your leadership style?</strong></p>
+<p><strong>Answer:</strong><br>
+Collaborative and standards-driven. I set architecture and quality bars (contracts, CI, observability), then empower others to own slices. On FRM I reviewed early, then stepped back as ownership stuck. On Masters I paired on the first canary and let juniors take full services. I adapt: tighter hands-on on compliance/audit paths, more autonomy on well-bounded features.</p>
+<hr>
+<p><strong>19. Tell me about a time you had to learn something new quickly.</strong></p>
+<p><strong>Answer:</strong><br>
+At Impact Analytics I had to ramp quickly on ClickHouse planning-store design and LangGraph/MCP agent orchestration for AssortSmart. I used internal Confluence DDL/HLD, ran and read the pivot POC results, and paired design with safety constraints (14 read-only tools, human confirm steps). Within the onboarding window I could defend 63 tables / 8 layers, insert-only refresh, and the 189s → 12.3s pivot evidence — while being clear the product is still building toward load test.</p>
+<hr>
+<p><strong>20. What do you know about our company?</strong></p>
+<p><strong>Answer:</strong><br>
+<em>(Customize per employer — keep this skeleton.)</em><br>
+Your company is known for [product/platform + engineering bar]. I respect your focus on [reliability / developer platform / AI / scale], and roles like this match where I have shipped: backend platforms, event-driven systems, and careful production AI. I am excited to contribute to [team mission] with the same ownership I brought to Uber FRM, Masters IRP, and AssortSmart.</p>
+<hr>
+<p><strong>21. How do you handle tight deadlines?</strong></p>
+<p><strong>Answer:</strong><br>
+I handle tight deadlines with ruthless prioritization and visible risk. I scope the must-have path, cut nice-to-haves, and communicate tradeoffs early. For instance, on Uber FRM recon v2 under quarterly close pressure, I sequenced identity-correct joins and HFM vs 10-Q checks before polish, kept parallel v1 as safety, and used CI gates so speed did not mean silent breakage. At Masters India on filing spikes, async IRP + DLQ mattered more than perfect sync latency. Deliver the critical path first; never surprise stakeholders on the last day.</p>
+<hr>
+<h2 id="quick-tips">Quick tips</h2>
+<ul>
+<li>Prefer <strong>stories</strong> (company + constraint + action + number) over generic soft skills.  </li>
+<li>Never claim IA copilot “fully shipped” or FRM “70% achieved” — those are TARGET / building.  </li>
+<li>Menu <strong>98%/100%</strong> = offline eval; ANZ <strong>20h/week</strong> = HISTORICAL.  </li>
+<li>For Q20, research the company’s latest product/eng blog the night before.</li>
+</ul>
+<hr>
+<h1 id="architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</h1>
+<p>Whiteboard-ready diagrams for every project on the current PDFs. Style inspired by the original prep’s ASCII box-arrow clarity, plus mermaid for Pages rendering. Facts match <code>GROUND_TRUTH.md</code> — not copied from original resume narratives.</p>
+<p><strong>How to use:</strong> Sketch the ASCII in interviews; open the HTML hub for live mermaid. Java track: swap FastAPI→Spring Boot / Gin→Spring verbally.</p>
+<hr>
+<h2 id="1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</h2>
+<h3 id="architecture-ascii">Architecture (ASCII)</h3>
+<pre><code> Planner (Chat UI)          Planner (Manual / Hindsight UI)
+        │                              │
+        ▼                              ▼
+ ┌──────────────────────┐     ┌─────────────────────────┐
+ │ FastAPI + LangGraph  │     │ Go Gin write APIs       │
+ │ + MCP (agent plane)  │     │ (shared doing layer)    │
+ │ 14 read-only tools   │────►│ Clustering / Hindsight  │
+ │ 3 human confirm steps│     │ / Strategy              │
+ └──────────┬───────────┘     └───────────┬─────────────┘
+            │ read-only                    │ INSERT / approve path
+            ▼                              ▼
+ ┌──────────────────────────────────────────────────────┐
+ │ Per-tenant ClickHouse  (63 tables / 8 layers)        │
+ │ insert-only · refresh by swapping partitions         │
+ │ agent profile: SELECT only                           │
+ └──────────▲───────────────────────────────┬───────────┘
+            │ BQ → CH ingest                │
+     ┌──────┴──────┐                 ┌──────▼──────┐
+     │  BigQuery   │                 │ GCS / snaps │
+     │ (historical)│                 └─────────────┘
+     └─────────────┘
+ Obs: LangSmith (agent) · Datadog (platform) · PostHog (product)
+      ── shared OTEL trace_id ──
+</code></pre>
+<h3 id="user-flow-clustering-copilot">User flow (clustering copilot)</h3>
+<pre><code>Intent → Ground scope (tools) → Confirm search plan → Batch explore configs
+      → Present 3–5 scenarios → Human approve → Write via Go APIs → Grid refresh
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Chat[Chat UI] --> FA[FastAPI LangGraph MCP]
+  Manual[Manual UI] --> Go[Go Gin doing layer]
+  FA -->|14 R/O tools| Go
+  FA -.->|SELECT only| CH[(ClickHouse 63/8)]
+  Go -->|INSERT / approve| CH
+  BQ[BigQuery] -->|ingest| CH
+  FA --> LS[LangSmith]
+  Go --> DD[Datadog]
+</div>
+<h3 id="why-each-box">Why each box</h3>
+<table>
+<thead>
+<tr>
+<th>Box</th>
+<th>Problem it solves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LangGraph/MCP</td>
+<td>Sequence audited tools; no free-form SQL from the LLM</td>
+</tr>
+<tr>
+<td>Go doing layer</td>
+<td>Same write path as Manual UI — one auth surface</td>
+</tr>
+<tr>
+<td>CH insert-only</td>
+<td>Avoid mutation queue; pivots stay fast (189s→12.3s POC)</td>
+</tr>
+<tr>
+<td>Human gates</td>
+<td>Agent never silently finalizes plans</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</h2>
+<h3 id="architecture-ascii_1">Architecture (ASCII)</h3>
+<pre><code> React (8 screens)
+   Recon · Materiality · EMI · Group · Component · Residual · Summary · …
+        │  30+ REST
+        ▼
+ ┌─────────────────────────────────────────┐
+ │ FastAPI  (or Spring Boot on Java track) │
+ │  handler / controller                   │
+ │       ▼                                 │
+ │  service  (materiality rules, trees)    │
+ │       ▼                                 │
+ │  repository  (SQLAlchemy 2.0 / JPA)     │
+ └──────────────────┬──────────────────────┘
+                    ▼
+            ┌───────────────┐
+            │ MySQL SSOT    │  ~11 models
+            │ facts · EMI   │  55 FSLIs / 14 entities
+            │ recon leaves  │  $340M / $170M sample
+            └───────▲───────┘
+                    │
+     Oracle HFM ────┘──── public 10-Q (validate)
+                    │
+                    ▼
+              PwC work papers
+</code></pre>
+<h3 id="quarterly-user-flow">Quarterly user flow</h3>
+<pre><code>Load HFM → Recon vs 10-Q → Set materiality → Group/Component scope
+  → Residual / EMI flags → Summary → Export to audit
+</code></pre>
+<h3 id="logical-er-say-this-dont-invent-extra-tables">Logical ER (say this, don’t invent extra tables)</h3>
+<pre><code>fiscal_period 1──* fslib_fact (BS/IS lines)
+entity 1──* component_assessment
+fslib_fact *──* scoping_decision (material / qualitative)
+emi_investee 1──* emi_assessment
+recon_leaf (HFM amt, filed amt, difference, line_id)
+metrics_table (materiality, residual threshold)
+</code></pre>
+<h3 id="mermaid_1">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  UI[React 8 screens] --> API[FastAPI layered service]
+  API --> DB[(MySQL SSOT)]
+  HFM[Oracle HFM] --> API
+  API --> TQ[10-Q checks]
+  DB --> PwC[PwC papers]
+</div>
+<hr>
+<h2 id="3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</h2>
+<h3 id="architecture-ascii_2">Architecture (ASCII)</h3>
+<pre><code> Third-party menu sites (HTML / PDF / image)
+        │  Selenium + IP rotate / proxies / retries
+        ▼
+ ┌─────────────────┐
+ │ Kafka ingest bus│  ordered per vendor key · replayable
+ └────────┬────────┘
+          ▼
+ ┌─────────────────┐
+ │ Flink normalize │  validate · keyed dedupe · route
+ └────┬────────┬───┘
+      │        │ unstructured
+      │        ▼
+      │   ┌──────────────────────────────┐
+      │   │ LangChain RAG + Gemini 2.5   │
+      │   │ Pro over Milvus              │
+      │   │ schema gate → human if low   │
+      │   └──────────────┬───────────────┘
+      │ structured       │
+      ▼                  ▼
+ ┌────────────────────────────┐
+ │ Uber Eats catalog upsert   │
+ └────────────────────────────┘
+
+ ANZ (Mobility — NOT Eats):
+ Driver/vehicle docs → compliance checks → 99.9% · ~20h/week HISTORICAL
+</code></pre>
+<h3 id="user-ops-flow">User / ops flow</h3>
+<pre><code>Scrape → Kafka → Flink → (catalog | RAG/Milvus/Gemini) → validate → live menu
+Success target 95%+ · onboarding 24h→2h · $600K+/yr · 30K+ menus/mo
+</code></pre>
+<h3 id="mermaid_2">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Sites --> Selenium --> Kafka --> Flink
+  Flink -->|structured| Catalog
+  Flink -->|PDF/image| RAG[RAG + Gemini + Milvus] --> Catalog
+</div>
+<hr>
+<h2 id="4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</h2>
+<h3 id="architecture-ascii_3">Architecture (ASCII)</h3>
+<pre><code> Client ERP / Dashboard
+        │
+ ┌──────▼──────────────────────────────┐
+ │ API Gateway  (canary % → FastAPI)   │
+ │              (fallback → PHP)       │
+ └──────┬──────────────────────────────┘
+        ▼
+ FastAPI microservices (auth · submit · bulk · recon)
+        │
+   ┌────┼────────────┬──────────────┐
+   ▼    ▼            ▼              ▼
+  PG   Redis      Kafka topics    MongoDB
+  (by  (hot       (chunks · IRP   (IRN/QR
+  tax  config)     jobs · hooks)   snapshots)
+  qtr)
+        │
+        ▼
+  Workers ──idempotency + retries + DLQ──► Government IRP
+        │
+   ELK + New Relic (request-id correlation)
+</code></pre>
+<h3 id="bulk-irp-flow">Bulk IRP flow</h3>
+<pre><code>File → validate chunks → Kafka → IRP workers → signed response → webhook/dashboard
+Key: client + fileHash + batchIndex  (no double register with gov)
+</code></pre>
+<h3 id="mermaid_3">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  ERP --> GW[Gateway canary]
+  GW --> API[FastAPI]
+  API --> KF[Kafka]
+  KF --> W[IRP workers] --> IRP[Gov IRP]
+  API --> PG[(PG by quarter)]
+  API --> Redis
+  W --> Mongo[(Mongo snapshots)]
+</div>
+<hr>
+<h2 id="5-geeksforgeeks">5. GeeksforGeeks</h2>
+<h3 id="architecture-ascii_4">Architecture (ASCII)</h3>
+<pre><code> Learners / influencers
+        │
+        ▼
+ ┌──────────────────┐
+ │ Django REST APIs │  (PHP → Django migration)
+ └────────┬─────────┘
+     ┌────┼────┬────────┐
+     ▼    ▼    ▼        ▼
+   MySQL Mongo Redis  Elasticsearch
+     │
+     ▼
+ Cron workers — video · reminders · cleanup   (+70% ops, separate from sales)
+ Influencer dashboard — earnings / coupons     (+30% course sales)
+ Votes / pins / locks                           (+15–20% premium)
+</code></pre>
+<h3 id="mermaid_4">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Clients --> Django
+  Django --> MySQL
+  Django --> MongoDB
+  Django --> Redis
+  Django --> ES[Elasticsearch]
+  Cron --> MySQL
+  Cron --> MongoDB
+</div>
+<hr>
+<h2 id="whiteboard-checklist">Whiteboard checklist</h2>
+<ul>
+<li>[ ] Draw AssortSmart agent vs doing layer split and where SQL is forbidden  </li>
+<li>[ ] Draw FRM handler→service→repo→MySQL and HFM/10-Q inputs  </li>
+<li>[ ] Draw Menu Selenium→Kafka→Flink with RAG branch; say ANZ ≠ Eats  </li>
+<li>[ ] Draw Masters gateway canary + Kafka IRP + quarter PG  </li>
+<li>[ ] Name one rejected alternative per critical box  </li>
+</ul></main></div>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+</body></html>
