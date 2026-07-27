@@ -144,28 +144,28 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 
 ## 1. 30s / 2min explain
 
-**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. For messy PDFs/images I built a RAG + Gemini 2.5 Pro extraction path with SFT—98% fidelity and 100% schema consistency on offline eval. Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **main-app drivers in ANZ** to 99.9% and saved ~20 hours/week.
+**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. Unstructured multilingual menus arrive as PDFs and images — I built a LangChain RAG + Gemini 2.5 Pro pipeline over a vector store of labeled menus, with SFT for schema adherence, hitting 98% fidelity and 100% schema consistency on offline eval into Uber Eats catalog shape. Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **Uber drivers in ANZ** to 99.9% and saved ~20 hours/week (HISTORICAL from prior resume — not re-measured here).
 
-**2min:** Partner menus arrive as JS-heavy sites, PDFs, and images. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s instead of failing half the time. Structured HTML paths land in catalog; unstructured payloads go through chunk → retrieve similar labeled menus → Gemini 2.5 Pro generate → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. Eval numbers (98% fidelity, 100% schema consistency) are offline—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Python compliance track for driver/vehicle docs (99.9%, 20h/week)—not the menu pipeline. Stack on the resume: Python, Selenium, Gemini, RAG, SFT, GCP, Docker—no streaming claim on this PDF.
+**2min:** Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from a **vector store** (LangChain RAG) → **Gemini 2.5 Pro** generate Uber Eats schema fields → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend *your* LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are **offline**—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, vector DB, SFT, GCP, Docker.
 
 ---
 
 ## 2. Architecture
 
 ```
-Partner sites (JS)          PDFs / images / scans
+Partner sites (JS)          PDFs / images (multilingual)
         │                            │
         ▼                            ▼
 ┌───────────────────┐      ┌─────────────────────────────┐
-│ Selenium scrapers │      │ RAG retrieval (labeled      │
-│ GCP · proxy pool  │      │ menus) → Gemini 2.5 Pro     │
-│ IP rotate · UA    │      │ → schema validate → SFT     │
-│ adaptive backoff  │      │ low conf → human review     │
+│ Selenium scrapers │      │ LangChain RAG               │
+│ GCP · proxy pool  │      │ vector store (labeled menus)│
+│ IP rotate · UA    │      │ → Gemini 2.5 Pro → SFT      │
+│ adaptive backoff  │      │ schema validate → human     │
 └─────────┬─────────┘      └──────────────┬──────────────┘
           │                               │
           └──────────────┬────────────────┘
                          ▼
-                 Catalog upsert
+                 Catalog upsert (Uber Eats schema)
               (idempotent by menu/version)
                          │
                          ▼
@@ -181,9 +181,10 @@ Separate track (not on hot menu path):
 flowchart LR
   Sites[Partner sites] --> Se[Selenium on GCP]
   Se -->|proxies / backoff| Raw[HTML / files]
-  PDFs[PDFs / images] --> RAG[RAG + Gemini 2.5 Pro + SFT]
-  Raw --> Cat[Catalog upsert]
-  RAG --> Cat
+  PDFs[PDFs / images multilingual] --> VS[Vector store labeled menus]
+  VS --> LC[LangChain RAG + Gemini 2.5 Pro + SFT]
+  Raw --> Cat[Catalog upsert Uber Eats schema]
+  LC --> Cat
   Cat --> Onboard[Onboarding 24h→2h]
   Docs[ANZ driver docs] --> Comp[Compliance automation 99.9%]
 ```
@@ -196,27 +197,31 @@ flowchart LR
 |---|---|---|---|
 | Acquire | Selenium on GCP | JS-rendered partner sites need a real browser | Fragile vs site DOM changes; needs monitoring |
 | Anti-bot | IP rotation + dynamic proxies + adaptive backoff | Lift success ~60–65% → 95%+ (baseline EST.) | Cost/latency of proxy fleet |
-| Unstructured | RAG + Gemini 2.5 Pro + SFT | PDFs/images lack stable HTML; schema must be strict | LLM cost; offline eval ≠ live SLA without monitoring |
+| Unstructured | LangChain RAG + Gemini + vector store + SFT | PDFs/images/multilingual lack stable HTML; need grounding + strict schema | LLM cost; offline eval ≠ live SLA without monitoring |
+| Vector store | Embeddings of labeled menus | Retrieve similar cuisine/layout examples for RAG grounding (industry pattern) | Index freshness; don’t invent vendor name |
 | Schema gate | Validate before catalog write | 100% schema consistency target | Rejects/queues low-confidence instead of silent bad data |
-| Human loop | Low-confidence review | Protect catalog quality | Throughput bound by review capacity |
+| Human loop | Low-confidence review | Protect catalog quality (DoorDash-style guardrail idea) | Throughput bound by review capacity |
 | Money model | Kill ~$2/menu vendor tool | In-house scrapers at 30K+/mo | Own ops/reliability burden |
-| ANZ | Separate Python automation | Different domain (driver docs), same employment | Don't merge into menu architecture story |
-| Resume stack | Selenium + RAG/Gemini + ANZ only | Matches PDF; Kafka ownership lives on Masters GST | Don't revive Flink/Spark/Kafka on Menu in interview |
+| ANZ | Separate Mobility automation | Driver/vehicle docs, Uber drivers in ANZ | Don't merge into menu architecture story |
+| Resume stack | Selenium + Kafka/Flink + LangChain RAG/Gemini/vector DB | Matches PDF | Spark/Pinot verbal only if asked |
 
 ---
 
 ## 4. Bullet-by-bullet defense
 
-### Bullet 1 — 24h → 2h; $600K+/yr; 30K+ menus/mo; Selenium on GCP
+### Bullet 1 — 24h → 2h; $600K+/yr; 30K+ menus/mo; Selenium + Kafka/Flink
 - **Outcomes:** HISTORICAL ops numbers. Onboarding cycle compressed ~90%.
 - **Money:** ~$2/menu × 30K × 12 = $720K list → resume **$600K+** conservative floor.
-- **How:** Ship in-house Selenium scrapers on GCP vs paid third-party menu tool.
+- **How:** Ship in-house Selenium scrapers on GCP + Kafka ingest + Flink keyed normalize/dedupe/replay vs paid third-party menu tool.
 - **Own:** Acquisition + reliability of scrape fleet landing catalogs faster—not a claim of owning all Eats catalog infra.
 
-### Bullet 2 — 98% fidelity / 100% schema consistency; RAG + Gemini 2.5 Pro + SFT
+### Bullet 2 — Multilingual PDFs/images → Uber Eats schema; LangChain RAG + Gemini + vector store + SFT; 98%/100% offline
 - **Always say offline / eval.** Not a live production SLA unless you instrumented one.
-- **Pipeline:** chunk → retrieve similar labeled menus → Gemini generate → schema validate → SFT for schema adherence → human review on low confidence.
+- **Why LLM:** unstructured menus (PDFs, images, different languages) defeat regex/HTML parsers; need schema-shaped Uber Eats catalog rows.
+- **Pipeline:** parse/chunk → retrieve similar labeled menus from **vector store** (LangChain RAG) → Gemini generate → schema validate → SFT for schema adherence → human review on low confidence.
 - **100% schema:** validation gate rejects malformed structures; fidelity is content correctness vs ground-truth labels.
+- **Industry parallel:** DoorDash menu transcription uses OCR→LLM structure + confidence/human gate; RAG retrieves similar items for grounding. Cite pattern, not their proprietary stack.
+- **Do not invent:** Pinecone/Weaviate product name, OCR vendor, or live MTTR numbers.
 
 ### Bullet 3 — 95%+ successful ingestions; IP rotation, dynamic proxies, adaptive backoff
 - **Endpoint:** mid-90s success after anti-bot hardening.
@@ -225,9 +230,9 @@ flowchart LR
 
 ### Bullet 4 — ANZ Mobility (separate project): 99.9% compliance; 20 hours/week saved
 - **Not Uber Eats.** Own PDF project: **ANZ Driver Document Compliance (Uber Mobility)**.
-- Past 4yr wording: Python automation for **driver and vehicle documents** with local authorities for **Uber earners / main-app drivers in the ANZ region**.
-- HISTORICAL: 99.9% automated compliance, ~20h/week manual verification removed.
-- Do not fold into menu Selenium/RAG architecture.
+- Past 4yr wording: Python automation for **driver and vehicle documents** with local authorities for **Uber earners / drivers in the ANZ region**.
+- **99.9%** and **20h/week:** HISTORICAL from that resume line — **not** re-measured from logs in this repo. Say HISTORICAL if pressed.
+- Do not say “main-app.” Do not fold into menu Selenium/RAG architecture.
 
 ---
 
@@ -243,7 +248,7 @@ Displace ~$2/menu tool × 30K menus/mo × 12 ≈ $720K list; resume cites $600K+
 Offline evaluation. Fidelity vs labeled set; schema consistency via validation before write. Don't present as unmeasured production SLI.
 
 **Q4. How does RAG help Gemini here?**  
-Retrieve similar already-labeled menus as few-shot context so generation stays on schema and cuisine/layout patterns; then hard schema validate.
+Retrieve similar already-labeled menus from a **vector store** as few-shot/context so generation stays on Uber Eats schema and cuisine/layout patterns across languages; then hard schema validate. LangChain wires retrieve→prompt→LLM.
 
 **Q5. What does SFT buy over prompt-only?**  
 Teaches consistent field layout and enum/schema adherence so fewer invalid JSON/structures hit the gate.
@@ -255,22 +260,25 @@ IP bans, CAPTCHA walls, soft 403s → success collapses. Rotation + dynamic pool
 Upsert keyed by vendor/menu version or content hash so retries after partial scrape don't double-write items.
 
 **Q8. Is ANZ part of Uber Eats?**  
-No. Same Uber/EPAM employment, **Uber Mobility** — main-app drivers in ANZ. Driver + vehicle docs vs local authorities. Separate project on the PDF.
+No. Same Uber/EPAM employment, **Uber Mobility** — **Uber drivers in ANZ**. Driver + vehicle docs vs local authorities. Separate project on the PDF. 20h/week is HISTORICAL from prior resume.
 
 **Q9. Where is Kafka / Flink on Menu?**  
 On the Menu PDF: Kafka ingest + Flink keyed normalize/dedupe/replay for bursty scrapes. Masters also has Kafka for GST IRP bulk — different product.
 
 **Q10. Biggest silent failure mode?**  
-DOM change or CAPTCHA shift that green-lights empty/partial menus. Defend with scrape-health checks, schema validation, and human review on low confidence—not "we never failed."
+DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM inventing items without retrieval grounding. Defend with scrape-health checks, schema validation, RAG grounding, and human review on low confidence.
 
 ---
 
 ## 6. Do NOT say
 
 - ANZ as an **Uber Eats / menu catalog** feature (it is **Mobility drivers** in ANZ).
+- “**main-app**” wording on ANZ.
 - Invented ANZ stack (Selenium menu stack ≠ doc compliance automation).
+- Named vector vendor (Pinecone/etc.) you cannot defend — say **vector store**.
 - **~200–500 events/sec** or streaming SLOs as measured Menu facts.
 - **98%/100% as live SLA** without saying **offline eval**.
 - **Baseline 60%** as measured fact (call it **estimated**).
 - **Pinot** / Spark as Menu PDF claims unless asked.
-- Claiming you owned all of Uber Eats catalog platform end-to-end.
+- Claiming you owned all of Uber Eats catalog platform / INCA end-to-end.
+- Claiming **20h/week** was re-measured from logs in this repo (HISTORICAL past-resume only).

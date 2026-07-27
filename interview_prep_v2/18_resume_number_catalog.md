@@ -36,15 +36,15 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | Resume number | Why / how | Tag | Defense file |
 |---|---|---|---|
 | 30K+ menus/mo · 24h→2h · $600K+/yr | Historical ops | HISTORICAL | `14_uber_menu_deep_dive.md` |
-| 98% fidelity / 100% schema | Offline eval | HISTORICAL | same |
+| 98% fidelity / 100% schema · LangChain RAG + Gemini + vector store + SFT | Multilingual PDFs/images → Uber Eats schema | HISTORICAL offline eval | `23b` |
 | 95%+ ingest · Kafka + Flink on Menu PDF | Anti-bot + streaming path | HISTORICAL | `23b` |
 
 ## ANZ Driver Docs (Uber Mobility)
 
 | Resume number | Why / how | Tag | Defense file |
 |---|---|---|---|
-| 99.9% compliance · 20h/week | Driver **and vehicle** docs for **main-app drivers in ANZ** vs local authorities | HISTORICAL | 4yr resume + `23b` |
-| Not Uber Eats | Separate Mobility project on PDF | Decision | `GROUND_TRUTH.md` |
+| 99.9% compliance · 20h/week | Driver **and vehicle** docs for **Uber drivers in ANZ** vs local authorities | HISTORICAL (past resume; 20h **not** re-measured here) | 4yr resume + `23b` |
+| Not Uber Eats · no “main-app” | Separate Mobility project on PDF | Decision | `GROUND_TRUTH.md` |
 
 ## Masters India (consensus across past resumes)
 
@@ -61,4 +61,4 @@ Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`,
 | Resume number | Why / how | Tag |
 |---|---|---|
 | **10K+ daily queries · 10× contest spikes** | Standardized (not 1K / not 100K) | HISTORICAL / user |
-| Premium +15–20% (voting / pinning / **locking**) · course sales +30% · ops +70% | HISTORICAL |
+| Premium +15–20% (voting / pinning / **locking**) · course sales +30% (**dashboard only**) · ops +70% (**crons separate**) | HISTORICAL |

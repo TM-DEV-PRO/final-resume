@@ -237,15 +237,23 @@ Learners / influencers
 | +15–20%? | Relative lift attributed by growth — own APIs/reliability, not causal monopoly |
 | Resume XYZ | Lifted premium **15–20%** by shipping voting/pinning/locking REST APIs |
 
-### Bullet 3 — Influencer dashboard + crons · sales +30% · ops +70%
+### Bullet 3 — Influencer dashboard · sales +30%
 
 | Probe | Defense |
 |---|---|
 | Dashboard? | Earnings, transactions, coupons, filters/CSV (past resumes); Redis near-real-time + cron rollups |
+| Metrics? | HISTORICAL business attribution; engineer the system, attribute carefully |
+| Resume XYZ | Raised course sales **30%** via influencer earnings/analytics dashboard |
+| Do not mix | Video processing / ops crons are a **separate** bullet |
+
+### Bullet 4 — Cron pipelines · ops +70%
+
+| Probe | Defense |
+|---|---|
 | Cron jobs? | Video handoff, reminders, recording cleanup |
 | Reliability? | Host lease, idempotent keys, success/fail logs, retry/partial-batch handling |
-| Metrics? | HISTORICAL business attribution; engineer the system, attribute carefully |
-| Resume XYZ | Raised course sales **30%** via influencer dashboard; ops **70%** via video/reminder/cleanup crons |
+| Metrics? | HISTORICAL time saved on manual video/reminder/cleanup workflows |
+| Resume XYZ | Raised ops efficiency **70%** via cron pipelines (video / reminders / cleanup) |
 
 ---
 

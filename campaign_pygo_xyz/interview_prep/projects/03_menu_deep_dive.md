@@ -1,10 +1,10 @@
 # Uber Menu Ingestion Deep Dive (v2 + Java tracks)
 
-> **Start here for interviews:** [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Menu.
+> **Start here for interviews:** [`23b_uber_interview_packs.md`](../../interview_prep_v2/23b_uber_interview_packs.md) § Menu.
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium + Kafka + Flink + RAG/Gemini** (Uber Eats). **ANZ is a separate Uber Mobility project** — main-app drivers/earners, driver+vehicle docs vs local authorities — **not** Eats catalog. Masters also owns Kafka for GST IRP (different product). Use [`23b_uber_interview_packs.md`](../../interview_prep_v2/23b_uber_interview_packs.md) § Menu / ANZ as the canonical pack.
+> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium + Kafka + Flink + LangChain RAG / Gemini / vector store / SFT** converting multilingual PDFs/images into Uber Eats schema (98%/100% offline). **ANZ is a separate Uber Mobility project** — Uber drivers in ANZ, driver+vehicle docs vs local authorities — **not** Eats; 20h/week is HISTORICAL past-resume only. Masters also owns Kafka for GST IRP (different product). Use [`23b_uber_interview_packs.md`](../../interview_prep_v2/23b_uber_interview_packs.md) § Menu / ANZ as the canonical pack.
 
 ---
 
@@ -72,7 +72,7 @@ IP rotation, UA spoofing, dynamic proxies, per-source retry budgets. Baseline ES
 
 ### 4. ANZ driver/vehicle compliance 99.9%, 20h/week saved (Uber Mobility)
 
-**Not Uber Eats.** Separate PDF project under **Uber Mobility**: automate **driver and vehicle documents** for **main-app drivers / earners in ANZ** against local authorities. HISTORICAL from 4yr resume. Do not invent Selenium/RAG for this path.
+**Not Uber Eats.** Separate PDF project under **Uber Mobility**: automate **driver and vehicle documents** for **Uber drivers / earners in ANZ** against local authorities. HISTORICAL from 4yr resume. **20h/week is HISTORICAL only** — not re-measured from logs here. Do not say “main-app.” Do not invent Selenium/RAG for this path.
 
 ---
 

@@ -144,7 +144,7 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 
 ## 1. 30s / 2min explain
 
-**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with proxy/backoff defenses that raised successful ingestions to 95%+. For messy PDFs/images I built a RAG + Gemini 2.5 Pro extraction path with SFT—98% fidelity and 100% schema consistency on offline eval. Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **main-app drivers in ANZ** to 99.9% and saved ~20 hours/week.
+**30s:** At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with proxy/backoff defenses that raised successful ingestions to 95%+. For messy PDFs/images I built a LangChain RAG + Gemini 2.5 Pro over a vector store of labeled menus (multilingual PDFs/images → Uber Eats schema), SFT—98% fidelity / 100% schema consistency offline. Separately, under **Uber Mobility**, I automated driver/vehicle document compliance for **Uber drivers in ANZ** to 99.9% and saved ~20 hours/week.
 
 **2min:** Partner menus arrive as JS-heavy sites, PDFs, and images. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s instead of failing half the time. Structured HTML paths land in catalog; unstructured payloads go through chunk → retrieve similar labeled menus → Gemini 2.5 Pro generate → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. Eval numbers (98% fidelity, 100% schema consistency) are offline—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Python compliance track for driver/vehicle docs (99.9%, 20h/week)—not the menu pipeline. Stack on the resume: Python, Selenium, Gemini, RAG, SFT, GCP, Docker—no streaming claim on this PDF.
 
@@ -225,7 +225,7 @@ flowchart LR
 
 ### Bullet 4 — ANZ Mobility (separate project): 99.9% compliance; 20 hours/week saved
 - **Not Uber Eats.** Own PDF project: **ANZ Driver Document Compliance (Uber Mobility)**.
-- Past 4yr wording: Python automation for **driver and vehicle documents** with local authorities for **Uber earners / main-app drivers in the ANZ region**.
+- Past 4yr wording: Python automation for **driver and vehicle documents** with local authorities for **Uber earners / Uber drivers in the ANZ region**.
 - HISTORICAL: 99.9% automated compliance, ~20h/week manual verification removed.
 - Do not fold into menu Selenium/RAG architecture.
 

@@ -80,17 +80,20 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 
 ## Uber Menu Ingestion (same employment)
 
-All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot), RAG + Gemini 2.5 Pro + SFT (100% schema consistency, 98% fidelity, offline eval).
+All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot).
 
-**Resume PDF:** Menu = **Selenium + Kafka + Flink + RAG/Gemini** (Uber Eats). Masters also owns Kafka for GST e-invoice (different product).
+**Unstructured → structured:** multilingual PDFs/images → Uber Eats schema via **LangChain RAG + Gemini 2.5 Pro** over a **vector store** of labeled menus + **SFT** → **98%/100%** offline eval. No named vector vendor on PDF.
+
+**Resume PDF:** Menu = **Selenium + Kafka + Flink + LangChain RAG/Gemini/vector store + SFT**. Masters also owns Kafka for GST e-invoice (different product).
 
 ## ANZ Driver Document Compliance (Uber Mobility — same employment, NOT Eats)
 
 | Claim | Tag | Source |
 |---|---|---|
-| Python automation for **driver and vehicle documents** vs local authorities for **Uber main-app drivers / earners in ANZ** | HISTORICAL | 4yr resume |
-| **99.9%** compliance · **20 hours/week** manual verification removed | HISTORICAL | same |
-| Separate Uber Mobility project on PDF — **not** nested under Uber Eats Menu | Resume decision Jul 2026 | User + past wording |
+| Python automation for **driver and vehicle documents** vs local authorities for **Uber drivers / earners in ANZ** | HISTORICAL | 4yr resume (“Uber earners in the ANZ region”) |
+| **99.9%** compliance | HISTORICAL | same |
+| **20 hours/week** manual verification removed | HISTORICAL only | Past resume — **not** re-measured from logs here |
+| Separate Uber Mobility project; say **Uber drivers in ANZ** (no “main-app”) | Resume decision | User + past wording |
 
 ## Masters India (Dec 2022 - Jun 2024)
 
@@ -114,8 +117,8 @@ All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboard
 |---|---|
 | PHP to Django migration, **10,000+ daily queries** (standardize 10K+; not 1K / not 100K) | User decision |
 | Voting / pinning / **locking** REST APIs, +15-20% premium subscriptions (relative) | HISTORICAL |
-| Influencer dashboard (earnings, transactions, coupons, filters), +30% course sales | HISTORICAL |
-| Cron orchestration (video processing, reminders, recording cleanup), +70% ops efficiency | HISTORICAL |
+| Influencer dashboard (earnings, transactions, coupons, filters), +30% course sales | HISTORICAL — own bullet |
+| Cron orchestration (video processing, reminders, recording cleanup), +70% ops efficiency | HISTORICAL — separate bullet from course sales |
 | Email/SMTP optimization 50% faster sends | HISTORICAL — prep depth |
 
 ## Achievements / education
