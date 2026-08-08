@@ -4,19 +4,19 @@ Aligned to campaign_pygo_xyz resume. Paste-ready. Avoid colon-heavy AI voice in 
 
 ## Headline (pick one)
 1. Senior Software Engineer | Python · Go | Distributed Systems · Kafka · Agentic AI
-2. Backend SSE (Python/Go) | Owned Uber FRM design · Kafka 1M+/day · LangGraph + ClickHouse
+2. Backend SSE (Python/Go) | Owned Uber (via EPAM) FRM design · Kafka 1M+/day · LangGraph + ClickHouse
 3. Senior Software Engineer building agentic planning systems | FastAPI · Go · ClickHouse · Kafka
 
 **Recommended:** #2 (metric-led for recruiter search).
 
 ## About — short
-Senior Software Engineer with 5 years owning Python and Go backends. I design and ship distributed systems — from Uber Finance risk scoping and Eats menu automation to Kafka e-invoicing at 1M+ submissions/day. Currently building an agentic retail planning copilot with LangGraph MCP and ClickHouse.
+Senior Software Engineer with 5 years owning Python and Go backends. I design and ship distributed systems — from Uber (via EPAM) Finance risk scoping and Eats menu automation to Kafka e-invoicing at 1M+ submissions/day. Currently building an agentic retail planning copilot with LangGraph MCP and ClickHouse.
 
 ## About — long
 I am a Senior Software Engineer focused on backend and data platforms in Python and Go.
 
 What I am known for:
-- Architecture ownership — Uber FRM Risk Scoping (FastAPI MySQL React) across 8 screens and 30+ APIs at $340M materiality. Led 3 engineers.
+- Architecture ownership — Uber (via EPAM) FRM Risk Scoping (FastAPI MySQL React) across 8 screens and 30+ APIs at $340M materiality. Led 3 engineers.
 - Scale — Masters India Kafka + PostgreSQL e-invoicing at 1M+ IRP/day lifting throughput from 700 to 4000 requests/min. Mentored 2 engineers. On-call with ELK and New Relic.
 - Product impact — Uber Eats menu onboarding 24h to 2h saving $600K+ annually on 30K+ menus/month with Selenium + RAG/Gemini.
 - Agentic systems — building AssortSmart planner copilot at Impact Analytics (FastAPI LangGraph MCP Go ClickHouse) with measured failure baselines and human-gated tools.
