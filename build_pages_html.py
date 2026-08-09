@@ -87,6 +87,15 @@ ROOTS = [
     "resume/prep",
     "resume/outreach",
     "resume/linkedin",
+    "final_java_ai/prep",
+    "final_java_ai/outreach",
+    "final_java_ai/linkedin",
+    "final_java_ai/ats",
+    "final_pygo_ai/prep",
+    "final_pygo_ai/outreach",
+    "final_pygo_ai/linkedin",
+    "final_pygo_ai/ats",
+    "final_pygo_ai/campaign_extras",
 ]
 
 # Track-root markdown (ApplicationKit / application questions) — convert in place.
@@ -96,7 +105,12 @@ ROOT_MD_FILES = [
     "resume_java/application_questions.md",
     "resume/ApplicationKit.md",
     "resume/application_questions.md",
-    # resume_v2/ApplicationKit.md kept for editors; do NOT convert — hand-maintained ApplicationKit.html
+    "final_java_ai/ApplicationKit.md",
+    "final_java_ai/application_questions.md",
+    "final_java_ai/README.md",
+    "final_pygo_ai/application_questions.md",
+    "final_pygo_ai/README.md",
+    # hand-maintained rich ApplicationKit.html: resume_v2 + final_pygo_ai
 ]
 
 SKIP_NAMES = {".git", "node_modules", "__pycache__", "artifacts", "output", "sections"}
@@ -127,6 +141,20 @@ def rel_hub_links(rel_path: str) -> str:
     track_up = "../" * max(depth - 1, 0)  # → owning track folder
     root_up = "../" * depth  # → repo root hub
 
+    if rel_path.startswith("final_pygo_ai/"):
+        return (
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Final PyGo+AI</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
+        )
+    if rel_path.startswith("final_java_ai/"):
+        return (
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Final Java+AI</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
+        )
     if rel_path.startswith("resume_v2/"):
         return (
             f'<a href="{root_up}index.html">← All tracks</a>'
@@ -248,6 +276,8 @@ def write_folder_indexes() -> None:
         os.path.join(BASE, "resume_v2"),
         os.path.join(BASE, "resume_java"),
         os.path.join(BASE, "resume"),
+        os.path.join(BASE, "final_java_ai"),
+        os.path.join(BASE, "final_pygo_ai"),
     }
     dirs = set()
     for md in iter_markdown():

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>22_application_questions — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/prep/22_application_questions.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#application-screening-questions-paste-ready">Application / screening questions (paste-ready)</a>
+<a class="lvl2" href="#autonomous-ai-system-langgraph-llamaindex-adk">Autonomous AI system (LangGraph / LlamaIndex / ADK)</a>
+<a class="lvl2" href="#production-grade-rag-for-enterprise-document-processing">Production-grade RAG for enterprise document processing</a>
+<a class="lvl2" href="#related-deep-dive">Related deep dive</a></nav>
+<main><h1 id="application-screening-questions-paste-ready">Application / screening questions (paste-ready)</h1>
+<p>Canonical copy-paste bank. HTML twin: <code>../ApplicationKit.html</code>. Keep honesty tags aligned with <code>GROUND_TRUTH.md</code>.</p>
+<p><strong>PDF IA sync (Aug 2026):</strong> product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Long answers below still teach agent safety (14 tools / 8.5%) for screening forms — that is interview depth, not a claim that those lines are on the PDF.</p>
+<hr>
+<h2 id="autonomous-ai-system-langgraph-llamaindex-adk">Autonomous AI system (LangGraph / LlamaIndex / ADK)</h2>
+<p><strong>Question:</strong> Can you describe an autonomous AI system you built and deployed in production using frameworks like LangGraph, LlamaIndex, or ADK? Please explain the architecture, orchestration logic, monitoring strategy, and how you ensured scalability and reliability.</p>
+<p><strong>Honesty before paste:</strong> Phase 1 of the Cluster Recommendation Copilot is <strong>design-complete with external review PASS to bring-up</strong>; <strong>bring-up load test pending</strong>. Prefer “building for production / production-bound” over “fully deployed to every tenant.” Framework used: <strong>LangGraph + MCP</strong> (not LlamaIndex or ADK).</p>
+<h3 id="full-answer-screening-form-250350-words">Full answer (screening form / ~250–350 words)</h3>
+<pre><code>At Impact Analytics I am building the Cluster Recommendation Copilot inside AssortSmart, a merchandise-planning SaaS where retailers decide what to buy, how much, and for which stores. The autonomous path uses LangGraph (not LlamaIndex/ADK) for orchestration and MCP for a fixed tool registry. Phase 1 is design-complete with external review PASS to bring-up; the remaining gate is a bring-up load test, so I describe this as a production-bound agent system I am building and hardening, not as a claim that every tenant already runs the shipped copilot.
+
+Architecture
+Two planes. (1) An agent plane: FastAPI + LangGraph + MCP. The LLM plans, explains, and selects tools; it never invents SQL. (2) A doing plane: Go (Gin) APIs for Hindsight / Clustering / Strategy, plus a per-tenant ClickHouse planning store (63 tables / 8 layers, append-only, agent profile read-only). Manual UI and agent tools converge on the same Go APIs so auth, validation, and audit are not duplicated in the LLM path. Object artifacts land in GCS; BigQuery remains historical truth for some feeds, with a dedicated ClickHouse read plane targeting deterministic agent probes (design: p95 under 500ms vs measured BigQuery variance of 1–20s+).
+
+Orchestration logic
+LangGraph models the workflow as a stateful graph with human-in-the-loop interrupts: ground the planner’s intent → confirm a search plan → fan out batch evaluation of many cluster configs (design target ≥20, batch window 20–100) via 14 audited read-only tools → present scored options with evidence → require human approval before any write-back. Three product confirm gates keep autonomy banded: the agent can explore and recommend, but write-back only happens after human signature. Content-addressed config snapshots make approved runs reproducible. MCP is the tool contract so the agent discovers schemas at runtime and cannot invent free-form warehouse queries.
+
+Monitoring strategy
+Three layers stitched by a shared OpenTelemetry trace_id: LangSmith for agent run trees, prompt/tool replay, tokens, and evals; Datadog for FastAPI/Go HTTP, DB, and infra SLOs; PostHog for product behavior (e.g. chat abandonment vs manual wizard). That split exists because Datadog alone does not give prompt replay, and LangSmith alone does not page on Go p99 or ClickHouse health.
+
+Scalability and reliability
+Scale the agent tier with LLM latency (Python), and the doing tier with request volume (Go goroutine pools, bounded bulk saves, idempotent batch ids). Reliability is engineered as constraints, not hope: DB-enforced read-only agent profile, fixed 14-tool registry, human gates before writes, append-only / versioned planning data, and measured baselines we engineer against — e.g. clustering-run failures were 8.5% (37/437 on kik, mostly input-boundary errors) with a target under 2%. A separate row-identical pivot POC (250M rows, 189s → 12.3s on ClickHouse) informed the analytics store choice before we committed the agentic read plane.
+</code></pre>
+<h3 id="short-answer-120-words">Short answer (~120 words)</h3>
+<pre><code>I am building AssortSmart’s Cluster Recommendation Copilot with LangGraph + MCP on FastAPI, backed by a Go doing layer and a per-tenant ClickHouse planning store. LangGraph owns the stateful flow (ground → search plan → batch tool calls → human approval → write-back). MCP exposes 14 audited read-only tools so the agent never invents SQL. Reliability comes from a DB read-only profile, three human confirm gates, and content-addressed configs. Monitoring splits LangSmith (agent quality), Datadog (platform SLOs), and PostHog (product), joined by one OTEL trace_id. Phase 1 is design-approved for bring-up; load test is the remaining production gate.
+</code></pre>
+<h3 id="bullet-checklist">Bullet checklist</h3>
+<pre><code>• Framework: LangGraph orchestration + MCP tool registry (not LlamaIndex/ADK)
+• Product: AssortSmart Cluster Recommendation Copilot for retail merchandise planning
+• Architecture: FastAPI agent plane ↔ Go doing layer ↔ ClickHouse (append-only, agent read-only) + GCS
+• Orchestration: stateful graph with human-in-the-loop gates; 14 audited read-only tools; agent cannot write
+• Monitoring: LangSmith + Datadog + PostHog on shared OTEL trace_id
+• Reliability: read-only DB profile, approval gates, content-addressed configs; baseline failures 8.5% (37/437) → target &lt;2%
+• Status honesty: Phase 1 design PASS / bring-up load test pending
+</code></pre>
+<hr>
+<h2 id="production-grade-rag-for-enterprise-document-processing">Production-grade RAG for enterprise document processing</h2>
+<p><strong>Question:</strong> How would you design a production-grade RAG pipeline for enterprise document processing? Please cover vector database selection, context management, retrieval optimization, feedback loops, and methods for improving response accuracy and compliance.</p>
+<p><strong>Honesty:</strong> Uber Menu RAG + Gemini numbers (<strong>98% fidelity / 100% schema</strong>) are <strong>offline/eval</strong>. Lead with design; ground with that production path.</p>
+<h3 id="full-answer">Full answer</h3>
+<pre><code>I design enterprise RAG as an extraction + grounding pipeline with a hard schema contract, not as “chat over a vector DB.” At Uber Eats I owned a production path that turns PDF/image menus into catalog rows with LangChain RAG + Gemini 2.5 Pro over Milvus embeddings, a hard schema validation gate before upsert, and offline eval at 98% fidelity / 100% schema consistency — low-confidence outputs went to human review, not silent upsert.
+
+1) Vector database selection
+Default for enterprise docs when Postgres is already SoR: pgvector (or a managed equivalent) colocated with tenancy, ACLs, and transactional metadata — one backup/IAM story, row-level security, and joins between vectors and document ACL tables. Choose a dedicated vector service (e.g. Vertex AI Vector Search / Pinecone / OpenSearch k-NN) when you need multi-million embeddings, aggressive QPS, or hybrid lexical+dense at search-engine scale. Reject “vector DB of the week” if it cannot express tenant isolation, soft-delete, and document versioning. Store: embedding + chunk text + document_id + version + tenant_id + ACL tags + content_hash + source URI + as_of timestamp.
+
+2) Context management
+Ingest: OCR/layout-aware parse → semantic chunking (section/heading aware, not fixed 500 tokens) with overlap only at section boundaries → embed with a pinned model version → upsert by (tenant, document_id, chunk_id, content_hash) for idempotent re-ingest. At query time: retrieve top-k, then pack a budgeted context window (token budget + citation slots), prefer fewer high-quality chunks over stuffing, and always pass structured fields (item name, price, allergens) separately from free text so the LLM cannot invent required columns. Session memory stays short; durable state is the validated catalog row, not the chat transcript.
+
+3) Retrieval optimization
+Hybrid retrieval: dense (embeddings) + sparse (BM25/keyword) for SKUs, prices, and rare tokens LLMs miss; optional cross-encoder / Cohere-style rerank on the top 50→10. Metadata filters first (tenant, locale, menu version, effective date) so you never retrieve another customer’s docs. Query rewrite for typos/synonyms; multi-query only when recall is measured low. Cache embeddings and frequent query vectors; invalidate on document version bump. Measure recall@k and citation precision on a golden set — not vibes.
+
+4) Feedback loops
+Offline: labeled gold menus / docs, regression suite on every prompt or embed-model change (LangSmith-style run trees + dataset evals). Online: thumbs / correct-edit capture when humans fix extracted fields; route corrections into a hard-negative and SFT set. Confidence gates: if model confidence or schema validation fails, escalate to human queue; never auto-write. Track drift: weekly sample of production outputs vs human corrections; alert when fidelity or schema-pass rate drops.
+
+5) Accuracy and compliance
+Accuracy: schema validation as a deterministic gate (100% schema consistency was our offline bar); constrained decoding / structured output where the API supports it; cite chunk IDs in the answer; refuse when evidence is missing. Compliance: tenant-isolated indexes; PII redaction before embed when required; encryption in transit/at rest; audit log of document version used for each extraction; retention and right-to-delete by content_hash; no training on customer docs without contract; prompt/tool allowlists; DLP on egress. For regulated surfaces, human approval before publish is part of the pipeline, not a bolt-on.
+
+Principle I ship with: the LLM proposes; validators and humans dispose. RAG improves recall of evidence; the schema and ACL layer decide what is allowed to become system of record.
+</code></pre>
+<h3 id="short-answer">Short answer</h3>
+<pre><code>I’d build enterprise RAG as ingest → hybrid retrieve → budgeted context → structured generate → schema validate → human escalate on fail. Vector store: pgvector when Postgres/tenancy/ACLs matter; dedicated vector search at multi-million scale. Chunk by document structure, version every upsert by content hash, filter by tenant before ANN. Optimize with dense+BM25, rerank, and golden-set recall@k. Close the loop with offline evals, human edit capture into SFT/hard-negatives, and confidence gates. Accuracy and compliance come from deterministic schema validation, citations, tenant isolation, audit of document versions, and never writing low-confidence output to SoR. That is the pattern I used on Uber Eats menu PDFs/images with RAG + Gemini (offline eval: 98% fidelity, 100% schema consistency).
+</code></pre>
+<h3 id="bullet-checklist_1">Bullet checklist</h3>
+<pre><code>• Vector DB: pgvector (Postgres/ACL-first) or managed vector search at high QPS/scale; always tenant_id + version + content_hash
+• Context: structure-aware chunks, token-budget packing, structured fields outside free text
+• Retrieval: hybrid dense+BM25 → rerank; metadata filters before ANN; measure recall@k
+• Feedback: offline golden evals; human corrections → hard-negatives / prompt fixes; confidence → human queue (SFT not on PDF)
+• Accuracy/compliance: schema gate, citations, tenant isolation, audit, PII/retention, no silent SoR writes
+• Grounding example: Uber Eats menu RAG + Gemini (98% fidelity / 100% schema, offline eval)
+</code></pre>
+<hr>
+<h2 id="related-deep-dive">Related deep dive</h2>
+<ul>
+<li>Architecture / Q&amp;A: <code>10_impact_analytics_deep_dive.md</code> (Why LangGraph, Why MCP, observability split)</li>
+<li>Menu RAG: <code>14_uber_menu_deep_dive.md</code></li>
+<li>Numbers: <code>18_resume_number_catalog.md</code>, <code>GROUND_TRUTH.md</code></li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

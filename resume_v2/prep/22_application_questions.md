@@ -2,6 +2,8 @@
 
 Canonical copy-paste bank. HTML twin: `../ApplicationKit.html`. Keep honesty tags aligned with `GROUND_TRUTH.md`.
 
+**PDF IA sync (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Long answers below still teach agent safety (14 tools / 8.5%) for screening forms — that is interview depth, not a claim that those lines are on the PDF.
+
 ---
 
 ## Autonomous AI system (LangGraph / LlamaIndex / ADK)

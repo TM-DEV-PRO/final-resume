@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>08_role_targeting_and_rapid_fire — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/prep/08_role_targeting_and_rapid_fire.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#role-targeting-rapid-fire-pythongo-resume-v2">Role targeting + rapid-fire — Python/Go resume v2</a>
+<a class="lvl2" href="#new-wording-you-must-say-correctly">New wording you must say correctly</a>
+<a class="lvl2" href="#role-families">Role families</a></nav>
+<main><h1 id="role-targeting-rapid-fire-pythongo-resume-v2">Role targeting + rapid-fire — Python/Go resume v2</h1>
+<p>Use with <code>resume_v2/</code> / <code>Tarun_Mittal_SSE_5yr_v2.pdf</code>.</p>
+<h2 id="new-wording-you-must-say-correctly">New wording you must say correctly</h2>
+<p><strong>“Under 1 hour” (IA clustering)</strong><br>
+“That’s the committed design target from the clustering FRD — we’re building and load-testing against it. Baseline we measured: days of manual config, ~8.5% run failures, one config tried per plan. I don’t claim a year of production p50 on that number yet.”</p>
+<p><strong>“Without lock contention” (ClickHouse)</strong><br>
+“Append-only inserts + latest-state reads — we don’t take row locks or run ClickHouse mutations for planner overrides. Every decision is an insert; versions resolve via views. That’s concurrency without lock contention, not a claim that the engine is wait-free in the CS sense.”</p>
+<p><strong>“BigQuery on your skills?”</strong><br>
+“Upstream historical source of truth. I own the ingest lane into ClickHouse (staging → <code>REPLACE PARTITION</code>, reconciliation). I don’t claim BigQuery warehouse optimization as my work.”</p>
+<p><strong>“Why drop Mongo/Cassandra/ES/DuckDB/gRPC/Rust from skills?”</strong><br>
+“Kept what’s evidenced on this resume’s Tech Used lines or the live IA/Uber stack. DuckDB was an earlier serving idea; July 2026 <strong>agentic-assort</strong> direction is <strong>ClickHouse/GCS end-to-end</strong> for planning data via insert-only versioned writes (HLD doing layer → CH/GCS). The POC report’s hybrid verdict still applies to legacy OLTP-mutable surfaces and “no wholesale CH” for mtp-assort — tell the write-model evolution story. Rust is an in-house escape hatch (CortexEye) — not something I claim as delivered on this PDF.”</p>
+<p><strong>Menu 98% / $600K</strong><br>
+Same as original prep: offline-eval fidelity; finance-owned savings model — know the arithmetic before quoting.</p>
+<h2 id="role-families">Role families</h2>
+<p>Same lead stories as <code>../resume/prep/08_role_targeting_and_rapid_fire.md</code> — IA ClickHouse/GCS planning store + FastAPI/Go agentic path, Uber Menu streaming, Masters quality/observability, FRM audit correctness.</p>
+<p><strong>IA 15-second lead (Jul 2026):</strong> “Raised planner throughput toward <strong>20–100 configs vs 1</strong> and under <strong>1 hour</strong> with Copilot over Go. ClickHouse/GCS insert-only / partition-swapped store (<strong>63/8</strong>, agent <code>readonly=1</code>) cut <strong>250M</strong> grids <strong>189s→12.3s</strong> (~15×) and avoided <strong>12B</strong> store-week (<strong>100–450×</strong>). Obs via Datadog / LangSmith / PostHog + OTEL.”</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

@@ -3,20 +3,20 @@
 Aligned to **Java/Spring** resume.
 
 ## One-liners
-- **Headline fit:** Senior SWE Java/Spring — Uber FRM design owner · Kafka 1M+/day · LangGraph/ClickHouse
+- **Headline fit:** Senior SWE Java/Spring Uber FRM design owner · Kafka 1M+/day · AssortSmart Cluster Recommendation Copilot · ClickHouse
 - **30s intro:** use LinkedIn About short in `linkedin/headline_about_experience.md`
-- **Why hire you:** FRM design ownership + Kafka 1M+/day + agentic ClickHouse work with honest measured vs target metrics
+- **Why hire you:** FRM design ownership + Kafka 1M+/day + AssortSmart architecture ownership with honest measured vs target metrics
 
 ## Common application questions
 
 ### Describe a complex system you designed
-FRM Risk Scoping — owned design and architecture Spring Boot MySQL React 8 screens 30+ APIs layered controller/service/repository 11-table JPA schema Sheets→MySQL recon v2 led 3 engineers for PwC-facing releases. Targeting 70% recon cut (TDD target).
+Owned end to end architecture for AssortSmart Cluster Recommendation Copilot chat plane (Python, LangGraph, MCP) and shared write APIs (Spring Boot) so tools and product writes share one auth and audit path. Also FRM Risk Scoping design ownership Spring Boot MySQL React 8 screens 30+ APIs layered controller/service/repository led 3 engineers. Targeting 70% recon cut (TDD target).
 
 ### Experience with AI / LLMs / agents
-Building AssortSmart Cluster Recommendation Copilot with LangGraph MCP (Python agent plane) and Spring Boot write APIs, 14 audited read tools, and 3 human gates before write-back. Menu RAG + Gemini 2.5 Pro offline 98% fidelity 100% schema. Kafka on Menu ingest and Masters IRP.
+Owned end to end architecture for AssortSmart Cluster Recommendation Copilot (Python, LangGraph, MCP) with shared write APIs (Spring Boot). Building Hindsight prior season Keep Shop Drop and grounded narration. Drove Postgres to ClickHouse store choice with a 250M row pivot POC (189s to 12.3s, about 15.5x). Menu RAG + Gemini 2.5 Pro offline 98% fidelity 100% schema. Kafka on Menu ingest and Masters IRP.
 
 ### Largest scale
-Masters Kafka e-invoicing 1M+ IRP/day 100K+/import 700→4000 req/min. ClickHouse pivot POC 250M rows 189s→12.3s.
+Masters Kafka e-invoicing 1M+ IRP/day 100K+/import 700 to 4000 req/min. Drove Postgres to ClickHouse with a row identical 250M row heavy planning pivot POC 189s to 12.3s, about 15.5x.
 
 ### Leadership
 Led 3 (Uber/EPAM). Mentored 2 (Masters).
@@ -28,4 +28,4 @@ Phone (+91) 9001542418 · tm.eng2021@gmail.com · linkedin.com/in/t-mittal · gi
 `artifacts/Tarun_Mittal_SSE_Java_5yr.pdf`
 
 ## Deeper answers
-Shared deep screening bank (honesty-aligned): `../resume_v2/prep/22_application_questions.md`
+Shared deep screening bank: `../resume_v2/prep/22_application_questions.md`

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>02_uber_frm — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/architecture/02_uber_frm.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-uber-frm-risk-scoping-campaign-pdf-sync">Architecture — Uber FRM Risk Scoping (campaign PDF sync)</a>
+<a class="lvl2" href="#resume-bullets-current">Resume bullets (current)</a>
+<a class="lvl2" href="#1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</a>
+<a class="lvl2" href="#2-domain-model-say-this-instead-of-11-tables">2. Domain model (say this instead of “11 tables”)</a>
+<a class="lvl2" href="#3-architecture-diagram">3. Architecture diagram</a>
+<a class="lvl2" href="#4-end-to-end-quarterly-flow">4. End-to-end quarterly flow</a>
+<a class="lvl2" href="#5-verbal-depth-not-on-pdf">5. Verbal depth (not on PDF)</a></nav>
+<main><h1 id="architecture-uber-frm-risk-scoping-campaign-pdf-sync">Architecture — Uber FRM Risk Scoping (campaign PDF sync)</h1>
+<h2 id="resume-bullets-current">Resume bullets (current)</h2>
+<ol>
+<li>Owned design/architecture — 8 screens, 30+ APIs, $340M materiality, targeting 70% recon cut.</li>
+<li>Replaced Sheets close with MySQL SSOT tying HFM to 10-Q for PwC line-level audit trail.</li>
+<li>Automated group/component scoping + residual-risk + EMI auto-flags across 55 FSLIs / 14 entities ($340M / $170M sample).</li>
+<li>Led 3 engineers + Bazel pytest suite to 1,100+ tests for PwC-facing releases.</li>
+</ol>
+<p><strong>Removed from PDF (still defend verbally):</strong> 11-table schema list, Sheets→MySQL “18 files” migration wording, column-aliasing bug as a standalone bullet.</p>
+<h2 id="1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python / FastAPI</strong></td>
+<td>30+ REST APIs for 8 screens</td>
+<td>Uber/EPAM Python service norms; async handlers with <code>asyncio.to_thread</code> for sync SQLAlchemy</td>
+</tr>
+<tr>
+<td><strong>SQLAlchemy 2.0 / Pydantic</strong></td>
+<td>ORM + response trees (L1→L2→L3)</td>
+<td>Typed models, explicit <code>.label()</code> joins, nested recon/scoping payloads</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>System of record for scoping + recon leaves</td>
+<td>SSOT vs Sheets; durable IDs for audit comments/history</td>
+</tr>
+<tr>
+<td><strong>React (Fusion.js)</strong></td>
+<td>8 UI screens</td>
+<td>Finance interactive grids</td>
+</tr>
+<tr>
+<td><strong>Handler / service / repository</strong></td>
+<td>Layered backend</td>
+<td>Parallelize pod work; testable boundaries</td>
+</tr>
+<tr>
+<td><strong>Bazel + pytest</strong></td>
+<td><code>uber_py_test</code> CI gates</td>
+<td>~1,100+ tests before merge</td>
+</tr>
+<tr>
+<td><strong>Docker</strong></td>
+<td>Local/CI packaging</td>
+<td>Reproducible runs</td>
+</tr>
+<tr>
+<td><strong>Header auth</strong></td>
+<td><code>x-auth-params-email</code></td>
+<td>Gateway-injected identity for <code>created_by</code> / <code>updated_by</code> audit columns</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-domain-model-say-this-instead-of-11-tables">2. Domain model (say this instead of “11 tables”)</h2>
+<p>Scoping service owns the financial close decision graph:</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>What it stores</th>
+<th>Screen / outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Balance sheet / income statement facts</td>
+<td>FSLI hierarchies by fiscal quarter/year</td>
+<td>Group + component scoping</td>
+</tr>
+<tr>
+<td>EMI</td>
+<td>Equity-method investees (ownership %, balances, auditor)</td>
+<td>EMI scoping</td>
+</tr>
+<tr>
+<td>Metrics / thresholds</td>
+<td>Materiality, residual threshold, benchmarks</td>
+<td>Materiality + Threshold Setup</td>
+</tr>
+<tr>
+<td>Assessments / questions</td>
+<td>Scoping questionnaire state</td>
+<td>Assessments</td>
+</tr>
+<tr>
+<td>Level mapping / component entity</td>
+<td>Hierarchy links</td>
+<td>Component scoping</td>
+</tr>
+<tr>
+<td>Recon leaves</td>
+<td>HFM vs filed 10-Q amounts + difference</td>
+<td>Reconciliation</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Q4 2025 sample (MEASURED):</strong> group materiality <strong>$340M</strong>, residual <strong>$170M</strong>, ~<strong>55</strong> line items, <strong>14</strong> entities.</p>
+<p>If asked “how many tables?”: “About <strong>11 SQLAlchemy models</strong> in the scoping service; collaboration/comments live in a separate service — I do not claim those.”</p>
+<h2 id="3-architecture-diagram">3. Architecture diagram</h2>
+<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
+<pre><code> React 8 screens ──30+ REST──► FastAPI (handler → service → repository)
+                                      │
+                                      ▼
+                               MySQL system of record
+                               (~11 models · 55 lines · 14 entities)
+                                      ▲
+                    Oracle HFM ───────┤
+                    public 10-Q ──────┘  (recon validate)
+                                      │
+                                      ▼
+                               PwC audit work papers
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  subgraph UI[React 8 screens]
+    Rec[Reconciliation]
+    Mat[Materiality]
+    EMI[EMI]
+    Grp[Group Scoping]
+    Cmp[Component Scoping]
+    Res[Residual Risk]
+    Sum[Summary]
+  end
+
+  subgraph API[FastAPI scoping service]
+    H[Handlers]
+    S[Services]
+    R[Repositories]
+  end
+
+  subgraph DB[MySQL SSOT]
+    Facts[BS / IS / EMI / metrics]
+    Recon[recon leaves HFM vs 10-Q]
+  end
+
+  subgraph Ext[Inputs / consumers]
+    HFM[Oracle HFM extracts]
+    TQ[Public 10-Q]
+    PwC[PwC audit work papers]
+  end
+
+  UI --> H --> S --> R --> Facts
+  R --> Recon
+  HFM --> S
+  S --> TQ
+  Facts --> PwC
+  Recon --> PwC
+</div>
+<h2 id="4-end-to-end-quarterly-flow">4. End-to-end quarterly flow</h2>
+<ol>
+<li>HFM extracts land in MySQL fact tables for the fiscal period.</li>
+<li>Recon screen ties HFM amounts to public <strong>10-Q</strong> line amounts (<code>difference = HFM − filed</code>).</li>
+<li>Materiality / thresholds set group materiality (<strong>$340M</strong> sample) and residual (<strong>$170M</strong>).</li>
+<li>Group scoping marks significant FSLIs; component scoping drills entities under each FSLI.</li>
+<li>Residual risk computes uncovered balance vs materiality; EMI scopes equity-method investees.</li>
+<li>Summary feeds <strong>PwC</strong> work papers.</li>
+<li>Platform <strong>targets</strong> <strong>70%</strong> less manual ingestion/recon time (TDD) — say <strong>targeting</strong>.</li>
+</ol>
+<h2 id="5-verbal-depth-not-on-pdf">5. Verbal depth (not on PDF)</h2>
+<h3 id="sheets-mysql-recon-owned">Sheets → MySQL recon (owned)</h3>
+<p>Parallel v2 endpoints beside v1; 18 files / +1268 LOC; stable UUIDs unlock comments. Cutover after staging parity.</p>
+<h3 id="column-aliasing-bug">Column-aliasing bug</h3>
+<p>Joined fact + <code>level_mapping</code> shared column names; <code>dict(zip(keys, row))</code> kept last write → wrong UUID. Fix: SQLAlchemy <code>aliased()</code> + explicit <code>.label()</code> on every projected column.</p>
+<h3 id="why-not-claim-collaboration-service">Why not claim collaboration service</h3>
+<p>Comments/Slack live in <code>frm-collaboration-service</code>. Scope your ownership to the <strong>scoping service</strong>.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

@@ -17,12 +17,11 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI Powered Retail Merchandise Planning Platform)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where retailers decide what to buy, how much, and for which stores, with AI agents drafting store clusters and plans for planner review, override, and approval.
-    \item Developing the \textbf{agentic microservice (FastAPI, LangGraph)} with a conversational agent that grounds plain language requests into store and season scopes, batch evaluates \textbf{100 silhouette scored candidate clusterings}, and presents the \textbf{top 3 with evidence} for human approval, cutting turnaround from days to \textbf{under 1 hour}.
-    \item Designing the core backend as \textbf{Go (Gin) microservices} covering plan lifecycle, tenant configuration, and bulk save REST APIs at \textbf{$\sim$10--20 peak RPS}, with goroutine worker pools, bounded channels, context timeouts, and JWT auth middleware.
-    \item Led the design of the per tenant \textbf{ClickHouse} planning store on an \textbf{append only, never erase write model} at \textbf{$\sim$5--10K row writes/sec}. Facts land as atomic partition swaps; decisions are inserts via latest state views for version diff, undo/redo, lock free writes, and a full audit trail.
-    % \item Designing the backend for the \textbf{planning grid, an Excel like pivot surface} where planners edit plans across product, store, and week hierarchies, serving rollups and drill downs from pre aggregated \textbf{ClickHouse} data at \textbf{p95 under 500ms} and cell edits under \textbf{80ms} via async write back.
-    \item \textbf{Tech Used}: Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
+    \item Building \textbf{AssortSmart} so retailers decide \textbf{what to buy, how much, and which stores} for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to.
+    \item Owned end to end architecture for the \textbf{Cluster Recommendation Copilot} that helps planners group stores for a season. Built the chat plane (\textbf{FastAPI, LangGraph, MCP}) and shared write APIs (\textbf{Go, Gin}) so tools and product writes share one auth and audit path.
+    \item Building \textbf{Hindsight} as the prior season decision layer with carry forward and underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy.
+    \item Drove the store decision with evidence. Ran a row identical \textbf{Postgres} to \textbf{ClickHouse} POC on \textbf{250M} row heavy planning pivots (\textbf{189s} to \textbf{12.3s}, about \textbf{15.5x}) and used that to justify ClickHouse as the agentic planning store.
+    \item \textbf{Tech} -- Python, FastAPI, LangGraph, MCP, Go, Gin, ClickHouse, PostgreSQL, Redis, Kafka, GCP, Docker.
 \end{zitemize}
 
 %====================

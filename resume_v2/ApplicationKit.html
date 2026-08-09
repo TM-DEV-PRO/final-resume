@@ -78,7 +78,7 @@ code{background:#1d2330;padding:1px 6px;border-radius:4px;font-size:12.6px}
 <div class="block"><div class="bhead"><h4>About</h4><button class="copy">Copy</button></div>
 <pre>I build backend systems and AI agents that ship to production.
 
-Right now I'm a Senior Software Engineer at Impact Analytics, building the agentic rebuild of AssortSmart, a merchandise planning SaaS where enterprise retailers decide what to buy, how much, and for which stores. AI agents draft store clusters and plans, and planners review, override, and approve. My work spans the Python agentic microservice (FastAPI, LangGraph, MCP) that runs all agentic workflows, the Go (Gin) core backend, and the data layer: ClickHouse with an append-only versioned write model where every planner edit is an insert, giving us version diff, undo/redo, and an immutable audit trail for free.
+Right now I'm a Senior Software Engineer at Impact Analytics, building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. I own end to end architecture for the Cluster Recommendation Copilot: the chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path. I am also building Hindsight as the prior season decision layer, and I drove the ClickHouse planning-store decision with a row identical Postgres to ClickHouse POC on 250M row heavy planning pivots (189s to 12.3s, about 15.5x).
 
 Before this I spent two years at Uber (via EPAM Systems) on two very different problems: a financial risk-scoping platform for Uber Finance targeting a ~70% cut in quarterly recon cycle time (~2 weeks to ~3–4 days) that feeds PwC audit work papers, and the Uber Eats menu ingestion platform, an event-driven pipeline (Selenium, Kafka, Flink) processing 30,000+ vendor menus a month with an AI extraction layer (RAG + Gemini + Milvus) at 98% offline fidelity / 100% schema consistency, saving $600K+ annually.
 
@@ -94,12 +94,11 @@ Open to senior backend / AI platform roles. Reach me at tm.eng2021@gmail.com.</p
 <p class="note">Company pages to tag: Impact Analytics · EPAM Systems (title: "Software Engineer (Client: Uber)") · Masters India · GeeksforGeeks. Attach 3–5 skills to each role — LinkedIn weights role-attached skills in recruiter search.</p>
 
 <div class="block"><div class="bhead"><h4>Impact Analytics — Senior Software Engineer (May 2026–Present, Bangalore)</h4><button class="copy">Copy</button></div>
-<pre>Building the agentic rebuild of AssortSmart, a merchandise planning SaaS where AI agents draft store clusters and assortment plans, and planners review, override, and approve.
+<pre>Building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to.
 
-• Developing the agentic microservice (FastAPI, LangGraph) whose conversational agent grounds plain-language requests into store and season scopes, batch-evaluates 100 silhouette-scored candidate clusterings, and presents the top 3 with evidence for human approval, cutting turnaround from days to under 1 hour.
-• Building the core backend as Go (Gin) microservices: REST APIs for plan lifecycle, tenant configuration, and bulk saves, with JWT auth middleware, goroutine worker pools, and context-based timeouts.
-• Led adoption of ClickHouse as the planning store with an append-only versioned write model where every planner override is an insert, powering version diff, undo/redo, and an immutable audit trail.
-• Designing the backend for the planning grid, an Excel-like pivot surface serving rollups and drill-downs from pre-aggregated ClickHouse data at p95 under 500ms, with cell edits under 80ms via async write-back.
+• Owned end to end architecture for the Cluster Recommendation Copilot that helps planners group stores for a season. Built the chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path.
+• Building Hindsight as the prior season decision layer with carry forward and underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy.
+• Drove the store decision with evidence. Ran a row identical Postgres to ClickHouse POC on 250M row heavy planning pivots (189s to 12.3s, about 15.5x) and used that to justify ClickHouse as the agentic planning store.
 
 Skills to attach: Go · LangGraph · ClickHouse · FastAPI · Microservices</pre></div>
 
@@ -162,7 +161,7 @@ Then add: Microservices, FastAPI, Gin, LangGraph, LangChain, Model Context Proto
 <div class="block"><div class="bhead"><h4>Long (~90 sec)</h4><button class="copy">Copy</button></div>
 <pre>I'm Tarun, a senior software engineer based in Bangalore with five years of experience across backend systems, data platforms, and AI agents.
 
-I'm currently at Impact Analytics as a Senior Software Engineer, building the agentic version of AssortSmart — a planning product where AI agents draft retail plans and human planners approve them. I own the Python agentic microservice and build the Go core backend, and I led our adoption of ClickHouse as the planning store.
+I'm currently at Impact Analytics as a Senior Software Engineer, building AssortSmart so retailers decide what to buy, how much, and which stores. I own the Cluster Recommendation Copilot architecture (FastAPI, LangGraph, MCP) with shared write APIs (Go, Gin), Hindsight as the prior season decision layer, and I drove the ClickHouse store decision with a measured 250M pivot POC.
 
 Before that I spent two years at Uber through EPAM Systems. On Uber Finance I built a risk-scoping platform targeting a ~70% cut in quarterly recon cycle time that feeds PwC audits. On Uber Eats I worked on the menu ingestion platform — an event-driven Selenium + Kafka + Flink pipeline processing thirty thousand menus a month with a RAG + Gemini + Milvus extraction layer.
 
@@ -172,7 +171,7 @@ Outside work — Google Code Jam qualifier top 2300 of 37,000, and a national fi
 
 <h2 id="in-tech">Technical intro (tech screen / panel)</h2>
 <div class="block"><div class="bhead"><h4>Short (~30 sec)</h4><button class="copy">Copy</button></div>
-<pre>I'm Tarun — five years of backend, currently senior engineer at Impact Analytics. My day-to-day is split across a Python agentic microservice built on FastAPI, LangGraph and MCP, and a Go core backend with Gin. The data layer is the part I'm proudest of: ClickHouse with an append-only versioned write model — every edit is an insert, so version diff, undo/redo and audit history come free. Before this: Uber for two years — a financial platform on FastAPI and MySQL, and a Kafka/Flink/Spark ingestion pipeline for Uber Eats. Strongest in Python, Go, and distributed data systems.</pre></div>
+<pre>I'm Tarun — five years of backend, currently senior engineer at Impact Analytics. Day to day I own the Cluster Recommendation Copilot chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin), plus Hindsight. I drove ClickHouse as the planning store with a row identical Postgres to ClickHouse POC on 250M heavy planning pivots (189s to 12.3s, about 15.5x). Before this: Uber for two years — FastAPI MySQL financial platform and Kafka Flink Spark menu ingestion for Uber Eats. Strongest in Python, Go, and distributed data systems.</pre></div>
 <div class="block"><div class="bhead"><h4>Long (~90 sec)</h4><button class="copy">Copy</button></div>
 <pre>I'm Tarun, senior software engineer at Impact Analytics, five years of experience.
 
@@ -329,7 +328,7 @@ UBER: I already know the codebase culture — two years on Uber Finance and Uber
 WEAKNESS (honest, with mitigation): I over-invest in polishing systems I own — dashboards, docs, test harnesses — sometimes past the point of diminishing returns for the current sprint. I manage it by writing down the "good enough" bar with my lead before starting, so the perfectionism has a budget.</pre></div>
 
 <div class="block"><div class="bhead"><h4>Describe your current role and responsibilities</h4><button class="copy">Copy</button></div>
-<pre>I'm a Senior Software Engineer at Impact Analytics on the agentic AssortSmart platform. I own the store clustering agent inside our Python agentic microservice — from the LangGraph workflow design to the deterministic tools it calls. I build the Go core backend services for plan lifecycle and bulk saves. I drove the ClickHouse planning-store decision and own its versioned write model. Beyond code: I write the design docs for my areas, review PRs across both the Python and Go codebases, and I'm the one who built our offline evaluation harness for agent output quality.</pre></div>
+<pre>I'm a Senior Software Engineer at Impact Analytics on AssortSmart. I own end to end architecture for the Cluster Recommendation Copilot (FastAPI, LangGraph, MCP) with shared write APIs (Go, Gin). I am building Hindsight and I drove the ClickHouse planning-store decision with a row identical Postgres to ClickHouse POC on 250M pivots (189s to 12.3s, about 15.5x). Beyond code: I write the design docs for my areas, review PRs across the Python and Go codebases, and I keep measured vs target language honest.</pre></div>
 
 <div class="block"><div class="bhead"><h4>Where do you see yourself in 5 years?</h4><button class="copy">Copy</button></div>
 <pre>Technically: a staff-level engineer known for one domain — the intersection of AI systems and data platforms — rather than a generalist. Organizationally: the person who owns an architecture end to end and multiplies the engineers around them; I already get energy from design reviews and from watching someone I onboarded outgrow needing me. What I'm not chasing is people management for its own sake — I want scope, not headcount.</pre></div>

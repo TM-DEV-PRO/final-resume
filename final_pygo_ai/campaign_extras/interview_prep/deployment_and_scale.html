@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>deployment_and_scale — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final PyGo+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/deployment_and_scale.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#deployment-scale-for-every-resume-project">Deployment + scale for every resume project</a>
+<a class="lvl2" href="#impact-analytics-agentic-assortsmart-hindsight">Impact Analytics — Agentic AssortSmart + Hindsight</a>
+<a class="lvl2" href="#uber-frm-risk-scoping">Uber — FRM Risk Scoping</a>
+<a class="lvl2" href="#uber-menu-ingestion">Uber — Menu Ingestion</a>
+<a class="lvl2" href="#masters-india-gst-e-invoice">Masters India — GST / e-invoice</a>
+<a class="lvl2" href="#geeksforgeeks-platform">GeeksforGeeks — platform</a>
+<a class="lvl2" href="#quick-comparison-table">Quick comparison table</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="deployment-scale-for-every-resume-project">Deployment + scale for every resume project</h1>
+<p>How each project shipped, why that deploy shape, and the scale numbers you can defend. Tags: MEASURED / TARGET / HISTORICAL / DESIGN.</p>
+<hr>
+<h2 id="impact-analytics-agentic-assortsmart-hindsight">Impact Analytics — Agentic AssortSmart + Hindsight</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scale</strong></td>
+<td>Multi-tenant retail SaaS; kik audit <strong>437</strong> clustering runs; CH <strong>63 tables / 8 layers</strong>; pivot POC <strong>250M</strong> rows <strong>189s→12.3s</strong>; aggregates <strong>~25M</strong> choice-cluster-week; edits <strong>~0.4 ms</strong></td>
+</tr>
+<tr>
+<td><strong>Deploy shape</strong></td>
+<td>Separate deployables: <strong>Python FastAPI</strong> agent service + <strong>Go Gin</strong> doing-layer services + per-tenant <strong>ClickHouse</strong> + UI. Config/catalog changes for Hindsight metrics <strong>without code deploy</strong>.</td>
+</tr>
+<tr>
+<td><strong>Why</strong></td>
+<td>Agent tier scales with LLM latency/cost; Go tier scales with request volume; boundary matches API contracts. Tenant CH isolates noisy neighbors.</td>
+</tr>
+<tr>
+<td><strong>CI / gates</strong></td>
+<td>Design review PASS; tool allow-list tests; <strong>load test pending</strong> before calling copilot shipped</td>
+</tr>
+<tr>
+<td><strong>Honesty</strong></td>
+<td>Say <strong>building</strong>. Do not invent prod TPS/RPM.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deploy story (interview):</strong> "Dockerized services on GCP. Agent and Go ship independently. Tenant onboarding is config sync into PG/CH catalogs, not a binary per retailer. Observability: Datadog + LangSmith + PostHog on one <code>trace_id</code>."</p>
+<hr>
+<h2 id="uber-frm-risk-scoping">Uber — FRM Risk Scoping</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scale</strong></td>
+<td><strong>8</strong> screens, <strong>30+</strong> REST APIs, <strong>$340M</strong> group / <strong>$170M</strong> residual sample, <strong>55</strong> FSLIs × <strong>14</strong> entities, <strong>1,100+</strong> Bazel tests, led <strong>3</strong></td>
+</tr>
+<tr>
+<td><strong>Deploy shape</strong></td>
+<td>FastAPI services + <strong>MySQL</strong> SSOT + React UI; <strong>Bazel</strong> monorepo CI; Docker images behind Uber/EPAM release process</td>
+</tr>
+<tr>
+<td><strong>Why</strong></td>
+<td>Sheets could not be PwC audit SSOT. MySQL gives line-level audit trail tying <strong>HFM</strong> extracts to <strong>10-Q</strong>.</td>
+</tr>
+<tr>
+<td><strong>CI / gates</strong></td>
+<td>Design reviews, API contracts, pytest via Bazel — quality gate for audit-facing releases</td>
+</tr>
+<tr>
+<td><strong>Honesty</strong></td>
+<td><strong>70%</strong> time cut is TARGET (~2 weeks → ~3–4 days). Do not claim multi-region FRM ownership.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deploy story:</strong> "Feature flags / staged rollout inside the finance tooling path. Schema migrations reviewed with audit trail in mind. Rollback = previous service revision + MySQL migration discipline (expand/contract)."</p>
+<hr>
+<h2 id="uber-menu-ingestion">Uber — Menu Ingestion</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scale</strong></td>
+<td><strong>30K+</strong> menus/month; onboarding <strong>24h→2h</strong>; <strong>$600K+/yr</strong>; ingest success <strong>95%+</strong>; offline RAG <strong>98%</strong> fidelity / <strong>100%</strong> schema; ANZ <strong>99.9%</strong>, <strong>20 h/week</strong></td>
+</tr>
+<tr>
+<td><strong>Deploy shape</strong></td>
+<td><strong>Selenium</strong> scraper fleet on <strong>GCP</strong> + <strong>Kafka</strong> ingest bus + <strong>Flink</strong> normalize/dedupe (hot path) + Python <strong>RAG/Gemini</strong> workers + Docker</td>
+</tr>
+<tr>
+<td><strong>Why Kafka</strong></td>
+<td>Scrapers are bursty/flaky; need replay and multiple consumers</td>
+</tr>
+<tr>
+<td><strong>Why Flink</strong></td>
+<td>Stateful keyed dedupe / event-time ordering for late pages; lower latency than Spark micro-batches for catalog freshness</td>
+</tr>
+<tr>
+<td><strong>Why not Spark on hot path</strong></td>
+<td>Spark for backfill/reprocess (verbal); Flink for streaming state</td>
+</tr>
+<tr>
+<td><strong>Honesty</strong></td>
+<td>RAG metrics are <strong>offline eval</strong>. $600K+ HISTORICAL vs third-party ~$2/menu.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deploy story:</strong> "Scrapers and consumers scale as separate jobs. Bad parser → rewind Kafka offsets before the bad watermark and reprocess. Proxies/IP pools are config, not code, for anti-bot."</p>
+<hr>
+<h2 id="masters-india-gst-e-invoice">Masters India — GST / e-invoice</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scale</strong></td>
+<td><strong>1,500+</strong> clients; p95 <strong>1.2s→300ms</strong>; <strong>700→4,000</strong> req/min; <strong>1M+</strong> IRP/day; <strong>100K+/import</strong>; Redis <strong>−30%</strong> reads; triage <strong>−70%</strong>; coverage <strong>35%→82%</strong>; deploy success <strong>98%</strong></td>
+</tr>
+<tr>
+<td><strong>Deploy shape</strong></td>
+<td><strong>Strangler:</strong> FastAPI services cut over behind gateway <strong>endpoint-by-endpoint</strong> with <strong>canary</strong> % traffic; shared DB during move; Kafka consumers for bulk; Docker on <strong>AWS</strong></td>
+</tr>
+<tr>
+<td><strong>Why</strong></td>
+<td>Laravel monolith: one slow IRP blocked a worker; all-or-nothing deploys; could not scale filing spikes</td>
+</tr>
+<tr>
+<td><strong>CI / gates</strong></td>
+<td>pytest coverage gate; contract tests vs old PHP payloads; ELK + New Relic alerts</td>
+</tr>
+<tr>
+<td><strong>Honesty</strong></td>
+<td>Triage baseline ~30→&lt;10 min ESTIMATED behind HISTORICAL 70%.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Deploy story:</strong> "Nginx canary per route. Rollback = traffic flip, not a rebuild. Idempotency keys + DLQ so Kafka replay does not double-file."</p>
+<hr>
+<h2 id="geeksforgeeks-platform">GeeksforGeeks — platform</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scale</strong></td>
+<td><strong>10K+</strong> daily users; <strong>10×</strong> traffic spikes; premium <strong>+15–20%</strong>; course sales <strong>+30%</strong>; ops efficiency <strong>+70%</strong> (HISTORICAL portfolio metrics)</td>
+</tr>
+<tr>
+<td><strong>Deploy shape</strong></td>
+<td>Django/app services + MySQL/Redis patterns of the era; CI deploys; feature work behind normal web release cadence</td>
+</tr>
+<tr>
+<td><strong>Why</strong></td>
+<td>Monetization + reliability under spike load on a content/learning platform</td>
+</tr>
+<tr>
+<td><strong>Honesty</strong></td>
+<td>Keep claims at product/ops outcomes; do not invent modern K8s/operator ownership for GFG.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="quick-comparison-table">Quick comparison table</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Primary deploy unit</th>
+<th>Bus / data plane</th>
+<th>Hard scale number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IA Assort</td>
+<td>FastAPI agent + Go services + CH</td>
+<td>Kafka jobs (embed); CH OLAP</td>
+<td>250M pivot 15.5×; 8.5% baseline</td>
+</tr>
+<tr>
+<td>FRM</td>
+<td>FastAPI + MySQL</td>
+<td>Sync REST; Bazel CI</td>
+<td>$340M; 30+ APIs; 1100+ tests</td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>Scraper jobs + Kafka + Flink + RAG workers</td>
+<td>Kafka → Flink → catalog</td>
+<td>30K menus/mo; 24h→2h</td>
+</tr>
+<tr>
+<td>Masters</td>
+<td>FastAPI strangler + Kafka consumers</td>
+<td>Kafka + PG shards</td>
+<td>1M+/day; 4k req/min</td>
+</tr>
+<tr>
+<td>GFG</td>
+<td>Web app releases</td>
+<td>Classic LAMP-ish stack</td>
+<td>10K+ daily; 10× spikes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="related">Related</h2>
+<ul>
+<li>Architecture folder: <a href="architecture/00_index.html">architecture/00_index.md</a></li>
+<li>Numbers: <a href="numbers_defense.html">numbers_defense.md</a></li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

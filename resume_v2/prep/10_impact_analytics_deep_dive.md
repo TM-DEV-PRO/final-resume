@@ -269,7 +269,7 @@ Aligned to AssortSmart HLR v1.1 (behavioral + constraints) and Copilot Phase-1 F
 
 ## 5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)
 
-> **Resume now leads with hybrid pivot/line-plan (189s→12.3s, cell &lt;1ms, 12B avoided).** Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.
+> **Resume PDF (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse **250M 189s→12.3s (~15.5×)** evidence. **Off PDF:** 63/8 DDL detail, 8.5%/14 tools, line-plan 12B. Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.
 
 ### 5.1 Exact story with numbers (memorize these)
 
@@ -869,7 +869,7 @@ Each percentage is a **partition of unity** (sums to 1 on its dimension), so `SU
 | 1. Building AssortSmart (what-to-buy / how-much / which-stores) via copilot — TARGET under 1h and ≥20 configs/plan | **NEEDS CARE** | Product-first. under 1h / ≥20 = TARGET. Say **building** (load test pending). |
 | 2. 8.5% (37/437 kik) → under 2% (target) via 14 tools + 3 gates | **SOLID with care** | 8.5% MEASURED. under 2% TARGET. |
 | 3. 12B→~25M with sub-second rollup + ~0.4ms cell edit | **SOLID with care** | 12B PROJECTED; ~0.4ms / sub-second MEASURED on aggregate. |
-| 4. ONE CH bullet: 63/8 + 250M 189s→12.3s (~15.5×, measured) | **SOLID with care** | Store = design. Pivot = MEASURED. Verbal: typical aggs ~2–3×. |
+| 4. ONE CH bullet: Postgres→ClickHouse **250M 189s→12.3s (~15.5×)** (PDF); 63/8 interview depth | **SOLID with care** | POC MEASURED. Store adoption = design. Verbal: typical aggs ~2–3×; option-count ~13–15×. |
 | Tech | **SOLID** | No Flink/Spark; Kafka on Masters. |
 
 ---

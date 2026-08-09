@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_mock_interview_transcripts — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final PyGo+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/campaign_extras/agents/03_mock_interview_transcripts.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#mock-interview-transcripts-interviewee-vs-panel">Mock Interview Transcripts (interviewee vs panel)</a>
+<a class="lvl2" href="#round-a-technical-lead-ia-deep-dive">Round A — Technical Lead (IA deep dive)</a>
+<a class="lvl2" href="#round-b-engineering-manager-masters-on-call">Round B — Engineering Manager (Masters on-call)</a>
+<a class="lvl2" href="#round-c-amazon-style-hiring-manager-lp">Round C — Amazon-style Hiring Manager (LP)</a>
+<a class="lvl2" href="#round-d-cto-business-impact">Round D — CTO (business impact)</a>
+<a class="lvl2" href="#round-e-technical-recruiter-google">Round E — Technical Recruiter (Google)</a>
+<a class="lvl2" href="#round-f-director-of-engineering-mentorship">Round F — Director of Engineering (mentorship)</a></nav>
+<main><h1 id="mock-interview-transcripts-interviewee-vs-panel">Mock Interview Transcripts (interviewee vs panel)</h1>
+<p>Interviewee answers in first person. Interviewer pushback in italics. Numbers match GROUND_TRUTH.</p>
+<h2 id="round-a-technical-lead-ia-deep-dive">Round A — Technical Lead (IA deep dive)</h2>
+<p><strong>TL:</strong> Walk AssortSmart and what you own.</p>
+<p><strong>You:</strong> AssortSmart helps retailers decide what to buy, how much, and which stores. I am building the cluster recommendation copilot on FastAPI LangGraph MCP over a shared Go Gin doing layer on per-tenant ClickHouse. Measured clustering failures on kik were 8.5% (37/437). We target under 2% with 14 audited tools that only read planning data and 3 human confirm gates before write-back. I am also building Hindsight scorecards with overnight narration grounded in computed metrics and tenant catalogs that onboard without a code deploy. Copilot targets days to under 1 hour and at least 20 configs per plan. Phase 1 design passed external review. Load test is still pending so I say building not shipped.</p>
+<p><em>TL: Why not let the agent run arbitrary SQL?</em>
+<strong>You:</strong> The model does not get a SQL shell. Tools are allow-listed read functions. Writes go through human gates and the product write path. That is the accurate claim, not a slogan about never writing SQL.</p>
+<p><em>TL: Defend the ClickHouse number.</em>
+<strong>You:</strong> Row-identical pivot POC at 250M rows cut a heavy grid from 189s to 12.3s about 15.5× measured. If you strip COUNT(DISTINCT) typical aggs can fall to roughly 2–3×. I will say that unprompted if pushed.</p>
+<h2 id="round-b-engineering-manager-masters-on-call">Round B — Engineering Manager (Masters on-call)</h2>
+<p><strong>EM:</strong> Tell me about production ownership.</p>
+<p><strong>You:</strong> At Masters India I owned the FastAPI strangler and Kafka e-invoice platform. We cut p95 from 1.2s to 300ms for 1500+ clients and lifted throughput from 700 to 4000 requests/min. I put ELK and New Relic on-call alerting in place which cut incident triage about 70% and raised coverage from 35% to 82% at 98% deployment success.</p>
+<p><em>EM: Walk a bad night.</em>
+<strong>You:</strong> Bulk IRP spike consumer lag rising. First check lag and error class. Idempotency keys plus DLQ meant we could pause replay and drain without double-filing invoices. Postmortem added better saturation alerts.</p>
+<h2 id="round-c-amazon-style-hiring-manager-lp">Round C — Amazon-style Hiring Manager (LP)</h2>
+<p><strong>HM:</strong> Tell me about Ownership.</p>
+<p><strong>You:</strong> At Uber via EPAM I owned the FRM Risk Scoping backend FastAPI MySQL — 30+ APIs powering 8 screens at $340M group materiality targeting a 70% cut in manual reconciliation. I personally owned Sheets to MySQL recon v2 across 18 files and led 3 engineers through design reviews API contracts for PwC-facing releases.</p>
+<p><em>HM: Is 70% measured?</em>
+<strong>You:</strong> No. It is a TDD target. Baseline calendar time is estimated about 2 weeks to 3–4 days. I always say targeting.</p>
+<h2 id="round-d-cto-business-impact">Round D — CTO (business impact)</h2>
+<p><strong>CTO:</strong> Where did you save real money?</p>
+<p><strong>You:</strong> Uber Eats menu ingestion — I owned it end to end on GCP. Selenium → Kafka → Flink cut onboarding 24h → 2h and saved $600K+/yr at 30K+ menus/month. LangChain RAG + Gemini over Milvus hit 98%/100% offline with a schema gate. Successful ingestions rose to 95%+ with IP rotation, dynamic proxies, and adaptive retries. Separately ANZ Mobility docs to 99.9% / ~20h/week HISTORICAL.</p>
+<h2 id="round-e-technical-recruiter-google">Round E — Technical Recruiter (Google)</h2>
+<p><strong>Recruiter:</strong> What languages and systems?
+<strong>You:</strong> Python and Go. FastAPI Gin Kafka ClickHouse PostgreSQL MySQL Redis Docker on GCP and AWS. About 5 years. Currently Senior Software Engineer at Impact Analytics building agentic planning. Before that SDE2 at Uber via EPAM and Masters India.</p>
+<h2 id="round-f-director-of-engineering-mentorship">Round F — Director of Engineering (mentorship)</h2>
+<p><strong>DoE:</strong> How have you multiplied others?
+<strong>You:</strong> Mentored 2 engineers through the Masters strangler and led 3 at EPAM/Uber via design reviews. I measure success as others shipping safely behind contracts not just my LOC.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

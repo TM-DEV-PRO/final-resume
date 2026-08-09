@@ -295,6 +295,103 @@ build(
     "Campaign PyGo XYZ · Full Hub",
 )
 
+# Final Java + AI (self-contained prep copy)
+FJ = os.path.join(BASE, "final_java_ai")
+FJ_PREP = os.path.join(FJ, "prep")
+build(
+    [os.path.join(FJ_PREP, "00_final_resume_map.md"), os.path.join(FJ_PREP, "00_index.md"),
+     os.path.join(FJ_PREP, "GROUND_TRUTH.md")]
+    + sorted(glob.glob(os.path.join(FJ_PREP, "projects", "*.md")))
+    + [
+        os.path.join(FJ, "ats", "00_ats_11_company_scorecard.md"),
+        os.path.join(FJ, "ats", "company_notes_rubrik_databricks_planetscale.md"),
+        os.path.join(FJ_PREP, "09_metrics_derivations.md"),
+        os.path.join(FJ_PREP, "10_impact_analytics_deep_dive.md"),
+        os.path.join(FJ_PREP, "11_uber_frm_deep_dive.md"),
+        os.path.join(FJ_PREP, "12_masters_gfg_deep_dive.md"),
+        os.path.join(FJ_PREP, "14_uber_menu_deep_dive.md"),
+        os.path.join(FJ_PREP, "18_resume_number_catalog.md"),
+        os.path.join(FJ_PREP, "21_ia_pivot_benchmark_source.md"),
+        os.path.join(FJ_PREP, "22_application_questions.md"),
+        os.path.join(FJ_PREP, "23a_ia_interview_pack.md"),
+        os.path.join(FJ_PREP, "23b_uber_interview_packs.md"),
+        os.path.join(FJ_PREP, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(FJ_PREP, "29_ia_ch_ddl_phase1_source.md"),
+        os.path.join(FJ_PREP, "31_resume_deep_explain_map.md"),
+        os.path.join(FJ_PREP, "32_common_interview_qa.md"),
+        os.path.join(FJ_PREP, "37_senior_screen_deep_qa.md"),
+        os.path.join(FJ, "campaign_extras", "interview_prep", "deployment_and_scale.md"),
+        os.path.join(FJ_PREP, "33_architecture_diagrams.md"),
+        os.path.join(FJ_PREP, "34_er_tables_tech_why.md"),
+        os.path.join(FJ_PREP, "35_table_schemas_api_design.md"),
+        os.path.join(FJ_PREP, "36_skills_ai_agents_defense.md"),
+        os.path.join(FJ_PREP, "01_skills_trim_rationale.md"),
+        os.path.join(FJ, "campaign_extras", "interview_prep", "tech_depth", "00_index.md"),
+        os.path.join(FJ, "campaign_extras", "interview_prep", "tech_depth", "langgraph_mcp_rag.md"),
+        os.path.join(FJ, "campaign_extras", "interview_prep", "tech_depth", "skills_fundamentals_map.md"),
+        os.path.join(FJ, "campaign_extras", "interview_prep", "tech_depth", "observability_cloud.md"),
+        os.path.join(FJ, "ApplicationKit.md"),
+        os.path.join(FJ, "linkedin", "headline_about_experience.md"),
+        os.path.join(FJ, "outreach", "recruiter_cold_email.md"),
+        os.path.join(FJ, "outreach", "referrals_short_long.md"),
+    ],
+    os.path.join(FJ, "InterviewPrep.html"),
+    "Tarun Mittal — Final Java + AI · Interview Prep",
+    "Final Java+AI · Interview Prep",
+)
+
+# Final Python + Go + AI
+FP = os.path.join(BASE, "final_pygo_ai")
+FP_PREP = os.path.join(FP, "prep")
+FP_EX = os.path.join(FP, "campaign_extras")
+build(
+    [
+        os.path.join(FP_PREP, "00_final_resume_map.md"),
+        os.path.join(FP_PREP, "00_index.md"),
+        os.path.join(FP_PREP, "GROUND_TRUTH.md"),
+        os.path.join(FP, "ats", "00_ats_11_company_scorecard.md"),
+        os.path.join(FP, "ats", "company_notes_rubrik_databricks_planetscale.md"),
+        os.path.join(FP_PREP, "09_metrics_derivations.md"),
+        os.path.join(FP_PREP, "10_impact_analytics_deep_dive.md"),
+        os.path.join(FP_PREP, "11_uber_frm_deep_dive.md"),
+        os.path.join(FP_PREP, "12_masters_gfg_deep_dive.md"),
+        os.path.join(FP_PREP, "14_uber_menu_deep_dive.md"),
+        os.path.join(FP_PREP, "18_resume_number_catalog.md"),
+        os.path.join(FP_PREP, "21_ia_pivot_benchmark_source.md"),
+        os.path.join(FP_PREP, "22_application_questions.md"),
+        os.path.join(FP_PREP, "23a_ia_interview_pack.md"),
+        os.path.join(FP_PREP, "23b_uber_interview_packs.md"),
+        os.path.join(FP_PREP, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(FP_PREP, "29_ia_ch_ddl_phase1_source.md"),
+        os.path.join(FP_PREP, "31_resume_deep_explain_map.md"),
+        os.path.join(FP_PREP, "32_common_interview_qa.md"),
+        os.path.join(FP_PREP, "37_senior_screen_deep_qa.md"),
+        os.path.join(FP_EX, "interview_prep", "deployment_and_scale.md"),
+        os.path.join(FP_PREP, "33_architecture_diagrams.md"),
+        os.path.join(FP_PREP, "34_er_tables_tech_why.md"),
+        os.path.join(FP_PREP, "35_table_schemas_api_design.md"),
+        os.path.join(FP_PREP, "36_skills_ai_agents_defense.md"),
+        os.path.join(FP_PREP, "01_skills_trim_rationale.md"),
+        os.path.join(FP_EX, "interview_prep", "architecture", "00_index.md"),
+        os.path.join(FP_EX, "interview_prep", "architecture", "01_ia_assortsmart_hindsight.md"),
+        os.path.join(FP_EX, "interview_prep", "design_decisions_tradeoffs.md"),
+        os.path.join(FP_EX, "interview_prep", "numbers_defense.md"),
+        os.path.join(FP_EX, "interview_prep", "tech_depth", "00_index.md"),
+        os.path.join(FP_EX, "interview_prep", "tech_depth", "langgraph_mcp_rag.md"),
+        os.path.join(FP_EX, "interview_prep", "tech_depth", "skills_fundamentals_map.md"),
+        os.path.join(FP_EX, "interview_prep", "tech_depth", "observability_cloud.md"),
+        os.path.join(FP_EX, "behavioral", "why_hire_you.md"),
+        os.path.join(FP_EX, "behavioral", "intros_short_long.md"),
+        os.path.join(FP, "ApplicationKit.md"),
+        os.path.join(FP, "linkedin", "headline_about_experience.md"),
+        os.path.join(FP, "outreach", "recruiter_cold_email.md"),
+        os.path.join(FP, "outreach", "referrals_short_long.md"),
+    ],
+    os.path.join(FP, "InterviewPrep.html"),
+    "Tarun Mittal — Final Python + Go + AI · Interview Prep",
+    "Final PyGo+AI · Interview Prep",
+)
+
 for hub in (
     os.path.join(CP, "CampaignCards.html"),
     os.path.join(V2, "ApplicationKit.html"),
@@ -302,6 +399,9 @@ for hub in (
     os.path.join(V2, "InterviewPrep.html"),
     os.path.join(JAVA, "InterviewPrep.html"),
     os.path.join(CP, "InterviewPrep.html"),
+    os.path.join(FJ, "InterviewPrep.html"),
+    os.path.join(FP, "InterviewPrep.html"),
+    os.path.join(FP, "ApplicationKit.html"),
     os.path.join(BASE, "index.html"),
 ):
     rewrite_md_hrefs(hub)

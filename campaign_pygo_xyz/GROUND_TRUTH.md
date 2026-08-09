@@ -54,12 +54,12 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | Do **not** recite **624 columns** (not on Phase-1 page); prefer **63** over overview “60” | Honesty | same |
 | External review **PASS**; load test remaining — say **building**, not shipped | MEASURED design status | Overview + DDL Phase-1 |
 | HLD stack: FastAPI + **LangGraph/MCP**; Go doing layer; CH + GCS; Kafka async embeddings; LangSmith/Datadog/PostHog | DESIGN + confirmed | `final_agenticassort.png` + playbook |
-| **ONE resume CH bullet:** insert-only / partition-swapped store + **250M** pivot **189.4s → 12.3s** (~**15.5×**) | MEASURED design + MEASURED POC | DDL Phase-1 + `pivot-poc/results/MASTER_RESULTS.md` |
+| **ONE resume CH bullet (Aug 2026):** Drove store decision with evidence. Row-identical **Postgres→ClickHouse** POC on **250M** heavy planning pivots **189s → 12.3s** (~**15.5×**) | MEASURED POC | `../resume_v2/prep/21_ia_pivot_benchmark_source.md` |
 | Line-plan aggregates **~25M**; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured). Flat **12B** projection | MEASURED ops / PROJECTED | **OMIT from PDF** (Jul 2026) — verbal/study only |
 | HLR scenario cap **3–5** | DESIGN | `PRD'S/…HLR_v1.1.docx` |
 | Agent probes: BQ **1–20s+** → CH **p95 <500ms** | MEASURED / TARGET | Copilot FRD |
 
-**Resume wording (Jul 2026):** building not shipping; under 2% marked (target); ONE CH speed claim; no IA TPS/RPM (none measured); hybrid PG write-back is prep-only history.
+**Resume PDF IA bullets (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Building not shipping. 8.5%/14 tools/63-8 are interview depth. No IA TPS/RPM. Hybrid PG write-back is prep-only history.
 
 ## Uber FRM (Jul 2024 - May 2026)
 

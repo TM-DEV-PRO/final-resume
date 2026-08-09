@@ -114,47 +114,59 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 
 ---
 
-## 4. Bullet-by-bullet defense
+## 4. Bullet-by-bullet defense (PDF Aug 2026)
 
-### Bullet 1 — Building AssortSmart copilot (FastAPI, LangGraph, MCP) on Go doing layer; targeting days → under 1h, 1 → ≥20 configs/plan
+### Bullet 1 — AssortSmart product job (what / how much / which stores)
 
 | | |
 |---|---|
-| **Claim** | Building planner copilot so retailers decide what/how much/which stores; FastAPI+LangGraph+MCP on Go doing layer; turnaround **days → under 1 hour**; search **1 → ≥20** configs/plan |
-| **Tag** | Product framing MEASURED; stack DESIGN; under 1h / ≥20 **TARGET** (batch design **20–100**) |
-| **Exact defense** | Product job is AssortSmart assortment planning. Today: one hand-picked config. FRD inverts to intent → grounded batch explore → human approve. Median compute **~20s** over 370 live runs — bottleneck is process around the machine. UI still shows **3–5** scenarios (HLR); breadth under the hood is the ≥20 / 20–100 story. Say **building** / **targeting**. |
-| **Attack vector** | “Is under 1 hour measured? Have you shipped? Why not just a chatbot on BQ?” |
-| **Candidate reply** | “Under 1 hour and ≥20 are **targets**, not production measurements. Phase 1 design has external review **PASS**; load test is the remaining bring-up gate. Shared BQ probes are **1–20s+** — interactive copilot needs dedicated CH probes targeting **p95 <500ms**. I am not claiming every tenant runs the shipped copilot today.” |
+| **Claim** | Building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to. |
+| **Tag** | Product framing MEASURED |
+| **Exact defense** | AssortSmart is live merchandise-planning SaaS. Your agentic work sits on clustering as step one of every plan. Keep this bullet product-first; stack and ownership are bullets 2–4. |
+| **Attack vector** | “What do you personally own on AssortSmart?” |
+| **Candidate reply** | “Product framing on the resume. My ownership is Cluster Recommendation Copilot architecture, Hindsight decision surface, and the ClickHouse store decision with POC evidence. Still building; load test pending.” |
 
-### Bullet 2 — 8.5% (37/437 kik) → under 2% (target); 14 tools; 3 human gates; agent never writes SQL
+### Bullet 2 — Cluster Recommendation Copilot architecture ownership
+
+| | |
+|---|---|
+| **Claim** | Owned end to end architecture for the Cluster Recommendation Copilot that helps planners group stores for a season. Built chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path. |
+| **Tag** | Architecture DESIGN / building; Java resume says Spring Boot write APIs |
+| **Exact defense** | Two planes: LLM orchestrates and explains; deterministic tools + Go doing layer execute. Manual UI and agent tools hit the same write APIs. Phase 1 design external review PASS; bring-up load test pending. |
+| **Attack vector** | “Is under 1 hour / ≥20 configs shipped?” / “Why not a chatbot on BQ?” |
+| **Candidate reply** | “Under 1 hour and ≥20 are **targets**, not on the PDF as claims. Shared BQ probes are **1–20s+**. Interactive copilot needs dedicated CH probes targeting **p95 <500ms**. I am not claiming every tenant runs the shipped copilot today.” |
+
+### Bullet 3 — Hindsight prior season decision layer
+
+| | |
+|---|---|
+| **Claim** | Building Hindsight with carry forward / underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy. |
+| **Tag** | Hindsight FRD DESIGN / building |
+| **Exact defense** | Narration must ground in computed metrics (no free-form hallucination). Metric catalogs are tenant config, not a release. Defend via `01b_hindsight_defense` / Hindsight FRD. |
+| **Attack vector** | “Is Hindsight shipped to all tenants?” |
+| **Candidate reply** | “Building. Catalogs and grounded narration are the design contract. I will not claim full production rollout.” |
+
+### Bullet 4 — Postgres to ClickHouse 250M POC drove the store decision
+
+| | |
+|---|---|
+| **Claim** | Drove the store decision with evidence. Row-identical Postgres to ClickHouse POC on **250M** heavy planning pivots **189s → 12.3s** (about **15.5x**) justified ClickHouse as the agentic planning store. |
+| **Tag** | 189s→12.3s **MEASURED**; store adoption = design direction for agentic |
+| **Exact defense** | Harness: row-identical 5M/50M/250M; PG native **48 GB** host vs CH **10 CPU / 3.3 GB** Docker — CH still won reads. At 250M PG spills **42 GB**, ~3m grid; CH **12.3s**. Interview depth: **63/8** insert-only DDL, agent `readonly=1` (not on PDF). |
+| **Attack vector** | “15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?” |
+| **Candidate reply** | “Raw heavy grid with option-count is **~15.5×**; strip DISTINCT and typical aggs are **~2–3×**; keep option-count and cite **~13–15×**. POC hybrid for **legacy OLTP-mutable** assortment. Agentic AssortSmart **changed the write model** to insert-only — CH for planning data. I did **not** build `pg2ch_cdc`.” |
+
+### Verbal only — 8.5% (37/437) → under 2%; 14 tools; 3 gates (**not on PDF**)
 
 | | |
 |---|---|
 | **Claim** | Cut failures from measured **8.5% (37/437)** toward **under 2%** with **14** audited R/O tools and **3** confirm gates; agent never writes SQL |
-| **Tag** | 8.5% / 37/437 MEASURED; under 2% **TARGET**; 14 tools + 3 gates **DESIGN** |
-| **Exact defense** | kik audit: **37/437** fails; **>80%** input-boundary. Mechanism: deterministic grounding (hierarchy backtrack, fiscal calendar), sample-size guards, machine-composed requests so that class never reaches the engine. Tools are templated (scope, significance, candidates, scoring, pins/impact…); LLM sequences them, does not invent SQL. Read-only DB profile + gates: grounding/search-plan/approval; write-back only after approve. Reproducibility baseline **0%** → TARGET **100%** via content-addressed config (recipe hash + data watermark). |
-| **Attack vector** | “You already cut to under 2%?” / “Overview lists four stops — why resume says three?” / “Why not trust the prompt?” |
-| **Candidate reply** | “Correct phrase: **designed to cut from measured 8.5% toward under 2%** — I will not claim under 2% until post-load-test metrics. Three FRD confirm gates after intent; grounding and write-back are bookends — agent physically cannot write. Prompts are not a control plane; R/O profile is.” |
+| **Tag** | 8.5% MEASURED; under 2% **TARGET**; tools/gates **DESIGN** — off PDF Aug 2026 |
+| **Candidate reply** | “Correct phrase: **designed to cut from measured 8.5% toward under 2%**. Not on the resume now; ownership + Hindsight + CH evidence are. Bring it if they ask about agent safety.” |
 
-### Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit (**OMIT from PDF** — verbal/study)
+### Verbal only — 12B → ~25M line-plan (**OMIT from PDF**)
 
-| | |
-|---|---|
-| **Claim** | Replace projected **12B**-row store-week with **~25M**-row aggregate so month rollups stay **sub-second** and cell edits **~0.4 ms** without materializing the explosion |
-| **Tag** | 12B **PROJECTED**; ~25M / sub-second / ~0.4 ms **MEASURED** — **not on current PDF** |
-| **Exact defense** | 12B ≈ 4,800 stores × final-levels × choices × 52 weeks. Flat at 100M already: month PG **2,923 ms**, edit **1,454 ms**. Projected flat at 12B: minutes. Editable truth = choice×cluster×week **~25M** (~**427×** smaller; at 1B: flat PG **115 GB** vs agg **276 MB**). Partition of unity: `store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc`; `SUM(flat)==SUM(agg)` to the cent at 10M/100M/1B. Month @25M: PG **690 ms** / CH **512 ms**. Cell on agg: PG **0.35–0.44 ms**. Explode one choice **~25 ms**. Sparse overrides, not a dense store-week grid. |
-| **Attack vector** | “Is 12B measured?” / “Won’t explode kill export?” / “Why not just use ClickHouse on the flat table?” |
-| **Candidate reply** | “12B is a **combinatorial projection** from KiK anchors — say PROJECTED. We reconciled aggregates to the cent; flat loads near 1B OOM’d a **3.3 GB** CH VM. Export gets a **slice**, not SoR. Schema flat→agg is the **100–450×** lever; engine swap is secondary. At ~25M, PG month is already sub-second — CH earns keep as tenants/plans multiply.” |
-
-### Bullet 4 — Per-tenant CH 63/8 insert-only / partition-swapped after 250M pivot 189s → 12.3s (~15.5×)
-
-| | |
-|---|---|
-| **Claim** | Adopt per-tenant ClickHouse (**63 tables / 8 layers**, insert-only / partition-swapped, agent R/O) after row-identical POC cut **250M** pivots **189s → 12.3s** (~**15.5×**, measured) |
-| **Tag** | 63/8 insert-only **MEASURED design** (DDL Phase-1 on CH 25.12; zero runtime evidence on schema); 189.4s→12.3s **MEASURED**; store adoption = design direction for agentic |
-| **Exact defense** | ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native **48 GB** host vs CH **10 CPU / 3.3 GB** Docker — CH still won reads. At 250M PG spills **42 GB**, **3m9s** grid; CH **12.3s**. Working hybrid POC: `GET /pivot` from CH, `POST /cell` → PG then mirror RMT. Agentic schema (Confluence v1.5): facts/cubes P1 partition-swapped, dims P2 RMT, decisions P3/P4 append-only + argMax views, agent `readonly=1`, services INSERT-only. Omit **624 columns**. |
-| **Attack vector** | “15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?” / “Did you author CDC?” |
-| **Candidate reply** | “Both true: raw heavy grid with option-count is **~15.5×**; strip DISTINCT and typical aggs are **~2–3×**; keep wireframe option-count and cite **~13–15×**. POC verdict is hybrid for **legacy OLTP-mutable** assortment and **no wholesale CH** for shipping mtp-assort. Agentic AssortSmart **changed the write model** to insert-only versions — CH/GCS end-to-end for planning data, thin PG for auth/workflow. I did **not** build `pg2ch_cdc` (Ashvin Sharma); I design against its patterns where relevant.” |
+Keep prior line-plan defense for study probes. Not on PDF.
 
 ---
 

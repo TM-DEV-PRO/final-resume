@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>01d_agentic_evals_guardrails_flow — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/projects/01d_agentic_evals_guardrails_flow.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#agentic-assortsmart-flow-guardrails-evals-benchmarking-honesty">Agentic AssortSmart — flow, guardrails, evals, benchmarking honesty</a>
+<a class="lvl2" href="#1-end-to-end-flow-say-this-out-loud">1. End-to-end flow (say this out loud)</a>
+<a class="lvl2" href="#2-guardrails-what-stops-bad-writes">2. Guardrails (what stops bad writes)</a>
+<a class="lvl2" href="#3-evaluations-what-exists-today">3. Evaluations (what exists today)</a>
+<a class="lvl2" href="#4-how-we-will-do-benchmark-method-not-fake-results">4. How we will / do benchmark (method, not fake results)</a>
+<a class="lvl2" href="#5-whole-safety-story-in-30-seconds">5. Whole safety story in 30 seconds</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="agentic-assortsmart-flow-guardrails-evals-benchmarking-honesty">Agentic AssortSmart — flow, guardrails, evals, benchmarking honesty</h1>
+<p><strong>PDF sync:</strong> failures <strong>8.5% (37/437)</strong> MEASURED · under <strong>2%</strong> TARGET · <strong>14</strong> read tools + <strong>3</strong> gates · LangSmith on Tech · load test <strong>pending</strong> (say <strong>building</strong>).</p>
+<hr>
+<h2 id="1-end-to-end-flow-say-this-out-loud">1. End-to-end flow (say this out loud)</h2>
+<pre><code class="language-text">Planner chat (UI)
+  → FastAPI Agent Service (LangGraph graph)
+      → MCP / audited tools (14) — READ planning data only
+      → optional LLM plan / tool selection (OpenAI / Gemini / Claude)
+  → Go (Gin) doing layer — Clustering / Hindsight / Strategy APIs
+      → ClickHouse (append-only planning store) + product write APIs
+  → 3 human confirm gates before any plan/cluster write-back
+  → Telemetry: LangSmith (agent) + Datadog (platform) + PostHog (product)
+      joined by shared OTEL trace_id
+</code></pre>
+<p><strong>One sentence:</strong> The LLM proposes and reads; the deterministic engine computes; humans approve; writes go through product APIs — never free-form model SQL.</p>
+<hr>
+<h2 id="2-guardrails-what-stops-bad-writes">2. Guardrails (what stops bad writes)</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Mechanism</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tool allow-list</td>
+<td><strong>14</strong> audited tools only</td>
+<td>No raw SQL shell / arbitrary code</td>
+</tr>
+<tr>
+<td>Read scope</td>
+<td>Tools <strong>only read</strong> planning/clustering data</td>
+<td>Separates explore from mutate</td>
+</tr>
+<tr>
+<td>Input grounding</td>
+<td>Catalog backtrack, fiscal calendar, sample-size guards</td>
+<td>Cuts input-boundary failures (majority of the <strong>8.5%</strong>)</td>
+</tr>
+<tr>
+<td>k / scenario caps</td>
+<td>Client min/max k, child-cluster cap (~10), UI <strong>3–5</strong> scenarios</td>
+<td>Business guardrails over pure silhouette optimum</td>
+</tr>
+<tr>
+<td>Human gates</td>
+<td><strong>3</strong> confirm steps before write-back</td>
+<td>Money decisions stay human-owned</td>
+</tr>
+<tr>
+<td>Content-addressed config</td>
+<td>Persist recipe + data watermark / seed</td>
+<td>Moves reproducibility <strong>0% → 100%</strong> (TARGET)</td>
+</tr>
+<tr>
+<td>Quotas / timeouts</td>
+<td>Per-tenant concurrency and tool budgets</td>
+<td>Protect CH and Go from agent storms</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Auth / rate-limit deep dive:</strong> <a href="../tech_depth/auth_tenancy_rate_limits.html">../tech_depth/auth_tenancy_rate_limits.md</a></p>
+<p><strong>Do not say:</strong> "the agent never fails" or "we never write SQL." Say: tools are read-scoped; humans gate writes; engineers still write SQL in services.</p>
+<hr>
+<h2 id="3-evaluations-what-exists-today">3. Evaluations (what exists today)</h2>
+<h3 id="offline-design-evals-use-these">Offline / design evals (use these)</h3>
+<table>
+<thead>
+<tr>
+<th>Eval</th>
+<th>What it measures</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Failure taxonomy on kik</td>
+<td><strong>37/437 = 8.5%</strong> run failures; &gt;80% input-boundary</td>
+<td>MEASURED baseline</td>
+</tr>
+<tr>
+<td>Clustering job latency</td>
+<td>Median <strong>~20s</strong> over <strong>370</strong> live runs</td>
+<td>MEASURED (engine, not full agent chat)</td>
+</tr>
+<tr>
+<td>Reproducibility audit</td>
+<td>Winning config/seed not persisted → <strong>0%</strong></td>
+<td>MEASURED baseline</td>
+</tr>
+<tr>
+<td>Tool-contract tests</td>
+<td>Allow-list, schema validators, no write paths on tools</td>
+<td>DESIGN / CI</td>
+</tr>
+<tr>
+<td>LangSmith run replay</td>
+<td>Prompt version, tool args, tokens/cost on agent trees</td>
+<td>DESIGN instrumentation</td>
+</tr>
+<tr>
+<td>Scenario quality rubric</td>
+<td>Distinct lens / horizon / scope / k; evidence attached</td>
+<td>DESIGN (HLR)</td>
+</tr>
+<tr>
+<td>Batch breadth</td>
+<td><strong>20–100</strong> configs explored under the hood; UI still <strong>3–5</strong></td>
+<td>TARGET / design</td>
+</tr>
+</tbody>
+</table>
+<h3 id="production-agentic-flow-benchmark-honesty">Production agentic-flow benchmark (honesty)</h3>
+<p><strong>We have not finished a production load test that proves</strong> "days → under 1 hour" or "8.5% → under 2%" on the <strong>full chat → tools → Go → CH → gate → write</strong> path.</p>
+<p>Correct interview lines:
+- "Baselines are measured on live clustering runs (kik)."
+- "Targets are design goals we engineer against."
+- "Phase 1 design passed external review; <strong>load test pending</strong> — I say <strong>building</strong>, not shipped."
+- "LangSmith is for agent-quality evals and regression; Datadog pages platform SLOs."</p>
+<p><strong>Wrong line:</strong> "We benchmarked the agentic flow in production and hit under 2% / under 1 hour."</p>
+<hr>
+<h2 id="4-how-we-will-do-benchmark-method-not-fake-results">4. How we will / do benchmark (method, not fake results)</h2>
+<p>When asked "how do you benchmark?":</p>
+<ol>
+<li><strong>Baseline freeze</strong> — failure rate, median job time, repro rate on a named tenant extract (already have kik numbers).</li>
+<li><strong>Offline agent suites</strong> — fixed planner prompts → expected tool sequences → golden evidence bundles in LangSmith datasets.</li>
+<li><strong>Tool latency SLOs</strong> — p95 per tool against CH; reject tools that scan unbounded.</li>
+<li><strong>Gate funnel metrics</strong> — % sessions that reach each of the 3 confirms; abandon rate (PostHog).</li>
+<li><strong>Load test (pending)</strong> — concurrent planners × tool fan-out × Go/CH; declare pass only when TARGET metrics hold under load.</li>
+<li><strong>Canary</strong> — one tenant first; compare failure class mix before expanding.</li>
+</ol>
+<hr>
+<h2 id="5-whole-safety-story-in-30-seconds">5. Whole safety story in 30 seconds</h2>
+<p>"Measured <strong>8.5%</strong> clustering failures on kik, mostly bad inputs. We cut that class with grounded tools and validators, explore many configs in batch, and require <strong>three human confirms</strong> before write-back through the Go APIs. Agent quality is traced in LangSmith; platform health in Datadog. Under <strong>2%</strong> and under <strong>1 hour</strong> are targets until load test lands."</p>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="01c_agent_read_tools_defense.html">01c_agent_read_tools_defense.md</a></li>
+<li><a href="01_ia_deep_dive.html">01_ia_deep_dive.md</a> § observability</li>
+<li><a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a></li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

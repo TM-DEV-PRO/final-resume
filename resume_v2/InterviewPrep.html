@@ -172,34 +172,34 @@ strong{color:#fff}
 <a class="lvl2" href="#1-30s-2min-project-explain">1. 30s / 2min project explain</a>
 <a class="lvl2" href="#2-architecture-diagram">2. Architecture diagram</a>
 <a class="lvl2" href="#3-design-decisions">3. Design decisions</a>
-<a class="lvl2" href="#4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense-pdf-aug-2026">4. Bullet-by-bullet defense (PDF Aug 2026)</a>
 <a class="lvl2" href="#5-mock-interview-12-qa">5. Mock interview — 12 Q&amp;A</a>
 <a class="lvl2" href="#6-do-not-say">6. Do NOT say</a>
 <a class="lvl1" href="#uber-frm-interview-pack">Uber FRM — Interview Pack</a>
 <a class="lvl2" href="#1-30s-2min-explain">1. 30s / 2min explain</a>
 <a class="lvl2" href="#2-architecture">2. Architecture</a>
 <a class="lvl2" href="#3-design-decisions_1">3. Design decisions</a>
-<a class="lvl2" href="#4-bullet-by-bullet-defense_1">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</a>
 <a class="lvl2" href="#5-mock-interview-10-qa">5. Mock interview (10 Q&amp;A)</a>
 <a class="lvl2" href="#6-do-not-say_1">6. Do NOT say</a>
 <a class="lvl1" href="#uber-menu-interview-pack">Uber Menu — Interview Pack</a>
 <a class="lvl2" href="#1-30s-2min-explain_1">1. 30s / 2min explain</a>
 <a class="lvl2" href="#2-architecture_1">2. Architecture</a>
 <a class="lvl2" href="#3-design-decisions_2">3. Design decisions</a>
-<a class="lvl2" href="#4-bullet-by-bullet-defense_2">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense_1">4. Bullet-by-bullet defense</a>
 <a class="lvl2" href="#5-mock-interview-10-qa_1">5. Mock interview (10 Q&amp;A)</a>
 <a class="lvl2" href="#6-do-not-say_2">6. Do NOT say</a>
 <a class="lvl1" href="#masters-india-interview-pack">Masters India — Interview Pack</a>
 <a class="lvl2" href="#1-30s-2min-explain_2">1. 30s / 2min explain</a>
 <a class="lvl2" href="#2-architecture_2">2. Architecture</a>
 <a class="lvl2" href="#3-design-decisions_3">3. Design decisions</a>
-<a class="lvl2" href="#4-bullet-by-bullet-defense_3">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense_2">4. Bullet-by-bullet defense</a>
 <a class="lvl2" href="#5-mock-interview-10-qa_2">5. Mock interview — 10 Q&amp;A</a>
 <a class="lvl1" href="#geeksforgeeks-interview-pack">GeeksforGeeks — Interview Pack</a>
 <a class="lvl2" href="#1-30s-2min-explain_3">1. 30s / 2min explain</a>
 <a class="lvl2" href="#2-architecture_3">2. Architecture</a>
 <a class="lvl2" href="#3-design-decisions_4">3. Design decisions</a>
-<a class="lvl2" href="#4-bullet-by-bullet-defense_4">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense_3">4. Bullet-by-bullet defense</a>
 <a class="lvl2" href="#5-mock-interview-6-qa">5. Mock interview — 6 Q&amp;A</a>
 <a class="lvl1" href="#5-job-listings-ats-scorecard-session-companies">5× Job Listings ATS Scorecard (session companies)</a>
 <a class="lvl2" href="#verdict-legend">Verdict legend</a>
@@ -564,9 +564,14 @@ strong{color:#fff}
 <td><code>final_agenticassort.png</code></td>
 </tr>
 <tr>
-<td><strong>ONE resume CH bullet:</strong> insert-only + swap partitions + <strong>250M</strong> pivot <strong>189.4s → 12.3s</strong> (~<strong>15.5×</strong>)</td>
-<td>MEASURED design + MEASURED POC</td>
-<td>DDL Phase-1 + <code>pivot-poc/results/MASTER_RESULTS.md</code></td>
+<td><strong>ONE resume CH bullet (Aug 2026):</strong> Drove store decision with evidence. Row-identical <strong>Postgres→ClickHouse</strong> POC on <strong>250M</strong> heavy planning pivots <strong>189s → 12.3s</strong> (~<strong>15.5×</strong>)</td>
+<td>MEASURED POC</td>
+<td><code>pivot-poc</code> / <code>21_ia_pivot_benchmark_source.md</code></td>
+</tr>
+<tr>
+<td><strong>63 tables / 8 layers</strong>, insert-only / partition-swapped, agent <code>readonly=1</code></td>
+<td>MEASURED design</td>
+<td>Interview depth (<code>29_…</code>); <strong>not on current PDF</strong> (folded into ownership + POC story)</td>
 </tr>
 <tr>
 <td>Line-plan: projected <strong>~12B</strong> → <strong>~25M</strong> aggregate; month rollup <strong>sub-second</strong>; cell edit <strong>~0.4 ms</strong> (PG measured)</td>
@@ -585,7 +590,7 @@ strong{color:#fff}
 </tr>
 </tbody>
 </table>
-<p><strong>Resume wording (Jul 2026):</strong> building not shipping; under 2% marked (target); ONE CH speed claim; no IA TPS/RPM (none measured); hybrid PG write-back is prep-only history.</p>
+<p><strong>Resume PDF IA bullets (Aug 2026):</strong> (1) AssortSmart product job (2) Cluster Recommendation Copilot architecture ownership (FastAPI/LangGraph/MCP + Go Gin or Spring Boot) (3) Hindsight prior-season decision layer (4) Postgres→ClickHouse 250M POC evidence. Say <strong>building</strong>, not shipped. <strong>Off PDF (interview):</strong> 8.5%/14 tools/3 gates, under 1h / ≥20 TARGET, 63/8 DDL detail, line-plan 12B. No IA TPS/RPM. Hybrid PG write-back is prep-only history.</p>
 <h2 id="uber-frm-jul-2024-may-2026">Uber FRM (Jul 2024 - May 2026)</h2>
 <table>
 <thead>
@@ -1616,7 +1621,7 @@ distribution_centres       ─daily─►  distribution_centres
 <hr>
 <h2 id="5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</h2>
 <blockquote>
-<p><strong>Resume now leads with hybrid pivot/line-plan (189s→12.3s, cell &lt;1ms, 12B avoided).</strong> Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.</p>
+<p><strong>Resume PDF (Aug 2026):</strong> product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse <strong>250M 189s→12.3s (~15.5×)</strong> evidence. <strong>Off PDF:</strong> 63/8 DDL detail, 8.5%/14 tools, line-plan 12B. Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.</p>
 </blockquote>
 <h3 id="51-exact-story-with-numbers-memorize-these">5.1 Exact story with numbers (memorize these)</h3>
 <p>All MEASURED from older POC dump. Infra was <strong>not</strong> identical.</p>
@@ -2418,9 +2423,9 @@ distribution_centres       ─daily─►  distribution_centres
 <td>12B PROJECTED; ~0.4ms / sub-second MEASURED on aggregate.</td>
 </tr>
 <tr>
-<td>4. ONE CH bullet: 63/8 + 250M 189s→12.3s (~15.5×, measured)</td>
+<td>4. ONE CH bullet: Postgres→ClickHouse <strong>250M 189s→12.3s (~15.5×)</strong> (PDF); 63/8 interview depth</td>
 <td><strong>SOLID with care</strong></td>
-<td>Store = design. Pivot = MEASURED. Verbal: typical aggs ~2–3×.</td>
+<td>POC MEASURED. Store adoption = design. Verbal: typical aggs ~2–3×; option-count ~13–15×.</td>
 </tr>
 <tr>
 <td>Tech</td>
@@ -6009,6 +6014,7 @@ India siblings often ask <strong>6-7+ years</strong> (e.g. Data Platform Bengalu
 <hr>
 <h1 id="application-screening-questions-paste-ready">Application / screening questions (paste-ready)</h1>
 <p>Canonical copy-paste bank. HTML twin: <code>../ApplicationKit.html</code>. Keep honesty tags aligned with <code>GROUND_TRUTH.md</code>.</p>
+<p><strong>PDF IA sync (Aug 2026):</strong> product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Long answers below still teach agent safety (14 tools / 8.5%) for screening forms — that is interview depth, not a claim that those lines are on the PDF.</p>
 <hr>
 <h2 id="autonomous-ai-system-langgraph-llamaindex-adk">Autonomous AI system (LangGraph / LlamaIndex / ADK)</h2>
 <p><strong>Question:</strong> Can you describe an autonomous AI system you built and deployed in production using frameworks like LangGraph, LlamaIndex, or ADK? Please explain the architecture, orchestration logic, monitoring strategy, and how you ensured scalability and reliability.</p>
@@ -6272,8 +6278,8 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </tbody>
 </table>
 <hr>
-<h2 id="4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</h2>
-<h3 id="bullet-1-building-assortsmart-copilot-fastapi-langgraph-mcp-on-go-doing-layer-targeting-days-under-1h-1-20-configsplan">Bullet 1 — Building AssortSmart copilot (FastAPI, LangGraph, MCP) on Go doing layer; targeting days → under 1h, 1 → ≥20 configs/plan</h3>
+<h2 id="4-bullet-by-bullet-defense-pdf-aug-2026">4. Bullet-by-bullet defense (PDF Aug 2026)</h2>
+<h3 id="bullet-1-assortsmart-product-job-what-how-much-which-stores">Bullet 1 — AssortSmart product job (what / how much / which stores)</h3>
 <table>
 <thead>
 <tr>
@@ -6284,27 +6290,120 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 <tbody>
 <tr>
 <td><strong>Claim</strong></td>
-<td>Building planner copilot so retailers decide what/how much/which stores; FastAPI+LangGraph+MCP on Go doing layer; turnaround <strong>days → under 1 hour</strong>; search <strong>1 → ≥20</strong> configs/plan</td>
+<td>Building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to.</td>
 </tr>
 <tr>
 <td><strong>Tag</strong></td>
-<td>Product framing MEASURED; stack DESIGN; under 1h / ≥20 <strong>TARGET</strong> (batch design <strong>20–100</strong>)</td>
+<td>Product framing MEASURED</td>
 </tr>
 <tr>
 <td><strong>Exact defense</strong></td>
-<td>Product job is AssortSmart assortment planning. Today: one hand-picked config. FRD inverts to intent → grounded batch explore → human approve. Median compute <strong>~20s</strong> over 370 live runs — bottleneck is process around the machine. UI still shows <strong>3–5</strong> scenarios (HLR); breadth under the hood is the ≥20 / 20–100 story. Say <strong>building</strong> / <strong>targeting</strong>.</td>
+<td>AssortSmart is live merchandise-planning SaaS. Your agentic work sits on clustering as step one of every plan. Keep this bullet product-first; stack and ownership are bullets 2–4.</td>
 </tr>
 <tr>
 <td><strong>Attack vector</strong></td>
-<td>“Is under 1 hour measured? Have you shipped? Why not just a chatbot on BQ?”</td>
+<td>“What do you personally own on AssortSmart?”</td>
 </tr>
 <tr>
 <td><strong>Candidate reply</strong></td>
-<td>“Under 1 hour and ≥20 are <strong>targets</strong>, not production measurements. Phase 1 design has external review <strong>PASS</strong>; load test is the remaining bring-up gate. Shared BQ probes are <strong>1–20s+</strong> — interactive copilot needs dedicated CH probes targeting <strong>p95 &lt;500ms</strong>. I am not claiming every tenant runs the shipped copilot today.”</td>
+<td>“Product framing on the resume. My ownership is Cluster Recommendation Copilot architecture, Hindsight decision surface, and the ClickHouse store decision with POC evidence. Still building; load test pending.”</td>
 </tr>
 </tbody>
 </table>
-<h3 id="bullet-2-85-37437-kik-under-2-target-14-tools-3-human-gates-agent-never-writes-sql">Bullet 2 — 8.5% (37/437 kik) → under 2% (target); 14 tools; 3 human gates; agent never writes SQL</h3>
+<h3 id="bullet-2-cluster-recommendation-copilot-architecture-ownership">Bullet 2 — Cluster Recommendation Copilot architecture ownership</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Owned end to end architecture for the Cluster Recommendation Copilot that helps planners group stores for a season. Built chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path.</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>Architecture DESIGN / building; Java resume says Spring Boot write APIs</td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>Two planes: LLM orchestrates and explains; deterministic tools + Go doing layer execute. Manual UI and agent tools hit the same write APIs. Phase 1 design external review PASS; bring-up load test pending.</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“Is under 1 hour / ≥20 configs shipped?” / “Why not a chatbot on BQ?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“Under 1 hour and ≥20 are <strong>targets</strong>, not on the PDF as claims. Shared BQ probes are <strong>1–20s+</strong>. Interactive copilot needs dedicated CH probes targeting <strong>p95 &lt;500ms</strong>. I am not claiming every tenant runs the shipped copilot today.”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bullet-3-hindsight-prior-season-decision-layer">Bullet 3 — Hindsight prior season decision layer</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Building Hindsight with carry forward / underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy.</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>Hindsight FRD DESIGN / building</td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>Narration must ground in computed metrics (no free-form hallucination). Metric catalogs are tenant config, not a release. Defend via <code>01b_hindsight_defense</code> / Hindsight FRD.</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“Is Hindsight shipped to all tenants?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“Building. Catalogs and grounded narration are the design contract. I will not claim full production rollout.”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bullet-4-postgres-to-clickhouse-250m-poc-drove-the-store-decision">Bullet 4 — Postgres to ClickHouse 250M POC drove the store decision</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Drove the store decision with evidence. Row-identical Postgres to ClickHouse POC on <strong>250M</strong> heavy planning pivots <strong>189s → 12.3s</strong> (about <strong>15.5x</strong>) justified ClickHouse as the agentic planning store.</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>189s→12.3s <strong>MEASURED</strong>; store adoption = design direction for agentic</td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>Harness: row-identical 5M/50M/250M; PG native <strong>48 GB</strong> host vs CH <strong>10 CPU / 3.3 GB</strong> Docker — CH still won reads. At 250M PG spills <strong>42 GB</strong>, ~3m grid; CH <strong>12.3s</strong>. Interview depth: <strong>63/8</strong> insert-only DDL, agent <code>readonly=1</code> (not on PDF).</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“Raw heavy grid with option-count is <strong>~15.5×</strong>; strip DISTINCT and typical aggs are <strong>~2–3×</strong>; keep option-count and cite <strong>~13–15×</strong>. POC hybrid for <strong>legacy OLTP-mutable</strong> assortment. Agentic AssortSmart <strong>changed the write model</strong> to insert-only — CH for planning data. I did <strong>not</strong> build <code>pg2ch_cdc</code>.”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="verbal-only-85-37437-under-2-14-tools-3-gates-not-on-pdf">Verbal only — 8.5% (37/437) → under 2%; 14 tools; 3 gates (<strong>not on PDF</strong>)</h3>
 <table>
 <thead>
 <tr>
@@ -6319,84 +6418,16 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </tr>
 <tr>
 <td><strong>Tag</strong></td>
-<td>8.5% / 37/437 MEASURED; under 2% <strong>TARGET</strong>; 14 tools + 3 gates <strong>DESIGN</strong></td>
-</tr>
-<tr>
-<td><strong>Exact defense</strong></td>
-<td>kik audit: <strong>37/437</strong> fails; <strong>&gt;80%</strong> input-boundary. Mechanism: deterministic grounding (hierarchy backtrack, fiscal calendar), sample-size guards, machine-composed requests so that class never reaches the engine. Tools are templated (scope, significance, candidates, scoring, pins/impact…); LLM sequences them, does not invent SQL. Read-only DB profile + gates: grounding/search-plan/approval; write-back only after approve. Reproducibility baseline <strong>0%</strong> → TARGET <strong>100%</strong> via content-addressed config (recipe hash + data watermark).</td>
-</tr>
-<tr>
-<td><strong>Attack vector</strong></td>
-<td>“You already cut to under 2%?” / “Overview lists four stops — why resume says three?” / “Why not trust the prompt?”</td>
+<td>8.5% MEASURED; under 2% <strong>TARGET</strong>; tools/gates <strong>DESIGN</strong> — off PDF Aug 2026</td>
 </tr>
 <tr>
 <td><strong>Candidate reply</strong></td>
-<td>“Correct phrase: <strong>designed to cut from measured 8.5% toward under 2%</strong> — I will not claim under 2% until post-load-test metrics. Three FRD confirm gates after intent; grounding and write-back are bookends — agent physically cannot write. Prompts are not a control plane; R/O profile is.”</td>
+<td>“Correct phrase: <strong>designed to cut from measured 8.5% toward under 2%</strong>. Not on the resume now; ownership + Hindsight + CH evidence are. Bring it if they ask about agent safety.”</td>
 </tr>
 </tbody>
 </table>
-<h3 id="bullet-3-projected-12b-store-week-25m-aggregate-sub-second-month-04-ms-cell-edit-omit-from-pdf-verbalstudy">Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit (<strong>OMIT from PDF</strong> — verbal/study)</h3>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Claim</strong></td>
-<td>Replace projected <strong>12B</strong>-row store-week with <strong>~25M</strong>-row aggregate so month rollups stay <strong>sub-second</strong> and cell edits <strong>~0.4 ms</strong> without materializing the explosion</td>
-</tr>
-<tr>
-<td><strong>Tag</strong></td>
-<td>12B <strong>PROJECTED</strong>; ~25M / sub-second / ~0.4 ms <strong>MEASURED</strong> — <strong>not on current PDF</strong></td>
-</tr>
-<tr>
-<td><strong>Exact defense</strong></td>
-<td>12B ≈ 4,800 stores × final-levels × choices × 52 weeks. Flat at 100M already: month PG <strong>2,923 ms</strong>, edit <strong>1,454 ms</strong>. Projected flat at 12B: minutes. Editable truth = choice×cluster×week <strong>~25M</strong> (~<strong>427×</strong> smaller; at 1B: flat PG <strong>115 GB</strong> vs agg <strong>276 MB</strong>). Partition of unity: <code>store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc</code>; <code>SUM(flat)==SUM(agg)</code> to the cent at 10M/100M/1B. Month @25M: PG <strong>690 ms</strong> / CH <strong>512 ms</strong>. Cell on agg: PG <strong>0.35–0.44 ms</strong>. Explode one choice <strong>~25 ms</strong>. Sparse overrides, not a dense store-week grid.</td>
-</tr>
-<tr>
-<td><strong>Attack vector</strong></td>
-<td>“Is 12B measured?” / “Won’t explode kill export?” / “Why not just use ClickHouse on the flat table?”</td>
-</tr>
-<tr>
-<td><strong>Candidate reply</strong></td>
-<td>“12B is a <strong>combinatorial projection</strong> from KiK anchors — say PROJECTED. We reconciled aggregates to the cent; flat loads near 1B OOM’d a <strong>3.3 GB</strong> CH VM. Export gets a <strong>slice</strong>, not SoR. Schema flat→agg is the <strong>100–450×</strong> lever; engine swap is secondary. At ~25M, PG month is already sub-second — CH earns keep as tenants/plans multiply.”</td>
-</tr>
-</tbody>
-</table>
-<h3 id="bullet-4-per-tenant-ch-638-insert-only-partition-swapped-after-250m-pivot-189s-123s-155">Bullet 4 — Per-tenant CH 63/8 insert-only / partition-swapped after 250M pivot 189s → 12.3s (~15.5×)</h3>
-<table>
-<thead>
-<tr>
-<th></th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Claim</strong></td>
-<td>Adopt per-tenant ClickHouse (<strong>63 tables / 8 layers</strong>, insert-only / partition-swapped, agent R/O) after row-identical POC cut <strong>250M</strong> pivots <strong>189s → 12.3s</strong> (~<strong>15.5×</strong>, measured)</td>
-</tr>
-<tr>
-<td><strong>Tag</strong></td>
-<td>63/8 insert-only <strong>MEASURED design</strong> (DDL Phase-1 on CH 25.12; zero runtime evidence on schema); 189.4s→12.3s <strong>MEASURED</strong>; store adoption = design direction for agentic</td>
-</tr>
-<tr>
-<td><strong>Exact defense</strong></td>
-<td>ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native <strong>48 GB</strong> host vs CH <strong>10 CPU / 3.3 GB</strong> Docker — CH still won reads. At 250M PG spills <strong>42 GB</strong>, <strong>3m9s</strong> grid; CH <strong>12.3s</strong>. Working hybrid POC: <code>GET /pivot</code> from CH, <code>POST /cell</code> → PG then mirror RMT. Agentic schema (Confluence v1.5): facts/cubes P1 partition-swapped, dims P2 RMT, decisions P3/P4 append-only + argMax views, agent <code>readonly=1</code>, services INSERT-only. Omit <strong>624 columns</strong>.</td>
-</tr>
-<tr>
-<td><strong>Attack vector</strong></td>
-<td>“15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?” / “Did you author CDC?”</td>
-</tr>
-<tr>
-<td><strong>Candidate reply</strong></td>
-<td>“Both true: raw heavy grid with option-count is <strong>~15.5×</strong>; strip DISTINCT and typical aggs are <strong>~2–3×</strong>; keep wireframe option-count and cite <strong>~13–15×</strong>. POC verdict is hybrid for <strong>legacy OLTP-mutable</strong> assortment and <strong>no wholesale CH</strong> for shipping mtp-assort. Agentic AssortSmart <strong>changed the write model</strong> to insert-only versions — CH/GCS end-to-end for planning data, thin PG for auth/workflow. I did <strong>not</strong> build <code>pg2ch_cdc</code> (Ashvin Sharma); I design against its patterns where relevant.”</td>
-</tr>
-</tbody>
-</table>
+<h3 id="verbal-only-12b-25m-line-plan-omit-from-pdf">Verbal only — 12B → ~25M line-plan (<strong>OMIT from PDF</strong>)</h3>
+<p>Keep prior line-plan defense for study probes. Not on PDF.</p>
 <hr>
 <h2 id="5-mock-interview-12-qa">5. Mock interview — 12 Q&amp;A</h2>
 <p><strong>Interviewer:</strong> You say you are “building” AssortSmart with agents. What ships today vs what is design?</p>
@@ -6561,7 +6592,7 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 </tbody>
 </table>
 <hr>
-<h2 id="4-bullet-by-bullet-defense_1">4. Bullet-by-bullet defense</h2>
+<h2 id="4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</h2>
 <h3 id="bullet-1-owned-designarchitecture-8-screens-30-apis-340m-targeting-70-2-weeks-34-days">Bullet 1 — Owned design/architecture: 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks → ~3–4 days)</h3>
 <ul>
 <li><strong>8 screens:</strong> Recon, Materiality, EMI, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary (TDD + Scoping Features).</li>
@@ -6730,7 +6761,7 @@ Separate track (not on hot menu path):
 </tbody>
 </table>
 <hr>
-<h2 id="4-bullet-by-bullet-defense_2">4. Bullet-by-bullet defense</h2>
+<h2 id="4-bullet-by-bullet-defense_1">4. Bullet-by-bullet defense</h2>
 <h3 id="bullet-1-24h-2h-600kyr-30k-menusmo-selenium-kafkaflink">Bullet 1 — 24h → 2h; $600K+/yr; 30K+ menus/mo; Selenium + Kafka/Flink</h3>
 <ul>
 <li><strong>Outcomes:</strong> HISTORICAL ops numbers. Onboarding cycle compressed ~90%.</li>
@@ -6899,7 +6930,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tbody>
 </table>
 <hr>
-<h2 id="4-bullet-by-bullet-defense_3">4. Bullet-by-bullet defense</h2>
+<h2 id="4-bullet-by-bullet-defense_2">4. Bullet-by-bullet defense</h2>
 <h3 id="bullet-1-php-fastapi-microservices-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → FastAPI microservices · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
 <table>
 <thead>
@@ -7155,7 +7186,7 @@ Doubt support is the Q&amp;A layer on articles and courses — high read volume,
 </tbody>
 </table>
 <hr>
-<h2 id="4-bullet-by-bullet-defense_4">4. Bullet-by-bullet defense</h2>
+<h2 id="4-bullet-by-bullet-defense_3">4. Bullet-by-bullet defense</h2>
 <h3 id="bullet-1-php-django-10k-daily-10-contest-spikes">Bullet 1 — PHP → Django · 10K+ daily · 10× contest spikes</h3>
 <table>
 <thead>
@@ -10289,6 +10320,7 @@ Sources: current <code>experience.tex</code> (v2 / java / pygo) + <code>GROUND_T
 <hr>
 <h1 id="resume-deep-explain-map-study-this-before-loops">Resume deep-explain map (study this before loops)</h1>
 <p><strong>Purpose:</strong> Anything on the PDF you can defend in depth — each tech (where / why / problem solved), numbers, user flows, architecture, ER-ish schema notes. Prep keeps jargon; <strong>PDF uses simple English</strong>.</p>
+<p><strong>PDF IA bullets (Aug 2026):</strong> product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Rows for <strong>14 tools / 8.5% / 63/8</strong> below remain interview depth (off PDF). Full defense: <a href="23a_ia_interview_pack.html"><code>23a_ia_interview_pack.md</code></a>.</p>
 <p><strong>Honesty:</strong> MEASURED / TARGET / HISTORICAL / ESTIMATED — see <a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>.</p>
 <p><strong>Packs:</strong> <a href="23a_ia_interview_pack.html"><code>23a</code></a> · <a href="23b_uber_interview_packs.html"><code>23b</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c</code></a><br>
 <strong>Diagrams:</strong> <code>campaign_pygo_xyz/interview_prep/architecture/</code> · deep dives <code>10</code>/<code>11</code>/<code>12</code>/<code>14</code>/<code>29</code><br>

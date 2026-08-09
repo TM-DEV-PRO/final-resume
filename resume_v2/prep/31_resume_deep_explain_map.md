@@ -2,6 +2,8 @@
 
 **Purpose:** Anything on the PDF you can defend in depth — each tech (where / why / problem solved), numbers, user flows, architecture, ER-ish schema notes. Prep keeps jargon; **PDF uses simple English**.
 
+**PDF IA bullets (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Rows for **14 tools / 8.5% / 63/8** below remain interview depth (off PDF). Full defense: [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md).
+
 **Honesty:** MEASURED / TARGET / HISTORICAL / ESTIMATED — see [`GROUND_TRUTH.md`](GROUND_TRUTH.md).
 
 **Packs:** [`23a`](23a_ia_interview_pack.md) · [`23b`](23b_uber_interview_packs.md) · [`23c`](23c_masters_gfg_interview_packs.md)  

@@ -17,10 +17,10 @@
 \textcolor{Project}{\textbf{Agentic AssortSmart (AI-Powered Retail Merchandise Planning)}}
 \vspace{-1ex}
 \begin{zitemize}
-    \item Building AssortSmart with a planner chat (\textbf{FastAPI, LangGraph, MCP}) and shared \textbf{Go (Gin)} write APIs so retailers decide \textbf{what to buy, how much, and which stores}, targeting turnaround from days to \textbf{under 1 hour} and \textbf{$\geq$20 configs} explored per plan.
-    \item Cutting measured clustering-run failures from \textbf{8.5\%} (\textbf{37/437} on kik) toward \textbf{under 2\%} (target) with \textbf{14} audited tools that only \textbf{read} planning data and \textbf{3} human confirm steps before any write-back.
-    \item Building \textbf{Hindsight} as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration \textbf{checked against computed metrics}, and tenant metric catalogs that go live \textbf{without a code deploy}.
-    \item Adopting per-tenant \textbf{ClickHouse} (\textbf{63 tables / 8 layers}, insert-only, refresh by swapping partitions, agent read-only) after a same-rows POC cut \textbf{250M}-row pivots from \textbf{189s to 12.3s} ($\sim$15.5x, measured).
+    \item Building \textbf{AssortSmart} so retailers decide \textbf{what to buy, how much, and which stores} for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to.
+    \item Owned end to end architecture for the \textbf{Cluster Recommendation Copilot} that helps planners group stores for a season. Built the chat plane (\textbf{FastAPI, LangGraph, MCP}) and shared write APIs (\textbf{Go, Gin}) so tools and product writes share one auth and audit path.
+    \item Building \textbf{Hindsight} as the prior season decision layer with carry forward and underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy.
+    \item Drove the store decision with evidence. Ran a row identical \textbf{Postgres} to \textbf{ClickHouse} POC on \textbf{250M} row heavy planning pivots (\textbf{189s} to \textbf{12.3s}, about \textbf{15.5x}) and used that to justify ClickHouse as the agentic planning store.
     \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, MCP, Kafka, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
 \end{zitemize}
 

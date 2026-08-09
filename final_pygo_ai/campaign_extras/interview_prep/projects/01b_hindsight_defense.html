@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>01b_hindsight_defense — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/projects/01b_hindsight_defense.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#hindsight-module-defense-resume-bullet">Hindsight Module Defense (resume bullet)</a>
+<a class="lvl2" href="#resume-claim-campaign-pdf">Resume claim (campaign PDF)</a>
+<a class="lvl2" href="#why-this-is-impactful-say-this-first">Why this is impactful (say this first)</a>
+<a class="lvl2" href="#product-surface-frd-v12">Product surface (FRD v1.2)</a>
+<a class="lvl2" href="#fr-mapping-to-resume-words">FR mapping to resume words</a>
+<a class="lvl2" href="#engineering-judgment-to-defend">Engineering judgment to defend</a>
+<a class="lvl2" href="#honesty">Honesty</a>
+<a class="lvl2" href="#60-second-talk-track">60-second talk track</a>
+<a class="lvl2" href="#likely-questions">Likely questions</a></nav>
+<main><h1 id="hindsight-module-defense-resume-bullet">Hindsight Module Defense (resume bullet)</h1>
+<p><strong>Source:</strong> <code>KNOWLEDGE-MATERIAL/Impact-Analytics-work/PRD'S/Hindsight_Module_Functional_Requirements-2.docx</code> (v1.2)</p>
+<h2 id="resume-claim-campaign-pdf">Resume claim (campaign PDF)</h2>
+<p>Building <strong>Hindsight</strong> as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy.</p>
+<h2 id="why-this-is-impactful-say-this-first">Why this is impactful (say this first)</h2>
+<p>Hindsight is the <strong>first stage</strong> of AssortSmart planning (hindsight → strategy → clustering → line plan → buy). Planners do not invent next season blind — they see <strong>what worked / what failed last season</strong>, which styles to <strong>Keep / Shop / Drop</strong>, and what to <strong>carry forward</strong>. That is buying-decision support, not a dashboard vanity project.</p>
+<h2 id="product-surface-frd-v12">Product surface (FRD v1.2)</h2>
+<p>Scorecard (TY vs LY / Optimised LY), contribution charts, store performance map, configurable bar charts, top performers, By Item grid, By Attribute heatmap, <strong>Carry-Forward / What Didn't Work</strong> panel, agent narration.</p>
+<h2 id="fr-mapping-to-resume-words">FR mapping to resume words</h2>
+<table>
+<thead>
+<tr>
+<th>Resume phrase</th>
+<th>FR</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prior-season decision layer</td>
+<td>Overview + pipeline position</td>
+<td>Hindsight exists so next-season buys are evidence-based</td>
+</tr>
+<tr>
+<td>Carry-forward and underperformance flags</td>
+<td><strong>FR-6.1</strong></td>
+<td>Surfaces candidates and underperformers with <strong>metric values beside narration</strong> — never narration alone. Threshold user-personalizable within tenant bounds</td>
+</tr>
+<tr>
+<td>Keep/Shop/Drop recommendations</td>
+<td><strong>FR-16.5</strong></td>
+<td>Item grid keeps existing Keep/Shop/Drop recommendation + per-item note; same grounding/fallback as other narration</td>
+</tr>
+<tr>
+<td>Overnight narration checked against computed metrics</td>
+<td><strong>FR-2.3, FR-4.3, FR-5.3, FR-8.1</strong></td>
+<td>Batch overnight (not live). Shared <strong>template library</strong> driven by metric metadata. <strong>Numbers checked before save</strong>; fail → templated sentence. No invented KPIs</td>
+</tr>
+<tr>
+<td>Deterministic visuals (verbal depth)</td>
+<td><strong>FR-9.1</strong></td>
+<td>Chart type/color/icons from config only — <strong>narration agent never chooses layout</strong></td>
+</tr>
+<tr>
+<td>Permission-scoped filters (verbal)</td>
+<td><strong>FR-0.1–0.5</strong></td>
+<td>One global product/location/season filter; "select all" never leaks outside permission scope</td>
+</tr>
+<tr>
+<td>Shared metric catalog (verbal)</td>
+<td><strong>§1.2, FR-1.1</strong></td>
+<td>One catalog for scorecard, bars, item, attribute — no per-widget metric lists</td>
+</tr>
+<tr>
+<td>Tenant catalogs without a code deploy</td>
+<td><strong>FR-1.3</strong></td>
+<td>Onboarding config (catalog + chart instances) applies to all tenant users <strong>without a code deployment</strong>; changes versioned with last-updated</td>
+</tr>
+<tr>
+<td>Item grid at scale (verbal)</td>
+<td><strong>FR-16.6</strong></td>
+<td>Stay fast at <strong>1,000+ items</strong> via pagination / virtualized scrolling</td>
+</tr>
+</tbody>
+</table>
+<h2 id="engineering-judgment-to-defend">Engineering judgment to defend</h2>
+<ol>
+<li><strong>LLM is not the visual designer</strong> (FR-9.1) and <strong>not the metric calculator</strong> (grounding check).</li>
+<li><strong>Batch overnight narration</strong> avoids latency/cost spikes on every filter change (live narration is Phase 2 only for special cases).</li>
+<li><strong>Config vs code</strong> — new retailer metrics/charts = data/config, not a release train.</li>
+<li><strong>Multi-tenant safety</strong> — permission scope on every widget including map and item grid.</li>
+</ol>
+<h2 id="honesty">Honesty</h2>
+<ul>
+<li>Status: <strong>building</strong> against FRD (AssortSmart Phase-1 posture). Do not claim fully shipped to all tenants.</li>
+<li>Keep/Shop/Drop is <strong>retained existing</strong> recommendation behavior per FR-16.5 — you are hardening/shipping it inside the Hindsight module surface, not inventing a brand-new model claim without evidence.</li>
+<li>No $ or latency KPI in FRD for Hindsight alone — do not invent. Pivot/CH speed numbers stay on the ClickHouse bullet.</li>
+</ul>
+<h2 id="60-second-talk-track">60-second talk track</h2>
+<p>"Hindsight is how planners learn from last season before they buy this season. I am building it as a decision layer — carry-forward and underperformance flags, Keep/Shop/Drop on the item grid, scorecard and contribution views — with permission-scoped filters and a shared tenant metric catalog that goes live without a code deploy. Agent narration runs overnight from a shared template library and is checked against computed numbers before save, and chart visuals stay deterministic so the model cannot invent layout or KPIs."</p>
+<h2 id="likely-questions">Likely questions</h2>
+<p><strong>Q: Does the agent invent metrics?</strong><br>
+A: No. Narration is checked against computed numbers before save (FR-2.3). Fail closed to a template sentence.</p>
+<p><strong>Q: Why overnight not live?</strong><br>
+A: v1 deliberately batches narration (Section 13). Live/on-demand is Phase 2 for narrow cases (FR-11.1) with the same grounding check.</p>
+<p><strong>Q: What is Keep/Shop/Drop?</strong><br>
+A: Per-item recommendation retained on the By Item grid (FR-16.5) with a note, grounded like other narration — guides assortment actions for the next plan.</p>
+<p><strong>Q: How does this relate to ClickHouse?</strong><br>
+A: Hindsight/pivot-style reads are scan-heavy; the CH planning store and pivot POC defend the read latency. Hindsight FRD is the product contract; CH is the serving engine.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

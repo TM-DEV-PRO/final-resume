@@ -51,12 +51,13 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | Overview inventory “**60** tables” vs DDL “**63**” — default **63**; do **not** recite **624 columns** (not on Phase-1 page) | Honesty | same |
 | External review **PASS**; **zero runtime evidence** on this schema — load test at bring-up; say **building**, not shipped | MEASURED design status | Overview + DDL Phase-1 |
 | HLD stack: FastAPI + **LangGraph/MCP**; Go doing layer; CH + GCS; LangSmith/Datadog/PostHog | DESIGN + confirmed | `final_agenticassort.png` |
-| **ONE resume CH bullet:** insert-only + swap partitions + **250M** pivot **189.4s → 12.3s** (~**15.5×**) | MEASURED design + MEASURED POC | DDL Phase-1 + `pivot-poc/results/MASTER_RESULTS.md` |
+| **ONE resume CH bullet (Aug 2026):** Drove store decision with evidence. Row-identical **Postgres→ClickHouse** POC on **250M** heavy planning pivots **189s → 12.3s** (~**15.5×**) | MEASURED POC | `pivot-poc` / `21_ia_pivot_benchmark_source.md` |
+| **63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1` | MEASURED design | Interview depth (`29_…`); **not on current PDF** (folded into ownership + POC story) |
 | Line-plan: projected **~12B** → **~25M** aggregate; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured) | PROJECTED 12B / MEASURED ops | **OMIT from PDF** (Jul 2026) — verbal/study via `20_…` / pack `23a` |
 | HLR scenario cap **3–5** | DESIGN | `PRD'S/…HLR_v1.1.docx` |
 | Agent probes: BQ **1–20s+** → CH **p95 <500ms** | MEASURED / TARGET | Copilot FRD |
 
-**Resume wording (Jul 2026):** building not shipping; under 2% marked (target); ONE CH speed claim; no IA TPS/RPM (none measured); hybrid PG write-back is prep-only history.
+**Resume PDF IA bullets (Aug 2026):** (1) AssortSmart product job (2) Cluster Recommendation Copilot architecture ownership (FastAPI/LangGraph/MCP + Go Gin or Spring Boot) (3) Hindsight prior-season decision layer (4) Postgres→ClickHouse 250M POC evidence. Say **building**, not shipped. **Off PDF (interview):** 8.5%/14 tools/3 gates, under 1h / ≥20 TARGET, 63/8 DDL detail, line-plan 12B. No IA TPS/RPM. Hybrid PG write-back is prep-only history.
 
 ## Uber FRM (Jul 2024 - May 2026)
 

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>37_senior_screen_deep_qa — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_java_ai/prep/37_senior_screen_deep_qa.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#senior-screen-deep-qa-millions-prod-perf-product-deploy">Senior screen deep Q&amp;A — millions / prod / perf / product / deploy</a>
+<a class="lvl2" href="#0-thirty-second-cheat-sheet">0. Thirty-second cheat sheet</a>
+<a class="lvl2" href="#1-core-product-of-each-company-you-worked-at">1. Core product of each company you worked at</a>
+<a class="lvl2" href="#2-describe-a-complex-system-you-designed-built">2. “Describe a complex system you designed / built”</a>
+<a class="lvl2" href="#3-have-you-built-a-system-that-handles-millions-of-requests">3. “Have you built a system that handles millions of requests?”</a>
+<a class="lvl2" href="#4-tell-me-about-a-production-issue-you-resolved">4. “Tell me about a production issue you resolved”</a>
+<a class="lvl2" href="#5-did-you-resolve-a-performance-issue-in-a-distributed-system">5. “Did you resolve a performance issue in a distributed system?”</a>
+<a class="lvl2" href="#6-deployment-how-do-you-deploy-cicd-rollback">6. Deployment — how do you deploy? CI/CD? Rollback?</a>
+<a class="lvl2" href="#7-extra-high-frequency-screens-short-answers">7. Extra high-frequency screens (short answers)</a>
+<a class="lvl2" href="#8-all-possible-questions-drill-index-where-to-go-deeper">8. “All possible questions” drill index (where to go deeper)</a>
+<a class="lvl2" href="#9-red-lines-fail-the-screen-if-you-say-these">9. Red lines (fail the screen if you say these)</a></nav>
+<main><h1 id="senior-screen-deep-qa-millions-prod-perf-product-deploy">Senior screen deep Q&amp;A — millions / prod / perf / product / deploy</h1>
+<p><strong>Purpose:</strong> One place for the classic senior-screen questions interviewers ask early. Full answers + follow-ups. Honesty tags = MEASURED / TARGET / HISTORICAL / DESIGN / ESTIMATED per <code>GROUND_TRUTH.md</code>.</p>
+<p><strong>Stack note (this file = Java final):</strong> FRM + AssortSmart write APIs = <strong>Spring Boot</strong>. Menu/Masters/GFG stories stay Python-path truthful (Selenium/Kafka/Flink/RAG). Agent plane remains Python LangGraph/MCP.</p>
+<p><strong>Related (deeper):</strong> <code>23a</code>/<code>23b</code>/<code>23c</code> packs · <code>10</code>/<code>11</code>/<code>12</code>/<code>14</code> deep dives · <code>campaign_extras/.../deployment_and_scale.md</code> · <code>07_behavioral_star_stories.md</code> · <code>32_common_interview_qa.md</code></p>
+<hr>
+<h2 id="0-thirty-second-cheat-sheet">0. Thirty-second cheat sheet</h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Lead with</th>
+<th>Number to say</th>
+<th>Honesty</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Millions of requests?</td>
+<td>Masters GST IRP on Kafka</td>
+<td><strong>1M+ submissions/day</strong>, <strong>700→4,000 req/min</strong></td>
+<td>HISTORICAL; ~12 TPS avg / 100+ peak <strong>ESTIMATED</strong></td>
+</tr>
+<tr>
+<td>Production issue?</td>
+<td>Masters IRP timeout canary <strong>or</strong> Menu anti-bot drop <strong>or</strong> double-filing near-miss</td>
+<td>triage <strong>−70%</strong>; ingest <strong>95%+</strong>; zero duplicate filings after fix</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>Perf in distributed systems?</td>
+<td>Masters p95 <strong>or</strong> Menu 24h→2h <strong>or</strong> CH pivot POC</td>
+<td>p95 <strong>1.2s→300ms</strong>; onboarding <strong>24h→2h</strong>; pivot <strong>189s→12.3s</strong> on <strong>250M</strong></td>
+<td>HISTORICAL / MEASURED POC</td>
+</tr>
+<tr>
+<td>Core product?</td>
+<td>Pick company they care about</td>
+<td>AssortSmart / FRM / Eats menus / GST e-invoice / GFG</td>
+<td>product truth</td>
+</tr>
+<tr>
+<td>Complex system?</td>
+<td>Menu E2E <strong>or</strong> Masters strangler <strong>or</strong> AssortSmart agent+CH</td>
+<td>E2E ownership + tradeoffs</td>
+<td>building for IA</td>
+</tr>
+<tr>
+<td>How deploy?</td>
+<td>Masters canary strangler <strong>or</strong> Menu jobs+Kafka rewind <strong>or</strong> IA dual deployables</td>
+<td>canary %; offset rewind; agent≠Go ship</td>
+<td>HISTORICAL / DESIGN</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-core-product-of-each-company-you-worked-at">1. Core product of each company you worked at</h2>
+<h3 id="q11-what-is-the-core-product-at-impact-analytics-assortsmart">Q1.1 What is the core product at Impact Analytics / AssortSmart?</h3>
+<p><strong>Answer:</strong> AssortSmart is a <strong>merchandise planning SaaS</strong>. Retail planners decide <strong>what to buy, how much, and which stores</strong> for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to. I own end-to-end architecture for the <strong>Cluster Recommendation Copilot</strong> (agent plane: Python LangGraph + MCP; write/doing plane: Spring Boot) and I am building <strong>Hindsight</strong> as the prior-season decision layer. I also drove <strong>ClickHouse</strong> adoption as the planning analytics engine after a row-identical <strong>Postgres → ClickHouse</strong> POC (<strong>250M</strong> rows, <strong>189s → 12.3s</strong>, ~<strong>15.5×</strong> MEASURED).</p>
+<p><strong>Honesty:</strong> Copilot is <strong>building</strong>, not fully shipped to every tenant. Load test pending. Do not invent IA TPS/RPM.</p>
+<p><strong>Follow-ups</strong>
+- <em>Who is the user?</em> Merch planners / assortment teams at enterprise retailers.
+- <em>What does success look like?</em> Faster plan turnaround (TARGET: days → under 1h), more configs explored (TARGET: ≥20), fewer failed clustering runs (MEASURED baseline <strong>8.5%</strong> → TARGET under <strong>2%</strong>).
+- <em>Why agents?</em> Batch explore + explain; humans still approve writes (3 confirm gates).</p>
+<h3 id="q12-what-did-you-work-on-at-uber-via-epam">Q1.2 What did you work on at Uber (via EPAM)?</h3>
+<p><strong>Answer — two products, do not mix:</strong></p>
+<ol>
+<li>
+<p><strong>FRM Risk Scoping (Uber Finance):</strong> Replaces quarterly Google Sheets risk scoping with a <strong>Spring Boot + MySQL</strong> system of record — <strong>30+ REST APIs</strong> powering <strong>8 screens</strong>, materiality sample <strong>$340M</strong> / residual <strong>$170M</strong>, ~<strong>55×14</strong> line/entity logic, Sheets→MySQL recon v2, led <strong>3</strong> engineers. Output feeds <strong>PwC</strong> audit work papers. Targeting <strong>~70%</strong> cut in manual recon cycle (~2 weeks → ~3–4 days) — <strong>TARGET</strong>, not measured.</p>
+</li>
+<li>
+<p><strong>Uber Eats Menu Ingestion:</strong> Owned menu ingestion <strong>end to end on GCP</strong>: Selenium → Kafka → Flink keyed normalize/dedupe; LangChain RAG + Gemini + Milvus with hard schema gate; scrape fleet to <strong>95%+</strong>. Outcomes: onboarding <strong>24h→2h</strong>, <strong>$600K+/yr</strong>, <strong>30K+ menus/month</strong> (HISTORICAL).</p>
+</li>
+<li>
+<p><strong>ANZ Driver Document Compliance (Uber Mobility — separate):</strong> Automated driver/vehicle doc checks vs <strong>local authority requirements</strong> to <strong>99.9%</strong>, removing ~<strong>20 h/week</strong> (HISTORICAL; not re-measured here). <strong>Not Eats.</strong></p>
+</li>
+</ol>
+<p><strong>Follow-ups</strong>
+- <em>EPAM or Uber employee?</em> Via <strong>EPAM</strong>, client Uber — say that once, clearly.
+- <em>Did you own React?</em> No frontend ownership claim on PDF.</p>
+<h3 id="q13-masters-india-what-is-the-product">Q1.3 Masters India — what is the product?</h3>
+<p><strong>Answer:</strong> <strong>GST compliance / e-invoicing SaaS</strong> for <strong>1,500+</strong> enterprise clients. Clients submit invoices; we validate, register with the government <strong>IRP</strong>, return IRN/QR. Bulk imports and reconciliation under filing deadlines. Correctness and idempotency beat raw speed — but filing days spike hard.</p>
+<h3 id="q14-geeksforgeeks-what-is-the-product">Q1.4 GeeksforGeeks — what is the product?</h3>
+<p><strong>Answer:</strong> Learning / content platform. I worked backend on <strong>doubt-support</strong> and monetization surfaces used by <strong>10K+</strong> daily queries with <strong>10×</strong> contest spikes: PHP→Django migration, voting/pinning/locking APIs, influencer earnings dashboard, cron pipelines for video/reminders/cleanup.</p>
+<hr>
+<h2 id="2-describe-a-complex-system-you-designed-built">2. “Describe a complex system you designed / built”</h2>
+<h3 id="q21-pick-your-strongest-complex-system-recommended-order">Q2.1 Pick your strongest complex system (recommended order)</h3>
+<p><strong>A. Uber Eats Menu Ingestion (best “complex distributed” story)</strong></p>
+<p><strong>Answer:</strong> Partner menus arrive as JS sites, PDFs, and images. I owned the path <strong>end to end on GCP</strong>:</p>
+<pre><code>Selenium fleet (IP rotate, dynamic proxies, adaptive retries)
+  → Kafka ingest bus (replay, fan-out)
+  → Flink keyed normalize/dedupe/route
+       ├─ structured HTML → catalog upsert
+       └─ PDF/image → LangChain RAG + Milvus retrieve → Gemini 2.5 Pro
+            → hard schema validation gate → low-confidence human review → upsert
+</code></pre>
+<p>Complexity is not “many boxes” — it is <strong>bursty adversarial acquisition</strong>, <strong>exactly-once-ish catalog writes under retries</strong>, and <strong>LLM output that must not poison the catalog</strong> without a deterministic gate. Outcomes: <strong>24h→2h</strong>, <strong>$600K+/yr</strong>, <strong>30K+/mo</strong>, <strong>95%+</strong> success, offline <strong>98%/100%</strong> schema eval (<strong>no SFT on PDF</strong>).</p>
+<p><strong>B. Masters India strangler + Kafka IRP (best “migration + scale” story)</strong></p>
+<p><strong>Answer:</strong> Migrated Laravel monolith → FastAPI microservices behind a gateway with <strong>per-endpoint canaries</strong>, shared DB during cutover (no dual-write SoR), then Kafka bulk path for IRP with idempotency keys, retries, DLQ, and PostgreSQL quarter sharding. Mentored <strong>2</strong>. Outcomes: p95 <strong>1.2s→300ms</strong>, <strong>700→4,000 req/min</strong>, <strong>1M+/day</strong>, <strong>100K+/import</strong>.</p>
+<p><strong>C. AssortSmart Copilot + ClickHouse (best “agentic + analytics” story)</strong></p>
+<p><strong>Answer:</strong> Two planes — LangGraph/MCP agent (read-only tools, human gates) and Spring Boot doing APIs on append-only per-tenant ClickHouse. Complexity = <strong>tool allow-lists + audit + OLAP pivots</strong> without letting the LLM invent SQL. Status: <strong>building</strong>.</p>
+<p><strong>Follow-ups</strong>
+- <em>What did you personally own?</em> Contracts, critical path, canaries/cutovers, anti-bot loop, schema gate — not “the whole company.”
+- <em>What would you change?</em> Menu: stronger online fidelity SLIs. Masters: earlier async for all IRP. IA: finish load test before “shipped.”</p>
+<h3 id="q22-application-form-wording-complex-system-you-designed">Q2.2 Application-form wording (“complex system you designed”)</h3>
+<p>Paste-ready short form lives in <code>ApplicationKit.md</code> / <code>22_application_questions.md</code>. Lead with AssortSmart architecture <strong>or</strong> FRM backend ownership + Menu E2E depending on JD (AI vs backend).</p>
+<hr>
+<h2 id="3-have-you-built-a-system-that-handles-millions-of-requests">3. “Have you built a system that handles millions of requests?”</h2>
+<h3 id="q31-direct-answer">Q3.1 Direct answer</h3>
+<p><strong>Yes — Masters India GST e-invoicing bulk/IRP path.</strong></p>
+<p><strong>Answer:</strong> We processed <strong>1M+ IRP submissions per day</strong> (HISTORICAL) for <strong>1,500+</strong> clients, with bulk imports at <strong>100K+ transactions per import</strong>. Sustained API throughput moved <strong>700 → 4,000 requests/min</strong> after the async/Kafka rewrite.</p>
+<p><strong>How the math hangs together (say estimated if pressed):</strong>
+- 1M/day ≈ <strong>~12 TPS</strong> average (1e6/86400) — ESTIMATED arithmetic.
+- Filing peaks are the design driver: roughly <strong>8–10×</strong> average → <strong>~100+ TPS</strong> bursts — ESTIMATED.
+- Kafka + workers absorb spikes; government IRP latency variance is why we went async (202 + progress) instead of blocking request threads.</p>
+<p><strong>Also cite (not “millions of HTTP RPS,” but real volume):</strong>
+- Menu: <strong>30K+ menus/month</strong> event-driven ingest (not millions of QPS — don’t inflate).
+- GFG: <strong>10K+ daily</strong> queries with <strong>10×</strong> spikes.
+- IA: <strong>250M-row</strong> pivot POC — analytics volume, not request RPS.</p>
+<p><strong>Do not say:</strong> “We handled millions of RPS.” Say <strong>1M+ transactions/submissions per day</strong> and explain TPS.</p>
+<h3 id="q32-follow-ups">Q3.2 Follow-ups</h3>
+<p><strong>Q: Why Kafka?</strong><br>
+Bursty imports + flaky IRP; need durable buffer, replay, and fan-out to submit / persist / webhook consumers. Partition by client GSTIN for per-taxpayer ordering.</p>
+<p><strong>Q: How avoid double-filing?</strong><br>
+Idempotency key <code>client + fileHash + batchIndex</code> (+ invoice refs); DLQ for poison batches; near-miss incident drove this across the bulk path (STAR #10).</p>
+<p><strong>Q: DB strategy?</strong><br>
+PostgreSQL tables split by <strong>tax quarter</strong> so hot-quarter writes don’t thrash cold history.</p>
+<hr>
+<h2 id="4-tell-me-about-a-production-issue-you-resolved">4. “Tell me about a production issue you resolved”</h2>
+<p>Pick <strong>one</strong> primary; keep two backups.</p>
+<h3 id="q41-masters-irp-timeout-canary-best-i-broke-i-fixed">Q4.1 Masters — IRP timeout canary (best “I broke / I fixed”)</h3>
+<p><strong>Answer (STAR):</strong><br>
+<strong>S:</strong> Early PHP→FastAPI canary: I set API timeouts too aggressively vs old PHP (e.g. ~10s vs ~60s). Legitimate IRP calls timed out — filing-day risk.<br>
+<strong>T:</strong> Stop customer pain without rolling back the whole migration.<br>
+<strong>A:</strong> Owned the miss; moved slow IRP calls fully <strong>async</strong> (202 + poll/progress); aligned timeouts with real IRP behavior; added <strong>idempotency, retries, DLQ</strong>.<br>
+<strong>R:</strong> Canary stabilized; pattern became default for third-party compliance calls.</p>
+<h3 id="q42-masters-double-filing-near-miss-best-integrity">Q4.2 Masters — double-filing near-miss (best “integrity”)</h3>
+<p><strong>Answer:</strong> Retried bulk import nearly double-registered with IRP. Flagged to leadership, wrote the review, retrofitted idempotency + DLQ across the bulk pipeline — not one endpoint. <strong>Zero duplicate filings</strong> after rollout.</p>
+<h3 id="q43-menu-anti-bot-success-collapse-best-moving-target">Q4.3 Menu — anti-bot success collapse (best “moving target”)</h3>
+<p><strong>Answer:</strong> Partner sites rotated defenses; scrape success dropped. Instrumented per-source block signatures; IP rotation, dynamic proxy pools, adaptive retries; fed block-rate into ops dashboards. Successful ingestions to <strong>95%+</strong>. Lesson: feedback loop &gt; one trick.</p>
+<h3 id="q44-masters-triage-observability-best-production-discipline">Q4.4 Masters — triage / observability (best “production discipline”)</h3>
+<p><strong>Answer:</strong> Before: SSH + grep. After: ELK + New Relic with <strong>request IDs</strong> across API → Kafka → worker. Incident triage <strong>~70%</strong> faster (HISTORICAL; baseline ~30→&lt;10 min ESTIMATED). Claim <strong>alerting + faster triage</strong>, not SEV commander / formal pager title without proof.</p>
+<h3 id="q45-follow-ups-interviewers-love">Q4.5 Follow-ups interviewers love</h3>
+<ul>
+<li><em>Root cause vs symptom?</em> Timeouts were config/assumption mismatch with third-party latency, not “FastAPI is slow.”</li>
+<li><em>How did you prevent recurrence?</em> Async IRP standard + idempotency template + canary checklist.</li>
+<li><em>Customer impact?</em> Near-miss: no customer damage yet — still treated as P0 process failure.</li>
+</ul>
+<hr>
+<h2 id="5-did-you-resolve-a-performance-issue-in-a-distributed-system">5. “Did you resolve a performance issue in a distributed system?”</h2>
+<h3 id="q51-masters-p95-12s-300ms-classic-api-perf">Q5.1 Masters p95 1.2s → 300ms (classic API perf)</h3>
+<p><strong>Answer:</strong> Distributed after the strangler (many services + Redis + Kafka workers). Win was <strong>not one cache magic</strong>:
+1. Async I/O for IRP/fan-out (stop blocking workers).
+2. Redis cache-aside on hot reads (<strong>−30%</strong> redundant DB reads HISTORICAL) — helps p50 more than tail.
+3. Query fixes: composite indexes <code>(client_id, invoice_date)</code>, kill N+1, pagination.
+4. Connection pooling per service vs PHP-FPM per-request connect.</p>
+<p><strong>Say:</strong> Caching alone does <strong>not</strong> explain the full p95 move — async + queries drove the tail.</p>
+<h3 id="q52-menu-onboarding-24h-2h-pipeline-perf-freshness">Q5.2 Menu onboarding 24h → 2h (pipeline perf / freshness)</h3>
+<p><strong>Answer:</strong> Replaced slow third-party/manual menu onboarding with in-house Selenium + <strong>Kafka</strong> + <strong>Flink</strong> keyed normalize/dedupe so catalog freshness stays hours not a day; anti-bot hardening kept the fleet at <strong>95%+</strong>. Money: kill ~$2/menu tool → <strong>$600K+/yr</strong> floor (HISTORICAL).</p>
+<h3 id="q53-clickhouse-pivot-189s-123s-on-250m-rows-analytics-perf">Q5.3 ClickHouse pivot 189s → 12.3s on 250M rows (analytics perf)</h3>
+<p><strong>Answer:</strong> MEASURED row-identical <strong>Postgres → ClickHouse</strong> POC for AssortSmart planning pivots. Drove CH adoption as planning analytics engine. Not “I rewrote production overnight” — <strong>evidence-gated store decision</strong>.</p>
+<h3 id="q54-frm-careful-honesty">Q5.4 FRM — careful honesty</h3>
+<p><strong>Answer:</strong> FRM hardness is <strong>correctness/audit</strong>, not big-data throughput (GL extracts tens of thousands of rows/quarter — not millions of RPS). Do <strong>not</strong> invent FRM p95&lt;300ms as measured. Value = hierarchy + recon + PwC-ready trail.</p>
+<hr>
+<h2 id="6-deployment-how-do-you-deploy-cicd-rollback">6. Deployment — how do you deploy? CI/CD? Rollback?</h2>
+<h3 id="q61-masters-best-deploy-story">Q6.1 Masters (best deploy story)</h3>
+<p><strong>Answer:</strong> <strong>Strangler + canary:</strong>
+- New FastAPI services behind gateway.
+- <strong>Nginx</strong> routes <strong>% traffic per endpoint</strong> to new service; watch error/latency; ramp to 100%.
+- <strong>Rollback = traffic flip</strong>, not a rebuild.
+- Shared DB during cutover → split tables after traffic moved.
+- Contract tests vs recorded PHP payloads.
+- pytest coverage gate (<strong>35%→82%</strong>); deploy success <strong>98%</strong> HISTORICAL.
+- Kafka consumers for bulk; Docker on <strong>AWS</strong>.</p>
+<h3 id="q62-uber-menu">Q6.2 Uber Menu</h3>
+<p><strong>Answer:</strong> Separate deployables: scraper jobs, Kafka, Flink jobs, RAG workers — Docker on <strong>GCP</strong>. Bad parser: <strong>rewind Kafka offsets</strong> / reprocess instead of re-scraping the internet. Proxy pools = config.</p>
+<h3 id="q63-uber-frm">Q6.3 Uber FRM</h3>
+<p><strong>Answer:</strong> Spring Boot + MySQL; <strong>Bazel</strong> monorepo tests; Docker via Uber/EPAM release process. Staged rollout for finance tooling. Schema migrations expand/contract minded for audit. Rollback = previous revision + migration discipline.</p>
+<h3 id="q64-impact-analytics">Q6.4 Impact Analytics</h3>
+<p><strong>Answer:</strong> Dual deployables — <strong>Python agent</strong> and <strong>Spring Boot</strong> services + per-tenant ClickHouse. Ship independently. Hindsight metric catalogs can go live <strong>without a code deploy</strong>. Observability: Datadog + LangSmith + PostHog on one <code>trace_id</code>. <strong>Honesty:</strong> load test pending → say building.</p>
+<h3 id="q65-follow-ups">Q6.5 Follow-ups</h3>
+<ul>
+<li><em>Blue/green vs canary?</em> Canary per route for Masters (compliance risk).</li>
+<li><em>Migrations?</em> Expand/contract; never break old readers mid-canary.</li>
+<li><em>Secrets/config?</em> Don’t invent Vault ownership — say env/secret store via platform norms.</li>
+<li><em>K8s?</em> Skills list has Kubernetes; do <strong>not</strong> claim cluster-admin/operator ownership unless asked as study (<code>17_senior_systems_study_only.md</code>).</li>
+</ul>
+<hr>
+<h2 id="7-extra-high-frequency-screens-short-answers">7. Extra high-frequency screens (short answers)</h2>
+<h3 id="q71-how-do-you-monitor-production">Q7.1 How do you monitor production?</h3>
+<p>Masters: ELK + New Relic + request-ID correlation + alerts on error/latency. IA: Datadog (platform) + LangSmith (agent) + PostHog (product). Menu: ingest success / block-rate / parse failure dashboards.</p>
+<h3 id="q72-how-do-you-ensure-reliability">Q7.2 How do you ensure reliability?</h3>
+<p>Idempotency, retries with jitter, DLQ, canaries, schema gates (Menu), human approval gates (IA agents), contract tests (strangler).</p>
+<h3 id="q73-biggest-technical-challenge">Q7.3 Biggest technical challenge?</h3>
+<p>Pick one: Menu adversarial scrapers + schema-safe LLM writes <strong>or</strong> Masters filing-day IRP spikes <strong>or</strong> FRM Sheets→MySQL recon correctness.</p>
+<h3 id="q74-scale-a-system-10">Q7.4 Scale a system 10×?</h3>
+<p>Masters: already lived filing spikes — queue load-level, autoscale workers on depth, shard hot quarter, cache hot reads, keep IRP async. Don’t scale the monolith.</p>
+<h3 id="q75-disagreement-leadership">Q7.5 Disagreement / leadership?</h3>
+<p>FRM: led 3 via API contracts + design reviews. Masters: mentored 2 on extraction conventions. STAR bank has conflict/near-miss stories.</p>
+<h3 id="q76-why-python-vs-go-or-java">Q7.6 Why Python vs Go (or Java)?</h3>
+<p>Java/Spring for FRM and AssortSmart write APIs; Python for agents/RAG/Menu scrapers — same products/metrics.</p>
+<hr>
+<h2 id="8-all-possible-questions-drill-index-where-to-go-deeper">8. “All possible questions” drill index (where to go deeper)</h2>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Open this</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IA product / agents / CH</td>
+<td><code>23a_ia_interview_pack.md</code>, <code>10_impact_analytics_deep_dive.md</code></td>
+</tr>
+<tr>
+<td>FRM finance correctness</td>
+<td><code>23b</code> § FRM, <code>11_uber_frm_deep_dive.md</code></td>
+</tr>
+<tr>
+<td>Menu streaming / RAG / ANZ</td>
+<td><code>23b</code> § Menu, <code>14_uber_menu_deep_dive.md</code>, <code>30_panel_menu_anz_milvus.md</code></td>
+</tr>
+<tr>
+<td>Masters / GFG scale</td>
+<td><code>23c</code>, <code>12_masters_gfg_deep_dive.md</code></td>
+</tr>
+<tr>
+<td>Deploy shapes</td>
+<td><code>campaign_extras/interview_prep/deployment_and_scale.md</code></td>
+</tr>
+<tr>
+<td>Kafka/Flink defense</td>
+<td><code>campaign_extras/.../kafka_flink_scale_defense.md</code></td>
+</tr>
+<tr>
+<td>Behavioral STAR</td>
+<td><code>07_behavioral_star_stories.md</code></td>
+</tr>
+<tr>
+<td>HR / classic 21</td>
+<td><code>32_common_interview_qa.md</code></td>
+</tr>
+<tr>
+<td>Screening forms</td>
+<td><code>22_application_questions.md</code>, <code>ApplicationKit.html</code></td>
+</tr>
+<tr>
+<td>Every PDF number</td>
+<td><code>18_resume_number_catalog.md</code>, <code>GROUND_TRUTH.md</code></td>
+</tr>
+<tr>
+<td>Study-only (don’t claim)</td>
+<td><code>17_senior_systems_study_only.md</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9-red-lines-fail-the-screen-if-you-say-these">9. Red lines (fail the screen if you say these)</h2>
+<ul>
+<li>IA <strong>shipped</strong> to all tenants / invent <strong>TPS/RPM</strong></li>
+<li>FRM <strong>70%</strong> as measured (it is TARGET)</li>
+<li>Menu <strong>98%/100%</strong> as live SLA (offline eval) or <strong>SFT on PDF</strong></li>
+<li>ANZ as <strong>Uber Eats</strong> or “main-app”</li>
+<li><strong>Spark/Pinot/Vitess</strong> ownership on PDF claims</li>
+<li><strong>SEV commander</strong> / multi-region sole owner without proof</li>
+<li>“Millions of <strong>RPS</strong>” (say <strong>1M+/day submissions</strong> instead)</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>
