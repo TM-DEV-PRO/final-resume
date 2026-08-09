@@ -78,9 +78,9 @@ def promote_mermaid(html: str) -> str:
 
 ROOTS = [
     "campaign_pygo_xyz",
-    "interview_prep_v2",
-    "interview_prep",
-    "interview_prep_java",
+    "resume_v2/prep",
+    "resume/prep",
+    "resume_java/prep",
 ]
 
 SKIP_NAMES = {".git", "node_modules", "__pycache__"}
@@ -102,14 +102,37 @@ def md_to_html_links(text: str) -> str:
 
 
 def rel_hub_links(rel_path: str) -> str:
+    """Topbar links back to the owning track (or root hub)."""
+    if rel_path.startswith("resume_v2/"):
+        return (
+            '<a href="../../index.html">← All tracks</a>'
+            '<a href="../index.html">Python/Go v2</a>'
+            '<a href="../InterviewPrep.html">Prep hub</a>'
+            '<a href="../ApplicationKit.html">Application Kit</a>'
+        )
+    if rel_path.startswith("resume_java/"):
+        return (
+            '<a href="../../index.html">← All tracks</a>'
+            '<a href="../index.html">Java/Spring</a>'
+            '<a href="../InterviewPrep.html">Prep hub</a>'
+        )
+    if rel_path.startswith("resume/"):
+        return (
+            '<a href="../../index.html">← All tracks</a>'
+            '<a href="../index.html">Legacy Python/Go</a>'
+            '<a href="../InterviewPrep.html">Prep hub</a>'
+        )
+    if rel_path.startswith("campaign_pygo_xyz/"):
+        depth = rel_path.count("/")
+        up = "../" * depth
+        return (
+            f'<a href="{up}../index.html">← All tracks</a>'
+            f'<a href="{up}index.html">Campaign track</a>'
+            f'<a href="{up}InterviewPrep.html">Prep hub</a>'
+        )
     depth = rel_path.count("/")
     up = "../" * depth if depth else ""
-    return (
-        f'<a href="{up}index.html">← Hub</a>'
-        f'<a href="{up}CampaignPyGo.html">Campaign</a>'
-        f'<a href="{up}InterviewPrepV2.html">Prep v2</a>'
-        f'<a href="{up}ApplicationKit.html">Application Kit</a>'
-    )
+    return f'<a href="{up}index.html">← Hub</a>'
 
 
 def convert_file(md_path: str) -> str:
@@ -185,10 +208,19 @@ def rewrite_hub_file(path: str) -> None:
 
 def write_folder_indexes() -> None:
     """Directory index.html listing sibling HTML pages (no raw .md links)."""
+    # Track landing pages owned by hand — do not overwrite.
+    skip = {
+        os.path.join(BASE, "campaign_pygo_xyz"),
+        os.path.join(BASE, "resume_v2"),
+        os.path.join(BASE, "resume_java"),
+        os.path.join(BASE, "resume"),
+    }
     dirs = set()
     for md in iter_markdown():
         dirs.add(os.path.dirname(md))
     for d in sorted(dirs):
+        if d in skip:
+            continue
         htmls = sorted(
             f for f in os.listdir(d)
             if f.endswith(".html") and f != "index.html"
@@ -222,11 +254,12 @@ def main() -> None:
         outs.append(convert_file(md))
     write_folder_indexes()
     for hub in (
-        "CampaignPyGo.html",
-        "ApplicationKit.html",
-        "InterviewPrep.html",
-        "InterviewPrepV2.html",
-        "InterviewPrepJava.html",
+        os.path.join("campaign_pygo_xyz", "InterviewPrep.html"),
+        os.path.join("campaign_pygo_xyz", "CampaignCards.html"),
+        os.path.join("resume_v2", "ApplicationKit.html"),
+        os.path.join("resume_v2", "InterviewPrep.html"),
+        os.path.join("resume_java", "InterviewPrep.html"),
+        os.path.join("resume", "InterviewPrep.html"),
         "index.html",
     ):
         rewrite_hub_file(os.path.join(BASE, hub))

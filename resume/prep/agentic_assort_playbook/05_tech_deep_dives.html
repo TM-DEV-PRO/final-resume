@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>05_tech_deep_dives — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Legacy Python/Go</a><a href="../InterviewPrep.html">Prep hub</a><span class="path">resume/prep/agentic_assort_playbook/05_tech_deep_dives.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#5-technology-deep-dives-funda-architecture-why-it-solves-the-problem-gotchas">5. Technology deep dives (funda · architecture · why it solves the problem · gotchas)</a>
+<a class="lvl2" href="#51-clickhouse">5.1 ClickHouse</a>
+<a class="lvl2" href="#52-bigquery">5.2 BigQuery</a>
+<a class="lvl2" href="#53-postgresql">5.3 PostgreSQL</a>
+<a class="lvl2" href="#54-duckdb">5.4 DuckDB</a>
+<a class="lvl2" href="#55-agent-orchestration-router-planner-executor-supervisor-langgraph">5.5 Agent orchestration (router / planner-executor / supervisor) &amp; LangGraph</a>
+<a class="lvl2" href="#56-llm-plumbing-text-to-sql-decomposition-confidence-rag-cache">5.6 LLM plumbing (text-to-SQL, decomposition, confidence, RAG, cache)</a>
+<a class="lvl2" href="#57-rust-axum-cortexeye-data-api">5.7 Rust / Axum (CortexEye data API)</a>
+<a class="lvl2" href="#58-supporting-infra">5.8 Supporting infra</a></nav>
+<main><hr>
+<h1 id="5-technology-deep-dives-funda-architecture-why-it-solves-the-problem-gotchas">5. Technology deep dives (funda · architecture · why it solves the problem · gotchas)</h1>
+<p>Each entry is what you should be able to say if an interviewer points at a word on your résumé.</p>
+<h2 id="51-clickhouse">5.1 ClickHouse</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Open-source <strong>columnar OLAP</strong> DB. Column-oriented storage + vectorized execution → aggregations scan only needed columns, compress well, and run SIMD-fast. Data lives in immutable <strong>parts</strong> (sorted by the table's <code>ORDER BY</code>); a background process <strong>merges</strong> parts (the "MergeTree" family).</li>
+<li><strong>Architecture (engines).</strong> <code>MergeTree</code> = base (sorted parts, partitioning, sparse primary index). <code>ReplacingMergeTree(version)</code> = on merge, keep the <strong>highest <code>version</code></strong> per sort key → dedup by newest. <code>AggregatingMergeTree</code> = store partial aggregate states (<code>AggregateFunction</code>) merged incrementally. <code>Distributed</code>/<code>Replicated*</code> = sharding/replication (we defer to ClickHouse Cloud). <strong>Partitioning</strong> (<code>PARTITION BY</code>) prunes at query time; <strong><code>ORDER BY</code></strong> is the primary/sort key that clustering + the sparse index rely on. <strong>Projections &amp; materialized views</strong> precompute alternative sort orders/rollups.</li>
+<li><strong>How it solves our problem.</strong> Pivot + hindsight are scan-and-aggregate → columnar is ideal. Its weakness — <strong>async mutations</strong> (<code>ALTER UPDATE/DELETE</code> degrade &gt;500, stop &gt;1000) — is avoided by our <strong>insert-only/versioned</strong> model: edit = insert a new <code>version</code>, read = <code>argMax(version)</code>, bulk = <code>REPLACE PARTITION</code>. So we use the engine only where it's strong and never touch the mutation queue.</li>
+<li><strong>Deep-dive/gotchas.</strong> <code>argMax</code> (or <code>FINAL</code>) is needed on read because dedup only happens <em>eventually</em> on merge; keep partitions from getting too many parts (hot-partition churn) — we partition by <code>(tenant, l1, fiscal_week)</code>; <code>SELECT FINAL</code> is convenient but costs a merge-on-read; <code>AggregatingMergeTree</code> requires <code>-State</code>/<code>-Merge</code> function discipline. It is <strong>not</strong> for per-row transactional read-after-write with locks — that's Postgres's job.</li>
+</ul>
+<h2 id="52-bigquery">5.2 BigQuery</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Serverless columnar warehouse; storage (Capacitor columnar) separate from compute (<strong>slots</strong>). You're billed <strong>on-demand by bytes scanned</strong> (or by slot reservations). No secondary indexes.</li>
+<li><strong>Architecture.</strong> <strong>Partitioning</strong> (usually by date) + <strong>clustering</strong> (sort within partitions by up to 4 cols) are the only "indexes." Query cost = columns read × partitions touched. DML (<code>UPDATE/MERGE</code>) is quota-limited and rewrite-oriented → not for interactive edits.</li>
+<li><strong>How it solves our problem.</strong> Perfect <strong>source of truth</strong> + batch cube/rollup builder: cheap, scalable scans; scheduled ELT. We keep planner edits <em>out</em> of BigQuery.</li>
+<li><strong>Deep-dive/gotchas.</strong> The three levers that gave ~3×/~74×/~280×: (1) read the <strong>clustered</strong> copy not the raw fact, (2) always pass a <strong>partition/date predicate</strong> (a bypass floor like <code>date &gt; '1999-01-01'</code> <em>defeats</em> pruning), (3) <strong>never <code>SELECT *</code></strong> (one <code>SELECT * LIMIT 2</code> billed 38.8 TiB / $327). Set <code>require_partition_filter=TRUE</code> so un-pruned scans fail loudly.</li>
+</ul>
+<h2 id="53-postgresql">5.3 PostgreSQL</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Row-store RDBMS, <strong>MVCC</strong> (each write creates a new tuple version; <code>VACUUM</code> reclaims dead tuples), full ACID, rich indexing (btree, GIN, partial, expression), declarative <strong>partitioning</strong>, <code>jsonb</code>.</li>
+<li><strong>Architecture in our stack.</strong> The <strong>editable system-of-record</strong>: plan masters + the editable grid as row tables with stored procs; LIST-partitioned by tenant / <code>final_level</code>; <strong>PgBouncer</strong> pools connections (<code>aiopg</code> async). GIN index on <code>jsonb</code> attribute bags; composite btrees for hot filters.</li>
+<li><strong>How it solves our problem.</strong> ACID + read-after-write + locking = exactly what a per-cell planning edit needs (the thing OLAP engines are bad at).</li>
+<li><strong>Deep-dive/gotchas.</strong> MVCC + del+reinsert = <strong>dead-tuple bloat</strong> (needs VACUUM); a <code>jsonb -&gt;&gt;</code> filter can't use a <code>jsonb_path_ops</code> GIN (rewrite as <code>@&gt;</code>); <strong>always include the partition key</strong> or you scan every partition; cascade-delete FK columns must be indexed or each parent delete seq-scans children; prefer <strong>set-based <code>UPDATE … FROM json_to_recordset</code></strong> over N+1 per-row loops; over-partitioning (5,503 partitions for 298K rows) hurts planning time.</li>
+</ul>
+<h2 id="54-duckdb">5.4 DuckDB</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Embedded ("SQLite for analytics") <strong>columnar, vectorized</strong> OLAP engine; runs in-process, reads Arrow/Parquet zero-copy.</li>
+<li><strong>How it solves our problem.</strong> Per-plan/per-session <strong>pivot accelerator</strong>: hydrate the plan's small cube slice into DuckDB, run native <code>PIVOT … USING sum() GROUP BY</code>, commit deltas to Postgres — fast cross-tabs without a server round-trip or rescanning facts.</li>
+<li><strong>Deep-dive/gotchas.</strong> Great single-node/embedded; not a multi-user server (that's why it's session-scoped and Postgres/ClickHouse own durability + concurrency).</li>
+</ul>
+<h2 id="55-agent-orchestration-router-planner-executor-supervisor-langgraph">5.5 Agent orchestration (router / planner-executor / supervisor) &amp; LangGraph</h2>
+<ul>
+<li><strong>Fundamentals.</strong> <strong>LangGraph</strong> models an agent app as a <strong>state graph</strong> (nodes = steps/agents, edges = control flow, a shared typed <strong>state</strong> object) — good for cyclic, multi-step, human-in-the-loop flows vs. a linear chain. The classic patterns: <strong>router</strong> (classify then dispatch), <strong>planner-executor</strong> (plan a DAG, then execute), <strong>supervisor/orchestrator</strong> (a controller delegates to workers and synthesizes).</li>
+<li><strong>Architecture (ours).</strong> Router → Decomposer (emits a validated DAG) → Orchestrator executes stages (parallel within stage) → synthesize. CortexEye's production brains are LangGraph; our multi-agent PoC is a <strong>custom</strong> Python router/orchestrator (stdlib <code>concurrent.futures</code>) that mirrors that shape deterministically for testability.</li>
+<li><strong>How it solves our problem.</strong> A planning question needs several specialized data pulls with dependencies; a validated DAG + supervisor gives parallelism, dependency passing (<code>&lt;A_n&gt;</code>), partial-failure tolerance, and an auditable trace.</li>
+<li><strong>Deep-dive/gotchas.</strong> The <strong>#1 failure is a malformed plan</strong> → a hard structural validator + one self-repair pass is the fix; guard against forward references; keep stages ≤3 agents wide, ≤8 sub-questions; make each agent's <code>answer()</code> non-throwing so one failure yields a <em>partial</em>, not a crash.</li>
+</ul>
+<h2 id="56-llm-plumbing-text-to-sql-decomposition-confidence-rag-cache">5.6 LLM plumbing (text-to-SQL, decomposition, confidence, RAG, cache)</h2>
+<ul>
+<li><strong>Text-to-SQL.</strong> LLM emits SQL from NL + schema (LlamaIndex RAG over schema in CortexEye). <strong>Guardrails are the engineering:</strong> SELECT-only, <code>LIMIT</code> caps, <code>NULLIF</code> denominators, no <code>SELECT *</code>, validate before execute. Solves "let business users ask in English" without runaway scans.</li>
+<li><strong>Query decomposition.</strong> One strong prompt (18 worked examples) → <code>{sub_queries[], path[][]}</code> DAG + <code>&lt;A_n&gt;</code> dependency rephrasing + a reflection/repair loop. Solves multi-hop questions ("why did margin drop and which clusters?") that a single query can't.</li>
+<li><strong>Intent classification / confidence.</strong> A deterministic rules prompt at <code>temperature=0</code> (chosen over a RAG/few-shot classifier for <strong>latency, cost, determinism on novel queries</strong>); confidence via <strong>rules + LLM logprobs + intent-match + error detection</strong>. Solves routing + "should we trust/show this answer."</li>
+<li><strong>RAG (hybrid).</strong> <code>text-embedding-3-small</code> → <strong>pgvector</strong>; <strong>BM25 (sparse) + dense</strong> retrieval fused, then <strong>Cohere rerank</strong>. Hybrid beats either alone (lexical + semantic); rerank fixes ordering.</li>
+<li><strong>Semantic cache.</strong> Embed the query; return a cached answer when cosine-sim ≥ threshold within TTL (pgvector <code>&lt;=&gt;</code> in prod). Solves repeat/near-duplicate questions → skip the whole pipeline. Gotcha: threshold too loose returns wrong-but-similar answers — tune + TTL-bound.</li>
+</ul>
+<h2 id="57-rust-axum-cortexeye-data-api">5.7 Rust / Axum (CortexEye data API)</h2>
+<ul>
+<li><strong>Fundamentals.</strong> Rust = memory-safe, no-GC, high-throughput; <strong>Axum</strong> (on <strong>Tokio</strong> async runtime, <strong>SQLx</strong> compile-checked queries) is the HTTP framework.</li>
+<li><strong>How it solves our problem.</strong> A <strong>deterministic, fast data API</strong> layer (BigQuery/GCS access, TTS streaming) separate from the probabilistic Python LLM services — clean separation of "deterministic data" vs "AI reasoning," and Rust's throughput/safety for the hot data path.</li>
+<li><strong>Deep-dive.</strong> Compile-time-checked SQL (SQLx) prevents a class of query bugs; async I/O (Tokio) for high concurrency; keeps LLM latency/cost out of the core data path.</li>
+</ul>
+<h2 id="58-supporting-infra">5.8 Supporting infra</h2>
+<ul>
+<li><strong>FastAPI + asyncio</strong> — async Python services; <code>asyncio.gather</code> to run classification + entity-extraction (or independent reads) concurrently.</li>
+<li><strong>Redis</strong> — chat history, <strong>semantic cache</strong>, and <strong>abort flags</strong> (cancel a running task across Cloud Run replicas). Fundamentals: in-memory key-value, sub-ms, TTL, pub/sub.</li>
+<li><strong>Socket.IO / WebSockets (WSS)</strong> — stream agent progress/partial tokens to the UI (long LLM calls need incremental feedback).</li>
+<li><strong>Google Cloud Tasks + Scheduler</strong> — async job offload + cron for ELT/cube builds (keeps heavy work off the request path).</li>
+<li><strong>Secret management</strong> — Google Secret Manager, IA convention <code>{client}_ms_ce_chatbot_{provider}_{env}</code>; ADC auth; no keys in code.</li>
+<li><strong>Apache tech (what the product actually uses).</strong> <strong>Apache Kafka</strong> (<code>aiokafka</code> / <code>confluent-kafka</code>) drives <strong>async embedding jobs</strong>, and <strong>Apache Parquet</strong> is the columnar storage/interchange format (§8.3). The <strong>planning-store ingestion path</strong> itself is <strong>batch ELT</strong> (BigQuery cube/rollup → Postgres/ClickHouse), not a streaming pipeline into the grid — so be precise: "Kafka for async embedding work + Parquet for storage; the grid's data lands via batch ELT." Kafka fundamentals to know: distributed append-only commit log, topics→partitions, consumer groups, at-least-once + offsets. If asked "where else would Kafka fit?": streaming POS/inventory events into the fact, or a CDC→ClickHouse path (ClickPipes / Kafka engine).</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

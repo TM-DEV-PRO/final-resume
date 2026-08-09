@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build InterviewPrep*.html study hubs for all resume tracks."""
+"""Build per-track InterviewPrep.html hubs (isolated resume folders)."""
 import glob
 import os
 import re
@@ -56,7 +56,6 @@ mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' })
 
 
 def promote_mermaid(html: str) -> str:
-    """Turn fenced mermaid code blocks into renderable <div class="mermaid">."""
     def repl(m):
         body = m.group(1)
         body = (
@@ -75,34 +74,7 @@ def promote_mermaid(html: str) -> str:
     )
 
 
-def build(order, out_name, title, brand):
-    parts = []
-    for f in order:
-        if os.path.exists(f):
-            parts.append(open(f, encoding="utf-8").read())
-    raw = "\n\n---\n\n".join(parts)
-    for d in ('<div class="callout note">', '<div class="callout warn">', '<div class="callout highlight">'):
-        raw = raw.replace(d, d[:-1] + ' markdown="1">')
-    md = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "fenced_code"], output_format="html5")
-    html = md.convert(raw)
-    html = rewrite_md_hrefs_text(html)
-    html = promote_mermaid(html)
-    nav = "\n".join(
-        f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
-        for m in re.finditer(r'<h([12]) id="([^"]+)">(.*?)</h\1>', html, flags=re.DOTALL)
-    )
-    page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>{title}</title>{CSS}</head><body>
-<div class="layout"><nav class="toc"><div class="brand">{brand}</div>{nav}</nav>
-<main>{html}</main></div>{MERMAID_BOOT}</body></html>"""
-    out = os.path.join(BASE, out_name)
-    open(out, "w", encoding="utf-8").write(page)
-    print("wrote", out, "| nav entries:", nav.count("lvl"), "| bytes:", len(page))
-
-
 def rewrite_md_hrefs_text(text):
-    """Point links at HTML mirrors (Pages serves .md as raw text)."""
     text = re.sub(
         r'(href=["\'])([^"\']+?)\.md(#[^"\']*)?(["\'])',
         lambda m: f"{m.group(1)}{m.group(2)}.html{m.group(3) or ''}{m.group(4)}",
@@ -126,109 +98,146 @@ def rewrite_md_hrefs(path):
         print("rewrote links:", os.path.relpath(path, BASE))
 
 
-# Run after all hubs are written (see bottom).
+def build(order, out_path, title, brand):
+    parts = []
+    for f in order:
+        if os.path.exists(f):
+            parts.append(open(f, encoding="utf-8").read())
+    raw = "\n\n---\n\n".join(parts)
+    for d in ('<div class="callout note">', '<div class="callout warn">', '<div class="callout highlight">'):
+        raw = raw.replace(d, d[:-1] + ' markdown="1">')
+    md = markdown.Markdown(extensions=["extra", "sane_lists", "toc", "fenced_code"], output_format="html5")
+    html = md.convert(raw)
+    html = rewrite_md_hrefs_text(html)
+    html = promote_mermaid(html)
+    nav = "\n".join(
+        f'<a class="lvl{m.group(1)}" href="#{m.group(2)}">{re.sub(r"<[^>]+>", "", m.group(3)).strip()}</a>'
+        for m in re.finditer(r'<h([12]) id="([^"]+)">(.*?)</h\1>', html, flags=re.DOTALL)
+    )
+    page = f"""<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>{title}</title>{CSS}</head><body>
+<div class="layout"><nav class="toc"><div class="brand">{brand}</div>{nav}</nav>
+<main>{html}</main></div>{MERMAID_BOOT}</body></html>"""
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
+    open(out_path, "w", encoding="utf-8").write(page)
+    print("wrote", out_path, "| nav entries:", nav.count("lvl"), "| bytes:", len(page))
 
 
-IP = os.path.join(BASE, "interview_prep")
+# Paths
+LEGACY = os.path.join(BASE, "resume")
+LEGACY_PREP = os.path.join(LEGACY, "prep")
+V2 = os.path.join(BASE, "resume_v2")
+V2_PREP = os.path.join(V2, "prep")
+JAVA = os.path.join(BASE, "resume_java")
+JAVA_PREP = os.path.join(JAVA, "prep")
+CP = os.path.join(BASE, "campaign_pygo_xyz")
+CPA = os.path.join(CP, "interview_prep", "architecture")
+CPP = os.path.join(CP, "interview_prep")
+
+# Legacy Python/Go
 build(
-    [os.path.join(IP, "00_index.md")]
-    + sorted(glob.glob(os.path.join(IP, "projects", "*.md")))
-    + [os.path.join(IP, "06_tech_deep_dives.md"), os.path.join(IP, "07_behavioral_star_stories.md"),
-       os.path.join(IP, "08_role_targeting_and_rapid_fire.md"),
-       os.path.join(IP, "09_metrics_derivations.md")]
-    + sorted(glob.glob(os.path.join(IP, "agentic_assort_playbook", "*.md"))),
-    "InterviewPrep.html",
-    "Tarun Mittal — Final Resume · Interview Prep Hub",
-    "Final Resume · Interview Prep",
+    [os.path.join(LEGACY_PREP, "00_index.md")]
+    + sorted(glob.glob(os.path.join(LEGACY_PREP, "projects", "*.md")))
+    + [
+        os.path.join(LEGACY_PREP, "06_tech_deep_dives.md"),
+        os.path.join(LEGACY_PREP, "07_behavioral_star_stories.md"),
+        os.path.join(LEGACY_PREP, "08_role_targeting_and_rapid_fire.md"),
+        os.path.join(LEGACY_PREP, "09_metrics_derivations.md"),
+    ]
+    + sorted(glob.glob(os.path.join(LEGACY_PREP, "agentic_assort_playbook", "*.md"))),
+    os.path.join(LEGACY, "InterviewPrep.html"),
+    "Tarun Mittal — Legacy Python/Go · Interview Prep",
+    "Legacy · Interview Prep",
 )
 
-IPJ = os.path.join(BASE, "interview_prep_java")
-IPV2 = os.path.join(BASE, "interview_prep_v2")
+# Java (own prep + shared grounded packs from resume_v2/prep — single source, no copy)
 build(
-    [os.path.join(IPJ, "00_index.md"), os.path.join(IPJ, "GROUND_TRUTH.md"),
-     os.path.join(IPJ, "README.md")]
-    + sorted(glob.glob(os.path.join(IPJ, "projects", "*.md")))
-    + [os.path.join(IPJ, "06_tech_deep_dives.md"), os.path.join(IPJ, "07_behavioral_star_stories.md"),
-       os.path.join(IPJ, "08_role_targeting_and_rapid_fire.md"),
-       os.path.join(IPJ, "09_metrics_derivations.md"),
-       # Shared grounded deep dives (same facts; map layers to Spring in interviews)
-       os.path.join(IPV2, "10_impact_analytics_deep_dive.md"),
-       os.path.join(IPV2, "11_uber_frm_deep_dive.md"),
-       os.path.join(IPV2, "12_masters_gfg_deep_dive.md"),
-       os.path.join(IPV2, "13_behavioral_why_switch.md"),
-       os.path.join(IPV2, "14_uber_menu_deep_dive.md"),
-       os.path.join(IPV2, "17_senior_systems_study_only.md"),
-       os.path.join(IPV2, "18_resume_number_catalog.md"),
-       os.path.join(IPV2, "22_application_questions.md"),
-       os.path.join(IPV2, "23_project_interview_packs.md"),
-       os.path.join(IPV2, "23a_ia_interview_pack.md"),
-     os.path.join(IPV2, "23b_uber_interview_packs.md"),
-     os.path.join(IPV2, "23c_masters_gfg_interview_packs.md"),
-     os.path.join(IPV2, "24_job_listings_5x_ats_scorecard.md"),
-     os.path.join(IPV2, "25_panel_ats_rescore_post_flink.md"),
-     os.path.join(IPV2, "26_python_job_listings_ats.md"),
-     os.path.join(IPV2, "27_epam_scope_validation.md"),
-     os.path.join(IPV2, "28_fresh_smts_genai_python_go_scorecard.md"),
-     os.path.join(IPV2, "29_ia_ch_ddl_phase1_source.md"),
-     os.path.join(IPV2, "30_panel_menu_anz_milvus.md"),
-     os.path.join(IPV2, "31_resume_deep_explain_map.md"),
-     os.path.join(IPV2, "32_common_interview_qa.md"),
-     os.path.join(IPV2, "33_architecture_diagrams.md"),
-     os.path.join(IPV2, "34_er_tables_tech_why.md"),
-     os.path.join(IPV2, "35_table_schemas_api_design.md")],
-    "InterviewPrepJava.html",
+    [os.path.join(JAVA_PREP, "00_index.md"), os.path.join(JAVA_PREP, "GROUND_TRUTH.md"),
+     os.path.join(JAVA_PREP, "README.md")]
+    + sorted(glob.glob(os.path.join(JAVA_PREP, "projects", "*.md")))
+    + [
+        os.path.join(JAVA_PREP, "06_tech_deep_dives.md"),
+        os.path.join(JAVA_PREP, "07_behavioral_star_stories.md"),
+        os.path.join(JAVA_PREP, "08_role_targeting_and_rapid_fire.md"),
+        os.path.join(JAVA_PREP, "09_metrics_derivations.md"),
+        os.path.join(V2_PREP, "10_impact_analytics_deep_dive.md"),
+        os.path.join(V2_PREP, "11_uber_frm_deep_dive.md"),
+        os.path.join(V2_PREP, "12_masters_gfg_deep_dive.md"),
+        os.path.join(V2_PREP, "13_behavioral_why_switch.md"),
+        os.path.join(V2_PREP, "14_uber_menu_deep_dive.md"),
+        os.path.join(V2_PREP, "17_senior_systems_study_only.md"),
+        os.path.join(V2_PREP, "18_resume_number_catalog.md"),
+        os.path.join(V2_PREP, "22_application_questions.md"),
+        os.path.join(V2_PREP, "23_project_interview_packs.md"),
+        os.path.join(V2_PREP, "23a_ia_interview_pack.md"),
+        os.path.join(V2_PREP, "23b_uber_interview_packs.md"),
+        os.path.join(V2_PREP, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(V2_PREP, "24_job_listings_5x_ats_scorecard.md"),
+        os.path.join(V2_PREP, "25_panel_ats_rescore_post_flink.md"),
+        os.path.join(V2_PREP, "26_python_job_listings_ats.md"),
+        os.path.join(V2_PREP, "27_epam_scope_validation.md"),
+        os.path.join(V2_PREP, "28_fresh_smts_genai_python_go_scorecard.md"),
+        os.path.join(V2_PREP, "29_ia_ch_ddl_phase1_source.md"),
+        os.path.join(V2_PREP, "30_panel_menu_anz_milvus.md"),
+        os.path.join(V2_PREP, "31_resume_deep_explain_map.md"),
+        os.path.join(V2_PREP, "32_common_interview_qa.md"),
+        os.path.join(V2_PREP, "33_architecture_diagrams.md"),
+        os.path.join(V2_PREP, "34_er_tables_tech_why.md"),
+        os.path.join(V2_PREP, "35_table_schemas_api_design.md"),
+    ],
+    os.path.join(JAVA, "InterviewPrep.html"),
     "Tarun Mittal — Java/Spring · Interview Prep Hub",
     "Java/Spring · Interview Prep",
 )
 
-IPV2 = os.path.join(BASE, "interview_prep_v2")
+# Python/Go v2
 build(
-    [os.path.join(IPV2, "00_index.md"),
-     os.path.join(IPV2, "GROUND_TRUTH.md"),
-     os.path.join(IPV2, "01_skills_trim_rationale.md"),
-     os.path.join(IPV2, "02_mongodb_elasticsearch.md"),
-     os.path.join(IPV2, "03_uber_menu_streaming_numbers.md"),
-     os.path.join(IPV2, "08_role_targeting_and_rapid_fire.md"),
-     os.path.join(IPV2, "09_metrics_derivations.md"),
-     os.path.join(IPV2, "10_impact_analytics_deep_dive.md"),
-     os.path.join(IPV2, "11_uber_frm_deep_dive.md"),
-     os.path.join(IPV2, "12_masters_gfg_deep_dive.md"),
-     os.path.join(IPV2, "13_behavioral_why_switch.md"),
-     os.path.join(IPV2, "14_uber_menu_deep_dive.md"),
-     os.path.join(IPV2, "15_judge_loop_report.md"),
-     os.path.join(IPV2, "16_ats_recruiter_report.md"),
-     os.path.join(IPV2, "17_senior_systems_study_only.md"),
-     os.path.join(IPV2, "18_resume_number_catalog.md"),
-     os.path.join(IPV2, "19_ia_ch_pg_poc_source.md"),
-     os.path.join(IPV2, "20_ia_lineplanning_benchmark_source.md"),
-     os.path.join(IPV2, "21_ia_pivot_benchmark_source.md"),
-     os.path.join(IPV2, "22_application_questions.md"),
-     os.path.join(IPV2, "23_project_interview_packs.md"),
-     os.path.join(IPV2, "23a_ia_interview_pack.md"),
-     os.path.join(IPV2, "23b_uber_interview_packs.md"),
-     os.path.join(IPV2, "23c_masters_gfg_interview_packs.md"),
-     os.path.join(IPV2, "24_job_listings_5x_ats_scorecard.md"),
-     os.path.join(IPV2, "25_panel_ats_rescore_post_flink.md"),
-     os.path.join(IPV2, "26_python_job_listings_ats.md"),
-     os.path.join(IPV2, "27_epam_scope_validation.md"),
-     os.path.join(IPV2, "28_fresh_smts_genai_python_go_scorecard.md"),
-     os.path.join(IPV2, "29_ia_ch_ddl_phase1_source.md"),
-     os.path.join(IPV2, "30_panel_menu_anz_milvus.md"),
-     os.path.join(IPV2, "31_resume_deep_explain_map.md"),
-     os.path.join(IPV2, "32_common_interview_qa.md"),
-     os.path.join(IPV2, "33_architecture_diagrams.md"),
-     os.path.join(IPV2, "34_er_tables_tech_why.md"),
-     os.path.join(IPV2, "35_table_schemas_api_design.md"),
-     os.path.join(IPV2, "07_behavioral_star_stories.md")],
-    "InterviewPrepV2.html",
+    [
+        os.path.join(V2_PREP, "00_index.md"),
+        os.path.join(V2_PREP, "GROUND_TRUTH.md"),
+        os.path.join(V2_PREP, "01_skills_trim_rationale.md"),
+        os.path.join(V2_PREP, "02_mongodb_elasticsearch.md"),
+        os.path.join(V2_PREP, "03_uber_menu_streaming_numbers.md"),
+        os.path.join(V2_PREP, "08_role_targeting_and_rapid_fire.md"),
+        os.path.join(V2_PREP, "09_metrics_derivations.md"),
+        os.path.join(V2_PREP, "10_impact_analytics_deep_dive.md"),
+        os.path.join(V2_PREP, "11_uber_frm_deep_dive.md"),
+        os.path.join(V2_PREP, "12_masters_gfg_deep_dive.md"),
+        os.path.join(V2_PREP, "13_behavioral_why_switch.md"),
+        os.path.join(V2_PREP, "14_uber_menu_deep_dive.md"),
+        os.path.join(V2_PREP, "15_judge_loop_report.md"),
+        os.path.join(V2_PREP, "16_ats_recruiter_report.md"),
+        os.path.join(V2_PREP, "17_senior_systems_study_only.md"),
+        os.path.join(V2_PREP, "18_resume_number_catalog.md"),
+        os.path.join(V2_PREP, "19_ia_ch_pg_poc_source.md"),
+        os.path.join(V2_PREP, "20_ia_lineplanning_benchmark_source.md"),
+        os.path.join(V2_PREP, "21_ia_pivot_benchmark_source.md"),
+        os.path.join(V2_PREP, "22_application_questions.md"),
+        os.path.join(V2_PREP, "23_project_interview_packs.md"),
+        os.path.join(V2_PREP, "23a_ia_interview_pack.md"),
+        os.path.join(V2_PREP, "23b_uber_interview_packs.md"),
+        os.path.join(V2_PREP, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(V2_PREP, "24_job_listings_5x_ats_scorecard.md"),
+        os.path.join(V2_PREP, "25_panel_ats_rescore_post_flink.md"),
+        os.path.join(V2_PREP, "26_python_job_listings_ats.md"),
+        os.path.join(V2_PREP, "27_epam_scope_validation.md"),
+        os.path.join(V2_PREP, "28_fresh_smts_genai_python_go_scorecard.md"),
+        os.path.join(V2_PREP, "29_ia_ch_ddl_phase1_source.md"),
+        os.path.join(V2_PREP, "30_panel_menu_anz_milvus.md"),
+        os.path.join(V2_PREP, "31_resume_deep_explain_map.md"),
+        os.path.join(V2_PREP, "32_common_interview_qa.md"),
+        os.path.join(V2_PREP, "33_architecture_diagrams.md"),
+        os.path.join(V2_PREP, "34_er_tables_tech_why.md"),
+        os.path.join(V2_PREP, "35_table_schemas_api_design.md"),
+        os.path.join(V2_PREP, "07_behavioral_star_stories.md"),
+    ],
+    os.path.join(V2, "InterviewPrep.html"),
     "Tarun Mittal — Python/Go v2 · Interview Prep",
     "Python/Go v2 · Interview Prep",
 )
 
-# Campaign PyGo XYZ — one-page hub (same pattern as InterviewPrep / V2 / Java)
-CP = os.path.join(BASE, "campaign_pygo_xyz")
-CPA = os.path.join(CP, "interview_prep", "architecture")
-CPP = os.path.join(CP, "interview_prep")
+# Campaign PyGo XYZ
 build(
     [
         os.path.join(CP, "00_index.md"),
@@ -262,14 +271,14 @@ build(
         os.path.join(CPP, "projects", "01d_agentic_evals_guardrails_flow.md"),
         os.path.join(CPP, "projects", "02_03_uber_frm_menu.md"),
         os.path.join(CPP, "projects", "04_05_masters_gfg.md"),
-        os.path.join(IPV2, "23a_ia_interview_pack.md"),
-        os.path.join(IPV2, "23b_uber_interview_packs.md"),
-        os.path.join(IPV2, "23c_masters_gfg_interview_packs.md"),
-        os.path.join(IPV2, "31_resume_deep_explain_map.md"),
-        os.path.join(IPV2, "32_common_interview_qa.md"),
-        os.path.join(IPV2, "33_architecture_diagrams.md"),
-        os.path.join(IPV2, "34_er_tables_tech_why.md"),
-        os.path.join(IPV2, "35_table_schemas_api_design.md"),
+        os.path.join(V2_PREP, "23a_ia_interview_pack.md"),
+        os.path.join(V2_PREP, "23b_uber_interview_packs.md"),
+        os.path.join(V2_PREP, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(V2_PREP, "31_resume_deep_explain_map.md"),
+        os.path.join(V2_PREP, "32_common_interview_qa.md"),
+        os.path.join(V2_PREP, "33_architecture_diagrams.md"),
+        os.path.join(V2_PREP, "34_er_tables_tech_why.md"),
+        os.path.join(V2_PREP, "35_table_schemas_api_design.md"),
         os.path.join(CP, "linkedin", "headline_about_experience.md"),
         os.path.join(CP, "ApplicationKit.md"),
         os.path.join(CP, "behavioral", "star_bank.md"),
@@ -281,22 +290,22 @@ build(
         os.path.join(CP, "ats", "00_ats_master_scorecard.md"),
     ]
     + sorted(glob.glob(os.path.join(CP, "agents", "company_recruiters", "*.md"))),
-    "CampaignPyGo.html",
+    os.path.join(CP, "InterviewPrep.html"),
     "Tarun Mittal — Campaign PyGo XYZ · Interview Prep Hub",
     "Campaign PyGo XYZ · Full Hub",
 )
 
 for hub in (
-    "CampaignPyGoCards.html",
-    "ApplicationKit.html",
-    "InterviewPrep.html",
-    "InterviewPrepV2.html",
-    "InterviewPrepJava.html",
-    "index.html",
+    os.path.join(CP, "CampaignCards.html"),
+    os.path.join(V2, "ApplicationKit.html"),
+    os.path.join(LEGACY, "InterviewPrep.html"),
+    os.path.join(V2, "InterviewPrep.html"),
+    os.path.join(JAVA, "InterviewPrep.html"),
+    os.path.join(CP, "InterviewPrep.html"),
+    os.path.join(BASE, "index.html"),
 ):
-    rewrite_md_hrefs(os.path.join(BASE, hub))
+    rewrite_md_hrefs(hub)
 
-# Also mirror every prep/campaign .md → .html for GitHub Pages.
 import build_pages_html  # noqa: E402
 
 build_pages_html.main()

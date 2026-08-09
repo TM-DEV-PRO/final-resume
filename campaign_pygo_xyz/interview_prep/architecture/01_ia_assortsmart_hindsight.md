@@ -24,7 +24,7 @@ Defend every Tech line item: where used, why chosen, DB shape, end-to-end flow.
 ## 2. Database / store design
 
 ### ClickHouse (planning SoR for agentic path)
-- **Model:** per-tenant ClickHouse; **63 tables / 8 layers**; **insert-only / partition-swapped**; agent `readonly=1` (not heavy UPDATE mutations). See `../../interview_prep_v2/29_ia_ch_ddl_phase1_source.md`.
+- **Model:** per-tenant ClickHouse; **63 tables / 8 layers**; **insert-only / partition-swapped**; agent `readonly=1` (not heavy UPDATE mutations). See `../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md`.
 - **Agent access:** tools **read** planning data only; no LLM SQL shell.
 - **Why layers:** separate fact, rollup, planning, and serving shapes so planners get sub-second probes without rewriting OLTP.
 

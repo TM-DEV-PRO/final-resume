@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>23b_uber_interview_packs — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Python/Go v2</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">resume_v2/prep/23b_uber_interview_packs.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#uber-frm-interview-pack">Uber FRM — Interview Pack</a>
+<a class="lvl2" href="#1-30s-2min-explain">1. 30s / 2min explain</a>
+<a class="lvl2" href="#2-architecture">2. Architecture</a>
+<a class="lvl2" href="#3-design-decisions">3. Design decisions</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#5-mock-interview-10-qa">5. Mock interview (10 Q&amp;A)</a>
+<a class="lvl2" href="#6-do-not-say">6. Do NOT say</a>
+<a class="lvl1" href="#uber-menu-interview-pack">Uber Menu — Interview Pack</a>
+<a class="lvl2" href="#1-30s-2min-explain_1">1. 30s / 2min explain</a>
+<a class="lvl2" href="#2-architecture_1">2. Architecture</a>
+<a class="lvl2" href="#3-design-decisions_1">3. Design decisions</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense_1">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#5-mock-interview-10-qa_1">5. Mock interview (10 Q&amp;A)</a>
+<a class="lvl2" href="#6-do-not-say_1">6. Do NOT say</a></nav>
+<main><blockquote>
+<p>Canonical interviewer packs for current resume_v2 FRM + Menu bullets. Menu PDF has NO Kafka/Flink/Spark. Synced Jul 2026.</p>
+</blockquote>
+<h1 id="uber-frm-interview-pack">Uber FRM — Interview Pack</h1>
+<h2 id="1-30s-2min-explain">1. 30s / 2min explain</h2>
+<p><strong>30s:</strong> At Uber Finance I owned the FRM Risk Scoping platform—FastAPI, MySQL, React—that replaced a quarterly Google Sheets close. Eight screens and 30+ REST APIs decide which FSLIs and entities are in scope for PwC, at $340M group materiality on the Q4 2025 close, targeting a 70% cut in manual recon (~2 weeks → ~3–4 days). I designed the 11-table SQLAlchemy 2.0 schema, owned the Sheets→MySQL recon v2 migration (18 files), and led a 3-engineer EPAM pod through reviews and Bazel CI gates.</p>
+<p><strong>2min:</strong> FRM scoping is a SOX-adjacent quarterly process: which balance-sheet / income-statement lines and which legal entities get risk assessment and audit testing. Before the tool, Finance ran a Sheets workbook—no stable line IDs, no audit trail, concurrent overwrite risk. I owned design and architecture for the replacement: handler → service → repository over MySQL (SOADB), Fusion.js React UI, auth via gateway-injected <code>x-auth-params-email</code>. Materiality lives in <code>frm_metrics_table</code> ($340M / residual $170M on that close). Rules: Quantitative Material if HFM &gt; materiality; Qualitative from scoping questions; Overall Significance = OR of the two. Component significance uses configurable 5% assets/revenue benchmarks. Eight screens: Recon, Materiality, EMI, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary. I personally migrated recon from Sheets-backed v1 to MySQL v2 in parallel (18 files, +1,268 LOC), validating HFM vs public 10-Q per line, and fixed a latent column-aliasing bug where <code>dict(zip(result.keys(), row))</code> on joined tables silently took the wrong <code>uuid</code>. Scale is tens of thousands of GL rows/quarter—correctness and auditability, not big data. 70% is a TDD target, not a measured post-launch KPI.</p>
+<hr>
+<h2 id="2-architecture">2. Architecture</h2>
+<pre><code>Oracle HFM (consolidation)
+        │  ETL (shared pipeline — consumes, does not own end-to-end)
+        ▼
+┌───────────────────────────────────────────────────────────┐
+│  MySQL (SOADB) — 11 SQLAlchemy 2.0 models (scoping svc)   │
+│  level_mapping ←── balance_sheet / income_statement       │
+│                 ←── component_entity                      │
+│  recon_* (v2) · frm_metrics_table · threshold_table_v2    │
+│  emi_data · scoping_questions / assessments               │
+└───────────────────────────────────────────────────────────┘
+        ▲
+        │  repository (sessions, SQL) → service (rules, trees)
+        │  → handler (HTTP, auth, errors)  /frm-scoping/*
+┌───────┴───────────────────────────────────────────────────┐
+│  FastAPI (langfx) · Pydantic · asyncio.to_thread(DB)      │
+│  x-auth-params-email → created_by / updated_by            │
+└───────────────────────────────────────────────────────────┘
+        ▲
+        │  30+ REST APIs
+┌───────┴──────────────┐     ┌─────────────────────────────┐
+│  React (Fusion.js)   │     │  frm-collaboration-service  │
+│  8 screens           │     │  comments / notifications   │
+│  → PwC work papers   │     │  (separate — do not claim)  │
+└──────────────────────┘     └─────────────────────────────┘
+</code></pre>
+<div class="mermaid">flowchart TB
+  HFM[Oracle HFM] --> ETL[Shared ETL]
+  ETL --> MySQL[(MySQL SOADB)]
+  MySQL --> Repo[Repository]
+  Repo --> Svc[Service: rules + L1-L3 trees]
+  Svc --> H[Handler FastAPI]
+  UI[React 8 screens] --> H
+  H -->|30+ APIs| UI
+  UI --> PwC[PwC audit work papers]
+</div>
+<hr>
+<h2 id="3-design-decisions">3. Design decisions</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+<th>Why</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Datastore</td>
+<td>MySQL SOADB / InnoDB</td>
+<td>Platform standard; ACID multi-user edits in close</td>
+<td>No Postgres recursive CTEs—hierarchy flattened in ETL</td>
+</tr>
+<tr>
+<td>Layering</td>
+<td>Handler / service / repository</td>
+<td>Testability; 3 engineers on same feature without collisions</td>
+<td>More files per change</td>
+</tr>
+<tr>
+<td>Hierarchy</td>
+<td><code>level_mapping</code> + <code>level_id</code> (no FKs in ORM)</td>
+<td>Stable ids; renames don't rewrite facts; join + fiscal period</td>
+<td>Logical joins only—app must enforce consistency</td>
+</tr>
+<tr>
+<td>Materiality rules</td>
+<td>Quant OR Qual; 5% component benchmarks</td>
+<td>Auditable, deterministic, matches finance process</td>
+<td>Qualitative still human-in-loop</td>
+</tr>
+<tr>
+<td>Recon cutover</td>
+<td>Parallel v1 Sheets + v2 MySQL</td>
+<td>Zero-downtime; side-by-side QA</td>
+<td>Dual path until UI cutover</td>
+</tr>
+<tr>
+<td>Column identity</td>
+<td>SQLAlchemy <code>aliased()</code> + <code>.label()</code></td>
+<td>Kill silent last-write-wins on joined <code>uuid</code></td>
+<td>Strict select discipline on every join</td>
+</tr>
+<tr>
+<td>Auth</td>
+<td>Trust gateway header; record email</td>
+<td>Audit trail for SOX-adjacent tool</td>
+<td>Fine-grained authz is upstream, not in service</td>
+</tr>
+<tr>
+<td>Blocking DB</td>
+<td><code>asyncio.to_thread</code></td>
+<td>Keep FastAPI event loop responsive</td>
+<td>Thread-pool under load (acceptable at this QPS)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</h2>
+<h3 id="bullet-1-owned-designarchitecture-8-screens-30-apis-340m-targeting-70-2-weeks-34-days">Bullet 1 — Owned design/architecture: 8 screens, 30+ APIs, $340M, targeting 70% (~2 weeks → ~3–4 days)</h3>
+<ul>
+<li><strong>8 screens:</strong> Recon, Materiality, EMI, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary (TDD + Scoping Features).</li>
+<li><strong>30+ APIs:</strong> Code = 32 <code>add_api_route</code> registrations incl. <code>/health</code> → 31 functional + health. Say <strong>30+</strong>. Never 36 (that folds collaboration service).</li>
+<li><strong>$340M:</strong> Q4 2025 sample in <code>frm_metrics_table</code>, not a forever constant. Residual $170M same close.</li>
+<li><strong>70%:</strong> TDD §3.1 <strong>TARGET</strong>. Phrase: "targeting a 70% cut." Baseline ~2 weeks → ~3–4 days is <strong>ESTIMATED</strong> analyst calendar. Never claim measured post-launch.</li>
+<li><strong>Own:</strong> Design + architecture of scoping service (FastAPI/MySQL/React). ETL shared; collaboration service separate.</li>
+</ul>
+<h3 id="bullet-2-11-table-sqlalchemy-20-schema-handlerservicerepository-55-lines-14-entities">Bullet 2 — 11-table SQLAlchemy 2.0 schema; handler/service/repository; 55 lines / 14 entities</h3>
+<ul>
+<li><strong>11 models:</strong> <code>balance_sheet</code>, <code>income_statement</code>, <code>emi_data</code>, <code>frm_metrics_table</code>, <code>scoping_questions</code>, <code>scoping_assessments</code>, <code>threshold_table_v2</code>, <code>level_mapping</code>, <code>component_entity</code>, <code>recon_balance_sheet</code>, <code>recon_income_statement</code>. Scope claim to scoping service (physical schema.uql has 16+).</li>
+<li><strong>Auto-flag:</strong> Quant = HFM &gt; materiality; Qual from assessments; Overall = OR (<code>conclusion_overall_significance_from_balance_sheet_materials</code>). Component: revenue% &gt; 5% OR |assets%| &gt; 5%.</li>
+<li><strong>55 / 14:</strong> ~26 BS + ~29 IS FSLIs and 14 scoped entities on that close. Broader GL ~400 entities / ~1.7–1.8K accounts—don't conflate.</li>
+</ul>
+<h3 id="bullet-3-sheets-mysql-v2-recon-18-files-hfm-vs-10-q-column-aliasing-bug">Bullet 3 — Sheets → MySQL v2 recon (18 files); HFM vs 10-Q; column-aliasing bug</h3>
+<ul>
+<li><strong>Ownership:</strong> Branch <code>tmitta1/recon-income-api-migration</code>, 18 files, +1,268 / −4, <code>RECON_API_MIGRATION.md</code>.</li>
+<li><strong>Pattern:</strong> Add <code>/v2/recon_*</code> beside v1; nested L1→L2→L3 tree; <code>difference = hfm_amount_in_millions − financial_statement_amount_in_millions</code>.</li>
+<li><strong>Bug:</strong> Joined fact + <code>level_mapping</code> → duplicate result keys → <code>dict(zip(...))</code> last-write-wins → wrong <code>uuid</code> for PATCH/comments. Fix: labeled <code>select()</code> on <code>aliased()</code> models.</li>
+<li><strong>Guardrail:</strong> Tool surfaces/persists breaks; human sign-off is procedural—don't claim hard-block.</li>
+</ul>
+<h3 id="bullet-4-led-3-engineers-design-reviews-api-contracts-ci-gates-pwc">Bullet 4 — Led 3 engineers; design reviews, API contracts, CI gates → PwC</h3>
+<ul>
+<li><strong>Led:</strong> Tech lead of 3-engineer EPAM pod (not people manager). Slice by layer; enforce thin handlers, service trees, repo sessions; PR tests + Bazel <code>uber_py_test</code> (resume-safe: 1,100+ tests; grep ~1,288).</li>
+<li><strong>PwC:</strong> Scoping output feeds external audit work papers (TDD). Don't claim you built collaboration/WebSocket OCC.</li>
+</ul>
+<hr>
+<h2 id="5-mock-interview-10-qa">5. Mock interview (10 Q&amp;A)</h2>
+<p><strong>Q1. Prove "30+ APIs" isn't padding.</strong><br>
+<code>setup_routes()</code> has 32 registrations, one <code>/health</code> → 31 functional. "30+" under-claims. 36 would wrongly include collaboration service.</p>
+<p><strong>Q2. Why MySQL not Postgres?</strong><br>
+SOADB mandate + ACID edits. Working set ~95K raw GL rows/quarter max—correctness problem. Hierarchy flattened into <code>level_id</code> in ETL, not recursive SQL at read time.</p>
+<p><strong>Q3. Walk the materiality rule in code terms.</strong><br>
+Quant YES if HFM &gt; materiality metric. Qual YES from assessment. Overall Significant if either YES. Component FSC if revenue% &gt; benchmark OR |assets%| &gt; benchmark (default 5%, configurable via <code>PUT /update_benchmark_thresholds</code>).</p>
+<p><strong>Q4. Explain residual risk.</strong><br>
+<code>Residual Balances = HFM − Total in Scope</code>; <code>Residual Multiples = Residual / Materiality</code>. Flags leftover still audit-relevant (e.g. &gt;50% materiality). <code>GET /residual_risk?fsli_type=bs|is</code>.</p>
+<p><strong>Q5. Column-aliasing bug—precise failure mode.</strong><br>
+Raw SQL join projected two columns named <code>uuid</code>; <code>dict(zip(keys, row))</code> kept mapping uuid; PATCH hit wrong line. Fixed with <code>.label("fsli_id")</code> vs <code>.label("level_mapping_uuid")</code>.</p>
+<p><strong>Q6. How do you scale this?</strong><br>
+Barely needs it. Memoized engine <code>pool_pre_ping</code>; would add read replicas, per-period GET cache (closed periods immutable), indexes on <code>(fiscal_quarter, fiscal_year, level_id)</code>. No Redis in shipped scoping service—don't invent one.</p>
+<p><strong>Q7. Auth is one header—secure enough?</strong><br>
+Gateway authenticates and injects <code>x-auth-params-email</code>; service 401s if missing and records <code>updated_by</code>. Authz was upstream. Standalone harden: signed token + roles.</p>
+<p><strong>Q8. Did you build the HFM ETL?</strong><br>
+No. Service consumes HFM-loaded tables. I owned scoping APIs and recon v2 migration. Shared pipeline responsibility.</p>
+<p><strong>Q9. "Led 3"—evidence.</strong><br>
+Layered task split (recon = 18 files across 5 layers), enforced conventions from backend syncs, Bazel test gate on every PR. Tech lead of EPAM pod.</p>
+<p><strong>Q10. Is this just a spreadsheet with APIs?</strong><br>
+Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(children), parallel recon migration, identity bugs under close deadline—wrong number becomes PwC evidence.</p>
+<hr>
+<h2 id="6-do-not-say">6. Do NOT say</h2>
+<ul>
+<li><strong>36 endpoints</strong> (use <strong>30+</strong>).</li>
+<li><strong>19M → 300K</strong> rows (unsupported; real scale ≤~95K/quarter).</li>
+<li><strong>70% as measured</strong> (say <strong>targeting</strong>).</li>
+<li>Invented <strong>FRM p95 / Redis / response cache</strong> (engine memoization only).</li>
+<li><strong>"I built the HFM ETL"</strong> or <strong>"I built collaboration/WebSockets/OCC"</strong>.</li>
+<li><strong>Coverage %</strong> for FRM (that's Masters); quote test count if pressed.</li>
+<li>Fixed materiality forever—qualify <strong>Q4 2025 close</strong>.</li>
+</ul>
+<hr>
+<h1 id="uber-menu-interview-pack">Uber Menu — Interview Pack</h1>
+<h2 id="1-30s-2min-explain_1">1. 30s / 2min explain</h2>
+<p><strong>30s:</strong> At Uber Eats I cut menu onboarding from 24h to 2h and saved $600K+/yr on 30K+ menus/month by shipping Selenium scrapers on GCP with Kafka ingest and Flink keyed normalize/dedupe, plus proxy/backoff defenses that raised successful ingestions to 95%+. Unstructured multilingual menus arrive as PDFs and images — I built a LangChain RAG + Gemini 2.5 Pro extractor over <strong>Milvus</strong> (labeled-menu embeddings), hitting 98% fidelity / 100% schema consistency on offline eval into Uber Eats catalog shape (schema gate; no SFT on PDF). Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document compliance for <strong>Uber drivers in ANZ</strong> to 99.9% and saved ~20 hours/week (HISTORICAL from prior resume — not re-measured here).</p>
+<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → <strong>Gemini 2.5 Pro</strong> generate Uber Eats schema fields → schema validate → low-confidence human review, with supervised fine-tuning for schema adherence. This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend <em>your</em> LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are <strong>offline</strong>—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
+<hr>
+<h2 id="2-architecture_1">2. Architecture</h2>
+<pre><code>Partner sites (JS)          PDFs / images (multilingual)
+        │                            │
+        ▼                            ▼
+┌───────────────────┐      ┌─────────────────────────────┐
+│ Selenium scrapers │      │ LangChain RAG               │
+│ GCP · proxy pool  │      │ vector store (labeled menus)│
+│ IP rotate · UA    │      │ → Gemini 2.5 Pro → SFT      │
+│ adaptive backoff  │      │ schema validate → human     │
+└─────────┬─────────┘      └──────────────┬──────────────┘
+          │                               │
+          └──────────────┬────────────────┘
+                         ▼
+                 Catalog upsert (Uber Eats schema)
+              (idempotent by menu/version)
+                         │
+                         ▼
+              Uber Eats menu onboarding
+                 30K+ menus / month
+                 24h → 2h cycle
+
+Separate track (not on hot menu path):
+  ANZ driver/vehicle docs → Python automation → 99.9% compliance
+</code></pre>
+<div class="mermaid">flowchart LR
+  Sites[Partner sites] --> Se[Selenium on GCP]
+  Se -->|proxies / backoff| Raw[HTML / files]
+  PDFs[PDFs / images multilingual] --> VS[Vector store labeled menus]
+  VS --> LC[LangChain RAG + Gemini 2.5 Pro + SFT]
+  Raw --> Cat[Catalog upsert Uber Eats schema]
+  LC --> Cat
+  Cat --> Onboard[Onboarding 24h→2h]
+  Docs[ANZ driver docs] --> Comp[Compliance automation 99.9%]
+</div>
+<hr>
+<h2 id="3-design-decisions_1">3. Design decisions</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+<th>Why</th>
+<th>Trade-off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acquire</td>
+<td>Selenium on GCP</td>
+<td>JS-rendered partner sites need a real browser</td>
+<td>Fragile vs site DOM changes; needs monitoring</td>
+</tr>
+<tr>
+<td>Anti-bot</td>
+<td>IP rotation + dynamic proxies + adaptive backoff</td>
+<td>Lift success ~60–65% → 95%+ (baseline EST.)</td>
+<td>Cost/latency of proxy fleet</td>
+</tr>
+<tr>
+<td>Unstructured</td>
+<td>LangChain RAG + Gemini + vector store + SFT</td>
+<td>PDFs/images/multilingual lack stable HTML; need grounding + strict schema</td>
+<td>LLM cost; offline eval ≠ live SLA without monitoring</td>
+</tr>
+<tr>
+<td>Vector store</td>
+<td>Embeddings of labeled menus</td>
+<td>Retrieve similar cuisine/layout examples for RAG grounding (industry pattern)</td>
+<td>Index freshness; don’t invent vendor name</td>
+</tr>
+<tr>
+<td>Schema gate</td>
+<td>Validate before catalog write</td>
+<td>100% schema consistency target</td>
+<td>Rejects/queues low-confidence instead of silent bad data</td>
+</tr>
+<tr>
+<td>Human loop</td>
+<td>Low-confidence review</td>
+<td>Protect catalog quality (DoorDash-style guardrail idea)</td>
+<td>Throughput bound by review capacity</td>
+</tr>
+<tr>
+<td>Money model</td>
+<td>Kill ~$2/menu vendor tool</td>
+<td>In-house scrapers at 30K+/mo</td>
+<td>Own ops/reliability burden</td>
+</tr>
+<tr>
+<td>ANZ</td>
+<td>Separate Mobility automation</td>
+<td>Driver/vehicle docs, Uber drivers in ANZ</td>
+<td>Don't merge into menu architecture story</td>
+</tr>
+<tr>
+<td>Resume stack</td>
+<td>Selenium + Kafka/Flink + LangChain RAG/Gemini/vector DB</td>
+<td>Matches PDF</td>
+<td>Spark/Pinot verbal only if asked</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-bullet-by-bullet-defense_1">4. Bullet-by-bullet defense</h2>
+<h3 id="bullet-1-24h-2h-600kyr-30k-menusmo-selenium-kafkaflink">Bullet 1 — 24h → 2h; $600K+/yr; 30K+ menus/mo; Selenium + Kafka/Flink</h3>
+<ul>
+<li><strong>Outcomes:</strong> HISTORICAL ops numbers. Onboarding cycle compressed ~90%.</li>
+<li><strong>Money:</strong> ~$2/menu × 30K × 12 = $720K list → resume <strong>$600K+</strong> conservative floor.</li>
+<li><strong>How:</strong> Ship in-house Selenium scrapers on GCP + Kafka ingest + Flink keyed normalize/dedupe/replay vs paid third-party menu tool.</li>
+<li><strong>Own:</strong> Acquisition + reliability of scrape fleet landing catalogs faster—not a claim of owning all Eats catalog infra.</li>
+</ul>
+<h3 id="bullet-2-multilingual-pdfsimages-uber-eats-schema-langchain-rag-gemini-milvus-98100-offline-no-sft">Bullet 2 — Multilingual PDFs/images → Uber Eats schema; LangChain RAG + Gemini + Milvus; 98%/100% offline (no SFT)</h3>
+<ul>
+<li><strong>Always say offline / eval.</strong> Not a live production SLA unless you instrumented one.</li>
+<li><strong>Why LLM:</strong> unstructured menus (PDFs, images, different languages) defeat regex/HTML parsers; need schema-shaped Uber Eats catalog rows.</li>
+<li><strong>Pipeline:</strong> parse/chunk → retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → Gemini generate → schema validate → human review on low confidence. (SFT removed from PDF; 100% schema = validation gate.)</li>
+<li><strong>100% schema:</strong> validation gate rejects malformed structures; fidelity is content correctness vs ground-truth labels.</li>
+<li><strong>Industry parallel:</strong> DoorDash menu transcription uses OCR→LLM structure + confidence/human gate; RAG retrieves similar items for grounding. Cite pattern, not their proprietary stack.</li>
+<li><strong>Do not invent:</strong> Pinecone/Weaviate product name, OCR vendor, or live MTTR numbers.</li>
+</ul>
+<h3 id="bullet-3-95-successful-ingestions-ip-rotation-dynamic-proxies-adaptive-backoff">Bullet 3 — 95%+ successful ingestions; IP rotation, dynamic proxies, adaptive backoff</h3>
+<ul>
+<li><strong>Endpoint:</strong> mid-90s success after anti-bot hardening.</li>
+<li><strong>Baseline:</strong> ~60–65% → 95%+ is <strong>ESTIMATED</strong> pre-hardening—say so if pressed.</li>
+<li><strong>Mechanics:</strong> rotate egress IPs, refresh proxy pools under ban signals, backoff/retry budgets per source so one hostile site doesn't burn the fleet.</li>
+</ul>
+<h3 id="bullet-4-anz-mobility-separate-project-999-compliance-20-hoursweek-saved">Bullet 4 — ANZ Mobility (separate project): 99.9% compliance; 20 hours/week saved</h3>
+<ul>
+<li><strong>Not Uber Eats.</strong> Own PDF project: <strong>ANZ Driver Document Compliance (Uber Mobility)</strong>.</li>
+<li>Past 4yr wording: Python automation for <strong>driver and vehicle documents</strong> with local authorities for <strong>Uber earners / drivers in the ANZ region</strong>.</li>
+<li><strong>99.9%</strong> and <strong>20h/week:</strong> HISTORICAL from that resume line — <strong>not</strong> re-measured from logs in this repo. Say HISTORICAL if pressed.</li>
+<li>Do not say “main-app.” Do not fold into menu Selenium/RAG architecture.</li>
+</ul>
+<hr>
+<h2 id="5-mock-interview-10-qa_1">5. Mock interview (10 Q&amp;A)</h2>
+<p><strong>Q1. Why Selenium and not a simple HTTP client?</strong><br>
+Partner menus are JS-rendered; static fetch misses items/prices. Browser automation is the acquisition layer; cost is maintenance when DOMs change.</p>
+<p><strong>Q2. Derive the $600K+.</strong><br>
+Displace ~$2/menu tool × 30K menus/mo × 12 ≈ $720K list; resume cites $600K+ as a conservative floor. HISTORICAL ops claim.</p>
+<p><strong>Q3. 98% / 100%—live or eval?</strong><br>
+Offline evaluation. Fidelity vs labeled set; schema consistency via validation before write. Don't present as unmeasured production SLI.</p>
+<p><strong>Q4. How does RAG help Gemini here?</strong><br>
+Retrieve similar already-labeled menus from a <strong>vector store</strong> as few-shot/context so generation stays on Uber Eats schema and cuisine/layout patterns across languages; then hard schema validate. LangChain wires retrieve→prompt→LLM.</p>
+<p><strong>Q5. What does SFT buy over prompt-only?</strong><br>
+Teaches consistent field layout and enum/schema adherence so fewer invalid JSON/structures hit the gate.</p>
+<p><strong>Q6. Anti-bot: what fails without proxies?</strong><br>
+IP bans, CAPTCHA walls, soft 403s → success collapses. Rotation + dynamic pools + adaptive backoff recover to 95%+.</p>
+<p><strong>Q7. Idempotent landing—how do you avoid duplicate menus?</strong><br>
+Upsert keyed by vendor/menu version or content hash so retries after partial scrape don't double-write items.</p>
+<p><strong>Q8. Is ANZ part of Uber Eats?</strong><br>
+No. Same Uber/EPAM employment, <strong>Uber Mobility</strong> — <strong>Uber drivers in ANZ</strong>. Driver + vehicle docs vs local authorities. Separate project on the PDF. 20h/week is HISTORICAL from prior resume.</p>
+<p><strong>Q9. Where is Kafka / Flink on Menu?</strong><br>
+On the Menu PDF: Kafka ingest + Flink keyed normalize/dedupe/replay for bursty scrapes. Masters also has Kafka for GST IRP bulk — different product.</p>
+<p><strong>Q10. Biggest silent failure mode?</strong><br>
+DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM inventing items without retrieval grounding. Defend with scrape-health checks, schema validation, RAG grounding, and human review on low confidence.</p>
+<hr>
+<h2 id="6-do-not-say_1">6. Do NOT say</h2>
+<ul>
+<li>ANZ as an <strong>Uber Eats / menu catalog</strong> feature (it is <strong>Mobility drivers</strong> in ANZ).</li>
+<li>“<strong>main-app</strong>” wording on ANZ.</li>
+<li>Invented ANZ stack (Selenium menu stack ≠ doc compliance automation).</li>
+<li>Invent Pinecone/Weaviate if you only owned <strong>Milvus</strong> (4yr resume).</li>
+<li><strong>~200–500 events/sec</strong> or streaming SLOs as measured Menu facts.</li>
+<li><strong>98%/100% as live SLA</strong> without saying <strong>offline eval</strong>.</li>
+<li><strong>Baseline 60%</strong> as measured fact (call it <strong>estimated</strong>).</li>
+<li><strong>Pinot</strong> / Spark as Menu PDF claims unless asked.</li>
+<li>Claiming you owned all of Uber Eats catalog platform / INCA end-to-end.</li>
+<li>Claiming <strong>20h/week</strong> was re-measured from logs in this repo (HISTORICAL past-resume only).</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

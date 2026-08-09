@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>00_index — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Legacy Python/Go</a><a href="../InterviewPrep.html">Prep hub</a><span class="path">resume/prep/00_index.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#final-resume-interview-prep-hub">Final Resume — Interview Prep Hub</a>
+<a class="lvl2" href="#the-resume-at-a-glance">The resume at a glance</a>
+<a class="lvl2" href="#metrics-honesty">Metrics honesty</a></nav>
+<main><h1 id="final-resume-interview-prep-hub">Final Resume — Interview Prep Hub</h1>
+<p><strong>Tarun Mittal · Senior Software Engineer · July 2026</strong></p>
+<p>This hub backs every line of <code>resume/resume.tex</code> (PDF in <code>output/</code>). Study order:</p>
+<ol>
+<li><strong>Project deep dives</strong> — one chapter per resume project, in resume order: Impact Analytics (Agentic Assort Planner + Clustering Copilot), Uber FRM Scoping, Uber Menu Ingestion, Masters India GST, GeeksforGeeks.</li>
+<li><strong>Tech deep dives</strong> — every technology named on the resume: fundamentals, internals, why-this-not-that, gotchas. (ClickHouse/BigQuery/Postgres/DuckDB/LangGraph/RAG live in the playbook chapters at the end.)</li>
+<li><strong>Behavioral bank</strong> — 10 STAR stories mapped to Amazon Leadership Principles and Googliness signals, plus rapid-fire answers.</li>
+<li><strong>Agentic Assort playbook (§0–§10)</strong> — the full Impact Analytics reference: XYZ bullets with backing blocks, HLD/LLD, DB architecture, per-tech deep dives, Q&amp;A bank, honesty tiers, the Cluster Copilot FRD digest, and the <strong>July 2026 stack direction</strong> (Go/Gin + Rust + ClickHouse end-to-end).</li>
+</ol>
+<div class="callout warn">
+<p><b>Honesty guardrail (read before every interview).</b> Know which numbers are <b>REAL</b> (live-audit measured: 8.5% run failures = 37/437, 1 config per plan, 0% reproducibility, 75% Masters India latency), which are <b>offline-eval</b> (0.54→0.99 decomposition), and which are <b>design targets</b> (p95 &lt;500 ms, &lt;1 h to plan, &lt;2% failures). Say "measured," "in an offline evaluation," or "our design target" accordingly — the full tier table is in the playbook §7.4. BigQuery framing: it is the <b>upstream source of truth we ingest from</b> — never claim BigQuery optimization work as yours.</p>
+</div>
+<h2 id="the-resume-at-a-glance">The resume at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Company</th>
+<th>Project</th>
+<th>Lead metric</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Impact Analytics (Jun 2026–)</td>
+<td>Agentic AssortSmart (one project block)</td>
+<td>Agentic microservice: conversational agent grounds scope, batch-evaluates ~100 silhouette-scored candidate clusterings, presents top 3 with evidence, days → &lt;1 h · Go (Gin) core backend: worker pools, bounded channels, context timeouts · ClickHouse per-tenant, append-only never-erase store: partition swaps, latest-state views, lock-free writes (planning-grid p95 bullet currently commented out of resume)</td>
+</tr>
+<tr>
+<td>Uber via EPAM (Jul 2024–May 2026)</td>
+<td>FRM Scoping Platform (listed first)</td>
+<td>70% cycle (~2 weeks → ~3–4 days) · 36 endpoints p95 &lt;300ms · 19M→300K rows</td>
+</tr>
+<tr>
+<td>Uber via EPAM</td>
+<td>Menu Ingestion Platform</td>
+<td>30K+ menus/mo · Kafka ~200–500 peak events/sec · +95% (~60–65% → 95%+) · Pinot sub-second</td>
+</tr>
+<tr>
+<td>Masters India (Dec 2022–Jun 2024)</td>
+<td>GST e-invoicing SaaS</td>
+<td>p95 1.2s→300ms · 1M+ txn/day (~12 TPS avg, 100+ peak) · triage 70% (~30→&lt;10 min)</td>
+</tr>
+<tr>
+<td>GeeksforGeeks (Aug 2021–Nov 2022)</td>
+<td>Backend (no project header on resume)</td>
+<td>100K+ daily queries (~1–2 RPS avg, ~10× spikes) · +15–20% relative</td>
+</tr>
+</tbody>
+</table>
+<h2 id="metrics-honesty">Metrics honesty</h2>
+<p>Every TPS/RPS/from→to on the PDF is catalogued in <a href="09_metrics_derivations.html"><code>09_metrics_derivations.md</code></a> as <strong>DOCUMENTED</strong> vs <strong>ESTIMATED</strong>. Read that before quoting numbers.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

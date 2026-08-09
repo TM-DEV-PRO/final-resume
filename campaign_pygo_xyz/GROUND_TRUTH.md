@@ -1,6 +1,6 @@
 # Ground Truth Fact Sheet (campaign_pygo_xyz snapshot)
 
-Canonical facts for the Python/Go XYZ MNC campaign resume. Mirrors `interview_prep_v2/GROUND_TRUTH.md` with campaign notes. Every resume bullet in `campaign_pygo_xyz/resume/` must trace to a row here. Tags: **MEASURED** (documented artifact), **TARGET** (design goal, say "targeting"), **HISTORICAL** (from past resumes, defensible), **ESTIMATED** (derived, say so).
+Canonical facts for the Python/Go XYZ MNC campaign resume. Mirrors `resume_v2/prep/GROUND_TRUTH.md` with campaign notes. Every resume bullet in `campaign_pygo_xyz/resume/` must trace to a row here. Tags: **MEASURED** (documented artifact), **TARGET** (design goal, say "targeting"), **HISTORICAL** (from past resumes, defensible), **ESTIMATED** (derived, say so).
 
 **Campaign AI-marker rule:** resume bullet text must not contain `:`, `;`, or em dashes.
 
@@ -49,7 +49,7 @@ Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers
 | Failures toward **under 2%**; reproducibility **0→100%** | TARGET | Copilot FRD §0 / §6 |
 | **14** audited read-only tools; **3** human confirm gates; agent tools only read planning data (writes gated) | DESIGN | Overview + Copilot FRD |
 | Hindsight scorecard + grounded narration + tenant catalogs without code deploy | DESIGN / building | Hindsight FRD v1.2 |
-| Per-tenant **ClickHouse**: **63 tables / 8 layers** (incl. 7 stage twins), insert-only / partition-swapped; agent **`readonly=1`**; service roles **INSERT-only** | MEASURED design | Confluence DDL Phase-1 v1.5 (`../interview_prep_v2/29_ia_ch_ddl_phase1_source.md`) |
+| Per-tenant **ClickHouse**: **63 tables / 8 layers** (incl. 7 stage twins), insert-only / partition-swapped; agent **`readonly=1`**; service roles **INSERT-only** | MEASURED design | Confluence DDL Phase-1 v1.5 (`../resume_v2/prep/29_ia_ch_ddl_phase1_source.md`) |
 | **5** dictionaries · **19** argMax views · **4/3/2** roles/profiles/quotas; syntax PASS on CH **25.12**; **zero runtime evidence** yet | MEASURED design | same |
 | Do **not** recite **624 columns** (not on Phase-1 page); prefer **63** over overview “60” | Honesty | same |
 | External review **PASS**; load test remaining — say **building**, not shipped | MEASURED design status | Overview + DDL Phase-1 |

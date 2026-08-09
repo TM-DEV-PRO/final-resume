@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>04_db_architecture — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Legacy Python/Go</a><a href="../InterviewPrep.html">Prep hub</a><span class="path">resume/prep/agentic_assort_playbook/04_db_architecture.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#4-database-architecture-hld-lld">4. Database architecture (HLD + LLD)</a>
+<a class="lvl2" href="#41-hld-the-three-tier-spine">4.1 HLD — the three-tier spine</a>
+<a class="lvl2" href="#42-the-tenant-unified-derived-schema">4.2 The tenant-unified derived schema</a>
+<a class="lvl2" href="#43-lld-clickhouse-insert-only-versioned-model">4.3 LLD — ClickHouse insert-only / versioned model</a>
+<a class="lvl2" href="#44-cube-rollup-pivot-fast-reads">4.4 Cube / rollup / pivot (fast reads)</a>
+<a class="lvl2" href="#45-the-reconciled-verdict-decision-gates">4.5 The reconciled verdict + decision gates</a>
+<a class="lvl2" href="#46-ingestion-be-precise-in-the-room">4.6 Ingestion (be precise in the room)</a></nav>
+<main><hr>
+<h1 id="4-database-architecture-hld-lld">4. Database architecture (HLD + LLD)</h1>
+<h2 id="41-hld-the-three-tier-spine">4.1 HLD — the three-tier spine</h2>
+<pre><code>                    ┌─────────────────────────────────────────────────────────┐
+   RAW FACTS  ─────▶│  BigQuery  =  SOURCE OF TRUTH + batch cube/rollup builds │  (OLAP, scan-heavy, quota-limited DML)
+                    └───────────────┬─────────────────────────────────────────┘
+                                    │ scheduled ELT (build pre-aggregated cube)
+                                    ▼
+                    ┌─────────────────────────────────────────────────────────┐
+   planner edits ──▶│  Postgres  =  EDITABLE SYSTEM-OF-RECORD (ACID, procs)    │  (OLTP writes, read-after-write)
+                    └───────────────┬───────────────────────────▲─────────────┘
+             hydrate plan slice     │ commit deltas             │
+                                    ▼                           │
+                    ┌───────────────────────────┐               │
+                    │ DuckDB (in-process pivot)  │───────────────┘
+                    └───────────────────────────┘
+                                    │ (at scale, read-serving)
+                                    ▼
+                    ┌─────────────────────────────────────────────────────────┐
+   fast pivots  ◀───│  ClickHouse = OLAP read/pivot serving (gated, insert-only)│
+                    └─────────────────────────────────────────────────────────┘
+   Invariant: BigQuery stays truth; Postgres stays the editable SoR — in every scenario.
+</code></pre>
+<p><strong>Why split:</strong> the product is <strong>OLTP-with-pivot</strong> (editable grid, ACID, read-after-write) <em>and</em> <strong>OLAP</strong> (hindsight scans). No single engine is best at both, so each workload runs on the engine that's best at it. "Everything in one OLAP DB" breaks transactional writes + per-edit cost; "everything in BigQuery" hits DML quota/latency walls for interactive edits.</p>
+<h2 id="42-the-tenant-unified-derived-schema">4.2 The tenant-unified derived schema</h2>
+<p>One common schema keyed by <code>tenant</code>, at the <strong>derived (cube) grain</strong> = <code>cluster × class × fiscal_week</code> — <strong>not</strong> per-tenant tables.</p>
+<ul>
+<li><strong>Postgres</strong> (<code>planning_schema.sql</code>): <code>plan_cube</code> <code>PARTITION BY LIST (tenant)</code>, PK <code>(tenant, season, plan_id, cluster, class, fiscal_week)</code>; onboarding a client = <code>CREATE TABLE plan_cube_kik PARTITION OF plan_cube FOR VALUES IN ('kik')</code>. Same-shaped <code>plan_cell_edits</code> audit table.</li>
+<li><strong>ClickHouse</strong> (<code>ch_planning_schema.sql</code>): <code>tenant</code> leads both <code>PARTITION BY (tenant, l1, fiscal_week)</code> and <code>ORDER BY (tenant, season, plan_id, l4, store_code, metric)</code>.</li>
+<li>The <strong>cube-build SQL is tenant-parameterized and identical</strong> across clients → one codebase/query set/procedures serves all tenants. Physical isolation (separate Postgres DB + BigQuery project per tenant) is retained; "unified" is a <strong>schema/codebase standard at the derived level</strong>, not a shared physical instance.</li>
+</ul>
+<h2 id="43-lld-clickhouse-insert-only-versioned-model">4.3 LLD — ClickHouse insert-only / versioned model</h2>
+<pre><code class="language-sql">-- main planning cube: INSERT-ONLY VERSIONED (no ALTER UPDATE/DELETE)
+CREATE TABLE plan_cube (
+  tenant String, season String, plan_id String,
+  l1 String, l4 String, store_code String,
+  fiscal_week UInt16,
+  metric String, value Float64,           -- 80–90 metrics modelled long (metric,value)
+  version UInt64,                          -- monotonic epoch-ms; newest wins
+  is_deleted UInt8 DEFAULT 0               -- soft delete (no hard DELETE)
+) ENGINE = ReplacingMergeTree(version)
+PARTITION BY (tenant, l1, fiscal_week)     -- week/L1 anchor avoids hot-partition churn
+ORDER BY (tenant, season, plan_id, l4, store_code, metric);
+
+-- EDIT  = insert a new version (never UPDATE)
+INSERT INTO plan_cube VALUES (..., metric, new_value, toUnixTimestamp64Milli(now64()), 0);
+
+-- READ latest = argMax over version (or FINAL on small partitions)
+SELECT l4, store_code, argMax(value, version) AS value
+FROM plan_cube WHERE tenant=? AND plan_id=? AND is_deleted=0
+GROUP BY l4, store_code;
+
+-- SOFT DELETE = insert a tombstone version
+INSERT INTO plan_cube VALUES (..., metric, 0.0, &lt;ver&gt;, 1);
+
+-- BULK re-seed (LY/LLY across a slice) = atomic partition swap, NOT a mutation
+ALTER TABLE plan_cube REPLACE PARTITION (tenant,l1,week) FROM plan_cube_staging;
+
+-- incremental brand/L1 rollups without rescans
+CREATE TABLE plan_cube_l1_rollup ( ..., value_state AggregateFunction(sum, Float64) )
+ENGINE = AggregatingMergeTree ...;
+</code></pre>
+<p><strong>Why this is the crux:</strong> ClickHouse <code>ALTER UPDATE/DELETE</code> <strong>mutations are async — they degrade past ~500 and stop accepting past ~1,000</strong>. A planning grid is edit-heavy, which is why the legacy audit said "no ClickHouse." The insight: <strong>model an edit as an INSERT of a new <code>version</code></strong>, read the latest with <code>argMax(version)</code>, tombstone for deletes, partition-swap for bulk re-seeds. A guard asserts <code>mutations_used == 0</code>. This also gives <strong>undo / version-diff for free</strong> (older versions retained until merge; the product caches <strong>up to 10 undo steps in Redis</strong> before async commit, rendering diffs as dual-value cells). Production hardens it with <strong><code>ReplicatedReplacingMergeTree</code> + sharding</strong> (ClickHouse Keeper, or physical <strong>L1-table sharding to kill hotspots</strong>), <strong><code>AggregatingMergeTree</code></strong> rollups, <strong><code>VersionedCollapsingMergeTree</code></strong> for out-of-order CDC, and <strong>Projections</strong>; partition <code>PARTITION BY toYYYYMM(week_date)</code>, <code>ORDER BY (measure, hierarchy…)</code> for sparse-index granule skipping. <strong>PoC results (requirements notebook):</strong> <code>mutations_used = 0</code> at every scale, and <strong>sub-second pivots over 250M synthetic rows — 8–130 ms filtered reads, ~160 ms writes, ~140–200× vs the legacy Postgres flat schema</strong> (see §8.4–8.5).</p>
+<h2 id="44-cube-rollup-pivot-fast-reads">4.4 Cube / rollup / pivot (fast reads)</h2>
+<ul>
+<li><strong>cube_builder</strong> — runs the tenant-parameterized <code>CUBE_BUILD_SQL</code> on BigQuery (aggregates fact → <code>cluster×class×week</code>), upserts to Postgres <code>plan_cube</code>.</li>
+<li><strong>rollup_builder</strong> — CTAS a store×category×week rollup <strong>from the clustered fact</strong> (<code>PARTITION BY RANGE_BUCKET(fiscal_week) CLUSTER BY store_code,l3_name</code>): reads ~3.3 GiB instead of ~2.9 TiB (<strong>~280–880× cheaper</strong>; ~$8 once, ~$0.008/day).</li>
+<li><strong>pivot_service</strong> — loads the plan's cube slice into DuckDB (Arrow) and runs native <code>PIVOT … USING sum() GROUP BY</code>; pivots track the <em>slice</em> size, not the fact.</li>
+</ul>
+<h2 id="45-the-reconciled-verdict-decision-gates">4.5 The reconciled verdict + decision gates</h2>
+<p>The decision was <strong>not</strong> "adopt ClickHouse now" — it was a staged gate:
+1. <strong>In-stack BigQuery fixes first</strong> (certain, no new infra): clustered <code>_assort</code> (~3×), store×cat×week rollup (~280×), forbid <code>SELECT *</code> + require date filter (kills the 38.8 TiB / $327 leak), fix cross-tenant hardcodes.
+2. <strong>Postgres discipline</strong>: transaction-wrap multi-table ops, set-based <code>UPDATE … FROM</code>, repartition <code>size_split_master</code> (5,503 LIST partitions for 298K rows), purge soft-delete debris, normalize the EAV spine.
+3. <strong>Versioned-write + pivot PoC at 10×</strong>: measure Postgres+DuckDB vs ClickHouse on the <em>same</em> insert-only cube; <strong>only then</strong> decide if ClickHouse earns a place.</p>
+<p><strong>Two end-states:</strong> (1) <strong>ClickHouse-unified</strong> if the insert-only model meets the pivot+update SLA at 100–200 users; (2) <strong>split SoR</strong> (BigQuery truth + Postgres strict-edit SoR + DuckDB pivot; CH read-only) if strict in-transaction per-cell read-after-write is required. <em>Anti-pattern explicitly rejected: "everything in one OLAP DB."</em></p>
+<h2 id="46-ingestion-be-precise-in-the-room">4.6 Ingestion (be precise in the room)</h2>
+<p>Ingestion into the serving/planning stores is <strong>batch ELT, not streaming</strong>: BigQuery cube/rollup builds → upsert/COPY into Postgres; ClickHouse fed by HTTP <code>INSERT … FORMAT JSONEachRow</code> + <code>REPLACE PARTITION</code> from staging. <strong>No Kafka/Airflow/Spark/Flink in the Agentic-Assort DB path.</strong> (Elsewhere in the org: the <em>data-fabric</em> platform uses an <strong>aiokafka</strong> consumer for async embeddings and <strong>Cloud Tasks + Cloud Scheduler</strong> for orchestration; legacy AssortSmart uses <strong>Pub/Sub</strong> for MDM sync — mention these as adjacent, not as this product's pipeline.)</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

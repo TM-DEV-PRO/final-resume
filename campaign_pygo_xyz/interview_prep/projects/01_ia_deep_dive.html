@@ -38,7 +38,7 @@ strong{color:#fff}
 </style>
 </head>
 <body>
-<div class="topbar"><a href="../../../index.html">← Hub</a><a href="../../../CampaignPyGo.html">Campaign</a><a href="../../../InterviewPrepV2.html">Prep v2</a><a href="../../../ApplicationKit.html">Application Kit</a><span class="path">campaign_pygo_xyz/interview_prep/projects/01_ia_deep_dive.html</span></div>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Campaign track</a><a href="../../../InterviewPrep.html">Prep hub</a><span class="path">campaign_pygo_xyz/interview_prep/projects/01_ia_deep_dive.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-deep-dive-bullet-by-bullet-interview-defense">Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense</a>
 <a class="lvl2" href="#0-role-framing-30-second-open">0. Role framing (30-second open)</a>
@@ -186,7 +186,7 @@ distribution_centres       ─daily─►  distribution_centres
 </code></pre>
 <p>Pattern for hot facts: <strong>insert-only updates</strong> into ReplacingMergeTree; version column (e.g. <code>_cdc_synced_at</code>) collapses duplicates on merge. Soft deletes via <code>_cdc_deleted</code>. Reads that need exact latest may use <code>FINAL</code> (costly) or partition-scoped queries + application-level version awareness.</p>
 <h3 id="2b-agentic-cluster-clickhouse-model-copilot-read-plane">2b. Agentic Cluster ClickHouse model (copilot read plane)</h3>
-<p><strong>Source of truth:</strong> Confluence <a href="https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240">DDL Model Phase-1</a> v1.5 — full extract in <a href="../../../interview_prep_v2/29_ia_ch_ddl_phase1_source.html"><code>../../../interview_prep_v2/29_ia_ch_ddl_phase1_source.md</code></a>.</p>
+<p><strong>Source of truth:</strong> Confluence <a href="https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240">DDL Model Phase-1</a> v1.5 — full extract in <a href="../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.html"><code>../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md</code></a>.</p>
 <p><strong>Summary (MEASURED design):</strong> <strong>63 tables / 8 layers</strong> (incl. <strong>7</strong> stage twins), <strong>5</strong> dictionaries, <strong>19</strong> argMax views, one database per tenant, <code>formatQuery</code>-validated on ClickHouse <strong>25.12</strong>. Doctrine: <strong>never erase</strong> on the hot path. <strong>Zero runtime evidence</strong> on this schema yet — load test at bring-up. <strong>Do not recite 624 columns</strong> (not on Phase-1 page).</p>
 <pre><code>LAYER MAP (Phase-1 names)
 

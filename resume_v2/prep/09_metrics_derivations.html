@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>09_metrics_derivations — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Python/Go v2</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">resume_v2/prep/09_metrics_derivations.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#metrics-derivations-resume-v2-java-tracks">Metrics Derivations (resume v2 + Java tracks)</a>
+<a class="lvl2" href="#decision-log-spark-flink-pinot-terraform-multi-region-k8s-ops">Decision log: Spark, Flink, Pinot, Terraform, multi-region, K8s ops</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart-clickhouse-planning-store">1. Impact Analytics — AssortSmart + ClickHouse planning store</a>
+<a class="lvl2" href="#2-uber-frm-scoping">2. Uber FRM Scoping</a>
+<a class="lvl2" href="#3-uber-menu-ingestion-selenium-kafka-flink-spark">3. Uber Menu Ingestion (Selenium → Kafka → Flink → Spark)</a>
+<a class="lvl2" href="#4-masters-india-gst">4. Masters India GST</a>
+<a class="lvl2" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
+<a class="lvl2" href="#6-achievements">6. Achievements</a></nav>
+<main><h1 id="metrics-derivations-resume-v2-java-tracks">Metrics Derivations (resume v2 + Java tracks)</h1>
+<p>Every TPS / RPS / from-to / money number on the <strong>current</strong> v2 and Java PDFs. Interview line: say <strong>"estimated, derived from X"</strong> for ESTIMATED and <strong>"measured / documented"</strong> for MEASURED or HISTORICAL. Do not invent finer precision than this table.</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MEASURED</strong></td>
+<td>Documented in POC / code / Confluence</td>
+</tr>
+<tr>
+<td><strong>TARGET</strong></td>
+<td>Design goal; say "targeting"</td>
+</tr>
+<tr>
+<td><strong>HISTORICAL</strong></td>
+<td>From past resumes / own experience</td>
+</tr>
+<tr>
+<td><strong>ESTIMATED</strong></td>
+<td>Derived arithmetic; say so</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="decision-log-spark-flink-pinot-terraform-multi-region-k8s-ops">Decision log: Spark, Flink, Pinot, Terraform, multi-region, K8s ops</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Resume decision</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spark + Flink on Uber Menu</strong></td>
+<td><strong>ON resume (restored Jul 2026)</strong></td>
+<td>Best fit: scrapers → Kafka → Flink online → Spark backfills. Matches original event-driven Menu bullet. Peak events/sec and Spark row counts ESTIMATED.</td>
+</tr>
+<tr>
+<td><strong>Pinot</strong></td>
+<td>Off one-pager</td>
+<td>Space + weaker need vs Flink/Spark for ATS; keep verbal if asked about health dashboards.</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Skills + Menu + Masters</td>
+<td>Menu bus + Masters e-invoice async.</td>
+</tr>
+<tr>
+<td><strong>Terraform / multi-region / K8s cluster ops</strong></td>
+<td><strong>OMIT</strong> experience; STUDY ONLY in <code>17_senior_systems_study_only.md</code></td>
+<td>No 95%+ personal ownership evidence. Kubernetes stays skills-listed only.</td>
+</tr>
+<tr>
+<td><strong>ClickHouse</strong></td>
+<td>Keep as <strong>POC</strong> bullet</td>
+<td>MEASURED benchmarks; not a full production cutover claim.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-impact-analytics-assortsmart-clickhouse-planning-store">1. Impact Analytics — AssortSmart + ClickHouse planning store</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20 to 100 configs per plan vs 1 manual</td>
+<td>TARGET / design</td>
+<td>Copilot Phase 1 FRD</td>
+</tr>
+<tr>
+<td>Turnaround under 1 hour (from days)</td>
+<td>TARGET</td>
+<td>Same FRD</td>
+</tr>
+<tr>
+<td>Failures under 2% from 8.5%</td>
+<td>MEASURED baseline / TARGET</td>
+<td>37/437 MEASURED</td>
+</tr>
+<tr>
+<td>100% reproducible clusters</td>
+<td>TARGET</td>
+<td>Config/seed persistence</td>
+</tr>
+<tr>
+<td>p95 probes under 500ms vs 1 to 20s BigQuery</td>
+<td>MEASURED baseline / TARGET</td>
+<td>Slot variance vs dedicated CH</td>
+</tr>
+<tr>
+<td>FastAPI owns chat; Go doing layer tools</td>
+<td>MEASURED design</td>
+<td><code>final_agenticassort.png</code> HLD</td>
+</tr>
+<tr>
+<td>Datadog + LangSmith + PostHog + OTEL</td>
+<td>MEASURED design</td>
+<td>HLD dual-layer obs + product analytics</td>
+</tr>
+<tr>
+<td><strong>ClickHouse/GCS end-to-end planning store</strong> (63/8, insert-only / partition-swapped, agent <code>readonly=1</code>)</td>
+<td>MEASURED design</td>
+<td>Confluence DDL Phase-1 v1.5 + HLD (doing layer → CH/GCS)</td>
+</tr>
+<tr>
+<td><strong>250M pivot 189s → 12.3s (~15×)</strong></td>
+<td>MEASURED</td>
+<td>Pivot / consolidated POC; ~15.5× on DISTINCT grids; typical aggregates ~2–3× honest</td>
+</tr>
+<tr>
+<td><strong>Avoided materializing 12B store-week (100–450×)</strong></td>
+<td>MEASURED</td>
+<td>LinePlanning; aggregate ~25M; 12B often projected</td>
+</tr>
+<tr>
+<td>Hardware caveat</td>
+<td>MEASURED</td>
+<td>PG 48 GB host vs CH 10 CPU / 3.3 GB VM (POC harness)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Prep / decision history (not resume headline):</strong> POC hybrid verdict (PG keyed UPDATE &lt;1ms; CH large reads); legacy mtp-assort = no wholesale CH; Order Batching 60× / 23.7M / 3.86s. Interview close: "POCs said hybrid for legacy OLTP mutations; agentic-assort changed the write model to insert-only versions so planning data lives on ClickHouse end-to-end."</p>
+<p><strong>Rapid fire:</strong> Lead with CH/GCS planning store + insert-only versions. If challenged with POC hybrid slides, explain write-model unlock + thin PG metadata only.</p>
+<hr>
+<h2 id="2-uber-frm-scoping">2. Uber FRM Scoping</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8 screens, <strong>30+ REST APIs</strong></td>
+<td>MEASURED</td>
+<td>Code: ~32 routes including health. Do <strong>not</strong> say 36.</td>
+</tr>
+<tr>
+<td><strong>$340M</strong> group materiality</td>
+<td>MEASURED</td>
+<td>Q4 2025 sample metrics / CSVs</td>
+</tr>
+<tr>
+<td><strong>70% cut (~2 weeks → ~3–4 days)</strong></td>
+<td>TARGET + ESTIMATED baseline</td>
+<td>70% is TDD project target (not measured). From-to ESTIMATED analyst calendar time for manual Sheets recon/scoping. Say "targeting".</td>
+</tr>
+<tr>
+<td>11 table schema, 55 line items, 14 entities</td>
+<td>MEASURED</td>
+<td>11 SQLAlchemy models; ~26 BS + ~29 IS ≈ 55; 14 entities in sample</td>
+</tr>
+<tr>
+<td>Recon v2 <strong>18 files</strong>, +1,268 LOC</td>
+<td>MEASURED</td>
+<td><code>RECON_API_MIGRATION.md</code></td>
+</tr>
+<tr>
+<td>10-Q validation</td>
+<td>MEASURED</td>
+<td>Recon HFM vs financial statement amounts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Do not claim:</strong> 19M→300K rows (UNSUPPORTED), FRM p95 &lt;300ms as measured, 100% coverage as resume fact.</p>
+<p><strong>Rapid fire:</strong> <em>"Is 70% measured?"</em> — No. TDD target. Baseline ~2 weeks of analyst work to ~3–4 days is the ESTIMATED from-to I use when asked for brackets.</p>
+<hr>
+<h2 id="3-uber-menu-ingestion-selenium-kafka-flink-spark">3. Uber Menu Ingestion (Selenium → Kafka → Flink → Spark)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>30K+</strong> menus/month</td>
+<td>HISTORICAL</td>
+<td>Original / 4yr resume</td>
+</tr>
+<tr>
+<td>Onboarding <strong>24h → 2h</strong> (90%)</td>
+<td>HISTORICAL</td>
+<td>Same</td>
+</tr>
+<tr>
+<td><strong>$600K+</strong> annually</td>
+<td>HISTORICAL arithmetic</td>
+<td>~$2/menu × 30K × 12 = $720K list → floor $600K+</td>
+</tr>
+<tr>
+<td>Kafka <strong>~200–500 peak events/sec</strong></td>
+<td>ESTIMATED (<strong>prep only — off PDF</strong>)</td>
+<td>Fleet-run amplification of menu/item/retry events; confusing next to 30K menus/mo on a one-pager</td>
+</tr>
+<tr>
+<td><strong>Flink</strong> normalize/dedupe online</td>
+<td>HISTORICAL role</td>
+<td>Event-time keyed processing; load ESTIMATED at Kafka peak</td>
+</tr>
+<tr>
+<td><strong>Spark</strong> backfills</td>
+<td>HISTORICAL role / ESTIMATED volume</td>
+<td>~1–2M item rows for typical reprocess window</td>
+</tr>
+<tr>
+<td>+<strong>95%</strong> successful ingestions</td>
+<td>HISTORICAL; baseline ESTIMATED</td>
+<td>~60–65% → 95%+</td>
+</tr>
+<tr>
+<td><strong>98%</strong> fidelity, <strong>100%</strong> schema consistency</td>
+<td>HISTORICAL offline eval</td>
+<td>Say offline/eval</td>
+</tr>
+<tr>
+<td>ANZ <strong>99.9%</strong>, <strong>20 h/week</strong> saved</td>
+<td>HISTORICAL</td>
+<td>Separate track</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Money deep dive:</strong> Unit cost killed ≈ $2/menu. Monthly $60K. Annual list $720K. Resume floors at $600K+.</p>
+<p><strong>Rapid fire:</strong> Flink = online path; Spark = backfill. Masters India Kafka is a different product. Deep defense: <code>14_uber_menu_deep_dive.md</code>.</p>
+<hr>
+<h2 id="4-masters-india-gst">4. Masters India GST</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>p95 <strong>1.2s → 300ms</strong></td>
+<td>HISTORICAL</td>
+<td>All resumes agree ~1000–1200ms → 300–400ms</td>
+</tr>
+<tr>
+<td><strong>1,500+</strong> clients</td>
+<td>HISTORICAL</td>
+<td>Prefer 1500+; drop 2500+</td>
+</tr>
+<tr>
+<td><strong>100K+/import</strong>, <strong>1M+ daily</strong></td>
+<td>HISTORICAL</td>
+<td>Past resumes</td>
+</tr>
+<tr>
+<td><strong>~12 TPS avg, 100+ peak</strong></td>
+<td>ESTIMATED</td>
+<td>1M / 86,400 ≈ 11.6 TPS. Peaks ~8–10× on filing deadlines</td>
+</tr>
+<tr>
+<td><strong>700 → 4,000 req/min (~67 RPS)</strong></td>
+<td>HISTORICAL</td>
+<td>4000/60 ≈ 66.7 RPS</td>
+</tr>
+<tr>
+<td>Redis <strong>-30%</strong> redundant reads</td>
+<td>HISTORICAL</td>
+<td>Cache-aside</td>
+</tr>
+<tr>
+<td>Idempotency / retries / DLQ</td>
+<td>HISTORICAL narrative</td>
+<td>Fault-tolerance bullet</td>
+</tr>
+<tr>
+<td>Triage <strong>70%</strong> (<strong>~30 min → &lt;10 min</strong>)</td>
+<td>HISTORICAL / ESTIMATED baseline</td>
+<td>ELK + New Relic</td>
+</tr>
+<tr>
+<td>Coverage <strong>35% → 82%</strong>, <strong>98%</strong> deploy success</td>
+<td>HISTORICAL</td>
+<td>CI gates</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-geeksforgeeks">5. GeeksforGeeks</h2>
+<table>
+<thead>
+<tr>
+<th>Claim on resume</th>
+<th>Tag</th>
+<th>Derivation / source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>10K+</strong> daily queries</td>
+<td>User-standardized</td>
+<td>Older resumes conflicted (1K / 100K); use 10K+</td>
+</tr>
+<tr>
+<td><strong>~1–2 RPS avg, ~10× contest spikes</strong></td>
+<td>ESTIMATED</td>
+<td>10K/86,400 ≈ 0.12 RPS if literal queries; treat as order-of-ten-thousand daily interactions with contest spikes ~10×</td>
+</tr>
+<tr>
+<td>Premium <strong>+15–20%</strong> relative</td>
+<td>HISTORICAL</td>
+<td>Relative lift; no absolute baseline</td>
+</tr>
+<tr>
+<td>Course sales <strong>+30%</strong>, ops <strong>+70%</strong></td>
+<td>HISTORICAL</td>
+<td>Business attribution; own engineering</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-achievements">6. Achievements</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Tag</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Jam <strong>2260 / 37,000+</strong></td>
+<td>HISTORICAL</td>
+<td>Past resumes</td>
+</tr>
+<tr>
+<td>SIH 2020 finalist top 3 nationally</td>
+<td>HISTORICAL</td>
+<td>Past resumes</td>
+</tr>
+<tr>
+<td>Global AI Hackathon EPAM</td>
+<td>HISTORICAL</td>
+<td>User / EPAM</td>
+</tr>
+<tr>
+<td>Certificates HackerRank + LangChain Academy</td>
+<td>MEASURED</td>
+<td><code>certificates.txt</code></td>
+</tr>
+<tr>
+<td>CGPA 7.7</td>
+<td>MEASURED</td>
+<td>Kept in GROUND_TRUTH only; <strong>removed from PDFs</strong></td>
+</tr>
+</tbody>
+</table></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

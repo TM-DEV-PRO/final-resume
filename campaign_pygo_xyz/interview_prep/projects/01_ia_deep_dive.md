@@ -109,7 +109,7 @@ Pattern for hot facts: **insert-only updates** into ReplacingMergeTree; version 
 
 ### 2b. Agentic Cluster ClickHouse model (copilot read plane)
 
-**Source of truth:** Confluence [DDL Model Phase-1](https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240) v1.5 — full extract in [`../../../interview_prep_v2/29_ia_ch_ddl_phase1_source.md`](../../../interview_prep_v2/29_ia_ch_ddl_phase1_source.md).
+**Source of truth:** Confluence [DDL Model Phase-1](https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240) v1.5 — full extract in [`../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md`](../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md).
 
 **Summary (MEASURED design):** **63 tables / 8 layers** (incl. **7** stage twins), **5** dictionaries, **19** argMax views, one database per tenant, `formatQuery`-validated on ClickHouse **25.12**. Doctrine: **never erase** on the hot path. **Zero runtime evidence** on this schema yet — load test at bring-up. **Do not recite 624 columns** (not on Phase-1 page).
 
