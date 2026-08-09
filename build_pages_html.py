@@ -79,11 +79,27 @@ def promote_mermaid(html: str) -> str:
 ROOTS = [
     "campaign_pygo_xyz",
     "resume_v2/prep",
-    "resume/prep",
+    "resume_v2/outreach",
+    "resume_v2/linkedin",
     "resume_java/prep",
+    "resume_java/outreach",
+    "resume_java/linkedin",
+    "resume/prep",
+    "resume/outreach",
+    "resume/linkedin",
 ]
 
-SKIP_NAMES = {".git", "node_modules", "__pycache__"}
+# Track-root markdown (ApplicationKit / application questions) — convert in place.
+ROOT_MD_FILES = [
+    "resume_v2/application_questions.md",
+    "resume_java/ApplicationKit.md",
+    "resume_java/application_questions.md",
+    "resume/ApplicationKit.md",
+    "resume/application_questions.md",
+    # resume_v2/ApplicationKit.md kept for editors; do NOT convert — hand-maintained ApplicationKit.html
+]
+
+SKIP_NAMES = {".git", "node_modules", "__pycache__", "artifacts", "output", "sections"}
 
 
 def md_to_html_links(text: str) -> str:
@@ -102,37 +118,44 @@ def md_to_html_links(text: str) -> str:
 
 
 def rel_hub_links(rel_path: str) -> str:
-    """Topbar links back to the owning track (or root hub)."""
+    """Topbar links back to the owning track (or root hub).
+
+    `rel_path` is repo-relative (file or dir/...). Depth of `/` chooses `../` count
+    so track-root pages and nested prep/outreach pages both resolve correctly.
+    """
+    depth = rel_path.count("/")  # resume_v2/foo.md → 1; resume_v2/prep/foo.md → 2
+    track_up = "../" * max(depth - 1, 0)  # → owning track folder
+    root_up = "../" * depth  # → repo root hub
+
     if rel_path.startswith("resume_v2/"):
         return (
-            '<a href="../../index.html">← All tracks</a>'
-            '<a href="../index.html">Python/Go v2</a>'
-            '<a href="../InterviewPrep.html">Prep hub</a>'
-            '<a href="../ApplicationKit.html">Application Kit</a>'
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Python/Go v2</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
         )
     if rel_path.startswith("resume_java/"):
         return (
-            '<a href="../../index.html">← All tracks</a>'
-            '<a href="../index.html">Java/Spring</a>'
-            '<a href="../InterviewPrep.html">Prep hub</a>'
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Java/Spring</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
         )
     if rel_path.startswith("resume/"):
         return (
-            '<a href="../../index.html">← All tracks</a>'
-            '<a href="../index.html">Legacy Python/Go</a>'
-            '<a href="../InterviewPrep.html">Prep hub</a>'
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Legacy Python/Go</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
         )
     if rel_path.startswith("campaign_pygo_xyz/"):
-        depth = rel_path.count("/")
-        up = "../" * depth
         return (
-            f'<a href="{up}../index.html">← All tracks</a>'
-            f'<a href="{up}index.html">Campaign track</a>'
-            f'<a href="{up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Campaign track</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
         )
-    depth = rel_path.count("/")
-    up = "../" * depth if depth else ""
-    return f'<a href="{up}index.html">← Hub</a>'
+    return f'<a href="{track_up}index.html">← Hub</a>'
 
 
 def convert_file(md_path: str) -> str:
@@ -193,7 +216,18 @@ def iter_markdown() -> list[str]:
             for name in filenames:
                 if name.endswith(".md"):
                     found.append(os.path.join(dirpath, name))
-    return sorted(found)
+    for rel in ROOT_MD_FILES:
+        abs_md = os.path.join(BASE, rel)
+        if os.path.isfile(abs_md):
+            found.append(abs_md)
+    # de-dupe while preserving order
+    seen = set()
+    out = []
+    for p in found:
+        if p not in seen:
+            seen.add(p)
+            out.append(p)
+    return sorted(out)
 
 
 def rewrite_hub_file(path: str) -> None:
@@ -258,7 +292,9 @@ def main() -> None:
         os.path.join("campaign_pygo_xyz", "CampaignCards.html"),
         os.path.join("resume_v2", "ApplicationKit.html"),
         os.path.join("resume_v2", "InterviewPrep.html"),
+        os.path.join("resume_java", "ApplicationKit.html"),
         os.path.join("resume_java", "InterviewPrep.html"),
+        os.path.join("resume", "ApplicationKit.html"),
         os.path.join("resume", "InterviewPrep.html"),
         "index.html",
     ):
