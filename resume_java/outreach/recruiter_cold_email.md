@@ -21,7 +21,7 @@ I am targeting [Senior SWE / SDE2 / MTS] roles on [Team]. Resume attached. Happy
 
 Thanks
 Tarun Mittal
-(+91) 9001542418 · tm.eng2021@gmail.com
+(+91) 9079727197 · tmittaliet@gmail.com
 linkedin.com/in/t-mittal · github.com/TM-DEV-PRO
 
 ## LinkedIn DM short

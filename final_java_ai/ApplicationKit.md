@@ -22,7 +22,7 @@ Masters Kafka e-invoicing 1M+ IRP/day 100K+/import 700 to 4000 req/min. Drove ad
 Led 3 (Uber/EPAM). Mentored 2 (Masters).
 
 ## Links
-Phone (+91) 9001542418 · tm.eng2021@gmail.com · linkedin.com/in/t-mittal · github.com/TM-DEV-PRO
+Phone (+91) 9079727197 · tmittaliet@gmail.com · linkedin.com/in/t-mittal · github.com/TM-DEV-PRO
 
 ## Attach
 `artifacts/Tarun_Mittal_SSE_Java_AI_Final.pdf`
