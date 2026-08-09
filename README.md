@@ -36,4 +36,3 @@ cd resume_v2 && tectonic resume.tex
 python3 build_interview_prep.py
 ```
 
-Old root URLs (`InterviewPrepV2.html`, `ApplicationKit.html`, …) redirect into the track folders.
