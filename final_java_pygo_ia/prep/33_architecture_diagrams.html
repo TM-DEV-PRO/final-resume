@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>33_architecture_diagrams — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+PyGo IA</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_java_pygo_ia/prep/33_architecture_diagrams.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</a>
+<a class="lvl2" href="#2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</a>
+<a class="lvl2" href="#3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</a>
+<a class="lvl2" href="#4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</a>
+<a class="lvl2" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
+<a class="lvl2" href="#whiteboard-checklist">Whiteboard checklist</a></nav>
+<main><h1 id="architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</h1>
+<p>Whiteboard-ready diagrams for every project on the current PDFs. Style inspired by the original prep’s ASCII box-arrow clarity, plus mermaid for Pages rendering. Facts match <code>GROUND_TRUTH.md</code> — not copied from original resume narratives.</p>
+<p><strong>How to use:</strong> Sketch the ASCII in interviews; open the HTML hub for live mermaid. Java track: swap FastAPI→Spring Boot / Gin→Spring verbally.</p>
+<hr>
+<h2 id="1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</h2>
+<h3 id="architecture-ascii">Architecture (ASCII)</h3>
+<pre><code> Planner (Chat UI)          Planner (Manual / Hindsight UI)
+        │                              │
+        ▼                              ▼
+ ┌──────────────────────┐     ┌─────────────────────────┐
+ │ FastAPI + LangGraph  │     │ Go Gin write APIs       │
+ │ + MCP (agent plane)  │     │ (shared doing layer)    │
+ │ 14 read-only tools   │────►│ Clustering / Hindsight  │
+ │ 3 human confirm steps│     │ / Strategy              │
+ └──────────┬───────────┘     └───────────┬─────────────┘
+            │ read-only                    │ INSERT / approve path
+            ▼                              ▼
+ ┌──────────────────────────────────────────────────────┐
+ │ Per-tenant ClickHouse  (63 tables / 8 layers)        │
+ │ insert-only · refresh by swapping partitions         │
+ │ agent profile: SELECT only                           │
+ └──────────▲───────────────────────────────┬───────────┘
+            │ BQ → CH ingest                │
+     ┌──────┴──────┐                 ┌──────▼──────┐
+     │  BigQuery   │                 │ GCS / snaps │
+     │ (historical)│                 └─────────────┘
+     └─────────────┘
+ Obs: LangSmith (agent) · Datadog (platform) · PostHog (product)
+      ── shared OTEL trace_id ──
+</code></pre>
+<h3 id="user-flow-clustering-copilot">User flow (clustering copilot)</h3>
+<pre><code>Intent → Ground scope (tools) → Confirm search plan → Batch explore configs
+      → Present 3–5 scenarios → Human approve → Write via Go APIs → Grid refresh
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Chat[Chat UI] --> FA[FastAPI LangGraph MCP]
+  Manual[Manual UI] --> Go[Go Gin doing layer]
+  FA -->|14 R/O tools| Go
+  FA -.->|SELECT only| CH[(ClickHouse 63/8)]
+  Go -->|INSERT / approve| CH
+  BQ[BigQuery] -->|ingest| CH
+  FA --> LS[LangSmith]
+  Go --> DD[Datadog]
+</div>
+<h3 id="why-each-box">Why each box</h3>
+<table>
+<thead>
+<tr>
+<th>Box</th>
+<th>Problem it solves</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LangGraph/MCP</td>
+<td>Sequence audited tools; no free-form SQL from the LLM</td>
+</tr>
+<tr>
+<td>Go doing layer</td>
+<td>Same write path as Manual UI — one auth surface</td>
+</tr>
+<tr>
+<td>CH insert-only</td>
+<td>Avoid mutation queue; pivots stay fast (189s→12.3s POC)</td>
+</tr>
+<tr>
+<td>Human gates</td>
+<td>Agent never silently finalizes plans</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</h2>
+<h3 id="architecture-ascii_1">Architecture (ASCII)</h3>
+<pre><code> React (8 screens)
+   Recon · Materiality · EMI · Group · Component · Residual · Summary · …
+        │  30+ REST
+        ▼
+ ┌─────────────────────────────────────────┐
+ │ FastAPI  (or Spring Boot on Java track) │
+ │  handler / controller                   │
+ │       ▼                                 │
+ │  service  (materiality rules, trees)    │
+ │       ▼                                 │
+ │  repository  (SQLAlchemy 2.0 / JPA)     │
+ └──────────────────┬──────────────────────┘
+                    ▼
+            ┌───────────────┐
+            │ MySQL SSOT    │  ~11 models
+            │ facts · EMI   │  55 FSLIs / 14 entities
+            │ recon leaves  │  $340M / $170M sample
+            └───────▲───────┘
+                    │
+     Oracle HFM ────┘──── public 10-Q (validate)
+                    │
+                    ▼
+              PwC work papers
+</code></pre>
+<h3 id="quarterly-user-flow">Quarterly user flow</h3>
+<pre><code>Load HFM → Recon vs 10-Q → Set materiality → Group/Component scope
+  → Residual / EMI flags → Summary → Export to audit
+</code></pre>
+<h3 id="logical-er-say-this-dont-invent-extra-tables">Logical ER (say this, don’t invent extra tables)</h3>
+<pre><code>fiscal_period 1──* fslib_fact (BS/IS lines)
+entity 1──* component_assessment
+fslib_fact *──* scoping_decision (material / qualitative)
+emi_investee 1──* emi_assessment
+recon_leaf (HFM amt, filed amt, difference, line_id)
+metrics_table (materiality, residual threshold)
+</code></pre>
+<h3 id="mermaid_1">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  UI[React 8 screens] --> API[FastAPI layered service]
+  API --> DB[(MySQL SSOT)]
+  HFM[Oracle HFM] --> API
+  API --> TQ[10-Q checks]
+  DB --> PwC[PwC papers]
+</div>
+<hr>
+<h2 id="3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</h2>
+<h3 id="architecture-ascii_2">Architecture (ASCII)</h3>
+<pre><code> Third-party menu sites (HTML / PDF / image)
+        │  Selenium + IP rotate / proxies / retries
+        ▼
+ ┌─────────────────┐
+ │ Kafka ingest bus│  ordered per vendor key · replayable
+ └────────┬────────┘
+          ▼
+ ┌─────────────────┐
+ │ Flink normalize │  validate · keyed dedupe · route
+ └────┬────────┬───┘
+      │        │ unstructured
+      │        ▼
+      │   ┌──────────────────────────────┐
+      │   │ LangChain RAG + Gemini 2.5   │
+      │   │ Pro over Milvus              │
+      │   │ schema gate → human if low   │
+      │   └──────────────┬───────────────┘
+      │ structured       │
+      ▼                  ▼
+ ┌────────────────────────────┐
+ │ Uber Eats catalog upsert   │
+ └────────────────────────────┘
+
+ ANZ (Mobility — NOT Eats):
+ Driver/vehicle docs → compliance checks → 99.9% · ~20h/week HISTORICAL
+</code></pre>
+<h3 id="user-ops-flow">User / ops flow</h3>
+<pre><code>Scrape → Kafka → Flink → (catalog | RAG/Milvus/Gemini) → validate → live menu
+Success target 95%+ · onboarding 24h→2h · $600K+/yr · 30K+ menus/mo
+</code></pre>
+<h3 id="mermaid_2">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Sites --> Selenium --> Kafka --> Flink
+  Flink -->|structured| Catalog
+  Flink -->|PDF/image| RAG[RAG + Gemini + Milvus] --> Catalog
+</div>
+<hr>
+<h2 id="4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</h2>
+<h3 id="architecture-ascii_3">Architecture (ASCII)</h3>
+<pre><code> Client ERP / Dashboard
+        │
+ ┌──────▼──────────────────────────────┐
+ │ API Gateway  (canary % → FastAPI)   │
+ │              (fallback → PHP)       │
+ └──────┬──────────────────────────────┘
+        ▼
+ FastAPI microservices (auth · submit · bulk · recon)
+        │
+   ┌────┼────────────┬──────────────┐
+   ▼    ▼            ▼              ▼
+  PG   Redis      Kafka topics    MongoDB
+  (by  (hot       (chunks · IRP   (IRN/QR
+  tax  config)     jobs · hooks)   snapshots)
+  qtr)
+        │
+        ▼
+  Workers ──idempotency + retries + DLQ──► Government IRP
+        │
+   ELK + New Relic (request-id correlation)
+</code></pre>
+<h3 id="bulk-irp-flow">Bulk IRP flow</h3>
+<pre><code>File → validate chunks → Kafka → IRP workers → signed response → webhook/dashboard
+Key: client + fileHash + batchIndex  (no double register with gov)
+</code></pre>
+<h3 id="mermaid_3">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  ERP --> GW[Gateway canary]
+  GW --> API[FastAPI]
+  API --> KF[Kafka]
+  KF --> W[IRP workers] --> IRP[Gov IRP]
+  API --> PG[(PG by quarter)]
+  API --> Redis
+  W --> Mongo[(Mongo snapshots)]
+</div>
+<hr>
+<h2 id="5-geeksforgeeks">5. GeeksforGeeks</h2>
+<h3 id="architecture-ascii_4">Architecture (ASCII)</h3>
+<pre><code> Learners / influencers
+        │
+        ▼
+ ┌──────────────────┐
+ │ Django REST APIs │  (PHP → Django migration)
+ └────────┬─────────┘
+     ┌────┼────┬────────┐
+     ▼    ▼    ▼        ▼
+   MySQL Mongo Redis  Elasticsearch
+     │
+     ▼
+ Cron workers — video · reminders · cleanup   (+70% ops, separate from sales)
+ Influencer dashboard — earnings / coupons     (+30% course sales)
+ Votes / pins / locks                           (+15–20% premium)
+</code></pre>
+<h3 id="mermaid_4">Mermaid</h3>
+<div class="mermaid">flowchart TB
+  Clients --> Django
+  Django --> MySQL
+  Django --> MongoDB
+  Django --> Redis
+  Django --> ES[Elasticsearch]
+  Cron --> MySQL
+  Cron --> MongoDB
+</div>
+<hr>
+<h2 id="whiteboard-checklist">Whiteboard checklist</h2>
+<ul>
+<li>[ ] Draw AssortSmart agent vs doing layer split and where SQL is forbidden  </li>
+<li>[ ] Draw FRM handler→service→repo→MySQL and HFM/10-Q inputs  </li>
+<li>[ ] Draw Menu Selenium→Kafka→Flink with RAG branch; say ANZ ≠ Eats  </li>
+<li>[ ] Draw Masters gateway canary + Kafka IRP + quarter PG  </li>
+<li>[ ] Name one rejected alternative per critical box  </li>
+</ul>
+<p><strong>ER + full table catalogs + why/problem per tech:</strong> <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a></p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

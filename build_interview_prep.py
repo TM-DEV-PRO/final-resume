@@ -340,6 +340,51 @@ build(
     "Final Java+AI · Interview Prep",
 )
 
+# Final Java + AI (IA = Python/Go hybrid)
+FJPI = os.path.join(BASE, "final_java_pygo_ia")
+FJPI_PREP = os.path.join(FJPI, "prep")
+build(
+    [os.path.join(FJPI_PREP, "00_final_resume_map.md"), os.path.join(FJPI_PREP, "00_index.md"),
+     os.path.join(FJPI_PREP, "GROUND_TRUTH.md")]
+    + sorted(glob.glob(os.path.join(FJPI_PREP, "projects", "*.md")))
+    + [
+        os.path.join(FJPI, "ats", "00_ats_11_company_scorecard.md"),
+        os.path.join(FJPI, "ats", "company_notes_rubrik_databricks_planetscale.md"),
+        os.path.join(FJPI_PREP, "09_metrics_derivations.md"),
+        os.path.join(FJPI_PREP, "10_impact_analytics_deep_dive.md"),
+        os.path.join(FJPI_PREP, "11_uber_frm_deep_dive.md"),
+        os.path.join(FJPI_PREP, "12_masters_gfg_deep_dive.md"),
+        os.path.join(FJPI_PREP, "14_uber_menu_deep_dive.md"),
+        os.path.join(FJPI_PREP, "18_resume_number_catalog.md"),
+        os.path.join(FJPI_PREP, "21_ia_pivot_benchmark_source.md"),
+        os.path.join(FJPI_PREP, "22_application_questions.md"),
+        os.path.join(FJPI_PREP, "23a_ia_interview_pack.md"),
+        os.path.join(FJPI_PREP, "23b_uber_interview_packs.md"),
+        os.path.join(FJPI_PREP, "23c_masters_gfg_interview_packs.md"),
+        os.path.join(FJPI_PREP, "29_ia_ch_ddl_phase1_source.md"),
+        os.path.join(FJPI_PREP, "31_resume_deep_explain_map.md"),
+        os.path.join(FJPI_PREP, "32_common_interview_qa.md"),
+        os.path.join(FJPI_PREP, "37_senior_screen_deep_qa.md"),
+        os.path.join(FJPI, "campaign_extras", "interview_prep", "deployment_and_scale.md"),
+        os.path.join(FJPI_PREP, "33_architecture_diagrams.md"),
+        os.path.join(FJPI_PREP, "34_er_tables_tech_why.md"),
+        os.path.join(FJPI_PREP, "35_table_schemas_api_design.md"),
+        os.path.join(FJPI_PREP, "36_skills_ai_agents_defense.md"),
+        os.path.join(FJPI_PREP, "01_skills_trim_rationale.md"),
+        os.path.join(FJPI, "campaign_extras", "interview_prep", "tech_depth", "00_index.md"),
+        os.path.join(FJPI, "campaign_extras", "interview_prep", "tech_depth", "langgraph_mcp_rag.md"),
+        os.path.join(FJPI, "campaign_extras", "interview_prep", "tech_depth", "skills_fundamentals_map.md"),
+        os.path.join(FJPI, "campaign_extras", "interview_prep", "tech_depth", "observability_cloud.md"),
+        os.path.join(FJPI, "ApplicationKit.md"),
+        os.path.join(FJPI, "linkedin", "headline_about_experience.md"),
+        os.path.join(FJPI, "outreach", "recruiter_cold_email.md"),
+        os.path.join(FJPI, "outreach", "referrals_short_long.md"),
+    ],
+    os.path.join(FJPI, "InterviewPrep.html"),
+    "Tarun Mittal — Final Java + AI (IA=Py/Go) · Interview Prep",
+    "Final Java+PyGo IA · Interview Prep",
+)
+
 # Final Python + Go + AI
 FP = os.path.join(BASE, "final_pygo_ai")
 FP_PREP = os.path.join(FP, "prep")
@@ -400,6 +445,7 @@ for hub in (
     os.path.join(JAVA, "InterviewPrep.html"),
     os.path.join(CP, "InterviewPrep.html"),
     os.path.join(FJ, "InterviewPrep.html"),
+    os.path.join(FJPI, "InterviewPrep.html"),
     os.path.join(FP, "InterviewPrep.html"),
     os.path.join(FP, "ApplicationKit.html"),
     os.path.join(BASE, "index.html"),

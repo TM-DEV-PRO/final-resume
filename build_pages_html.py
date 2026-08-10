@@ -91,6 +91,10 @@ ROOTS = [
     "final_java_ai/outreach",
     "final_java_ai/linkedin",
     "final_java_ai/ats",
+    "final_java_pygo_ia/prep",
+    "final_java_pygo_ia/outreach",
+    "final_java_pygo_ia/linkedin",
+    "final_java_pygo_ia/ats",
     "final_pygo_ai/prep",
     "final_pygo_ai/outreach",
     "final_pygo_ai/linkedin",
@@ -108,6 +112,9 @@ ROOT_MD_FILES = [
     "final_java_ai/ApplicationKit.md",
     "final_java_ai/application_questions.md",
     "final_java_ai/README.md",
+    "final_java_pygo_ia/ApplicationKit.md",
+    "final_java_pygo_ia/application_questions.md",
+    "final_java_pygo_ia/README.md",
     "final_pygo_ai/application_questions.md",
     "final_pygo_ai/README.md",
     # hand-maintained rich ApplicationKit.html: resume_v2 + final_pygo_ai
@@ -152,6 +159,13 @@ def rel_hub_links(rel_path: str) -> str:
         return (
             f'<a href="{root_up}index.html">← All tracks</a>'
             f'<a href="{track_up}index.html">Final Java+AI</a>'
+            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
+        )
+    if rel_path.startswith("final_java_pygo_ia/"):
+        return (
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{track_up}index.html">Final Java+PyGo IA</a>'
             f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
             f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
         )
@@ -277,6 +291,7 @@ def write_folder_indexes() -> None:
         os.path.join(BASE, "resume_java"),
         os.path.join(BASE, "resume"),
         os.path.join(BASE, "final_java_ai"),
+        os.path.join(BASE, "final_java_pygo_ia"),
         os.path.join(BASE, "final_pygo_ai"),
     }
     dirs = set()

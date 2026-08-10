@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>35_table_schemas_api_design — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+PyGo IA</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_java_pygo_ia/prep/35_table_schemas_api_design.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#table-schemas-database-design-api-contracts-all-resume-projects">Table schemas · database design · API contracts (all resume projects)</a>
+<a class="lvl2" href="#how-to-answer">How to answer</a>
+<a class="lvl1" href="#1-impact-analytics-clickhouse-schemas-api-surface">1. Impact Analytics — ClickHouse schemas + API surface</a>
+<a class="lvl1" href="#2-uber-frm-mysql-schemas-measured-orm-rest">2. Uber FRM — MySQL schemas (MEASURED ORM) + REST</a>
+<a class="lvl1" href="#3-uber-eats-menu-event-catalog-rag-schemas-logical">3. Uber Eats Menu — event / catalog / RAG schemas (LOGICAL)</a>
+<a class="lvl1" href="#4-masters-india-gst-e-invoice-schemas-apis-logical-historical">4. Masters India — GST e-invoice schemas + APIs (LOGICAL / HISTORICAL)</a>
+<a class="lvl1" href="#5-geeksforgeeks-content-votes-subs-logical-historical">5. GeeksforGeeks — content / votes / subs (LOGICAL / HISTORICAL)</a>
+<a class="lvl1" href="#6-one-page-whiteboard-cheat-sheet">6. One-page whiteboard cheat sheet</a>
+<a class="lvl1" href="#sources">Sources</a></nav>
+<main><h1 id="table-schemas-database-design-api-contracts-all-resume-projects">Table schemas · database design · API contracts (all resume projects)</h1>
+<p>Column-level schemas and API surfaces you can whiteboard. Complements <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a> (ER / why-tech) and deep dives.</p>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Schema truth</th>
+<th>API truth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IA AssortSmart</strong></td>
+<td>MEASURED design — CH DDL Phase-1 (<code>DDL.sql</code> / Confluence)</td>
+<td>DESIGN — MCP tools + Go write path (load test pending)</td>
+</tr>
+<tr>
+<td><strong>Uber FRM</strong></td>
+<td>MEASURED code — 11 SQLAlchemy models</td>
+<td>MEASURED code — 32 routes under <code>/frm-scoping</code></td>
+</tr>
+<tr>
+<td><strong>Uber Menu</strong></td>
+<td>LOGICAL / HISTORICAL shapes (no public DDL in repo)</td>
+<td>LOGICAL event + upsert contracts</td>
+</tr>
+<tr>
+<td><strong>Masters India</strong></td>
+<td>LOGICAL / HISTORICAL (compliance SaaS narrative)</td>
+<td>LOGICAL REST + async IRP</td>
+</tr>
+<tr>
+<td><strong>GFG</strong></td>
+<td>LOGICAL / HISTORICAL</td>
+<td>LOGICAL REST</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Honesty:</strong> omit IA <strong>624 columns</strong>. No invented IA TPS. FRM = say <strong>11 models in scoping service</strong>, <strong>30+</strong> APIs. Menu = <strong>Milvus</strong> (not Pinecone). Copilot = <strong>building</strong>.</p>
+<hr>
+<h2 id="how-to-answer">How to answer</h2>
+<ol>
+<li>Name the <strong>store</strong> (MySQL / CH / Kafka+catalog / PG+Mongo).  </li>
+<li>Draw <strong>2–3 tables</strong> with PK + natural key + 5–8 critical columns.  </li>
+<li>Sketch <strong>3–5 endpoints</strong> with method, path, query/body, response shape.  </li>
+<li>Tag MEASURED / DESIGN / HISTORICAL / LOGICAL.</li>
+</ol>
+<hr>
+<h1 id="1-impact-analytics-clickhouse-schemas-api-surface">1. Impact Analytics — ClickHouse schemas + API surface</h1>
+<p><strong>Tenant DB example:</strong> <code>cluster_briscoes</code> (one CH database per retailer).<br>
+<strong>Inventory:</strong> 63 tables (incl. 7 stage twins) · 8 layers · 5 dictionaries · 19 views.<br>
+<strong>Writers:</strong> SYNC (facts/cubes/mirrors) · API/JR/NIGHT (decision plane) · agent = <code>readonly=1</code> only.</p>
+<h3 id="11-facts-p1-mergetree-stage-twin-replace-partition">1.1 Facts (P1 — MergeTree + stage twin + <code>REPLACE PARTITION</code>)</h3>
+<pre><code class="language-sql">-- fact_sales  ENGINE = MergeTree
+-- PARTITION BY toYYYYMM(date)
+-- ORDER BY (l1_name, l2_name, l3_name, store_code, date)
+date Date
+fy_fw UInt32
+channel / sub_channel LowCardinality(String)
+store_code LowCardinality(String)
+product_code / article / style String
+color / size / season LowCardinality(String)
+l0_name … l6_name LowCardinality(String)   -- hierarchy denormalized on fact
+product_bucket_code, brand, product_type, …
+is_clearance UInt8
+revenue / qty / qty_returns / cost / margin / discount_amount / msrp / price / lost_units Float64
+-- bloom indexes: style, article, product_code
+-- twin: fact_sales_stage AS fact_sales
+</code></pre>
+<pre><code class="language-sql">-- fact_inventory_wk  PARTITION BY toYYYYMM(week_start)
+-- ORDER BY (l1_name, l2_name, l3_name, store_code, week_start)
+week_start Date
+fy_fw UInt32
+channel, store_code, l1_name, l2_name, l3_name
+product_code String
+oh_units / oh_cost / receipts_qty / receipts_cost / receipts_msrp / lost_units Float64
+stockout_flag UInt8
+</code></pre>
+<pre><code class="language-sql">-- fact_forecast_wk  (future windows use forecast KPIs like actuals)
+week_start, fy_fw, channel, store_code, l1/l2/l3
+forecast_ver LowCardinality(String)
+fc_revenue / fc_qty / fc_margin Float64
+</code></pre>
+<pre><code class="language-sql">-- ingest_watermark  (append-only sync ledger — reproducibility anchor)
+source_table LowCardinality(String)
+partition_id String
+last_modified DateTime64(3)
+row_count UInt64
+bytes_landed UInt64
+load_id UUID
+status Enum8('landed','verified','failed')
+detail String
+synced_at DateTime64(3)
+-- views: v_watermark_latest (argMax), v_data_as_of
+</code></pre>
+<p><strong>Interview line:</strong> “Facts restate by building a stage twin and <code>REPLACE PARTITION</code> — no row UPDATE on the hot path.”</p>
+<h3 id="12-dims-p2-replacingmergetree">1.2 Dims (P2 — ReplacingMergeTree)</h3>
+<pre><code class="language-sql">-- dim_store  RMT(synced_at, is_deleted)  ORDER BY store_code
+store_code, store_name, channel, sub_channel, region, store_type
+active UInt8, open_date Date, close_date Nullable(Date)
+is_deleted UInt8, synced_at DateTime
+
+-- dim_hierarchy  RMT(synced_at, is_deleted)
+hierarchy_code, level UInt8
+l0_name … l6_name, path, is_leaf, is_custom, active
+attribute_list String, search_text (+ ngram / aliases)
+
+-- dim_fiscal, dim_sister_store, dim_channel  (same RMT pattern)
+</code></pre>
+<p>Dictionaries (5 + <code>dict_user</code> at bring-up): store / hierarchy / fiscal / channel / sister-store — <code>dictGet</code> for agent grounding.</p>
+<h3 id="13-cubes-caches-planner-rollups">1.3 Cubes / caches (planner rollups)</h3>
+<pre><code class="language-sql">-- cube_store_attr_week / cube_store_kpi_week  (+ stage twins, P1 swap)
+-- significance_cache / precomputed_candidates  RMT(computed_at)
+-- feature_matrix_cache  MergeTree
+</code></pre>
+<p>Say purpose in interview; full column lists live in DDL § cubes — do not recite every column.</p>
+<h3 id="14-pg-mirrors-transitional-read-models">1.4 PG mirrors (transitional read models)</h3>
+<pre><code class="language-sql">-- mirror_plan  ORDER BY plan_code
+plan_code UInt32
+plan_name, description String
+step_x10 UInt8          -- NEVER Float32 (1.3 not binary-safe); 13 = step 1.3
+is_deleted UInt8
+selling_sdate / selling_edate Date
+selling_periods JSON
+channels Array(String)
+hierarchy_level LowCardinality(String)
+scope_filters JSON
+scope_l1s / scope_l2s / scope_l3s Array(String)
+scope_fingerprint FixedString(64)
+scope_recoverable UInt8
+member_cnt UInt32, cluster_cnt UInt16, adoption_cnt UInt32
+created_via, created_at, updated_at, synced_at
+
+-- mirror_plan_membership  ORDER BY (plan_code, channel, store_code)
+plan_code, channel, store_code, cluster_code, display_name, synced_at
+
+-- mirror_strategy_consumer  ORDER BY (cluster_plan_code, strategy_plan_id)
+-- mirror_plan_line  (+ stage) planned_* / bought_* by week — outcome loop
+</code></pre>
+<p>View <code>v_doorway_eligible</code>: <code>step_x10 &gt;= 13 AND is_deleted = 0 AND member_cnt &gt; 0 AND scope_recoverable = 1</code>.</p>
+<h3 id="15-decision-plane-content-addressed-config-event-status">1.5 Decision plane (content-addressed config + event status)</h3>
+<pre><code class="language-sql">-- cluster_config  RMT(created_at)  ORDER BY config_hash
+config_hash FixedString(64)     -- content address; insert dedup token
+doc JSON
+scope_fingerprint FixedString(64)
+entry_mode, created_by, created_at
+
+-- cluster_run  (immutable HEADER — status NEVER here)
+config_hash, data_watermark, run_id UUID, batch_id UUID, session_id UUID
+plan_code UInt32 DEFAULT 0
+scope_fingerprint, entry_mode, scorer_version, weights_version, seed
+created_by, created_at, created_date
+ORDER BY (config_hash, data_watermark, run_id)
+
+-- cluster_run_event  (P3 append-only status)
+run_id, event_seq UInt16, event_time DateTime64(6)
+status Enum8('queued','claimed','running','scored','failed','timeout','superseded')
+claim_token, error, actor, event_date
+-- latest: v_run_status / v_run_status_recent via argMax(event_seq, event_time, claim_token)
+
+-- cluster_run_membership  (typed store→label; shortlist policy)
+run_id, config_hash, batch_id
+axis Enum8('product','performance','store')
+k UInt8, channel, store_code, label, label_ord, margin_to_next
+pinned UInt8, shortlisted UInt8
+</code></pre>
+<p><strong>Lock-free claim:</strong> runner INSERTs <code>claimed</code> + <code>claim_token</code>, reads <code>v_run_status*</code>, proceeds only if its token won argMax. Crash reclaim: append <code>superseded</code>, mint <strong>new</strong> <code>run_id</code>.</p>
+<h3 id="16-approval-immutable-snapshot-write-back">1.6 Approval + immutable snapshot + write-back</h3>
+<pre><code class="language-sql">-- approval_event
+run_id, event_seq, event_time
+status Enum8('pending','approved','rejected')
+approver, comment
+snapshot_id FixedString(64)
+writeback_plan_code UInt32
+-- view: v_approval_state
+
+-- Ordering contract: write plan_snapshot + snapshot_* FIRST, 'approved' event LAST
+
+-- plan_snapshot  ORDER BY (plan_code, approved_at)  FOREVER
+plan_code, approved_at, snapshot_id, run_id, config_hash
+config_doc JSON, metric_vector JSON, pins_applied JSON
+data_watermark, scorer_version, weights_version, approved_by
+
+-- snapshot_cluster  ORDER BY (snapshot_id, channel, cluster_code)
+-- cluster_code = trim(concat(channel, ' ', product_label, performance_label, ' ', store_label))
+
+-- snapshot_membership  frozen store→cluster (+ per-axis labels)
+
+-- writeback_staging / writeback_plan_shell / writeback_event  (transitional PG wire)
+-- pending_intent + intent_event  (strategy_create, recluster_proposal, …)
+</code></pre>
+<p><strong>Gotcha to say:</strong> <code>is_optimal</code> (engine on run metrics) ≠ <code>is_final</code> (human via approval/snapshot). Agent never writes these tables.</p>
+<h3 id="17-thin-postgresql-identity-uam">1.7 Thin PostgreSQL (identity / UAM)</h3>
+<p>Logical only in interview:</p>
+<pre><code>users(id, email, …)
+tenant_membership(user_id, tenant_id, role)
+workflow_state / feature_flags
+-- CH dict_user syncs identity for audit labels; PG remains auth SoR
+</code></pre>
+<h3 id="18-api-tool-design-design-building">1.8 API / tool design (DESIGN — building)</h3>
+<p><strong>Plane split</strong></p>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Role</th>
+<th>Mutates?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FastAPI + LangGraph + MCP</td>
+<td>Chat, tool sequencing, evidence packs</td>
+<td>No planning facts</td>
+</tr>
+<tr>
+<td><strong>14 audited tools</strong> (MCP)</td>
+<td>Templated reads: grounding, significance, candidates, score, compare, pins/impact, …</td>
+<td>SELECT / <code>dictGet</code> only</td>
+</tr>
+<tr>
+<td>Go Gin doing layer</td>
+<td>Clustering / Hindsight / Strategy product writes after gates</td>
+<td>INSERT-only on owned CH + PG write-back SPs</td>
+</tr>
+<tr>
+<td>Sync / NIGHT jobs</td>
+<td>BQ→CH facts, cube rebuild, mirror refresh</td>
+<td>Stage + partition swap / RMT inserts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Human gates:</strong> grounding → search plan → approval → write-back.</p>
+<p><strong>Tool categories (say these — do not invent 14 product names unless from FRD):</strong></p>
+<ol>
+<li>Scope / hierarchy grounding  </li>
+<li>Eligibility / doorway FitScore inputs  </li>
+<li>Significance / candidate generation  </li>
+<li>Feature matrix / k-search support reads  </li>
+<li>Score / rank / compare configs  </li>
+<li>Pin &amp; edit-impact preview (read)  </li>
+<li>Run/batch progress (<code>v_batch_progress</code>)  </li>
+<li>Watermark / data-as-of disclosure  </li>
+</ol>
+<p><strong>Go write API sketch (DESIGN shape):</strong></p>
+<pre><code>POST /v1/runs                    {config_hash|config_doc, plan_code?, session_id}
+                                 → {run_id, batch_id, status: queued}
+GET  /v1/runs/{run_id}           → header + v_run_status
+POST /v1/batches/{id}/claim      → claim_token dance (worker)
+POST /v1/approvals               {run_id, decision, comment}
+                                 → snapshot_id (snapshot rows then approved event)
+POST /v1/writeback               {snapshot_id, plan_code}  // after human gate
+GET  /v1/plans/{plan_code}       → mirror + doorway eligibility
+</code></pre>
+<p><strong>Auth / tenancy:</strong> tenant → CH database; agent DB user <code>readonly=1</code>; service roles INSERT-only; OTEL <code>trace_id</code> across LangSmith / Datadog / PostHog.</p>
+<hr>
+<h1 id="2-uber-frm-mysql-schemas-measured-orm-rest">2. Uber FRM — MySQL schemas (MEASURED ORM) + REST</h1>
+<p><strong>Source:</strong> <code>frm_scoping_service/database/models/*.py</code> + <code>handler/scoping_handler.py</code>.<br>
+<strong>Prefix:</strong> <code>/frm-scoping</code>. <strong>Auth:</strong> <code>x-auth-params-email</code> → <code>updated_by</code>.<br>
+<strong>Period key on almost every row:</strong> <code>fiscal_quarter</code> String(4) · <code>fiscal_year</code> String(8).<br>
+<strong>No DB foreign keys</strong> — logical joins on <code>level_id</code> + period + active flags.</p>
+<h3 id="21-shared-audit-columns">2.1 Shared audit columns</h3>
+<pre><code>created_at TIMESTAMP
+created_by String(36)   -- default &quot;Scoping APP&quot; on some tables
+updated_at TIMESTAMP
+updated_by String(36)
+</code></pre>
+<h3 id="22-level_mapping-hierarchy-spine">2.2 <code>level_mapping</code> — hierarchy spine</h3>
+<pre><code>uuid PK String(36)          -- THIS is level_id on facts
+level1…level4 String(256)
+fiscal_quarter, fiscal_year
+is_active String(16)
++ audit
+</code></pre>
+<h3 id="23-balance_sheet-income_statement-fsli-facts">2.3 <code>balance_sheet</code> / <code>income_statement</code> — FSLI facts</h3>
+<pre><code>uuid PK String(36)
+level_id String(36)         -- = level_mapping.uuid
+hfm_amount DECIMAL(18,2)
+percentage_of_total DECIMAL(5,2)
+group_multiple DECIMAL(18,2)
+hfm_amount_in_millions DECIMAL(18,2)
+hfm_amount_previous_year DECIMAL(18,2)
+quantitative_material / qualitative_material String(16)
+conclusion_overall_significance / conclusion_scope String(64)
+testing_strategy Text
+component_selection String(256)
+total_inscope DECIMAL(18,2)
+total_inscope_percentage DECIMAL(5,2)
+residual_balances / residual_multiples DECIMAL(18,2)
+residual_percentage DECIMAL(5,2)
+residual_balance_prev_year, residual_dollar_change, residual_percentage_change
+group_dollar_change, group_percentage_change
+greater_than_materiality / greater_than_threshold_change / investigate String(16)
+level_1…level_4 String(256)   -- denormalized labels for UI tree
+is_level_active String(16)
+group_status / component_status / residual_status String(36)
+  -- group_status allowlist: Draft | Review | ReOpen | Closed
+fiscal_quarter, fiscal_year + audit
+</code></pre>
+<p><code>income_statement</code> same shape (+ ORM helpers <code>fetch_for_period</code>, <code>update_scope_and_status</code>, …).</p>
+<h3 id="24-recon-v2-leaves">2.4 Recon v2 leaves</h3>
+<pre><code>-- recon_balance_sheet / recon_income_statement
+uuid PK, level_id
+hfm_amount, hfm_amount_in_millions
+financial_statement_amount_in_millions
+difference                    -- HFM − filed (10-Q)
+level_1…level_3
+is_level_active
+fiscal_quarter, fiscal_year + audit
+</code></pre>
+<h3 id="25-component-emi-metrics-thresholds-qa">2.5 Component, EMI, metrics, thresholds, Q&amp;A</h3>
+<pre><code>-- component_entity
+uuid PK, level_id, scoping_component, amount DECIMAL(18,2)
+is_active, fiscal_quarter, fiscal_year + audit
+
+-- emi_data  (one row ≈ one UI column / investee)
+uuid PK
+investee, investee_entity, uber_investor_entity
+period_acquired, security
+uber_ownership_equity_interest_percentage
+uber_ownership_interest_as_of_date
+asset_balance, preliminary_income_loss_on_investments
+asset_as_a_perc_of_total, income_loss_as_a_perc_of_total_emi_components
+financial_reporting_framework, fiscal_year_end
+audited_financial_statements_available, report_issuance_date
+auditor, additional_considerations Text
+significant_emi, auditboard_link_to_risk_assessment
+is_active, fiscal_quarter, fiscal_year + audit
+-- @validates strips whitespace on string columns
+
+-- frm_metrics_table  (class ScopingMetrics)
+uuid PK, metric_key String(128), metric_value String(512)
+unit String(32), is_active
+-- materiality key → e.g. $340M (MEASURED product number)
+
+-- threshold_table_v2  (class ThresholdSetup)
+uuid PK, legal_entity
+total_assets / total_revenue DECIMAL(18,2)
+total_assets_percentage / total_revenue_percentage DECIMAL(5,2)
+financially_significant_component / significant_due_to_risk / inscope_due_to_coverage
+conclusion / updated_conclusion / review_status
+is_active, fiscal_quarter, fiscal_year + audit
+
+-- scoping_questions
+uuid PK   -- SHA-256(question_text + normalized page_name) → 32 hex
+question_text Text, page_name String(36), is_active
+
+-- scoping_assessments
+uuid PK, question_id, line_id   -- line_id = fact uuid
+answer_text Text
+fiscal_quarter, fiscal_year + audit
+</code></pre>
+<h3 id="26-api-catalog-32-registrations-say-30">2.6 API catalog (32 registrations; say <strong>30+</strong>)</h3>
+<p>Query period (most GETs): <code>fiscal_quarter=Q1|…|Q4</code> &amp; <code>fiscal_year=YYYY</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Body / notes</th>
+<th>Response idea</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>/health</code></td>
+<td>—</td>
+<td><code>{status, service}</code></td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/scoping</code></td>
+<td>welcome echo</td>
+<td><code>DataResponse</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/recon_balance_sheet</code></td>
+<td>v1 Sheets</td>
+<td>recon response</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v2/recon_balance_sheet</code></td>
+<td><strong>MySQL nested tree</strong> (migration owned)</td>
+<td><code>ReconFetchResponse</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/v2/recon_income_statement</code></td>
+<td>same for IS</td>
+<td><code>ReconFetchResponse</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/recon_income_statement</code></td>
+<td>v1</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/group_balance_sheet</code></td>
+<td>nested from <code>balance_sheet</code></td>
+<td>tree</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/group_balance_sheet/{uuid}</code></td>
+<td><code>{conclusion_scope?, group_status?}</code></td>
+<td>dict</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/group_income_statement</code></td>
+<td>—</td>
+<td>tree</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/group_income_statement/{uuid}</code></td>
+<td>same patch shape</td>
+<td>dict</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/bs_components</code></td>
+<td>optional <code>level_1…4</code> filters</td>
+<td><code>ComponentScopingResponse</code></td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/is_components</code></td>
+<td>YTD annualization rules</td>
+<td>same</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/bs_component_filters</code></td>
+<td>cascading distinct labels</td>
+<td>filter options</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/is_component_filters</code></td>
+<td>same</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/residual_risk</code></td>
+<td><code>fsli_type=bs\|is</code>, optional <code>threshold_percentage</code></td>
+<td>residual analytics</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/emi_scoping</code></td>
+<td>comparison view</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/emi_data</code></td>
+<td>grid; active flag</td>
+<td><code>header_row</code> + <code>columns_data</code></td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/emi_data/{uuid}</code></td>
+<td>partial column; not <code>investee</code></td>
+<td>patch response</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/add_scoping_metrics</code></td>
+<td>metrics payload</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/scoping_metrics</code></td>
+<td>optional period</td>
+<td>list</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td><code>/update_benchmark_thresholds</code></td>
+<td>assets/revenue benchmarks → recompute significance</td>
+<td>dict</td>
+</tr>
+<tr>
+<td>GET/PUT</td>
+<td><code>/materiality</code></td>
+<td><code>metric_key=materiality</code></td>
+<td>value + doc link</td>
+</tr>
+<tr>
+<td>GET/PUT</td>
+<td><code>/active-page-number</code></td>
+<td>UI page state</td>
+<td>dict</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/threshold-setup</code></td>
+<td>active rows for period</td>
+<td>list</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/threshold-setup/{uuid}</code></td>
+<td>partial</td>
+<td>dict</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/scoping_questions/bulk</code></td>
+<td><code>[{question_text, page_name, is_active}]</code> upsert</td>
+<td>uuids in order</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/scoping_questions</code></td>
+<td><code>page_name</code> allowlisted</td>
+<td>list</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>/scoping_assessments</code></td>
+<td>create</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>/scoping_assessments</code></td>
+<td>by <code>line_id</code></td>
+<td>joined questions</td>
+</tr>
+<tr>
+<td>PATCH</td>
+<td><code>/scoping_assessments/{uuid}</code></td>
+<td><code>{answer_text}</code>; may sync BS qualitative fields in same txn</td>
+<td>dict</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Idempotency talking points</strong></p>
+<ul>
+<li>GET/PATCH/PUT by uuid = set semantics.  </li>
+<li>Questions bulk: deterministic uuid → upsert.  </li>
+<li><code>POST /add_scoping_metrics</code> is append/versioned by <code>is_active</code> (not strictly idempotent).</li>
+</ul>
+<p><strong>Bug story (schema-linked):</strong> join <code>balance_sheet</code> ⨝ <code>level_mapping</code> without <code>.label()</code> → duplicate <code>uuid</code> keys in <code>dict(zip(...))</code> → wrong PATCH target. Fix: SQLAlchemy 2.0 <code>select</code> + explicit labels (<code>fsli_id</code> vs <code>level_mapping_uuid</code>).</p>
+<hr>
+<h1 id="3-uber-eats-menu-event-catalog-rag-schemas-logical">3. Uber Eats Menu — event / catalog / RAG schemas (LOGICAL)</h1>
+<p>No production DDL in this repo. Defend <strong>shapes</strong>, not invent Uber table names as fact.</p>
+<h3 id="31-kafka-scrape-event-producer-selenium">3.1 Kafka scrape event (producer: Selenium)</h3>
+<pre><code class="language-json">{
+  &quot;event_id&quot;: &quot;uuid&quot;,
+  &quot;event_time&quot;: &quot;2024-…Z&quot;,
+  &quot;vendor_id&quot;: &quot;string&quot;,          // partition key
+  &quot;menu_id&quot;: &quot;string|null&quot;,
+  &quot;source_url&quot;: &quot;https://…&quot;,
+  &quot;content_type&quot;: &quot;html|pdf|image&quot;,
+  &quot;content_hash&quot;: &quot;sha256&quot;,
+  &quot;object_uri&quot;: &quot;gs://…/raw/…&quot;,
+  &quot;locale&quot;: &quot;en|…&quot;,
+  &quot;scrape_attempt&quot;: 1,
+  &quot;proxy_pool&quot;: &quot;string&quot;,
+  &quot;status&quot;: &quot;ok|blocked|timeout&quot;,
+  &quot;http_status&quot;: 200
+}
+</code></pre>
+<h3 id="32-flink-catalog-upsert-contract">3.2 Flink → catalog upsert contract</h3>
+<pre><code class="language-json">{
+  &quot;vendor_id&quot;: &quot;…&quot;,
+  &quot;menu_version&quot;: &quot;content_hash or version&quot;,
+  &quot;items&quot;: [
+    {
+      &quot;item_key&quot;: &quot;vendor_id+normalized_name+size&quot;,
+      &quot;name&quot;: &quot;…&quot;,
+      &quot;description&quot;: &quot;…&quot;,
+      &quot;price_amount&quot;: 12.99,
+      &quot;currency&quot;: &quot;USD&quot;,
+      &quot;modifiers&quot;: [{&quot;name&quot;: &quot;…&quot;, &quot;price_delta&quot;: 1.5}],
+      &quot;availability&quot;: true,
+      &quot;raw_refs&quot;: [&quot;object_uri#chunk&quot;]
+    }
+  ],
+  &quot;idempotency_key&quot;: &quot;vendor_id+menu_version&quot;
+}
+</code></pre>
+<p><strong>Dedupe state (Flink keyed):</strong> <code>(vendor_id, content_hash)</code> → drop duplicates; late events by event-time.</p>
+<h3 id="33-rag-milvus-metadata-schema-gate">3.3 RAG / Milvus metadata + schema gate</h3>
+<pre><code>milvus collection fields (logical):
+  embedding vector
+  menu_id / vendor_id
+  locale
+  chunk_text
+  label_tags
+  source_uri
+
+Gemini output → JSON Schema validate → catalog upsert
+low confidence → human review queue
+</code></pre>
+<p><strong>Offline HISTORICAL:</strong> <strong>98%</strong> fidelity · <strong>100%</strong> schema consistency. Say offline/eval, not live SLA.</p>
+<h3 id="34-processing-apis-logical-ops-surface">3.4 Processing APIs (LOGICAL ops surface)</h3>
+<pre><code>POST /internal/scrape/jobs          {vendor_ids[], priority}
+GET  /internal/scrape/jobs/{id}     lag / success
+POST /internal/catalog/upsert       (from Flink sink; idempotent)
+POST /internal/rag/extract          {object_uri} → validated menu JSON
+GET  /internal/menus/{vendor_id}    freshness SLO (24h→2h HISTORICAL)
+</code></pre>
+<p><strong>ANZ Mobility (separate):</strong> <code>driver</code>, <code>vehicle</code>, <code>document</code>, <code>compliance_check</code> — not Eats Kafka topics.</p>
+<hr>
+<h1 id="4-masters-india-gst-e-invoice-schemas-apis-logical-historical">4. Masters India — GST e-invoice schemas + APIs (LOGICAL / HISTORICAL)</h1>
+<h3 id="41-postgresql-quarter-routed">4.1 PostgreSQL (quarter-routed)</h3>
+<pre><code class="language-sql">-- clients
+client_id PK, gstin UNIQUE, name, config JSONB, created_at
+
+-- invoice_header_YYYY_QN   (or schema per quarter)
+invoice_id PK
+client_id, gstin
+invoice_number, invoice_date
+supply_type, place_of_supply
+taxable_value, cgst, sgst, igst, total_value
+status Enum('accepted','irp_pending','registered','failed','cancelled')
+idempotency_key UNIQUE   -- client + doc ref
+period_quarter  -- derived at API; reject mismatch
+INDEX (client_id, invoice_date)
+
+-- invoice_line
+line_id PK, invoice_id, hsn, qty, rate, tax_breakup…
+
+-- irp_registration
+invoice_id PK/FK
+irn, signed_qr, ack_no, ack_date
+irp_status, raw_response_ref  -- points to Mongo
+</code></pre>
+<h3 id="42-mongo-redis-kafka">4.2 Mongo + Redis + Kafka</h3>
+<pre><code>mongo.invoice_payload_snapshot:
+  { invoice_id, request_doc, irp_response, irn, qr, ts }
+
+redis keys:
+  irp:token:{env} TTL &lt; IRP lifetime
+  client:config:{client_id}
+  gstin:master:{gstin}
+
+kafka topics (logical):
+  invoice.accepted      key=gstin
+  irp.submit            key=gstin
+  irp.completed         key=gstin
+  client.webhook        key=client_id
+  *.dlq
+</code></pre>
+<h3 id="43-rest-async-api-sketch">4.3 REST + async API sketch</h3>
+<pre><code>POST /v1/einvoice/submit
+  Headers: Authorization, Idempotency-Key
+  Body: { gstin, invoice_number, invoice_date, lines[], … }
+  → 200 { invoice_id, status, irn? }  or  202 { invoice_id, status: irp_pending }
+
+GET  /v1/einvoice/{invoice_id}
+POST /v1/bulk/imports          multipart → S3; returns import_id
+GET  /v1/bulk/imports/{id}     progress {chunks_done, failed, irp_ok}
+POST /v1/webhooks/irp/callback (if used) / internal consumer from Kafka
+GET  /v1/invoices?client_id&amp;from&amp;to   // ES-backed search optional
+</code></pre>
+<p><strong>Idempotency:</strong> <code>client + fileHash + batchIndex</code> (bulk) and client invoice refs — never double-register IRP.</p>
+<p><strong>Numbers (HISTORICAL):</strong> p95 ~1.2s→~300ms · 700→4,000 req/min · 1M+/day · Redis −30% redundant reads.</p>
+<hr>
+<h1 id="5-geeksforgeeks-content-votes-subs-logical-historical">5. GeeksforGeeks — content / votes / subs (LOGICAL / HISTORICAL)</h1>
+<h3 id="51-mysql-core">5.1 MySQL core</h3>
+<pre><code class="language-sql">users(id, email, …)
+content(id, type, author_id, title, status, created_at)
+votes(
+  id PK,
+  user_id, content_id,
+  value TINYINT,              -- +1 / -1
+  UNIQUE(user_id, content_id) -- idempotent cast
+)
+pins(user_id, content_id, created_at) UNIQUE(user_id, content_id)
+locks(content_id, locked_by, reason, expires_at)
+subscriptions(user_id, plan, status, started_at, renewed_at)
+unread_counters(user_id, thread_id, count)  -- durable; Redis for badge hot path
+</code></pre>
+<h3 id="52-mongo-es-redis">5.2 Mongo / ES / Redis</h3>
+<pre><code>mongo: flexible article / doubt payloads
+elasticsearch: content_id, title, body, tags — search
+redis: vote_buffer:{content_id}, unread:{user_id}, contest hot keys
+</code></pre>
+<h3 id="53-rest-sketch">5.3 REST sketch</h3>
+<pre><code>POST /api/v1/votes          {content_id, value}  → idempotent upsert
+DELETE /api/v1/votes/{content_id}
+POST /api/v1/pins           {content_id}
+POST /api/v1/content/{id}/lock
+GET  /api/v1/unread/count
+POST /api/v1/subscriptions  …
+GET  /api/v1/search?q=
+</code></pre>
+<p><strong>Numbers (HISTORICAL):</strong> 10K+ daily interactions · premium +15–20% · course sales +30% (influencer dashboard) · ops +70% (crons — separate bullet).</p>
+<hr>
+<h1 id="6-one-page-whiteboard-cheat-sheet">6. One-page whiteboard cheat sheet</h1>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Draw first</th>
+<th>API first</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IA</td>
+<td><code>fact_*</code> + <code>cluster_run</code>/<code>_event</code> + <code>plan_snapshot</code></td>
+<td>MCP read tools → Go approve/writeback</td>
+</tr>
+<tr>
+<td>FRM</td>
+<td><code>level_mapping</code> ← <code>balance_sheet</code> ← <code>scoping_assessments</code></td>
+<td><code>GET/PATCH /group_balance_sheet</code> + <code>/v2/recon_*</code></td>
+</tr>
+<tr>
+<td>Menu</td>
+<td>scrape_event → Flink state → catalog + Milvus</td>
+<td>upsert + schema-gated extract</td>
+</tr>
+<tr>
+<td>Masters</td>
+<td>invoice_header → irp_registration + Kafka</td>
+<td>submit + bulk import + idempotency</td>
+</tr>
+<tr>
+<td>GFG</td>
+<td>content ← votes (unique user+content)</td>
+<td>vote/pin APIs + Redis counters</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 id="sources">Sources</h1>
+<ul>
+<li>IA: <code>KNOWLEDGE-MATERIAL/.../ClickHouse DDL Model (Phase-1).md</code> · <a href="29_ia_ch_ddl_phase1_source.html"><code>29_ia_ch_ddl_phase1_source.md</code></a>  </li>
+<li>FRM: <code>frm_scoping_service/database/models/*</code> · <a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a>  </li>
+<li>Menu / Masters / GFG: deep dives + packs — <strong>logical</strong> unless code present  </li>
+</ul>
+<p>Full ER/why-tech: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a>. Diagrams: <a href="33_architecture_diagrams.html"><code>33_architecture_diagrams.md</code></a>.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

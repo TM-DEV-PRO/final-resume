@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>27_epam_scope_validation — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+PyGo IA</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_java_pygo_ia/prep/27_epam_scope_validation.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#epam-uber-scope-validation">EPAM / Uber scope validation</a>
+<a class="lvl2" href="#verdict">Verdict</a>
+<a class="lvl2" href="#employment-facts-canonical">Employment facts (canonical)</a>
+<a class="lvl2" href="#what-was-actually-owned-frm-evidence-backed">What was actually owned (FRM) — evidence-backed</a>
+<a class="lvl2" href="#what-led-3-means-validated-framing">What “led 3” means (validated framing)</a>
+<a class="lvl2" href="#menu-same-employment-scope-honesty">Menu (same employment) — scope honesty</a>
+<a class="lvl2" href="#how-recruiters-cto-should-hear-it">How recruiters / CTO should hear it</a>
+<a class="lvl2" href="#reference-check-questions-what-would-validate">Reference-check questions (what would validate)</a>
+<a class="lvl2" href="#score-epam-risk-after-validation">Score: EPAM risk after validation</a></nav>
+<main><h1 id="epam-uber-scope-validation">EPAM / Uber scope validation</h1>
+<p><strong>Date:</strong> 2026-07-27<br>
+<strong>Sources:</strong> <code>GROUND_TRUTH.md</code>, FRM code dump + TDD, <code>11_uber_frm_deep_dive.md</code>, <code>23b_uber_interview_packs.md</code>, Menu HISTORICAL ops<br>
+<strong>Purpose:</strong> Answer CTO/EM red flag — “via EPAM = fake Uber ownership?”</p>
+<h2 id="verdict">Verdict</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Validated?</th>
+<th>Confidence</th>
+<th>How to say it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Employed by <strong>EPAM</strong>, embedded on <strong>Uber Finance / Menu</strong> products</td>
+<td><strong>YES</strong></td>
+<td>High</td>
+<td>“SDE2 at Uber via EPAM (staff aug)”</td>
+</tr>
+<tr>
+<td><strong>Uber FTE / people manager</strong></td>
+<td><strong>NO</strong></td>
+<td>High</td>
+<td>Never claim Uber employee or perf reviews</td>
+</tr>
+<tr>
+<td><strong>Tech lead of 3-engineer EPAM pod</strong></td>
+<td><strong>YES</strong> (user-confirmed + code conventions)</td>
+<td>High</td>
+<td>Design reviews, API contracts, design reviews</td>
+</tr>
+<tr>
+<td><strong>Owned FRM scoping service design + recon v2 migration</strong></td>
+<td><strong>YES</strong> (code + branch + migration doc)</td>
+<td>High</td>
+<td>Personal branch <code>tmitta1/recon-income-api-migration</code></td>
+</tr>
+<tr>
+<td>Owned <strong>HFM ETL</strong> end-to-end</td>
+<td><strong>NO</strong></td>
+<td>High</td>
+<td>“Service consumes HFM-loaded MySQL; ETL was shared”</td>
+</tr>
+<tr>
+<td>Owned <strong>frm-collaboration-service</strong> (Slack/collab)</td>
+<td><strong>NO</strong></td>
+<td>High</td>
+<td>Separate service — don’t claim</td>
+</tr>
+<tr>
+<td><strong>70% recon cut measured</strong></td>
+<td><strong>NO</strong> — TARGET only</td>
+<td>High</td>
+<td>“Targeting 70%…”</td>
+</tr>
+<tr>
+<td>Menu <strong>$600K / 24h→2h / 98% fidelity</strong></td>
+<td><strong>HISTORICAL</strong> (past resume + ops)</td>
+<td>Medium</td>
+<td>Defend as Menu work on same employment; offline eval honesty</td>
+</tr>
+<tr>
+<td>Menu Kafka/Flink <strong>peak TPS measured</strong></td>
+<td><strong>NO</strong></td>
+<td>High</td>
+<td>Burst/replay/keyed dedupe defense; ESTIMATED peaks</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Panel answer:</strong> Scope is <strong>real IC ownership inside Uber product + monorepo</strong>, with <strong>employer = EPAM</strong>. Not inflated “Uber Staff.” Not ticket-only if you can walk FRM code (layers, recon migration, 1,100+ tests).</p>
+<hr>
+<h2 id="employment-facts-canonical">Employment facts (canonical)</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Truth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Employer</td>
+<td><strong>EPAM Systems</strong></td>
+</tr>
+<tr>
+<td>Client / product</td>
+<td><strong>Uber</strong> (Finance FRM + Uber Eats Menu)</td>
+</tr>
+<tr>
+<td>Title</td>
+<td>Software Engineer <strong>A2 / SDE2</strong></td>
+</tr>
+<tr>
+<td>Dates</td>
+<td><strong>Jul 2024 – May 2026</strong> (~1.9y)</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>Bangalore</td>
+</tr>
+<tr>
+<td>Resume line</td>
+<td><code>UBER (via EPAM Systems)</code> — keep this; do not hide EPAM</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="what-was-actually-owned-frm-evidence-backed">What was actually owned (FRM) — evidence-backed</h2>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Evidence</th>
+<th>Ownership level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Platform: FastAPI + MySQL (Fusion.js), 8 screens, <strong>30+ REST APIs</strong></td>
+<td>Code: ~32 routes incl. health; TDD</td>
+<td><strong>Primary backend owner</strong> of scoping service</td>
+</tr>
+<tr>
+<td><strong>11-table</strong> SQLAlchemy 2.0 schema</td>
+<td><code>database/models/</code></td>
+<td>Design + implementation</td>
+</tr>
+<tr>
+<td>Layered handler → service → repository</td>
+<td>Uniform across codebase</td>
+<td>Set/enforced conventions for pod</td>
+</tr>
+<tr>
+<td>Recon v1 Sheets → v2 MySQL</td>
+<td><code>RECON_API_MIGRATION.md</code>; <strong>18 files, +1,268 LOC</strong>; branch under your id</td>
+<td><strong>Personally owned migration</strong></td>
+</tr>
+<tr>
+<td>Auth via gateway <code>x-auth-params-email</code></td>
+<td>Middleware pattern in code</td>
+<td>Implemented in service</td>
+</tr>
+<tr>
+<td>Tests <strong>1,100+</strong> (grep ~1,288 <code>def test_</code>)</td>
+<td>Bazel <code>uber_py_test</code></td>
+<td>Grew suite + CI gate</td>
+</tr>
+<tr>
+<td>Materiality <strong>$340M</strong> / residual <strong>$170M</strong></td>
+<td>Q4 2025 sample CSVs</td>
+<td>MEASURED sample, not eternal constants</td>
+</tr>
+<tr>
+<td>Feeds <strong>PwC</strong> work papers</td>
+<td>Product purpose / TDD</td>
+<td>Platform output; you didn’t “work at PwC”</td>
+</tr>
+<tr>
+<td>Led <strong>3 engineers</strong></td>
+<td>User-confirmed EPAM pod</td>
+<td><strong>Tech lead</strong>, not manager</td>
+</tr>
+</tbody>
+</table>
+<h3 id="explicit-non-ownership-say-out-loud-if-probed">Explicit non-ownership (say out loud if probed)</h3>
+<ol>
+<li><strong>HFM ETL pipeline</strong> — shared; you consume loaded tables.  </li>
+<li><strong>Collaboration / Slack service</strong> — separate repo.  </li>
+<li><strong>Uber org design review board as FTE</strong> — you worked in EPAM+Uber stakeholder cadence (PM/Finance); don’t invent ARB membership.  </li>
+<li><strong>People management</strong> — no Uber/EPAM perf reviews of the 3 as “my reports” in HR sense.  </li>
+<li><strong>Measured 70% time save</strong> — TDD target only.</li>
+</ol>
+<hr>
+<h2 id="what-led-3-means-validated-framing">What “led 3” means (validated framing)</h2>
+<p><strong>Safe one-liner:</strong><br>
+“I was tech lead of a <strong>3-engineer EPAM pod</strong> on Uber Finance FRM — not a people manager. I sliced work by layer, enforced API/ORM conventions from backend syncs, and gated merges on Bazel tests.”</p>
+<p><strong>Concrete actions (prep-backed):</strong></p>
+<ul>
+<li>Task split along handler / service / repository / model so two people could ship one feature without merge wars (recon migration is the example).  </li>
+<li>Conventions: thin handlers; services own trees; repos own sessions; <code>updated_by</code> from auth header; <code>asyncio.to_thread</code> for blocking DB.  </li>
+<li>Review gate: tests + <code>uber_py_test</code> before merge → suite to 1,100+.</li>
+</ul>
+<p><strong>Fail answer:</strong> “I managed three Uber engineers and owned the Finance org roadmap.”</p>
+<hr>
+<h2 id="menu-same-employment-scope-honesty">Menu (same employment) — scope honesty</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Tag</th>
+<th>Interview rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Same EPAM→Uber engagement</td>
+<td>HISTORICAL role</td>
+<td>OK to discuss as second Uber product</td>
+</tr>
+<tr>
+<td>30K+ menus/mo, 24h→2h, $600K+/yr, 95%+ ingest</td>
+<td>HISTORICAL ops</td>
+<td>Keep; don’t invent new TPS</td>
+</tr>
+<tr>
+<td>RAG + Gemini + Milvus schema gate 98% / 100%</td>
+<td>Offline eval</td>
+<td>Say offline, not online A/B; no SFT on PDF</td>
+</tr>
+<tr>
+<td>Kafka + Flink on PDF (post-Flink update)</td>
+<td>HISTORICAL / ESTIMATED rates</td>
+<td>Defend <strong>burst, replay, keyed dedupe</strong> — not vanity TPS</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="how-recruiters-cto-should-hear-it">How recruiters / CTO should hear it</h2>
+<table>
+<thead>
+<tr>
+<th>Bad packaging</th>
+<th>Good packaging</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“I worked at Uber” (implies FTE)</td>
+<td>“SDE2 on Uber FRM <strong>via EPAM</strong>”</td>
+</tr>
+<tr>
+<td>“Led Uber’s Finance eng team”</td>
+<td>“Tech-led <strong>EPAM pod of 3</strong> on FRM”</td>
+</tr>
+<tr>
+<td>“Built Uber’s entire audit stack”</td>
+<td>“Owned <strong>FRM scoping service</strong> + recon migration; feeds PwC work papers”</td>
+</tr>
+<tr>
+<td>Hide EPAM</td>
+<td>Lead with <strong>product problem + ownership</strong>, EPAM as employment vehicle</td>
+</tr>
+</tbody>
+</table>
+<p>Amazon recruiter guidance already matches this: EPAM secondary; product + owned design primary.</p>
+<hr>
+<h2 id="reference-check-questions-what-would-validate">Reference-check questions (what would validate)</h2>
+<p>Ask an EPAM lead / Uber PM peer:</p>
+<ol>
+<li>Who owned the recon Sheets→MySQL migration and the SQLAlchemy schema?  </li>
+<li>Did Tarun set review/CI standards for the pod?  </li>
+<li>Was he presenting progress to Uber Finance stakeholders or only EPAM internal?</li>
+</ol>
+<p>If answers align with migration doc + backend sync notes → <strong>scope validated</strong>. If “he only took tickets under Uber Staff design” → <strong>downgrade “owned design” language</strong>.</p>
+<hr>
+<h2 id="score-epam-risk-after-validation">Score: EPAM risk after validation</h2>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Score</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Honesty of employment framing</td>
+<td><strong>9/10</strong></td>
+<td>“via EPAM” on resume is correct</td>
+</tr>
+<tr>
+<td>Hands-on FRM depth</td>
+<td><strong>8/10</strong></td>
+<td>Code + migration doc strong</td>
+</tr>
+<tr>
+<td>Leadership claim accuracy</td>
+<td><strong>7/10</strong></td>
+<td>Solid if “pod TL”; fails if “manager”</td>
+</tr>
+<tr>
+<td>Outcome metrics honesty</td>
+<td><strong>8/10</strong></td>
+<td>70% TARGET correctly worded on good resumes</td>
+</tr>
+<tr>
+<td>Inflated Uber brand risk</td>
+<td><strong>Mitigated</strong></td>
+<td>If verbal matches this doc</td>
+</tr>
+</tbody>
+</table>
+<p><strong>CTO condition still stands:</strong> advance to rounds; <strong>offer only after</strong> EPAM-scope story holds in interview (and IA exit narrative is clean). Scope itself is <strong>defensible</strong>, not fabricated — if you stay inside the guardrails above.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>
