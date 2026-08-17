@@ -14,7 +14,7 @@ I am Tarun Mittal a Senior Software Engineer (Python Go) with 5 years owning pro
 
 - Owned design and architecture for Uber Finance FRM Risk Scoping across 8 screens and 30+ APIs at $340M materiality and led 3 engineers
 - Owned Uber Eats menu ingestion end to end (Selenium/Kafka/Flink + RAG/Milvus) — 24h → 2h, $600K+/yr at 30K+ menus/month, 95%+ ingest success
-- Built Masters India Kafka e-invoicing to 1M+ IRP/day and 700 to 4000 req/min mentored 2
+- Built Masters India FastAPI strangler + Kafka e-invoicing to 1M+ IRP/day and 700 to 4000 req/min mentored 2
 - Now owning Impact Analytics AssortSmart Cluster Recommendation Copilot architecture (FastAPI, LangGraph, MCP) with write APIs (Go, Gin), Hindsight, and a Postgres to ClickHouse 250M pivot POC (189s to 12.3s, about 15.5x)
 
 I am targeting [Senior SWE / SDE2 / MTS] roles on [Team]. Resume attached. Happy to do a 15-minute screen this week.

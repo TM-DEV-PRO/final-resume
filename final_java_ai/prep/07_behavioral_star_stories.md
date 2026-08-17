@@ -169,3 +169,6 @@ Atlassian, Salesforce) lives in `../campaign_extras/behavioral/company_behavior_
 - **Observability:** **Actuator + Micrometer** metrics, ELK correlation IDs, New Relic APM — the
   Masters India "triage 70% faster" story is unchanged.
 
+---
+
+**Also study:** [`39_behavioral_question_bank.md`](39_behavioral_question_bank.md) (all ~43 common questions → which story) · [`40_behavioral_prep_grid.md`](40_behavioral_prep_grid.md) (project × question drill sheet).

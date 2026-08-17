@@ -279,3 +279,5 @@ Pick three, and prefer the ones that reveal engineering culture:
 **Cross-references:** `GROUND_TRUTH.md` (every number and tag) · `18_resume_number_catalog.md` ·
 `37_senior_screen_deep_qa.md` (millions / production / performance / deploy) ·
 `32_common_interview_qa.md` · `07_behavioral_star_stories.md` · `../ApplicationKit.md` (paste-ready).
+
+**Also study:** [`39_behavioral_question_bank.md`](39_behavioral_question_bank.md) · [`40_behavioral_prep_grid.md`](40_behavioral_prep_grid.md) · [`star_bank.md`](../behavioral/star_bank.md).

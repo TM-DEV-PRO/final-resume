@@ -118,3 +118,7 @@ Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness s
 - **"Conflict with a manager?"** Use story 7 (rulebook disagreement), framed upward.
 - **"A time you failed?"** Story 5 (refactor regression) or story 10 (near-miss) — both end in process fixes.
 - **"What are you most proud of?"** Story 1 — turning an org-level disagreement into a gated, evidence-based decision that later became the committed direction.
+
+---
+
+**Also study:** [`39_behavioral_question_bank.md`](39_behavioral_question_bank.md) (all ~43 common questions → which story) · [`40_behavioral_prep_grid.md`](40_behavioral_prep_grid.md) (project × question drill sheet).

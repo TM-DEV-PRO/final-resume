@@ -171,3 +171,6 @@ Atlassian, Salesforce) lives in `../campaign_extras/behavioral/company_behavior_
 - **Observability:** one OTEL `trace_id` stitched across the Go write plane, the Python agent tier,
   and the Java services; Actuator + Micrometer on the Spring side; New Relic APM.
 
+---
+
+**Also study:** [`39_behavioral_question_bank.md`](39_behavioral_question_bank.md) (all ~43 common questions → which story) · [`40_behavioral_prep_grid.md`](40_behavioral_prep_grid.md) (project × question drill sheet).

@@ -1,5 +1,8 @@
 # Company Behavior Guides (beyond Amazon/Google)
 
+> **Full question bank + prep grid:** [`39_behavioral_question_bank.md`](../../prep/39_behavioral_question_bank.md) · [`40_behavioral_prep_grid.md`](../../prep/40_behavioral_prep_grid.md) (adapted from [awesome-behavioral-interviews](https://github.com/ashishps1/awesome-behavioral-interviews); answers are Tarun-specific).
+
+
 Use with `star_bank.md`. Pick 2–3 stories per company. Never reuse the same story twice in one loop.
 
 ## Amazon

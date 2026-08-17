@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>39_behavioral_question_bank — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/39_behavioral_question_bank.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#behavioral-question-bank-mapped-to-taruns-stories">Behavioral question bank — mapped to Tarun's stories</a>
+<a class="lvl2" href="#0-general-tips-say-these-to-yourself-before-the-loop">0. General tips (say these to yourself before the loop)</a>
+<a class="lvl2" href="#1-coverage-matrix-43-common-questions-your-stories">1. Coverage matrix — ~43 common questions → your stories</a>
+<a class="lvl2" href="#2-gap-answers-tarun-specific-memorize-these">2. Gap answers (Tarun-specific — memorize these)</a>
+<a class="lvl2" href="#3-rapid-reuse-cheat-sheet">3. Rapid reuse cheat sheet</a>
+<a class="lvl2" href="#4-questions-to-ask-them-pick-3">4. Questions to ask them (pick 3)</a>
+<a class="lvl2" href="#5-delivery-rules-again">5. Delivery rules (again)</a></nav>
+<main><h1 id="behavioral-question-bank-mapped-to-taruns-stories">Behavioral question bank — mapped to Tarun's stories</h1>
+<p><strong>Track:</strong> Final Java + AI · <strong>PDF:</strong> <code>Tarun_Mittal_SSE_Java_AI_Final.pdf</code> · <strong>Stack on this track:</strong> Java/Spring · Python</p>
+<p><strong>Source of the question list:</strong> adapted from
+<a href="https://github.com/ashishps1/awesome-behavioral-interviews">ashishps1/awesome-behavioral-interviews</a>
+(tips, question taxonomy, reverse questions, CTCI-style prep-grid idea). Their sample
+answers are generic fiction and are <strong>not</strong> copied. Every answer below uses Tarun's
+real experience and the honesty tags in <code>GROUND_TRUTH.md</code>.</p>
+<p><strong>Companion files:</strong>
+- Full 10 STAR stories: <a href="07_behavioral_star_stories.html"><code>07_behavioral_star_stories.md</code></a>
+- Why-hire / pitch / objections: <a href="38_why_hire_tarun_qa.html"><code>38_why_hire_tarun_qa.md</code></a>
+- Project × question prep grid: <a href="40_behavioral_prep_grid.html"><code>40_behavioral_prep_grid.md</code></a>
+- Company LP guides: <a href="../campaign_extras/behavioral/company_behavior_guides.html"><code>company_behavior_guides.md</code></a></p>
+<div class="callout warn">
+<p><b>Never break these.</b> AssortSmart Copilot is <b>building, not shipped</b>. FRM <b>70% is a TARGET</b>.
+Menu <b>98%/100% is offline eval</b>. <b>No Spark / SFT</b>. Uber work was <b>via EPAM</b>.
+ANZ 99.9% is HISTORICAL Mobility work. Do not invent a LeetCode rating.</p>
+</div>
+<hr>
+<h2 id="0-general-tips-say-these-to-yourself-before-the-loop">0. General tips (say these to yourself before the loop)</h2>
+<p>Adapted from the awesome-behavioral-interviews tip list; keep them short.</p>
+<ol>
+<li><strong>STAR every behavioral.</strong> Situation → Task → Action (you, not "we") → Result (number + tag) → one-line Lesson.</li>
+<li><strong>Listen, then answer the question asked.</strong> If unclear: "Do you want a technical deep dive or a leadership story?"</li>
+<li><strong>Be concise.</strong> 60–90 seconds. Stop after the number.</li>
+<li><strong>It is OK to take 5 seconds.</strong> Say "Let me pick the strongest example."</li>
+<li><strong>No trash talk.</strong> Past employers, managers, teammates — frame friction as disagreement between competent people.</li>
+<li><strong>Failures end in process.</strong> Story 5 and story 10 already do this — reuse that shape.</li>
+<li><strong>If you do not have the experience:</strong> "I have not lived that exact case. Here is how I would handle it, grounded in a related story." Do not invent.</li>
+<li><strong>Balance "I" and the team.</strong> Lead with your ownership, credit the people you led/mentored.</li>
+<li><strong>Ask clarifying questions</strong> on ambiguous prompts (especially system-design-flavored behavioral).</li>
+<li><strong>Prepare reverse questions.</strong> Section 4 below — pick three per company.</li>
+</ol>
+<hr>
+<h2 id="1-coverage-matrix-43-common-questions-your-stories">1. Coverage matrix — ~43 common questions → your stories</h2>
+<p>Story numbers = the bank in <code>07_behavioral_star_stories.md</code>.
+<strong>G</strong> = short gap answer written in §2 (not one of the original 10).
+<strong>H</strong> = honesty / "how I would" — no fabricated STAR.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Question</th>
+<th>Use</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Tell me about yourself</td>
+<td><strong>G1</strong></td>
+<td>60–90s walkthrough</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Disagreement with manager / senior</td>
+<td><strong>1</strong> or <strong>7</strong></td>
+<td>CH verdict or ORM rulebook</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Conflict with a teammate</td>
+<td><strong>7</strong> (or <strong>1</strong>)</td>
+<td>Technical disagreement, not personal</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Tell me about a time you failed</td>
+<td><strong>5</strong> or <strong>10</strong></td>
+<td>Prefer 5 (refactor) or 10 (near-miss)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Led a team — outcome</td>
+<td><strong>8</strong> + FRM led-3</td>
+<td>Masters + FRM design reviews</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Worked well under pressure</td>
+<td><strong>8</strong></td>
+<td>GST deadline windows</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Difficult decision</td>
+<td><strong>1</strong> or <strong>3</strong></td>
+<td>CH split decision / validator</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Above and beyond</td>
+<td><strong>2</strong> or <strong>9</strong></td>
+<td>Freshness as a feature / anti-bot loop</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Don't know the answer</td>
+<td><strong>G2</strong></td>
+<td>Honest + research loop</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Received tough / critical feedback</td>
+<td><strong>G3</strong></td>
+<td>Coverage CI failure → learning</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Gave someone difficult feedback</td>
+<td><strong>G4</strong></td>
+<td>Mentorship at Masters</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Prioritize tasks quickly</td>
+<td><strong>G5</strong></td>
+<td>Menu bug vs feature / Masters peak</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Anticipated problems / prevention</td>
+<td><strong>2</strong> or <strong>3</strong> or <strong>10</strong></td>
+<td>Freshness / validator / idempotency</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Difficult customer / stakeholder</td>
+<td><strong>G6</strong></td>
+<td>PwC-facing FRM releases</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Missed a deadline</td>
+<td><strong>G7</strong></td>
+<td>Honest near-miss + communication</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Heavy workload</td>
+<td><strong>8</strong> + <strong>G5</strong></td>
+<td>Short-staffed Masters peak framing</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Significant change at work</td>
+<td><strong>G8</strong></td>
+<td>Monolith→microservices / agentic rebuild</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Took initiative without being asked</td>
+<td><strong>1</strong> or <strong>2</strong></td>
+<td>CH PoC / BQ→CH lane</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Conflict within the team (mediator)</td>
+<td><strong>1</strong></td>
+<td>Two expert camps</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Out of your comfort zone</td>
+<td><strong>G8</strong> / <strong>4</strong></td>
+<td>Agentic ownership / workflow inversion</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Delivered under a tight deadline</td>
+<td><strong>8</strong></td>
+<td>Same as pressure</td>
+</tr>
+<tr>
+<td>22</td>
+<td>Big risk that failed</td>
+<td><strong>5</strong> (small) or <strong>H</strong></td>
+<td>Do not invent a catastrophic failure</td>
+</tr>
+<tr>
+<td>23</td>
+<td>Design/test for diversity &amp; inclusion</td>
+<td><strong>H</strong></td>
+<td>No product-DEI ownership — approach only</td>
+</tr>
+<tr>
+<td>24</td>
+<td>Explain technical to non-technical</td>
+<td><strong>G9</strong></td>
+<td>Materiality / clustering to planners</td>
+</tr>
+<tr>
+<td>25</td>
+<td>Disagreed with a colleague</td>
+<td><strong>7</strong> or <strong>1</strong></td>
+<td>Same pool</td>
+</tr>
+<tr>
+<td>26</td>
+<td>Collaborate with another department</td>
+<td><strong>G6</strong> / FRM</td>
+<td>Finance + PwC + eng</td>
+</tr>
+<tr>
+<td>27</td>
+<td>Complex technical project</td>
+<td>Menu or <strong>4</strong> / <strong>8</strong></td>
+<td>Pick one; do not merge Kafka stories</td>
+</tr>
+<tr>
+<td>28</td>
+<td>Stay up-to-date with tech</td>
+<td><strong>G10</strong></td>
+<td>Real habits only</td>
+</tr>
+<tr>
+<td>29</td>
+<td>Why this company?</td>
+<td><code>38</code> §2.2 + intros templates</td>
+<td>Never improvise cold</td>
+</tr>
+<tr>
+<td>30</td>
+<td>Biggest technical challenge</td>
+<td>Menu or <strong>3</strong></td>
+<td>Adversarial + LLM gate, or validator</td>
+</tr>
+<tr>
+<td>31</td>
+<td>Why leave / change company?</td>
+<td><code>38</code> §2.1</td>
+<td>Positive framing</td>
+</tr>
+<tr>
+<td>32</td>
+<td>Many possible solutions — how choose?</td>
+<td><strong>1</strong></td>
+<td>Evidence gates</td>
+</tr>
+<tr>
+<td>33</td>
+<td>Motivate / encourage collaboration</td>
+<td>FRM led-3 + Masters mentored-2</td>
+<td>With story <strong>8</strong></td>
+</tr>
+<tr>
+<td>34</td>
+<td>Enhance technical knowledge</td>
+<td><strong>G10</strong></td>
+<td>Same as 28</td>
+</tr>
+<tr>
+<td>35</td>
+<td>Assigned a task you don't know</td>
+<td><strong>G2</strong></td>
+<td>Same shape</td>
+</tr>
+<tr>
+<td>36</td>
+<td>Urgent + long-term at once</td>
+<td><strong>G5</strong></td>
+<td>Explicit priority rule</td>
+</tr>
+<tr>
+<td>37</td>
+<td>Hard time working with someone</td>
+<td><strong>7</strong></td>
+<td>Keep it technical</td>
+</tr>
+<tr>
+<td>38</td>
+<td>Project that didn't go to plan</td>
+<td><strong>5</strong> or Menu anti-bot early misses</td>
+<td>Process fix</td>
+</tr>
+<tr>
+<td>39</td>
+<td>Something new you learned recently</td>
+<td><strong>G10</strong> + ClickHouse / LangGraph</td>
+<td>Concrete</td>
+</tr>
+<tr>
+<td>40</td>
+<td>Decision without all information</td>
+<td><strong>1</strong> or <strong>G11</strong></td>
+<td>Explicit assumptions</td>
+</tr>
+<tr>
+<td>41</td>
+<td>Linked two problems → underlying issue</td>
+<td><strong>6</strong> or <strong>10</strong></td>
+<td>Coverage lie / idempotency class</td>
+</tr>
+<tr>
+<td>42</td>
+<td>Sacrifice short-term for long-term</td>
+<td><strong>G12</strong></td>
+<td>Strangler sequencing / CH gates</td>
+</tr>
+<tr>
+<td>43</td>
+<td>Friday prod deploy ask (ethics)</td>
+<td><strong>G13</strong></td>
+<td>Never hero-deploy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Amazon LP quick map:</strong> Ownership→2,8 · Dive Deep→1,6 · Deliver Results→8 · Bias for Action→8,9 · Earn Trust→5,10 · Have Backbone→1,7 · Invent &amp; Simplify→2,4 · Insist on Highest Standards→3,5 · Customer Obsession→3,4 · Think Big→4 · Learn &amp; Be Curious→6,9 · Hire &amp; Develop→mentorship narrative.</p>
+<p><strong>Googliness:</strong> humility→1,5 · ambiguity→1,4 · collaboration→7, mentorship · bias to action→2,8 · doing the right thing→10.</p>
+<hr>
+<h2 id="2-gap-answers-tarun-specific-memorize-these">2. Gap answers (Tarun-specific — memorize these)</h2>
+<p>Stack on this track: FRM = <strong>Spring Boot / MySQL</strong> · AssortSmart writes = <strong>Spring Boot</strong> · agent plane = <strong>Python FastAPI + LangGraph</strong> · Masters migration = <strong>Spring Boot strangler</strong>.</p>
+<h3 id="g1-tell-me-about-yourself-6090s">G1. Tell me about yourself (60–90s)</h3>
+<p>"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in <strong>Java and Python</strong>. Chronologically: GeeksforGeeks backend reliability → Masters India, where I led a <strong>Spring Boot strangler</strong> and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned the FRM Risk Scoping backend (30+ APIs, 8 screens, $340M materiality, led 3) and Uber Eats menu ingestion end to end (24h→2h, $600K+/yr) → Impact Analytics, where I own AssortSmart Cluster Recommendation Copilot architecture (<strong>Python FastAPI + LangGraph</strong>, write APIs in <strong>Spring Boot</strong>) and drove ClickHouse adoption with a measured 250M-row POC. I want a senior role where I keep owning systems end to end, with a stronger design-review bar."</p>
+<p>Stop. Do not append hobbies unless asked.</p>
+<h3 id="g2-dont-know-the-answer-task-youve-never-done">G2. Don't know the answer / task you've never done</h3>
+<p>"I say I don't know, then I show the loop. Example shape: in a client or design review, if I'm asked about a technology I haven't used in production, I acknowledge it, outline how I'll get the answer — docs, a spike, a teammate who has done it — and commit to a follow-up time. I do not bluff. Related: when ClickHouse was new to parts of the org, I didn't argue taste — I ran a row-identical POC and let 189s→12.3s decide."</p>
+<h3 id="g3-received-tough-critical-feedback">G3. Received tough / critical feedback</h3>
+<p>"Use the coverage story (story 6) framed as feedback: CI failed me at 34.6% on an ORM migration even though I thought the paths were tested. The tough part was realizing my mental model of coverage was wrong — mocks had shifted execution away from the model layer. I asked for the specific concern, wrote 12 direct model-layer tests including rejection paths, and wrote the pattern into the team's testing notes. Result: 100% on the changed module. Lesson: a metric you don't understand will lie to you."</p>
+<h3 id="g4-gave-someone-difficult-feedback">G4. Gave someone difficult feedback</h3>
+<p>"At Masters India I mentored 2 engineers. One shipped working endpoints with almost no tests around the tax/dedup rules. In a 1:1 I led with what was strong, then showed a concrete failure mode a missing test would miss, paired on the first test, and set a CI coverage gate on changed modules so it wasn't personal taste. They presented the next slice themselves in review. Tone: growth, not gotcha."</p>
+<h3 id="g5-prioritize-quickly-urgent-long-term">G5. Prioritize quickly / urgent + long-term</h3>
+<p>"Rule I use: customer-visible correctness and deadline-window risk beat feature work. At Masters during GST peaks I froze cutovers in deadline weeks and kept long-term strangler work on non-peak days. On Menu, a production ingest block outranks a parser tidy-up. I say the priority out loud to the lead, time-box the urgent fix, then return to the long-term thread with mini-deadlines."</p>
+<h3 id="g6-difficult-customer-stakeholder-pwc-facing">G6. Difficult customer / stakeholder (PwC-facing)</h3>
+<p>"FRM releases were PwC-facing. Ambiguity in 'in scope' was expensive. I encoded materiality, qualitative override, residual risk, and the 5% component threshold as explicit rules against $340M / $170M thresholds so the system could reproduce and audit a decision. Weekly clarity with finance stakeholders beat arguing in a spreadsheet. Result: platform of 30+ APIs / 8 screens; the 70% reconciliation cut remains a TARGET."</p>
+<h3 id="g7-missed-a-deadline">G7. Missed a deadline</h3>
+<p>"I do not have a dramatic missed-deadline story with customer damage. Closest honest shape: when anti-bot defenses rotated on Menu sources, ingest success dipped and a planned parser improvement slipped. I flagged the slip early, explained the adversarial cause, proposed a contingency (protect the critical path first, defer nice-to-haves), and instrumented block-rate into the same dashboards as parse failures. We recovered to 95%+ successful ingestions. Lesson: surface the miss early with a revised plan — silence is the real failure."</p>
+<p>If pressed for a harder miss: use story 5 (refactor regression caught in CI before release) and be explicit it did <strong>not</strong> ship broken.</p>
+<h3 id="g8-significant-change-comfort-zone">G8. Significant change / comfort zone</h3>
+<p>"Two real ones. (1) Masters: PHP monolith → <strong>Spring Boot strangler</strong> + Kafka under live filing traffic — I had to learn the strangler sequencing, not just the target architecture. (2) Impact Analytics: owning an agentic rebuild (LangGraph / MCP / RAG) when my prior strength was classical backends — I stayed in the comfort of APIs for the write plane (<strong>Spring Boot</strong>) and stretched on the agent plane with explicit human gates and offline eval. Lesson: change the workflow and the measurement first; the model second."</p>
+<h3 id="g9-explain-technical-to-non-technical">G9. Explain technical to non-technical</h3>
+<p>"Pick the audience. To a finance stakeholder on FRM: 'materiality' as a dollar threshold that decides whether a line item is in scope for the audit, with an override path that is logged. To a retail planner on clustering: 'we evaluate ~100 ways to group stores and show you the top 3 with why, including one that mimics how you used to do it — you still approve before anything writes back.' No jargon without a one-line translation."</p>
+<h3 id="g10-stay-up-to-date-something-new-learned">G10. Stay up-to-date / something new learned</h3>
+<p>"Concrete, not vague: ClickHouse mutation limits and why insert-only planning stores win; LangGraph / MCP tool-calling patterns with schema gates; Flink keyed dedupe vs micro-batching for Menu. Habits: read the primary docs and one postmortem/blog for a new system before proposing it; spike with a measurable PoC before arguing in a design review. Recently: the line-planning schema lesson — choice×cluster×week (~25M) beat a flat store-week projection (~12B). The lever was the schema, not the engine."</p>
+<h3 id="g11-decision-without-all-information">G11. Decision without all information</h3>
+<p>"Story 1 shape: both CH camps had partial evidence. I wrote the assumptions down, accepted every measured fact, and proposed gated experiments instead of a one-shot decision. If a gate failed, we would stop. That is how you decide under incomplete information without gambling the company."</p>
+<h3 id="g12-sacrifice-short-term-for-long-term">G12. Sacrifice short-term for long-term</h3>
+<p>"Strangler sequencing at Masters: shadow reads and bulk Kafka paths before interactive filing, freeze cutovers in deadline weeks — slower short-term delivery, zero deadline-window outage. Same idea on CH: BigQuery fixes and Postgres discipline before a full cutover, so we did not burn a quarter on the wrong store."</p>
+<h3 id="g13-friday-afternoon-prod-deploy-ask">G13. Friday afternoon prod deploy ask</h3>
+<p>"I would not develop and deploy a change to production alone on a Friday afternoon without review. Course of action: clarify severity (is it a Sev-1 customer outage?). If yes — incident process, pair if possible, minimal fix, feature flag / quick rollback, postmortem. If no — schedule for Monday with a design note and a reviewer. Hero deploys without a rollback plan are how you create weekend incidents. Earn Trust &gt; looking helpful."</p>
+<h3 id="h-diversity-inclusion-product-design-no-fabricated-star">H. Diversity &amp; inclusion product design (no fabricated STAR)</h3>
+<p>"I have not owned a formal product-DEI workstream, so I will not invent one. How I would approach a design/test question: define who is excluded by the current flow (language, device, accessibility, data bias in rankings), add explicit test cases and eval slices for those groups, keep a human review path for low-confidence model output (we already do this on Menu schema gates), and measure quality per cohort — not only global averages. Related muscle: Menu multilingual menus + human review for low-confidence extractions; clustering always includes a baseline scenario so we do not silently drop a client's legacy configuration."</p>
+<hr>
+<h2 id="3-rapid-reuse-cheat-sheet">3. Rapid reuse cheat sheet</h2>
+<table>
+<thead>
+<tr>
+<th>Signal they want</th>
+<th>Open with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ownership</td>
+<td>FRM led-3 / Menu end-to-end / Copilot architecture</td>
+</tr>
+<tr>
+<td>Dive Deep</td>
+<td>Story 6 coverage / Story 1 assumptions</td>
+</tr>
+<tr>
+<td>Bias for Action</td>
+<td>Story 8 sequencing / Story 9 experiment loop</td>
+</tr>
+<tr>
+<td>Earn Trust</td>
+<td>Story 10 near-miss / G13 Friday deploy</td>
+</tr>
+<tr>
+<td>Customer Obsession</td>
+<td>Story 4 workflow inversion / G6 PwC</td>
+</tr>
+<tr>
+<td>Humility</td>
+<td>Story 5 / Story 1</td>
+</tr>
+<tr>
+<td>Ambiguity</td>
+<td>Story 1 / Story 4 / G11</td>
+</tr>
+</tbody>
+</table>
+<p>Never tell the same story twice in one loop. Never merge Masters Kafka with Menu Kafka.</p>
+<hr>
+<h2 id="4-questions-to-ask-them-pick-3">4. Questions to ask them (pick 3)</h2>
+<p>Expanded from the awesome-behavioral-interviews reverse-question list; prefer culture/engineering over flattery.</p>
+<ol>
+<li>What does the design review process look like before code gets written?</li>
+<li>Where does this team's on-call pain actually come from right now?</li>
+<li>Which decision in the last six months would you make differently?</li>
+<li>How do you tell a senior engineer from a staff engineer here — what changes?</li>
+<li>If I join, what should be measurably better in six months because I was here?</li>
+<li>What is the biggest piece of technical debt you are deliberately living with, and why?</li>
+<li>What is the ratio of developers to testers / PMs, and how does planning actually happen?</li>
+<li>What is the onboarding process for this role in the first 30/60/90 days?</li>
+<li>What has changed in the org since you joined?</li>
+<li>What are the most exciting projects on this team in the next two quarters?</li>
+<li>How does project planning and prioritization work when urgent work lands mid-sprint?</li>
+<li>What opportunities are there here to go deep on scalability / data platforms?</li>
+<li>Can you describe a typical day for someone in this role?</li>
+<li>What type of person usually does well here — and who struggles?</li>
+<li>What challenges is the company facing that this team is expected to help with?</li>
+<li>What do you personally like most about working here?</li>
+</ol>
+<hr>
+<h2 id="5-delivery-rules-again">5. Delivery rules (again)</h2>
+<ul>
+<li>Lead with the outcome, then the mechanism.</li>
+<li>Tag every number: MEASURED / TARGET / HISTORICAL / DESIGN / ESTIMATED.</li>
+<li>One story, one owner. Building stays building.</li>
+<li>Stop talking after the number.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

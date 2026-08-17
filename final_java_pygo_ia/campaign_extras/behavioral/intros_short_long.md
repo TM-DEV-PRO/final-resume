@@ -3,10 +3,10 @@
 ## HR / recruiter screen
 
 ### Short
-I am Tarun Mittal a Senior Software Engineer with 5 years in Python and Go backends distributed systems and recently agentic AI. I am exploring senior backend roles at [Company].
+I am Tarun Mittal a Senior Software Engineer with 5 years in Java, Python and Go backends distributed systems and recently agentic AI. I am exploring senior backend roles at [Company].
 
 ### Long
-I am Tarun Mittal based in Bangalore. I have about 5 years of experience building production backends. Most recently at Impact Analytics I am a Senior Software Engineer owning AssortSmart Cluster Recommendation Copilot architecture with FastAPI LangGraph MCP Go Gin write APIs Hindsight and ClickHouse. Before that I was SDE2 at Uber via EPAM on Financial Risk Management and Uber Eats menu automation and earlier SDE2 at Masters India on GST e-invoicing with Kafka. I am looking for a senior role where I can own systems end to end.
+I am Tarun Mittal based in Bangalore. I have about 5 years of experience building production backends. Most recently at Impact Analytics I am a Senior Software Engineer owning AssortSmart Cluster Recommendation Copilot architecture with FastAPI LangGraph MCP Go Gin write APIs Hindsight and ClickHouse. Before that I was SDE2 at Uber via EPAM on Financial Risk Management (Spring Boot) and Uber Eats menu automation and earlier SDE2 at Masters India on GST e-invoicing with Spring Boot and Kafka. I am looking for a senior role where I can own systems end to end.
 
 ## Hiring manager
 
