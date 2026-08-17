@@ -17,6 +17,39 @@ Uber work was <b>via EPAM</b>. ANZ is Uber <b>Mobility</b>, and its 99.9% is HIS
 
 ---
 
+## 0. The pitch — third-person summary (recruiter blurb / referral)
+
+Paste-ready prose for a recruiter, a referral note, or a LinkedIn "About". Third person on purpose,
+so a referrer can send it as-is. Every claim here is on the resume and defensible.
+
+> Tarun Mittal is a Senior Software Engineer with **5 years** of experience designing and owning
+> cloud-native, high-throughput distributed systems using **Java, Python, Spring Boot, FastAPI, Kafka, Flink, Redis, PostgreSQL, ClickHouse, and cloud platforms (AWS, GCP)**. He has a proven track record
+> of improving system performance, designing high-throughput services, and building reliable,
+> event-driven architectures — cutting API p95 from **1.2s to 300ms**, scaling a government
+> e-invoicing pipeline to **1M+ submissions a day**, automating a menu-ingestion flow that saved
+> **$600K+ a year**, and driving a storage migration proven on a **250M-row** benchmark (189s → 12.3s).
+>
+> He brings strong expertise in **distributed systems, microservices, concurrency, event-driven
+> design, and system design (HLD/LLD)**, plus **Agentic AI and RAG** systems, where he owns the
+> architecture of a cluster-recommendation copilot. His problem-solving is evidenced by a
+> **Google Code Jam** qualifier rank of **2260 / 37,000+**, a **top-3 national finish at the Smart
+> India Hackathon 2020**, and **HackerRank Problem Solving** and **LangChain Academy** certifications.
+> His ability to own complex projects end to end, decide with measured evidence rather than opinion,
+> and lead and mentor engineers makes him a strong addition to any engineering team.
+
+**First-person, 20-second spoken version:** "I'm a senior backend engineer, 5 years, building
+cloud-native distributed systems in Java and Python. I've owned finance-grade services at Uber, scaled a
+1M-a-day pipeline at Masters India, and I now own the architecture for an agentic planning copilot.
+I decide with benchmarks, I own things end to end, and I can defend every number on my resume."
+
+<div class="callout note">
+<b>Honesty note on the "problem-solving" line.</b> Use the real credentials above — Google Code Jam
+rank, Smart India Hackathon finalist, HackerRank / LangChain certs. Do <b>not</b> claim a LeetCode
+rating or a specific "N problems solved" count; that is not on the resume and cannot be verified.
+</div>
+
+---
+
 ## 1. Why should we hire Tarun?
 
 ### 1.1 Thirty-second answer (recruiter screen)
