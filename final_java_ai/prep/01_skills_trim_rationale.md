@@ -11,7 +11,9 @@ Defend with `36_skills_ai_agents_defense.md` + Menu offline eval + IA MCP tools 
 | SOA / Microservices (skills) | Prefer Distributed Systems + experience proof | Point at Masters strangler / FRM services |
 | ELK (skills) | Still on Masters tech/alerting bullet | "ELK + New Relic triage story" |
 | SQLAlchemy (skills) | FRM tech line / verbal | "SQLAlchemy 2.0 on FRM ORM" |
-| Mockito | Trimmed from Java Core | JUnit remains |
+| Mockito | Trimmed from Java Core | Testing covers it verbally |
+| JUnit | Trimmed from Core Engineering (Aug 2026) | Still on the **FRM experience Tech line**, so the keyword is on the PDF — just not in Skills |
+| Design Patterns | Trimmed from Backend & APIs (Aug 2026) | Defended verbally via strangler / layered / repository / cache-aside |
 | Rust, Cassandra, Chroma, DuckDB | Not on shipped path | Literacy only |
 
 ## Kept on purpose

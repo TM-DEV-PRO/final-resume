@@ -1,8 +1,10 @@
-# Java Track — Interview Prep Hub (grounded rewrite)
+# Final Java + AI — Interview Prep Hub
 
-**Tarun Mittal · Senior Software Engineer (Java / Spring) · July 2026**
+**Tarun Mittal · Senior Software Engineer · Aug 2026**
 
-Backs `resume_java/` (PDF: `Tarun_Mittal_SSE_Java_5yr.pdf`). Same facts as v2. Non-agentic APIs framed in Spring Boot / Hibernate where defensible. AI/RAG, Menu, and ClickHouse work stay Python.
+Backs `final_java_ai/` (PDF: `Tarun_Mittal_SSE_Java_AI_Final.pdf`). Same facts as the Python/Go final. Non-agentic APIs framed in Spring Boot / Hibernate where defensible, including the AssortSmart write plane. AI/RAG, Menu, and ClickHouse work stay Python.
+
+**Summary on the PDF (verify against this):** Senior Software Engineer with 5 years designing and owning cloud-native, high-throughput distributed systems · expertise in **Java and Python** microservices, event-driven architectures, real-time and batch data processing, Agentic AI and RAG systems · proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
 ## Study order
 

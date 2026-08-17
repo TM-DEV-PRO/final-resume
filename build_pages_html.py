@@ -76,51 +76,34 @@ def promote_mermaid(html: str) -> str:
         flags=re.DOTALL,
     )
 
-ROOTS = [
-    "campaign_pygo_xyz",
-    "resume_v2/prep",
-    "resume_v2/outreach",
-    "resume_v2/linkedin",
-    "resume_java/prep",
-    "resume_java/outreach",
-    "resume_java/linkedin",
-    "resume/prep",
-    "resume/outreach",
-    "resume/linkedin",
-    "final_java_ai/prep",
-    "final_java_ai/outreach",
-    "final_java_ai/linkedin",
-    "final_java_ai/ats",
-    "final_java_pygo_ia/prep",
-    "final_java_pygo_ia/outreach",
-    "final_java_pygo_ia/linkedin",
-    "final_java_pygo_ia/ats",
-    "final_pygo_ai/prep",
-    "final_pygo_ai/outreach",
-    "final_pygo_ai/linkedin",
-    "final_pygo_ai/ats",
-    "final_pygo_ai/campaign_extras",
-]
+# Every markdown file in the repo is mirrored to HTML, except sources under these
+# directories (build inputs / binaries, not study pages).
+SKIP_NAMES = {
+    ".git",
+    "node_modules",
+    "__pycache__",
+    "artifacts",
+    "output",
+    "sections",
+    "KNOWLEDGE-MATERIAL",
+}
 
-# Track-root markdown (ApplicationKit / application questions) — convert in place.
-ROOT_MD_FILES = [
-    "resume_v2/application_questions.md",
-    "resume_java/ApplicationKit.md",
-    "resume_java/application_questions.md",
-    "resume/ApplicationKit.md",
-    "resume/application_questions.md",
-    "final_java_ai/ApplicationKit.md",
-    "final_java_ai/application_questions.md",
-    "final_java_ai/README.md",
-    "final_java_pygo_ia/ApplicationKit.md",
-    "final_java_pygo_ia/application_questions.md",
-    "final_java_pygo_ia/README.md",
-    "final_pygo_ai/application_questions.md",
-    "final_pygo_ai/README.md",
-    # hand-maintained rich ApplicationKit.html: resume_v2 + final_pygo_ai
-]
+# Hand-maintained rich pages the generic converter must never overwrite.
+PROTECTED_HTML = {
+    "resume_v2/ApplicationKit.html",
+    "final_pygo_ai/ApplicationKit.html",
+}
 
-SKIP_NAMES = {".git", "node_modules", "__pycache__", "artifacts", "output", "sections"}
+# Track folder → label for the topbar and the site map.
+TRACK_LABELS = [
+    ("final_java_pygo_ia", "Final Java+PyGo IA"),
+    ("final_java_ai", "Final Java+AI"),
+    ("final_pygo_ai", "Final PyGo+AI"),
+    ("resume_v2", "Python/Go v2"),
+    ("resume_java", "Java/Spring"),
+    ("campaign_pygo_xyz", "Campaign track"),
+    ("resume", "Legacy Python/Go"),
+]
 
 
 def md_to_html_links(text: str) -> str:
@@ -148,56 +131,17 @@ def rel_hub_links(rel_path: str) -> str:
     track_up = "../" * max(depth - 1, 0)  # → owning track folder
     root_up = "../" * depth  # → repo root hub
 
-    if rel_path.startswith("final_pygo_ai/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Final PyGo+AI</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    if rel_path.startswith("final_java_ai/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Final Java+AI</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    if rel_path.startswith("final_java_pygo_ia/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Final Java+PyGo IA</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    if rel_path.startswith("resume_v2/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Python/Go v2</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    if rel_path.startswith("resume_java/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Java/Spring</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    if rel_path.startswith("resume/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Legacy Python/Go</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    if rel_path.startswith("campaign_pygo_xyz/"):
-        return (
-            f'<a href="{root_up}index.html">← All tracks</a>'
-            f'<a href="{track_up}index.html">Campaign track</a>'
-            f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
-            f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
-        )
-    return f'<a href="{track_up}index.html">← Hub</a>'
+    for folder, label in TRACK_LABELS:
+        if rel_path.startswith(folder + "/"):
+            return (
+                f'<a href="{root_up}index.html">← All tracks</a>'
+                f'<a href="{track_up}index.html">{label}</a>'
+                f'<a href="{track_up}InterviewPrep.html">Prep hub</a>'
+                f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
+                f'<a href="{root_up}all_pages.html">All pages</a>'
+            )
+    # Repo-root page (README, cross-track ATS, …)
+    return '<a href="index.html">← All tracks</a><a href="all_pages.html">All pages</a>'
 
 
 def convert_file(md_path: str) -> str:
@@ -243,33 +187,21 @@ def convert_file(md_path: str) -> str:
 </html>
 """
     out = md_path[:-3] + ".html" if md_path.endswith(".md") else md_path + ".html"
+    if os.path.relpath(out, BASE) in PROTECTED_HTML:
+        return ""  # hand-maintained rich page — leave it alone
     open(out, "w", encoding="utf-8").write(page)
     return out
 
 
 def iter_markdown() -> list[str]:
+    """Every markdown file in the repo except build inputs (see SKIP_NAMES)."""
     found = []
-    for root in ROOTS:
-        abs_root = os.path.join(BASE, root)
-        if not os.path.isdir(abs_root):
-            continue
-        for dirpath, dirnames, filenames in os.walk(abs_root):
-            dirnames[:] = [d for d in dirnames if d not in SKIP_NAMES and not d.startswith(".")]
-            for name in filenames:
-                if name.endswith(".md"):
-                    found.append(os.path.join(dirpath, name))
-    for rel in ROOT_MD_FILES:
-        abs_md = os.path.join(BASE, rel)
-        if os.path.isfile(abs_md):
-            found.append(abs_md)
-    # de-dupe while preserving order
-    seen = set()
-    out = []
-    for p in found:
-        if p not in seen:
-            seen.add(p)
-            out.append(p)
-    return sorted(out)
+    for dirpath, dirnames, filenames in os.walk(BASE):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_NAMES and not d.startswith(".")]
+        for name in filenames:
+            if name.endswith(".md"):
+                found.append(os.path.join(dirpath, name))
+    return sorted(found)
 
 
 def rewrite_hub_file(path: str) -> None:
@@ -294,6 +226,7 @@ def write_folder_indexes() -> None:
         os.path.join(BASE, "final_java_pygo_ia"),
         os.path.join(BASE, "final_pygo_ai"),
     }
+    skip.add(BASE)  # repo root index.html is the hand-written track hub
     dirs = set()
     for md in iter_markdown():
         dirs.add(os.path.dirname(md))
@@ -326,11 +259,89 @@ def write_folder_indexes() -> None:
         open(os.path.join(d, "index.html"), "w", encoding="utf-8").write(page)
 
 
+def iter_html_pages() -> list[str]:
+    """Every published HTML page, repo-relative, sorted."""
+    found = []
+    for dirpath, dirnames, filenames in os.walk(BASE):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_NAMES and not d.startswith(".")]
+        for name in filenames:
+            if name.endswith(".html"):
+                rel = os.path.relpath(os.path.join(dirpath, name), BASE)
+                if rel not in ("all_pages.html",):
+                    found.append(rel)
+    return sorted(found)
+
+
+def write_site_map() -> int:
+    """Publish all_pages.html — every HTML page on the site, grouped by track."""
+    pages = iter_html_pages()
+    groups: dict[str, list[str]] = {}
+    for rel in pages:
+        top = rel.split("/")[0] if "/" in rel else "_root"
+        groups.setdefault(top, []).append(rel)
+
+    order = [f for f, _ in TRACK_LABELS]
+    labels = dict(TRACK_LABELS)
+    ordered_keys = ["_root"] + [k for k in order if k in groups]
+    ordered_keys += [k for k in sorted(groups) if k not in ordered_keys]
+
+    sections = []
+    for key in ordered_keys:
+        rels = groups.get(key)
+        if not rels:
+            continue
+        heading = "Repo root" if key == "_root" else f"{labels.get(key, key)} <code>{key}/</code>"
+        # sub-group by directory so prep/outreach/ats read as blocks
+        by_dir: dict[str, list[str]] = {}
+        for rel in rels:
+            parent = os.path.dirname(rel) or "."
+            by_dir.setdefault(parent, []).append(rel)
+        blocks = []
+        for parent in sorted(by_dir):
+            items = "\n".join(
+                f'<li><a href="{rel}">{os.path.basename(rel)[:-5]}</a></li>'
+                for rel in sorted(by_dir[parent])
+            )
+            sub = "" if parent in (".", key) else f'<div class="dir">{parent}/</div>'
+            blocks.append(f'{sub}<ul class="pagelist">{items}</ul>')
+        sections.append(
+            f'<section><h2>{heading} '
+            f'<span class="count">{len(rels)} pages</span></h2>{"".join(blocks)}</section>'
+        )
+
+    page = f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>All pages — Tarun Mittal</title>{CSS}
+<style>
+main{{max-width:1100px}}
+.count{{color:var(--mut);font-size:12px;font-weight:400;margin-left:8px}}
+.dir{{color:var(--warn);font-size:12.5px;font-family:ui-monospace,monospace;margin:14px 0 4px}}
+ul.pagelist{{list-style:none;padding:0;margin:0 0 6px;display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:2px 14px}}
+ul.pagelist li{{margin:0}}
+ul.pagelist a{{display:block;padding:3px 8px;border-radius:6px;text-decoration:none;font-size:13px}}
+ul.pagelist a:hover{{background:#1d2330}}
+section{{margin-bottom:34px}}
+</style></head>
+<body>
+<div class="topbar"><a href="index.html">← All tracks</a><span class="path">all_pages.html</span></div>
+<main>
+<h1>Every page on this site</h1>
+<p style="color:var(--mut)">{len(pages)} HTML pages. Markdown sources stay in the git repo; every
+one of them is mirrored here so nothing is reachable only as raw <code>.md</code>.</p>
+{"".join(sections)}
+</main>
+</body></html>
+"""
+    open(os.path.join(BASE, "all_pages.html"), "w", encoding="utf-8").write(page)
+    return len(pages)
+
+
 def main() -> None:
     files = iter_markdown()
-    outs = []
-    for md in files:
-        outs.append(convert_file(md))
+    outs = [o for o in (convert_file(md) for md in files) if o]
     write_folder_indexes()
     for hub in (
         os.path.join("campaign_pygo_xyz", "InterviewPrep.html"),
@@ -341,10 +352,17 @@ def main() -> None:
         os.path.join("resume_java", "InterviewPrep.html"),
         os.path.join("resume", "ApplicationKit.html"),
         os.path.join("resume", "InterviewPrep.html"),
+        os.path.join("final_java_ai", "InterviewPrep.html"),
+        os.path.join("final_java_ai", "ApplicationKit_deep.html"),
+        os.path.join("final_java_pygo_ia", "InterviewPrep.html"),
+        os.path.join("final_java_pygo_ia", "ApplicationKit_deep.html"),
+        os.path.join("final_pygo_ai", "InterviewPrep.html"),
+        os.path.join("final_pygo_ai", "ApplicationKit.html"),
         "index.html",
     ):
         rewrite_hub_file(os.path.join(BASE, hub))
-    print(f"wrote {len(outs)} HTML mirrors + folder indexes")
+    total = write_site_map()
+    print(f"wrote {len(outs)} HTML mirrors + folder indexes + site map ({total} pages)")
 
 
 if __name__ == "__main__":

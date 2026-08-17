@@ -1,6 +1,6 @@
 # Role targeting + rapid-fire — Java / Spring senior SWE
 
-Use this when applying with `resume_java` / `Tarun_Mittal_SSE_Java_5yr.pdf`. Lead with Java/Spring keywords; keep cloud, Kafka, and systems stories.
+Use this when applying with this track — `final_java_pygo_ia/artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf` (the primary public resume). Lead with Java/Spring keywords for Uber and Masters; the AssortSmart write plane is Go/Gin and the AI path is Python.
 
 ## 1. Role families and what to lead with
 

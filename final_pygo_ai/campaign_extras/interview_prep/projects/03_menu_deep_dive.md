@@ -1,10 +1,10 @@
 # Uber Menu Ingestion Deep Dive (v2 + Java tracks)
 
-> **Start here for interviews:** [`23b_uber_interview_packs.md`](../../resume_v2/prep/23b_uber_interview_packs.md) § Menu.
+> **Start here for interviews:** [`23b_uber_interview_packs.md`](../../../prep/23b_uber_interview_packs.md) § Menu.
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium + Kafka + Flink + LangChain RAG / Gemini / vector store / SFT** converting multilingual PDFs/images into Uber Eats schema (98%/100% offline). **ANZ is a separate Uber Mobility project** — Uber drivers in ANZ, driver+vehicle docs vs local authorities — **not** Eats; 20h/week is HISTORICAL past-resume only. Masters also owns Kafka for GST IRP (different product). Use [`23b_uber_interview_packs.md`](../../resume_v2/prep/23b_uber_interview_packs.md) § Menu / ANZ as the canonical pack.
+> **RESUME ALIGNMENT (Jul 2026):** Menu PDF is **Selenium + Kafka + Flink + LangChain RAG / Gemini / vector store / SFT** converting multilingual PDFs/images into Uber Eats schema (98%/100% offline). **ANZ is a separate Uber Mobility project** — Uber drivers in ANZ, driver+vehicle docs vs local authorities — **not** Eats; 20h/week is HISTORICAL past-resume only. Masters also owns Kafka for GST IRP (different product). Use [`23b_uber_interview_packs.md`](../../../prep/23b_uber_interview_packs.md) § Menu / ANZ as the canonical pack.
 
 ---
 

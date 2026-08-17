@@ -1,7 +1,9 @@
 # 5× Job Listings ATS Scorecard (session companies)
 
 **Review date:** 2026-07-27  
-**Resumes scored:** `Tarun_Mittal_SSE_5yr_v2.pdf` · `Tarun_Mittal_SSE_Java_5yr.pdf` · `campaign_pygo_xyz/output/Tarun_Mittal_SSE_PyGo_XYZ.pdf`  
+**Resumes scored:** `Tarun_Mittal_SSE_5yr_v2.pdf` · `Tarun_Mittal_SSE_Java_5yr.pdf` · `campaign_pygo_xyz/output/Tarun_Mittal_SSE_PyGo_XYZ.pdf`
+
+> **Scope note (Aug 2026):** this scorecard was run against the *source* tracks (`resume_v2/`, `resume_java/`, `campaign_pygo_xyz/`). The finals were cut from them and share the same evidence, but the Summary is now three lines with a per-track language stack, and Skills no longer list Design Patterns or JUnit. Route applications using this track's own PDF in `artifacts/`.  
 **Method:** Pull 5 live/recent senior-backend postings per company; score ATS keyword + hard YoE gates + language gates. Not an interview pass prediction.
 
 ## Verdict legend

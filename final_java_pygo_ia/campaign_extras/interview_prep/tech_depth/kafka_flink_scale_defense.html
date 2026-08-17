@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>kafka_flink_scale_defense — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/tech_depth/kafka_flink_scale_defense.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#kafka-flink-where-why-at-high-numbers-how-to-defend">Kafka + Flink — where, why at high numbers, how to defend</a>
+<a class="lvl2" href="#1-where-each-tech-is-used-map">1. Where each tech is used (map)</a>
+<a class="lvl2" href="#2-why-these-tech-at-high-numbers-the-defense">2. Why these tech at “high numbers” (the defense)</a>
+<a class="lvl2" href="#3-attack-answer-memorize">3. Attack → answer (memorize)</a>
+<a class="lvl2" href="#4-scale-cheat-sheet-say-tags-out-loud">4. Scale cheat sheet (say tags out loud)</a>
+<a class="lvl2" href="#5-20-second-stories">5. 20-second stories</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="kafka-flink-where-why-at-high-numbers-how-to-defend">Kafka + Flink — where, why at high numbers, how to defend</h1>
+<p>Interview sheet. Numbers are HISTORICAL / ESTIMATED peaks where noted. Do not invent TPS you never measured.</p>
+<hr>
+<h2 id="1-where-each-tech-is-used-map">1. Where each tech is used (map)</h2>
+<table>
+<thead>
+<tr>
+<th>Place</th>
+<th>Kafka?</th>
+<th>Flink?</th>
+<th>Job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Uber Menu</strong></td>
+<td>Yes — ingest bus after Selenium</td>
+<td>Yes — hot-path validate / keyed dedupe / route</td>
+<td>30K+ menus/mo, 24h→2h, 95%+ success</td>
+</tr>
+<tr>
+<td><strong>Masters India GST</strong></td>
+<td>Yes — bulk IRP / e-invoice pipeline</td>
+<td><strong>No</strong></td>
+<td>1M+/day, 100K+/import, 700→4,000 req/min</td>
+</tr>
+<tr>
+<td><strong>Impact Analytics</strong></td>
+<td>Yes — async jobs (embeddings etc.) on Tech</td>
+<td><strong>No</strong></td>
+<td>Not the CH OLAP path</td>
+</tr>
+<tr>
+<td><strong>FRM / GFG</strong></td>
+<td>No</td>
+<td>No</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>One-liner:</strong> Kafka absorbs bursts and enables replay. Flink adds <strong>stateful</strong> stream logic on Menu only. Masters stays Kafka + idempotent workers + PG shards.</p>
+<hr>
+<h2 id="2-why-these-tech-at-high-numbers-the-defense">2. Why these tech at “high numbers” (the defense)</h2>
+<h3 id="uber-menu-why-not-just-call-the-catalog-api-from-the-scraper">Uber Menu — why not “just call the catalog API from the scraper”</h3>
+<table>
+<thead>
+<tr>
+<th>Pressure</th>
+<th>Number / shape</th>
+<th>Why sync HTTP dies</th>
+<th>Why Kafka</th>
+<th>Why Flink</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volume</td>
+<td><strong>30K+ menus/month</strong> (~1K+/day average; spikes when vendors refresh)</td>
+<td>Scrapers block on slow catalog writes</td>
+<td>Buffer + multiple consumers</td>
+<td>Continuous process without waiting for batch windows</td>
+</tr>
+<tr>
+<td>Latency goal</td>
+<td>Onboarding <strong>24h → 2h</strong></td>
+<td>Retry storms amplify latency</td>
+<td>Decouple scrape success from catalog success</td>
+<td>Stateful dedupe avoids redoing work</td>
+</tr>
+<tr>
+<td>Burstiness</td>
+<td>Scrape waves, anti-bot backoff, retries</td>
+<td>Thread pool meltdown</td>
+<td>Partitioned log absorbs spikes</td>
+<td>Backpressure into Kafka lag, not scraper crashes</td>
+</tr>
+<tr>
+<td>Failure / bad deploy</td>
+<td>Parser bug ships</td>
+<td>Cannot replay HTTP</td>
+<td><strong>Rewind offsets</strong>, reprocess</td>
+<td>Keyed state + watermark rewind</td>
+</tr>
+<tr>
+<td>Fan-out</td>
+<td>Structured path + RAG path + health</td>
+<td>One HTTP call cannot fan out cleanly</td>
+<td>Many consumer groups</td>
+<td>Route in-stream after validate</td>
+</tr>
+<tr>
+<td>Ordering</td>
+<td>Per-vendor menu updates</td>
+<td>Race overwrites</td>
+<td>Key by vendor/menu id</td>
+<td>Keyed state matches that key</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Rough rate talk (ESTIMATED, say so):</strong><br>
+30K menus/mo ≈ <strong>~0.4–1 event/s average</strong> if one event per menu, but scrape retries, page chunks, and re-scrapes make the <strong>bus</strong> busier than “30K messages.” Peaks are bursty (vendor batches), not a flat TPS. Defend <strong>burst + replay + fan-out</strong>, not “we ran Flink because we had a million TPS.”</p>
+<p><strong>If interviewer says “30K/month is tiny for Kafka”:</strong><br>
+Agree averages are modest. Kafka is there for <strong>operational properties</strong> (replay, decoupling, multi-consumer, ordered keys under scrape failure), not because we needed LinkedIn-scale throughput. Flink is there for <strong>keyed dedupe + event-time</strong>, not vanity TPS.</p>
+<h3 id="masters-india-why-kafka-at-1mday-and-4k-reqmin">Masters India — why Kafka at 1M+/day and 4k req/min</h3>
+<table>
+<thead>
+<tr>
+<th>Pressure</th>
+<th>Number</th>
+<th>Why sync PHP/Laravel workers die</th>
+<th>Why Kafka</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Daily IRP</td>
+<td><strong>1M+ submissions/day</strong> (~12 TPS avg; <strong>100+ TPS peak ESTIMATED</strong> at filing deadlines)</td>
+<td>One slow IRP blocks a worker</td>
+<td>Queue absorbs deadline spikes</td>
+</tr>
+<tr>
+<td>Bulk import</td>
+<td><strong>100K+/import</strong></td>
+<td>Memory + request timeout</td>
+<td>Chunk → topics → consumers</td>
+</tr>
+<tr>
+<td>API throughput</td>
+<td><strong>700 → 4,000 req/min</strong> (~12 → ~67 RPS)</td>
+<td>Monolith scaled as one unit</td>
+<td>Microservices + async bulk path</td>
+</tr>
+<tr>
+<td>Safety</td>
+<td>Double-file risk</td>
+<td>Retries without idempotency</td>
+<td>Idempotency keys + DLQ + replay</td>
+</tr>
+<tr>
+<td>Ordering</td>
+<td>Per taxpayer</td>
+<td>Race on same GSTIN</td>
+<td>Partition key = client GSTIN</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why no Flink at Masters:</strong><br>
+Consumers + Celery/workers + <strong>idempotent DB writes</strong> were enough. Adding Flink would duplicate the pipeline without a stateful windowing/dedupe requirement like Menu’s late scrape pages.</p>
+<h3 id="ia-why-kafka-on-tech-light-claim">IA — why Kafka on Tech (light claim)</h3>
+<p>Async embedding / background jobs off the request path. <strong>Do not</strong> claim Menu- or Masters-scale Kafka ownership at IA. ClickHouse is the OLAP story.</p>
+<hr>
+<h2 id="3-attack-answer-memorize">3. Attack → answer (memorize)</h2>
+<h3 id="kafka-and-flink-for-only-30k-menus-a-month-overkill">“Kafka and Flink for only 30K menus a month — overkill?”</h3>
+<p><strong>A:</strong> Average rate is not the design driver. Scrapers are <strong>bursty and flaky</strong> (anti-bot, retries). Catalog writes and RAG extraction have different latency profiles. Kafka lets scrape succeed even when downstream is slow, and lets us <strong>replay</strong> after a bad parser. Flink owns <strong>keyed dedupe and routing</strong> so we do not double-apply the same vendor menu when late pages arrive. If we only had Celery sync chains, a bad deploy meant re-scrape the internet instead of rewind the log.</p>
+<h3 id="prove-you-needed-flink-not-just-kafka-consumers">“Prove you needed Flink, not just Kafka consumers.”</h3>
+<p><strong>A:</strong> Plain consumers are fine for fire-and-forget transforms. We needed <strong>keyed state</strong> (per vendor/menu), <strong>event-time</strong> for late HTML, and a single job that <strong>validates → dedupes → routes</strong> structured vs unstructured before catalog/RAG. That is Flink’s sweet spot. Spark is worse for the hot path (micro-batch delay); we keep Spark as <strong>verbal backfill</strong>.</p>
+<h3 id="what-was-the-peak-eventssec-on-menu">“What was the peak events/sec on Menu?”</h3>
+<p><strong>A:</strong> I do not claim a measured Flink peak TPS on the resume. What is HISTORICAL is <strong>30K+ menus/month</strong>, <strong>24h→2h</strong>, <strong>95%+</strong> successful ingestions. Peak bus rate is <strong>ESTIMATED</strong> from scrape fan-out and retries — I will not invent a vanity number. I defend architecture under burst + failure, not a fake million-TPS slide.</p>
+<h3 id="masters-1mday-was-that-kafka-or-the-api">“Masters 1M+/day — was that Kafka or the API?”</h3>
+<p><strong>A:</strong> Both. Interactive API path hit <strong>4,000 req/min</strong> after the FastAPI strangler. Bulk IRP submissions (<strong>1M+/day</strong>, <strong>100K+/import</strong>) ride <strong>Kafka</strong> so filing-deadline spikes do not melt Postgres. Idempotency keys stop double filing on replay.</p>
+<h3 id="how-do-you-get-exactly-once">“How do you get exactly-once?”</h3>
+<p><strong>A:</strong> End-to-end exactly-once is a slogan. Practical recipe: Kafka at-least-once + <strong>idempotent sink</strong> (Menu: catalog upsert keyed by vendor/menu version; Masters: <code>client + fileHash + batchIndex</code>). Flink can use transactional sinks into Kafka; the catalog still needs idempotent writes. DLQ for poison messages; never infinite retry on bad payload.</p>
+<h3 id="bad-flinkparser-deploy-recovery">“Bad Flink/parser deploy — recovery?”</h3>
+<p><strong>A:</strong> Stop the job → fix → <strong>rewind Kafka</strong> to offsets before the bad watermark → reprocess. Gaps that need heavy history → Spark/batch backfill (verbal). Scrapers do not re-hit the open web for every repair if the raw payload is still in object storage / log.</p>
+<h3 id="why-kafka-not-rabbitmq-sqs-only-celery">“Why Kafka not RabbitMQ / SQS / only Celery?”</h3>
+<p><strong>A:</strong> We needed a <strong>replayable, partitioned, multi-consumer log</strong> with per-key ordering. Celery is a task queue (good for jobs); it is a weaker audit/replay bus for “reprocess last Tuesday’s scrapes.” SQS lacks the same ordered multi-subscriber log story we used. Kafka matched Menu fan-out and Masters IRP consumers.</p>
+<hr>
+<h2 id="4-scale-cheat-sheet-say-tags-out-loud">4. Scale cheat sheet (say tags out loud)</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Tag</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>30K+ menus/month, 24h→2h, $600K+, 95%+</td>
+<td>HISTORICAL</td>
+<td>Menu outcomes</td>
+</tr>
+<tr>
+<td>Kafka + Flink on Menu</td>
+<td>HISTORICAL architecture</td>
+<td>On campaign PDF</td>
+</tr>
+<tr>
+<td>Menu peak events/sec</td>
+<td>ESTIMATED if discussed</td>
+<td>Do not put on PDF</td>
+</tr>
+<tr>
+<td>1M+ IRP/day, 100K+/import</td>
+<td>HISTORICAL</td>
+<td>Masters</td>
+</tr>
+<tr>
+<td>~12 TPS avg / 100+ TPS peak</td>
+<td>ESTIMATED from 1M+/day</td>
+<td>Say estimated</td>
+</tr>
+<tr>
+<td>700 → 4,000 req/min</td>
+<td>HISTORICAL</td>
+<td>Masters API</td>
+</tr>
+<tr>
+<td>Spark / Pinot</td>
+<td>STUDY / verbal</td>
+<td>Not on PDF</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-20-second-stories">5. 20-second stories</h2>
+<p><strong>Menu:</strong> “Scrapers are bursty. Kafka is the replayable bus. Flink does keyed dedupe and routes structured vs RAG paths so catalog freshness stays hours not a day. That is how 30K+ menus/month moved from 24h to 2h onboarding.”</p>
+<p><strong>Masters:</strong> “Filing deadlines spike IRP traffic. Kafka plus idempotent consumers and PG quarter shards took us to 1M+ submissions/day and 4,000 req/min without double-filing on replay. No Flink — workers were enough.”</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="flink.html">flink.md</a> · <a href="kafka_streaming.html">kafka_streaming.md</a></li>
+<li><a href="../architecture/03_uber_menu.html">../architecture/03_uber_menu.md</a></li>
+<li><a href="../architecture/04_masters_gst.html">../architecture/04_masters_gst.md</a></li>
+<li><a href="../deployment_and_scale.html">../deployment_and_scale.md</a></li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

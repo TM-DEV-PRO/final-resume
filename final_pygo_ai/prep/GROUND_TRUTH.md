@@ -13,7 +13,8 @@ Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA 
 | Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS) | 85% HISTORICAL / ESTIMATED peaks | Resume experience | Past resumes + metrics derivations |
 | Fault tolerance: idempotency keys, retries, DLQ on bulk IRP path (PDF: plain English, not “idempotent sinks”) | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
 | On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
-| Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | Skills | FRM code + Masters migration |
+| Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | **OMIT from Skills** (Aug 2026) — verbal only; Backend & APIs no longer lists it | FRM code + Masters migration |
+| JUnit keyword | n/a for this track | **OMIT from Skills** (Aug 2026); Core Engineering ends at Testing | Java tests live on the Java tracks' FRM experience line |
 | Fault Tolerance / High Availability / Operational Excellence / On-call skill keywords | n/a | **OMIT from Skills** (Jul 2026) — keep only as Masters **experience** (idempotency/DLQ + ELK alerting) | User skills trim; Core uses Multithreading + Concurrency instead |
 | Kafka + Flink on Uber Menu (Selenium→Kafka→Flink keyed normalize/dedupe/replay) | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Restored Jul 2026; Spark backfills verbal/study only — not on PDF |
 | Multi-region / active-active / DR ownership | <5% | **OMIT resume** | CDC DR doc authored by Ashvin Sharma; no personal ownership |

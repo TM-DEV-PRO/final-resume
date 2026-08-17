@@ -3,7 +3,7 @@
 **Purpose:** Interview fluency for big-tech senior screens.  
 **Honesty rule:** Items marked `STUDY ONLY - NOT RESUME EXPERIENCE` are study material. Do **not** claim them as production ownership on the resume unless a later evidence matrix row reaches 95%+.
 
-Resume-safe claims live in `GROUND_TRUTH.md` evidence matrix: FRM ownership/architecture, Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call alerting (experience bullets), Design Patterns in Skills. **Core skills omit** Fault Tolerance / High Availability / Operational Excellence / On-call keywords — use Multithreading + Concurrency instead. Kubernetes stays skills-listed only. Multi-region, K8s ops, Spark, and Terraform are **off the resume**. Flink is on the Menu experience bullet (keyed normalize/dedupe/replay).
+Resume-safe claims live in `GROUND_TRUTH.md` evidence matrix: FRM ownership/architecture, Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call alerting (experience bullets). **Skills no longer list Design Patterns or JUnit** (trimmed Aug 2026). **Core skills omit** Fault Tolerance / High Availability / Operational Excellence / On-call keywords — use Multithreading + Concurrency instead. Kubernetes stays skills-listed only. Multi-region, K8s ops, Spark, and Terraform are **off the resume**. Flink is on the Menu experience bullet (keyed normalize/dedupe/replay).
 
 ---
 

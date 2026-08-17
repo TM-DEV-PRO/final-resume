@@ -38,36 +38,62 @@ strong{color:#fff}
 </style>
 </head>
 <body>
-<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><span class="path">final_pygo_ai/prep/README.html</span></div>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_pygo_ai/prep/README.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#pythongo-resume-v2-hardened">Python/Go resume v2 (hardened)</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#final-python-go-ai-readme">Final Python + Go + AI — README</a>
 <a class="lvl2" href="#layout">Layout</a>
-<a class="lvl2" href="#fixes-applied">Fixes applied</a>
-<a class="lvl2" href="#rebuild">Rebuild</a></nav>
-<main><h1 id="pythongo-resume-v2-hardened">Python/Go resume v2 (hardened)</h1>
-<p>Credibility-hardened copy of the main Python/Go resume. <strong>Does not modify</strong> <code>resume/</code> or <code>interview_prep/</code>.</p>
+<a class="lvl2" href="#rebuild-pdf">Rebuild PDF</a>
+<a class="lvl2" href="#rebuild-the-published-html">Rebuild the published HTML</a>
+<a class="lvl2" href="#credibility-rules-carried-over-from-the-source-track">Credibility rules carried over from the source track</a>
+<a class="lvl2" href="#summary-block-on-the-pdf">Summary block on the PDF</a></nav>
+<main><h1 id="final-python-go-ai-readme">Final Python + Go + AI — README</h1>
+<p>AI / data-leaning submit track for Google · Microsoft · Netflix · Databricks · PlanetScale. Every
+project keeps its real stack: FastAPI and LangGraph for the AssortSmart agent plane, Go and Gin for
+the shared write APIs, FastAPI and MySQL for Uber FRM.</p>
 <h2 id="layout">Layout</h2>
-<pre><code>resume_v2/                 LaTeX sources
-resume_v2/prep/         Delta prep (index + skills rationale + rapid-fire)
-output/
-  Tarun_Mittal_SSE_5yr_v2.pdf
-  Tarun_Mittal_Resume_v2_Overleaf.zip
-Tarun_Mittal_SSE_5yr_v2.pdf
-InterviewPrepV2.html
+<pre><code>final_pygo_ai/
+  resume.tex                 compile this
+  sections/*.tex             objective · skills · experience · education
+  artifacts/
+    Tarun_Mittal_SSE_PyGo_AI_Final.pdf
+    Tarun_Mittal_PyGo_AI_Overleaf.zip
+  prep/                      grounded interview prep (this folder)
+    00_index.md              hub + stack mapping table
+    GROUND_TRUTH.md          every number, honesty tag, and omit list
+    38_why_hire_tarun_qa.md  screening &amp; behavioral Q&amp;A bank
+  campaign_extras/           behavioral bank · architecture · tech depth · ATS loops
+  ats/ · linkedin/ · outreach/
+  InterviewPrep.html         one-page hub (generated)
+  ApplicationKit.html        paste-ready application answers (hand-maintained)
 </code></pre>
-<h2 id="fixes-applied">Fixes applied</h2>
+<p>Do not mix tracks inside one interview loop — if you sent this PDF, Uber FRM is FastAPI, not Spring.</p>
+<h2 id="rebuild-pdf">Rebuild PDF</h2>
+<pre><code class="language-bash">mkdir -p /tmp/rb &amp;&amp; cd final_pygo_ai &amp;&amp; tectonic resume.tex --outdir /tmp/rb
+cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf
+</code></pre>
+<p>Or upload <code>artifacts/Tarun_Mittal_PyGo_AI_Overleaf.zip</code> to Overleaf (main file <code>resume.tex</code>).</p>
+<h2 id="rebuild-the-published-html">Rebuild the published HTML</h2>
+<pre><code class="language-bash">python3 build_pages_html.py       # mirrors every .md → .html + site map
+python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
+</code></pre>
+<h2 id="credibility-rules-carried-over-from-the-source-track">Credibility rules carried over from the source track</h2>
 <ol>
-<li>Skills trimmed to technologies evidenced on Tech Used lines / live stack</li>
-<li>IA “under 1 hour” → <strong>targeting</strong> (design target)</li>
-<li>“lock free writes” → concurrent writes <strong>without lock contention</strong></li>
-<li>BigQuery kept with explicit ingest-SoT talking track in prep</li>
+<li>Skills list only technologies evidenced on a Tech line or the live stack.</li>
+<li>AssortSmart "under 1 hour" and "under 2%" are <strong>TARGET</strong>, not measured.</li>
+<li>No "lock-free writes" — say concurrent writes <strong>without lock contention</strong>.</li>
+<li>BigQuery stays, with the ingest source-of-truth talking track in prep.</li>
+<li><strong>Design Patterns and JUnit are not in Skills</strong> (trimmed Aug 2026).</li>
+<li><strong>No Spark, no Pinot, no SFT</strong> on the PDF — study-only depth.</li>
 </ol>
-<h2 id="rebuild">Rebuild</h2>
-<pre><code class="language-bash">cd resume_v2 &amp;&amp; tectonic resume.tex --outdir ../output
-mv ../output/resume.pdf ../output/Tarun_Mittal_SSE_5yr_v2.pdf
-cp ../output/Tarun_Mittal_SSE_5yr_v2.pdf ../
-</code></pre>
-<p>Deep project chapters remain in <code>interview_prep/</code> — this folder only documents v2 deltas.</p></main>
+<h2 id="summary-block-on-the-pdf">Summary block on the PDF</h2>
+<ol>
+<li>Senior Software Engineer with <strong>5 years</strong> of experience designing and owning cloud-native,
+   high-throughput <strong>distributed systems</strong>.</li>
+<li>Expertise in <strong>Python and Go microservices</strong>, event-driven architectures, real-time and batch
+   data processing, <strong>Agentic AI and RAG</strong> systems.</li>
+<li>Proven track record shipping production systems, leading backend migrations, and improving
+   reliability, performance, and scalability.</li>
+</ol></main>
 </div>
 
 <script type="module">

@@ -21,7 +21,7 @@ Shared keywords for Workday Greenhouse Lever iCIMS Taleo-style parsers and the 8
 | Mentorship / Led engineers | FRM Masters |
 | Observability Datadog ELK New Relic | Skills Masters |
 | RAG LangGraph MCP | Skills IA |
-| Design Patterns | Skills |
+| Design Patterns | ~~Skills~~ → verbal only (removed from Backend & APIs, Aug 2026) |
 | Multithreading Concurrency | Skills Core |
 | gRPC REST | Skills |
 | SQLAlchemy Pydantic | FRM Tech |

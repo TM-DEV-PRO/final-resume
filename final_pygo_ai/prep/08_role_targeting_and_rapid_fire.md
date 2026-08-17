@@ -1,6 +1,6 @@
 # Role targeting + rapid-fire — Python/Go resume v2
 
-Use with `resume_v2/` / `Tarun_Mittal_SSE_5yr_v2.pdf`.
+Use this when applying with this track — `final_pygo_ai/artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf`.
 
 ## New wording you must say correctly
 

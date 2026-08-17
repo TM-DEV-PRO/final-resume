@@ -1,6 +1,6 @@
 # Role targeting + rapid-fire — Java / Spring senior SWE
 
-Use this when applying with `resume_java` / `Tarun_Mittal_SSE_Java_5yr.pdf`. Lead with Java/Spring keywords; keep cloud, Kafka, and systems stories.
+Use this when applying with this track — `final_java_ai/artifacts/Tarun_Mittal_SSE_Java_AI_Final.pdf`. Lead with Java/Spring keywords; keep cloud, Kafka, and systems stories.
 
 ## 1. Role families and what to lead with
 

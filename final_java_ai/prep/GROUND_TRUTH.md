@@ -11,7 +11,7 @@ Stack framing only:
 - Never claim shipped Java services in production at IA; say building / design ownership.
 
 Evidence boundary (same as v2 `GROUND_TRUTH.md` evidence matrix):
-- Resume-safe: FRM ownership + layered architecture, Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call alerting (experience), Design Patterns in Skills. **Core omits** Fault Tolerance / HA / On-call skill keywords (use Multithreading + Concurrency).
+- Resume-safe: FRM ownership + layered architecture, Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call alerting (experience). **Skills omit** Design Patterns and JUnit (Core Engineering uses Testing + Multithreading + Concurrency instead). JUnit still appears on the **FRM experience Tech line**, not in Skills — say "JUnit on the Uber FRM work" if asked. **Core omits** Fault Tolerance / HA / On-call skill keywords (use Multithreading + Concurrency).
 - Menu has Kafka + Flink (keyed normalize/dedupe/replay) on PDF. Omit Spark, multi-region, K8s ops, Terraform from resume; study in `../../resume_v2/prep/17_senior_systems_study_only.md`.
 - CGPA removed from Java resume PDF (kept in shared ground truth for reference).
 

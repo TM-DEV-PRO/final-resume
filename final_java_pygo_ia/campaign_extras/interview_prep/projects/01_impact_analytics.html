@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>01_impact_analytics — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/projects/01_impact_analytics.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-interview-pack">Impact Analytics — Interview Pack</a>
+<a class="lvl2" href="#1-30s-2min-project-explain">1. 30s / 2min project explain</a>
+<a class="lvl2" href="#2-architecture-diagram">2. Architecture diagram</a>
+<a class="lvl2" href="#3-design-decisions">3. Design decisions</a>
+<a class="lvl2" href="#4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</a>
+<a class="lvl2" href="#5-mock-interview-12-qa">5. Mock interview — 12 Q&amp;A</a>
+<a class="lvl2" href="#6-do-not-say">6. Do NOT say</a></nav>
+<main><blockquote>
+<p><strong>PDF sync (campaign_pygo_xyz / v2 / java Aug 2026):</strong> PDF IA bullets are (1) AssortSmart product job (2) Cluster Recommendation Copilot architecture ownership (3) Hindsight (4) Postgres→ClickHouse 250M POC evidence. <strong>Off PDF:</strong> 8.5%/14 tools/3 gates, under 1h/≥20 TARGET claims, 63/8 DDL detail, line-plan 12B→25M/~0.4 ms. Defend those verbally via this pack / <code>23a</code> / <code>20_…</code>. Hindsight defense: <code>01b_hindsight_defense.md</code>.</p>
+</blockquote>
+<p>Canonical interviewer pack for campaign IA bullets. Synced Jul 2026.</p>
+<h1 id="impact-analytics-interview-pack">Impact Analytics — Interview Pack</h1>
+<p><strong>Role:</strong> Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present (IC)<br>
+<strong>Product:</strong> AssortSmart — AI-powered retail merchandise planning<br>
+<strong>Honesty rule:</strong> Tag every number MEASURED / TARGET / DESIGN / PROJECTED. No IA TPS/RPM (none measured). Continuous present for ongoing work. Phase 1 design PASS; load test pending — <strong>building</strong>, not shipped.</p>
+<hr>
+<h2 id="1-30s-2min-project-explain">1. 30s / 2min project explain</h2>
+<h3 id="30-seconds-product-first">30 seconds (product first)</h3>
+<p>AssortSmart helps retailers decide <strong>what to buy, how much, and for which stores</strong> a season ahead. Store clustering is the foundation every strategy plan binds to. Today a planner makes four expert choices blind and runs <strong>one</strong> config; compute is fine (median job <strong>~20s</strong>), but failures, one-shot search, and zero reproducibility burn days. I am <strong>building</strong> the Cluster Recommendation Copilot — FastAPI/LangGraph/MCP over a Go doing layer on per-tenant ClickHouse — so planners state intent, the agent batch-explores configs, and a human approves before any write. Targets: hierarchy-to-plan <strong>days → under 1 hour</strong>, configs <strong>1 → ≥20</strong>, failures <strong>8.5% → under 2%</strong>. Design approved; load test still pending.</p>
+<h3 id="2-minutes-architecture-evidence">2 minutes (architecture + evidence)</h3>
+<p>AssortSmart is merchandise planning SaaS: buy depth × store placement for the next season. Clustering is the binding step — wrong clusters poison every downstream strategy.</p>
+<p><strong>Pain (MEASURED on kik):</strong> <strong>8.5%</strong> clustering-run failures (<strong>37/437</strong>), <strong>&gt;80%</strong> input-boundary mistakes; reproducibility <strong>0%</strong> (winning config/seed never persisted); one manual config in a huge search space; agent probes on shared BigQuery <strong>1–20s+</strong> variance.</p>
+<p><strong>Product inversion:</strong> planner states hierarchy + reference period → agent grounds scope → batch evaluates many configs (design <strong>20–100</strong>, success bar <strong>≥20</strong>) → UI shows <strong>3–5</strong> distinct scenarios → human gates → write-back. LLM plans and narrates; a <strong>deterministic engine</strong> via <strong>14 audited read-only tools</strong> computes; agent <strong>never writes SQL</strong>.</p>
+<p><strong>Stack (DESIGN / HLD):</strong> Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a <strong>Go (Gin) doing layer</strong> (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant <strong>ClickHouse, 63 tables / 8 layers</strong>, insert-only / partition-swapped, agent <code>readonly=1</code> (service roles INSERT-only). Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL <code>trace_id</code>.</p>
+<p><strong>Evidence that unlocked the store:</strong>
+- Pivot POC, row-identical at <strong>250M</strong>: heavy grid <strong>189.4s → 12.3s</strong> (~<strong>15.5×</strong>, MEASURED). Verbal honesty: strip <code>COUNT(DISTINCT)</code> and typical aggs fall to <strong>~2–3×</strong>; keep option-count and cite <strong>~13–15×</strong>.
+- Line-plan: refuse projected <strong>~12B</strong> store-week (4,800 stores × levels × choices × 52 weeks); editable truth at choice×cluster×week <strong>~25M</strong>; month rollup <strong>sub-second</strong>, cell edit <strong>~0.4 ms</strong> on aggregate (MEASURED). Schema win <strong>100–450×</strong>, not “engine magic.”</p>
+<p><strong>Status:</strong> Phase 1 adversarial + external review <strong>PASS, approve to bring-up</strong>. Remaining gate: bring-up load test on real kik extract. I own design and build work in continuous present — not “shipped to all tenants.”</p>
+<hr>
+<h2 id="2-architecture-diagram">2. Architecture diagram</h2>
+<div class="mermaid">flowchart TB
+  subgraph FE["Frontend"]
+    Chat["Chat UI"]
+    Manual["Manual screens"]
+  end
+
+  subgraph PathA["Path A — Agent chat"]
+    FA["FastAPI Agent Service<br/>LangGraph · MCP · LLM"]
+  end
+
+  subgraph PathM["Path M — Manual"]
+    GoREST["Go Gin REST<br/>create / update / delete"]
+  end
+
+  subgraph Doing["Go doing layer — shared"]
+    H["Hindsight"]
+    C["Clustering engine"]
+    S["Strategy"]
+  end
+
+  subgraph Data["Data plane"]
+    CH["Per-tenant ClickHouse<br/>63 tables / 8 layers<br/>insert-only · partition-swap · agent R/O"]
+    GCS["GCS parquet / snapshots"]
+    BQ["BigQuery<br/>historical truth → CH ingest"]
+    PG["Thin PG metadata<br/>auth / tenant / workflow"]
+  end
+
+  subgraph Obs["Observability"]
+    LS["LangSmith"]
+    DD["Datadog"]
+    PH["PostHog"]
+  end
+
+  Chat -->|POST /chat| FA
+  FA <-->|reason / plan| LLM["OpenAI / etc."]
+  FA -->|A3 tool call| Doing
+  Manual --> GoREST --> Doing
+  Doing --> CH
+  Doing --> GCS
+  BQ -->|BQ→CH feed| CH
+  FA -.->|read-only tools| CH
+  FA --> LS
+  FA --> DD
+  Doing --> DD
+  Chat --> PH
+  Manual --> PH
+</div>
+<p><strong>ASCII (whiteboard fallback):</strong></p>
+<pre><code>Planner ──chat──► FastAPI (LangGraph/MCP) ──tools──► Go doing layer ──► ClickHouse/GCS
+                         │                              ▲
+                         │ LLM reason/plan              │
+Manual UI ───────────────┴────── REST ──────────────────┘
+BigQuery (truth) ──ingest──► CH (63/8, insert-only / partition-swapped, agent R/O)
+Human gates: grounding → search plan → approval → write-back
+Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
+</code></pre>
+<p><strong>Convergence rule:</strong> Path A tools and Path M REST hit the <strong>same</strong> Go APIs. Agent never bypasses Go for mutations. <code>is_optimal</code> (engine) ≠ <code>is_final</code> (human).</p>
+<hr>
+<h2 id="3-design-decisions">3. Design decisions</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Alternatives</th>
+<th>Why</th>
+<th>Tradeoff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LangGraph</strong> over ad-hoc FastAPI tool loop</td>
+<td>Plain <code>while</code> + function-calling; single-shot ReAct</td>
+<td>Clustering is stateful: ground → search plan → batch → pins → approval interrupts that must survive reconnect; same graph for wizard Mode A and chat Mode B</td>
+<td>Framework surface; harder than a one-shot loop — payoff is checkpointable gates, not prompt spaghetti</td>
+</tr>
+<tr>
+<td><strong>MCP</strong> tool delivery on top of LangGraph</td>
+<td>Embed OpenAI function schemas in the graph process</td>
+<td>LangGraph = <em>when</em> to call / pause; MCP = fixed registry of <strong>14</strong> tools with runtime schemas, versioning, read-only enforcement across clients</td>
+<td>Extra process boundary + discovery handshake; hard wall between “LLM may select” and “only these tools run”</td>
+</tr>
+<tr>
+<td><strong>Go (Gin) doing layer</strong>; FastAPI owns chat only</td>
+<td>One Python monolith; Go as BFF in front of chat</td>
+<td>Chat is LLM-latency-shaped (streaming, run trees); plan lifecycle / bulk save / clustering / hindsight are throughput I/O — goroutine-per-request, static binary; Manual + agent converge on same APIs</td>
+<td>Dual-language tax; Path M must not share a GIL/async pool with multi-second LLM turns</td>
+</tr>
+<tr>
+<td><strong>ClickHouse insert-only / partition-swapped</strong> (P1 swap / RMT / events), zero row-level mutations; agent <code>readonly=1</code></td>
+<td>PG OLTP mutations; CH <code>ALTER UPDATE</code>; lightweight UPDATE (26.5)</td>
+<td>Interactive planning + CDC-shaped feeds hate mutation queues; facts/cubes swap partitions; decisions are append-only events; privileges ban UPDATE below sync</td>
+<td>Readers need <code>argMax</code>/<code>FINAL</code>/prune-first shapes; eventual consistency until merge; not a keyed-UPDATE keyboard path without a write-model change</td>
+</tr>
+<tr>
+<td><strong>3 human confirm gates</strong> (+ write-back bookend)</td>
+<td>Autopilot finalize; prompt-only “ask user”; 6–10 soft confirms</td>
+<td>Clustering ships into strategy plans; silent auto-finalize unacceptable; FRD: search plan → approve winner → governance where required</td>
+<td>Human-in-the-loop latency; UX must make gates crisp; L2 autopilot / L3 drift are later phases — do not claim</td>
+</tr>
+<tr>
+<td><strong>14 audited read-only tools</strong>; agent never writes SQL</td>
+<td>Free-form SQL tool; fewer mega-tools; prompt “don’t write”</td>
+<td>Numbers must be deterministic and auditable; DB profile is R/O; new capability = new tool, not a prompt tweak</td>
+<td>Slower feature velocity; every evidence number must trace to a tool call</td>
+</tr>
+<tr>
+<td><strong>~25M aggregate</strong> instead of materializing <strong>~12B</strong> store-week</td>
+<td>Flat <code>line_arch_store_week</code> SoR; CH-only flat scan; explode-always-in-DB</td>
+<td><strong>~12B</strong> = 4,800 stores × levels × choices × 52 weeks (PROJECTED product); users edit cluster×choice×delivery; <code>store_week = choice × %s</code> (partition of unity); explode on demand <strong>~25 ms</strong>; month on 25M: PG <strong>690 ms</strong> / CH <strong>512 ms</strong>; cell <strong>0.35–0.44 ms</strong></td>
+<td>Export slices still need materialization when downstream demands full store-week; override-delta rollups grow with override count</td>
+</tr>
+<tr>
+<td><strong>Hybrid POC history → CH E2E for agentic</strong></td>
+<td>Wholesale CH for legacy mtp-assort; stay PG-only forever; dual-write everything</td>
+<td>Pivot POC: CH wins heavy grids (<strong>189s→12.3s</strong> at 250M), PG wins sub-ms cells — hybrid <em>per surface</em> for assortment. Legacy mtp-assort is OLTP-mutable (JSONB <code>\|\|</code>, keyed UPDATE) → <strong>no wholesale CH</strong>. Agentic build changes write model to insert-only versions → <strong>CH/GCS end-to-end</strong> for planning data (Jul 2026 stack + HLD)</td>
+<td>Looks politically inconsistent unless you separate surface vs product; dual-store sync tax on hybrid surfaces; must not claim CH beats PG at keyed UPDATE without the write-model unlock</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</h2>
+<h3 id="bullet-1-building-assortsmart-copilot-fastapi-langgraph-mcp-on-go-doing-layer-targeting-days-under-1h-1-20-configsplan">Bullet 1 — Building AssortSmart copilot (FastAPI, LangGraph, MCP) on Go doing layer; targeting days → under 1h, 1 → ≥20 configs/plan</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Building planner copilot so retailers decide what/how much/which stores; FastAPI+LangGraph+MCP on Go doing layer; turnaround <strong>days → under 1 hour</strong>; search <strong>1 → ≥20</strong> configs/plan</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>Product framing MEASURED; stack DESIGN; under 1h / ≥20 <strong>TARGET</strong> (batch design <strong>20–100</strong>)</td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>Product job is AssortSmart assortment planning. Today: one hand-picked config. FRD inverts to intent → grounded batch explore → human approve. Median compute <strong>~20s</strong> over 370 live runs — bottleneck is process around the machine. UI still shows <strong>3–5</strong> scenarios (HLR); breadth under the hood is the ≥20 / 20–100 story. Say <strong>building</strong> / <strong>targeting</strong>.</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“Is under 1 hour measured? Have you shipped? Why not just a chatbot on BQ?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“Under 1 hour and ≥20 are <strong>targets</strong>, not production measurements. Phase 1 design has external review <strong>PASS</strong>; load test is the remaining bring-up gate. Shared BQ probes are <strong>1–20s+</strong> — interactive copilot needs dedicated CH probes targeting <strong>p95 &lt;500ms</strong>. I am not claiming every tenant runs the shipped copilot today.”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bullet-2-85-37437-kik-under-2-target-14-tools-3-human-gates-agent-never-writes-sql">Bullet 2 — 8.5% (37/437 kik) → under 2% (target); 14 tools; 3 human gates; agent never writes SQL</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Cut failures from measured <strong>8.5% (37/437)</strong> toward <strong>under 2%</strong> with <strong>14</strong> audited R/O tools and <strong>3</strong> confirm gates; agent never writes SQL</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>8.5% / 37/437 MEASURED; under 2% <strong>TARGET</strong>; 14 tools + 3 gates <strong>DESIGN</strong></td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>kik audit: <strong>37/437</strong> fails; <strong>&gt;80%</strong> input-boundary. Mechanism: deterministic grounding (hierarchy backtrack, fiscal calendar), sample-size guards, machine-composed requests so that class never reaches the engine. Tools are templated (scope, significance, candidates, scoring, pins/impact…); LLM sequences them, does not invent SQL. Read-only DB profile + gates: grounding/search-plan/approval; write-back only after approve. Reproducibility baseline <strong>0%</strong> → TARGET <strong>100%</strong> via content-addressed config (recipe hash + data watermark).</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“You already cut to under 2%?” / “Overview lists four stops — why resume says three?” / “Why not trust the prompt?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“Correct phrase: <strong>designed to cut from measured 8.5% toward under 2%</strong> — I will not claim under 2% until post-load-test metrics. Three FRD confirm gates after intent; grounding and write-back are bookends — agent physically cannot write. Prompts are not a control plane; R/O profile is.”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bullet-3-projected-12b-store-week-25m-aggregate-sub-second-month-04-ms-cell-edit">Bullet 3 — Projected 12B store-week → ~25M aggregate; sub-second month; ~0.4 ms cell edit</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Replace projected <strong>12B</strong>-row store-week with <strong>~25M</strong>-row aggregate so month rollups stay <strong>sub-second</strong> and cell edits <strong>~0.4 ms</strong> without materializing the explosion</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>12B <strong>PROJECTED</strong>; ~25M / sub-second / ~0.4 ms <strong>MEASURED</strong> on aggregate path</td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>12B ≈ 4,800 stores × final-levels × choices × 52 weeks. Flat at 100M already: month PG <strong>2,923 ms</strong>, edit <strong>1,454 ms</strong>. Projected flat at 12B: minutes. Editable truth = choice×cluster×week <strong>~25M</strong> (~<strong>427×</strong> smaller; at 1B: flat PG <strong>115 GB</strong> vs agg <strong>276 MB</strong>). Partition of unity: <code>store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc</code>; <code>SUM(flat)==SUM(agg)</code> to the cent at 10M/100M/1B. Month @25M: PG <strong>690 ms</strong> / CH <strong>512 ms</strong>. Cell on agg: PG <strong>0.35–0.44 ms</strong>. Explode one choice <strong>~25 ms</strong>. Sparse overrides, not a dense store-week grid.</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“Is 12B measured?” / “Won’t explode kill export?” / “Why not just use ClickHouse on the flat table?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“12B is a <strong>combinatorial projection</strong> from KiK anchors — say PROJECTED. We reconciled aggregates to the cent; flat loads near 1B OOM’d a <strong>3.3 GB</strong> CH VM. Export gets a <strong>slice</strong>, not SoR. Schema flat→agg is the <strong>100–450×</strong> lever; engine swap is secondary. At ~25M, PG month is already sub-second — CH earns keep as tenants/plans multiply.”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bullet-4-per-tenant-ch-638-insert-only-partition-swapped-after-250m-pivot-189s-123s-155">Bullet 4 — Per-tenant CH 63/8 insert-only / partition-swapped after 250M pivot 189s → 12.3s (~15.5×)</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Claim</strong></td>
+<td>Adopt per-tenant ClickHouse (<strong>63 tables / 8 layers</strong>, insert-only / partition-swapped, agent R/O) after row-identical POC cut <strong>250M</strong> pivots <strong>189s → 12.3s</strong> (~<strong>15.5×</strong>, measured)</td>
+</tr>
+<tr>
+<td><strong>Tag</strong></td>
+<td>63/8 insert-only <strong>MEASURED design</strong> (DDL Phase-1 on CH 25.12; zero runtime evidence on schema); 189.4s→12.3s <strong>MEASURED</strong>; store adoption = design direction for agentic</td>
+</tr>
+<tr>
+<td><strong>Exact defense</strong></td>
+<td>ONE resume CH bullet = store design + pivot evidence. Harness: row-identical 5M/50M/250M; PG native <strong>48 GB</strong> host vs CH <strong>10 CPU / 3.3 GB</strong> Docker — CH still won reads. At 250M PG spills <strong>42 GB</strong>, <strong>3m9s</strong> grid; CH <strong>12.3s</strong>. Working hybrid POC: <code>GET /pivot</code> from CH, <code>POST /cell</code> → PG then mirror RMT. Agentic schema (Confluence v1.5): facts/cubes P1 partition-swapped, dims P2 RMT, decisions P3/P4 append-only + argMax views, agent <code>readonly=1</code>, services INSERT-only. Omit <strong>624 columns</strong>.</td>
+</tr>
+<tr>
+<td><strong>Attack vector</strong></td>
+<td>“15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?” / “Did you author CDC?”</td>
+</tr>
+<tr>
+<td><strong>Candidate reply</strong></td>
+<td>“Both true: raw heavy grid with option-count is <strong>~15.5×</strong>; strip DISTINCT and typical aggs are <strong>~2–3×</strong>; keep wireframe option-count and cite <strong>~13–15×</strong>. POC verdict is hybrid for <strong>legacy OLTP-mutable</strong> assortment and <strong>no wholesale CH</strong> for shipping mtp-assort. Agentic AssortSmart <strong>changed the write model</strong> to insert-only versions — CH/GCS end-to-end for planning data, thin PG for auth/workflow. I did <strong>not</strong> build <code>pg2ch_cdc</code> (Ashvin Sharma); I design against its patterns where relevant.”</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-mock-interview-12-qa">5. Mock interview — 12 Q&amp;A</h2>
+<p><strong>Interviewer:</strong> You say you are “building” AssortSmart with agents. What ships today vs what is design?</p>
+<p><strong>Candidate:</strong> AssortSmart is live merchandise-planning SaaS; the <strong>agentic Cluster Recommendation Copilot</strong> is Phase 1 design-complete — four internal adversarial passes plus external review <strong>PASS, approve to bring-up</strong>. Bring-up load test on real kik extract is still pending. I own present-tense design and implementation work, not a claim that every tenant already runs the shipped copilot.</p>
+<hr>
+<p><strong>Interviewer:</strong> Why LangGraph instead of a plain function-calling loop in FastAPI?</p>
+<p><strong>Candidate:</strong> Clustering is a multi-step stateful workflow with human interrupts: ground scope, confirm search plan, fan out batch compute, stream scores, pause for pins, then approval. LangGraph makes nodes, edges, and checkpointable state explicit so gates survive reconnect and the same graph drives wizard and chat. Plain function calling is fine for one-shot tools; it gets brittle for durable HITL. Tradeoff is framework surface for auditable orchestration.</p>
+<hr>
+<p><strong>Interviewer:</strong> Failures 8.5% to under 2% — prove the baseline and stop claiming the target as done.</p>
+<p><strong>Candidate:</strong> kik tenant: <strong>8.5% = 37 of 437</strong> runs; <strong>&gt;80%</strong> are input-boundary mistakes (<strong>MEASURED</strong>). Winning algorithm/hyperparameters/seed were never persisted ⇒ reproducibility <strong>0%</strong>. Target is <strong>under 2%</strong> via deterministic grounding and machine-composed requests, plus content-addressed configs for <strong>100%</strong> reproducibility (<strong>TARGET</strong>). Correct phrase: “designed to cut from a measured 8.5% toward under 2%.” I will not say we hit under 2% until post-load-test metrics exist.</p>
+<hr>
+<p><strong>Interviewer:</strong> Walk the 250M pivot number. Hardware was unfair — defend or walk it back.</p>
+<p><strong>Candidate:</strong> Row-identical harness; PG on host with <strong>48 GB</strong>, CH in <strong>10 CPU / 3.3 GB</strong> Docker — CH was <strong>weaker</strong> and still faster on the heavy grid: <strong>189.4s → 12.3s</strong> (~<strong>15.5×</strong>), PG spilled <strong>42 GB</strong>. Adversarial pass: ~90% of that gap is <code>COUNT(DISTINCT)</code> / option-count; strip it and typical aggs are <strong>~2–3×</strong>; keep option-count and cite <strong>~13–15×</strong>. On writes, untuned CH cell looked ~82× worse; with durability parity PG still wins <strong>~14×</strong> on single-cell — so hybrid per surface, not a religion. POC-directional, not production cutover.</p>
+<hr>
+<p><strong>Interviewer:</strong> Why refuse to materialize the 12B store-week table KiK seems to need?</p>
+<p><strong>Candidate:</strong> <strong>~12B</strong> is the projected explosion of 4,800 stores × levels × choices × 52 weeks. Users never edit that dense grid — they edit cluster×choice×delivery; store-week is 100% re-derived. We store <strong>~25M</strong> choice×cluster×week, explode on demand (<strong>~25 ms</strong>), and keep month rollups <strong>sub-second</strong> with cell edits <strong>~0.4 ms</strong>. Partition-of-unity math reconciles <code>SUM(flat)==SUM(agg)</code> to the cent at 10M/100M/1B. Flat near 1B OOM’d the CH VM. Export a slice when needed — never make 12B the SoR.</p>
+<hr>
+<p><strong>Interviewer:</strong> Why is chat FE → FastAPI directly? Why isn’t Go the BFF for everything?</p>
+<p><strong>Candidate:</strong> From the HLD: chat is LLM-latency-shaped — LangGraph, MCP, streaming, run trees — Python owns that ecosystem. Go is the <strong>doing layer</strong> for plan lifecycle, bulk saves, clustering/hindsight/strategy, CH/GCS. Manual UI and agent tools converge on the same Go APIs so auth, validation, and audit are not duplicated in the LLM path. Putting Go as a dumb chat proxy adds a hop without buying throughput. Dual language is a real tax; the blast-radius split is the point.</p>
+<hr>
+<p><strong>Interviewer:</strong> Three observability products — why not Datadog for everything? How do you debug “agent said X but Go returned Y”?</p>
+<p><strong>Candidate:</strong> LangSmith owns agent quality (run trees, replay, tokens/cost). Datadog owns platform health (HTTP/DB, Go SLOs, infra). PostHog owns product behavior (chat vs manual funnel). Shared OTEL <strong><code>trace_id</code></strong> stitches one planner utterance across LangSmith and Datadog when the LLM “succeeded” but the tool timed out. Datadog alone does not give prompt replay; LangSmith alone will not page on CH part merges. This is MEASURED design from the HLD — I do not invent MTTR numbers.</p>
+<hr>
+<p><strong>Interviewer:</strong> Why dedicated ClickHouse for agent probes instead of shared BigQuery slots you already pay for?</p>
+<p><strong>Candidate:</strong> Interactive copilots need <strong>deterministic</strong> probe latency. Live audit: agent probes on shared BQ <strong>1–20s+</strong> with uncontrolled variance (<strong>MEASURED</strong>). Design target: dedicated CH read plane <strong>p95 &lt;500ms</strong>, nightly precompute aiming <strong>≥80%</strong> cold→warm, cube reconciliation within <strong>0.1%</strong> of BQ (<strong>TARGET</strong>s). BQ stays historical truth; existing BQ→CH ingest isolates agent load from shared slots. Phase 1 non-goal: do not move transactional plan data to CH for classic OLTP edits — read plane first.</p>
+<hr>
+<p><strong>Interviewer:</strong> Your POC said hybrid PG writes / CH reads, and “no ClickHouse now” for mtp-assort. Your stack note says CH end-to-end for agentic. Which is it?</p>
+<p><strong>Candidate:</strong> Both, at different scopes. Consolidated POC: hybrid for <strong>legacy assortment surfaces</strong> with keyed UPDATE / JSONB merge; <strong>no wholesale CH</strong> for shipping mtp-assort — fix BQ hygiene first (<code>SELECT *</code> jobs billed <strong>38.8 TiB</strong>, etc.). Agentic AssortSmart follows the Jul 2026 directive: planning data on <strong>ClickHouse/GCS end-to-end</strong> because we changed the write model to insert-only versions (<code>mutations_used=0</code>). Thin PG for auth/tenant/workflow is fine. I will not pretend CH beats PG at interactive keyed UPDATE without that unlock.</p>
+<hr>
+<p><strong>Interviewer:</strong> What breaks at 10× tenants or store universe?</p>
+<p><strong>Candidate:</strong> Nightly precompute and cube partition swaps become the bottleneck — need per-tenant quotas and concurrency budgets (designed; load test pending). Significance matrices and what-if caches grow with store universe — partition strategy and retention must be proven on kik×10 sizing. On the agent side, unbounded tool fan-out melts CH part merges; mitigate with audited tool budgets and bounded Go worker pools on bulk save. If load test misses p95 probe budgets, we revisit precompute before claiming latency targets.</p>
+<hr>
+<p><strong>Interviewer:</strong> Can the agent write the cluster master? What is <code>is_optimal</code> vs <code>is_final</code>?</p>
+<p><strong>Candidate:</strong> No. Engine-enforced <strong>read-only</strong> DB profiles; exploration only on isolated scratch plans; write-back is a separate path after human approval. <strong><code>is_optimal</code></strong> is the engine’s scored recommendation; <strong><code>is_final</code></strong> is the human signature. The agent never silently finalizes. Strategy doorway audit found <strong>1 in 5</strong> finalized kik plans with <strong>zero stores</strong> attached — eligibility gates before scoring are not pedantry.</p>
+<hr>
+<p><strong>Interviewer:</strong> Ownership challenge — did you build <code>pg2ch_cdc</code>, ship the copilot, and own Datadog?</p>
+<p><strong>Candidate:</strong> No on overclaims. <strong><code>pg2ch_cdc</code></strong> was authored by Ashvin Sharma; where Order Batching CQRS comes up, I designed against its SLOs (commit-to-visible <strong>p95 ≤10s</strong>, snapshot <strong>≥25K rows/s</strong>) — I did not build the CDC platform. Copilot: Phase 1 design approved to bring-up; load test pending; L2/L3 later. Observability stack on the resume is <strong>MEASURED design / instrumentation</strong>, not sole SaaS ownership. Correct language: “designing / building / designed against,” not “I shipped the agent to all tenants.”</p>
+<hr>
+<h2 id="6-do-not-say">6. Do NOT say</h2>
+<ul>
+<li>“We shipped the copilot to production / all tenants” (load test pending; say <strong>building</strong>)</li>
+<li>“We cut failures to under 2%” or “plans finish in under 1 hour today” (those are <strong>TARGET</strong>s; 8.5% is the MEASURED baseline)</li>
+<li>Any <strong>IA TPS / RPM / RPS</strong> (none measured — inventing them is a fail)</li>
+<li>“I built <code>pg2ch_cdc</code> end to end” (Ashvin Sharma)</li>
+<li>“Identical benchmark hardware” (PG was stronger in both Order Batching and pivot harnesses)</li>
+<li>“15.5× on every aggregate” without the DISTINCT caveat (verbal: typical <strong>~2–3×</strong>, option-count grids <strong>~13–15×</strong>)</li>
+<li>“12B rows measured in the warehouse” (say <strong>PROJECTED</strong> combinatorial product)</li>
+<li>“ClickHouse replaces Postgres for cell typing” without the insert-only write-model story (PG still wins sub-ms keyed UPDATE)</li>
+<li>“Wholesale ClickHouse for legacy mtp-assort” (POC said <strong>no</strong>; fix BQ first)</li>
+<li>“Hybrid POC contradicts CH E2E” without separating <strong>legacy OLTP surfaces</strong> vs <strong>agentic insert-only planning store</strong></li>
+<li>“Agent can write SQL / auto-finalize clusters” (<code>is_optimal</code> ≠ <code>is_final</code>; R/O tools)</li>
+<li>“I own Datadog/LangSmith/PostHog as the platform team” (design split + instrumentation, not sole SaaS ownership)</li>
+<li>Order Batching <strong>60×</strong> / <strong>5.9M rows/s</strong> as if they are the <strong>resume headline</strong> (prep depth only; lead with pivot <strong>189s→12.3s</strong> + line-plan aggregate)</li>
+<li>Flink / Spark / Kubernetes ops / Terraform ownership on IA (out of scope / omit)</li>
+<li>Past-tense “built and shipped the agentic store last quarter” — use <strong>continuous present</strong> for ongoing work</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

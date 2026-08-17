@@ -22,7 +22,7 @@ Maps every skill on `final_*/sections/skills.tex` (synced skeleton). If you cann
 | **Spring Boot / MVC / Security / Data JPA / Hibernate / Batch** (Java) | controllers, security, ORM, batch | FRM, Masters, GFG, IA write APIs |
 | **REST / gRPC** | idempotency, versioning; protobuf literacy | REST primary |
 | **Celery / asyncio** (PyGo) | workers, event loop | Masters / agent I/O |
-| **Design Patterns** | strangler, layered services | Masters, FRM |
+| **Design Patterns** *(off Skills since Aug 2026 — verbal only)* | strangler, layered services | Masters, FRM |
 
 ## AI and Agents
 | Skill | Fundamentals | Where |
@@ -71,7 +71,7 @@ See: [observability_cloud.md](observability_cloud.md).
 | **Distributed Systems / HLD/LLD** | consistency, retries, design ownership | FRM, IA, Masters |
 | **Multithreading / Concurrency** | threads vs async vs goroutines | All |
 | **Caching / Sharding / Reliability / Testing** | ops + quality | Masters, FRM |
-| **JUnit** (Java) | unit tests | FRM / Masters Java |
+| **JUnit** (Java) *(off Skills since Aug 2026; not on this track's PDF at all)* | unit tests | FRM / Masters Java |
 
 ---
 

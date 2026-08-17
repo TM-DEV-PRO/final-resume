@@ -1,6 +1,6 @@
 # Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense
 
-> **Start here for interviews:** [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) — 30s/2min, architecture, design decisions, bullet defenses, 12 mock Q&As, Do NOT say. This file is deeper background + source extracts.
+> **Start here for interviews:** [`23a_ia_interview_pack.md`](../../../prep/23a_ia_interview_pack.md) — 30s/2min, architecture, design decisions, bullet defenses, 12 mock Q&As, Do NOT say. This file is deeper background + source extracts.
 
 **Role:** Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present  
 **Project:** Agentic AssortSmart (FastAPI chat + Go doing layer) on **ClickHouse/GCS** (insert-only versioned planning store); POC evidence from Pivot / LinePlanning / consolidated CH-vs-PG report  
@@ -109,7 +109,7 @@ Pattern for hot facts: **insert-only updates** into ReplacingMergeTree; version 
 
 ### 2b. Agentic Cluster ClickHouse model (copilot read plane)
 
-**Source of truth:** Confluence [DDL Model Phase-1](https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240) v1.5 — full extract in [`../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md`](../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md).
+**Source of truth:** Confluence [DDL Model Phase-1](https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240) v1.5 — full extract in [`../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md`](../../../prep/29_ia_ch_ddl_phase1_source.md).
 
 **Summary (MEASURED design):** **63 tables / 8 layers** (incl. **7** stage twins), **5** dictionaries, **19** argMax views, one database per tenant, `formatQuery`-validated on ClickHouse **25.12**. Doctrine: **never erase** on the hot path. **Zero runtime evidence** on this schema yet — load test at bring-up. **Do not recite 624 columns** (not on Phase-1 page).
 

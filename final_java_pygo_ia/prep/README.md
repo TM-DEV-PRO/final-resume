@@ -1,39 +1,61 @@
-# Java / Spring track — README
+# Final Java + AI (IA = Py/Go) — README
 
-Separate **Senior Software Engineer** resume and interview prep for **Java / Spring / Hibernate** roles. Same companies, projects, and metrics as the main Python/Go track; non-agentic APIs framed in Spring where defensible; AI/RAG and Menu streaming stay Python.
+The **primary public resume**. Uber and Masters India work is framed in Java / Spring; the Impact
+Analytics AssortSmart work keeps its real stack — FastAPI and LangGraph for the agent plane, Go and
+Gin for the shared write APIs. Contact block matches the Python/Go final track.
 
 ## Layout
 
 ```
-resume_java/                 LaTeX sources (Overleaf-ready)
+final_java_pygo_ia/
   resume.tex                 compile this
-  sections/*.tex
-output/
-  Tarun_Mittal_SSE_Java_5yr.pdf
-  Tarun_Mittal_Resume_Java_Overleaf.zip
-resume_java/prep/
-  00_index.md                hub + stack mapping table
-  projects/01..05_*.md       per-project deep dives (Java telling)
-  06_tech_deep_dives.md      Java, Spring, JPA, Security, Batch, Kafka, …
-  07_behavioral_star_stories.md  pointers + Java wording swaps
-  08_role_targeting_and_rapid_fire.md
+  sections/*.tex             objective · skills · experience · education
+  artifacts/
+    Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf        ← site download
+    Tarun_Mittal_Java_PyGoIA_Overleaf.zip
+  prep/                      grounded interview prep (this folder)
+    00_index.md              hub + stack mapping table
+    GROUND_TRUTH.md          every number, honesty tag, and omit list
+    38_why_hire_tarun_qa.md  screening & behavioral Q&A bank
+  campaign_extras/           behavioral bank · architecture · tech depth
+  ats/ · linkedin/ · outreach/
+  InterviewPrep.html         one-page hub (generated)
+  ApplicationKit.html        paste-ready application answers
 ```
-
-Main (Python/Go) materials stay in `resume/` (legacy) and `resume_v2/` — do not mix stacks in one interview loop.
 
 ## Rebuild PDF
 
 ```bash
-cd resume_java && tectonic resume.tex --outdir ../output
-mv ../output/resume.pdf ../output/Tarun_Mittal_SSE_Java_5yr.pdf
+mkdir -p /tmp/rb && cd final_java_pygo_ia && tectonic resume.tex --outdir /tmp/rb
+cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf
 ```
 
-Or upload `output/Tarun_Mittal_Resume_Java_Overleaf.zip` to Overleaf (main file `resume.tex`).
+Or upload `artifacts/Tarun_Mittal_Java_PyGoIA_Overleaf.zip` to Overleaf (main file `resume.tex`).
+
+## Rebuild the published HTML
+
+```bash
+python3 build_pages_html.py       # mirrors every .md → .html + site map
+python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
+```
 
 ## Stack on this resume
 
-- **Languages lead:** Java  
-- **Backend:** Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, Spring Batch  
-- **AI:** LangGraph, LangChain, MCP, tool calling, prompt engineering, RAG, embeddings, Milvus, pgvector, offline eval, LangSmith (agent plane Python; not Spring AI) — see `prep/36_skills_ai_agents_defense.md`  
-- **Unchanged streaming:** Kafka, Flink, Spark, Pinot (Menu tech line stays Python + streaming — no Spring claim)  
-- **Data/cloud:** ClickHouse, Postgres/MySQL/Redis, GCP/AWS, Docker/K8s, observability
+- **Languages:** Java, Python, Go (Golang), SQL, C, C++
+- **Backend & APIs:** Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, FastAPI,
+  Gin, Django, REST, gRPC, Spring Batch — **Design Patterns removed** (Aug 2026), defend verbally
+- **AI & Agents:** LLM agents, LangGraph, LangChain, MCP, tool calling, prompt engineering, RAG,
+  embeddings, Milvus, pgvector, offline eval, LangSmith (agent plane is Python, not Spring AI)
+- **Core Engineering:** Distributed Systems, System Design (HLD/LLD), Multithreading, Concurrency,
+  Caching, Sharding, Reliability, Testing — **JUnit removed** from Skills (Aug 2026); JUnit still
+  appears on the **Uber FRM experience Tech line**
+- **Streaming on the PDF:** Kafka and Flink only. **No Spark, no Pinot, no SFT** — study-only depth.
+
+## Summary block on the PDF
+
+1. Senior Software Engineer with **5 years** of experience designing and owning cloud-native,
+   high-throughput **distributed systems**.
+2. Expertise in **Java, Python and Go microservices**, event-driven architectures, real-time and
+   batch data processing, **Agentic AI and RAG** systems.
+3. Proven track record shipping production systems, leading backend migrations, and improving
+   reliability, performance, and scalability.

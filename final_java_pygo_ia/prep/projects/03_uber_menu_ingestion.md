@@ -1,6 +1,9 @@
 # Uber Menu Ingestion (Java track note)
 
-**Resume tech:** Python, Selenium, Kafka, Flink, Spark, Gemini, RAG, SFT, GCP, Docker  
+**Resume tech (matches the PDF Tech line exactly):** Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker
+
+**Not on the PDF — do not claim:** Spark and SFT/fine-tuning. Spark backfills are study-only depth; the extraction path is RAG over Milvus embeddings into Gemini, not a fine-tuned model.
+
 **No Spring claim.** Same stack as v2.
 
 > Full defense: `../../resume_v2/prep/14_uber_menu_deep_dive.md`.

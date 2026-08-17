@@ -2,7 +2,7 @@
 
 One doc per resume project: **tech → where used → why**, **DB design**, **ASCII + mermaid architecture**, **flow**.
 
-Also: [`../../resume_v2/prep/33_architecture_diagrams.md`](../../resume_v2/prep/33_architecture_diagrams.md) — flows · [`../../resume_v2/prep/34_er_tables_tech_why.md`](../../resume_v2/prep/34_er_tables_tech_why.md) — **ER + tables + why each tech**.
+Also: [`../../resume_v2/prep/33_architecture_diagrams.md`](../../../resume_v2/prep/33_architecture_diagrams.md) — flows · [`../../resume_v2/prep/34_er_tables_tech_why.md`](../../../resume_v2/prep/34_er_tables_tech_why.md) — **ER + tables + why each tech**.
 
 | Project | File |
 |---|---|

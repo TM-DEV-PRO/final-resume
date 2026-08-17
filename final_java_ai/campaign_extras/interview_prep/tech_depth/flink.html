@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>flink — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/tech_depth/flink.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#flink-menu-hot-path-spark-backfill-verbal">Flink (Menu hot path) + Spark (backfill — verbal)</a>
+<a class="lvl2" href="#what">What</a>
+<a class="lvl2" href="#where-only-menu">Where (only Menu)</a>
+<a class="lvl2" href="#why-we-needed-it-at-menu-scale">Why we needed it at Menu scale</a>
+<a class="lvl2" href="#why-flink-here-not-spark-on-the-hot-path">Why Flink here (not Spark on the hot path)</a>
+<a class="lvl2" href="#how-it-fits-the-menu-pipeline">How it fits the Menu pipeline</a>
+<a class="lvl2" href="#fundamentals-to-recite">Fundamentals to recite</a>
+<a class="lvl2" href="#failure-modes">Failure modes</a>
+<a class="lvl2" href="#likely-questions">Likely questions</a>
+<a class="lvl2" href="#resume-placement">Resume placement</a></nav>
+<main><h1 id="flink-menu-hot-path-spark-backfill-verbal">Flink (Menu hot path) + Spark (backfill — verbal)</h1>
+<h2 id="what">What</h2>
+<p><strong>Apache Flink</strong> — stateful stream processor over Kafka. Used on <strong>Uber Menu</strong> after the ingest bus for validate / keyed dedupe / route structured vs unstructured.</p>
+<p><strong>Apache Spark</strong> — batch / micro-batch. Prefer for <strong>backfills and reprocessing</strong>, not the hot catalog freshness path (verbal unless JD demands Spark on PDF).</p>
+<h2 id="where-only-menu">Where (only Menu)</h2>
+<ul>
+<li><strong>In:</strong> Kafka topics of scrape events (keyed by vendor/menu).</li>
+<li><strong>Out:</strong> structured → catalog upsert; unstructured → RAG/Gemini path.</li>
+<li><strong>Not used at:</strong> Masters (Kafka workers), IA (CH + agent), FRM.</li>
+</ul>
+<h2 id="why-we-needed-it-at-menu-scale">Why we needed it at Menu scale</h2>
+<p>30K+ menus/month is not “Flink because huge TPS.” Drivers:</p>
+<ol>
+<li><strong>Burst + retries</strong> from Selenium/anti-bot — need continuous processing, not nightly batch.</li>
+<li><strong>Keyed dedupe</strong> — same vendor can emit late/duplicate pages; Flink keyed state drops duplicates.</li>
+<li><strong>Event-time</strong> — scrape timestamps out of order; watermarks bound lateness.</li>
+<li><strong>SLA</strong> — 24h→2h onboarding needs minutes-level freshness vs Spark micro-batches.</li>
+<li><strong>Fan-out routing</strong> — one job validates then routes structured vs unstructured.</li>
+</ol>
+<p>Full scale attack answers: <a href="kafka_flink_scale_defense.html">kafka_flink_scale_defense.md</a>.</p>
+<h2 id="why-flink-here-not-spark-on-the-hot-path">Why Flink here (not Spark on the hot path)</h2>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Flink</th>
+<th>Spark</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keyed state per vendor/menu</td>
+<td>Native</td>
+<td>Awkward</td>
+</tr>
+<tr>
+<td>Event-time + late pages</td>
+<td>Watermarks</td>
+<td>Micro-batch delay</td>
+</tr>
+<tr>
+<td>Catalog freshness (minutes)</td>
+<td>Better</td>
+<td>Heavier</td>
+</tr>
+<tr>
+<td>Huge historical reprocess</td>
+<td>Possible</td>
+<td><strong>Better fit</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-it-fits-the-menu-pipeline">How it fits the Menu pipeline</h2>
+<pre><code class="language-text">Selenium scrape → Kafka (replayable bus)
+  → Flink: validate, dedupe (keyed state), route
+       → structured → catalog upsert
+       → unstructured → RAG/Gemini extract → schema validate → catalog
+  → Spark (verbal): backfill / repair gaps after bad deploy
+</code></pre>
+<h2 id="fundamentals-to-recite">Fundamentals to recite</h2>
+<ul>
+<li><strong>Parallelism</strong> ≈ Kafka partition count (rough alignment).</li>
+<li><strong>Keyed state</strong> — vendor/menu id for dedupe.</li>
+<li><strong>Watermarks</strong> — bounded out-of-orderness for late scrapes.</li>
+<li><strong>Exactly-once</strong> — Flink + Kafka transactions help; <strong>catalog upserts still idempotent</strong>.</li>
+<li><strong>Failure</strong> — bad Flink build → rewind Kafka before bad watermark; Spark backfill for holes.</li>
+</ul>
+<h2 id="failure-modes">Failure modes</h2>
+<ul>
+<li>State blowup if key cardinality explodes.</li>
+<li>Idle watermarks stalling windows.</li>
+<li>Brittle HTML in Flink UDFs — version parse modules.</li>
+</ul>
+<h2 id="likely-questions">Likely questions</h2>
+<p>Why Flink not Spark? How do you handle late events? How do you rewind after a bad parser? What is in your dedupe key? Is 30K/month enough to justify Flink? (Answer: burst/replay/state, not vanity TPS.)</p>
+<h2 id="resume-placement">Resume placement</h2>
+<ul>
+<li><strong>Skills:</strong> Flink under Data and Streaming.</li>
+<li><strong>Menu Tech + bullet:</strong> Kafka + Flink.</li>
+<li><strong>Masters:</strong> Kafka only.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

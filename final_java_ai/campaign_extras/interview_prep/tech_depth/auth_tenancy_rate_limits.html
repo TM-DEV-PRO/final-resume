@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>auth_tenancy_rate_limits — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/tech_depth/auth_tenancy_rate_limits.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#authn-authz-rate-limits-api-vs-ai-controls-per-tenant-quotas">AuthN / AuthZ, rate limits, API vs AI controls, per-tenant quotas</a>
+<a class="lvl2" href="#1-map-by-project-quick">1. Map by project (quick)</a>
+<a class="lvl2" href="#2-impact-analytics-multi-tenant-saas-deep">2. Impact Analytics — multi-tenant SaaS (deep)</a>
+<a class="lvl2" href="#3-uber-frm-gateway-trust-audit-authn">3. Uber FRM — gateway trust + audit AuthN</a>
+<a class="lvl2" href="#4-masters-india-jwt-rbac-compliance-data">4. Masters India — JWT + RBAC + compliance data</a>
+<a class="lvl2" href="#5-menu-service-identity-scrape-throttle-different-problem">5. Menu — service identity + scrape throttle (different problem)</a>
+<a class="lvl2" href="#6-api-level-vs-ai-level-comparison-cheat-sheet">6. API level vs AI level (comparison cheat sheet)</a>
+<a class="lvl2" href="#7-attack-answer">7. Attack → answer</a>
+<a class="lvl2" href="#8-30-second-story-ia">8. 30-second story (IA)</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="authn-authz-rate-limits-api-vs-ai-controls-per-tenant-quotas">AuthN / AuthZ, rate limits, API vs AI controls, per-tenant quotas</h1>
+<p>How authentication, authorization, throttling, and multi-tenant limits work across resume projects. Say DESIGN vs HISTORICAL. Do not invent org-wide IAM ownership.</p>
+<hr>
+<h2 id="1-map-by-project-quick">1. Map by project (quick)</h2>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>AuthN</th>
+<th>AuthZ</th>
+<th>Rate / quota</th>
+<th>Tenant isolation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IA AssortSmart</strong></td>
+<td>JWT on Go doing layer + session/SSO at edge (product)</td>
+<td>Role + tenant claims; agent tools allow-listed</td>
+<td>Per-tenant concurrency + tool budgets; agent quotas</td>
+<td>Per-tenant CH + PG config catalogs</td>
+</tr>
+<tr>
+<td><strong>IA agent (AI level)</strong></td>
+<td>Same user JWT / service identity calling tools</td>
+<td><strong>14 read tools only</strong>; writes via <strong>3 human gates</strong></td>
+<td>Token/cost budgets; tool call caps; concurrency budget</td>
+<td>Tools scoped to tenant planning data</td>
+</tr>
+<tr>
+<td><strong>Uber FRM</strong></td>
+<td>Gateway injects <code>x-auth-params-email</code></td>
+<td>AuthZ <strong>upstream</strong> of service</td>
+<td>Platform gateway limits (not owned in-service)</td>
+<td>Single Uber Finance tenant / period-scoped data</td>
+</tr>
+<tr>
+<td><strong>Uber Menu</strong></td>
+<td>Internal service auth / job identity on GCP</td>
+<td>Catalog write ACLs via service accounts</td>
+<td>Scraper backoff + proxy pools (anti-bot), consumer lag backpressure</td>
+<td>Vendor/menu keys; not retail multi-tenant SaaS</td>
+</tr>
+<tr>
+<td><strong>Masters GST</strong></td>
+<td>JWT (access + refresh); enterprise IP allowlists</td>
+<td>RBAC on mutating APIs; audit who/what/when</td>
+<td>Gateway + service capacity; Celery rate limits; Kafka lag</td>
+<td>Client/GSTIN partition keys; per-client config</td>
+</tr>
+<tr>
+<td><strong>GFG</strong></td>
+<td>Django session/auth</td>
+<td>Permissions on threads/content</td>
+<td>Classic web limits</td>
+<td>User/content ACLs</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="2-impact-analytics-multi-tenant-saas-deep">2. Impact Analytics — multi-tenant SaaS (deep)</h2>
+<h3 id="authentication-authn">Authentication (AuthN)</h3>
+<ul>
+<li>Planner hits product UI → edge issues identity (SSO/session → <strong>JWT</strong> with <code>tenant_id</code>, <code>user_id</code>, roles).</li>
+<li><strong>Go (Gin) middleware</strong> validates JWT on plan lifecycle / tenant config / bulk save APIs (resume-era doing layer).</li>
+<li><strong>FastAPI agent service</strong> accepts the same tenant-bound identity (or mints a short-lived service token for tool calls) so every tool invocation is attributable.</li>
+<li>Correlation: <code>trace_id</code> + user/tenant on Datadog and LangSmith.</li>
+</ul>
+<p><strong>Defend:</strong> “AuthN is JWT at the API edge of the doing layer. I do not claim I own corporate IdP/Okta.”</p>
+<h3 id="authorization-authz">Authorization (AuthZ)</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>API (Go)</strong></td>
+<td>Role claims (planner / admin / read-only) gate mutating routes; tenant claim must match resource <code>tenant_id</code></td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Queries always filter <code>tenant_id</code> (PG config + CH tables partitioned/keyed by tenant)</td>
+</tr>
+<tr>
+<td><strong>AI tools</strong></td>
+<td>Allow-list of <strong>14</strong> audited tools — <strong>read planning data only</strong></td>
+</tr>
+<tr>
+<td><strong>Writes</strong></td>
+<td>No free-form SQL from the LLM; write-back only after <strong>3 human confirm gates</strong> through product APIs</td>
+</tr>
+<tr>
+<td><strong>Hindsight catalogs</strong></td>
+<td>Tenant metric catalogs are config — live without code deploy — still behind admin AuthZ</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cross-tenant attack defense:</strong> never take <code>tenant_id</code> only from the request body; bind from JWT. Reject tool calls whose scope ≠ token tenant.</p>
+<h3 id="rate-limiting-api-level">Rate limiting — API level</h3>
+<ul>
+<li>Per-route limits on Gin/FastAPI (requests / burst) for interactive plan APIs.</li>
+<li>Bulk save / clustering kickoff: stricter quotas than read APIs.</li>
+<li>Backpressure: Go worker pools + context timeouts so one tenant cannot exhaust goroutines.</li>
+</ul>
+<h3 id="rate-limiting-budgets-ai-level">Rate limiting / budgets — AI level</h3>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tool-call budget</strong> per session / plan</td>
+<td>Stop runaway LangGraph loops</td>
+</tr>
+<tr>
+<td><strong>Concurrency budget</strong> per tenant</td>
+<td>Cap parallel clustering pipelines from one chat (“N parallel” bounded)</td>
+</tr>
+<tr>
+<td><strong>Token / cost budget</strong> (LangSmith attribution)</td>
+<td>Cap LLM spend per tenant/day</td>
+</tr>
+<tr>
+<td><strong>Timeout budgets</strong> per tool</td>
+<td>CH/Go p95; kill hung tools</td>
+</tr>
+<tr>
+<td><strong>Scenario / batch caps</strong></td>
+<td>UI <strong>3–5</strong> scenarios; batch explore <strong>20–100</strong> under the hood (design) — still bounded</td>
+</tr>
+<tr>
+<td><strong>k / child-cluster caps</strong></td>
+<td>Client min/max k; ~10 child clusters default</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Say:</strong> “AI limits are product budgets, not only nginx <code>limit_req</code>. The dangerous amplifier is tool fan-out × LLM retries.”</p>
+<h3 id="per-tenant-limits-how-we-manage-noisy-neighbors">Per-tenant limits (how we manage noisy neighbors)</h3>
+<ol>
+<li><strong>Physical / logical isolation:</strong> per-tenant ClickHouse (or tenant-keyed tables) + PG tenant config — blast radius.</li>
+<li><strong>Onboarding = config</strong>, not fork-the-codebase (Hindsight catalogs without code deploy).</li>
+<li><strong>Quotas:</strong> concurrent clustering jobs, agent sessions, embed/Kafka async job rate, CH read concurrency.</li>
+<li><strong>Fairness:</strong> one tenant’s batch explore cannot starve another’s interactive edits (<code>~0.4 ms</code> path stays protected).</li>
+<li><strong>Observability:</strong> per-tenant metrics in Datadog; LangSmith datasets tagged by tenant for eval regressions.</li>
+</ol>
+<p><strong>Honesty:</strong> Exact numeric quota table (e.g. “50 RPM per tenant”) is <strong>DESIGN / product config</strong> — do not invent a number not in FRD. Describe the <strong>mechanism</strong>.</p>
+<hr>
+<h2 id="3-uber-frm-gateway-trust-audit-authn">3. Uber FRM — gateway trust + audit AuthN</h2>
+<pre><code class="language-text">User → Uber gateway (AuthN + AuthZ)
+     → FRM FastAPI
+          reads x-auth-params-email
+          401 if missing
+          persists created_by / updated_by
+</code></pre>
+<ul>
+<li><strong>In-service:</strong> identity capture for SOX-adjacent audit trail.</li>
+<li><strong>Not in-service:</strong> fine-grained “who may edit Materiality” — upstream.</li>
+<li><strong>Interview upgrade if asked:</strong> signed JWT + roles inside service for standalone harden.</li>
+</ul>
+<p>No multi-tenant retail model here — period-scoped finance data for Uber entities.</p>
+<hr>
+<h2 id="4-masters-india-jwt-rbac-compliance-data">4. Masters India — JWT + RBAC + compliance data</h2>
+<table>
+<thead>
+<tr>
+<th>Control</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AuthN</td>
+<td>Short-lived <strong>JWT access</strong> + refresh; TLS</td>
+</tr>
+<tr>
+<td>AuthZ</td>
+<td><strong>RBAC</strong> on mutating e-invoice / recon APIs</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Who/what/when/before-after on mutations</td>
+</tr>
+<tr>
+<td>Enterprise</td>
+<td>IP allowlisting for some clients</td>
+</tr>
+<tr>
+<td>Secrets</td>
+<td>AWS KMS (HISTORICAL framing)</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Redis for IRP auth tokens (TTL &lt; token life), client config</td>
+</tr>
+<tr>
+<td>Rate</td>
+<td>Gateway/service capacity (<strong>700→4,000 req/min</strong>); Celery task rate limits; Kafka absorbs bulk (<strong>100K+/import</strong>) so HTTP tier is not the bulk meter</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Per-client:</strong> config/feature flags; GSTIN-keyed Kafka partitions for ordering — not full CH-style tenant DBs.</p>
+<hr>
+<h2 id="5-menu-service-identity-scrape-throttle-different-problem">5. Menu — service identity + scrape throttle (different problem)</h2>
+<ul>
+<li>Jobs use <strong>service accounts</strong>, not end-user JWT.</li>
+<li>“Rate limit” = <strong>anti-bot</strong>: IP rotation, proxy pools, adaptive backoff (drives <strong>95%+</strong> success) — protecting against <em>external</em> blocks, not multi-tenant SaaS fairness.</li>
+<li>Downstream: Kafka lag = backpressure; Flink parallelism bounded by partitions.</li>
+</ul>
+<p>Do not conflate Menu proxy backoff with IA per-tenant agent quotas.</p>
+<hr>
+<h2 id="6-api-level-vs-ai-level-comparison-cheat-sheet">6. API level vs AI level (comparison cheat sheet)</h2>
+<table>
+<thead>
+<tr>
+<th>Concern</th>
+<th>API level (REST/Gin/FastAPI)</th>
+<th>AI level (LangGraph/MCP)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identity</td>
+<td>JWT / gateway header</td>
+<td>Same user/tenant propagated into tool context</td>
+</tr>
+<tr>
+<td>AuthZ</td>
+<td>Route + role + tenant match</td>
+<td>Tool allow-list + read-only tools</td>
+</tr>
+<tr>
+<td>Abuse</td>
+<td>RPM / burst / IP</td>
+<td>Tool loops, prompt injection, cost bombs</td>
+</tr>
+<tr>
+<td>Limit unit</td>
+<td>HTTP requests</td>
+<td>Tool calls, tokens, parallel graphs</td>
+</tr>
+<tr>
+<td>Failure mode</td>
+<td>429 / 401 / 403</td>
+<td>Refuse tool, ask clarify, gate write</td>
+</tr>
+<tr>
+<td>Audit</td>
+<td>Access + mutation logs</td>
+<td>LangSmith run tree + tool args</td>
+</tr>
+<tr>
+<td>Write path</td>
+<td>Authenticated handlers</td>
+<td><strong>Human gates</strong> then product write API</td>
+</tr>
+</tbody>
+</table>
+<p><strong>One sentence:</strong> “APIs authenticate who you are and throttle requests; the agent stack authorizes <em>what tools you may call</em> and budgets <em>how much non-determinism you may burn</em>.”</p>
+<hr>
+<h2 id="7-attack-answer">7. Attack → answer</h2>
+<p><strong>Q. How do you stop cross-tenant data leaks?</strong><br>
+<strong>A.</strong> Tenant id from JWT, not body; CH/PG always filtered; agent tools inherit tenant scope; integration tests attempt cross-tenant IDs and expect 403.</p>
+<p><strong>Q. How do you rate-limit the agent differently from the API?</strong><br>
+<strong>A.</strong> API: per-route RPM. Agent: max tool calls/session, max parallel clustering jobs/tenant, token budget, timeouts. A 429 on HTTP does not stop an already-running graph — need graph-level budgets.</p>
+<p><strong>Q. What if the LLM ignores the read-only instruction?</strong><br>
+<strong>A.</strong> Instruction is not the control. Tools are allow-listed functions without write SQL. Write APIs require human confirm tokens / gates.</p>
+<p><strong>Q. Per-tenant limits — numbers?</strong><br>
+<strong>A.</strong> Mechanism is concurrency + tool + token budgets in config catalogs (no code deploy to change). I will not invent a specific RPM without a measured/doc’d value. kik baselines (8.5% failures) are measured; quotas are product DESIGN.</p>
+<p><strong>Q. FRM — is header auth insecure?</strong><br>
+<strong>A.</strong> Trusted mesh: only gateway can inject the header on the internal network. Internet-facing would need signed JWT. Tradeoff for audit email capture inside Uber.</p>
+<p><strong>Q. Masters — JWT vs session?</strong><br>
+<strong>A.</strong> Stateless access tokens for microservices behind gateway; refresh rotation; RBAC on money paths; audit trail for GST compliance data.</p>
+<hr>
+<h2 id="8-30-second-story-ia">8. 30-second story (IA)</h2>
+<p>“Multi-tenant AssortSmart: JWT carries tenant and role into Go APIs; every query is tenant-scoped. The copilot only gets 14 read tools and three human gates before write-back. We rate-limit HTTP at the API and budget tool calls, tokens, and parallel jobs per tenant so one retailer’s batch explore cannot starve another’s interactive plan edits.”</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="../projects/01d_agentic_evals_guardrails_flow.html">projects/01d_agentic_evals_guardrails_flow.md</a></li>
+<li><a href="../projects/01c_agent_read_tools_defense.html">projects/01c_agent_read_tools_defense.md</a></li>
+<li><a href="go_gin.html">tech_depth/go_gin.md</a></li>
+<li><a href="../architecture/01_ia_assortsmart_hindsight.html">architecture/01_ia_assortsmart_hindsight.md</a></li>
+<li><a href="../architecture/02_uber_frm.html">architecture/02_uber_frm.md</a></li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

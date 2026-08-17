@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>langgraph_mcp_rag — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/tech_depth/langgraph_mcp_rag.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#langgraph-mcp-rag-production-agent-skills">LangGraph + MCP + RAG + production agent skills</a>
+<a class="lvl2" href="#what-pdf-skills">What (PDF skills)</a>
+<a class="lvl2" href="#how-used-here">How used here</a>
+<a class="lvl2" href="#tradeoffs">Tradeoffs</a>
+<a class="lvl2" href="#failure-modes">Failure modes</a>
+<a class="lvl2" href="#likely-questions">Likely questions</a>
+<a class="lvl2" href="#full-agentic-flow-evals-guardrails">Full agentic flow / evals / guardrails</a></nav>
+<main><h1 id="langgraph-mcp-rag-production-agent-skills">LangGraph + MCP + RAG + production agent skills</h1>
+<p>Defense for the <strong>AI &amp; Agents</strong> skills line on both final resumes. Canonical table: <a href="../../../prep/36_skills_ai_agents_defense.html"><code>../../../prep/36_skills_ai_agents_defense.md</code></a> (from <code>campaign_extras/.../tech_depth/</code> use <code>../../../../prep/36_skills_ai_agents_defense.md</code> — prefer opening <code>prep/36_skills_ai_agents_defense.md</code> from the final folder root).</p>
+<h2 id="what-pdf-skills">What (PDF skills)</h2>
+<p>LLM agents (OpenAI/Gemini/Claude), <strong>LangGraph</strong>, <strong>LangChain</strong>, <strong>MCP</strong>, <strong>tool calling</strong>, <strong>prompt engineering</strong>, <strong>RAG</strong>, <strong>embeddings</strong>, <strong>Milvus</strong>, <strong>pgvector</strong>, <strong>offline eval</strong>, <strong>LangSmith</strong>.</p>
+<h2 id="how-used-here">How used here</h2>
+<ul>
+<li><strong>IA:</strong> LangGraph copilot graph; MCP-hosted <strong>tool calling</strong> to audited <strong>read-only</strong> planning tools; <strong>prompt engineering</strong> + structured tool contracts; human confirm before writes; <strong>LangSmith</strong> for traces/eval; embeddings jobs on async/Kafka path; ClickHouse reads — say <strong>building</strong>, not shipped.</li>
+<li><strong>Menu:</strong> <strong>LangChain RAG</strong> + <strong>Gemini 2.5 Pro</strong> + <strong>Milvus</strong> (<strong>embeddings</strong> of labeled menus); <strong>prompt engineering</strong> + schema validation gate; <strong>98%/100% offline eval</strong> (HISTORICAL). No SFT on PDF.</li>
+</ul>
+<h2 id="tradeoffs">Tradeoffs</h2>
+<p>Autonomy vs safety — gated confirms beat fully autonomous money/planning writes. RAG + schema gate beats brittle regex for messy menus. Offline eval ≠ live SLA without monitoring.</p>
+<h2 id="failure-modes">Failure modes</h2>
+<ul>
+<li>Hallucinated tool args → validators / typed schemas  </li>
+<li>Stale embeddings / RAG index  </li>
+<li>Eval leakage (offline ≠ production)  </li>
+<li>Prompt drift without golden-set regression (LangSmith)</li>
+</ul>
+<h2 id="likely-questions">Likely questions</h2>
+<p>Why LangGraph vs plain chains? How do MCP tools stay read-only? What is tool calling vs free-form SQL? How do you evaluate RAG? Prompt engineering vs fine-tuning? Embeddings where?</p>
+<h2 id="full-agentic-flow-evals-guardrails">Full agentic flow / evals / guardrails</h2>
+<p>See <a href="../projects/01d_agentic_evals_guardrails_flow.html">../projects/01d_agentic_evals_guardrails_flow.md</a> if present — production load-test honesty, LangSmith vs Datadog, 14 tools + 3 gates (verbal).</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

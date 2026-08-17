@@ -1,8 +1,10 @@
-# Python/Go resume v2 — Interview Prep Hub (grounded rewrite)
+# Final Python + Go + AI — Interview Prep Hub
 
-**Tarun Mittal · Senior Software Engineer · July 2026**
+**Tarun Mittal · Senior Software Engineer · Aug 2026**
 
-This hub backs `resume_v2/` (PDF: `Tarun_Mittal_SSE_5yr_v2.pdf`). Legacy track lives in `resume/` (with its own `prep/`).
+Backs `final_pygo_ai/` (PDF: `Tarun_Mittal_SSE_PyGo_AI_Final.pdf`). The source track it was cut from lives in `resume_v2/`; the legacy track lives in `resume/` (each with its own `prep/`).
+
+**Summary on the PDF (verify against this):** Senior Software Engineer with 5 years designing and owning cloud-native, high-throughput distributed systems · expertise in **Python and Go** microservices, event-driven architectures, real-time and batch data processing, Agentic AI and RAG systems · proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
 ## Study order (do this)
 

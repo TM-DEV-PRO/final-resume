@@ -98,11 +98,61 @@ def rewrite_md_hrefs(path):
         print("rewrote links:", os.path.relpath(path, BASE))
 
 
-def build(order, out_path, title, brand):
+SKIP_DIRS = {"artifacts", "output", "sections", "__pycache__", "node_modules"}
+
+
+def rest_of_track(track_dir, already):
+    """Every remaining markdown file in a track, so a hub is never a partial view.
+
+    `already` fixes the reading order for the curated head; whatever is left gets
+    appended alphabetically instead of being silently dropped from the hub.
+    """
+    seen = {os.path.abspath(p) for p in already}
+    extra = []
+    for dirpath, dirnames, filenames in os.walk(track_dir):
+        dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS and not d.startswith(".")]
+        for name in filenames:
+            if not name.endswith(".md"):
+                continue
+            path = os.path.join(dirpath, name)
+            if os.path.abspath(path) not in seen:
+                extra.append(path)
+    return sorted(extra)
+
+
+def relativize(text, src_dir, out_dir):
+    """Re-base relative links so they still resolve from the hub's own directory.
+
+    A hub concatenates files from `prep/` but is written at the track root, so a link
+    like `GROUND_TRUTH.md` has to become `prep/GROUND_TRUTH.md`.
+    """
+    def fix(target):
+        if not target or target.startswith(("http://", "https://", "mailto:", "#", "/")):
+            return target
+        return os.path.relpath(os.path.join(src_dir, target), out_dir).replace(os.sep, "/")
+
+    text = re.sub(
+        r"(\]\()([^)\s#]+)((?:#[^)]*)?\))",
+        lambda m: f"{m.group(1)}{fix(m.group(2))}{m.group(3)}",
+        text,
+    )
+    text = re.sub(
+        r'(href=")([^"#]+)((?:#[^"]*)?")',
+        lambda m: f"{m.group(1)}{fix(m.group(2))}{m.group(3)}",
+        text,
+    )
+    return text
+
+
+def build(order, out_path, title, brand, track_dir=None):
+    if track_dir:
+        order = list(order) + rest_of_track(track_dir, order)
+    out_dir = os.path.dirname(os.path.abspath(out_path))
     parts = []
     for f in order:
         if os.path.exists(f):
-            parts.append(open(f, encoding="utf-8").read())
+            body = open(f, encoding="utf-8").read()
+            parts.append(relativize(body, os.path.dirname(os.path.abspath(f)), out_dir))
     raw = "\n\n---\n\n".join(parts)
     for d in ('<div class="callout note">', '<div class="callout warn">', '<div class="callout highlight">'):
         raw = raw.replace(d, d[:-1] + ' markdown="1">')
@@ -148,7 +198,7 @@ build(
     + sorted(glob.glob(os.path.join(LEGACY_PREP, "agentic_assort_playbook", "*.md"))),
     os.path.join(LEGACY, "InterviewPrep.html"),
     "Tarun Mittal — Legacy Python/Go · Interview Prep",
-    "Legacy · Interview Prep",
+    "Legacy · Interview Prep",    track_dir=LEGACY,
 )
 
 # Java (own prep + shared grounded packs from resume_v2/prep — single source, no copy)
@@ -188,7 +238,7 @@ build(
     ],
     os.path.join(JAVA, "InterviewPrep.html"),
     "Tarun Mittal — Java/Spring · Interview Prep Hub",
-    "Java/Spring · Interview Prep",
+    "Java/Spring · Interview Prep",    track_dir=JAVA,
 )
 
 # Python/Go v2
@@ -234,7 +284,7 @@ build(
     ],
     os.path.join(V2, "InterviewPrep.html"),
     "Tarun Mittal — Python/Go v2 · Interview Prep",
-    "Python/Go v2 · Interview Prep",
+    "Python/Go v2 · Interview Prep",    track_dir=V2,
 )
 
 # Campaign PyGo XYZ
@@ -292,7 +342,7 @@ build(
     + sorted(glob.glob(os.path.join(CP, "agents", "company_recruiters", "*.md"))),
     os.path.join(CP, "InterviewPrep.html"),
     "Tarun Mittal — Campaign PyGo XYZ · Interview Prep Hub",
-    "Campaign PyGo XYZ · Full Hub",
+    "Campaign PyGo XYZ · Full Hub",    track_dir=CP,
 )
 
 # Final Java + AI (self-contained prep copy)
@@ -337,7 +387,7 @@ build(
     ],
     os.path.join(FJ, "InterviewPrep.html"),
     "Tarun Mittal — Final Java + AI · Interview Prep",
-    "Final Java+AI · Interview Prep",
+    "Final Java+AI · Interview Prep",    track_dir=FJ,
 )
 
 # Final Java + AI (IA = Python/Go hybrid)
@@ -382,7 +432,7 @@ build(
     ],
     os.path.join(FJPI, "InterviewPrep.html"),
     "Tarun Mittal — Final Java + AI (IA=Py/Go) · Interview Prep",
-    "Final Java+PyGo IA · Interview Prep",
+    "Final Java+PyGo IA · Interview Prep",    track_dir=FJPI,
 )
 
 # Final Python + Go + AI
@@ -434,7 +484,7 @@ build(
     ],
     os.path.join(FP, "InterviewPrep.html"),
     "Tarun Mittal — Final Python + Go + AI · Interview Prep",
-    "Final PyGo+AI · Interview Prep",
+    "Final PyGo+AI · Interview Prep",    track_dir=FP,
 )
 
 for hub in (

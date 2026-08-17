@@ -1,6 +1,6 @@
 # Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense
 
-> **Start here for interviews:** [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) — 30s/2min, architecture, design decisions, bullet defenses, 12 mock Q&As, Do NOT say. This file is deeper background + source extracts.
+> **Start here for interviews:** [`23a_ia_interview_pack.md`](../../../resume_v2/prep/23a_ia_interview_pack.md) — 30s/2min, architecture, design decisions, bullet defenses, 12 mock Q&As, Do NOT say. This file is deeper background + source extracts.
 
 **Role:** Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present  
 **Project:** Agentic AssortSmart (FastAPI chat + Go doing layer) on **ClickHouse/GCS** (insert-only versioned planning store); POC evidence from Pivot / LinePlanning / consolidated CH-vs-PG report  

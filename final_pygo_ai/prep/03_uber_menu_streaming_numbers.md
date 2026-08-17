@@ -4,8 +4,8 @@ v2 resume uses the same Menu bullets as the main track. Do not duplicate the ful
 
 **Study:**
 
-1. [`../resume/prep/projects/03_uber_menu_ingestion.md`](../resume/prep/projects/03_uber_menu_ingestion.md) §3–4 (why Kafka/Flink/Spark/Pinot **with numbers**)
-2. [`../resume/prep/06_tech_deep_dives.md`](../resume/prep/06_tech_deep_dives.md) §§3–6
+1. [`../resume/prep/projects/03_uber_menu_ingestion.md`](../../resume/prep/projects/03_uber_menu_ingestion.md) §3–4 (why Kafka/Flink/Spark/Pinot **with numbers**)
+2. [`../resume/prep/06_tech_deep_dives.md`](../../resume/prep/06_tech_deep_dives.md) §§3–6
 3. [`09_metrics_derivations.md`](09_metrics_derivations.md) §3
 
 | Component | Why | Number (ESTIMATED unless noted) |

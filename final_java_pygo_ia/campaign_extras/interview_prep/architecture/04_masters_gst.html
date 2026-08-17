@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>04_masters_gst — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/architecture/04_masters_gst.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-masters-india-gst-e-invoicing">Architecture — Masters India GST / E-Invoicing</a>
+<a class="lvl2" href="#1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</a>
+<a class="lvl2" href="#2-database-partition-design">2. Database / partition design</a>
+<a class="lvl2" href="#3-architecture-diagram">3. Architecture diagram</a>
+<a class="lvl2" href="#4-end-to-end-flow">4. End-to-end flow</a>
+<a class="lvl2" href="#5-gradual-migration-note-strangler-verbally">5. Gradual migration note (strangler verbally)</a></nav>
+<main><h1 id="architecture-masters-india-gst-e-invoicing">Architecture — Masters India GST / E-Invoicing</h1>
+<h2 id="1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Python / FastAPI</strong></td>
+<td>Microservices replacing PHP Laravel (gradual cutover)</td>
+<td>Async-friendly APIs; filing-day safe canary cutover</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Bulk e-invoice / IRP async stages</td>
+<td>Ordering per taxpayer, durable replay, multiple consumer groups</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL</strong></td>
+<td>Transactional data split by <strong>tax quarter</strong></td>
+<td>Hot/cold by fiscal quarter; query and retention fit GST</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Document snapshots of signed IRP responses</td>
+<td>Flexible payload storage for IRN/QR artifacts</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>Caching for hot reads</td>
+<td>Cut repeat DB reads <strong>~30%</strong></td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>Search / log analytics with ELK</td>
+<td>Incident triage and support lookups</td>
+</tr>
+<tr>
+<td><strong>Celery</strong></td>
+<td>Scheduled/background tasks</td>
+<td>Cron-like work that is not stream semantics</td>
+</tr>
+<tr>
+<td><strong>ELK + New Relic</strong></td>
+<td>On-call alerting and APM</td>
+<td>Triage <strong>~70%</strong> faster; production visibility</td>
+</tr>
+<tr>
+<td><strong>Docker / AWS</strong></td>
+<td>Deploy and cloud</td>
+<td>Org standard for services</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-database-partition-design">2. Database / partition design</h2>
+<ul>
+<li><strong>Quarter sharding (PostgreSQL):</strong> partition or shard keys aligned to GST filing quarters so large history does not poison hot paths.</li>
+<li><strong>Idempotency keys:</strong> client + file hash + batch index (and unique business refs) to prevent double IRP registration.</li>
+<li><strong>DLQ:</strong> poison / failed IRP messages for safe replay after fix.</li>
+<li><strong>Redis:</strong> cache frequently read master/config data; accept invalidation complexity.</li>
+</ul>
+<h2 id="3-architecture-diagram">3. Architecture diagram</h2>
+<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
+<pre><code> Client ERP / Dashboard
+        │
+ ┌──────▼────────────────────────────────┐
+ │ Gateway canary (% FastAPI | PHP)      │
+ └──────┬────────────────────────────────┘
+        ▼
+ FastAPI services (submit · bulk · recon)
+        │
+   ┌────┼──────────┬────────────┐
+   ▼    ▼          ▼            ▼
+  PG   Redis    Kafka        MongoDB
+ (by   cache   (chunks ·     (IRN/QR
+ tax          IRP · hooks)   snapshots)
+ qtr)
+        │
+        ▼
+ Workers ── idempotency + retries + DLQ ──► Government IRP
+        │
+   ELK + New Relic
+</code></pre>
+<h3 id="mermaid">Mermaid</h3>
+<div class="mermaid">flowchart LR
+  ERP[Client ERP]
+  API[FastAPI APIs]
+  KF[Kafka]
+  W1[IRP submit workers]
+  W2[Callback / webhook consumers]
+  PG[(PostgreSQL by tax quarter)]
+  MG[(Mongo signed snapshots)]
+  RD[(Redis)]
+  IRP[Government IRP]
+  OBS[ELK + New Relic]
+
+  ERP --> API --> KF
+  KF --> W1 --> IRP
+  IRP --> W2 --> MG
+  W2 --> PG
+  API --> PG
+  API --> RD
+  API --> OBS
+  W1 --> OBS
+</div>
+<h2 id="4-end-to-end-flow">4. End-to-end flow</h2>
+<ol>
+<li>Client posts invoice JSON (or bulk file) to FastAPI.</li>
+<li>Validate schema/GSTIN; accept import chunks.</li>
+<li>Kafka carries submit jobs; workers call government <strong>IRP</strong>.</li>
+<li>Signed e-invoice (IRN/QR) persisted; webhooks fan out.</li>
+<li>Idempotency + DLQ prevent double-filing and allow replay.</li>
+<li>Outcomes: <strong>1M+ IRP/day</strong>, <strong>100K+/import</strong>, throughput <strong>700 → 4,000 req/min</strong>, p95 <strong>1.2s → 300ms</strong> for <strong>1,500+</strong> clients; mentored <strong>2</strong>; coverage <strong>35% → 82%</strong>; deploy success <strong>98%</strong> (HISTORICAL).</li>
+</ol>
+<h2 id="5-gradual-migration-note-strangler-verbally">5. Gradual migration note (strangler verbally)</h2>
+<p>PHP monolith stays behind the gateway while FastAPI services cut over by domain with canaries — interviewers may call this <em>strangler</em>; PDF says migrated to microservices.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

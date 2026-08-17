@@ -1,6 +1,6 @@
 # 11. Uber FRM Risk Scoping Platform: Deep Dive
 
-> **Start here for interviews:** [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) § Uber FRM.
+> **Start here for interviews:** [`23b_uber_interview_packs.md`](../../../resume_v2/prep/23b_uber_interview_packs.md) § Uber FRM.
 
 Defense material for the four Uber FRM resume bullets. Every number here traces to `GROUND_TRUTH.md` or to the code in `KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/`. Tags: **MEASURED** (documented artifact or code), **TARGET** (design goal, say "targeting"), **ESTIMATED** (derived, say so). No number here is invented.
 
