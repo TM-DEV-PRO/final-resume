@@ -2,12 +2,12 @@
 
 **Purpose:** Anything on the PDF you can defend in depth — each tech (where / why / problem solved), numbers, user flows, architecture, ER-ish schema notes. Prep keeps jargon; **PDF uses simple English**.
 
-**PDF IA bullets (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Rows for **14 tools / 8.5% / 63/8** below remain interview depth (off PDF). Full defense: [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md).
+**PDF IA bullets (Aug 2026):** product · Keep/Drop engine (LangGraph + SELECT-only CH + 300-gold/≥80%) · dig-deeper QnA · ClickHouse POC from 189s to 12.3s. Project title: **AssortSmart (Retail Merchandise Planning Platform)**. Pipeline: `../docs/assort_kd_flow/PIPELINE.md`. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight · 14 tools / 8.5% / 63/8. Full defense: [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md).
 
 **Honesty:** MEASURED / TARGET / HISTORICAL / ESTIMATED — see [`GROUND_TRUTH.md`](GROUND_TRUTH.md).
 
 **Packs:** [`23a`](23a_ia_interview_pack.md) · [`23b`](23b_uber_interview_packs.md) · [`23c`](23c_masters_gfg_interview_packs.md)  
-**Diagrams:** `campaign_pygo_xyz/interview_prep/architecture/` · deep dives `10`/`11`/`12`/`14`/`29`  
+**Diagrams:** `campaign_extras/interview_prep/architecture/` · deep dives `10`/`11`/`12`/`14`/`29`  
 **Schemas + APIs:** [`34`](34_er_tables_tech_why.md) (ER/why) · [`35`](35_table_schemas_api_design.md) (columns + contracts)
 
 ---
@@ -25,7 +25,7 @@
 ## Impact Analytics — AssortSmart (building, not shipped)
 
 ### User flow
-Planner opens AssortSmart → chat asks for cluster / assortment help → agent calls **audited tools only** (read) → shows search plan → **human confirms** → write APIs apply approved changes → grid/Hindsight refresh from planning store.
+Planner opens AssortSmart → Keep/Drop scores article × plan-season (ST%/ROS + LangGraph lenses) → CSV bake-and-promote behind gold gate → dig-deeper QnA explains locked decisions read-only → ClickHouse planning analytics (POC from 189s to 12.3s). **Verbal only:** Cluster Copilot / Hindsight if asked.
 
 ### Architecture flow
 ```

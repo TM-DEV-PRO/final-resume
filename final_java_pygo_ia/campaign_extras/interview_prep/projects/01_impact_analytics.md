@@ -1,38 +1,35 @@
-> **PDF sync (campaign_pygo_xyz / v2 / java Aug 2026):** PDF IA bullets are (1) AssortSmart product job (2) Cluster Recommendation Copilot architecture ownership (3) Hindsight (4) Postgres→ClickHouse 250M POC evidence. **Off PDF:** 8.5%/14 tools/3 gates, under 1h/≥20 TARGET claims, 63/8 DDL detail, line-plan 12B→25M/~0.4 ms. Defend those verbally via this pack / `23a` / `20_…`. Hindsight defense: `01b_hindsight_defense.md`.
+> **PDF sync (final_java_pygo_ia Aug 2026):** PDF IA bullets are (1) AssortSmart product job (2) Keep/Drop engine + LangGraph lenses + SELECT-only CH + 300-gold / ≥80% offline gate (3) read-only dig-deeper QnA over locked decisions (4) ClickHouse POC from 189s to 12.3s on 250M rows. Project title: **AssortSmart (Retail Merchandise Planning Platform)**. Pipeline: `docs/assort_kd_flow/PIPELINE.md`. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/3 gates · 63/8 DDL · line-plan 12B. Hindsight defense: `01b_hindsight_defense.md`.
 
-Canonical interviewer pack for campaign IA bullets. Synced Jul 2026.
+Canonical interviewer pack for current PDF IA bullets. Synced Aug 2026.
 
 # Impact Analytics — Interview Pack
 
 **Role:** Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present (IC)  
-**Product:** AssortSmart — AI-powered retail merchandise planning  
-**Honesty rule:** Tag every number MEASURED / TARGET / DESIGN / PROJECTED. No IA TPS/RPM (none measured). Continuous present for ongoing work. Phase 1 design PASS; load test pending — **building**, not shipped.
+**Product:** AssortSmart — retail merchandise planning (AssortSmart (Retail Merchandise Planning Platform))  
+**Honesty rule:** Tag every number MEASURED / TARGET / DESIGN / PROJECTED. No IA TPS/RPM. Keep/Drop gold gate ≠ multi-tenant GA.
 
 ---
 
 ## 1. 30s / 2min project explain
 
-### 30 seconds (product first)
+### 30 seconds (PDF first)
 
-AssortSmart helps retailers decide **what to buy, how much, and for which stores** a season ahead. Store clustering is the foundation every strategy plan binds to. Today a planner makes four expert choices blind and runs **one** config; compute is fine (median job **~20s**), but failures, one-shot search, and zero reproducibility burn days. I am **building** the Cluster Recommendation Copilot — FastAPI/LangGraph/MCP over a Go doing layer on per-tenant ClickHouse — so planners state intent, the agent batch-explores configs, and a human approves before any write. Targets: hierarchy-to-plan **days → under 1 hour**, configs **1 → ≥20**, failures **8.5% → under 2%**. Design approved; load test still pending.
+AssortSmart helps retailers decide **what to buy, how much, and for which stores** a season ahead. I architected the **Keep/Drop engine** at article × plan-season grain — deterministic ST%/ROS plus LangGraph lenses, agents **SELECT-only** on ClickHouse via CSV-first bake-and-promote, promotions gated on **300 gold cases** and **≥80% offline accuracy**. I also built a **read-only dig-deeper QnA** over locked Keep/Drop so planners can ask why a style was kept or dropped without unfreezing decisions. ClickHouse adoption is backed by a measured POC: pivot latency from **189s to 12.3s** (~15.5×) on **250M** rows. Write plane on this track: **Go / Gin**.
 
 ### 2 minutes (architecture + evidence)
 
-AssortSmart is merchandise planning SaaS: buy depth × store placement for the next season. Clustering is the binding step — wrong clusters poison every downstream strategy.
-
-**Pain (MEASURED on kik):** **8.5%** clustering-run failures (**37/437**), **>80%** input-boundary mistakes; reproducibility **0%** (winning config/seed never persisted); one manual config in a huge search space; agent probes on shared BigQuery **1–20s+** variance.
-
-**Product inversion:** planner states hierarchy + reference period → agent grounds scope → batch evaluates many configs (design **20–100**, success bar **≥20**) → UI shows **3–5** distinct scenarios → human gates → write-back. LLM plans and narrates; a **deterministic engine** via **14 audited read-only tools** computes; agent **never writes SQL**.
-
-**Stack (DESIGN / HLD):** Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a **Go (Gin) doing layer** (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant **ClickHouse, 63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1` (service roles INSERT-only). Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL `trace_id`.
+**PDF path:** Keep/Drop scoring → LangGraph lenses → CSV bake → gold gate → promote; QnA stays read-only over locked outcomes. Detail: `docs/assort_kd_flow/PIPELINE.md`.
 
 **Evidence that unlocked the store:**
-- Pivot POC, row-identical at **250M**: heavy grid **189.4s → 12.3s** (~**15.5×**, MEASURED). Verbal honesty: strip `COUNT(DISTINCT)` and typical aggs fall to **~2–3×**; keep option-count and cite **~13–15×**.
-- Line-plan: refuse projected **~12B** store-week (4,800 stores × levels × choices × 52 weeks); editable truth at choice×cluster×week **~25M**; month rollup **sub-second**, cell edit **~0.4 ms** on aggregate (MEASURED). Schema win **100–450×**, not “engine magic.”
+- Pivot POC, row-identical at **250M**: heavy grid from **189.4s to 12.3s** (~**15.5×**, MEASURED).
 
-**Status:** Phase 1 adversarial + external review **PASS, approve to bring-up**. Remaining gate: bring-up load test on real kik extract. I own design and build work in continuous present — not “shipped to all tenants.”
+**Verbal only / not on PDF (if asked):** Cluster Recommendation Copilot (days → under 1h TARGET, 8.5% → under 2%, 14 tools, 3 gates) and Hindsight prior-season layer — building / deep-dive, not resume headline bullets.
+
+**Status:** Keep/Drop + QnA are real assort_kd_flow work. Gold / ≥80% is a promotion gate — not “shipped to all tenants.”
 
 ---
+
+> **Note:** Diagrams below still discuss broader agentic planes (Copilot/Hindsight doing layer). Treat as **verbal / deep-dive**, not PDF bullet map.
 
 ## 2. Architecture diagram
 

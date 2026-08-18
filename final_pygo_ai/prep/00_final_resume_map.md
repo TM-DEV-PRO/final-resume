@@ -1,36 +1,40 @@
-# Final Python + Go + AI — every PDF point → deep defense
+# Final PyGo + AI — every PDF point → deep defense
 
 Use this map in interviews. Honesty tags: MEASURED / TARGET / DESIGN / HISTORICAL.
+
+**Keep/Drop pipeline:** [`../docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md) · shared [`../../docs/assort_kd_flow/PIPELINE.md`](../../docs/assort_kd_flow/PIPELINE.md)
 
 ## Summary
 | # | PDF claim | Defense pack | Tag |
 |---|---|---|---|
-| S1 | 5y software development, distributed systems | objective · `31_resume_deep_explain_map.md` | HISTORICAL tenure |
-| S2 | Python Go + Agentic AI RAG (skills AI line expanded) | `36_skills_ai_agents_defense.md` · `campaign_extras/.../skills_fundamentals_map.md` | framing |
-| IA1 | AssortSmart what/how much/which stores | `23a_ia_interview_pack.md` Bullet 1 | product |
-| IA2 | Cluster Recommendation Copilot ownership (FastAPI LangGraph MCP + Go Gin) | `23a` Bullet 2 · `33_architecture_diagrams.md` · `campaign_extras/interview_prep/architecture/01_ia_assortsmart_hindsight.md` | DESIGN building |
-| IA3 | Hindsight | `23a` Bullet 3 · `campaign_extras/interview_prep/projects/01b_hindsight_defense.md` | DESIGN building |
-| IA4 | Postgres→ClickHouse 250M 189s→12.3s ~15.5x | `21_ia_pivot_benchmark_source.md` · `23a` Bullet 4 | MEASURED POC |
-| FRM* | FastAPI MySQL backend 30+ APIs / 8 screens; recon v2; materiality engine; led 3 | `11_uber_frm_deep_dive.md` · `23b` · `campaign_extras/.../02_uber_frm.md` | MEASURED + TARGET 70% |
-| Menu* | Owned E2E Selenium→Kafka→Flink + RAG/Milvus schema gate + 95%+ scrape; ANZ Mobility 99.9% | `14_uber_menu_deep_dive.md` · `23b` | MEASURED / offline / HISTORICAL ANZ |
-| Masters* | FastAPI strangler Kafka 1M+/day | `12_masters_gfg_deep_dive.md` · `23c` | HISTORICAL |
-| GFG* | Django 10K+ | `12_masters_gfg_deep_dive.md` · `23c` | HISTORICAL |
+| S1 | 5y software development, distributed systems | this track objective · `31_resume_deep_explain_map.md` | HISTORICAL tenure |
+| S2 | Expertise in Python and Go microservices, with applied experience in AI-assisted and RAG systems. | `36_skills_ai_agents_defense.md` · `campaign_extras/.../skills_fundamentals_map.md` | framing |
+| IA0 | Project title: **Agentic AssortSmart (AI-Powered Retail Merchandise Planning)** | `23a_ia_interview_pack.md` · PIPELINE.md | product |
+| IA1 | Building AssortSmart (seasonal buying, store clustering, assortment) | `23a` Bullet 1 · PIPELINE.md | product / building |
+| IA2 | Keep/Drop engine (LangGraph + SELECT-only CH + gold gate) | `23a` Bullet 2 · PIPELINE.md | DESIGN / MEASURED offline gate |
+| IA3 | Read-only dig-deeper QnA over locked Keep/Drop | `23a` Bullet 3 · PIPELINE.md | DESIGN building |
+| IA4 | ClickHouse POC from 189s to 12.3s (~15.5x) on 250M rows | `21_ia_pivot_benchmark_source.md` · `23a` Bullet 4 | MEASURED POC |
+| FRM* | backend 30+ APIs / 8 screens $340M 70% target from about 2 weeks to 3–4 days; recon v2 L1→L3; materiality ~55×14; led 3 | `11_uber_frm_deep_dive.md` · `23b` | MEASURED + TARGET 70% |
+| Menu* | Owned E2E Selenium→Kafka→Flink + RAG/Milvus schema gate + 95%+ scrape; from 24 hours to 2 hours; ANZ Mobility 99.9% | `14_uber_menu_deep_dive.md` · `23b` | MEASURED / offline / HISTORICAL ANZ |
+| Masters* | FastAPI strangler p95 from 1.2s to 300ms Kafka 1M+/day mentored 2 | `12_masters_gfg_deep_dive.md` · `23c` | HISTORICAL |
+| GFG* | PHP → Django (Python) 10K+ daily | `12_masters_gfg_deep_dive.md` · `23c` | HISTORICAL |
 
-## Schemas · ER · APIs · design decisions · tech depth
+## Schemas · ER · APIs · design decisions
 | Topic | File |
 |---|---|
-| Architecture diagrams | `33_architecture_diagrams.md` · `campaign_extras/interview_prep/architecture/` |
+| Architecture diagrams | `33_architecture_diagrams.md` |
 | ER + tables + why tech | `34_er_tables_tech_why.md` |
 | Column schemas + API design | `35_table_schemas_api_design.md` |
-| Tech depth (Kafka Flink CH Go FastAPI LangGraph) | `campaign_extras/interview_prep/tech_depth/` · **`36_skills_ai_agents_defense.md`** |
-| Design decisions | `campaign_extras/interview_prep/design_decisions_tradeoffs.md` |
-| Numbers defense | `campaign_extras/interview_prep/numbers_defense.md` · `18_resume_number_catalog.md` |
+| CH DDL Phase-1 (63/8 interview depth) | `29_ia_ch_ddl_phase1_source.md` |
+| Numbers catalog | `18_resume_number_catalog.md` · `09_metrics_derivations.md` |
+| Design decisions / tradeoffs | see `23a` § design decisions · Uber/Masters packs |
+| AI skills line (tool calling, prompt eng, embeddings, offline eval, LangSmith) | `36_skills_ai_agents_defense.md` · `campaign_extras/interview_prep/tech_depth/skills_fundamentals_map.md` |
 | Common Q&A | `32_common_interview_qa.md` |
-| Application forms | `22_application_questions.md` · `../ApplicationKit.html` |
-| Company recruiters | `campaign_extras/agents/company_recruiters/` |
+| Application forms | `22_application_questions.md` · `../ApplicationKit.md` |
 | ATS 11 companies | `../ats/00_ats_11_company_scorecard.md` |
+| Keep/Drop pipeline (assort_kd_flow) | `../docs/assort_kd_flow/PIPELINE.md` · `../../docs/assort_kd_flow/PIPELINE.md` |
 
 ## Verbal only (not on PDF)
-8.5% (37/437) → under 2% TARGET · 14 tools · 3 gates · 63/8 DDL · line-plan 12B → ~25M · under 1h / ≥20 configs TARGET.
+Cluster Recommendation Copilot · Hindsight (building / deep-dive) · 8.5% (37/437) → under 2% TARGET · 14 tools · 3 gates · 63/8 DDL · line-plan 12B → ~25M · under 1h / ≥20 configs TARGET.
 
-| Senior screen Q&A (millions/prod/perf/deploy) | \`37_senior_screen_deep_qa.md\` |
+| Senior screen Q&A (millions/prod/perf/deploy) | `37_senior_screen_deep_qa.md` |

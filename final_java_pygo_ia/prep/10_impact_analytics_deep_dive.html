@@ -45,7 +45,7 @@ strong{color:#fff}
 <a class="lvl2" href="#1-end-to-end-architecture-order-batching-cqrs-edit-path">1. End-to-end architecture (Order Batching CQRS + edit path)</a>
 <a class="lvl2" href="#2-clickhouse-planning-agentic-schema-sketch">2. ClickHouse planning / agentic schema sketch</a>
 <a class="lvl2" href="#3-clustering-copilot-user-flow-what-i-walk-through">3. Clustering copilot user flow (what I walk through)</a>
-<a class="lvl2" href="#4-resume-bullet-1-cluster-recommendation-copilot">4. Resume bullet 1: Cluster Recommendation Copilot</a>
+<a class="lvl2" href="#4-verbal-only-not-on-pdf-cluster-recommendation-copilot-was-prior-pdf-bullet">4. Verbal only / not on PDF: Cluster Recommendation Copilot (was prior PDF bullet)</a>
 <a class="lvl2" href="#5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</a>
 <a class="lvl2" href="#6-resume-bullet-3-cqrs-migration-order-batching">6. Resume bullet 3: CQRS migration (Order Batching)</a>
 <a class="lvl2" href="#7-resume-bullet-4-update-strategies-replacingmergetree-compression">7. Resume bullet 4: Update strategies, ReplacingMergeTree, compression</a>
@@ -71,7 +71,7 @@ strong{color:#fff}
 <p>I joined Impact Analytics as a Senior Software Engineer on 14 May 2026. My charter sits at the intersection of two workstreams:</p>
 <ol>
 <li><strong>Agentic AssortSmart data plane:</strong> ClickHouse/GCS as the end-to-end planning store — insert-only versioned writes (<code>ReplacingMergeTree</code> + <code>argMax</code>) so the doing layer is not stuck on classic OLTP mutations. BigQuery stays upstream historical truth (BQ→CH ingest). Thin Postgres metadata only if asked.</li>
-<li><strong>Agentic product:</strong> Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL <code>trace_id</code>.</li>
+<li><strong>PDF product path:</strong> Keep/Drop + dig-deeper QnA (<code>assort_kd_flow</code>). <strong>Verbal / not on PDF:</strong> Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL <code>trace_id</code>.</li>
 </ol>
 <p>I am an IC so far (no people lead at IA). CDC platform tooling (<code>pg2ch_cdc</code>) was authored by another engineer (Ashvin Sharma). Copilot: Phase 1 design approved (external review PASS); bring-up load test pending. Obs stack on the resume is <strong>MEASURED design / instrumentation</strong>, not sole SaaS ownership.</p>
 <p><strong>Source tension to own unprompted:</strong> The Jul 2026 POC report verdict is still <strong>hybrid per surface</strong> for assortment benchmarks and <strong>no wholesale CH</strong> for legacy mtp-assort. The <strong>agentic-assort</strong> build follows the Jul 2026 stack directive + HLD: planning data on ClickHouse end-to-end because we changed the write model. Do not collapse “no CH for legacy UPDATE/JSONB” into “no CH for agentic AssortSmart.”</p>
@@ -271,7 +271,7 @@ distribution_centres       ─daily─►  distribution_centres
 <p><strong>Platform NFRs (TARGET from Planning Platform Architecture):</strong> grid p95 <strong>&lt;500ms</strong>, cell edit <strong>&lt;80ms</strong>, History Opt <strong>&lt;30s</strong>, 3 scenarios <strong>&lt;60s</strong>.</p>
 <p><strong>Status honesty:</strong> Phase 1 design complete; four internal adversarial passes + external review <strong>PASS (approve to bring-up)</strong>. Remaining gate: <strong>bring-up load test</strong> (cube sizing on real kik extract). Do not claim shipped production copilot.</p>
 <hr>
-<h2 id="4-resume-bullet-1-cluster-recommendation-copilot">4. Resume bullet 1: Cluster Recommendation Copilot</h2>
+<h2 id="4-verbal-only-not-on-pdf-cluster-recommendation-copilot-was-prior-pdf-bullet">4. Verbal only / not on PDF: Cluster Recommendation Copilot (was prior PDF bullet)</h2>
 <blockquote>
 <p>Building the Cluster Recommendation Copilot for AssortSmart, an agentic store clustering module where an LLM agent (LangGraph, MCP) plans and calls 14 audited tools while a deterministic engine computes clusters, with human approval gates before any write. Targets are plan turnaround under 1 hour (from days), 20+ configurations evaluated per run (from 1), and run failures under 2% (from a measured 8.5%).</p>
 </blockquote>
@@ -383,7 +383,7 @@ distribution_centres       ─daily─►  distribution_centres
 <hr>
 <h2 id="5-prep-depth-order-batching-pg-vs-ch-benchmarks-replaced-on-resume-headline">5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)</h2>
 <blockquote>
-<p><strong>Resume PDF (Aug 2026):</strong> product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse <strong>250M 189s→12.3s (~15.5×)</strong> evidence. <strong>Off PDF:</strong> 63/8 DDL detail, 8.5%/14 tools, line-plan 12B. Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.</p>
+<p><strong>Resume PDF (Aug 2026):</strong> product · Keep/Drop engine · dig-deeper QnA · ClickHouse POC from <strong>189s to 12.3s</strong> on <strong>250M</strong> (~15.5×). Project title: <strong>AssortSmart (Retail Merchandise Planning Platform)</strong>. Pipeline: <code>../docs/assort_kd_flow/PIPELINE.md</code>. <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight · 63/8 DDL · 8.5%/14 tools · line-plan 12B. Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.</p>
 </blockquote>
 <h3 id="51-exact-story-with-numbers-memorize-these">5.1 Exact story with numbers (memorize these)</h3>
 <p>All MEASURED from older POC dump. Infra was <strong>not</strong> identical.</p>

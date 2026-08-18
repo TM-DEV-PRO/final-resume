@@ -25,7 +25,7 @@
 
 ### Q1.1 What is the core product at Impact Analytics / AssortSmart?
 
-**Answer:** AssortSmart is a **merchandise planning SaaS**. Retail planners decide **what to buy, how much, and which stores** for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to. I own end-to-end architecture for the **Cluster Recommendation Copilot** (agent plane: Python LangGraph + MCP; write/doing plane: Spring Boot) and I am building **Hindsight** as the prior-season decision layer. I also drove **ClickHouse** adoption as the planning analytics engine after a row-identical **Postgres → ClickHouse** POC (**250M** rows, **189s → 12.3s**, ~**15.5×** MEASURED).
+**Answer:** AssortSmart is a **merchandise planning SaaS** (**Agentic AssortSmart (AI-Powered Retail Merchandise Planning)** on this PDF). Retail planners decide **what to buy, how much, and which stores** for a season ahead. On the resume I architected AssortSmart's **Keep/Drop engine** (ST%/ROS + LangGraph lenses; agents SELECT-only on ClickHouse via CSV bake-and-promote; promotions gated on 300 gold / ≥80% offline) and a **read-only dig-deeper QnA** over locked decisions. Write plane: **Spring Boot**. I also drove **ClickHouse** adoption after a row-identical Postgres-versus-ClickHouse POC (**250M** rows, from **189s to 12.3s**, ~**15.5×** MEASURED). **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight.
 
 **Honesty:** Copilot is **building**, not fully shipped to every tenant. Load test pending. Do not invent IA TPS/RPM.
 
@@ -175,9 +175,9 @@ Pick **one** primary; keep two backups.
 
 **Answer:** Replaced slow third-party/manual menu onboarding with in-house Selenium + **Kafka** + **Flink** keyed normalize/dedupe so catalog freshness stays hours not a day; anti-bot hardening kept the fleet at **95%+**. Money: kill ~$2/menu tool → **$600K+/yr** floor (HISTORICAL).
 
-### Q5.3 ClickHouse pivot 189s → 12.3s on 250M rows (analytics perf)
+### Q5.3 ClickHouse pivot from 189s to 12.3s on 250M rows (analytics perf)
 
-**Answer:** MEASURED row-identical **Postgres → ClickHouse** POC for AssortSmart planning pivots. Drove CH adoption as planning analytics engine. Not “I rewrote production overnight” — **evidence-gated store decision**.
+**Answer:** MEASURED row-identical **Postgres-versus-ClickHouse** POC for AssortSmart planning pivots. Drove CH adoption as planning analytics engine. Not “I rewrote production overnight” — **evidence-gated store decision**.
 
 ### Q5.4 FRM — careful honesty
 

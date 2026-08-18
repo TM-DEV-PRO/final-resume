@@ -55,7 +55,6 @@ python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
 
 1. Senior Software Engineer with **5 years** of experience designing and owning cloud-native,
    high-throughput **distributed systems**.
-2. Expertise in **Java, Python and Go microservices**, event-driven architectures, real-time and
-   batch data processing, **Agentic AI and RAG** systems.
+2. Expertise in **Java, Python and Go microservices**, with applied experience in **AI-assisted and RAG systems**.
 3. Proven track record shipping production systems, leading backend migrations, and improving
    reliability, performance, and scalability.

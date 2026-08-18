@@ -1,10 +1,10 @@
-> Canonical interviewer pack for current resume_v2 IA bullets. Synced Jul 2026.
+> Canonical interviewer pack for `final_java_pygo_ia` PDF IA bullets (Keep/Drop · QnA · CH POC). Project title: **AssortSmart (Retail Merchandise Planning Platform)**. Synced Aug 2026.
 
 # Impact Analytics — Interview Pack
 
 **Role:** Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present (IC)  
 **Product:** AssortSmart — AI-powered retail merchandise planning  
-**Honesty rule:** Tag every number MEASURED / TARGET / DESIGN / PROJECTED. No IA TPS/RPM (none measured). Continuous present for ongoing work. Phase 1 design PASS; load test pending — **building**, not shipped.
+**Honesty rule:** Tag every number MEASURED / TARGET / DESIGN / PROJECTED. No IA TPS/RPM (none measured). Keep/Drop + QnA are real assort_kd_flow work; gold/≥80% is a **promotion gate** (not multi-tenant GA). Cluster Copilot / Hindsight = **verbal only / not on PDF**.
 
 ---
 
@@ -12,23 +12,38 @@
 
 ### 30 seconds (product first)
 
-AssortSmart helps retailers decide **what to buy, how much, and for which stores** a season ahead. Store clustering is the foundation every strategy plan binds to. Today a planner makes four expert choices blind and runs **one** config; compute is fine (median job **~20s**), but failures, one-shot search, and zero reproducibility burn days. I am **building** the Cluster Recommendation Copilot — FastAPI/LangGraph/MCP over a Go doing layer on per-tenant ClickHouse — so planners state intent, the agent batch-explores configs, and a human approves before any write. Targets: hierarchy-to-plan **days → under 1 hour**, configs **1 → ≥20**, failures **8.5% → under 2%**. Design approved; load test still pending.
+AssortSmart helps retailers decide **what to buy, how much, and for which stores** a season ahead. On the PDF I lead with four claims: building AssortSmart; architecting the **Keep/Drop engine** (ST%/ROS + LangGraph lenses, agents SELECT-only on ClickHouse via CSV bake-and-promote, promotions gated on **300 gold / ≥80% offline**); a **read-only dig-deeper QnA** over locked Keep/Drop; and ClickHouse adoption proven by a **250M** POC (pivot from **189s to 12.3s**, ~15.5×). Write plane on this track: **Go / Gin**. Cluster Recommendation Copilot / Hindsight are **verbal only / not on PDF**.
+
 
 ### 2 minutes (architecture + evidence)
 
-AssortSmart is merchandise planning SaaS: buy depth × store placement for the next season. Clustering is the binding step — wrong clusters poison every downstream strategy.
+**PDF path first:** Keep/Drop at article × plan-season → LangGraph lenses → CSV-first bake-and-promote → gold gate → dig-deeper QnA stays read-only over locked decisions. Pipeline: `docs/assort_kd_flow/PIPELINE.md`.
 
-**Pain (MEASURED on kik):** **8.5%** clustering-run failures (**37/437**), **>80%** input-boundary mistakes; reproducibility **0%** (winning config/seed never persisted); one manual config in a huge search space; agent probes on shared BigQuery **1–20s+** variance.
+**Evidence that unlocked the analytics store:**
+- Pivot POC, row-identical at **250M**: heavy grid from **189.4s to 12.3s** (~**15.5×**, MEASURED).
 
-**Product inversion:** planner states hierarchy + reference period → agent grounds scope → batch evaluates many configs (design **20–100**, success bar **≥20**) → UI shows **3–5** distinct scenarios → human gates → write-back. LLM plans and narrates; a **deterministic engine** via **14 audited read-only tools** computes; agent **never writes SQL**.
+**Verbal only / not on PDF (if they dig):** Cluster Recommendation Copilot (under 1h / ≥20 TARGET, 8.5% baseline, 14 tools, 3 gates) and Hindsight prior-season layer — building / deep-dive.
 
-**Stack (DESIGN / HLD):** Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a **Go (Gin) doing layer** (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant **ClickHouse, 63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1` (service roles INSERT-only). Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL `trace_id`.
+**Status:** Keep/Drop + QnA are real `assort_kd_flow` work. Gold / ≥80% is a **promotion gate** — not “shipped to all tenants.”
+
+<details><summary>Broader agentic plane (verbal deep-dive)</summary>
+
+
+AssortSmart is merchandise planning SaaS:
+
+**Pain (MEASURED on kik — verbal / Copilot context):** **8.5%** clustering-run failures (**37/437**), **>80%** input-boundary mistakes; reproducibility **0%** (winning config/seed never persisted); one manual config in a huge search space; agent probes on shared BigQuery **1–20s+** variance.
+
+**Product inversion (verbal / Copilot context):** planner states hierarchy + reference period → agent grounds scope → batch evaluates many configs (design **20–100**, success bar **≥20**) → UI shows **3–5** distinct scenarios → human gates → write-back. LLM plans and narrates; a **deterministic engine** via **14 audited read-only tools** computes; agent **never writes SQL**.
+
+**Stack (DESIGN / HLD — verbal plane):** Chat FE → FastAPI (LangGraph/MCP). Tool actions hit a **Go, Gin doing layer** (Hindsight / Clustering / Strategy) that Manual UI also uses — one authorization surface. Planning store: per-tenant **ClickHouse, 63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1` (service roles INSERT-only). Obs: LangSmith (agent quality) + Datadog (platform) + PostHog (product), stitched by shared OTEL `trace_id`.
 
 **Evidence that unlocked the store:**
-- Pivot POC, row-identical at **250M**: heavy grid **189.4s → 12.3s** (~**15.5×**, MEASURED). Verbal honesty: strip `COUNT(DISTINCT)` and typical aggs fall to **~2–3×**; keep option-count and cite **~13–15×**.
+- Pivot POC, row-identical at **250M**: heavy grid **189.4s to 12.3s** (~**15.5×**, MEASURED). Verbal honesty: strip `COUNT(DISTINCT)` and typical aggs fall to **~2–3×**; keep option-count and cite **~13–15×**.
 - Line-plan: refuse projected **~12B** store-week (4,800 stores × levels × choices × 52 weeks); editable truth at choice×cluster×week **~25M**; month rollup **sub-second**, cell edit **~0.4 ms** on aggregate (MEASURED). Schema win **100–450×**, not “engine magic.”
 
 **Status:** Phase 1 adversarial + external review **PASS, approve to bring-up**. Remaining gate: bring-up load test on real kik extract. I own design and build work in continuous present — not “shipped to all tenants.”
+
+</details>
 
 ---
 
@@ -110,71 +125,77 @@ Obs: LangSmith ↔ Datadog ↔ PostHog via shared OTEL trace_id
 | **3 human confirm gates** (+ write-back bookend) | Autopilot finalize; prompt-only “ask user”; 6–10 soft confirms | Clustering ships into strategy plans; silent auto-finalize unacceptable; FRD: search plan → approve winner → governance where required | Human-in-the-loop latency; UX must make gates crisp; L2 autopilot / L3 drift are later phases — do not claim |
 | **14 audited read-only tools**; agent never writes SQL | Free-form SQL tool; fewer mega-tools; prompt “don’t write” | Numbers must be deterministic and auditable; DB profile is R/O; new capability = new tool, not a prompt tweak | Slower feature velocity; every evidence number must trace to a tool call |
 | **~25M aggregate** instead of materializing **~12B** store-week | Flat `line_arch_store_week` SoR; CH-only flat scan; explode-always-in-DB | **~12B** = 4,800 stores × levels × choices × 52 weeks (PROJECTED product); users edit cluster×choice×delivery; `store_week = choice × %s` (partition of unity); explode on demand **~25 ms**; month on 25M: PG **690 ms** / CH **512 ms**; cell **0.35–0.44 ms** | Export slices still need materialization when downstream demands full store-week; override-delta rollups grow with override count |
-| **Hybrid POC history → CH E2E for agentic** | Wholesale CH for legacy mtp-assort; stay PG-only forever; dual-write everything | Pivot POC: CH wins heavy grids (**189s→12.3s** at 250M), PG wins sub-ms cells — hybrid *per surface* for assortment. Legacy mtp-assort is OLTP-mutable (JSONB `\|\|`, keyed UPDATE) → **no wholesale CH**. Agentic build changes write model to insert-only versions → **CH/GCS end-to-end** for planning data (Jul 2026 stack + HLD) | Looks politically inconsistent unless you separate surface vs product; dual-store sync tax on hybrid surfaces; must not claim CH beats PG at keyed UPDATE without the write-model unlock |
+| **Hybrid POC history → CH E2E for agentic** | Wholesale CH for legacy mtp-assort; stay PG-only forever; dual-write everything | Pivot POC: CH wins heavy grids (**from 189s to 12.3s** at 250M), PG wins sub-ms cells — hybrid *per surface* for assortment. Legacy mtp-assort is OLTP-mutable (JSONB `\|\|`, keyed UPDATE) → **no wholesale CH**. Agentic build changes write model to insert-only versions → **CH/GCS end-to-end** for planning data (Jul 2026 stack + HLD) | Looks politically inconsistent unless you separate surface vs product; dual-store sync tax on hybrid surfaces; must not claim CH beats PG at keyed UPDATE without the write-model unlock |
 
 ---
 
 ## 4. Bullet-by-bullet defense (PDF Aug 2026)
 
-### Bullet 1 — AssortSmart product job (what / how much / which stores)
+Pipeline reference: `../docs/assort_kd_flow/PIPELINE.md` · `../../docs/assort_kd_flow/PIPELINE.md`.
+
+### Bullet 1 — Building AssortSmart (product)
 
 | | |
 |---|---|
-| **Claim** | Building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to. |
-| **Tag** | Product framing MEASURED |
-| **Exact defense** | AssortSmart is live merchandise-planning SaaS. Your agentic work sits on clustering as step one of every plan. Keep this bullet product-first; stack and ownership are bullets 2–4. |
+| **Claim** | Building AssortSmart, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions. |
+| **Tag** | Product framing MEASURED / continuous present |
+| **Exact defense** | AssortSmart is live merchandise-planning SaaS. Keep this bullet product-first; Keep/Drop, QnA, and ClickHouse are bullets 2–4. Project title on this PDF: **AssortSmart (Retail Merchandise Planning Platform)**. |
 | **Attack vector** | “What do you personally own on AssortSmart?” |
-| **Candidate reply** | “Product framing on the resume. My ownership is Cluster Recommendation Copilot architecture, Hindsight decision surface, and ClickHouse adoption for planning analytics with POC evidence. Still building; load test pending.” |
+| **Candidate reply** | “Product framing. My PDF ownership is Keep/Drop engine, dig-deeper QnA, and ClickHouse adoption with POC evidence. Cluster Recommendation Copilot and Hindsight are verbal-only / not on PDF if you want the broader roadmap.” |
 
-### Bullet 2 — Cluster Recommendation Copilot architecture ownership
-
-| | |
-|---|---|
-| **Claim** | Owned end to end architecture for the Cluster Recommendation Copilot that helps planners group stores for a season. Built chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path. |
-| **Tag** | Architecture DESIGN / building; this hybrid PDF says Go Gin write APIs (same as PyGo IA) |
-| **Exact defense** | Two planes: LLM orchestrates and explains; deterministic tools + Go doing layer execute. Manual UI and agent tools hit the same write APIs. Phase 1 design external review PASS; bring-up load test pending. |
-| **Attack vector** | “Is under 1 hour / ≥20 configs shipped?” / “Why not a chatbot on BQ?” |
-| **Candidate reply** | “Under 1 hour and ≥20 are **targets**, not on the PDF as claims. Shared BQ probes are **1–20s+**. Interactive copilot needs dedicated CH probes targeting **p95 <500ms**. I am not claiming every tenant runs the shipped copilot today.” |
-
-### Bullet 3 — Hindsight prior season decision layer
+### Bullet 2 — Keep/Drop engine
 
 | | |
 |---|---|
-| **Claim** | Building Hindsight with carry forward / underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy. |
-| **Tag** | Hindsight FRD DESIGN / building |
-| **Exact defense** | Narration must ground in computed metrics (no free-form hallucination). Metric catalogs are tenant config, not a release. Defend via `01b_hindsight_defense` / Hindsight FRD. |
-| **Attack vector** | “Is Hindsight shipped to all tenants?” |
-| **Candidate reply** | “Building. Catalogs and grounded narration are the design contract. I will not claim full production rollout.” |
+| **Claim** | Architected AssortSmart's Keep/Drop engine at article × plan-season grain, combining deterministic ST%/ROS scoring with LangGraph lenses, kept agents SELECT-only on ClickHouse through CSV-first bake-and-promote, with promotions gated on 300 gold cases and ≥80% offline accuracy. |
+| **Tag** | DESIGN + MEASURED offline gate; write plane on this track: **Go / Gin** |
+| **Exact defense** | Deterministic ST%/ROS scores first; LangGraph lenses add agentic judgment without letting agents mutate CH. CSV-first bake-and-promote keeps agents SELECT-only. 300 gold / ≥80% offline accuracy is a **promotion gate** — defend as design bar, not multi-tenant GA. Detail: `docs/assort_kd_flow/PIPELINE.md`. |
+| **Attack vector** | “Is Keep/Drop shipped to all tenants?” / “Do agents write ClickHouse?” |
+| **Candidate reply** | “Agents stay SELECT-only; promotions are gated on the gold set and ≥80% offline accuracy. I will not claim every tenant already runs the promoted path.” |
 
-### Bullet 4 — Drove ClickHouse adoption via 250M pivot POC (189s → 12.3s, ~15.5×)
+### Bullet 3 — Dig-deeper QnA over locked Keep/Drop
 
 | | |
 |---|---|
-| **Claim** | Drove adoption of **ClickHouse** as AssortSmart's planning analytics engine, improving pivot latency **189s → 12.3s** (~**15.5×**) on **250M** rows by running a row-identical **Postgres → ClickHouse** POC. |
-| **Tag** | 189s→12.3s **MEASURED**; ClickHouse adoption = design direction for agentic |
+| **Claim** | Built a read-only dig-deeper QnA agent over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes. |
+| **Tag** | DESIGN / building; schema constraints MEASURED in assort_kd_flow |
+| **Exact defense** | QnA explains locked outcomes; it must not unfreeze decisions or write CH/CSV/outcomes. Schema constraints are the safety story. |
+| **Attack vector** | “Can the QnA agent change a Keep/Drop?” |
+| **Candidate reply** | “No — read-only over locked decisions. Writes to ClickHouse, CSVs, and outcomes are blocked by schema constraints.” |
+
+### Bullet 4 — Drove ClickHouse adoption via 250M pivot POC (from 189s to 12.3s, ~15.5×)
+
+| | |
+|---|---|
+| **Claim** | Drove adoption of ClickHouse as AssortSmart's planning analytics engine, reducing pivot latency from 189s to 12.3s (~15.5×) on 250M rows through a row-identical Postgres-versus-ClickHouse POC. |
+| **Tag** | from 189s to 12.3s **MEASURED**; ClickHouse adoption = design direction for planning analytics |
 | **Exact defense** | Harness: row-identical 5M/50M/250M; PG native **48 GB** host vs CH **10 CPU / 3.3 GB** Docker — CH still won reads. At 250M PG spills **42 GB**, ~3m grid; CH **12.3s**. Interview depth: **63/8** insert-only DDL, agent `readonly=1` (not on PDF). |
-| **Attack vector** | “15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid / no CH for mtp-assort — why CH E2E now?” |
-| **Candidate reply** | “Raw heavy grid with option-count is **~15.5×**; strip DISTINCT and typical aggs are **~2–3×**; keep option-count and cite **~13–15×**. POC hybrid for **legacy OLTP-mutable** assortment. Agentic AssortSmart **changed the write model** to insert-only — CH for planning data. I did **not** build `pg2ch_cdc`.” |
+| **Attack vector** | “15.5× is overstated — adversarial said 2–3×.” / “POC said hybrid — why CH for planning?” |
+| **Candidate reply** | “Raw heavy grid with option-count is **~15.5×**; strip DISTINCT and typical aggs are **~2–3×**; keep option-count and cite **~13–15×**. POC hybrid for **legacy OLTP-mutable** assortment. Planning analytics / agentic insert-only paths unlocked CH — I did **not** build `pg2ch_cdc`.” |
+
+### Verbal only — Cluster Recommendation Copilot · Hindsight (**not on PDF**)
+
+Use if interviewers ask for broader agentic roadmap. Mark clearly as building / not PDF bullets. Copilot targets (under 1h, ≥20 configs, 8.5%→under 2%, 14 tools, 3 gates) and Hindsight prior-season layer stay deep-dive (`01b_hindsight_defense.md`).
 
 ### Verbal only — 8.5% (37/437) → under 2%; 14 tools; 3 gates (**not on PDF**)
 
 | | |
 |---|---|
 | **Claim** | Cut failures from measured **8.5% (37/437)** toward **under 2%** with **14** audited R/O tools and **3** confirm gates; agent never writes SQL |
-| **Tag** | 8.5% MEASURED; under 2% **TARGET**; tools/gates **DESIGN** — off PDF Aug 2026 |
-| **Candidate reply** | “Correct phrase: **designed to cut from measured 8.5% toward under 2%**. Not on the resume now; ownership + Hindsight + CH evidence are. Bring it if they ask about agent safety.” |
+| **Tag** | 8.5% MEASURED; under 2% **TARGET**; tools/gates **DESIGN** — off PDF |
+| **Candidate reply** | “Correct phrase: **designed to cut from measured 8.5% toward under 2%**. Not on the resume now; Keep/Drop + QnA + CH evidence are. Bring it if they ask about clustering-copilot safety.” |
 
 ### Verbal only — 12B → ~25M line-plan (**OMIT from PDF**)
 
 Keep prior line-plan defense for study probes. Not on PDF.
 
----
+
 
 ## 5. Mock interview — 12 Q&A
 
 **Interviewer:** You say you are “building” AssortSmart with agents. What ships today vs what is design?
 
-**Candidate:** AssortSmart is live merchandise-planning SaaS; the **agentic Cluster Recommendation Copilot** is Phase 1 design-complete — four internal adversarial passes plus external review **PASS, approve to bring-up**. Bring-up load test on real kik extract is still pending. I own present-tense design and implementation work, not a claim that every tenant already runs the shipped copilot.
+**Candidate:** AssortSmart is live merchandise-planning SaaS. On the PDF I defend Keep/Drop + dig-deeper QnA from `assort_kd_flow` (agents SELECT-only; gold / ≥80% is a promotion gate — not multi-tenant GA) plus the ClickHouse 250M POC. Cluster Recommendation Copilot is Phase 1 design-complete / verbal-only if they ask for that roadmap — not a PDF headline bullet.
 
 ---
 
@@ -192,7 +213,7 @@ Keep prior line-plan defense for study probes. Not on PDF.
 
 **Interviewer:** Walk the 250M pivot number. Hardware was unfair — defend or walk it back.
 
-**Candidate:** Row-identical harness; PG on host with **48 GB**, CH in **10 CPU / 3.3 GB** Docker — CH was **weaker** and still faster on the heavy grid: **189.4s → 12.3s** (~**15.5×**), PG spilled **42 GB**. Adversarial pass: ~90% of that gap is `COUNT(DISTINCT)` / option-count; strip it and typical aggs are **~2–3×**; keep option-count and cite **~13–15×**. On writes, untuned CH cell looked ~82× worse; with durability parity PG still wins **~14×** on single-cell — so hybrid per surface, not a religion. POC-directional, not production cutover.
+**Candidate:** Row-identical harness; PG on host with **48 GB**, CH in **10 CPU / 3.3 GB** Docker — CH was **weaker** and still faster on the heavy grid: **189.4s to 12.3s** (~**15.5×**), PG spilled **42 GB**. Adversarial pass: ~90% of that gap is `COUNT(DISTINCT)` / option-count; strip it and typical aggs are **~2–3×**; keep option-count and cite **~13–15×**. On writes, untuned CH cell looked ~82× worse; with durability parity PG still wins **~14×** on single-cell — so hybrid per surface, not a religion. POC-directional, not production cutover.
 
 ---
 
@@ -258,6 +279,6 @@ Keep prior line-plan defense for study probes. Not on PDF.
 - “Hybrid POC contradicts CH E2E” without separating **legacy OLTP surfaces** vs **agentic insert-only planning store**
 - “Agent can write SQL / auto-finalize clusters” (`is_optimal` ≠ `is_final`; R/O tools)
 - “I own Datadog/LangSmith/PostHog as the platform team” (design split + instrumentation, not sole SaaS ownership)
-- Order Batching **60×** / **5.9M rows/s** as if they are the **resume headline** (prep depth only; lead with pivot **189s→12.3s** + line-plan aggregate)
+- Order Batching **60×** / **5.9M rows/s** as if they are the **resume headline** (prep depth only; lead with pivot **from 189s to 12.3s** + line-plan aggregate)
 - Flink / Spark / Kubernetes ops / Terraform ownership on IA (out of scope / omit)
 - Past-tense “built and shipped the agentic store last quarter” — use **continuous present** for ongoing work

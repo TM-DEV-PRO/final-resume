@@ -1,31 +1,33 @@
 # Application Kit (paste-ready)
 
-Aligned to **Final Python + Go + AI** resume.
+Aligned to **Final PyGo + AI** resume.
 
 ## One-liners
-- **Headline fit:** Senior SWE Python/Go Uber FRM design owner · Kafka 1M+/day · AssortSmart Cluster Recommendation Copilot · ClickHouse
+- **Headline fit:** Senior SWE Python/Go Uber FRM design owner · Kafka 1M+/day · AssortSmart Keep/Drop · ClickHouse
 - **30s intro:** use LinkedIn About short in `linkedin/headline_about_experience.md`
-- **Why hire you:** FRM design ownership + Kafka 1M+/day + AssortSmart architecture ownership with honest measured vs target metrics
+- **Why hire you:** FRM design ownership + Kafka 1M+/day + AssortSmart Keep/Drop architecture with honest measured vs target metrics
 
 ## Common application questions
 
 ### Describe a complex system you designed
-Owned end to end architecture for AssortSmart Cluster Recommendation Copilot chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path. Also owned FRM Risk Scoping backend FastAPI MySQL 30+ APIs powering 8 screens; Sheets→MySQL recon v2; materiality engine ~55×14; led 3 engineers. Targeting 70% recon cut (TDD target).
+Architected AssortSmart's Keep/Drop engine (FastAPI, LangGraph, MCP; write plane Go, Gin) at article × plan-season grain — deterministic ST%/ROS plus LangGraph lenses, agents SELECT-only on ClickHouse via CSV-first bake-and-promote, promotions gated on 300 gold cases and ≥80% offline accuracy. Also owned FRM Risk Scoping backend (FastAPI, MySQL) 30+ APIs powering 8 screens; Sheets→MySQL recon v2; materiality engine ~55×14; led 3 engineers. Targeting 70% recon cut from about 2 weeks to 3–4 days (TDD target).
 
 ### Experience with AI / LLMs / agents
-Owned end to end architecture for AssortSmart Cluster Recommendation Copilot (FastAPI, LangGraph, MCP) with shared write APIs (Go, Gin). Building Hindsight prior season Keep Shop Drop and grounded narration. Drove adoption of ClickHouse as AssortSmart's planning analytics engine, improving pivot latency 189s to 12.3s (about 15.5x) on 250M rows by running a row-identical Postgres to ClickHouse POC. Owned Uber Eats menu ingestion end to end (Selenium/Kafka/Flink; 24h→2h, $600K+/yr, 30K+) plus LangChain RAG + Gemini 2.5 Pro / Milvus with hard schema gate (98%/100% offline) and 95%+ scrape success. Separately automated Uber Mobility ANZ driver/vehicle document checks against local authority requirements to 99.9% / ~20h/week (HISTORICAL). Kafka on Menu ingest and Masters IRP.
+Built AssortSmart Keep/Drop with LangGraph lenses and a read-only dig-deeper QnA agent over locked decisions (schema constraints block writes to ClickHouse/CSVs/outcomes). Drove adoption of ClickHouse as AssortSmart's planning analytics engine, reducing pivot latency from 189s to 12.3s (about 15.5x) on 250M rows through a row-identical Postgres-versus-ClickHouse POC. Owned Uber Eats menu ingestion end to end (Selenium/Kafka/Flink; from 24 hours to 2 hours, $600K+/yr, 30K+) plus LangChain RAG + Gemini 2.5 Pro / Milvus with hard schema gate (98%/100% offline) and 95%+ scrape success. Separately automated Uber Mobility ANZ driver/vehicle document checks against local authority requirements to 99.9% / ~20h/week (HISTORICAL). Kafka on Menu ingest and Masters IRP.
+
+**Verbal only / not on PDF:** Cluster Recommendation Copilot and Hindsight (building) — use only if the form asks for broader agentic roadmap.
 
 ### Largest scale
-Masters Kafka e-invoicing 1M+ IRP/day 100K+/import 700 to 4000 req/min. Drove adoption of ClickHouse as AssortSmart's planning analytics engine, improving pivot latency 189s to 12.3s (about 15.5x) on 250M rows by running a row-identical Postgres to ClickHouse POC.
+Masters Kafka e-invoicing 1M+ IRP/day 100K+/import from 700 to 4000 req/min. Drove adoption of ClickHouse as AssortSmart's planning analytics engine, reducing pivot latency from 189s to 12.3s (about 15.5x) on 250M rows through a row-identical Postgres-versus-ClickHouse POC.
 
 ### Leadership
 Led 3 (Uber/EPAM). Mentored 2 (Masters).
 
 ## Links
-Phone (+91) 9001542418 · tm.eng2021@gmail.com · linkedin.com/in/t-mittal · github.com/TM-DEV-PRO
+Phone (+91) 9079727197 · tmittaliet@gmail.com · linkedin.com/in/t-mittal · github.com/TM-DEV-PRO
 
 ## Attach
 `artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf`
 
 ## Deeper answers
-Full screening answers: `prep/22_application_questions.md` · Rich LinkedIn kit: `ApplicationKit.html`
+Track screening bank: `prep/22_application_questions.md`

@@ -51,42 +51,43 @@ strong{color:#fff}
 <p>Aligned to <strong>Final Java + AI (IA = Py/Go)</strong> resume. Paste-ready. Avoid colon-heavy AI voice in About where possible.</p>
 <h2 id="headline-pick-one">Headline (pick one)</h2>
 <ol>
-<li>Senior Software Engineer | Python · Go | Distributed Systems · Kafka · Agentic AI</li>
-<li>Backend SSE (Python/Go) | Owned Uber (via EPAM) FRM design · Kafka 1M+/day · LangGraph + ClickHouse</li>
-<li>Senior Software Engineer building agentic planning systems | FastAPI · Go · ClickHouse · Kafka</li>
+<li>Senior Software Engineer | Java · Python · Go | Distributed Systems · Kafka · AI-assisted systems</li>
+<li>Backend SSE (Java, Python and Go) | Owned Uber (via EPAM) FRM design · Kafka 1M+/day · LangGraph + ClickHouse</li>
+<li>Senior Software Engineer building AI-assisted planning systems | LangGraph · ClickHouse · Kafka</li>
 </ol>
 <p><strong>Recommended:</strong> #2 (metric-led for recruiter search)</p>
 <h2 id="about-short">About — short</h2>
-<p>Senior Software Engineer with 5 years of experience designing and owning cloud-native, high-throughput distributed systems. Expertise in Java, Python and Go microservices, event-driven architectures, real-time and batch data processing, Agentic AI and RAG systems. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</p>
+<p>Senior Software Engineer with 5 years of experience designing and owning cloud-native, high-throughput distributed systems. Expertise in Java, Python and Go microservices, with applied experience in AI-assisted and RAG systems. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</p>
 <h2 id="about-long">About — long</h2>
 <p>I am a Senior Software Engineer focused on backend and data platforms in Java, Python, and Go.</p>
 <p>What I am known for:
 - Architecture ownership Uber (via EPAM) FRM Risk Scoping backend — 30+ APIs powering 8 screens at $340M materiality; recon v2 + materiality engine; led 3 engineers.
 - Scale Masters India Kafka + PostgreSQL e-invoicing at 1M+ IRP/day lifting throughput from 700 to 4000 requests/min. Mentored 2 engineers. On-call with ELK and New Relic.
-- Product impact owned Uber Eats menu ingestion end to end (Selenium/Kafka/Flink + RAG/Gemini/Milvus) — 24h → 2h, $600K+/yr, 30K+ menus/month, 95%+ ingest success, 98%/100% offline eval.
-- Agentic systems building AssortSmart Cluster Recommendation Copilot at Impact Analytics (FastAPI, LangGraph, MCP) with write APIs (Go, Gin), Hindsight, and ClickHouse justified by a measured 250M pivot POC.</p>
+- Product impact owned Uber Eats menu ingestion end to end (Selenium/Kafka/Flink + RAG/Gemini/Milvus) — from 24 hours to 2 hours, $600K+/yr, 30K+ menus/month, 95%+ ingest success, 98%/100% offline eval.
+- AI-assisted planning at Impact Analytics: AssortSmart Keep/Drop engine and dig-deeper QnA (FastAPI, LangGraph, MCP) with Go, Gin write plane and a measured ClickHouse 250M pivot POC (from 189s to 12.3s, about 15.5x).</p>
 <p>I care about honest metrics (measured vs target) clear design tradeoffs and mentoring people to ship safely.</p>
-<p>Open to Senior Software Engineer / SDE2+ backend platform and agentic systems roles.</p>
+<p>Open to Senior Software Engineer / SDE2+ backend platform and AI-assisted systems roles.</p>
 <h2 id="experience-blurbs">Experience blurbs</h2>
 <h3 id="impact-analytics-senior-software-engineer-may-2026-present">Impact Analytics — Senior Software Engineer (May 2026 – Present)</h3>
-<p>Building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. Store clustering and assortment plans are the foundation every buying strategy binds to. Owned end to end architecture for the Cluster Recommendation Copilot that helps planners group stores for a season. Built the chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path. Building Hindsight as the prior season decision layer with carry forward and underperformance flags, Keep Shop Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy. Drove adoption of ClickHouse as AssortSmart's planning analytics engine, improving pivot latency 189s to 12.3s (about 15.5x) on 250M rows by running a row-identical Postgres to ClickHouse POC.</p>
+<p>Building AssortSmart so retailers decide what to buy, how much, and which stores for a season ahead. PDF project title: <strong>AssortSmart (Retail Merchandise Planning Platform)</strong>. Architected AssortSmart's Keep/Drop engine at article × plan-season grain — deterministic ST%/ROS scoring plus LangGraph lenses, agents SELECT-only on ClickHouse via CSV-first bake-and-promote, promotions gated on 300 gold cases and ≥80% offline accuracy (promotion gate / design — do not claim shipped to all tenants). Built a read-only dig-deeper QnA agent over locked Keep/Drop decisions so planners can understand why styles were kept or dropped while schema constraints preserve frozen decisions and block writes to ClickHouse, CSVs, and outcomes. Drove adoption of ClickHouse as AssortSmart's planning analytics engine, reducing pivot latency from 189s to 12.3s (about 15.5x) on 250M rows through a row-identical Postgres-versus-ClickHouse POC. Stack on this PDF: Go, Gin, Python, FastAPI, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.</p>
+<p><strong>Verbal only / not on PDF (building):</strong> Cluster Recommendation Copilot and Hindsight remain deep-dive context if asked — not resume headline bullets.</p>
 <h3 id="uber-via-epam-sde2-jul-2024-may-2026">Uber via EPAM — SDE2 (Jul 2024 – May 2026)</h3>
-<p><strong>FRM:</strong> Owned FRM Risk Scoping backend (Spring Boot, MySQL) — 30+ REST APIs powering 8 screens at $340M materiality, targeting 70% recon cut. Owned Sheets→MySQL recon v2 (18 files, L1→L2→L3 /v2 APIs, HFM vs 10-Q). Automated in-scope decisions ~55×14 with materiality/residual/5% logic. Led 3 engineers on the FRM backend by owning API contracts and layered design reviews for Finance's quarterly scoping.</p>
-<p><strong>Menu (Uber Eats):</strong> Owned end-to-end menu ingestion on GCP (Selenium → Kafka → Flink keyed normalize/dedupe) — onboarding 24h → 2h, $600K+/yr at 30K+ menus/month. Owned LangChain RAG + Gemini 2.5 Pro over Milvus for multilingual PDF/image → Uber Eats catalog schema (98%/100% offline) with a hard schema gate before upsert. Raised successful ingestions to 95%+ via IP rotation, dynamic proxy pools, and adaptive retries.
+<p><strong>FRM:</strong> Owned FRM Risk Scoping backend (Spring Boot, MySQL) — 30+ REST APIs powering 8 screens at $340M materiality, targeting 70% recon cut from about 2 weeks to 3–4 days. Owned Sheets→MySQL recon v2 (18 files, L1→L2→L3 /v2 APIs, HFM vs 10-Q). Automated in-scope decisions ~55×14 with materiality/residual/5% logic. Led 3 engineers on the FRM backend by owning API contracts and layered design reviews for Finance's quarterly scoping.</p>
+<p><strong>Menu (Uber Eats):</strong> Owned end-to-end menu ingestion on GCP (Selenium → Kafka → Flink keyed normalize/dedupe) — onboarding from 24 hours to 2 hours, $600K+/yr at 30K+ menus/month. Owned LangChain RAG + Gemini 2.5 Pro over Milvus for multilingual PDF/image → Uber Eats catalog schema (98%/100% offline) with a hard schema gate before upsert. Raised successful ingestions to 95%+ via IP rotation, dynamic proxy pools, and adaptive retries.
 <strong>ANZ (Uber Mobility):</strong> Automated Uber Mobility driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20h/week manual verification (HISTORICAL).</p>
 <h3 id="masters-india-sde2-dec-2022-jun-2024">Masters India — SDE2 (Dec 2022 – Jun 2024)</h3>
-<p>Cut p95 1.2s to 300ms for 1500+ clients by migrating Laravel to Spring Boot microservices; mentored 2. Lifted 700 to 4000 req/min and 1M+ IRP/day on Kafka + PostgreSQL split by tax quarter. Idempotency keys, retries, DLQ + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage 35 to 82% at 98% deploy.</p>
+<p>Cut p95 from 1.2s to 300ms for 1500+ clients by migrating Laravel to Spring Boot microservices; mentored 2. Lifted from 700 to 4000 req/min and 1M+ IRP/day on Kafka + PostgreSQL split by tax quarter. Idempotency keys, retries, DLQ + Redis −30% reads. ELK/New Relic + usage dashboard cut triage 70% and support tickets 35%; coverage from 35 to 82% at 98% deploy.</p>
 <h3 id="geeksforgeeks-sde-aug-2021-nov-2022">GeeksforGeeks — SDE (Aug 2021 – Nov 2022)</h3>
-<p>Stabilized doubt-support for 10K+ daily queries and 10× contest spikes via PHP to Spring Boot. Voting/pinning/locking APIs lifted premium 15–20%. Influencer earnings dashboard raised course sales 30%. Separate cron pipelines for video/reminders/cleanup raised ops efficiency 70%.</p>
+<p>Stabilized doubt-support for 10K+ daily queries and 10× contest spikes via PHP to Django. Voting/pinning/locking APIs lifted premium 15–20%. Influencer earnings dashboard raised course sales 30%. Separate cron pipelines for video/reminders/cleanup raised ops efficiency 70%.</p>
 <h2 id="featured-section">Featured section</h2>
 <ul>
-<li>Resume PDF (Java/Spring)</li>
+<li>Resume PDF (Java FRM + Py/Go IA)</li>
 <li>LangChain Academy cert</li>
 <li>HackerRank Problem Solving cert</li>
 <li>Optional: GitHub TM-DEV-PRO</li>
 </ul>
 <h2 id="skills-order-linkedin">Skills order (LinkedIn)</h2>
-<p>Java · Spring Boot · Hibernate · Distributed Systems · Microservices · Kafka · ClickHouse · System Design · Docker · AWS · GCP · PostgreSQL · MySQL · Redis · Python · LangGraph · RAG · Mentorship</p></main>
+<p>Java · Spring Boot · Hibernate · Python · Go · Gin · FastAPI · Distributed Systems · Microservices · Kafka · ClickHouse · System Design · Docker · AWS · GCP · PostgreSQL · MySQL · Redis · LangGraph · RAG · Mentorship</p></main>
 </div>
 
 <script type="module">

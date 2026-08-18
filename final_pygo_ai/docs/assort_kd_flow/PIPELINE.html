@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>PIPELINE — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final PyGo+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/docs/assort_kd_flow/PIPELINE.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#assort-keepdrop-flow-assort_kd_flow-deep-endtoend-pipeline-reference">Assort Keep/Drop flow (assort_kd_flow) — Deep End‑to‑End Pipeline Reference</a>
+<a class="lvl2" href="#0-mental-model-in-one-paragraph">0. Mental model in one paragraph</a>
+<a class="lvl2" href="#1-architecture-layers">1. Architecture layers</a>
+<a class="lvl2" href="#2-tables-clickhouse-database-kik_dev">2. Tables (ClickHouse, database kik_dev)</a>
+<a class="lvl2" href="#3-prerequisites-before-a-run">3. Prerequisites before a run</a>
+<a class="lvl2" href="#4-endtoend-flow">4. End‑to‑end flow</a>
+<a class="lvl2" href="#5-step-fill-fillarticle_store_weekpy">5. STEP: fill  (fill/article_store_week.py)</a>
+<a class="lvl2" href="#6-step-deterministic-enginesdeterministicpy">6. STEP: deterministic  (engines/deterministic.py)</a>
+<a class="lvl2" href="#7-step-agentic-enginesagenticpy-agentic_batchpy">7. STEP: agentic  (engines/agentic.py + agentic_batch.py)</a>
+<a class="lvl2" href="#8-step-ensemble-enginesrun_ensemblepy-optional">8. STEP: ensemble  (engines/run_ensemble.py, optional)</a>
+<a class="lvl2" href="#9-step-evals-evals-ops-the-quality-gate">9. STEP: evals  (evals/, ops/) — the quality gate</a>
+<a class="lvl2" href="#10-gold-proxy-vs-production-planner">10. Gold — proxy vs production planner</a>
+<a class="lvl2" href="#11-proxygold-sql-generating-labels-from-data">11. Proxy‑gold SQL — generating labels from data</a>
+<a class="lvl2" href="#12-guardrails-timeouts-retries-all-in-configdecisionjson-guardrails">12. Guardrails, timeouts, retries (all in config/decision.json → guardrails)</a>
+<a class="lvl2" href="#13-running-in-production">13. Running in production</a>
+<a class="lvl2" href="#14-cutover-matrix-what-to-rerun-when-something-changes">14. Cutover matrix — what to re‑run when something changes</a>
+<a class="lvl2" href="#15-bake-tables-migrate">15. Bake tables &amp; migrate</a>
+<a class="lvl2" href="#16-csv-staging-the-manual-clickhouse-loader">16. CSV staging &amp; the manual ClickHouse loader</a>
+<a class="lvl2" href="#17-known-gaps-followups-be-honest">17. Known gaps / follow‑ups (be honest)</a>
+<a class="lvl2" href="#18-complete-toggle-switch-reference">18. Complete toggle &amp; switch reference</a></nav>
+<main><h1 id="assort-keepdrop-flow-assort_kd_flow-deep-endtoend-pipeline-reference">Assort Keep/Drop flow (<code>assort_kd_flow</code>) — Deep End‑to‑End Pipeline Reference</h1>
+<p>Hybrid <strong>Keep / Drop</strong> decisioning at <strong>article × plan‑season</strong> grain, combining a
+deterministic rule score (<code>s_det</code>) with an agentic LLM score (<code>s_agent</code>) into a
+final blended score (<code>s_final</code>). Outcomes are <strong>binary: keep or drop</strong> (no "shop").</p>
+<p>This document explains every stage: what it does, why it exists, the SQL it runs,
+the maths, the config it reads, the agents involved, prompts, guardrails,
+timeouts/retries, evals, and how to run it in production — with worked examples.</p>
+<blockquote>
+<p><strong>Package note.</strong> <code>assort_kd_flow</code> is the only Keep/Drop package in this repo
+(former <code>assortment/</code> / <code>assortment_v2</code> names retired). It is <strong>self-contained</strong>
+for config, prompts, agents, engines, and CH clients (shared only: repo <code>.env</code> +
+ClickHouse). It has a pure <code>domain/</code> math layer, offline <code>evals/</code>, <code>ops/</code> helpers,
+a prompt registry, and Critic/Evaluator disabled. <strong>All engines write staging
+CSVs only.</strong> Ops loads bake via <code>python -m assort_kd_flow.ops.load_csv_to_ch
+--target bake</code>, then promotes with <code>python -m assort_kd_flow.ops.migrate_bake</code>.
+Config <code>source.*_table</code> defaults point at <code>*_bake</code> for mid-run reads; <code>*_table_main</code>
+names are for promote. Evals grade whatever <code>source.final_table</code> names (bake by default).</p>
+</blockquote>
+<hr>
+<h2 id="0-mental-model-in-one-paragraph">0. Mental model in one paragraph</h2>
+<p>For each article in a season we compute a rule score from sell‑through and rate of
+sale (<code>s_det</code>), and an LLM score from a set of analytical "lenses" combined by a
+per‑article "decider" (<code>s_agent</code>). We blend them: <code>s_final = 0.4·s_det + 0.6·s_agent</code>.
+Keep if <code>s_final ≥ 0.55</code>. Everything is config‑driven; formulas live in <code>domain/</code>;
+LLM behaviour is bounded by guardrails; quality is checked offline by <code>evals/</code>.</p>
+<hr>
+<h2 id="1-architecture-layers">1. Architecture layers</h2>
+<pre><code>assort_kd_flow/
+  config/decision.json     # weights, ramps, lenses, agents, guardrails  (the knobs)
+  config/eval.json         # promotion gates
+  domain/                  # PURE math + rules (no I/O, no LLM)
+    kpis.py                #   KPI formulas + SQL exprs (single source of truth)
+    scoring.py             #   ramps, s_det, s_final, confidence, mixes
+    rules.py               #   binary outcome, demand&gt;margin, cutover matrix
+  context/                 # what each agent is allowed to see (ranked fields)
+  prompts/registry.py      # prompt id -&gt; path
+  prompts/md/              # base + lens + decider + explain + topN + peer prompts
+  lenses/
+    features.py            # feature SQL from reco_article_store_week
+    gate.py                # cheap prefilter: which lenses apply to an article
+  agents/
+    tool_agent.py          # LangGraph ToolNode loop (bounded)
+    peer.py                # PeerBenchmark agent (relative context)
+    critic.py, evaluator.py# DISABLED in v2 (replaced by offline evals)
+  engines/
+    deterministic.py       # s_det SQL engine
+    decider.py             # per-article lens mixes
+    agentic.py             # orchestration: scopes, parallelism, resume
+    agentic_batch.py       # per-batch: peer -&gt; decider -&gt; lenses -&gt; blend -&gt; explanations
+    ensemble.py            # re-exports domain.scoring (compat)
+    confidence.py          # re-exports domain.scoring (compat)
+    explain.py             # planner-facing Keep/Drop explanation JSON
+    topn_explain.py        # short Top Performing card tagline for Keeps
+    run_ensemble.py        # patch s_det/s_final only (no LLM)
+  fill/
+    article_store_week.py  # master_input → week bake CSV (SELECT only)
+    detect_new.py          # watermark: which l1×l2×week changed
+  ch/, tools/, settings/, llm.py
+  evals/                   # offline gold suite + post-run report
+  ops/                     # load_csv_to_ch, migrate_bake, promote_config, run_controller
+  logs/                    # run ledgers only (&lt;run_id&gt;/events.jsonl + summary.json)
+  run_pipeline.py          # CLI
+</code></pre>
+<p><strong>No LLM orchestrator.</strong> Batch order is fixed in <code>engines/agentic_batch.py</code>
+(peer → decider → lenses → blend → explain → topN explain). Run-level oversight is deterministic
+<code>ops/run_controller.py</code> (ledger, circuit breaker, signal-quality abort) — not an agent.</p>
+<p><strong>Design rule:</strong> KPI/ramp/ensemble/confidence maths exist <strong>once</strong> in <code>domain/</code>.
+SQL generators and Python tests both call the same functions, so the number a
+planner sees and the number a test checks can never silently diverge.</p>
+<hr>
+<h2 id="2-tables-clickhouse-database-kik_dev">2. Tables (ClickHouse, database <code>kik_dev</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Grain</th>
+<th>Written by</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>master_input_imputed_assort_*</code></td>
+<td>article × store × <strong>date</strong></td>
+<td>upstream (read‑only)</td>
+<td>raw sales + inventory</td>
+</tr>
+<tr>
+<td><code>reco_article_store_week_bake</code></td>
+<td>article × store × <strong>fiscal_year_week</strong></td>
+<td><code>load_csv_to_ch</code> (from fill CSV)</td>
+<td>bake week rollup (<code>approved</code>)</td>
+</tr>
+<tr>
+<td><code>reco_deterministic_score_bake</code></td>
+<td>article × plan‑season</td>
+<td><code>load_csv_to_ch</code> (from det CSV)</td>
+<td>bake <code>s_det</code> + <code>approved</code></td>
+</tr>
+<tr>
+<td><code>reco_agentic_score_bake</code></td>
+<td>article × plan‑season</td>
+<td><code>load_csv_to_ch</code> (from agentic CSV)</td>
+<td>bake <code>s_agent</code> + <code>approved</code> + <code>l0</code>–<code>l4</code></td>
+</tr>
+<tr>
+<td><code>reco_final_score_bake</code></td>
+<td>article × plan‑season</td>
+<td><code>load_csv_to_ch</code> (from final CSV)</td>
+<td>bake finals + <code>approved</code></td>
+</tr>
+<tr>
+<td><code>reco_article_store_week</code> / <code>reco_deterministic_score</code> / <code>reco_agentic_score</code> / <code>reco_final_score</code></td>
+<td>same grains</td>
+<td><code>migrate_bake</code></td>
+<td>main tables after promote</td>
+</tr>
+</tbody>
+</table>
+<p>| <code>global.fiscal_date_mapping</code>, <code>global.season_master</code> | calendar | upstream | maps <code>fiscal_year_week → plan_season_code</code> |</p>
+<p>Since <code>output.mode = csv</code>, <strong>all engines write staging CSVs only</strong> (exact table
+columns + staging-only <code>ch_load_status</code>). Publish path:</p>
+<ol>
+<li><code>ops.load_csv_to_ch --target bake</code> (default) → <code>*_bake</code></li>
+<li><code>ops.migrate_bake</code> → main (<code>approved=1</code> on bake)</li>
+</ol>
+<p>Operator order for a fresh season: fill CSV → load week bake → det CSV → load
+det bake → agentic CSV → load agentic/final bake → migrate when ready.
+<code>output.mode</code> <code>clickhouse</code>/<code>dual</code> requires ops <code>--dangerous-write-ch</code> — agents
+never get that flag. Host <code>resource_budget</code> caps workers and pool size.
+Staging lives under <code>assort_kd_flow/staging/&lt;run_id&gt;/</code>. Fill resume is
+checkpoint JSON by year×l1×l2.
+<strong>Critical calendar note:</strong> <code>season_code</code> has one meaning across the week,
+deterministic, agentic, and final tables: the Kik plan season (e.g. 74/76).
+The fill maps it once from <code>fiscal_year_week</code> via
+<code>global.fiscal_date_mapping → global.season_master</code>; scoring propagates that
+stored key directly. The source product-fashion value (0–4) is retained only as
+<code>reco_article_store_week.product_season_code</code>.</p>
+<p><strong>Provenance columns.</strong> Every <code>reco_*</code> row carries <code>config_hash</code> (SHA‑256 of the
+config JSON <strong>and</strong> all referenced prompt files) and <code>computed_at</code>. Uniqueness /
+resume is by <code>(season_code, article)</code> (latest <code>computed_at</code>), not a run UUID.
+<code>reco_deterministic_score</code> also stores <code>matched_terms</code> + <code>reason_codes</code> +
+<code>det_reason</code>; <code>reco_agentic_score</code> stores per‑lens <code>lens_results</code> and
+<code>agent_status</code> (<code>ok</code>/<code>pending</code>/<code>error</code>); <code>reco_final_score</code> stores <code>outcome</code>,
+Keep/Drop <code>explanation</code>, Top Performing <code>explanation_topN</code>, and
+<code>explanation_json</code>. Score tables also carry the <strong>product hierarchy</strong>
+<code>l0_name</code>…<code>l4_name</code> (denormalized from the week table; one article → one path).
+Store hierarchy (<code>s0</code>/<code>s1</code>/<code>region</code>) stays on the week table only — score grain
+is article×season, not store. Because <code>config_hash</code> folds in prompt text, editing
+any prompt changes the hash — you can always tell which config+prompts produced a
+row.</p>
+<hr>
+<h2 id="3-prerequisites-before-a-run">3. Prerequisites before a run</h2>
+<ol>
+<li><strong>ClickHouse access</strong> via <code>.env</code> (<code>CLICKHOUSE_HOST</code>, <code>_PORT</code>, <code>_USER</code>,
+   <code>_PASSWORD</code>, <code>_DATABASE</code>, <code>_SECURE</code>). App is <strong>SELECT/INSERT only</strong> — never DDL.
+   Schema (<code>reco_*</code> tables, incl. <code>explanation_json</code>) is applied out‑of‑band by a
+   privileged user.</li>
+<li><strong>LLM access</strong> via <code>.env</code> (OpenAI/Azure/Anthropic/etc.); <code>assort_kd_flow/llm.py</code>
+   builds a model per call (no global singleton).</li>
+<li><strong>Source populated:</strong> <code>master_input_imputed_assort_*</code> for the target fiscal
+   years, containing <code>units_sold, revenue, margin, cost, msrp, discount_percentage,
+   oh, oh_cost, eop_inv, bop_inv, receipts_quantity, …</code>.</li>
+<li><strong>Calendar populated:</strong> <code>global.fiscal_date_mapping</code> + <code>global.season_master</code>
+   covering those weeks (so plan seasons resolve).</li>
+<li><strong>Config chosen:</strong> <code>assort_kd_flow/config/decision.json</code> (weights, ramps, active
+   lenses, guardrails). Its <code>config_hash</code> is stamped on every output row.</li>
+</ol>
+<blockquote>
+<p>Data reality that shaped v2: in the Kik feed <code>eop_inv</code>/<code>bop_inv</code> are <strong>all zero</strong>,
+but daily on‑hand <code>oh</code> is populated ~71%. So sell‑through uses <strong>ending on‑hand</strong>
+as residual stock, clamped ≥ 0. See §6.</p>
+</blockquote>
+<hr>
+<h2 id="4-endtoend-flow">4. End‑to‑end flow</h2>
+<div class="mermaid">flowchart TD
+  A[master_input_imputed_assort_*] -->|fill SELECT rollup<br/>checkpoint resume| Wcsv[staging/.../reco_article_store_week_bake/*.csv]
+  Wcsv -->|OPERATOR load_csv_to_ch bake| Wbake[reco_article_store_week_bake]
+  Wbake -->|det SELECT KPI + ramps| Dcsv[staging/.../reco_deterministic_score_bake/*.csv]
+  Dcsv -->|OPERATOR load_csv_to_ch bake| Dbake[reco_deterministic_score_bake]
+  Wbake -->|agentic feature SQL| Dfeat[features per article]
+  Dbake -->|s_det join| E
+  Dfeat --> E
+  subgraph E [Per-batch agentic - LLM, NO DB writes]
+    P[PeerBenchmark agent] --> DEC[Decider: lens mixes]
+    DEC --> L[Lenses run in parallel]
+    L --> MIX[score mixes -> s_agent]
+    MIX --> BL[blend s_det+s_agent -> s_final]
+    BL --> CONF[confidence]
+    BL --> EXP[Explain + TopN taglines]
+  end
+  E --> F[staging/.../reco_agentic_score_bake/*.csv]
+  E --> G[staging/.../reco_final_score_bake/*.csv]
+  F -->|OPERATOR load_csv_to_ch bake| Abake[reco_agentic_score_bake]
+  G -->|OPERATOR load_csv_to_ch bake| Fbake[reco_final_score_bake]
+  Wbake -->|OPERATOR migrate_bake| Wmain[reco_article_store_week]
+  Dbake -->|OPERATOR migrate_bake| Dmain[reco_deterministic_score]
+  Abake -->|OPERATOR migrate_bake| Amain[reco_agentic_score]
+  Fbake -->|OPERATOR migrate_bake| Fmain[reco_final_score]
+</div>
+<p>Fixed order: <strong>fill → deterministic → agentic → (ensemble optional) → evals.</strong>
+<code>--steps auto|all</code> expands to <code>fill, deterministic, agentic, evals</code>.</p>
+<p><strong>Write model (who writes ClickHouse):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Writes CH?</th>
+<th>Artifact</th>
+<th>Resume mechanism</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fill</code></td>
+<td><strong>No</strong> (CSV only)</td>
+<td><code>reco_article_store_week_bake/*.csv</code></td>
+<td>checkpoint JSON (<code>year×l1×l2</code>)</td>
+</tr>
+<tr>
+<td><code>deterministic</code></td>
+<td><strong>No</strong> (CSV only; optional <code>--dangerous-write-ch</code>)</td>
+<td><code>reco_deterministic_score_bake/*.csv</code></td>
+<td>staging <code>ch_load_status</code></td>
+</tr>
+<tr>
+<td><code>agentic</code> / <code>final</code> / explain / topN</td>
+<td><strong>No</strong> (CSV only)</td>
+<td>staging bake CSVs</td>
+<td><code>agent_status='ok'</code> (manifest)</td>
+</tr>
+<tr>
+<td><strong>publish</strong> <code>load_csv_to_ch</code></td>
+<td><strong>Yes</strong> (operator)</td>
+<td><code>*_bake</code> (default) or main</td>
+<td><code>ch_load_status=ok</code> skip</td>
+</tr>
+<tr>
+<td><strong>promote</strong> <code>migrate_bake</code></td>
+<td><strong>Yes</strong> (operator)</td>
+<td>main tables</td>
+<td>unapproved bake rows</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>No LLM agent ever writes ClickHouse.</strong> Agent tools are SELECT-only
+  (<code>tools/ch_read.py</code>), and sinks are forced to CSV unless an operator
+  passes <code>--dangerous-write-ch</code> (§18.3).</li>
+<li>Publishing CSVs to ClickHouse is <strong>not</strong> a pipeline step — it is a separate
+  operator command (§16).</li>
+<li>Every write script honors the host <code>resource_budget</code> (~50% CPU/RAM/pool by
+  default; §18.2).</li>
+</ul>
+<hr>
+<h2 id="5-step-fill-fillarticle_store_weekpy">5. STEP: fill  (<code>fill/article_store_week.py</code>)</h2>
+<p><strong>What:</strong> aggregate <code>master_input</code> daily rows → staging CSVs for
+<code>reco_article_store_week_bake</code> (article × store × fiscal_year_week). Publish with
+<code>load_csv_to_ch</code> then <code>migrate_bake</code>.</p>
+<p><strong>Why:</strong> scoring never touches raw daily data; the weekly rollup is the single
+fact table for KPIs and features. Chunked by year × (l1,l2) because a full‑year
+GROUP BY OOMs on Cloud (~14 GiB).</p>
+<p><strong>Key SQL (per year × l1 × l2), simplified:</strong></p>
+<pre><code class="language-sql">SELECT
+  calendar.plan_season_code AS season_code,
+  anyLast(toInt64(coalesce(m.season_code,0))) AS product_season_code,
+  m.fiscal_year_week, m.fiscal_year, m.article, m.store_code,
+  anyLast(...) AS &lt;dims&gt;,                 -- style, color, l1..l4, channel, etc.
+  sum(m.units_sold)               AS qty,
+  sum(m.revenue)                  AS revenue,
+  sum(m.margin)                   AS margin,
+  avgWeighted(m.discount_percentage, greatest(m.revenue,0)) AS discount_pct,
+  sum(coalesce(m.receipts_quantity,0)) AS receipts_qty,
+  argMinIf(m.bop_inv, m.date, m.bop_inv IS NOT NULL) AS bop_units,
+  argMaxIf(m.eop_inv, m.date, m.eop_inv IS NOT NULL) AS eop_units,
+  sum(coalesce(m.oh,0))           AS oh_units_daysum,   -- daily on-hand summed
+  sum(coalesce(m.oh_cost,0))      AS oh_cost_daysum,
+  countIf(coalesce(m.oh,0)!=0)    AS oh_days_cnt,       -- days with on-hand
+  ...
+FROM kik_dev.master_input_imputed_assort_1_textil AS m
+INNER JOIN (
+  SELECT f.fiscal_year_week, any(s.season_code) AS plan_season_code
+  FROM global.fiscal_date_mapping AS f
+  INNER JOIN global.season_master AS s ON s.name = f.fiscal_season_name
+  GROUP BY f.fiscal_year_week
+) AS calendar ON calendar.fiscal_year_week = m.fiscal_year_week
+WHERE m.fiscal_year IN (...) AND m.article!='' AND m.store_code!=''
+GROUP BY calendar.plan_season_code, m.fiscal_year_week, m.fiscal_year,
+         m.article, m.store_code
+</code></pre>
+<p>(Engines run SELECT only; CH INSERT is ops <code>load_csv_to_ch</code>.)</p>
+<p>Before deleting or inserting, fill aborts if any selected source fiscal week has
+no calendar mapping. This prevents silently missing or mis-seasoned facts.</p>
+<p><strong>Standalone module + pipeline invoke.</strong> <code>fill/run_fill.py</code> (<code>run_fill(...)</code>) is
+the entrypoint the pipeline calls; you can also run it directly
+(<code>python -m assort_kd_flow.fill.run_fill</code>). It is a <strong>CSV-only script write</strong> —
+no agent, no default CH insert. Publish with <code>load_csv_to_ch</code> / <code>migrate_bake</code>.</p>
+<p><strong>Resume (checkpoint).</strong> Each completed <code>year × l1 × l2</code> scope is appended to a
+checkpoint JSON under the run's <code>fill_checkpoints/</code> (or a legacy staging path).
+<code>--resume</code> skips scopes already recorded. Default checkpoint path can be
+overridden with <code>--checkpoint</code>. Pass <code>--run-id</code> to pin the staging folder.</p>
+<p><strong>Guards:</strong> <code>max_execution_time=600</code>, external group‑by + memory caps;
+<code>AdaptivePool</code> runs scopes in parallel (<code>max_parallel_fill_scopes</code>, dial‑down on
+failure, <code>fill_retries</code>) — capped by <code>resource_budget.max_workers</code> (§18.2); each
+worker gets its <strong>own</strong> CH client (thread‑safety). CH year DELETE / INSERT happen
+only in ops publish/promote (not in fill).</p>
+<p><strong>Incrementality — <code>detect_new.py</code>:</strong> compares <code>master_input</code> vs the configured
+week table (<code>source.week_table</code>, bake by default) per <code>l1 × l2 × fiscal_year_week</code>
+(a watermark). Only "dirty" scopes are re‑filled, then deterministic/agentic
+cascade to those scopes. Enables crash‑safe, cheap re‑runs when new sales land.</p>
+<p><strong>Existing-table migration (manual, out of band):</strong></p>
+<pre><code class="language-sql">ALTER TABLE kik_dev.reco_article_store_week
+    ADD COLUMN IF NOT EXISTS product_season_code Int64 AFTER season_code;
+</code></pre>
+<p>After deploying the updated fill, rerun it in replace mode for <strong>every fiscal
+year already present</strong>. Existing rows cannot be reused: their <code>season_code</code>
+contains the old product-fashion value. Do not run deterministic/agentic until
+the refill finishes and all week rows carry mapped plan seasons. The application
+does not execute this DDL; see <code>ch/schema.sql</code>.</p>
+<hr>
+<h2 id="6-step-deterministic-enginesdeterministicpy">6. STEP: deterministic  (<code>engines/deterministic.py</code>)</h2>
+<p><strong>What:</strong> compute <code>s_det</code> + KPIs per article × plan‑season → staging
+<code>reco_deterministic_score_bake</code> CSV (publish via load/migrate).</p>
+<p><strong>Why:</strong> a fast, transparent, auditable rule score that anchors the blend and
+gives explainable reason codes. It is intentionally <strong>not</strong> the final word — the
+agentic layer refines borderline cases.</p>
+<h3 id="61-kpis-single-source-domainkpispy-sql-mirrored-in-engine">6.1 KPIs (single source: <code>domain/kpis.py</code>, SQL mirrored in engine)</h3>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>Formula</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sell_thru_eop_pct</code></td>
+<td><code>100·qty / (qty + residual)</code></td>
+<td><code>residual = max(0, max(eop_units, end_oh_units))</code></td>
+</tr>
+<tr>
+<td><code>ros</code> (rate of sale)</td>
+<td><code>qty / store_week_cnt</code></td>
+<td>units per selling store‑week</td>
+</tr>
+<tr>
+<td><code>woh</code> (weeks of cover)</td>
+<td><code>avg_on_hand / weekly_sales</code></td>
+<td>clamped ≥ 0</td>
+</tr>
+<tr>
+<td><code>gm_pct</code></td>
+<td><code>100·margin / revenue</code></td>
+<td>stored, not scored today</td>
+</tr>
+<tr>
+<td><code>sell_thru_pct</code></td>
+<td><code>100·qty / (bop + receipts)</code></td>
+<td>weak: bop empty in feed</td>
+</tr>
+</tbody>
+</table>
+<p><code>end_oh_units</code> = per store, last week's average daily on‑hand
+(<code>argMax(oh_units_daysum/oh_days_cnt, fiscal_year_week)</code>), summed across stores.
+This is the fix for the empty‑<code>eop_inv</code> problem: without it every article read
+100% sell‑through and the signal carried no information.</p>
+<h3 id="62-ramp-normalization-domainscoringnormalize_signal_value">6.2 Ramp normalization (<code>domain/scoring.normalize_signal_value</code>)</h3>
+<p>Each KPI maps to [0,1] piecewise‑linear with knobs <strong>low / target / high</strong>:</p>
+<pre><code>x ≤ low                    -&gt; 0
+low &lt; x &lt; target           -&gt; target_score · (x-low)/(target-low)
+target ≤ x &lt; high          -&gt; target_score + (1-target_score)·(x-target)/(high-target)
+x ≥ high                   -&gt; 1
+</code></pre>
+<p>Current config:</p>
+<table>
+<thead>
+<tr>
+<th>signal</th>
+<th>weight</th>
+<th>low</th>
+<th>target</th>
+<th>high</th>
+<th>target_score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sell_thru_eop_pct</td>
+<td>0.55</td>
+<td>50</td>
+<td>85</td>
+<td>98</td>
+<td>0.6</td>
+</tr>
+<tr>
+<td>ros</td>
+<td>0.45</td>
+<td>0.5</td>
+<td>1.0</td>
+<td>1.5</td>
+<td>0.6</td>
+</tr>
+</tbody>
+</table>
+<h3 id="63-s_det">6.3 s_det</h3>
+<pre><code>s_det = Σ(weight · ramp(metric)) / Σ(weight)
+s_det = max(s_det, structural_floor[PLC])        # Basics≥0.85, NOS≥0.90
+s_det = clip(s_det, 0, 1)
+det_outcome = keep if s_det ≥ det_keep_threshold (0.65) else drop
+</code></pre>
+<p><strong>Worked example:</strong> ST=84 → ramp = 0.6·(84−50)/(85−50)=0.583; ROS=1.168 →
+0.6+0.4·(1.168−1.0)/0.5=0.734; <code>s_det = (0.55·0.583 + 0.45·0.734)/1.0 = 0.65</code> → keep.</p>
+<h3 id="64-terms-reason-codes-deterministicterms">6.4 Terms (reason codes, <code>deterministic.terms</code>)</h3>
+<p>The <strong>score</strong> comes from the signals+ramps above. Separately, <code>terms</code> produce
+human‑readable <strong>reason codes</strong> for explainability (they don't change <code>s_det</code>
+under <code>weighted_continuous</code>; they annotate <em>why</em> an article looks keep‑worthy):</p>
+<table>
+<thead>
+<tr>
+<th>term id</th>
+<th>condition</th>
+<th>reason code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mandatory</code></td>
+<td><code>is_mandatory = 1</code></td>
+<td><code>DET_MANDATORY</code></td>
+</tr>
+<tr>
+<td><code>plc</code></td>
+<td><code>product_life_cycle ∈ {Basics, NOS}</code></td>
+<td><code>DET_PLC_KEEP</code></td>
+</tr>
+<tr>
+<td><code>st_ge</code></td>
+<td><code>sell_thru_eop_pct ≥ 65</code></td>
+<td><code>DET_ST_GE_65</code></td>
+</tr>
+<tr>
+<td><code>ros_ge</code></td>
+<td><code>ros ≥ 1.0</code></td>
+<td><code>DET_ROS_GE_1</code></td>
+</tr>
+<tr>
+<td><code>st_ros_combo</code></td>
+<td><code>ST ≥ 50</code> AND <code>ROS ≥ 0.5</code></td>
+<td><code>DET_ST_ROS_COMBO</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>structural_floors</code> <strong>do</strong> raise the score: Basics <code>s_det ≥ 0.85</code>, NOS <code>≥ 0.90</code>,
+so lifecycle staples are never dropped by the rule layer even on a soft season.
+<code>default_outcome = drop</code> means anything not clearing <code>det_keep_threshold</code> (0.65)
+is a rule‑drop before the agent sees it.</p>
+<h3 id="65-quality-gate-why-v2-wont-silently-degrade">6.5 Quality gate (why v2 won't silently degrade)</h3>
+<p>Before scoring, <code>assess_signal_quality</code> computes each KPI <strong>fresh from the week
+table</strong> (via the shared <code>build_kpi_select_sql</code>) and checks:</p>
+<ul>
+<li><code>usable_fraction</code> ≥ <code>min_usable_fraction</code> (values finite and in range)</li>
+<li><code>boundary_fraction</code> ≤ <code>max_boundary_fraction</code> (not piled on one value)</li>
+</ul>
+<p>If a signal fails (e.g. 99.6% of articles at ST=100), it is <strong>disabled for the
+run</strong> and logged loudly, so a broken signal can't dominate <code>s_det</code> at full weight.
+<code>check_signal_quality</code> also reports post‑hoc breaches in the run summary.</p>
+<blockquote>
+<p>Lesson baked in: the gate must read the <strong>freshly computed</strong> KPI, not the
+previously stored column — otherwise a formula change is invisible to the gate.</p>
+</blockquote>
+<h3 id="66-csv-first-write-script">6.6 CSV-first write (script)</h3>
+<p>Deterministic is a <strong>standalone write script</strong> (<code>run_deterministic</code>, invoked by the
+pipeline). Per scope it runs the scoring <code>SELECT</code> (the old <code>INSERT … SELECT</code> body
+without the <code>INSERT</code> prefix), writes rows to
+<code>staging/&lt;run_id&gt;/reco_deterministic_score_bake/</code> with <code>ch_load_status=pending</code>
+and <code>approved=0</code>. Publish with <code>load_csv_to_ch --tables deterministic --target bake</code>,
+then <code>migrate_bake --tables deterministic</code>.</p>
+<ul>
+<li>Default is CSV-only (<code>write_to_ch=False</code>). Ops <code>--dangerous-write-ch</code> can still
+  insert main directly (not the recommended path).</li>
+<li>Agentic reads <code>s_det</code> from <code>source.deterministic_table</code> (bake by default) — load
+  det bake before agentic on a fresh season.</li>
+</ul>
+<p><strong>Guards:</strong> parallel scopes via <code>AdaptivePool</code> capped by <code>resource_budget.max_workers</code>
+(§18.2); per‑thread CH clients (<code>new_ephemeral_client</code>, small pool); optional season
+delete before insert; <code>config_hash</code>/<code>rule_version</code> stamped.</p>
+<hr>
+<h2 id="7-step-agentic-enginesagenticpy-agentic_batchpy">7. STEP: agentic  (<code>engines/agentic.py</code> + <code>agentic_batch.py</code>)</h2>
+<p><strong>What:</strong> produce <code>s_agent</code> (and <code>s_final</code>, confidence, explanation) per article
+using LLM lenses combined by a per‑article decider, with peer context.</p>
+<p><strong>Why:</strong> rules alone are coarse and over‑keep. The agentic layer reads richer
+signals (size curve, colour cannibalization, trend, discount dependency, channel,
+multi‑season, margin) and does most of the real cutting on borderline items.</p>
+<h3 id="70-feature-build-lensesfeaturespy">7.0 Feature build (<code>lenses/features.py</code>)</h3>
+<p>Per scope, one SQL (<code>build_batch_features_sql</code>) aggregates the week table into one
+row per article for the plan season: <code>qty, revenue, margin, discount_pct_avg/max</code>,
+KPIs (<code>sell_thru_eop_pct</code>, <code>ros</code>, <code>gm_pct</code>), gate counts (<code>size_count</code>,
+<code>channel_count</code>, <code>store_count</code>, <code>style_color_count</code>, <code>season_count</code>,
+<code>weeks_on_sale</code>), and a <code>week_series</code> array (weekly qty + discount) for the
+time‑series lenses. <code>compact_features_for_lens</code> then trims this to only the fields
+a given lens needs (and only the last 12 weeks for trend/discount lenses) to keep
+prompts small.</p>
+<p><strong>Sell‑through is now aligned to <code>domain/kpis.py</code>.</strong> Lens features use the same
+on‑hand‑fallback sell‑through as deterministic scoring
+(<code>residual = max(0, max(eop, end_oh))</code>), via <code>sell_thru_eop_sql_expr</code> +
+<code>end_oh_units_sql_expr</code>. (Previously lens features used the naive <code>qty/(qty+eop)</code>,
+so lenses saw ~100% ST while rules saw the real number — that divergence is fixed.)</p>
+<h3 id="71-orchestration-parallelism-agenticpy">7.1 Orchestration &amp; parallelism (<code>agentic.py</code>)</h3>
+<ul>
+<li>Enumerate plan seasons and <code>l1×l2</code> scopes.</li>
+<li>Parallel knobs (guardrails): <code>max_parallel_seasons</code>, <code>max_parallel_scopes_per_season</code>,
+  <code>max_parallel_batches_per_scope</code>, <code>max_inflight_llm</code> (global semaphore).</li>
+<li>Articles chunked into batches of <code>max_articles_per_llm_batch</code> (64). Every
+  structured LLM call (peer, decider, each lens, explain, topN explain) covers
+  that same chunk. TopN explain filters the chunk to Keep rows before calling.
+  Peer tool budget = <code>max_peer_tool_calls</code> (<strong>2</strong>) for the <strong>whole batch</strong>;
+  batch tools (<code>get_sibling_colours_batch</code>, <code>get_scope_benchmarks_batch</code>) return
+  peer data for <strong>all</strong> articles in one SELECT each.
+  Forecast metadata (<code>forecast_targets</code>) is the same retail season type in the
+  next two years <strong>after the scored season's own year</strong>; <code>forecast.current_year</code>
+  overrides that anchor only when explicitly set (it is <code>null</code> by default, so
+  wall-clock date never shifts the targets).
+  Optional <code>trend_provider</code> (Google Trends, off by default) attaches category
+  (l1×l2) summaries once per season scope; sales <code>week_series</code> / <code>sales_momentum</code>
+  are always available.</li>
+</ul>
+<p><strong><code>sales_momentum</code> (computed, not LLM prose)</strong> — <code>domain/momentum.py</code> derives
+per-article, in-season trend structure that the lenses must cite:</p>
+<table>
+<thead>
+<tr>
+<th>field</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>direction</code></td>
+<td><code>rising</code> / <code>stable</code> / <code>declining</code> / <code>insufficient</code> (slope + early-vs-late qty)</td>
+</tr>
+<tr>
+<td><code>phase</code></td>
+<td><code>emerging</code> (peak still ahead), <code>peaking</code> (topped out), <code>declining</code>, <code>stable</code>, <code>insufficient</code></td>
+</tr>
+<tr>
+<td><code>peak_week_index</code></td>
+<td>peak's ordinal week within the season → <em>when</em> to expect the peak in a corresponding future season</td>
+</tr>
+<tr>
+<td><code>peak_position</code></td>
+<td>0.0 = peaked at season open, 1.0 = still climbing at season close</td>
+</tr>
+<tr>
+<td><code>early_qty</code> / <code>late_qty</code> / <code>slope</code></td>
+<td>the underlying half-season velocities</td>
+</tr>
+</tbody>
+</table>
+<p><code>phase</code> is the answer to "which trend is starting vs already peaked";
+<code>peak_week_index</code> transfers that timing to the <code>forecast_targets</code> seasons.
+Anything beyond this (external fashion trends) needs the Trends provider.
+- <strong>Per‑thread CH clients</strong> and a dedicated <strong>tool client per batch</strong> (the shared
+  client crashes on concurrent queries).
+- <strong>Resume:</strong> <code>_load_done_articles</code> (per season) skips already‑written articles;
+  SIGTERM/SIGINT = graceful stop, next <code>--resume</code> continues. A failed batch never
+  fails the scope; failures land as <code>pending</code> for a later resume.</p>
+<h3 id="72-perbatch-sequence-agentic_batchscore_batch_decider_final">7.2 Per‑batch sequence (<code>agentic_batch.score_batch_decider_final</code>)</h3>
+<div class="mermaid">sequenceDiagram
+  participant B as Batch (≤64 articles)
+  participant Pe as Peer agent
+  participant De as Decider
+  participant Le as Lenses (parallel)
+  participant Sc as Scoring
+  participant Ex as Explain + TopN
+  B->>Pe: features + ≤max_peer_tool_calls batch tools -> sibling/scope context (all articles)
+  B->>De: features + allowlisted lenses -> adaptive mixes/article
+  De->>Le: 2 fixed anchors + 2-3 adaptive mixes; unique gate-eligible lenses
+  Le-->>Sc: per-lens score/outcome/confidence
+  Sc->>Sc: validate mix coverage -> configured aggregate -> s_agent
+  Sc->>Sc: blend s_det -> s_final; compute confidence
+  Sc->>Ex: rows -> explanation + explanation_topN (LLM on)
+  B-->>CSV: staging reco_agentic_score_bake + reco_final_score_bake (ch_load_status=pending)
+</div>
+<p>The batch writes <strong>CSV only</strong> (no direct DB write). Publish is the operator
+<code>load_csv_to_ch</code> step (§16); direct CH bake needs ops <code>--dangerous-write-ch</code> (§18.3).</p>
+<h3 id="73-lens-gate-lensesgatepy-how-lenses-are-picked">7.3 Lens gate (<code>lenses/gate.py</code>) — how lenses are picked</h3>
+<p>A cheap prefilter runs <strong>before</strong> any LLM call; a lens only runs if the article
+has the data to make it meaningful:</p>
+<table>
+<thead>
+<tr>
+<th>Lens</th>
+<th>Runs only if</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>colour_cannibalization</td>
+<td><code>style_color_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>size_curve</td>
+<td><code>size_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>channel_divergence</td>
+<td><code>channel_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>multi_season_consistency</td>
+<td><code>season_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>trend_velocity</td>
+<td><code>weeks_on_sale ≥ 3</code></td>
+</tr>
+<tr>
+<td>discount_dependency</td>
+<td><code>discount_pct_avg &gt; 0</code> or <code>max &gt; 0</code></td>
+</tr>
+<tr>
+<td>margin_resilience</td>
+<td>always</td>
+</tr>
+<tr>
+<td>spatial_variance</td>
+<td><code>store_count ≥ 3</code> (currently inactive)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong> a single‑colour, single‑size sock sold in one channel for 2 weeks
+→ gate allows only <code>margin_resilience</code> (+ trend if ≥3 weeks). No wasted LLM calls
+on colour/size/channel lenses that have nothing to compare.</p>
+<h3 id="74-decider-enginesdeciderpy-lens-mixes">7.4 Decider (<code>engines/decider.py</code>) — lens mixes</h3>
+<p>The Decider LLM proposes adaptive weighted mixes of allowlisted lenses per
+article. Python then constructs the final <strong>4–5 mix hybrid plan</strong>:</p>
+<ol>
+<li>two deterministic anchors (demand and risk/cannibalization),</li>
+<li>two or three distinct adaptive Decider mixes,</li>
+<li>deterministic eligible-lens fallback mixes if adaptive output is missing.</li>
+</ol>
+<p>This keeps useful per-article adaptation without allowing one LLM call to own the
+whole ensemble. Output is validated:
+- unknown lens ids dropped, duplicates removed, ≤ <code>max_lenses_per_mix</code> (5),
+- weights renormalized to sum 1 and restricted to the article's <strong>gate-eligible</strong>
+  lenses (the old gate bypass is removed),
+- fixed anchors and fallback mixes are pure Python and add <strong>no LLM calls</strong>,
+- if the LLM fails → the plan is entirely deterministic (config weights).</p>
+<p>Multiple mixes = a mini‑ensemble; their spread feeds confidence (agreement).</p>
+<h3 id="75-lenses-what-they-measure">7.5 Lenses — what they measure</h3>
+<p>Each lens is an LLM call over the batch returning per‑article
+<code>score∈[0,1]</code> (1 = strong keep), <code>outcome</code>, <code>confidence</code>, <code>signal</code>, <code>reason_codes</code>.
+Prompts live in <code>prompts/md/lenses/*.md</code> and carry: the question, required
+evidence, a scoring rubric, forbidden moves, few-shot exemplars, and output
+format. Runtime rules (injected by <code>context/</code> + <code>prompts/builder.py</code>) tell the
+lens: score on merits across [0,1], your score feeds <code>s_agent</code> then
+<code>s_final = 0.4·s_det + 0.6·s_agent</code> (kept when <code>s_final ≥ 0.55</code>) — <strong>do not target
+the threshold</strong>; demand overrides margin; cite numbers, don't invent KPIs.</p>
+<p><strong>Few-shot exemplars (over-keep countermeasure).</strong> Three prompts ship compact
+worked cases (input KPIs → expected <code>score</code>/<code>outcome</code>/<code>reason_codes</code>): the base
+<code>hindsight_system.md</code> (4), <code>lenses/trend_velocity.md</code> (4), and <code>peer_system.md</code>
+(3, context-only — peer still never decides Keep/Drop). The base pack is
+prepended to <strong>every</strong> lens system prompt by <code>prompts/builder.py</code>, so the other
+seven lenses inherit it; only <code>trend_velocity</code> adds lens-specific exemplars.
+They are deliberately weighted toward the documented <strong>over-keep</strong> failure:
+weak/declining demand or thin (<code>&lt;3</code> week) evidence must Drop even when margin or a
+single strong week looks fine; strong demand with poor GM stays Keep. Because
+prompt text folds into <code>config_hash</code>, adding or editing exemplars is a new config
+version — gate any change on held-out DROP recall in <code>evals/</code> before promoting.</p>
+<p><strong>Evidence branches (data-shape → emphasis).</strong> Every lens whose evidence is gated
+by a count (<code>channel_count</code>, <code>style_color_count</code>, <code>season_count</code>, <code>size_count</code>,
+<code>store_count</code>, or discount fields) carries an <code>### Evidence branch</code> block that
+splits behaviour on whether that evidence is present. The <strong>thin/absent</strong> branch
+is explicit — return a neutral score with capped confidence (≤ 0.4–0.5), state
+the data was unavailable, and <strong>do not</strong> Keep or Drop on that lens alone; the
+<strong>present</strong> branch names the comparison to make. This mirrors the ONE-vs-TWO+
+branching in a good analytical prompt, but the "shape" is the evidence count, not
+a chart type. It closes the over-keep hole where a lens with no data silently
+returned a mid score read as support. These branches are prose only (no extra
+few-shots) to keep prompts small.</p>
+<table>
+<thead>
+<tr>
+<th>Lens</th>
+<th>Question it answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>trend_velocity</td>
+<td>Is weekly demand accelerating or dying?</td>
+</tr>
+<tr>
+<td>size_curve</td>
+<td>Is the size distribution healthy or broken?</td>
+</tr>
+<tr>
+<td>colour_cannibalization</td>
+<td>Do sibling colours steal this one's demand?</td>
+</tr>
+<tr>
+<td>channel_divergence</td>
+<td>Does it behave differently online vs store?</td>
+</tr>
+<tr>
+<td>multi_season_consistency</td>
+<td>Does it perform across seasons or one‑off?</td>
+</tr>
+<tr>
+<td>discount_dependency</td>
+<td>Does it only sell on markdown?</td>
+</tr>
+<tr>
+<td>margin_resilience</td>
+<td>Margin quality — but <strong>cannot force Drop alone</strong>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="76-scoring-the-mixes-s_agent-domainscoring">7.6 Scoring the mixes → s_agent (<code>domain/scoring</code>)</h3>
+<pre><code>mix_weight_coverage = returned planned weight / total planned weight
+s_mix = Σ(weight_lens · score_lens) / Σ(returned weight)
+        only when mix_weight_coverage ≥ 0.75
+article_mix_coverage = valid mixes / planned mixes
+        must be ≥ 0.75, otherwise the article is pending
+s_agent = aggregate(valid s_mix values)                     # mean by default
+agent_outcome = keep if s_agent ≥ agent_keep_threshold (0.55) else drop
+</code></pre>
+<p>Missing lens responses therefore cannot disappear from the denominator and
+silently make an optimistic mix valid. Supported aggregation modes are <code>mean</code>,
+<code>median</code>, and <code>drop-highest-mean</code>; the mock architecture benchmark did <strong>not</strong>
+justify replacing <code>mean</code>, so <code>mean</code> remains the provisional default.</p>
+<h3 id="77-blend-s_final-domainscoringcompute_s_final">7.7 Blend → s_final (<code>domain/scoring.compute_s_final</code>)</h3>
+<pre><code>s_final = w_det·s_det + w_agent·s_agent      # weights normalized; 0.4 / 0.6
+outcome = keep if s_final ≥ keep_threshold (0.55) else drop
+</code></pre>
+<p><strong>Worked example:</strong> <code>s_det=0.737</code>, <code>s_agent=0.711</code> → <code>s_final = 0.4·0.737 +
+0.6·0.711 = 0.721</code> → keep.</p>
+<h3 id="78-confidence-domainscoringcompute_confidence">7.8 Confidence (<code>domain/scoring.compute_confidence</code>)</h3>
+<pre><code>base = 0.35·avg(lens_confidence)
+     + 0.25·mix_agreement            # 1 - min(1, pstdev(mix_scores)/0.25)
+     + 0.20·cut_margin               # min(1, 2·|s_final - keep_threshold|)
+     + 0.20·coverage                 # fraction of planned lenses that returned
+confidence = clip01(base · critic_factor · eval_multiplier)   # factors = 1.0 in v2
+</code></pre>
+<p>High when lenses are confident, mixes agree, the article is far from the cut line,
+and lens coverage is complete.</p>
+<h3 id="79-peerbenchmark-agent-agentspeerpy">7.9 PeerBenchmark agent (<code>agents/peer.py</code>)</h3>
+<p><strong>Why:</strong> a raw ST of 80% means little without "vs its siblings / its category".
+Peer builds <strong>relative</strong> context (no Keep/Drop): Tier‑1 style‑colour siblings,
+Tier‑2 l1/l2 scope benchmarks, via read‑only tools.</p>
+<p><strong>Bounded:</strong> one <strong>batch</strong> <code>ToolBudget</code> (<code>max_peer_tool_calls</code>=2 DB calls for the
+whole batch). Batch tools cover every article in a single SELECT each; no
+per-article peek loop. Tool-loop <code>recursion_limit = max(8, 2·max_tools+4)</code>.
+Failure → empty context (articles still score).</p>
+<h3 id="710-explain-agent-enginesexplainpy">7.10 Explain agent (<code>engines/explain.py</code>)</h3>
+<p>Two independent toggles — <code>explain_agent.enabled</code> and <code>topn_explainer.enabled</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Column value</th>
+<th><code>explanation_json</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>OFF</strong></td>
+<td><strong>Template always filled</strong> (never blank for scored rows)</td>
+<td><code>templateFallback</code> set; LLM <code>reasoning</code> / <code>watchouts</code> / <code>glossary</code> empty</td>
+</tr>
+<tr>
+<td><strong>ON</strong></td>
+<td>LLM text (falls back to template on failure)</td>
+<td>Full LLM fields <strong>plus</strong> <code>templateFallback</code> always</td>
+</tr>
+</tbody>
+</table>
+<p>Deeper Keep/Drop template (config <code>explanation.template</code>) includes outcome,
+confidence, ST%, ROS, momentum <code>phase</code>, top lenses, det reason, and
+<code>forecast_targets</code>. There is <strong>no</strong> <code>explanation_lines</code> column.</p>
+<h3 id="711-top-performing-explainer-enginestopn_explainpy">7.11 Top Performing explainer (<code>engines/topn_explain.py</code>)</h3>
+<p><strong><code>explanation_topN</code> is its own String column</strong> (not a new table). Template is
+always computed for Keeps (<code>topn_explainer.template</code>); Drops stay empty.</p>
+<table>
+<thead>
+<tr>
+<th><code>topn_explainer.enabled</code></th>
+<th><code>explanation_topN</code></th>
+<th>JSON</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>false</strong></td>
+<td>template tagline</td>
+<td><code>topN.templateFallback</code></td>
+</tr>
+<tr>
+<td><strong>true</strong></td>
+<td>LLM tagline (template on fail/omit)</td>
+<td><code>topN.templateFallback</code> + <code>topN.explanation</code></td>
+</tr>
+</tbody>
+</table>
+<p>Go API ranks with hierarchy filters + <code>ORDER BY s_agent LIMIT n</code> (default contract
+<code>n=20</code>). Store filter = week-table membership (season-wide score).</p>
+<h3 id="712-locked-decision-qna-qna">7.12 Locked-decision QnA (<code>qna/</code>)</h3>
+<p>Separate from the scoring batch. Digs deeper into Keep/Drop or TopN <strong>without
+changing</strong> <code>outcome</code> / <code>s_agent</code> / <code>s_final</code>.</p>
+<pre><code class="language-bash">uv run python -m assort_kd_flow.qna.service --list-lenses
+uv run python -m assort_kd_flow.qna.service \
+  --article A1 --season-code 74 --mode keep_drop \
+  --query &quot;Why keep given soft margin?&quot; \
+  --decision-pack-json pack.json
+</code></pre>
+<p>Safeguards: <code>qna_agent.max_tool_calls</code> ≤ 4, <strong><code>allow_writes: false</code></strong> (no
+INSERT/UPDATE/DELETE/DDL — SELECT-only tools), answer schema forces
+<code>didNotChangeDecision=true</code> and echoes locked scores. UI lens catalog =
+<code>qna.catalog.list_lens_options(cfg)</code>. Custom lens <code>{name, definition, kpis}</code> is
+an analysis frame only and is never persisted into scoring config.</p>
+<h3 id="713-critic-batchevaluator-disabled-in-v2">7.13 Critic &amp; BatchEvaluator — <strong>disabled in v2</strong></h3>
+<p>In earlier online Critic/Evaluator designs these agents multiplied only
+<strong>confidence</strong> and essentially never changed Keep/Drop. v2 keeps them off and
+replaces them with <strong>offline evals</strong> (§9).</p>
+<h3 id="714-current-llm-batch-parallelism-knobs">7.14 Current LLM batch / parallelism knobs</h3>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_articles_per_llm_batch</code></td>
+<td>64</td>
+<td>Articles per LLM call (peer/decider/lenses/explain/topN)</td>
+</tr>
+<tr>
+<td><code>max_peer_peek_articles</code></td>
+<td>64</td>
+<td>legacy; peer no longer peeks per article (batch tools cover all)</td>
+</tr>
+<tr>
+<td><code>max_inflight_llm</code></td>
+<td>16</td>
+<td>Global concurrent LLM calls</td>
+</tr>
+<tr>
+<td><code>max_parallel_seasons</code></td>
+<td>2</td>
+<td>Seasons in parallel</td>
+</tr>
+<tr>
+<td><code>max_parallel_scopes_per_season</code></td>
+<td>5</td>
+<td>l1×l2 scopes in parallel</td>
+</tr>
+<tr>
+<td><code>max_parallel_batches_per_scope</code></td>
+<td>3</td>
+<td>Batches per scope in parallel</td>
+</tr>
+<tr>
+<td><code>max_peer_tool_calls</code></td>
+<td>2</td>
+<td>Peer DB tools <strong>per batch</strong> (not per article)</td>
+</tr>
+<tr>
+<td><code>max_db_calls_per_batch</code></td>
+<td>250</td>
+<td>Batch CH budget</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="8-step-ensemble-enginesrun_ensemblepy-optional">8. STEP: ensemble  (<code>engines/run_ensemble.py</code>, optional)</h2>
+<p>Recomputes/patches <code>s_det</code> and <code>s_final</code> on <code>reco_final_score</code> <strong>without</strong> any LLM
+call — used when only deterministic inputs or weights changed and you don't want
+to re‑run the agentic layer. Explanation JSON is left as a det‑patch marker.</p>
+<hr>
+<h2 id="9-step-evals-evals-ops-the-quality-gate">9. STEP: evals  (<code>evals/</code>, <code>ops/</code>) — the quality gate</h2>
+<p><strong>Why:</strong> LLMs are non‑deterministic and the outcome is money. Evals are how you
+know a config/prompt change made decisions <em>better</em>, not just <em>different</em>.</p>
+<p><code>--steps evals</code> runs the offline suite (<code>ops.promote_config</code> → <code>evals.run_suite</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>What it guards</th>
+<th>Pass rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ramp_monotonic</code></td>
+<td>ramp edits never make a higher KPI score lower</td>
+<td>non‑decreasing on a fixed grid</td>
+</tr>
+<tr>
+<td><code>demand_blend_guard</code></td>
+<td>high <code>s_det</code> + weak agent still Keep (margin can't solo‑Drop)</td>
+<td><code>s_det=0.9, s_agent=0.4 → keep</code></td>
+</tr>
+<tr>
+<td><code>gold_outcomes</code></td>
+<td>pipeline Keep/Drop matches labelled gold</td>
+<td>all configured gates in <code>config/eval.json</code> pass</td>
+</tr>
+</tbody>
+</table>
+<p><code>gold_outcomes</code> reports <code>accuracy</code>, <code>drop_recall</code>, <code>keep_recall</code>,
+<code>drop_precision</code>, <code>keep_precision</code>, and a <code>confusion</code> block
+(<code>drop_as_drop</code> / <code>drop_as_keep</code> / <code>keep_as_keep</code> / <code>keep_as_drop</code>). Gates:</p>
+<table>
+<thead>
+<tr>
+<th>gate (<code>config/eval.json</code>)</th>
+<th>default</th>
+<th>use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>gold_min_accuracy</code></td>
+<td><code>0.8</code></td>
+<td>overall correctness</td>
+</tr>
+<tr>
+<td><code>gold_min_drop_recall</code></td>
+<td><code>0.0</code></td>
+<td><strong>raise this to attack over-keep</strong> — accuracy alone hides it</td>
+</tr>
+<tr>
+<td><code>gold_min_keep_recall</code></td>
+<td><code>0.0</code></td>
+<td>guard against over-correcting into over-drop</td>
+</tr>
+<tr>
+<td><code>promote_requires_gold_rows</code></td>
+<td><code>false</code></td>
+<td>set <code>true</code> so an empty/unavailable gold set <strong>blocks</strong> promotion instead of skipping</td>
+</tr>
+</tbody>
+</table>
+<p>Accuracy alone is a weak gate on an over-keep pipeline: a set that is mostly
+Keeps can clear 80% while catching half the Drops. Set <code>gold_min_drop_recall</code>
+before judging any prompt or ramp change.</p>
+<h3 id="91-two-ways-gold_outcomes-scores-evalssuitepy">9.1 Two ways <code>gold_outcomes</code> scores (<code>evals/suite.py</code>)</h3>
+<p>The gold file may or may not carry model scores. The suite auto‑detects:</p>
+<ul>
+<li><strong><code>blend</code> mode</strong> — cases that include <code>s_det</code> and <code>s_agent</code>. The suite recomputes
+  <code>s_final</code> from <code>domain.scoring.compute_s_final</code> and compares the outcome. Pure,
+  offline, no ClickHouse. Used by unit tests and for testing weight/threshold
+  changes without a run.</li>
+<li><strong><code>vs_final</code> mode</strong> — proxy cases that carry <strong>outcome only</strong> (no scores). The
+  suite reads the <em>actual</em> pipeline outcome from <code>reco_final_score</code> (deduped via
+  <code>ops.latest_final_row_sql</code>, <strong>SELECT only</strong>, article list passed as a bound
+  <code>Array(String)</code> param) and compares. This is how held‑out proxy gold (§11)
+  grades a real run. If ClickHouse is unavailable the check <strong>skips</strong> (passes with
+  <code>skipped=true</code>) rather than failing the gate spuriously — unless
+  <code>promote_requires_gold_rows: true</code>, which makes that skip blocking.</li>
+</ul>
+<p><code>report.build_quality_report_sql</code> gives a read‑only post‑run snapshot: rows,
+unique articles, agent ok/pending, avg <code>s_det</code>/<code>s_agent</code>/<code>s_final</code>, keep %.</p>
+<p><strong>Promotion rule:</strong> change ramps/weights/prompts only behind a new config version,
+and promote only if <code>promote_config()</code> passes.</p>
+<h3 id="92-what-the-first-real-gold-run-showed-baseline">9.2 What the first real gold run showed (baseline)</h3>
+<p>Held‑out proxy gold (300 cases, 150 keep / 150 drop; season 74 scored, season 76
+as truth) run in <code>vs_final</code> mode against the then‑live <code>reco_final_score</code>
+(pre‑bake / older decisions):</p>
+<table>
+<thead>
+<tr>
+<th>Slice</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overall accuracy</td>
+<td><strong>50.2%</strong> (150/299)</td>
+</tr>
+<tr>
+<td>Held‑out KEEP → pipeline KEEP</td>
+<td><strong>96.7%</strong> (145/150)</td>
+</tr>
+<tr>
+<td>Held‑out DROP → pipeline DROP</td>
+<td><strong>3.4%</strong> (5/149)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reading it:</strong> the pipeline almost never misses a true winner, but it <strong>keeps
+144/149 articles that went on to sell poorly</strong> — a strong <strong>over‑keep</strong> signal, not
+a gold bug. Expected, given the rule layer keeps ~77% and the ensemble leans
+<code>w_agent=0.6</code> on lenses tuned to be conservative about dropping. This is the
+number to move: candidate levers are the ensemble <code>keep_threshold</code>, <code>w_det/w_agent</code>,
+the sell‑through ramp, and lens drop‑assertiveness. Each lever change → new config
+version → re‑run agentic → re‑eval, and only ship if <code>drop</code> recall improves without
+tanking <code>keep</code> recall. <strong>This baseline is the pre‑bake yardstick</strong> for v2.</p>
+<hr>
+<h2 id="10-gold-proxy-vs-production-planner">10. Gold — proxy vs production planner</h2>
+<p>Gold grades Keep/Drop <strong>after</strong> a run. It is <strong>not</strong> injected into agentic prompts.</p>
+<h3 id="100-dual-sets-flag-configevaljson">10.0 Dual sets + flag (<code>config/eval.json</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Flag / file</th>
+<th>Default</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>use_proxy_golden</code></strong></td>
+<td><strong><code>true</code></strong></td>
+<td><code>true</code> → proxy <code>cases.json</code>; <code>false</code> → planner <code>cases_planner.json</code></td>
+</tr>
+<tr>
+<td><code>gold_proxy_file</code></td>
+<td><code>cases.json</code></td>
+<td>Held-out next-season proxy (300 cases today)</td>
+</tr>
+<tr>
+<td><code>gold_planner_file</code></td>
+<td><code>cases_planner.json</code></td>
+<td>Merchant production labels (empty until filled)</td>
+</tr>
+<tr>
+<td><code>planner_min_cases</code> / <code>planner_min_per_class</code></td>
+<td>50 / 20</td>
+<td>Enforced only when proxy is OFF</td>
+</tr>
+</tbody>
+</table>
+<p>Proxy stays forever as a cheap baseline. Flip <code>use_proxy_golden</code> to <code>false</code> only after
+planner gold passes size/balance checks. Full stepwise playbook with spreadsheet →
+JSON examples: <strong><code>evals/gold/README.md</code></strong>.</p>
+<div class="mermaid">flowchart LR
+  A[eval.json use_proxy_golden] -->|true| B[cases.json proxy]
+  A -->|false| C[cases_planner.json planner]
+  B --> D[evals suite gold_outcomes]
+  C --> D
+  D -->|blend if s_det+s_agent| E[domain.scoring offline]
+  D -->|else vs_final| F[SELECT latest outcome from final table]
+  D --> G[promote_config gate]
+</div>
+<p><strong>Production practices (companies):</strong> gold is an offline / promote gate and shadow
+metric — not a live retrieval key for agents. Split holdout vs tuning labels;
+raise drop-recall gates; refresh each season; keep proxy as fallback.</p>
+<h3 id="101-what-it-is-and-how-to-prepare-it">10.1 What it is and how to prepare it</h3>
+<p><strong>Gold</strong> = labelled <code>article × season</code> with the known-right outcome. File(s) under
+<code>evals/gold/</code>. Schema: <code>article</code>, <code>season_code</code>, <code>expected_outcome</code>, optional
+<code>s_det</code>/<code>s_agent</code>, plus planner provenance (<code>label_source</code>, <code>labeler</code>, <code>labeled_at</code>).</p>
+<p><strong>Sources (best first):</strong>
+1. <strong>Planner labels</strong> — merchant marks ~50–300 obvious keeps/drops → <code>cases_planner.json</code>, then <code>use_proxy_golden: false</code>.
+2. <strong>Proxy from held‑out next‑season sales</strong> — <code>cases.json</code> via <code>build_gold.py</code> (§11); <code>use_proxy_golden: true</code> (current).
+3. <strong>Historical validated decisions.</strong></p>
+<p>Aim for balanced keep/drop, spread across L1s, <strong>obvious</strong> cases only.</p>
+<h3 id="102-switching-to-production-planner-gold-checklist">10.2 Switching to production planner gold (checklist)</h3>
+<ol>
+<li>Collect merchant labels (obvious keep/drop only).  </li>
+<li>Write <code>cases_planner.json</code> (see <code>cases_planner.example.json</code>).  </li>
+<li>Validate with <code>validate_planner_gold</code> (≥50 rows, ≥20/class).  </li>
+<li>Set <code>use_proxy_golden: false</code>, raise <code>gold_min_drop_recall</code>, set <code>promote_requires_gold_rows: true</code>.  </li>
+<li>Run <code>--steps evals</code> against the bake/main table you intend to ship.  </li>
+<li>Keep proxy file for CI / fallback.</li>
+</ol>
+<p>Worked copy-paste examples: <code>evals/gold/README.md</code> Steps 0–8.</p>
+<hr>
+<h2 id="11-proxygold-sql-generating-labels-from-data">11. Proxy‑gold SQL — generating labels from data</h2>
+<p>When no planner labels exist, derive them from what actually happened next season.
+Script: <code>evals/gold/build_gold.py</code> (read‑only; writes <code>cases.json</code>).</p>
+<p>The pipeline scores season A; truth comes from season B <strong>only</strong>. Two confounds
+have to be designed out, or the resulting accuracy number is meaningless:</p>
+<table>
+<thead>
+<tr>
+<th>Confound</th>
+<th>Why it breaks the eval</th>
+<th>Fix in the script</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Circularity</strong></td>
+<td>Season‑A ROS is 45% of <code>s_det</code>, so labelling on it grades the pipeline against its own input — accuracy looks good whether or not the agentic layer helps</td>
+<td>Labels use <strong>only</strong> season‑B sell‑through and ROS (held out; the pipeline never sees B when scoring A)</td>
+</tr>
+<tr>
+<td><strong>Treatment leakage</strong></td>
+<td>An article the planner already dropped sells zero in B <em>by construction</em>, so the label encodes a past human decision, not dead demand</td>
+<td><code>INNER JOIN</code> on both seasons <strong>plus</strong> <code>store_weeks_present_b ≥ min_presence_b</code> (default 20), so <code>qty_b = 0</code> means it was stocked and still didn't sell</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Labels:</strong></p>
+<ul>
+<li><strong>DROP</strong> — weak in B: <code>st_b ≤ drop_st_max</code> AND <code>ros_b ≤ drop_ros_max</code></li>
+<li><strong>KEEP</strong> — strong in B: <code>st_b ≥ keep_st_min</code> AND <code>ros_b ≥ keep_ros_min</code></li>
+<li>everything between the bands is ambiguous and <strong>skipped on purpose</strong></li>
+</ul>
+<p><code>st_b</code> uses the same on‑hand‑fallback sell‑through as <code>domain/kpis.py</code>. <code>ros_b</code> is
+units per <strong>stocked</strong> store‑week (denominator = store‑weeks present), which is
+stricter than the pipeline's ROS (denominator = selling store‑weeks) — so its
+values run lower. Classes are balanced and capped per L1.</p>
+<p><strong>Dirty‑data filters (learned the hard way).</strong> The first generation pulled in
+placeholder SKUs and negative quantities. The builder now drops, in both SQL and
+Python: <code>qty_b &lt; 0</code> / <code>ros_b &lt; 0</code> (return‑dominated rows) and article ids
+containing <code>no_</code> or <code>Farbdummy</code> (colour dummies / unmapped articles). Without
+these, a "keep" like <code>no_sa-no_color_id-no_color_desc</code> (qty_b≈99k) and "drops"
+with negative qty polluted the set.</p>
+<p><strong>Step 1 — inspect the distribution before choosing thresholds</strong> (read‑only, writes nothing):</p>
+<pre><code class="language-bash">uv run python -m assort_kd_flow.evals.gold.build_gold --season-a 74 --season-b 76 --stats
+</code></pre>
+<p>Prints <code>st_b</code>/<code>ros_b</code> quantiles (p10…p90) and how many keep/drop/skipped the
+current thresholds would yield. Tune the four threshold flags from that output.</p>
+<p><strong>Step 2 — write the labels:</strong></p>
+<pre><code class="language-bash">uv run python -m assort_kd_flow.evals.gold.build_gold \
+  --season-a 74 --season-b 76 --per-class 150 \
+  --drop-st-max 70 --drop-ros-max 1.05 --keep-st-min 92 --keep-ros-min 1.22 \
+  --out assort_kd_flow/evals/gold/cases.json
+</code></pre>
+<p>Defaults above match the 74→76 held‑out distribution (<code>ros_b</code> floors near ~1.0;
+the older 0.15 ROS drop cut produced almost no drops). Always re‑check with
+<code>--stats</code> when seasons change.</p>
+<p>Exits non‑zero if either class comes back empty rather than writing a one‑sided
+gold set.</p>
+<p><strong>Step 3 — evaluate:</strong></p>
+<pre><code class="language-bash">uv run python -m assort_kd_flow.run_pipeline --steps evals
+</code></pre>
+<blockquote>
+<p>Even held‑out proxy labels are weaker than planner labels: they measure
+"did demand hold up", not "was this the right range decision". ~100 merchant‑labelled
+articles still outrank the whole proxy set. Use the proxy to get a baseline now,
+and replace it as planner labels arrive.</p>
+</blockquote>
+<hr>
+<h2 id="12-guardrails-timeouts-retries-all-in-configdecisionjson-guardrails">12. Guardrails, timeouts, retries (all in <code>config/decision.json → guardrails</code>)</h2>
+<h3 id="120-nonllm-run-controller-opsrun_controllerpy">12.0 Non‑LLM run controller (<code>ops/run_controller.py</code>)</h3>
+<p>v2 includes a <strong>deterministic</strong> run controller (not an agent). It does <strong>not</strong>
+edit formulas, prompts, or config mid‑run.</p>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Run ledger</strong></td>
+<td><code>events.jsonl</code> + <code>summary.json</code>, independently gated by <code>run_controller.run_ledger</code> or CLI <code>--run-ledger</code> / <code>--no-run-ledger</code> (default <strong>false</strong> in v2 config).</td>
+</tr>
+<tr>
+<td><strong>CSV telemetry</strong></td>
+<td><code>steps.csv</code>, <code>agents.csv</code>, <code>tool_calls.csv</code>, <code>llm_calls.csv</code>, <code>cost_by_article.csv</code>, <code>perf_summary.json</code>, <code>cost_summary.json</code>. Independently gated by <code>run_controller.telemetry</code> (alias <code>csv_telemetry</code>) or CLI <code>--telemetry</code> / <code>--no-telemetry</code> (default <strong>false</strong> in v2 config).</td>
+</tr>
+<tr>
+<td><strong>Circuit breaker</strong></td>
+<td>Stops fill/det/agentic when fail streak ≥ <code>max_consecutive_fails</code> (5) or fail fraction &gt; <code>max_fail_fraction</code> (0.25)</td>
+</tr>
+<tr>
+<td><strong>Adaptive pool</strong></td>
+<td>Dial‑down on failure streaks; dial‑up after <code>dial_up_after</code> (4) successes (within configured min/max workers)</td>
+</tr>
+<tr>
+<td><strong>Signal‑quality abort</strong></td>
+<td>Deterministic step <strong>aborts before scoring</strong> if a KPI signal fails the quality gate or no active signals remain — logs requirements in the ledger</td>
+</tr>
+</tbody>
+</table>
+<p>Config block: <code>run_controller</code> in <code>decision.json</code>. Disable with <code>"enabled": false</code>.</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binary_outcomes_only</code></td>
+<td>true</td>
+<td>keep/drop only</td>
+</tr>
+<tr>
+<td><code>demand_overrides_margin</code></td>
+<td>true</td>
+<td>margin never solo‑drops</td>
+</tr>
+<tr>
+<td><code>max_articles_per_llm_batch</code></td>
+<td>64</td>
+<td>uniform LLM article chunk (peer/decider/lenses/explain/topN explain)</td>
+</tr>
+<tr>
+<td><code>max_peer_peek_articles</code></td>
+<td>64</td>
+<td>unused by peer path (kept for compat); batch tools cover all articles</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec_base</code></td>
+<td>60</td>
+<td>fixed overhead for an LLM call</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec_per_article</code></td>
+<td>8</td>
+<td>added seconds × articles in the batch</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec_max</code></td>
+<td>600</td>
+<td>hard ceiling (<code>timeout = min(max, base + per×n)</code>; batch=64 → 572s)</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec</code> / <code>llm_timeout_sec</code></td>
+<td>600</td>
+<td>legacy aliases for the max ceiling</td>
+</tr>
+<tr>
+<td><code>db_query_timeout_sec</code></td>
+<td>15</td>
+<td>per tool query timeout</td>
+</tr>
+<tr>
+<td><code>llm_retries</code></td>
+<td>2</td>
+<td>retries per call</td>
+</tr>
+<tr>
+<td><code>max_inflight_llm</code></td>
+<td>16</td>
+<td>global concurrent LLM cap</td>
+</tr>
+<tr>
+<td><code>max_parallel_seasons/scopes/batches</code></td>
+<td>2 / 5 / 3</td>
+<td>parallelism</td>
+</tr>
+<tr>
+<td><code>max_agent_steps</code></td>
+<td>4</td>
+<td>LangGraph tool‑loop cap</td>
+</tr>
+<tr>
+<td><code>max_tool_calls_per_article</code></td>
+<td>10</td>
+<td>tool budget</td>
+</tr>
+<tr>
+<td><code>max_peer_tool_calls</code></td>
+<td>2</td>
+<td>peer DB calls <strong>per batch</strong> (batch tools cover all articles)</td>
+</tr>
+<tr>
+<td><code>db_query_timeout_sec</code></td>
+<td>15</td>
+<td>per tool query timeout</td>
+</tr>
+<tr>
+<td><code>max_db_calls_per_batch</code></td>
+<td>250</td>
+<td>batch DB budget</td>
+</tr>
+<tr>
+<td><code>decider.min_mix_weight_coverage</code></td>
+<td>0.75</td>
+<td>returned planned weight required for one valid mix</td>
+</tr>
+<tr>
+<td><code>decider.min_article_mix_coverage</code></td>
+<td>0.75</td>
+<td>valid planned mixes required to score; otherwise pending</td>
+</tr>
+</tbody>
+</table>
+<p>Fill/deterministic parallelism also has adaptive knobs: <code>max_parallel_fill_scopes</code>
+(2), <code>fill_retries</code> (3), <code>fill_dial_down_after</code> (2), <code>max_parallel_det_scopes</code> (3),
+<code>det_retries</code> (3). <code>AdaptivePool</code> lowers concurrency after repeated failures rather
+than crashing the step.</p>
+<p><strong>Tool safety (<code>tools/ch_read.py</code>):</strong> SELECT‑only, table <strong>allowlist</strong>
+(<code>source.allowed_read_tables</code>), per‑query timeout (<code>db_query_timeout_sec</code>),
+per‑batch/per‑article budgets (<code>max_db_calls_per_batch</code>, <code>max_tool_calls_per_article</code>);
+<strong>every write/DDL statement is regex-rejected</strong>. <code>forbid_recursive_reentry</code> stops an
+agent re‑entering the tool loop. The shared CH client pool size is derived from
+<code>resource_budget</code> (~50% host by default, capped at <code>max_ch_pool_ceiling</code>), not a
+hard-coded 32.</p>
+<h3 id="121-agent-enable-flags-prompts-configdecisionjson">12.1 Agent enable flags &amp; prompts (<code>config/decision.json</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>key</th>
+<th>enabled</th>
+<th>prompt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Decider</td>
+<td><code>decider</code></td>
+<td>always</td>
+<td><code>prompts/md/decider_system.md</code></td>
+</tr>
+<tr>
+<td>Lenses</td>
+<td><code>lenses[].is_active</code></td>
+<td>7 on, <code>spatial_variance</code> off</td>
+<td><code>prompts/md/lenses/*.md</code></td>
+</tr>
+<tr>
+<td>PeerBenchmark</td>
+<td><code>peer_agent.enabled</code></td>
+<td><strong>true</strong></td>
+<td><code>prompts/md/peer_system.md</code></td>
+</tr>
+<tr>
+<td>Explain</td>
+<td><code>explain_agent.enabled</code></td>
+<td><strong>true</strong></td>
+<td><code>prompts/md/explain_system.md</code></td>
+</tr>
+<tr>
+<td>Top Performing</td>
+<td><code>topn_explainer.enabled</code></td>
+<td><strong>true</strong></td>
+<td><code>prompts/md/topn_system.md</code></td>
+</tr>
+<tr>
+<td>QnA (dig-deeper)</td>
+<td><code>qna_agent.enabled</code></td>
+<td><strong>true</strong></td>
+<td><code>prompts/md/qna_system.md</code></td>
+</tr>
+<tr>
+<td>Critic</td>
+<td><code>critic_agent.enabled</code></td>
+<td><strong>false</strong></td>
+<td><code>prompts/md/critic_system.md</code></td>
+</tr>
+<tr>
+<td>BatchEvaluator</td>
+<td><code>evaluator_agent.enabled</code></td>
+<td><strong>false</strong></td>
+<td><code>prompts/md/evaluator_system.md</code></td>
+</tr>
+<tr>
+<td>Base/system</td>
+<td><code>source.base_prompt</code></td>
+<td>—</td>
+<td><code>prompts/md/hindsight_system.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>decider</code>: <code>mix_count_min</code> 4, <code>mix_count_max</code> 5, <code>max_lenses_per_mix</code> 5,
+<code>fixed_anchor_count</code> 2, mix/article coverage 0.75, <code>retries</code> 2.
+Each lens has a <code>weight</code> (decider hint / fallback), <code>required_fields</code>, and a
+<code>reason_template</code>. <code>prompts/registry.py</code> maps every lens id → prompt path so the
+active‑lens set and prompt files can't drift apart (unit‑tested).</p>
+<h3 id="122-prompt-anatomy">12.2 Prompt anatomy</h3>
+<p>Every lens prompt (<code>prompts/md/lenses/*.md</code>) carries: the <strong>question</strong>, <strong>required
+evidence</strong>, a <strong>scoring rubric</strong> (what maps to low/high score), <strong>forbidden moves</strong>
+(e.g. "don't invent KPIs", "don't target the threshold"), and the <strong>output
+schema</strong>. At runtime <code>context/</code> + <code>prompts/builder.py</code> inject the live ensemble
+math (<code>s_final = 0.4·s_det + 0.6·s_agent</code>, keep ≥ 0.55), the config ROS/keep
+benchmarks, and the demand‑over‑margin rule — so the same prompt file adapts to
+config changes without editing the markdown.</p>
+<h3 id="123-decision-architecture-mock-benchmark">12.3 Decision architecture mock benchmark</h3>
+<p><code>ops/bench_decision_architecture.py</code> compares composition, aggregation, threshold,
+and deterministic/agent weights without ClickHouse or a live LLM:</p>
+<pre><code class="language-bash">uv run python -m assort_kd_flow.ops.bench_decision_architecture \
+  --articles 600 --seeds 11,29,47
+</code></pre>
+<p>Every run creates a new <code>logs/bench-decision-&lt;timestamp&gt;-&lt;id&gt;/</code> containing
+<code>comparison.csv</code>, <code>per_seed.csv</code>, <code>scenarios.csv</code>, and <code>summary.json</code>; prior runs
+are never overwritten. The selection objective is balanced accuracy subject to
+KEEP recall ≥90% and scored coverage ≥95%.</p>
+<p>The implemented run compared 54 candidates. The global synthetic winner was the
+adaptive baseline with <code>mean</code>, <code>keep_threshold=0.55</code>, and weights <code>0.4/0.6</code>.
+The planned hybrid candidate with those same settings also met every gate
+(balanced accuracy 1.0, KEEP/DROP recall 1.0, average coverage ~96.4%, 11 relative
+LLM calls/batch), so hybrid anchors are enabled while <code>mean</code> remains the
+aggregation default. These numbers prove deterministic architecture behavior
+only; they are <strong>not</strong> production quality evidence. The next quality gate is a
+frozen real bake replay, followed by planner gold.</p>
+<hr>
+<h2 id="13-running-in-production">13. Running in production</h2>
+<pre><code class="language-bash"># 0. Inspect config (no side effects)
+uv run python -m assort_kd_flow.run_pipeline --steps show-config
+
+# 1. Fill weekly rollup CSVs for fiscal years
+uv run python -m assort_kd_flow.run_pipeline --steps fill --fiscal-years 2024,2025,2026
+#    then load week bake before det (mid-run reads CH bake):
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;fill_run_id&gt; --mode apply \
+  --tables week --target bake
+
+# 2. Deterministic scores for plan seasons (reads source.week_table bake)
+uv run python -m assort_kd_flow.run_pipeline --steps deterministic --season-codes 74,76 --force-det
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;det_run_id&gt; --mode apply \
+  --tables deterministic --target bake
+
+# 3. Agentic scores (expensive; resumable; reads week + det bake)
+uv run python -m assort_kd_flow.run_pipeline --steps agentic --season-codes 74,76 --force-agentic
+#    resume after interruption:
+uv run python -m assort_kd_flow.run_pipeline --steps agentic --season-codes 74,76 --resume
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;agent_run_id&gt; --mode apply \
+  --tables agentic,final --target bake
+
+# 4. Offline evals / promotion gate (exit 1 if eval_promote_ok=False)
+uv run python -m assort_kd_flow.run_pipeline --steps evals
+
+# 5. MANUAL promote bake → main when ready (§15)
+uv run python -m assort_kd_flow.ops.migrate_bake \
+  --tables week,deterministic,agentic,final \
+  --season-codes 74,76 --fiscal-years 2024,2025,2026 --mode full
+
+# Incremental (new sales only):
+uv run python -m assort_kd_flow.run_pipeline --steps auto --detect-new --fiscal-years 2024,2025,2026
+
+# Standalone write scripts (pipeline calls these internally; CSV only):
+uv run python -m assort_kd_flow.fill.run_fill --fiscal-years 2024,2025,2026 --resume --run-id &lt;id&gt;
+uv run python -m assort_kd_flow.engines.run_deterministic --season-codes 74,76 --run-id &lt;id&gt;
+</code></pre>
+<p>Steps that load/migrate ClickHouse are <strong>never</strong> triggered by <code>--steps</code> — no
+accidental CH writes. Engines are CSV-only unless an operator explicitly passes
+<code>--dangerous-write-ch</code> (§18.3).</p>
+<p><code>&lt;run_id&gt;</code> comes from each step summary (<code>run_id</code> / <code>det_run_id</code> /
+<code>agent_run_id</code> / <code>staging_dir</code>). Prefer one shared <code>--run-id</code> across fill→det→agentic
+so publish can load all folders from a single staging dir.</p>
+<p><strong>Flags:</strong> <code>--force-fill/-det/-agentic</code> (overwrite), <code>--resume</code> (skip done),
+<code>--detect-new</code> (dirty scopes only), <code>--season(-codes)</code>, <code>--l1/--l2</code> (scope),
+<code>--articles</code> (smoke list).</p>
+<p><strong>CLI exit codes:</strong> <code>0</code> ok · <code>1</code> evals promote failed · <code>2</code> bad args / missing CH ·
+<code>3</code> signal-quality abort · <code>4</code> circuit open. Ledgers land in <code>assort_kd_flow/logs/&lt;run_id&gt;/</code>.</p>
+<p><strong>Dedup for readers:</strong> <code>reco_final_score</code> accumulates rows; consume via
+<code>ops.latest_final_row_sql(...)</code> = latest <code>computed_at</code> per <code>(season_code, article)</code>.</p>
+<hr>
+<h2 id="14-cutover-matrix-what-to-rerun-when-something-changes">14. Cutover matrix — what to re‑run when something changes</h2>
+<table>
+<thead>
+<tr>
+<th>Change</th>
+<th>Re‑run</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>master_input sales/inventory columns</td>
+<td>fill → deterministic → agentic</td>
+</tr>
+<tr>
+<td>ST/ROS formula or ramp</td>
+<td>deterministic → agentic</td>
+</tr>
+<tr>
+<td>ensemble weights or keep_threshold</td>
+<td>agentic (or ensemble patch)</td>
+</tr>
+<tr>
+<td>lens prompt / active lens set</td>
+<td>agentic</td>
+</tr>
+<tr>
+<td>decider / explain / topN / peer prompt</td>
+<td>agentic</td>
+</tr>
+<tr>
+<td>gold labels only</td>
+<td>evals</td>
+</tr>
+<tr>
+<td>CSVs already produced, tables stale</td>
+<td><code>ops.load_csv_to_ch</code> only (§16)</td>
+</tr>
+<tr>
+<td>bake tables ok, main tables stale</td>
+<td><code>ops.migrate_bake</code> only (§15)</td>
+</tr>
+<tr>
+<td><code>output.mode</code> / <code>--dangerous-write-ch</code></td>
+<td>nothing — affects the next agentic run's sink</td>
+</tr>
+<tr>
+<td><code>resource_budget</code> (fraction/pool/chunk)</td>
+<td>nothing — applies to the next write script</td>
+</tr>
+<tr>
+<td>LLM timeout knobs (base/per/max)</td>
+<td>nothing — applies to the next agentic run</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="15-bake-tables-migrate">15. Bake tables &amp; migrate</h2>
+<p>Config defaults point <strong>mid-run reads</strong> at bake tables:</p>
+<ul>
+<li><code>source.week_table</code> = <code>reco_article_store_week_bake</code></li>
+<li><code>source.deterministic_table</code> = <code>reco_deterministic_score_bake</code></li>
+<li><code>source.agentic_table</code> = <code>reco_agentic_score_bake</code></li>
+<li><code>source.final_table</code> = <code>reco_final_score_bake</code></li>
+<li><code>source.*_table_main</code> = live main names for promote</li>
+</ul>
+<p>Engines write CSVs only. Ops <code>load_csv_to_ch --target bake</code> loads bake
+(<code>approved=0</code>). Then promote:</p>
+<pre><code class="language-bash">uv run python -m assort_kd_flow.ops.migrate_bake \
+  --tables week,deterministic,agentic,final \
+  --season-codes 74,76 --fiscal-years 2024,2025,2026 --mode full
+uv run python -m assort_kd_flow.ops.migrate_bake \
+  --tables agentic,final --season-codes 74,76 --mode resume
+uv run python -m assort_kd_flow.ops.migrate_bake \
+  --tables agentic,final --season-codes 74,76 --mode force
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Promote grain</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>week</td>
+<td><code>--fiscal-years</code> (bulk)</td>
+<td>DELETE main years → INSERT SELECT from bake → mark approved</td>
+</tr>
+<tr>
+<td>deterministic</td>
+<td><code>--season-codes</code> × article</td>
+<td>same pattern as agentic</td>
+</tr>
+<tr>
+<td>agentic / final</td>
+<td><code>--season-codes</code> × article</td>
+<td>only <code>agent_status='ok'</code> agentic rows</td>
+</tr>
+</tbody>
+</table>
+<p>CLI default <code>--tables</code> remains <code>agentic,final</code> for back-compat; pass week/det
+explicitly when promoting those.</p>
+<p><strong>Create bake tables out-of-band</strong> from <code>ch/schema.sql</code> after explicit confirmation
+(app never runs DDL).</p>
+<hr>
+<h2 id="16-csv-staging-the-manual-clickhouse-loader">16. CSV staging &amp; the manual ClickHouse loader</h2>
+<h3 id="161-why-scoring-writes-csv-first">16.1 Why scoring writes CSV first</h3>
+<p><code>output.mode = csv</code> (default). <strong>Fill, deterministic, agentic, and final</strong> all
+produce <strong>business CSVs on disk</strong>; publishing them to ClickHouse is a <strong>separate,
+human‑triggered step</strong>. This is deliberate:</p>
+<ul>
+<li><strong>Inspect before publish.</strong> A bad prompt or config change is visible in a CSV
+  diff before it ever touches a table planners read.</li>
+<li><strong>Cheap re‑publish.</strong> Re‑running the loader costs seconds; re‑running agentic
+  costs LLM spend.</li>
+<li><strong>Fewer live mutations.</strong> Long scoring runs no longer issue thousands of
+  <code>ALTER … DELETE</code> mutations against ClickHouse while they work.</li>
+<li><strong>Portability.</strong> The same CSVs can be handed to another system or archived.</li>
+</ul>
+<p>The loader is intentionally <strong>not</strong> a <code>run_pipeline --steps</code> value. There is no
+way to publish to ClickHouse by accident.</p>
+<p><strong>CSV-first + resume stamp (all CSV→CH scripts).</strong> Every staging CSV carries a
+<strong>staging-only</strong> <code>ch_load_status</code> column (<code>pending</code> → <code>ok</code>). It is <em>never</em> part of
+ClickHouse table DDL — the loader strips it before insert. The loader:
+1. reads rows, <strong>skips</strong> any already <code>ok</code> (unless <code>--no-resume</code>),
+2. inserts the remaining rows,
+3. rewrites the CSV stamping those <code>(season, article)</code> rows <code>ok</code>.</p>
+<p>So an interrupted publish resumes exactly where it stopped. Fill / det / agentic
+all use the same status column for publish resume.</p>
+<h3 id="162-staging-layout">16.2 Staging layout</h3>
+<pre><code>assort_kd_flow/staging/&lt;run_id&gt;/
+  manifest.jsonl
+  reco_article_store_week_bake/part-000001.csv
+  reco_deterministic_score_bake/part-000001.csv
+  reco_agentic_score_bake/part-000001.csv
+  reco_final_score_bake/part-000002.csv
+</code></pre>
+<ul>
+<li><code>&lt;run_id&gt;</code> is a UUID printed as <code>agent_run_id</code> / <code>det_run_id</code> / <code>run_id</code> in the
+  step summary (also <code>staging_dir</code>).</li>
+<li>One <code>part-*.csv</code> per write (one per batch for agentic/final), so files are
+  small and a crash never truncates a previous part.</li>
+<li>Headers are the target bake table's column list in table order, <strong>plus</strong> the
+  trailing staging-only <code>ch_load_status</code>. The loader accepts either exact-table or
+  table+<code>ch_load_status</code> headers and rejects any other drift. Score CSVs carry
+  product hierarchy (<code>l0_name</code>–<code>l4_name</code>); <code>--target main</code> drops <code>approved</code>.</li>
+<li><code>manifest.jsonl</code> records <code>{ts, season_code, article, agent_status, table}</code>
+  per agentic/final row (drives the agentic <code>--resume</code> skip of <code>ok</code> articles).
+  <code>ch_load_status</code> inside each part file drives the <strong>publish</strong> resume.</li>
+</ul>
+<p>Staging is gitignored (<code>assort_kd_flow/staging/</code>).</p>
+<h3 id="163-which-csv-maps-to-which-table">16.3 Which CSV maps to which table</h3>
+<table>
+<thead>
+<tr>
+<th>Staging folder</th>
+<th><code>--target bake</code> (default)</th>
+<th><code>--target main</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reco_article_store_week_bake/</code></td>
+<td><code>reco_article_store_week_bake</code></td>
+<td><code>reco_article_store_week</code></td>
+</tr>
+<tr>
+<td><code>reco_deterministic_score_bake/</code></td>
+<td><code>reco_deterministic_score_bake</code></td>
+<td><code>reco_deterministic_score</code></td>
+</tr>
+<tr>
+<td><code>reco_agentic_score_bake/</code></td>
+<td><code>reco_agentic_score_bake</code></td>
+<td><code>reco_agentic_score</code></td>
+</tr>
+<tr>
+<td><code>reco_final_score_bake/</code></td>
+<td><code>reco_final_score_bake</code></td>
+<td><code>reco_final_score</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>--target main</code> drops the bake‑only <code>approved</code> column; <code>--target bake</code> keeps it
+so <code>migrate_bake</code> (§15) can promote later. Week loads default overwrite grain to
+<code>fiscal_year</code>.</p>
+<blockquote>
+<p>All engines are CSV-only. <code>load_csv_to_ch</code> is the only normal path into bake;
+<code>migrate_bake</code> is the only normal path into main.</p>
+</blockquote>
+<h3 id="164-type-mapping-and-validation">16.4 Type mapping and validation</h3>
+<p>Everything in a CSV is text; the loader coerces each column to its ClickHouse
+type and refuses anything it cannot represent. This runs in <strong>dry‑run too</strong>, so
+a malformed file fails locally instead of half‑way through an insert.</p>
+<table>
+<thead>
+<tr>
+<th>Column(s)</th>
+<th>CH type</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>season_code</code>, <code>product_season_code</code>, <code>fiscal_year</code>, <code>fiscal_year_week</code>, <code>transaction_count</code></td>
+<td><code>Int64</code></td>
+<td><code>season_code</code> / week keys required non‑empty</td>
+</tr>
+<tr>
+<td><code>article</code></td>
+<td><code>String</code></td>
+<td>required, non‑empty</td>
+</tr>
+<tr>
+<td><code>is_mandatory</code>, <code>approved</code></td>
+<td><code>UInt8</code></td>
+<td>empty → <code>0</code></td>
+</tr>
+<tr>
+<td><code>oh_days_cnt</code>, <code>store_week_cnt</code></td>
+<td><code>UInt32</code></td>
+<td>empty → <code>0</code></td>
+</tr>
+<tr>
+<td><code>weeks_on_sale</code></td>
+<td><code>UInt16</code></td>
+<td>empty → <code>0</code></td>
+</tr>
+<tr>
+<td><code>build_id</code></td>
+<td><code>UUID</code></td>
+<td>required for week rows</td>
+</tr>
+<tr>
+<td><code>s_det</code>, <code>s_agent</code>, <code>s_final</code>, <code>ros</code>, <code>woh</code>, <code>gm_pct</code>, <code>sell_thru_*</code>, <code>confidence</code>, <code>w_det</code>, <code>w_agent</code>, <code>keep_threshold</code>, week measures (<code>qty</code>, <code>revenue</code>, …)</td>
+<td><code>Float64</code></td>
+<td>empty → <code>0.0</code></td>
+</tr>
+<tr>
+<td><code>matched_terms</code>, <code>reason_codes</code></td>
+<td><code>Array(LowCardinality(String))</code></td>
+<td>JSON list; empty → <code>[]</code>; unparseable → single‑element list</td>
+</tr>
+<tr>
+<td><code>det_outcome</code>, <code>agent_outcome</code>, <code>outcome</code></td>
+<td><code>Enum8</code></td>
+<td>must be <code>keep</code> or <code>drop</code></td>
+</tr>
+<tr>
+<td><code>agent_status</code></td>
+<td><code>Enum8</code></td>
+<td>must be <code>ok</code>, <code>pending</code>, or <code>error</code></td>
+</tr>
+<tr>
+<td><code>config_hash</code>, <code>template_hash</code>, <code>lens_set_hash</code></td>
+<td><code>FixedString(64)</code></td>
+<td>must be <strong>exactly</strong> 64 chars</td>
+</tr>
+<tr>
+<td><code>computed_at</code>, <code>built_at</code></td>
+<td><code>DateTime64(3)</code></td>
+<td><code>YYYY-MM-DD HH:MM:SS[.mmm]</code> (<code>T</code> separator ok); empty → now (UTC)</td>
+</tr>
+<tr>
+<td>everything else</td>
+<td><code>String</code></td>
+<td>passthrough</td>
+</tr>
+</tbody>
+</table>
+<p>Two of these are worth calling out:</p>
+<ul>
+<li><strong><code>FixedString(64)</code> is length‑checked, not padded.</strong> ClickHouse silently
+  null‑pads a short <code>FixedString</code>, which would corrupt every join on
+  <code>config_hash</code>. A wrong length is a hard error.</li>
+<li><strong><code>computed_at</code> / <code>built_at</code> are parsed into real <code>datetime</code>s.</strong> Handing
+  ClickHouse a bare string for a <code>DateTime64</code> column is what breaks naive loaders.</li>
+</ul>
+<p>Validation collects up to 20 problems per run rather than stopping at the first,
+and each is reported as <code>file:line: message</code>:</p>
+<pre><code>deterministic: part-000001.csv:57: invalid enum 'maybe' (allowed: drop, keep)
+deterministic: part-000002.csv:9: FixedString(64) needs 64 chars, got 8
+</code></pre>
+<p>A row that fails validation is <strong>excluded</strong>, and if any table has errors that
+table is skipped entirely in <code>apply</code> mode — a partial publish is worse than none.</p>
+<h3 id="165-overwrite-grains">16.5 Overwrite grains</h3>
+<p><code>--overwrite</code> decides what is deleted before inserting.</p>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Behaviour</th>
+<th>Use when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>article</code> (default)</td>
+<td><code>DELETE WHERE season_code = S AND article IN (…)</code> per season, batched 5 000 articles</td>
+<td>normal republish for det/agentic/final</td>
+</tr>
+<tr>
+<td><code>fiscal_year</code></td>
+<td><code>DELETE WHERE fiscal_year IN (…)</code></td>
+<td>week table republish (also auto-selected when loading <code>week</code> with <code>--overwrite article</code>)</td>
+</tr>
+<tr>
+<td><code>season</code></td>
+<td><code>DELETE WHERE season_code IN (…)</code></td>
+<td>rebuilding a season from scratch</td>
+</tr>
+<tr>
+<td><code>none</code></td>
+<td>no delete, pure append</td>
+<td>append‑only archives / <code>ReplacingMergeTree</code> bake tables</td>
+</tr>
+</tbody>
+</table>
+<p><code>--overwrite season</code> / <code>fiscal_year</code> remove <strong>every</strong> matching row, including rows
+this run did not produce. They therefore require an explicit <code>--yes</code>:</p>
+<pre><code>ERROR --overwrite season deletes every matching row (including other runs).
+      Re-run with --yes to confirm.
+</code></pre>
+<p>All deletes use <code>SETTINGS mutations_sync = 2</code> so the mutation completes before
+the insert, preventing a delete from racing ahead and eating fresh rows.</p>
+<h3 id="166-running-it">16.6 Running it</h3>
+<pre><code class="language-bash"># 1. Validate — no writes, no ClickHouse connection needed
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;run_id&gt; --mode dry-run
+
+# 2. Publish to bake tables (default target) — normal path
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;run_id&gt; --mode apply \
+    --tables week,deterministic,agentic,final --target bake
+
+# 3. Optional: load straight to main (strips approved; skips bake inspect)
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;run_id&gt; --mode apply \
+    --tables agentic,final --target main
+
+# 4. Full season rebuild (destructive; needs --yes)
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;run_id&gt; --mode apply \
+    --overwrite season --yes
+# Week fiscal-year wipe:
+uv run python -m assort_kd_flow.ops.load_csv_to_ch --run-id &lt;run_id&gt; --mode apply \
+    --tables week --overwrite fiscal_year --yes
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--run-id</code></td>
+<td><em>(required)</em></td>
+<td>staging folder name</td>
+</tr>
+<tr>
+<td><code>--staging-dir</code></td>
+<td><code>assort_kd_flow/staging</code></td>
+<td>relative paths resolve from repo root</td>
+</tr>
+<tr>
+<td><code>--database</code></td>
+<td><code>kik_dev</code></td>
+<td>target database</td>
+</tr>
+<tr>
+<td><code>--tables</code></td>
+<td><code>week,deterministic,agentic,final</code></td>
+<td>comma list</td>
+</tr>
+<tr>
+<td><code>--mode</code></td>
+<td><code>dry-run</code></td>
+<td><code>dry-run</code> validates only; <code>apply</code> writes</td>
+</tr>
+<tr>
+<td><code>--target</code></td>
+<td><code>bake</code></td>
+<td><code>bake</code> keeps <code>approved</code>; <code>main</code> strips it</td>
+</tr>
+<tr>
+<td><code>--overwrite</code></td>
+<td><code>article</code></td>
+<td><code>article</code> / <code>season</code> / <code>fiscal_year</code> / <code>none</code>; week auto-uses <code>fiscal_year</code> when <code>article</code></td>
+</tr>
+<tr>
+<td><code>--chunk-size</code></td>
+<td><code>50000</code></td>
+<td>rows per <code>INSERT</code> (clamped by <code>resource_budget.insert_chunk_size</code>)</td>
+</tr>
+<tr>
+<td><code>--config</code></td>
+<td><code>…/decision.json</code></td>
+<td>source of <code>resource_budget</code></td>
+</tr>
+<tr>
+<td><code>--resume</code></td>
+<td>on</td>
+<td>skip rows already <code>ch_load_status=ok</code></td>
+</tr>
+<tr>
+<td><code>--no-resume</code></td>
+<td>off</td>
+<td>reload every row regardless of stamp</td>
+</tr>
+<tr>
+<td><code>--yes</code></td>
+<td>off</td>
+<td>confirms <code>--overwrite season</code> / <code>fiscal_year</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exit codes:</strong> <code>0</code> ok · <code>1</code> validation errors (nothing written for the failing
+table) · <code>2</code> bad args, missing run dir, ClickHouse unavailable, or unconfirmed
+destructive overwrite.</p>
+<h3 id="167-output">16.7 Output</h3>
+<p>The tool prints a JSON summary. Per table it reports the files read, resolved
+target, row/article/season counts, any errors, rows inserted, and a
+<strong>post‑insert <code>count()</code> verification</strong> so you can confirm what actually landed:</p>
+<pre><code class="language-json">{
+  &quot;run_dir&quot;: &quot;.../staging/6f2c…&quot;,
+  &quot;mode&quot;: &quot;apply&quot;,
+  &quot;target&quot;: &quot;bake&quot;,
+  &quot;overwrite&quot;: &quot;article&quot;,
+  &quot;rows_total&quot;: 1284,
+  &quot;errors&quot;: [],
+  &quot;tables&quot;: {
+    &quot;final&quot;: {
+      &quot;files&quot;: [&quot;part-000001.csv&quot;, &quot;part-000002.csv&quot;],
+      &quot;target_table&quot;: &quot;kik_dev.reco_final_score_bake&quot;,
+      &quot;rows&quot;: 642, &quot;articles&quot;: 642, &quot;seasons&quot;: [74, 76],
+      &quot;inserted&quot;: 642,
+      &quot;rows_in_table_after&quot;: 642
+    }
+  }
+}
+</code></pre>
+<h3 id="168-guarantees-and-limits">16.8 Guarantees and limits</h3>
+<ul>
+<li><strong>No DDL, ever.</strong> Only <code>INSERT</code> and row‑level <code>ALTER … DELETE</code>. Tables must
+  already exist (<code>ch/schema.sql</code>, applied out of band — see §15).</li>
+<li><strong>Does not replace <code>fill</code>.</strong> The weekly rollup stays ClickHouse‑native; there
+  is no CSV path for <code>reco_article_store_week</code>.</li>
+<li><strong>Not idempotent with <code>--overwrite none</code></strong> on plain <code>MergeTree</code> targets —
+  re‑running appends duplicates. Use the default <code>article</code> grain to republish.</li>
+<li><strong><code>explanation_lines</code> is gone</strong> from the v2 final CSV/writers. If your live
+  <code>reco_final_score</code> still has that column, the insert simply omits it and the
+  column default applies; dropping it needs a confirmed out‑of‑band <code>ALTER</code>.</li>
+<li><strong><code>explanation_topN</code> is a final-table column, not a separate table.</strong> Main and
+  bake tables must receive the commented out-of-band <code>ALTER</code> in <code>ch/schema.sql</code>
+  before loading a CSV produced with the new header.</li>
+<li><strong>Old final staging CSVs are not forward-compatible.</strong> The manual loader
+  validates the exact <code>FINAL_CSV_COLUMNS</code> header, so a run produced before
+  <code>explanation_topN</code> was added must be loaded with its matching older code or
+  regenerated; the loader will reject it rather than shift columns silently.</li>
+</ul>
+<hr>
+<h2 id="17-known-gaps-followups-be-honest">17. Known gaps / follow‑ups (be honest)</h2>
+<ol>
+<li><strong>Over‑keep is the real finding</strong> (§9.2): held‑out DROP recall is ~3% on the
+   current <code>reco_final_score</code> (pre‑v2 / older decisions). Improving it is the main
+   open work — and the reason the eval loop exists. <code>--steps evals</code> exiting <code>1</code> /
+   <code>eval_promote_ok=False</code> is <strong>expected</strong> until a baked v2 table beats that baseline.</li>
+<li><strong>Gold is proxy, not planner</strong> — <code>cases.json</code> is held‑out next‑season demand
+   (§11), which measures "did demand hold up", not "was this the right range call".
+   Replace/augment with ~100–300 merchant labels when available (<code>use_proxy_golden:
+   false</code> + <code>cases_planner.json</code>).</li>
+<li><strong>No v2 bake cutover yet</strong> — current <code>reco_final_score</code> and the §9.2 baseline
+   may still reflect older decisions. Use §15 bake to measure v2 agentic/final.</li>
+<li><strong>Peer recursion</strong> occasionally trips on the largest scopes (non‑fatal, empty
+   context). Fine at current scale; revisit if peer coverage matters.</li>
+<li><strong><code>reco_final_score</code> not idempotent</strong> — use the dedupe view until a
+   ReplacingMergeTree/version strategy is decided.</li>
+<li><strong>No LLM supervisor</strong> — intentional. Oversight is <code>run_controller</code> + fixed
+   batch graph; Critic/Evaluator stay off unless offline evals prove insufficient.</li>
+<li><strong>Product hierarchy on live CH</strong> — app/CSV writers now stamp <code>l0</code>–<code>l4</code> on
+   det/agentic/final. Existing live tables need the <code>ALTER … ADD COLUMN</code> blocks
+   in <code>ch/schema.sql</code> applied out of band before the first write that includes
+   those columns (app never runs DDL).</li>
+</ol>
+<p><em>Resolved since first draft: lens‑feature sell‑through matches <code>domain/kpis.py</code>
+(§7.0); proxy gold is held‑out + carried‑in‑both (§11); <code>vs_final</code> gold mode (§9.1);
+logs confined to <code>assort_kd_flow/logs/</code>; prompt registry covers critic/evaluator files.</em></p>
+<hr>
+<h2 id="18-complete-toggle-switch-reference">18. Complete toggle &amp; switch reference</h2>
+<p>Every switch that changes behaviour, its <strong>current state</strong>, and <strong>when to flip it</strong>.
+Location column: <code>decision.json</code> block, <code>eval.json</code>, or CLI flag.</p>
+<h3 id="181-agents-explainers-decisionjson">18.1 Agents &amp; explainers (<code>decision.json</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Location</th>
+<th>State</th>
+<th>OFF behaviour</th>
+<th>Flip ON when…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>peer_agent.enabled</code></td>
+<td><code>peer_agent</code></td>
+<td><strong>ON</strong></td>
+<td>No sibling/scope context; lenses score without peers</td>
+<td>(already on) turn OFF only to cut LLM/tool cost on a smoke run</td>
+</tr>
+<tr>
+<td><code>explain_agent.enabled</code></td>
+<td><code>explain_agent</code></td>
+<td><strong>ON</strong></td>
+<td><code>explanation</code> = deep template; rich JSON fields empty; <code>templateFallback</code> set</td>
+<td>turn OFF to skip LLM narratives (template still fills column)</td>
+</tr>
+<tr>
+<td><code>topn_explainer.enabled</code></td>
+<td><code>topn_explainer</code></td>
+<td><strong>ON</strong></td>
+<td><code>explanation_topN</code> = template tagline for Keeps; Drops empty</td>
+<td>turn OFF to skip LLM Top-Performing taglines (template still fills)</td>
+</tr>
+<tr>
+<td><code>qna_agent.enabled</code></td>
+<td><code>qna_agent</code></td>
+<td><strong>ON</strong></td>
+<td><code>qna.service</code> refuses to answer</td>
+<td>(already on) turn OFF to disable the dig-deeper endpoint</td>
+</tr>
+<tr>
+<td><code>qna_agent.allow_writes</code></td>
+<td><code>qna_agent</code></td>
+<td><strong>OFF (locked)</strong></td>
+<td>SELECT-only tools; <code>build_qna_tools(allow_writes=True)</code> raises</td>
+<td><strong>never</strong> — invariant that no agent writes CH</td>
+</tr>
+<tr>
+<td><code>critic_agent.enabled</code></td>
+<td><code>critic_agent</code></td>
+<td><strong>OFF</strong></td>
+<td>Offline evals replace it (§9); previously confidence-only</td>
+<td>only if offline evals prove insufficient</td>
+</tr>
+<tr>
+<td><code>evaluator_agent.enabled</code></td>
+<td><code>evaluator_agent</code></td>
+<td><strong>OFF</strong></td>
+<td>Offline evals replace it (§9)</td>
+<td>same as critic</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Explain / TopN semantics (locked):</strong> OFF ⇒ template fills the column; ON ⇒ LLM
+overwrites the column and the template is preserved in <code>explanation_json</code> under
+<code>templateFallback</code> / <code>topN.templateFallback</code>. Columns are <strong>never blank</strong> for
+scored Keep rows.</p>
+<h3 id="182-resource-budget-decisionjson-resource_budget">18.2 Resource budget (<code>decision.json → resource_budget</code>)</h3>
+<p>Caps one write script's footprint on the machine it runs on. Default ~<strong>50%</strong> of
+detected CPU/RAM, applied to <code>fill</code>, <code>deterministic</code>, <code>load_csv_to_ch</code>,
+<code>migrate_bake</code>, and the shared CH client pool. Also clamps agentic parallelism.</p>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Default</th>
+<th>Meaning / use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fraction</code></td>
+<td><code>0.5</code></td>
+<td>master dial — fraction of host CPU/RAM to use. Lower on a shared box; raise on a dedicated batch VM</td>
+</tr>
+<tr>
+<td><code>max_cpu_fraction</code></td>
+<td><code>0.5</code></td>
+<td>overrides <code>fraction</code> for worker count only</td>
+</tr>
+<tr>
+<td><code>max_memory_fraction</code></td>
+<td><code>0.5</code></td>
+<td>overrides <code>fraction</code> for the memory budget (shrinks insert chunk on low-RAM hosts)</td>
+</tr>
+<tr>
+<td><code>max_ch_pool_ceiling</code></td>
+<td><code>32</code></td>
+<td>absolute cap on CH connections regardless of CPU</td>
+</tr>
+<tr>
+<td><code>max_ch_pool_size</code></td>
+<td><code>null</code></td>
+<td>pin an exact pool size (else derived from CPU×fraction)</td>
+</tr>
+<tr>
+<td><code>max_parallel_workers_cap</code></td>
+<td><code>null</code></td>
+<td>hard cap on <code>AdaptivePool</code> workers across all steps</td>
+</tr>
+<tr>
+<td><code>insert_chunk_size</code></td>
+<td><code>50000</code></td>
+<td>rows per INSERT (auto-shrinks to 10k under 4 GiB budget)</td>
+</tr>
+<tr>
+<td><code>override_cpu_count</code></td>
+<td><code>null</code></td>
+<td>pretend the host has N cores (testing / containers with wrong <code>os.cpu_count()</code>)</td>
+</tr>
+<tr>
+<td><code>override_memory_bytes</code></td>
+<td><code>null</code></td>
+<td>pretend the host has N bytes RAM</td>
+</tr>
+</tbody>
+</table>
+<p>Resolved caps are echoed in each write script's summary
+(<code>resource_budget_workers</code>, <code>resource_budget.*</code> in the loader summary).</p>
+<h3 id="183-output-sink-the-dangerous-ch-write-decisionjson-output-cli">18.3 Output sink &amp; the dangerous CH write (<code>decision.json → output</code>, CLI)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Location</th>
+<th>State</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>output.mode</code></td>
+<td><code>output</code></td>
+<td><strong><code>csv</code></strong></td>
+<td><code>csv</code> = agentic/final write CSV only (default &amp; recommended). <code>dual</code>/<code>clickhouse</code> are <strong>ignored</strong> unless the operator flag below is set</td>
+</tr>
+<tr>
+<td><code>output.csv_staging_dir</code></td>
+<td><code>output</code></td>
+<td><code>assort_kd_flow/staging</code></td>
+<td>where run folders land</td>
+</tr>
+<tr>
+<td><code>--dangerous-write-ch</code></td>
+<td><code>run_agentic</code> / <code>run_deterministic</code> CLI</td>
+<td><strong>off</strong></td>
+<td>Ops-only escape hatch for direct CH writes. <strong>Agents never receive this</strong>; sinks force CSV without it</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Guarantee: with the default config, <strong>no agentic/LLM path can write ClickHouse.</strong>
+The only write paths are the fill/det scripts and the two operator publish tools.</p>
+</blockquote>
+<h3 id="184-llm-batch-timeout-decisionjson-guardrails">18.4 LLM batch &amp; timeout (<code>decision.json → guardrails</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Default</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_articles_per_llm_batch</code></td>
+<td><code>64</code></td>
+<td>articles per LLM call (peer/decider/lenses/explain/topN). Lower to shrink prompts / latency; raise to cut call count. Sweet spot from mock bench (<code>ops.bench_llm_batch</code>): <strong>64</strong> over 32/128/256</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec_base</code></td>
+<td><code>60</code></td>
+<td>fixed per-call overhead in the scaled timeout</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec_per_article</code></td>
+<td><code>8</code></td>
+<td>seconds added per article in the batch</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec_max</code></td>
+<td><code>600</code></td>
+<td>ceiling: <code>timeout = min(max, base + per×n)</code> (batch 25 → 260s)</td>
+</tr>
+<tr>
+<td><code>llm_call_timeout_sec</code> / <code>llm_timeout_sec</code></td>
+<td><code>600</code></td>
+<td>legacy aliases; if the scaled knobs are absent these act as the ceiling</td>
+</tr>
+<tr>
+<td><code>llm_retries</code></td>
+<td><code>2</code></td>
+<td>retries per call before giving up (row → <code>pending</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Batch-scaled timeout is applied uniformly by <code>engines/llm_retry.llm_timeout_for_batch</code>
+across peer, decider, lenses, explain, topN, critic, evaluator, and QnA.</p>
+<h3 id="185-parallelism-decisionjson-guardrails-capped-by-182">18.5 Parallelism (<code>decision.json → guardrails</code>, capped by §18.2)</h3>
+<table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Default</th>
+<th>Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_inflight_llm</code></td>
+<td><code>16</code></td>
+<td>global concurrent LLM calls</td>
+</tr>
+<tr>
+<td><code>max_parallel_seasons</code></td>
+<td><code>2</code></td>
+<td>seasons scored concurrently</td>
+</tr>
+<tr>
+<td><code>max_parallel_scopes_per_season</code></td>
+<td><code>5</code></td>
+<td>l1×l2 scopes concurrently</td>
+</tr>
+<tr>
+<td><code>max_parallel_batches_per_scope</code></td>
+<td><code>3</code></td>
+<td>batches per scope concurrently</td>
+</tr>
+<tr>
+<td><code>max_parallel_fill_scopes</code> / <code>min_…</code></td>
+<td><code>2</code> / <code>1</code></td>
+<td>fill worker band</td>
+</tr>
+<tr>
+<td><code>max_parallel_det_scopes</code> / <code>min_…</code></td>
+<td><code>3</code> / <code>1</code></td>
+<td>det worker band</td>
+</tr>
+<tr>
+<td><code>fill_retries</code> / <code>det_retries</code></td>
+<td><code>3</code> / <code>3</code></td>
+<td>per-scope retries</td>
+</tr>
+<tr>
+<td><code>fill_dial_down_after</code> / <code>det_dial_down_after</code></td>
+<td><code>2</code> / <code>2</code></td>
+<td>failures before halving workers</td>
+</tr>
+</tbody>
+</table>
+<p>All of the above are further clamped so no run exceeds <code>resource_budget.max_workers</code>.</p>
+<h3 id="186-deterministic-scoring-switches-decisionjson-deterministic">18.6 Deterministic scoring switches (<code>decision.json → deterministic</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Default</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>signals[].enabled</code></td>
+<td><code>sell_thru</code> ON, <code>ros</code> ON</td>
+<td>disable a KPI signal from <code>s_det</code> (the quality gate can also auto-disable a broken one for a run)</td>
+</tr>
+<tr>
+<td><code>scoring_mode</code></td>
+<td><code>weighted_continuous</code></td>
+<td><code>binary</code> reverts to term-match scoring</td>
+</tr>
+<tr>
+<td><code>det_keep_threshold</code></td>
+<td><code>0.65</code></td>
+<td>rule keep cutoff</td>
+</tr>
+<tr>
+<td><code>structural_floors</code></td>
+<td>Basics 0.85 / NOS 0.90</td>
+<td>raise/lower the floor that protects lifecycle staples</td>
+</tr>
+<tr>
+<td><code>keep_plc_values</code></td>
+<td><code>[Basics, NOS]</code></td>
+<td>which PLCs get a floor + <code>DET_PLC_KEEP</code></td>
+</tr>
+<tr>
+<td><code>terms[]</code></td>
+<td>5 terms</td>
+<td>reason codes only (don't move <code>s_det</code> under continuous mode)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="187-lens-switches-decisionjson-lenses">18.7 Lens switches (<code>decision.json → lenses[]</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Lens</th>
+<th><code>is_active</code></th>
+<th>Gate (also required)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>colour_cannibalization</td>
+<td><strong>ON</strong></td>
+<td><code>style_color_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>size_curve</td>
+<td><strong>ON</strong></td>
+<td><code>size_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>channel_divergence</td>
+<td><strong>ON</strong></td>
+<td><code>channel_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>multi_season_consistency</td>
+<td><strong>ON</strong></td>
+<td><code>season_count ≥ 2</code></td>
+</tr>
+<tr>
+<td>trend_velocity</td>
+<td><strong>ON</strong></td>
+<td><code>weeks_on_sale ≥ 3</code></td>
+</tr>
+<tr>
+<td>discount_dependency</td>
+<td><strong>ON</strong></td>
+<td>discount present</td>
+</tr>
+<tr>
+<td>margin_resilience</td>
+<td><strong>ON</strong></td>
+<td>always (cannot solo-Drop)</td>
+</tr>
+<tr>
+<td>spatial_variance</td>
+<td><strong>OFF</strong></td>
+<td><code>store_count ≥ 3</code></td>
+</tr>
+</tbody>
+</table>
+<p>Flip <code>is_active</code> to add/remove a lens from decider mixes. Each also has <code>weight</code>
+(decider hint / fallback). Changing lens set or prompt ⇒ new <code>config_hash</code> ⇒
+re-run agentic + re-eval.</p>
+<h3 id="188-ensemble-forecast-decisionjson">18.8 Ensemble &amp; forecast (<code>decision.json</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Default</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ensemble.w_det</code> / <code>w_agent</code></td>
+<td><code>0.4</code> / <code>0.6</code></td>
+<td>blend weights (renormalized) — a lever against over-keep</td>
+</tr>
+<tr>
+<td><code>ensemble.keep_threshold</code></td>
+<td><code>0.55</code></td>
+<td>final keep cutoff; selected provisionally by the mock architecture benchmark</td>
+</tr>
+<tr>
+<td><code>ensemble.agent_keep_threshold</code></td>
+<td><code>0.55</code></td>
+<td>cutoff for the diagnostic <code>agent_outcome</code> field (final outcome still uses blended score)</td>
+</tr>
+<tr>
+<td><code>ensemble.mix_aggregation</code></td>
+<td><code>mean</code></td>
+<td><code>mean</code> / <code>median</code> / <code>drop-highest-mean</code>; keep <code>mean</code> until a real replay supports a conservative switch</td>
+</tr>
+<tr>
+<td><code>decider.fixed_anchor_count</code></td>
+<td><code>2</code></td>
+<td>fixed demand + risk anchors before adaptive mixes; no extra LLM calls</td>
+</tr>
+<tr>
+<td><code>decider.min_mix_weight_coverage</code></td>
+<td><code>0.75</code></td>
+<td>reject a mix if too much planned lens weight failed to return</td>
+</tr>
+<tr>
+<td><code>decider.min_article_mix_coverage</code></td>
+<td><code>0.75</code></td>
+<td>mark article pending if fewer valid mixes return</td>
+</tr>
+<tr>
+<td><code>forecast.horizon_years</code></td>
+<td><code>2</code></td>
+<td>how many corresponding future seasons to project</td>
+</tr>
+<tr>
+<td><code>forecast.current_year</code></td>
+<td><code>null</code></td>
+<td>pin the anchor year; <code>null</code> = derive from the scored season (wall-clock never shifts targets)</td>
+</tr>
+<tr>
+<td><code>trend_provider.enabled</code></td>
+<td><strong>OFF</strong></td>
+<td>turn on external Google-Trends category context (needs credentials); internal <code>sales_momentum</code> is always on</td>
+</tr>
+</tbody>
+</table>
+<h3 id="189-run-controller-telemetry-decisionjson-run_controller-cli">18.9 Run controller &amp; telemetry (<code>decision.json → run_controller</code>, CLI)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Default</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>run_controller.enabled</code></td>
+<td><strong>ON</strong></td>
+<td>master switch for ledger + circuit breaker + adaptive pool + signal-quality abort</td>
+</tr>
+<tr>
+<td><code>run_controller.run_ledger</code> / <code>--run-ledger</code> / <code>--no-run-ledger</code></td>
+<td><strong>OFF</strong></td>
+<td>write <code>events.jsonl</code> + <code>summary.json</code> per run</td>
+</tr>
+<tr>
+<td><code>run_controller.telemetry</code> / <code>--telemetry</code> / <code>--no-telemetry</code></td>
+<td><strong>OFF</strong></td>
+<td>write steps/agents/tools/llm-cost/perf CSVs</td>
+</tr>
+<tr>
+<td><code>run_controller.abort_on_signal_quality_fail</code></td>
+<td><strong>ON</strong></td>
+<td>det aborts before scoring if a KPI signal fails the gate</td>
+</tr>
+<tr>
+<td><code>run_controller.abort_if_no_active_signals</code></td>
+<td><strong>ON</strong></td>
+<td>det aborts if every signal got disabled</td>
+</tr>
+<tr>
+<td><code>run_controller.max_fail_fraction</code></td>
+<td><code>0.25</code></td>
+<td>circuit-break a step past this failure fraction</td>
+</tr>
+<tr>
+<td><code>run_controller.max_consecutive_fails</code></td>
+<td><code>5</code></td>
+<td>circuit-break after this fail streak</td>
+</tr>
+<tr>
+<td><code>run_controller.dial_up_after</code></td>
+<td><code>4</code></td>
+<td>success streak before restoring workers</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1810-guardrail-flags-tool-budgets-decisionjson-guardrails">18.10 Guardrail flags &amp; tool budgets (<code>decision.json → guardrails</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Default</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>binary_outcomes_only</code></td>
+<td><strong>ON</strong></td>
+<td>keep/drop only (no "shop")</td>
+</tr>
+<tr>
+<td><code>demand_overrides_margin</code></td>
+<td><strong>ON</strong></td>
+<td>margin can never solo-Drop</td>
+</tr>
+<tr>
+<td><code>forbid_recursive_reentry</code></td>
+<td><strong>ON</strong></td>
+<td>stop an agent re-entering the tool loop / re-running the whole engine</td>
+</tr>
+<tr>
+<td><code>require_data_ok_fraction</code></td>
+<td><code>0.5</code></td>
+<td>legacy fallback; Decider path uses the stricter 0.75 mix controls in §18.8</td>
+</tr>
+<tr>
+<td><code>max_agent_steps</code></td>
+<td><code>4</code></td>
+<td>LangGraph tool-loop cap</td>
+</tr>
+<tr>
+<td><code>max_tool_calls_per_article</code></td>
+<td><code>10</code></td>
+<td>per-article tool budget</td>
+</tr>
+<tr>
+<td><code>max_peer_tool_calls</code></td>
+<td><code>2</code></td>
+<td>peer DB calls <strong>per batch</strong> (not per article)</td>
+</tr>
+<tr>
+<td><code>max_peer_peek_articles</code></td>
+<td><code>64</code></td>
+<td>legacy; peer uses batch tools for all articles in one go</td>
+</tr>
+<tr>
+<td><code>max_db_calls_per_batch</code></td>
+<td><code>250</code></td>
+<td>per-batch CH budget</td>
+</tr>
+<tr>
+<td><code>db_query_timeout_sec</code></td>
+<td><code>15</code></td>
+<td>per tool query timeout</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1811-evals-promotion-gates-configevaljson">18.11 Evals / promotion gates (<code>config/eval.json</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Toggle</th>
+<th>Default</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>use_proxy_golden</code></strong></td>
+<td><strong>ON (<code>true</code>)</strong></td>
+<td><code>true</code> = proxy <code>cases.json</code>; <code>false</code> = planner <code>cases_planner.json</code></td>
+</tr>
+<tr>
+<td><code>gold_proxy_file</code> / <code>gold_planner_file</code></td>
+<td><code>cases.json</code> / <code>cases_planner.json</code></td>
+<td>file names under <code>evals/gold/</code></td>
+</tr>
+<tr>
+<td><code>planner_min_cases</code> / <code>planner_min_per_class</code></td>
+<td><code>50</code> / <code>20</code></td>
+<td>size gates when proxy is OFF</td>
+</tr>
+<tr>
+<td><code>promote_requires_suite_pass</code></td>
+<td><strong>ON</strong></td>
+<td>block promotion unless the offline suite passes</td>
+</tr>
+<tr>
+<td><code>gold_min_accuracy</code></td>
+<td><code>0.8</code></td>
+<td>overall correctness floor</td>
+</tr>
+<tr>
+<td><code>gold_min_drop_recall</code></td>
+<td><code>0.0</code></td>
+<td><strong>raise to attack over-keep</strong> (§9)</td>
+</tr>
+<tr>
+<td><code>gold_min_keep_recall</code></td>
+<td><code>0.0</code></td>
+<td>guard against over-dropping</td>
+</tr>
+<tr>
+<td><code>promote_requires_gold_rows</code></td>
+<td><strong>OFF</strong></td>
+<td>when ON, missing/unavailable gold blocks instead of skipping</td>
+</tr>
+<tr>
+<td><code>post_run.max_pending_fraction</code></td>
+<td><code>0.05</code></td>
+<td>tolerated fraction of <code>pending</code> agentic rows</td>
+</tr>
+<tr>
+<td><code>post_run.warn_peer_empty_fraction</code></td>
+<td><code>0.4</code></td>
+<td>warn if peer context empty above this</td>
+</tr>
+</tbody>
+</table>
+<p>Playbook to fill production planner gold: <code>evals/gold/README.md</code>.</p>
+<h3 id="1812-cli-flags-pipeline-scripts">18.12 CLI flags (pipeline &amp; scripts)</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Applies to</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--steps</code></td>
+<td><code>run_pipeline</code></td>
+<td><code>fill,deterministic,agentic,ensemble,evals,auto,all,show-config</code></td>
+</tr>
+<tr>
+<td><code>--resume</code></td>
+<td>pipeline / fill / det / agentic / load_csv</td>
+<td>skip already-done work (checkpoint / <code>ok</code> / <code>ch_load_status</code>)</td>
+</tr>
+<tr>
+<td><code>--force-fill/-det/-agentic</code></td>
+<td>pipeline</td>
+<td>overwrite (ignore resume skip)</td>
+</tr>
+<tr>
+<td><code>--no-replace</code></td>
+<td>pipeline / fill / det / agentic</td>
+<td>don't delete before insert</td>
+</tr>
+<tr>
+<td><code>--detect-new</code></td>
+<td>pipeline</td>
+<td>only re-run dirty l1×l2×week scopes</td>
+</tr>
+<tr>
+<td><code>--season(-codes)</code>, <code>--l1</code>, <code>--l2</code>, <code>--fiscal-years</code>, <code>--articles</code></td>
+<td>pipeline / scripts</td>
+<td>scope selection</td>
+</tr>
+<tr>
+<td><code>--dangerous-write-ch</code></td>
+<td><code>run_agentic</code> / <code>run_deterministic</code></td>
+<td>ops-only direct CH write (never for agents)</td>
+</tr>
+<tr>
+<td><code>--checkpoint</code></td>
+<td><code>run_fill</code></td>
+<td>override the fill resume checkpoint path</td>
+</tr>
+<tr>
+<td><code>--mode</code>, <code>--target</code>, <code>--overwrite</code>, <code>--yes</code>, <code>--no-resume</code>, <code>--chunk-size</code></td>
+<td><code>load_csv_to_ch</code></td>
+<td>publish controls (§16.6)</td>
+</tr>
+<tr>
+<td><code>--mode full/resume/force</code>, <code>--dry-run</code></td>
+<td><code>migrate_bake</code></td>
+<td>bake→main promote controls (§15)</td>
+</tr>
+</tbody>
+</table></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

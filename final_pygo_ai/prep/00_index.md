@@ -1,43 +1,40 @@
-# Final Python + Go + AI — Interview Prep Hub
+# Final PyGo + AI — Interview Prep Hub
 
 **Tarun Mittal · Senior Software Engineer · Aug 2026**
 
-Backs `final_pygo_ai/` (PDF: `Tarun_Mittal_SSE_PyGo_AI_Final.pdf`). The source track it was cut from lives in `resume_v2/`; the legacy track lives in `resume/` (each with its own `prep/`).
+Backs `final_pygo_ai/` (PDF: `Tarun_Mittal_SSE_PyGo_AI_Final.pdf`).
 
-**Summary on the PDF (verify against this):** Senior Software Engineer with 5 years designing and owning cloud-native, high-throughput distributed systems · expertise in **Python and Go** microservices, event-driven architectures, real-time and batch data processing, Agentic AI and RAG systems · proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
+**Summary on the PDF:** Senior Software Engineer with 5 years designing and owning cloud-native, high-throughput distributed systems · Expertise in Python and Go microservices, with applied experience in AI-assisted and RAG systems. · proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
-## Study order (do this)
+**Keep/Drop pipeline reference:** track copy [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md) · shared [`docs/assort_kd_flow/PIPELINE.md`](../../docs/assort_kd_flow/PIPELINE.md).
 
-1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) — every shippable number and honesty tag
-2. **[`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)** — every PDF tech: where / why / flow / numbers
-2b. **[`36_skills_ai_agents_defense.md`](36_skills_ai_agents_defense.md)** — tool calling, prompt engineering, embeddings, offline eval, LangSmith
-3. **[`33_architecture_diagrams.md`](33_architecture_diagrams.md)** — ASCII + mermaid flows for every project
-4. **[`34_er_tables_tech_why.md`](34_er_tables_tech_why.md)** — ER diagrams, table catalogs, why each tech / problem faced
-5. **[`35_table_schemas_api_design.md`](35_table_schemas_api_design.md)** — column-level schemas + API contracts (IA CH DDL, FRM ORM/routes, Menu/Masters/GFG)
-6. **[`23_project_interview_packs.md`](23_project_interview_packs.md)** — interviewer packs for every project
-   - [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md) · [`23c_masters_gfg_interview_packs.md`](23c_masters_gfg_interview_packs.md)
-7. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) — AssortSmart extra depth + source extracts `19`/`20`/`21`/`29` (CH DDL Phase-1)
-8. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
-9. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
-10. [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) + [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md)
-11. [`22_application_questions.md`](22_application_questions.md) + `../ApplicationKit.html` + **[`32_common_interview_qa.md`](32_common_interview_qa.md)** (21 classic Q&As, filled)
-11b. **[`37_senior_screen_deep_qa.md`](37_senior_screen_deep_qa.md)** — millions of reqs · prod issues · perf · core products · complex systems · deploy (full answers)
-12. [`16_ats_recruiter_report.md`](16_ats_recruiter_report.md) · [`24_job_listings_5x_ats_scorecard.md`](24_job_listings_5x_ats_scorecard.md) · [`25_panel_ats_rescore_post_flink.md`](25_panel_ats_rescore_post_flink.md) · [`26_python_job_listings_ats.md`](26_python_job_listings_ats.md) · [`27_epam_scope_validation.md`](27_epam_scope_validation.md) · **[`28_fresh_smts_genai_python_go_scorecard.md`](28_fresh_smts_genai_python_go_scorecard.md)** · [`18_resume_number_catalog.md`](18_resume_number_catalog.md)
-13. [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) — STUDY ONLY (multi-region, K8s ops, Spark, Flink, Terraform)
+## Study order
 
-## Resume at a glance (v2 grounded)
+1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) · [`00_final_resume_map.md`](00_final_resume_map.md)
+2. [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)
+3. [`10_impact_analytics_deep_dive.md`](10_impact_analytics_deep_dive.md) · Keep/Drop [`../docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md)
+4. [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md)
+5. [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md) · [`13_behavioral_why_switch.md`](13_behavioral_why_switch.md) · [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md)
+6. [`22_application_questions.md`](22_application_questions.md) · [`36_skills_ai_agents_defense.md`](36_skills_ai_agents_defense.md)
+7. Local: [`06_tech_deep_dives.md`](06_tech_deep_dives.md), [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md)
+
+## Stack notes
+
+- Write plane on this track: **Go / Gin**
+- Agent / Keep/Drop / QnA plane: **FastAPI, LangGraph, MCP**
+- Menu / ClickHouse clients stay Python where claimed
+- Skills: **AI & Agents** full list (not Applied AI)
+
+<div class="callout warn">
+<b>Honesty.</b> Keep/Drop + QnA are real assort_kd_flow work; 300-gold / ≥80% is a promotion gate — do not claim shipped to all tenants. Cluster Recommendation Copilot and Hindsight are <b>verbal only / not on PDF</b>. FRM 70% is TARGET. No Spark on PDF.
+</div>
+
+## Resume at a glance
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | Product-first AssortSmart; building (not shipped); 8.5% (37/437)→under 2% (target); ONE CH (63/8 insert-only, swap partitions + 189s→12.3s) |
-| Uber FRM | Design+architecture ownership; 8 screens, 30+ APIs, $340M, targeting 70%; led 3 |
-| Uber Menu | Selenium + Kafka/Flink + LangChain RAG/Gemini/Milvus; ANZ is **Mobility** (not Eats) |
-| Masters India | Laravel→FastAPI microservices; Kafka bulk e-invoice; p95 1.2s→300ms; 700→4,000 req/min; 1M+/day; support tickets −35% |
-| GeeksforGeeks | 10K+ daily / 10× spikes; premium +15–20% (votes/pins/locks); course sales +30% (dashboard); ops +70% (crons, separate) |
-
-Original playbook still useful for agentic Assort depth: `../resume/prep/agentic_assort_playbook/`.
-
-<div class="callout warn">
-<b>Honesty guardrail.</b> MEASURED vs TARGET vs HISTORICAL vs ESTIMATED are defined in GROUND_TRUTH. FRM 70% is a TDD target. Copilot is Phase 1 design-approved, load test pending — say <b>building</b>, not shipped. No IA TPS/RPM (none measured). Menu Kafka/Flink is Eats ingest; Masters Kafka is GST IRP — different products. ANZ is Uber <b>Mobility</b> drivers, not Eats.
-</div>
-
+| Impact Analytics | Product-first AssortSmart Keep/Drop + QnA; Go Gin write APIs; CH POC; see `23a` + `31` |
+| Uber FRM | FastAPI framing; 30+ APIs; targeting 70% from about 2 weeks to 3–4 days; led 3; see `23b` |
+| Uber Menu | Python Selenium→Kafka→Flink + RAG/Gemini/Milvus + ANZ Mobility; from 24 hours to 2 hours; see `23b` |
+| Masters India | FastAPI strangler / Kafka; see `23c` |
+| GeeksforGeeks | PHP → Django (Python); 10K+ daily; see `23c` |

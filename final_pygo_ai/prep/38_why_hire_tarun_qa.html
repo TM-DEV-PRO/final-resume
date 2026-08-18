@@ -57,7 +57,7 @@ answers you can say out loud. Technical depth lives in the project packs (<code>
 <p><strong>Honesty tags:</strong> MEASURED (instrumented) · TARGET (goal, not yet proven) · HISTORICAL (earlier
 role, not re-measured) · DESIGN (approved design, build in progress) · ESTIMATED (derived).</p>
 <div class="callout warn">
-<p><b>Never break these.</b> Agentic AssortSmart is <b>building, not shipped</b>. FRM <b>70% is a TARGET</b>.
+<p><b>Never break these.</b> AssortSmart Keep/Drop + QnA are real assort_kd_flow work; gold gate is a <b>promotion gate</b> — do not claim shipped to all tenants. Cluster Recommendation Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% is a TARGET</b>.
 Menu <b>98% / 100% is offline eval</b>, not a live SLA. <b>No Spark</b> and no IA TPS/RPM claims.
 Uber work was <b>via EPAM</b>. ANZ is Uber <b>Mobility</b>, and its 99.9% is HISTORICAL.</p>
 </div>
@@ -71,10 +71,9 @@ cloud-native, high-throughput distributed systems using <strong>Python, Go, Fast
 of improving system performance, designing high-throughput services, and building reliable,
 event-driven architectures — cutting API p95 from <strong>1.2s to 300ms</strong>, scaling a government
 e-invoicing pipeline to <strong>1M+ submissions a day</strong>, automating a menu-ingestion flow that saved
-<strong>$600K+ a year</strong>, and driving a storage migration proven on a <strong>250M-row</strong> benchmark (189s → 12.3s).</p>
+<strong>$600K+ a year</strong>, and driving a storage migration proven on a <strong>250M-row</strong> benchmark (from 189s to 12.3s).</p>
 <p>He brings strong expertise in <strong>distributed systems, microservices, concurrency, event-driven
-design, and system design (HLD/LLD)</strong>, plus <strong>Agentic AI and RAG</strong> systems, where he owns the
-architecture of a cluster-recommendation copilot. His problem-solving is evidenced by a
+design, and system design (HLD/LLD)</strong>, plus <strong>AI-assisted and RAG</strong> systems, where he owns AssortSmart Keep/Drop and dig-deeper QnA. His problem-solving is evidenced by a
 <strong>Google Code Jam</strong> qualifier rank of <strong>2260 / 37,000+</strong>, a <strong>top-3 national finish at the Smart
 India Hackathon 2020</strong>, and <strong>HackerRank Problem Solving</strong> and <strong>LangChain Academy</strong> certifications.
 His ability to own complex projects end to end, decide with measured evidence rather than opinion,
@@ -82,7 +81,7 @@ and lead and mentor engineers makes him a strong addition to any engineering tea
 </blockquote>
 <p><strong>First-person, 20-second spoken version:</strong> "I'm a senior backend engineer, 5 years, building
 cloud-native distributed systems in Python and Go. I've owned finance-grade services at Uber, scaled a
-1M-a-day pipeline at Masters India, and I now own the architecture for an agentic planning copilot.
+1M-a-day pipeline at Masters India, and I now build AssortSmart Keep/Drop and dig-deeper QnA.
 I decide with benchmarks, I own things end to end, and I can defend every number on my resume."</p>
 <div class="callout note">
 <p><b>Honesty note on the "problem-solving" line.</b> Use the real credentials above — Google Code Jam
@@ -98,7 +97,7 @@ distributed systems in Python and Go. At Uber, via EPAM, I owned the FRM Risk Sc
 ingestion end to end, which cut partner onboarding from 24 hours to 2 and saved $600K+ a year at
 30K+ menus a month. At Masters India I took a Laravel monolith to microservices, moved p95 from
 1.2 seconds to 300 milliseconds, and ran a Kafka e-invoicing path at 1M+ government submissions a
-day. Right now I own the architecture for AssortSmart's Cluster Recommendation Copilot and I drove
+day. Right now I build AssortSmart's Keep/Drop engine and dig-deeper QnA, and I drove
 ClickHouse adoption with a measured 250M-row POC that took a planning pivot from 189 seconds to
 12.3 seconds. You get architecture ownership, production discipline, and numbers I can defend.</p>
 <h3 id="12-ninety-second-answer-hiring-manager">1.2 Ninety-second answer (hiring manager)</h3>
@@ -109,11 +108,11 @@ ClickHouse adoption with a measured 250M-row POC that took a planning pivot from
    On Menu I owned acquisition, the Kafka ingest bus, Flink keyed normalize/dedupe, and the LLM
    extraction path with a hard schema gate before anything touched the catalog.</li>
 <li><strong>I make storage and platform decisions with evidence, not taste.</strong> I did not argue for
-   ClickHouse; I ran a row-identical Postgres → ClickHouse POC on 250M rows and let 189s → 12.3s
+   ClickHouse; I ran a row-identical Postgres-versus-ClickHouse POC on 250M rows and let from 189s to 12.3s
    (~15.5x, MEASURED) make the case. I also told the team where ClickHouse was <em>wrong</em> — legacy
    in-place keyed updates stay on Postgres.</li>
-<li><strong>I am honest about what is proven.</strong> The FRM 70% reconciliation cut is a TARGET. The Copilot is
-   design-approved and building, with the bring-up load test still pending. The Menu 98% fidelity /
+<li><strong>I am honest about what is proven.</strong> The FRM 70% reconciliation cut is a TARGET. Keep/Drop gold
+   (≥80% offline on 300 cases) is a promotion gate — not a claim that every tenant already runs it. The Menu 98% fidelity /
    100% schema consistency numbers are offline eval. I would rather lose a point in the interview
    than have you discover the gap in month two.</li>
 </ol>
@@ -126,11 +125,10 @@ I have not run a 50-engineer platform org, and I am not claiming multi-region or
 operations ownership. What I bring is the ability to take an ambiguous business problem, produce a
 design others can review, and ship it with instrumentation.</p>
 <h3 id="14-why-should-we-not-hire-you-biggest-risk">1.4 "Why should we <em>not</em> hire you?" / biggest risk</h3>
-<p>Say the real one: my most recent agentic work is <strong>building, not shipped</strong>, so if the role needs
-somebody who has already operated an LLM agent product at scale under live traffic, I am not the
-strongest candidate on that axis. What I do have is the design, the safety model — read-only tools,
-14 audited tools, three human gates — and the measured baseline it has to beat (8.5% clustering-run
-failures, 37 of 437, MEASURED). Then pivot to shipped evidence: Menu, FRM, and the Masters Kafka
+<p>Say the real one: Keep/Drop promotions are gated offline (300 gold / ≥80%) and I will not claim
+multi-tenant GA if they have not seen it. Cluster Recommendation Copilot / Hindsight are verbal-only
+building topics, not PDF bullets. What I do have on the PDF is Keep/Drop + SELECT-only agents +
+QnA over locked decisions + a measured ClickHouse POC. Then pivot to shipped evidence: Menu, FRM, and the Masters Kafka
 platform all ran in production.</p>
 <h3 id="15-differentiators-memorize-the-shape-not-the-words">1.5 Differentiators (memorize the shape, not the words)</h3>
 <table>
@@ -149,7 +147,7 @@ platform all ran in production.</p>
 </tr>
 <tr>
 <td>Moves real money</td>
-<td>Menu: 24h → 2h onboarding, $600K+/yr, 30K+ menus/month</td>
+<td>Menu: from 24 hours to 2 hours onboarding, $600K+/yr, 30K+ menus/month</td>
 <td>MEASURED</td>
 </tr>
 <tr>
@@ -159,7 +157,7 @@ platform all ran in production.</p>
 </tr>
 <tr>
 <td>Decides with benchmarks</td>
-<td>Postgres → ClickHouse, 250M rows, 189s → 12.3s (~15.5x)</td>
+<td>Postgres-versus-ClickHouse, 250M rows, from 189s to 12.3s (~15.5x)</td>
 <td>MEASURED POC</td>
 </tr>
 <tr>
@@ -212,7 +210,7 @@ proxy pools, and adaptive retries to 95%+ successful ingestions; a Kafka ingest 
 survives slow downstream and can be replayed after a bad parser; Flink keyed normalize and dedupe
 so a late duplicate page cannot double-apply. Unstructured menus go through LangChain RAG over
 Milvus embeddings into Gemini 2.5 Pro, then a hard schema validation gate before upsert, with
-low-confidence output sent to human review instead of the catalog. Result: 24h → 2h onboarding,
+low-confidence output sent to human review instead of the catalog. Result: from 24 hours to 2 hours onboarding,
 $600K+/yr saved, 30K+ menus a month, and 98% fidelity / 100% schema consistency in offline eval.</p>
 <h3 id="32-biggest-failure-or-mistake">3.2 Biggest failure or mistake</h3>
 <p>Use the constants-refactor regression: I changed shared constants during a refactor and broke

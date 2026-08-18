@@ -2,7 +2,7 @@
 
 Canonical copy-paste bank. HTML twin: `../ApplicationKit.html`. Keep honesty tags aligned with `GROUND_TRUTH.md`.
 
-**PDF IA sync (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse 250M POC. Long answers below still teach agent safety (14 tools / 8.5%) for screening forms — that is interview depth, not a claim that those lines are on the PDF.
+**PDF IA sync (Aug 2026):** product · Keep/Drop engine · dig-deeper QnA · ClickHouse POC from 189s to 12.3s (Agentic AssortSmart (AI-Powered Retail Merchandise Planning)). Pipeline: `../docs/assort_kd_flow/PIPELINE.md`. Long answers that still teach Cluster Copilot / 14 tools / 8.5% are **verbal / interview depth**, not PDF bullets.
 
 ---
 
@@ -18,22 +18,22 @@ Canonical copy-paste bank. HTML twin: `../ApplicationKit.html`. Keep honesty tag
 At Impact Analytics I am building the Cluster Recommendation Copilot inside AssortSmart, a merchandise-planning SaaS where retailers decide what to buy, how much, and for which stores. The autonomous path uses LangGraph (not LlamaIndex/ADK) for orchestration and MCP for a fixed tool registry. Phase 1 is design-complete with external review PASS to bring-up; the remaining gate is a bring-up load test, so I describe this as a production-bound agent system I am building and hardening, not as a claim that every tenant already runs the shipped copilot.
 
 Architecture
-Two planes. (1) An agent plane: FastAPI + LangGraph + MCP. The LLM plans, explains, and selects tools; it never invents SQL. (2) A doing plane: Go (Gin) APIs for Hindsight / Clustering / Strategy, plus a per-tenant ClickHouse planning store (63 tables / 8 layers, append-only, agent profile read-only). Manual UI and agent tools converge on the same Go APIs so auth, validation, and audit are not duplicated in the LLM path. Object artifacts land in GCS; BigQuery remains historical truth for some feeds, with a dedicated ClickHouse read plane targeting deterministic agent probes (design: p95 under 500ms vs measured BigQuery variance of 1–20s+).
+Two planes. (1) An agent plane: FastAPI + LangGraph + MCP. The LLM plans, explains, and selects tools; it never invents SQL. (2) A doing plane: Spring Boot APIs for Hindsight / Clustering / Strategy, plus a per-tenant ClickHouse planning store (63 tables / 8 layers, append-only, agent profile read-only). Manual UI and agent tools converge on the same Go APIs so auth, validation, and audit are not duplicated in the LLM path. Object artifacts land in GCS; BigQuery remains historical truth for some feeds, with a dedicated ClickHouse read plane targeting deterministic agent probes (design: p95 under 500ms vs measured BigQuery variance of 1–20s+).
 
 Orchestration logic
 LangGraph models the workflow as a stateful graph with human-in-the-loop interrupts: ground the planner’s intent → confirm a search plan → fan out batch evaluation of many cluster configs (design target ≥20, batch window 20–100) via 14 audited read-only tools → present scored options with evidence → require human approval before any write-back. Three product confirm gates keep autonomy banded: the agent can explore and recommend, but write-back only happens after human signature. Content-addressed config snapshots make approved runs reproducible. MCP is the tool contract so the agent discovers schemas at runtime and cannot invent free-form warehouse queries.
 
 Monitoring strategy
-Three layers stitched by a shared OpenTelemetry trace_id: LangSmith for agent run trees, prompt/tool replay, tokens, and evals; Datadog for FastAPI/Go HTTP, DB, and infra SLOs; PostHog for product behavior (e.g. chat abandonment vs manual wizard). That split exists because Datadog alone does not give prompt replay, and LangSmith alone does not page on Go p99 or ClickHouse health.
+Three layers stitched by a shared OpenTelemetry trace_id: LangSmith for agent run trees, prompt/tool replay, tokens, and evals; Datadog for FastAPI/Spring HTTP, DB, and infra SLOs; PostHog for product behavior (e.g. chat abandonment vs manual wizard). That split exists because Datadog alone does not give prompt replay, and LangSmith alone does not page on Go p99 or ClickHouse health.
 
 Scalability and reliability
-Scale the agent tier with LLM latency (Python), and the doing tier with request volume (Go goroutine pools, bounded bulk saves, idempotent batch ids). Reliability is engineered as constraints, not hope: DB-enforced read-only agent profile, fixed 14-tool registry, human gates before writes, append-only / versioned planning data, and measured baselines we engineer against — e.g. clustering-run failures were 8.5% (37/437 on kik, mostly input-boundary errors) with a target under 2%. A separate row-identical pivot POC (250M rows, 189s → 12.3s on ClickHouse) informed the analytics store choice before we committed the agentic read plane.
+Scale the agent tier with LLM latency (Python), and the doing tier with request volume (Spring Boot pools, bounded bulk saves, idempotent batch ids). Reliability is engineered as constraints, not hope: DB-enforced read-only agent profile, fixed 14-tool registry, human gates before writes, append-only / versioned planning data, and measured baselines we engineer against — e.g. clustering-run failures were 8.5% (37/437 on kik, mostly input-boundary errors) with a target under 2%. A separate row-identical pivot POC (250M rows, from 189s to 12.3s on ClickHouse) informed the analytics store choice before we committed the agentic read plane.
 ```
 
 ### Short answer (~120 words)
 
 ```
-I am building AssortSmart’s Cluster Recommendation Copilot with LangGraph + MCP on FastAPI, backed by a Go doing layer and a per-tenant ClickHouse planning store. LangGraph owns the stateful flow (ground → search plan → batch tool calls → human approval → write-back). MCP exposes 14 audited read-only tools so the agent never invents SQL. Reliability comes from a DB read-only profile, three human confirm gates, and content-addressed configs. Monitoring splits LangSmith (agent quality), Datadog (platform SLOs), and PostHog (product), joined by one OTEL trace_id. Phase 1 is design-approved for bring-up; load test is the remaining production gate.
+I am building AssortSmart’s Cluster Recommendation Copilot with LangGraph + MCP on FastAPI, backed by a Spring Boot doing layer and a per-tenant ClickHouse planning store. LangGraph owns the stateful flow (ground → search plan → batch tool calls → human approval → write-back). MCP exposes 14 audited read-only tools so the agent never invents SQL. Reliability comes from a DB read-only profile, three human confirm gates, and content-addressed configs. Monitoring splits LangSmith (agent quality), Datadog (platform SLOs), and PostHog (product), joined by one OTEL trace_id. Prefer Keep/Drop + QnA as the PDF story; Copilot wording below is verbal-only if the form asks for autonomous agents broadly.
 ```
 
 ### Bullet checklist
@@ -41,7 +41,7 @@ I am building AssortSmart’s Cluster Recommendation Copilot with LangGraph + MC
 ```
 • Framework: LangGraph orchestration + MCP tool registry (not LlamaIndex/ADK)
 • Product: AssortSmart Cluster Recommendation Copilot for retail merchandise planning
-• Architecture: FastAPI agent plane ↔ Go doing layer ↔ ClickHouse (append-only, agent read-only) + GCS
+• Architecture: FastAPI agent plane ↔ Spring Boot doing layer ↔ ClickHouse (append-only, agent read-only) + GCS
 • Orchestration: stateful graph with human-in-the-loop gates; 14 audited read-only tools; agent cannot write
 • Monitoring: LangSmith + Datadog + PostHog on shared OTEL trace_id
 • Reliability: read-only DB profile, approval gates, content-addressed configs; baseline failures 8.5% (37/437) → target <2%

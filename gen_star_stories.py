@@ -93,13 +93,6 @@ TRACKS = {
              "APIs are **Go / Gin**; the agent plane (planner, RAG, evals) stays **Python**.",
         addendum=HYBRID_ADDENDUM,
     ),
-    "resume_java": dict(
-        title="Behavioral / STAR stories — Java / Spring",
-        writes="Spring Boot",
-        note="Pure Java/Spring framing: non-agentic APIs are **Spring Boot / Hibernate**; the agent "
-             "plane stays **Python**.",
-        addendum=JAVA_ADDENDUM,
-    ),
 }
 
 HEADER = """# {title}

@@ -24,9 +24,9 @@ Full answers live in [`07_behavioral_star_stories.md`](07_behavioral_star_storie
 
 ## Grid
 
-| Question theme | IA Copilot / CH / Hindsight | Uber FRM | Uber Menu | Masters India | GFG |
+| Question theme | IA Keep/Drop / QnA / CH (Copilot·Hindsight verbal) | Uber FRM | Uber Menu | Masters India | GFG |
 |---|---|---|---|---|---|
-| Ownership / end-to-end | Arch owner; writes=Go / Gin; agent=Python FastAPI + LangGraph; CH POC 189s→12.3s MEASURED | 30+ APIs, 8 screens, $340M, led 3 | Selenium→Kafka→Flink→RAG gate; 24h→2h; $600K+/yr | FastAPI strangler; 1M+/day; mentored 2 | Django reliability |
+| Ownership / end-to-end | Arch owner; writes=Go / Gin; agent=Python FastAPI + LangGraph; CH POC from 189s to 12.3s MEASURED | 30+ APIs, 8 screens, $340M, led 3 | Selenium→Kafka→Flink→RAG gate; 24h→2h; $600K+/yr | FastAPI strangler; 1M+/day; mentored 2 | Django reliability |
 | Disagreement / backbone | Story 1 CH camps | Story 7 ORM vs repository | — | Sequencing debates | — |
 | Failure / mistake | — | Story 5 constants refactor | Early anti-bot misses | Story 10 near-miss | — |
 | Dive deep / debug | Schema choice×cluster×week | Story 6 coverage lie | Block-rate instrumentation | Idempotency class bug | — |
@@ -42,8 +42,8 @@ Full answers live in [`07_behavioral_star_stories.md`](07_behavioral_star_storie
 
 ## Per-project one-liners (memorize)
 
-**IA — AssortSmart Cluster Recommendation Copilot**  
-Building (not shipped). Agent plane Python FastAPI + LangGraph; write APIs Go / Gin; Hindsight; ClickHouse insert-only planning store; 250M-row POC 189s→12.3s (~15.5×) MEASURED; clustering failure baseline 8.5% (37/437) MEASURED; <1h / <2% are TARGET.
+**IA — AssortSmart Keep/Drop + QnA (PDF)**  
+Keep/Drop + dig-deeper QnA from assort_kd_flow; agents SELECT-only; 300-gold / ≥80% offline = promotion gate (not multi-tenant GA). Write APIs Go / Gin; agent plane FastAPI, LangGraph, MCP; ClickHouse POC from 189s to 12.3s (~15.5×) MEASURED. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight (building).
 
 **Uber FRM (via EPAM)**  
 FastAPI / MySQL; 30+ REST APIs; 8 screens; $340M materiality; ~55×14; led 3; 70% recon cut = TARGET.

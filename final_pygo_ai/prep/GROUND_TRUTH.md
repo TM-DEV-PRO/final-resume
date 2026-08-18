@@ -1,135 +1,56 @@
-# Ground Truth Fact Sheet (single source for v2 + Java tracks)
+# Ground Truth (Final PyGo + AI)
 
-Built from KNOWLEDGE-MATERIAL (ClickHouse POC dump, Uber FRM code + KT docs, IA PRDs, all past resumes) on 19 Jul 2026. Every resume bullet on the v2 and Java PDFs must trace to a row here. Tags: **MEASURED** (documented artifact), **TARGET** (design goal, say "targeting"), **HISTORICAL** (from past resumes, defensible), **ESTIMATED** (derived, say so).
+Self-contained for this track. Do **not** treat `resume/`, `resume_v2/`, `resume_java/`, or `campaign_pygo_xyz/` as sources of truth (those tracks are being removed).
 
-## Evidence matrix (95%+ resume-safe vs omit)
+**PDF:** `Tarun_Mittal_SSE_PyGo_AI_Final.pdf` · Project title: **Agentic AssortSmart (AI-Powered Retail Merchandise Planning)**
 
-| Claim | Confidence | Placement | Source |
-|---|---|---|---|
-| Owned Uber FRM recon v1 Sheets to MySQL v2 (18 files, +1,268 LOC) | 95% MEASURED | Resume experience | `RECON_API_MIGRATION.md`, FRM code |
-| Designed layered handler / service / repository / ORM architecture (11 models, 30+ APIs) | 95% MEASURED | Resume experience | `frm_scoping_service/` |
-| Led 3 engineers (EPAM pod) via API contracts and layered design reviews | 90% user-confirmed | Resume experience | User confirm + code conventions |
-| Led Masters PHP monolith to microservices (strangler verbally), mentored 2, p95 1.2s to 300ms | 85%+ HISTORICAL | Resume experience | Past resumes + prep |
-| Kafka + PostgreSQL quarter sharding: 100K+/import, 1M+/day (~12 TPS, 100+ peak), 700 to 4,000 RPM (~67 RPS) | 85% HISTORICAL / ESTIMATED peaks | Resume experience | Past resumes + metrics derivations |
-| Fault tolerance: idempotency keys, retries, DLQ on bulk IRP path (PDF: plain English, not “idempotent sinks”) | 75% HISTORICAL narrative | Resume experience (Masters) | Masters prep + past resumes |
-| On-call alerting via ELK + New Relic, triage ~70% faster | 75% HISTORICAL | Resume experience (Masters) | 4yr resume; baseline ~30 to <10 min ESTIMATED |
-| Design Patterns keyword (strangler, layered, repository, cache-aside, idempotency) | 90%+ pattern evidence | **OMIT from Skills** (Aug 2026) — verbal only; Backend & APIs no longer lists it | FRM code + Masters migration |
-| JUnit keyword | n/a for this track | **OMIT from Skills** (Aug 2026); Core Engineering ends at Testing | Java tests live on the Java tracks' FRM experience line |
-| Fault Tolerance / High Availability / Operational Excellence / On-call skill keywords | n/a | **OMIT from Skills** (Jul 2026) — keep only as Masters **experience** (idempotency/DLQ + ELK alerting) | User skills trim; Core uses Multithreading + Concurrency instead |
-| Kafka + Flink on Uber Menu (Selenium→Kafka→Flink keyed normalize/dedupe/replay) | 70% HISTORICAL role / ESTIMATED rates | Resume experience (Menu) | Restored Jul 2026; Spark backfills verbal/study only — not on PDF |
-| Multi-region / active-active / DR ownership | <5% | **OMIT resume** | CDC DR doc authored by Ashvin Sharma; no personal ownership |
-| Kubernetes cluster operations (kubectl/helm/operators) | <5% | **OMIT resume experience**; STUDY ONLY prep | Zero manifests / ops narrative |
-| Spark production ownership on Uber Menu | <50% verbal/study | **OMIT resume**; STUDY ONLY / interview depth | Not on PDF |
-| Terraform / IaC production ownership | <5% | **OMIT resume**; STUDY ONLY prep | Keyword blob only on old PDF |
-| CGPA 7.7/10 | MEASURED | **Removed from resume PDFs** (kept here for reference) | Education record |
-| Go (Gin) write APIs at IA; PostgreSQL by tax quarter + idempotency/retries/DLQ at Masters | MEASURED design / HISTORICAL | Resume experience | Simple-language PDF pass Jul 2026 |
+**Keep/Drop pipeline reference:** track copy [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md) · shared [`docs/assort_kd_flow/PIPELINE.md`](../../docs/assort_kd_flow/PIPELINE.md).
 
-## Career timeline (canonical)
+## Summary (PDF)
 
-| Company | Title | Dates |
-|---|---|---|
-| Impact Analytics, Bangalore | Senior Software Engineer | **14 May 2026 - Present** |
-| Uber (via EPAM Systems), Bangalore | Software Engineer (A2) / SDE2 | Jul 2024 - May 2026 |
-| Masters India, Noida | SDE 2 | Dec 2022 - Jun 2024 |
-| GeeksforGeeks, Noida | SDE | Aug 2021 - Nov 2022 |
-| IET Lucknow, B.Tech IT | CGPA **7.7/10** | Jul 2017 - Jun 2021 |
+1. Senior Software Engineer with **5 years** of experience designing and owning cloud-native, high-throughput **distributed systems**.
+2. Expertise in **Python and Go microservices**, with applied experience in **AI-assisted and RAG systems**.
+3. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
-Leadership headcounts (user confirmed): **Masters India led/mentored 2 engineers; EPAM/Uber led 3 engineers.** IA is IC so far.
+Skills line still uses **AI & Agents** (full list), not “Applied AI”.
 
-## Impact Analytics (May 2026 - Present)
+## Resume PDF IA bullets (approved)
 
-**Source scope:** Only files **directly** under `KNOWLEDGE-MATERIAL/Impact-Analytics-work/` (incl. `pivot-poc/`) plus `PRD'S/`. **Ignore** nested `ASSORTSMART-OLD-KNOWLEDGE/` and `ClickHouse-POC-Dump/`.
+1. Building **AssortSmart**, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions.
+2. Architected AssortSmart's **Keep/Drop engine** at article × plan-season grain, combining deterministic **ST%/ROS** scoring with **LangGraph** lenses, kept agents **SELECT-only** on ClickHouse through CSV-first bake-and-promote, with promotions gated on **300 gold cases** and **≥80% offline accuracy**.
+3. Built a **read-only dig-deeper QnA agent** over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes.
+4. Drove adoption of **ClickHouse** as AssortSmart's planning analytics engine, reducing pivot latency from **189s to 12.3s** (~**15.5x**) on **250M rows** through a row-identical Postgres-versus-ClickHouse POC.
 
-| Claim | Tag | Source |
-|---|---|---|
-| Product: AssortSmart helps retailers decide **what to buy / how much / which stores** | MEASURED product framing | Overview §1 + Copilot FRD |
-| Copilot targets: days → under **1 hour**; **1 → ≥20** (design batch **20–100**) configs/plan | TARGET | Copilot FRD §0 / §2 |
-| Failures **8.5%** = **37/437** (kik); **>80%** input-boundary | MEASURED | Copilot FRD §1 |
-| Failures toward **under 2%**; reproducibility **0→100%** | TARGET | Copilot FRD §0 / §6 |
-| **14** audited read-only tools; **3** human confirm gates; agent never writes SQL | DESIGN | Overview + Copilot FRD |
-| Per-tenant **ClickHouse**: **63 tables / 8 layers** (incl. 7 stage twins), insert-only / refresh by swapping partitions (PDF wording); agent **`readonly=1`**; service roles **INSERT-only** | MEASURED design | Confluence DDL Phase-1 v1.5 (`29_ia_ch_ddl_phase1_source.md`) |
-| **5** dictionaries · **19** argMax views · **4/3/2** roles/profiles/quotas · **58** ops mapped; syntax PASS on CH **25.12** | MEASURED design | same |
-| Overview inventory “**60** tables” vs DDL “**63**” — default **63**; do **not** recite **624 columns** (not on Phase-1 page) | Honesty | same |
-| External review **PASS**; **zero runtime evidence** on this schema — load test at bring-up; say **building**, not shipped | MEASURED design status | Overview + DDL Phase-1 |
-| HLD stack: FastAPI + **LangGraph/MCP**; Go doing layer; CH + GCS; LangSmith/Datadog/PostHog | DESIGN + confirmed | `final_agenticassort.png` |
-| **ONE resume CH bullet (Aug 2026):** Drove adoption of **ClickHouse** as AssortSmart's planning analytics engine, improving pivot latency **189s → 12.3s** (~**15.5×**) on **250M** rows by running a row-identical **Postgres → ClickHouse** POC. | MEASURED POC | `pivot-poc` / `21_ia_pivot_benchmark_source.md` |
-| **63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1` | MEASURED design | Interview depth (`29_…`); **not on current PDF** (folded into ownership + POC story) |
-| Line-plan: projected **~12B** → **~25M** aggregate; month rollup **sub-second**; cell edit **~0.4 ms** (PG measured) | PROJECTED 12B / MEASURED ops | **OMIT from PDF** (Jul 2026) — verbal/study via `20_…` / pack `23a` |
-| HLR scenario cap **3–5** | DESIGN | `PRD'S/…HLR_v1.1.docx` |
-| Agent probes: BQ **1–20s+** → CH **p95 <500ms** | MEASURED / TARGET | Copilot FRD |
+**Stack on this track:** agent plane = FastAPI, LangGraph, MCP; write plane = Go / Gin. IA agent plane Python FastAPI + LangGraph; write APIs Go / Gin. Keep/Drop + QnA are real assort_kd_flow work; gold gate is promotion/design — do not claim shipped to all tenants.
 
-**Resume PDF IA bullets (Aug 2026):** (1) AssortSmart product job (2) Cluster Recommendation Copilot architecture ownership (FastAPI/LangGraph/MCP + Go Gin or Spring Boot) (3) Hindsight prior-season decision layer (4) Postgres→ClickHouse 250M POC evidence. Say **building**, not shipped. **Off PDF (interview):** 8.5%/14 tools/3 gates, under 1h / ≥20 TARGET, 63/8 DDL detail, line-plan 12B. No IA TPS/RPM. Hybrid PG write-back is prep-only history.
+**Honesty:** Keep/Drop and QnA are real work from `assort_kd_flow`. The 300-gold / ≥80% offline accuracy line is a **promotion gate / design** — do **not** invent “shipped to all tenants.”
 
-## Uber FRM (Jul 2024 - May 2026)
+## Verbal only / not on PDF (building)
 
-| Claim | Tag | Source |
-|---|---|---|
-| FRM Risk Scoping backend: FastAPI + MySQL (UI separate; not claimed), replaces Google Sheets / legacy Flask workbook, feeds PwC audit work papers | MEASURED | TDD, code dump |
-| 8 screens (Recon, Materiality, EMI, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary) | MEASURED | TDD, Scoping Features |
-| **30+ REST endpoints** (code truth: 32 routes + health; do NOT say 36 unless counting collab service) | MEASURED | scoping_handler.py |
-| **11-table** SQLAlchemy 2.0 schema (balance_sheet, income_statement, emi_data, frm_metrics_table, scoping_questions, scoping_assessments, threshold_table_v2, level_mapping, component_entity, recon_balance_sheet, recon_income_statement); full schema.uql 16+ | MEASURED | database/models/ |
-| Layered handler / service / repository / ORM architecture, MySQLManager cached engine, auth via x-auth-params-email header middleware | MEASURED | code |
-| Recon v1 (Sheets-backed) to v2 (MySQL) API migration, branch tmitta1/recon-income-api-migration, 18 files, +1268 lines | MEASURED, personally owned | RECON_API_MIGRATION.md |
-| ~1125 unit tests (pytest + mocks) across ~65 files, Bazel uber_py_test | MEASURED | code |
-| SQLAlchemy 2.0 Mapped models, aliased() joins, hybrid raw SQL; column-aliasing bug fix plausible pattern | MEASURED style; bug fix HISTORICAL (own prep) | code |
-| Materiality $340M, residual threshold $170M, ~26 BS / ~29 IS FSLIs (resume says "55 financial line items"), 14 entities, 10-Q recon | MEASURED (Q4 2025 sample) | CSVs |
-| **70% reduction in manual ingestion + reconciliation time = PROJECT TARGET (TDD goal)**, not measured. Resume wording: targeting a **70% cut (~2 weeks to ~3–4 days)** — from-to is ESTIMATED analyst calendar baseline | TARGET + ESTIMATED baseline | TDD 3.1; v1 resume brackets |
-| 19M GL rows to 300K: **UNSUPPORTED** (raw dumps 76K / 38K / 95K rows). DROPPED from resumes. Real scale: raw GL extracts up to ~95K rows/quarter, ~1.7-1.8K accounts, ~400 entities | MEASURED | CSVs |
-| Led 3 engineers (EPAM pod) | User confirmed | - |
+- **Cluster Recommendation Copilot** — architecture / FRD / deep-dive; not a PDF headline bullet.
+- **Hindsight** — prior-season decision layer; not a PDF headline bullet.
+- Off-PDF interview depth: 8.5% (37/437) → under 2% TARGET · 14 tools · 3 gates · 63/8 DDL · line-plan ~12B → ~25M · under 1h / ≥20 configs TARGET.
 
-## Uber Menu Ingestion (same employment)
+## Stack framing (this PDF)
 
-All HISTORICAL from original resume + 4yr ops numbers: 30K+ menus/month, onboarding 24h to 2h (90%), $2/menu cost killed = $600K+/yr, +95% ingestion success (anti-bot).
+- FRM / Masters APIs: FastAPI framing where this track claims it.
+- Menu scraping and AI extraction: **Python unchanged**.
+- IA: IA agent plane Python FastAPI + LangGraph; write APIs Go / Gin. Keep/Drop + QnA are real assort_kd_flow work; gold gate is promotion/design — do not claim shipped to all tenants.
+- GFG on PDF: **PHP → Django (Python)**.
 
-**Unstructured → structured extraction (PDF claim):** multilingual / multi-format menus (**PDFs, images**) → Uber Eats catalog schema via **LangChain RAG + Gemini 2.5 Pro** over **Milvus** (labeled-menu embeddings) → schema validation gate → **98% fidelity / 100% schema consistency** (**offline eval**, HISTORICAL from 4yr resume). **No SFT on PDF** (removed Jul 2026 — 100% schema is the validation gate, not fine-tune).
+## Evidence boundary
 
-**Why Milvus:** Named on 4yr resume Databases line (`Milvus` + “Vector Databases” under GenAI). Fits production RAG with LangChain better than unnamed “vector store”; self-hosted/scale path vs Pinecone managed. Do not invent Pinecone/Weaviate ownership.
+- Resume-safe: FRM ownership + layered architecture; Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call (experience). Skills use **AI & Agents** full list.
+- Menu has Kafka + Flink (keyed normalize/dedupe/replay) on PDF. Omit Spark, multi-region, K8s ops, Terraform from resume.
+- Metric prose everywhere: **from about 2 weeks to 3–4 days**; **from 24 hours to 2 hours**; **from 189s to 12.3s** (not arrow form in spoken/written prose).
+- CGPA removed from resume PDFs.
 
-**Fidelity:** 4yr exact: “increasing extraction fidelity by 98%” + “100% data consistency for menus.” Tag **HISTORICAL offline eval** — not a live SLA.
+## Deep dives (this track)
 
-**Resume PDF (Aug 2026):** Owned E2E Menu on GCP = **Selenium → Kafka → Flink** + **LangChain RAG / Gemini 2.5 Pro / Milvus** hard schema gate (no SFT) + **95%+** scrape fleet; ANZ Mobility = local-authority doc checks **99.9%** / ~20h/week HISTORICAL. Do not put ~200–500 events/sec parentheticals or Spark/Pinot on the PDF.
+- `10_impact_analytics_deep_dive.md` · `23a_ia_interview_pack.md`
+- `11_uber_frm_deep_dive.md` · `14_uber_menu_deep_dive.md`
+- `12_masters_gfg_deep_dive.md` · `13_behavioral_why_switch.md`
+- `17_senior_systems_study_only.md` · `36_skills_ai_agents_defense.md`
+- Keep/Drop pipeline: `../docs/assort_kd_flow/PIPELINE.md`
 
-| Claim | Tag | Source |
-|---|---|---|
-| Python automation for **driver and vehicle documents** vs local authorities for **Uber drivers / earners in ANZ** | HISTORICAL | 4yr resume exact wording (“Uber earners in the ANZ region”) |
-| **99.9%** compliance | HISTORICAL | same |
-| **20 hours/week** manual verification removed | HISTORICAL only | Same 4yr resume line — **not** independently re-measured from logs/telemetry in this repo. Defend as past-resume HISTORICAL; do not invent a measurement study. |
-| Separate project under Uber Mobility — **not** Menu / Uber Eats; say **Uber drivers in ANZ** (no “main-app”) | Resume decision Jul 2026 | User + past wording |
-
-## Masters India (Dec 2022 - Jun 2024)
-
-| Claim | Tag |
-|---|---|
-| Led PHP (**Laravel**) monolith to Python FastAPI microservices migration; mentored **2 engineers** | HISTORICAL + user |
-| p95 latency 1.2s to 300ms (75%) for enterprise clients | HISTORICAL (all resumes agree at 1000-1200 to 300-400ms) |
-| Throughput **700 to 4,000 RPM** under peak load | HISTORICAL (2.5yr resume) |
-| Redis caching cut redundant DB queries ~30% | HISTORICAL (2.5yr) |
-| Audit Logs feature reduced client churn ~15% | HISTORICAL (2.5yr) — prep depth; not required on PDF |
-| Bulk e-invoicing 100K+ txns/import, **1M+ daily** IRP submissions (~12 TPS avg, 100+ TPS peak ESTIMATED), **1,500+ clients** (use 1500+, drop 2500+ which appears only once) | HISTORICAL |
-| Coverage 35% to 82%, 98% deployment success | HISTORICAL |
-| ELK + New Relic on-call alerting, triage -70% (~30 min to <10 min ESTIMATED baseline) | HISTORICAL |
-| Client usage dashboard / log downloads cut support tickets **~35%** | HISTORICAL (4yr) — on PDF with triage bullet |
-| Fault tolerance on bulk IRP path: idempotency keys (client + file hash + batch index), exponential backoff retries, dead-letter replay | HISTORICAL (prep + past narratives) |
-| KMS encryption, RBAC, JWT, audit logging for compliance | HISTORICAL — prep depth; off PDF unless space |
-
-## GeeksforGeeks (Aug 2021 - Nov 2022)
-
-| Claim | Tag |
-|---|---|
-| PHP to Django migration, **10,000+ daily queries** (user-chosen scale; old resumes said 1000+ doubts/day, 4yr said 100K, we standardize 10K+) | User decision |
-| Voting / pinning / **locking** REST APIs, +15-20% premium subscriptions (relative) | HISTORICAL (1yr/2.5yr include locking) |
-| Influencer dashboard (earnings, transactions, coupons, filters), +30% course sales | HISTORICAL — **own bullet** (do not mix with video crons) |
-| Cron orchestration (video processing, reminders, recording cleanup), +70% ops efficiency | HISTORICAL — **separate bullet** from course-sales |
-| Email/SMTP optimization 50% faster sends, rate limiting | HISTORICAL (1yr/2.5yr) — prep depth |
-
-## Achievements / education
-
-- Code Jam 2260 / 37,000+ (2021). SIH 2020 finalist, top 3 nationally. **Global AI Hackathon, EPAM Systems**. CGPA 7.7/10 kept in ground truth only; **removed from v2 and Java resume PDFs** per Jul 2026 hardening.
-- Certificates verified in `KNOWLEDGE-MATERIAL/certificates.txt`: **HackerRank Problem Solving** (`7e492a2e11be`) and **LangChain Academy** (`vkkkoij3ke`).
-
-## Why-switch narratives (see behavioral prep)
-
-- GFG to Masters India (1.2yr): scope jump from feature work to owning a platform migration.
-- Masters to EPAM/Uber (1.5yr): scale jump, global product, Uber-grade engineering practices.
-- Uber to IA (1.9yr): agentic AI + data platform ownership at senior level.
-- IA (joined 14 May 2026) exploring after ~2 months: role fit / charter honesty (see prep for exact framing; never badmouth).
+Verified certificates: **HackerRank Problem Solving** and **LangChain Academy**.

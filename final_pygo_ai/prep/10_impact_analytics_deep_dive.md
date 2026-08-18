@@ -14,7 +14,7 @@
 I joined Impact Analytics as a Senior Software Engineer on 14 May 2026. My charter sits at the intersection of two workstreams:
 
 1. **Agentic AssortSmart data plane:** ClickHouse/GCS as the end-to-end planning store — insert-only versioned writes (`ReplacingMergeTree` + `argMax`) so the doing layer is not stuck on classic OLTP mutations. BigQuery stays upstream historical truth (BQ→CH ingest). Thin Postgres metadata only if asked.
-2. **Agentic product:** Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL `trace_id`.
+2. **PDF product path:** Keep/Drop + dig-deeper QnA (`assort_kd_flow`). **Verbal / not on PDF:** Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL `trace_id`.
 
 I am an IC so far (no people lead at IA). CDC platform tooling (`pg2ch_cdc`) was authored by another engineer (Ashvin Sharma). Copilot: Phase 1 design approved (external review PASS); bring-up load test pending. Obs stack on the resume is **MEASURED design / instrumentation**, not sole SaaS ownership.
 
@@ -210,7 +210,7 @@ Aligned to AssortSmart HLR v1.1 (behavioral + constraints) and Copilot Phase-1 F
 
 ---
 
-## 4. Resume bullet 1: Cluster Recommendation Copilot
+## 4. Verbal only / not on PDF: Cluster Recommendation Copilot (was prior PDF bullet)
 
 > Building the Cluster Recommendation Copilot for AssortSmart, an agentic store clustering module where an LLM agent (LangGraph, MCP) plans and calls 14 audited tools while a deterministic engine computes clusters, with human approval gates before any write. Targets are plan turnaround under 1 hour (from days), 20+ configurations evaluated per run (from 1), and run failures under 2% (from a measured 8.5%).
 
@@ -269,7 +269,7 @@ Aligned to AssortSmart HLR v1.1 (behavioral + constraints) and Copilot Phase-1 F
 
 ## 5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)
 
-> **Resume PDF (Aug 2026):** product · Cluster Recommendation Copilot ownership · Hindsight · Postgres→ClickHouse **250M 189s→12.3s (~15.5×)** evidence. **Off PDF:** 63/8 DDL detail, 8.5%/14 tools, line-plan 12B. Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.
+> **Resume PDF (Aug 2026):** product · Keep/Drop engine · dig-deeper QnA · ClickHouse POC from **189s to 12.3s** on **250M** (~15.5×). Project title: **Agentic AssortSmart (AI-Powered Retail Merchandise Planning)**. Pipeline: `../docs/assort_kd_flow/PIPELINE.md`. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight · 63/8 DDL · 8.5%/14 tools · line-plan 12B. Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.
 
 ### 5.1 Exact story with numbers (memorize these)
 

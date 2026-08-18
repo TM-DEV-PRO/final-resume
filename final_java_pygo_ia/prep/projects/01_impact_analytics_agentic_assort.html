@@ -40,36 +40,35 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final Java+PyGo IA</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/prep/projects/01_impact_analytics_agentic_assort.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-agentic-assortsmart-java-history-pygo-ia">Impact Analytics — Agentic AssortSmart (Java history + PyGo IA)</a>
-<a class="lvl2" href="#1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</a>
-<a class="lvl2" href="#2-service-split-say-it-exactly">2. Service split (say it exactly)</a>
-<a class="lvl2" href="#3-go-gin-doing-layer-defend-the-resume-bullet">3. Go Gin doing layer — defend the resume bullet</a>
-<a class="lvl2" href="#4-agentic-microservice-python-unchanged-ownership">4. Agentic microservice (Python — unchanged ownership)</a>
-<a class="lvl2" href="#5-clickhouse-end-to-end-poc-numbers">5. ClickHouse end-to-end + POC numbers</a>
-<a class="lvl2" href="#6-stack-evolution-correct-order">6. Stack evolution (correct order)</a>
-<a class="lvl2" href="#7-qa-hybrid-flavored">7. Q&amp;A (hybrid-flavored)</a></nav>
-<main><h1 id="impact-analytics-agentic-assortsmart-java-history-pygo-ia">Impact Analytics — Agentic AssortSmart (Java history + PyGo IA)</h1>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-assortsmart-retail-merchandise-planning-platform">Impact Analytics — AssortSmart (Retail Merchandise Planning Platform)</a>
+<a class="lvl2" href="#pdf-bullets-say-these">PDF bullets (say these)</a>
+<a class="lvl2" href="#elevator-pitch-30-seconds">Elevator pitch (30 seconds)</a>
+<a class="lvl2" href="#honesty">Honesty</a>
+<a class="lvl2" href="#clickhouse-poc">ClickHouse POC</a>
+<a class="lvl2" href="#qa">Q&amp;A</a></nav>
+<main><h1 id="impact-analytics-assortsmart-retail-merchandise-planning-platform">Impact Analytics — AssortSmart (Retail Merchandise Planning Platform)</h1>
 <p><strong>Role:</strong> Senior Software Engineer · 14 May 2026 – Present · Bangalore<br>
-<strong>Resume tech:</strong> Go · Gin · Python · FastAPI · LangGraph · MCP · ClickHouse · BigQuery · GCS · Datadog · LangSmith · PostHog · Docker  </p>
+<strong>Resume tech:</strong> FastAPI, LangGraph, MCP · write plane <strong>Go / Gin</strong> · ClickHouse · BigQuery · GCS · Datadog · LangSmith · PostHog · Docker  </p>
 <blockquote>
-<p>Same facts as <code>../../resume_v2/prep/10_impact_analytics_deep_dive.md</code> and <code>GROUND_TRUTH.md</code>. This file matches the <strong>hybrid PDF</strong>: IA = FastAPI/LangGraph/MCP + <strong>Go Gin</strong> (same as PyGo). Uber/Masters stay Spring elsewhere.</p>
+<p>Ground truth: <a href="../GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>. Keep/Drop pipeline: <a href="../../docs/assort_kd_flow/PIPELINE.html"><code>../../docs/assort_kd_flow/PIPELINE.md</code></a> · shared <a href="../../../docs/assort_kd_flow/PIPELINE.html"><code>../../../docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
 </blockquote>
 <hr>
-<h2 id="1-elevator-pitch-30-seconds">1. Elevator pitch (30 seconds)</h2>
-<p>"Four stories on AssortSmart. Copilot cuts clustering from days toward under one hour and from one to 20–100 configs — FastAPI/LangGraph owns chat, Go Gin is the doing layer. Safety moves failures from a measured 8.5% toward under 2% with read-only tools and three human gates. The same Go Gin Hindsight/Clustering/Strategy APIs serve agents and manual screens, with Datadog, LangSmith, and PostHog on one OTEL trace. Pivot hybrid cuts 250M Hindsight grids from 189s to 12.3s on ClickHouse reads while Postgres keeps cell edits; line-plan avoided 12B store-week rows via a ~25M aggregate; agentic planning store is ClickHouse insert-only. Phase 1 design PASS, load test pending."</p>
-<h2 id="2-service-split-say-it-exactly">2. Service split (say it exactly)</h2>
-<p>"Path A: FE → FastAPI <code>POST /chat</code> → LLM → tools → <strong>Go Gin doing layer</strong> → CH/GCS. Path M: FE → Go Gin REST → <strong>same</strong> doing modules — no LLM. FastAPI owns chat because agent loops are LLM-latency-shaped. Go Gin owns doing because Path M is throughput I/O (goroutines, static binary). Agent never bypasses Gin for mutations; probe DB profiles stay read-only."</p>
-<h2 id="3-go-gin-doing-layer-defend-the-resume-bullet">3. Go Gin doing layer — defend the resume bullet</h2>
-<p>Resume: <em>Built the chat plane (FastAPI, LangGraph, MCP) and shared write APIs (Go, Gin) so tools and product writes share one auth and audit path.</em></p>
+<h2 id="pdf-bullets-say-these">PDF bullets (say these)</h2>
+<ol>
+<li>Building <strong>AssortSmart</strong>, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions.</li>
+<li>Architected AssortSmart's <strong>Keep/Drop engine</strong> at article × plan-season grain, combining deterministic <strong>ST%/ROS</strong> scoring with <strong>LangGraph</strong> lenses, kept agents <strong>SELECT-only</strong> on ClickHouse through CSV-first bake-and-promote, with promotions gated on <strong>300 gold cases</strong> and <strong>≥80% offline accuracy</strong>.</li>
+<li>Built a <strong>read-only dig-deeper QnA agent</strong> over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes.</li>
+<li>Drove adoption of <strong>ClickHouse</strong> as AssortSmart's planning analytics engine, reducing pivot latency from <strong>189s to 12.3s</strong> (~<strong>15.5x</strong>) on <strong>250M rows</strong> through a row-identical Postgres-versus-ClickHouse POC.</li>
+</ol>
+<h2 id="elevator-pitch-30-seconds">Elevator pitch (30 seconds)</h2>
+<p>"Four PDF stories on AssortSmart. Keep/Drop scores article × plan-season with ST%/ROS plus LangGraph lenses; agents stay SELECT-only on ClickHouse via CSV bake-and-promote; promotions gate on 300 gold cases and ≥80% offline accuracy. Dig-deeper QnA explains locked Keep/Drop without writing outcomes. ClickHouse POC took a planning pivot from 189s to 12.3s on 250M rows. Write plane on this track is Go / Gin; agent plane stays Python/LangGraph."</p>
+<h2 id="honesty">Honesty</h2>
 <ul>
-<li><strong>Hindsight / Clustering / Strategy</strong> — Gin handlers + service packages shared by Path M and Path A tool calls.</li>
-<li><strong>JWT</strong> — Gin middleware; tenant + role claims.</li>
-<li><strong>Bulk / tool I/O</strong> — bounded goroutine worker pool; request deadlines on CH clients; idempotency via batch id + content hash; versioned batch INSERT into ClickHouse.</li>
-<li><strong>Obs</strong> — OTEL <code>trace_id</code> into Datadog (L2 platform). Claim <strong>instrumentation design</strong>, not sole SaaS ownership. LangSmith stays on the Python agent tier (L1); PostHog on product/FE.</li>
+<li>Keep/Drop + QnA = real <code>assort_kd_flow</code> work.</li>
+<li>300-gold / ≥80% = <strong>promotion gate / design</strong> — not “shipped to all tenants.”</li>
+<li><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight (building / deep-dive via <code>01b_hindsight_defense.md</code> if asked).</li>
 </ul>
-<h2 id="4-agentic-microservice-python-unchanged-ownership">4. Agentic microservice (Python — unchanged ownership)</h2>
-<p>Same FRD targets: 20–100 configs vs 1; under 1h (TARGET); 8.5% → under 2% (MEASURED/TARGET); 100% reproducible (TARGET); p95 probes under 500ms vs BQ 1–20s (MEASURED/TARGET).</p>
-<h2 id="5-clickhouse-end-to-end-poc-numbers">5. ClickHouse end-to-end + POC numbers</h2>
+<h2 id="clickhouse-poc">ClickHouse POC</h2>
 <table>
 <thead>
 <tr>
@@ -80,56 +79,17 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>ClickHouse/GCS planning store (insert-only versions)</td>
-<td>MEASURED design</td>
-<td>HLD + Jul 2026 stack direction</td>
-</tr>
-<tr>
-<td>250M Hindsight pivot <strong>189s → 12.3s</strong> (~15×) via CH reads + PG cell edits</td>
+<td>from <strong>189s to 12.3s</strong> (~15.5×) on <strong>250M</strong> row-identical PG vs CH</td>
 <td>MEASURED</td>
-<td><code>pivot-poc/</code>; ~15.5× with option-count; typical ~2–3×; PG write ~14× tuned</td>
-</tr>
-<tr>
-<td>Avoided <strong>12B</strong> flat (<strong>100–450×</strong>)</td>
-<td>MEASURED / projected 12B</td>
-<td>Aggregate ~25M; explode ~25 ms</td>
-</tr>
-<tr>
-<td>Hardware</td>
-<td>MEASURED</td>
-<td>PG 48 GB host vs CH 10 CPU / 3.3 GB VM</td>
-</tr>
-<tr>
-<td>Hybrid decision rule (aggregate→CH, cell edit→PG)</td>
-<td>MEASURED</td>
-<td>Same rule as line-plan POC; agentic store still insert-only CH</td>
-</tr>
-<tr>
-<td>Legacy mtp-assort no wholesale CH</td>
-<td>MEASURED</td>
-<td>Fix BigQuery first</td>
-</tr>
-<tr>
-<td>Order Batching 60×</td>
-<td>MEASURED prep</td>
-<td>Offer if asked</td>
+<td><code>pivot-poc/</code> · <code>21_ia_pivot_benchmark_source.md</code></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Interview close:</strong> "POCs said hybrid for legacy keyed UPDATE. Agentic AssortSmart changed the write model — planning facts are ClickHouse end-to-end."</p>
-<h2 id="6-stack-evolution-correct-order">6. Stack evolution (correct order)</h2>
-<ol>
-<li>Live audit: no wholesale CH for legacy in-place UPDATEs — correct for that write model.</li>
-<li>Pivot + line-plan POCs → CH wins large reads; schema flat→agg is the bigger lever; hybrid for classic OLTP.</li>
-<li>Insert-only / versioned write PoC → <code>mutations_used = 0</code>.</li>
-<li>Jul 2026: agentic-assort commits ClickHouse end-to-end for planning data; HLD shows doing layer → ClickHouse/GCS.</li>
-</ol>
-<h2 id="7-qa-hybrid-flavored">7. Q&amp;A (hybrid-flavored)</h2>
+<h2 id="qa">Q&amp;A</h2>
 <ul>
-<li><strong>"Hibernate / JPA on ClickHouse?"</strong> No — clickhouse-go (or HTTP). Thin metadata may stay on Postgres; FRM/Masters JPA is a different product.</li>
-<li><strong>"Why not Spring Boot write APIs here?"</strong> That framing is <code>final_java_ai</code>. This PDF matches PyGo IA: Go Gin for shared writes. LangGraph/MCP stay Python.</li>
-<li><strong>"Why Gin?"</strong> Radix router, middleware chain, <code>ShouldBindJSON</code>; team familiarity. Rejected fiber (fasthttp / <code>net/http</code> mismatch).</li>
-<li><strong>"What shipped vs POC?"</strong> CH planning-store direction = MEASURED design (HLD/stack). Pivot/line-plan numbers = MEASURED harness. Copilot = Phase 1 design PASS, load test pending.</li>
+<li><strong>"Shipped to all tenants?"</strong> No — gold gate is the promotion bar; say continuous present / gated rollout.</li>
+<li><strong>"What about Cluster Copilot / Hindsight?"</strong> Verbal only / not on PDF — building context if they ask.</li>
+<li><strong>"Hibernate on ClickHouse?"</strong> No.</li>
 </ul></main>
 </div>
 

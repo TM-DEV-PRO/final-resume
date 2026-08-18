@@ -1,5 +1,8 @@
 # Behavioral / managerial rounds — 10 STAR stories
 
+
+> **PDF IA (Aug 2026):** Keep/Drop · dig-deeper QnA · ClickHouse POC. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`.
+
 Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness signals** (intellectual humility, bias to action, collaboration, comfort with ambiguity, doing the right thing). Tell them in 60–90 seconds: one line of Situation, one of Task, 3–4 concrete Actions, quantified Result, and a one-line Lesson. Never share the same story twice in one loop — this bank gives you coverage.
 
 **Coverage matrix**

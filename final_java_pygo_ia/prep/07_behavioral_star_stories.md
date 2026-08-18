@@ -1,5 +1,8 @@
 # Behavioral / STAR stories — Final Java + PyGo IA (primary)
 
+
+> **PDF IA (Aug 2026):** Keep/Drop · dig-deeper QnA · ClickHouse POC. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`.
+
 **Self-contained** behavioral bank — the full 10 stories are below, so you never leave this track
 to prep. Outcomes, Amazon Leadership Principle mapping, and Googliness signals are identical across
 every resume track; only the **stack wording** differs. On this track Uber FRM and Masters India are **Spring Boot**; the AssortSmart write APIs are **Go / Gin**; the agent plane (planner, RAG, evals) stays **Python**.

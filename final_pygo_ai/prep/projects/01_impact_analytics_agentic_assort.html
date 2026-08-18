@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>01_impact_analytics_agentic_assort — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final PyGo+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/prep/projects/01_impact_analytics_agentic_assort.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-agentic-assortsmart-ai-powered-retail-merchandise-planning">Impact Analytics — Agentic AssortSmart (AI-Powered Retail Merchandise Planning)</a>
+<a class="lvl2" href="#pdf-bullets-say-these">PDF bullets (say these)</a>
+<a class="lvl2" href="#elevator-pitch-30-seconds">Elevator pitch (30 seconds)</a>
+<a class="lvl2" href="#honesty">Honesty</a>
+<a class="lvl2" href="#clickhouse-poc">ClickHouse POC</a>
+<a class="lvl2" href="#qa">Q&amp;A</a></nav>
+<main><h1 id="impact-analytics-agentic-assortsmart-ai-powered-retail-merchandise-planning">Impact Analytics — Agentic AssortSmart (AI-Powered Retail Merchandise Planning)</h1>
+<p><strong>Role:</strong> Senior Software Engineer · 14 May 2026 – Present · Bangalore<br>
+<strong>Resume tech:</strong> FastAPI, LangGraph, MCP · write plane <strong>Go / Gin</strong> · ClickHouse · BigQuery · GCS · Datadog · LangSmith · PostHog · Docker  </p>
+<blockquote>
+<p>Ground truth: <a href="../GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>. Keep/Drop pipeline: <a href="../../docs/assort_kd_flow/PIPELINE.html"><code>../../docs/assort_kd_flow/PIPELINE.md</code></a> · shared <a href="../../../docs/assort_kd_flow/PIPELINE.html"><code>../../../docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
+</blockquote>
+<hr>
+<h2 id="pdf-bullets-say-these">PDF bullets (say these)</h2>
+<ol>
+<li>Building <strong>AssortSmart</strong>, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions.</li>
+<li>Architected AssortSmart's <strong>Keep/Drop engine</strong> at article × plan-season grain, combining deterministic <strong>ST%/ROS</strong> scoring with <strong>LangGraph</strong> lenses, kept agents <strong>SELECT-only</strong> on ClickHouse through CSV-first bake-and-promote, with promotions gated on <strong>300 gold cases</strong> and <strong>≥80% offline accuracy</strong>.</li>
+<li>Built a <strong>read-only dig-deeper QnA agent</strong> over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes.</li>
+<li>Drove adoption of <strong>ClickHouse</strong> as AssortSmart's planning analytics engine, reducing pivot latency from <strong>189s to 12.3s</strong> (~<strong>15.5x</strong>) on <strong>250M rows</strong> through a row-identical Postgres-versus-ClickHouse POC.</li>
+</ol>
+<h2 id="elevator-pitch-30-seconds">Elevator pitch (30 seconds)</h2>
+<p>"Four PDF stories on AssortSmart. Keep/Drop scores article × plan-season with ST%/ROS plus LangGraph lenses; agents stay SELECT-only on ClickHouse via CSV bake-and-promote; promotions gate on 300 gold cases and ≥80% offline accuracy. Dig-deeper QnA explains locked Keep/Drop without writing outcomes. ClickHouse POC took a planning pivot from 189s to 12.3s on 250M rows. Write plane on this track is Go / Gin; agent plane stays Python/LangGraph."</p>
+<h2 id="honesty">Honesty</h2>
+<ul>
+<li>Keep/Drop + QnA = real <code>assort_kd_flow</code> work.</li>
+<li>300-gold / ≥80% = <strong>promotion gate / design</strong> — not “shipped to all tenants.”</li>
+<li><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight (building / deep-dive via <code>01b_hindsight_defense.md</code> if asked).</li>
+</ul>
+<h2 id="clickhouse-poc">ClickHouse POC</h2>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Tag</th>
+<th>Defense</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>from <strong>189s to 12.3s</strong> (~15.5×) on <strong>250M</strong> row-identical PG vs CH</td>
+<td>MEASURED</td>
+<td><code>pivot-poc/</code> · <code>21_ia_pivot_benchmark_source.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="qa">Q&amp;A</h2>
+<ul>
+<li><strong>"Shipped to all tenants?"</strong> No — gold gate is the promotion bar; say continuous present / gated rollout.</li>
+<li><strong>"What about Cluster Copilot / Hindsight?"</strong> Verbal only / not on PDF — building context if they ask.</li>
+<li><strong>"Hibernate on ClickHouse?"</strong> No.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

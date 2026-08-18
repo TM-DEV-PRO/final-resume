@@ -37,38 +37,6 @@ TRACKS = [
         stack="Python, Go, FastAPI, Gin, Kafka, Flink, Redis, PostgreSQL, ClickHouse, "
               "and cloud platforms (AWS, GCP)",
     ),
-    dict(
-        d="resume_v2/prep", label="Python/Go v2 (source)",
-        langs="Python and Go", frm="FastAPI, MySQL", writes="Go, Gin",
-        pdf="Tarun_Mittal_SSE_5yr_v2.pdf",
-        email="tm.eng2021@gmail.com", phone="(+91) 9001542418",
-        stack="Python, Go, FastAPI, Gin, Kafka, Flink, Redis, PostgreSQL, ClickHouse, "
-              "and cloud platforms (AWS, GCP)",
-    ),
-    dict(
-        d="resume_java/prep", label="Java/Spring (source)",
-        langs="Java and Python", frm="Spring Boot, MySQL", writes="Spring Boot",
-        pdf="Tarun_Mittal_SSE_Java_5yr.pdf",
-        email="tm.eng2021@gmail.com", phone="(+91) 9001542418",
-        stack="Java, Python, Spring Boot, FastAPI, Kafka, Flink, Redis, PostgreSQL, "
-              "ClickHouse, and cloud platforms (AWS, GCP)",
-    ),
-    dict(
-        d="campaign_pygo_xyz/interview_prep", label="Campaign PyGo XYZ",
-        langs="Python and Go", frm="FastAPI, MySQL", writes="Go, Gin",
-        pdf="Tarun_Mittal_SSE_PyGo_XYZ.pdf",
-        email="tm.eng2021@gmail.com", phone="(+91) 9001542418",
-        stack="Python, Go, FastAPI, Gin, Kafka, Flink, Redis, PostgreSQL, ClickHouse, "
-              "and cloud platforms (AWS, GCP)",
-    ),
-    dict(
-        d="resume/prep", label="Python/Go (legacy)",
-        langs="Python and Go", frm="FastAPI, MySQL", writes="Go, Gin",
-        pdf="Tarun_Mittal_SSE_5yr.pdf",
-        email="tm.eng2021@gmail.com", phone="(+91) 9001542418",
-        stack="Python, Go, FastAPI, Gin, Kafka, Flink, Redis, PostgreSQL, ClickHouse, "
-              "and cloud platforms (AWS, GCP)",
-    ),
 ]
 
 TEMPLATE = """# Why hire Tarun — screening & behavioral Q&A bank

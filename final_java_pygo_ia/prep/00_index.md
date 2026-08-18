@@ -5,7 +5,12 @@
 Backs `final_java_pygo_ia/` (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`).
 
 **Same as** `final_java_ai` for Uber FRM / Menu / ANZ / Masters / GFG (Java/Spring framing).  
-**IA difference:** AssortSmart = FastAPI + LangGraph + MCP + **Go Gin** write APIs (same as `final_pygo_ai`).
+**IA difference:** AssortSmart = FastAPI + LangGraph + MCP + **Go Gin** write APIs (same as `final_pygo_ai`).  
+**Project title on this PDF:** AssortSmart (Retail Merchandise Planning Platform).
+
+**Summary on the PDF:** Senior Software Engineer with 5 years designing and owning cloud-native, high-throughput distributed systems · Expertise in Java, Python and Go microservices, with applied experience in AI-assisted and RAG systems. · proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
+
+**Keep/Drop pipeline reference:** track copy [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md) · shared [`docs/assort_kd_flow/PIPELINE.md`](../../docs/assort_kd_flow/PIPELINE.md).
 
 ## Study order
 
@@ -14,26 +19,27 @@ Backs `final_java_pygo_ia/` (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`).
 3. [`37_senior_screen_deep_qa.md`](37_senior_screen_deep_qa.md) · [`32_common_interview_qa.md`](32_common_interview_qa.md)
 4. FRM/Menu/Masters: [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) · [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
 5. [`36_skills_ai_agents_defense.md`](36_skills_ai_agents_defense.md) · diagrams/schemas `33`/`34`/`35`
+6. Keep/Drop pipeline: [`../docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md)
 
 ## Stack mapping (this hybrid)
 
 | Area | Claim on this PDF |
 |---|---|
-| AssortSmart chat | FastAPI, LangGraph, MCP |
+| AssortSmart chat / Keep/Drop / QnA | FastAPI, LangGraph, MCP |
 | AssortSmart writes | **Go Gin** |
 | FRM / Masters | Spring Boot / JPA / Hibernate |
 | Menu / GFG | Python (Selenium→Kafka→Flink; PHP→Django) |
 
 <div class="callout warn">
-<b>Honesty.</b> Building not shipped for AssortSmart. FRM 70% is TARGET. Do not say Spring Boot write APIs for IA on this track — that is <code>final_java_ai</code> only. No Spark on PDF.
+<b>Honesty.</b> Keep/Drop + QnA are real assort_kd_flow work; gold gate is promotion/design — not “shipped to all tenants.” Cluster Recommendation Copilot and Hindsight are <b>verbal only / not on PDF</b>. FRM 70% is TARGET. Do not say Spring Boot write APIs for IA on this track — that is <code>final_java_ai</code> only. No Spark on PDF.
 </div>
 
 ## Resume at a glance
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | Product-first AssortSmart; FastAPI+Go Gin; ONE CH bullet; see `23a` |
-| Uber FRM | Spring Boot + JPA; 30+ APIs; targeting 70%; led 3; see `23b` |
-| Uber Menu | Python Selenium→Kafka→Flink + RAG/Gemini/Milvus + ANZ Mobility; see `23b` |
+| Impact Analytics | Product-first AssortSmart Keep/Drop + QnA; FastAPI+Go Gin; CH POC; see `23a` |
+| Uber FRM | Spring Boot + JPA; 30+ APIs; targeting 70% from about 2 weeks to 3–4 days; led 3; see `23b` |
+| Uber Menu | Python Selenium→Kafka→Flink + RAG/Gemini/Milvus + ANZ Mobility; from 24 hours to 2 hours; see `23b` |
 | Masters India | Laravel→Spring Boot; Kafka + PG; see `23c` |
 | GeeksforGeeks | PHP → Django (Python); 10K+ daily; see `23c` |

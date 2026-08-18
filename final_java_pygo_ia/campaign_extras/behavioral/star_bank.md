@@ -1,5 +1,8 @@
 # Behavioral / managerial rounds — 10 STAR stories (Final Java + PyGo IA)
 
+
+> **PDF IA (Aug 2026):** Keep/Drop · dig-deeper QnA · ClickHouse POC. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`.
+
 > For this track's stack-correct wording per story (Spring Boot for Uber/Masters, Go/Gin for AssortSmart writes, Python agent plane), see [`../../prep/07_behavioral_star_stories.md`](../../prep/07_behavioral_star_stories.md). Outcomes and LP mapping below are identical.
 
 Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness signals** (intellectual humility, bias to action, collaboration, comfort with ambiguity, doing the right thing). For Microsoft LinkedIn Apple Netflix Atlassian Salesforce mappings see `company_behavior_guides.md`. Tell them in 60–90 seconds: one line of Situation, one of Task, 3–4 concrete Actions, quantified Result, and a one-line Lesson. Never share the same story twice in one loop — this bank gives you coverage.

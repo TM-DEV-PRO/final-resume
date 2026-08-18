@@ -15,7 +15,7 @@ real experience and the honesty tags in `GROUND_TRUTH.md`.
 - Company LP guides: [`company_behavior_guides.md`](../campaign_extras/behavioral/company_behavior_guides.md)
 
 <div class="callout warn">
-<b>Never break these.</b> AssortSmart Copilot is <b>building, not shipped</b>. FRM <b>70% is a TARGET</b>.
+<b>Never break these.</b> Keep/Drop gold gate is a <b>promotion gate</b> (not multi-tenant GA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% is a TARGET</b>.
 Menu <b>98%/100% is offline eval</b>. <b>No Spark / SFT</b>. Uber work was <b>via EPAM</b>.
 ANZ 99.9% is HISTORICAL Mobility work. Do not invent a LeetCode rating.
 </div>
@@ -103,7 +103,7 @@ Stack on this track: FRM = **Spring Boot / MySQL** · AssortSmart writes = **Go 
 
 ### G1. Tell me about yourself (60–90s)
 
-"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Java, Python and Go**. Chronologically: GeeksforGeeks backend reliability → Masters India, where I led a **Spring Boot strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned the FRM Risk Scoping backend (30+ APIs, 8 screens, $340M materiality, led 3) and Uber Eats menu ingestion end to end (24h→2h, $600K+/yr) → Impact Analytics, where I own AssortSmart Cluster Recommendation Copilot architecture (**Python FastAPI + LangGraph**, write APIs in **Go / Gin**) and drove ClickHouse adoption with a measured 250M-row POC. I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
+"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Java, Python and Go**. Chronologically: GeeksforGeeks backend reliability → Masters India, where I led a **Spring Boot strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned the FRM Risk Scoping backend (30+ APIs, 8 screens, $340M materiality, led 3) and Uber Eats menu ingestion end to end (from 24 hours to 2 hours, $600K+/yr) → Impact Analytics, where I build AssortSmart Keep/Drop and dig-deeper QnA (**FastAPI, LangGraph, MCP**, write APIs in **Go / Gin**) and drove ClickHouse adoption with a measured 250M-row POC. I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
 
 Stop. Do not append hobbies unless asked.
 

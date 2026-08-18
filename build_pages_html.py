@@ -90,7 +90,6 @@ SKIP_NAMES = {
 
 # Hand-maintained rich pages the generic converter must never overwrite.
 PROTECTED_HTML = {
-    "resume_v2/ApplicationKit.html",
     "final_pygo_ai/ApplicationKit.html",
 }
 
@@ -99,10 +98,6 @@ TRACK_LABELS = [
     ("final_java_pygo_ia", "Final Java+PyGo IA"),
     ("final_java_ai", "Final Java+AI"),
     ("final_pygo_ai", "Final PyGo+AI"),
-    ("resume_v2", "Python/Go v2"),
-    ("resume_java", "Java/Spring"),
-    ("campaign_pygo_xyz", "Campaign track"),
-    ("resume", "Legacy Python/Go"),
 ]
 
 
@@ -218,10 +213,6 @@ def write_folder_indexes() -> None:
     """Directory index.html listing sibling HTML pages (no raw .md links)."""
     # Track landing pages owned by hand — do not overwrite.
     skip = {
-        os.path.join(BASE, "campaign_pygo_xyz"),
-        os.path.join(BASE, "resume_v2"),
-        os.path.join(BASE, "resume_java"),
-        os.path.join(BASE, "resume"),
         os.path.join(BASE, "final_java_ai"),
         os.path.join(BASE, "final_java_pygo_ia"),
         os.path.join(BASE, "final_pygo_ai"),
@@ -344,14 +335,6 @@ def main() -> None:
     outs = [o for o in (convert_file(md) for md in files) if o]
     write_folder_indexes()
     for hub in (
-        os.path.join("campaign_pygo_xyz", "InterviewPrep.html"),
-        os.path.join("campaign_pygo_xyz", "CampaignCards.html"),
-        os.path.join("resume_v2", "ApplicationKit.html"),
-        os.path.join("resume_v2", "InterviewPrep.html"),
-        os.path.join("resume_java", "ApplicationKit.html"),
-        os.path.join("resume_java", "InterviewPrep.html"),
-        os.path.join("resume", "ApplicationKit.html"),
-        os.path.join("resume", "InterviewPrep.html"),
         os.path.join("final_java_ai", "InterviewPrep.html"),
         os.path.join("final_java_ai", "ApplicationKit_deep.html"),
         os.path.join("final_java_pygo_ia", "InterviewPrep.html"),

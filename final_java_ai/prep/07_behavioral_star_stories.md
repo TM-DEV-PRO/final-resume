@@ -1,5 +1,8 @@
 # Behavioral / STAR stories — Final Java + AI
 
+
+> **PDF IA (Aug 2026):** Keep/Drop · dig-deeper QnA · ClickHouse POC. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`.
+
 **Self-contained** behavioral bank — the full 10 stories are below, so you never leave this track
 to prep. Outcomes, Amazon Leadership Principle mapping, and Googliness signals are identical across
 every resume track; only the **stack wording** differs. On this track the AssortSmart write plane is framed as **Spring Boot**; the agent plane (planner, RAG, evals) stays **Python**.
