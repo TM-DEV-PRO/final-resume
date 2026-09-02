@@ -1,0 +1,36 @@
+%============================================================================%
+%  IMPACT ANALYTICS / ASSORTSMART  (page 1)
+%============================================================================%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{May 2026 -- Present}\\
+\end{tabularx}
+\vspace{-1.35ex}
+
+\textcolor{Project}{\textbf{AssortSmart --- Senior Software Engineer (Platform \& AI)}}
+\vspace{0.25ex}
+
+\textcolor{Project}{\textit{Platform Engineering \& Infrastructure}}
+\vspace{-0.65ex}
+\begin{zitemize}
+    \item Architected a multi-tenant \textbf{Go/Gin} platform scaling to \textbf{10k peak RPS}, utilizing \textbf{Google Wire} for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native \textbf{h2c}, nested timeouts, and \textbf{Datadog} distributed tracing.
+    \item Accelerated retail analytics performance by \textbf{15.5x}, slashing pivot query latency from \textbf{189s to 12s} on \textbf{250M-row} operations. Migrated the data layer to \textbf{ClickHouse}, scaling the catalog to process \textbf{1.6M} article-season combinations and \textbf{2.4B} weekly rollup rows.
+    \item Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into safe, \texttt{ifNotFinite}-wrapped ClickHouse SQL fragments, decoupling business logic from code releases.
+    \item Guaranteed strict multi-tenant data boundaries and UAM-scoped hierarchy access across the platform. Secured system entry by implementing a Redis-fronted Firebase Admin to JWT/Google OIDC verification waterfall, constant-time API keys, and Postgres-backed role resolution.
+    \item Enforced zero-regression engineering practices by designing a \textbf{100.0\%} statement-coverage CI gate (race and atomic) across \textbf{1,200+} Go tests. Hardened the Bitbucket deployment pipeline with automated golangci-linting, pre-push hooks, and continuous SAST/SBOM security scanning.
+\end{zitemize}
+
+\textcolor{Project}{\textit{Agentic Flows \& Orchestration}}
+\vspace{-0.65ex}
+\begin{zitemize}
+    \item Architected a multi-pipeline AI merchandise decision engine (\textbf{Keep/Drop}, Missed Opportunities, Top Style) evaluating \textbf{335K+} products across multiple seasons. Optimized inference at scale---processing \textbf{88k} items per pass for under \textbf{\$100} token spend---by blending deterministic KPI math with structured LLM invokes across \textbf{7 AI lenses}.
+    \item Guaranteed zero-data-corruption across a \textbf{2.11B-row} ClickHouse fact table by physically air-gapping batch LLM execution from database queries. Ensured fault tolerance using ClickHouse \texttt{ReplacingMergeTree} for two-phase inserts, feeding models via JSON payloads and falling back to deterministic scores upon LLM failure.
+    \item Engineered a resilient AI orchestration registry to safely manage high-throughput LLM workloads across millions of tokens. Guaranteed stable parallel batch processing via custom circuit breakers and durable checkpoints, embedding \textbf{LangSmith} and custom per-run JSON telemetry to track exact token costs, step durations, and batch fallbacks.
+    \item Shipped ``Ask Iris,'' a WebSocket AI copilot enabling planners to interactively query multi-billion-row KPIs, generate dynamic charts, and drill down into AI decisions. Architected the underlying \textbf{LangGraph} orchestration---featuring a Supervisor router and Evaluator loop---enforcing socket-level frozen scopes to guarantee data isolation and prevent infinite LLM loops.
+    \item Established rigorous AI deployment guardrails by building a \textbf{300-case} offline evaluation harness and a $\geq$\textbf{80\%} accuracy CI promotion gate. Prevented degraded rollouts by benching candidate agent configurations against a \textbf{74\%} deterministic baseline, ensuring provable business value before production release.
+    \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.
+\end{zitemize}

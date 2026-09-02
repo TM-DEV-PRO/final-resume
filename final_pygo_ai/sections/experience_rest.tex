@@ -1,0 +1,60 @@
+%============================================================================%
+%  UBER + MASTERS + GFG  (page 2+)
+%============================================================================%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
+\end{tabularx}
+\vspace{-1.6ex}
+
+\textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform}}
+\vspace{-0.88ex}
+\begin{zitemize}
+    \item Owned the Financial Risk Management scoping backend, reducing quarterly reconciliation time by \textbf{70\%} (from \textbf{14 days to 3 days}) against a \textbf{\$340M} materiality threshold. Engineered the Sheets-to-MySQL migration across \textbf{19M} raw GL rows, shipping \textbf{36 FastAPI} endpoints to automate custom financial math and a nested 4-level FSLI (L1--L4) hierarchy with dynamic quarter-annualization.
+    \item Resolved ETL pipeline lock contention during financial close by designing an 8-table normalized MySQL schema on Uber's SOADB featuring a polymorphic review-status model. Guaranteed real-time, multi-user collaboration integrity by implementing optimistic row-locking, atomic cross-table syncs, and deterministic SHA-256 natural-key hashing to eliminate data duplication across quarterly audit trails.
+    \item Led \textbf{3 engineers} in a core SQLAlchemy 2.0 ORM migration that eliminated latent column-aliasing bugs and raised module statement coverage to \textbf{100\%}. Orchestrated zero-downtime releases via stacked Bazel PRs, embedding reporting SQL allowlists and automated FSM gates with \textbf{50\%} delta-variance checks to enforce SOX compliance.
+    \item \textbf{Tech} -- Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, Docker.
+\end{zitemize}
+
+\textcolor{Project}{\textbf{Menu Ingestion \& Automation (Uber Eats)}}
+\vspace{-0.88ex}
+\begin{zitemize}
+    \item Accelerated restaurant onboarding from \textbf{24 hours to 2 hours} and saved \textbf{\$600K} annually by architecting an automated ingestion pipeline processing \textbf{30K+} menus monthly. Converted unstructured, multilingual PDFs into a strict catalog schema at \textbf{98\%} field fidelity utilizing a \textbf{Gemini 2.5 Pro} and \textbf{LangChain RAG} pipeline over \textbf{Milvus} vector embeddings.
+    \item Scaled menu extraction success to \textbf{95\%+} by hardening a Selenium fleet with dynamic proxy pools and adaptive retries, orchestrating downstream data ingestion via a \textbf{Kafka} event bus. Engineered a resilient streaming pipeline using \textbf{Apache Flink} to execute stateful keyed deduplication and schema normalization, guaranteeing exactly-once processing for catalog upserts.
+    \item \textbf{Tech} -- Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
+\end{zitemize}
+
+\textcolor{Project}{\textbf{Document Compliance (Uber Mobility)}}
+\vspace{-0.88ex}
+\begin{zitemize}
+    \item Achieved \textbf{99.9\%} regulatory compliance for Uber Mobility ANZ by automating driver and vehicle document verification workflows against local authority requirements. Eliminated \textbf{20 hours} of manual operational overhead per week by replacing manual review queues with a deterministic validation backend.
+\end{zitemize}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
+\end{tabularx}
+\vspace{-1.6ex}
+
+\textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
+\vspace{-0.88ex}
+\begin{zitemize}
+    \item Reduced p95 API latency by \textbf{75\%} (from \textbf{1.2s to 300ms}) across \textbf{1,500+} enterprise clients by spearheading the migration of a legacy PHP monolith to a \textbf{FastAPI} microservices architecture. Mentored two engineers through the transition, optimizing backend design to drive overall system throughput from \textbf{700 to 4,000 requests per minute}.
+    \item Architected a bulk e-invoicing pipeline processing \textbf{1M+} daily government submissions by orchestrating a \textbf{Kafka} event bus and a \textbf{PostgreSQL} database horizontally sharded by tax quarter. Guaranteed exactly-once processing for \textbf{100K+} concurrent imports by implementing idempotency keys, dead-letter queues, and bounded retries against volatile state IRP portals.
+    \item Decreased incident triage time by \textbf{70\%} and lowered database read load by \textbf{30\%} by instrumenting \textbf{ELK} and \textbf{New Relic} distributed tracing alongside a Redis caching layer. Hardened the CI/CD release cycle by driving test coverage from \textbf{35\% to 82\%}, achieving a \textbf{98\%} deployment success rate across the microservices ecosystem.
+    \item \textbf{Tech} -- Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
+\end{zitemize}
+
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
+\end{tabularx}
+\vspace{-1.55ex}
+\begin{zitemize}
+    \item Stabilized the doubt-support platform to handle \textbf{10K+} daily queries and \textbf{10x} traffic spikes during live coding contests by migrating the backend to \textbf{Django}. Engineered high-throughput REST APIs for voting, pinning, and locking threads utilizing MySQL, MongoDB, Redis, and Elasticsearch, driving a \textbf{20\%} lift in premium subscriptions.
+    \item Accelerated platform course sales by \textbf{30\%} by launching an influencer analytics and earnings dashboard to dynamically track transactions and affiliate coupon conversions. Increased engineering operational efficiency by \textbf{70\%} by designing asynchronous scheduled workflows for automated video processing, user reminders, and data cleanup.
+\end{zitemize}

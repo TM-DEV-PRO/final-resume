@@ -10,9 +10,19 @@ Expert in {Java and Python | Python and Go | Java, Python and Go} microservices,
 
 Proven track record of bridging enterprise data with fault-tolerant AI by deploying LangGraph multi-agent systems, Milvus RAG architectures, and deterministic evaluation harnesses to deliver measurable business impact.
 
-## Skills categories
+## Skills (AssortSmart tab)
 
-Languages · Backend & APIs · AI & Applied ML · Data & Streaming · Databases & Storage · Cloud & DevOps · Architecture & Core
+Languages · Backend & APIs · AI & Applied ML · Data & Streaming · Databases & Storage · Cloud & DevOps · Architecture & Core Concepts
+
+Tab list (Python/Go). Java and hybrid tracks add Java + Spring Boot/MVC/Security/Data JPA/Hibernate/Spring Batch + Maven; keep every tab skill including Go, FastAPI, Gin, Pydantic, Celery, asyncio, DynamoDB.
+
+- Languages: Python, Go (Golang), SQL, C, C++
+- Backend & APIs: FastAPI, Gin, Django, REST, gRPC, Pydantic, Celery, asyncio
+- AI & Applied ML: LangGraph, LangChain, RAG, Milvus, pgvector, LLM Agents (OpenAI/Gemini/Claude), LangSmith, Offline Evaluation
+- Data & Streaming: Apache Kafka, Apache Flink, ClickHouse, BigQuery, ETL Pipelines
+- Databases & Storage: PostgreSQL, MySQL, Redis, MongoDB, Elasticsearch, DynamoDB, S3
+- Cloud & DevOps: GCP, AWS, Docker, Kubernetes, Bazel, CI/CD, Datadog, ELK, New Relic
+- Architecture & Core Concepts: Distributed Systems, Microservices, System Design (HLD/LLD), Database Sharding, Concurrency, Idempotency
 
 ## Impact Analytics / AssortSmart — Platform Engineering & Infrastructure
 
