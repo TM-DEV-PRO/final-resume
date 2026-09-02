@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>DECISIONS — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="index.html">← All tracks</a><a href="all_pages.html">All pages</a><span class="path">OUT_2026-09_faang/DECISIONS.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#faang-batch-resume-rebuild-decisions-sept-2026">FAANG batch — resume rebuild decisions (Sept 2026)</a>
+<a class="lvl2" href="#1-claims-removed-and-why">1. Claims REMOVED, and why</a>
+<a class="lvl2" href="#2-what-the-rewrite-adds-that-wasnt-there">2. What the rewrite adds that wasn't there</a>
+<a class="lvl2" href="#3-ats-coverage-vs-the-8-jds">3. ATS coverage vs the 8 JDs</a>
+<a class="lvl2" href="#4-where-to-send-which-and-honest-fit">4. Where to send which — and honest fit</a>
+<a class="lvl2" href="#5-interview-landmines-to-pre-empt">5. Interview landmines to pre-empt</a>
+<a class="lvl2" href="#6-structural-issues-i-did-not-fix-they-need-your-call">6. Structural issues I did NOT fix (they need your call)</a>
+<a class="lvl2" href="#7-second-adversarial-pass-post-xyz-rewrite-corrections-applied">7. Second adversarial pass (post-XYZ rewrite) — corrections applied</a></nav>
+<main><h1 id="faang-batch-resume-rebuild-decisions-sept-2026">FAANG batch — resume rebuild decisions (Sept 2026)</h1>
+<p>Two variants built in this directory. <strong>Nothing in <code>final_pygo_ai/</code>, <code>final_java_ai/</code>, or <code>final_java_pygo_ia/</code> was modified.</strong></p>
+<ul>
+<li><code>pygo_ai/</code> — Python + Go + AI. Primary.</li>
+<li><code>java_pygo_ia/</code> — Java + Python + Go + AI. Keeps the existing track's Spring Boot framing for FRM and Masters.</li>
+</ul>
+<p>Both compile to <strong>2 comfortable pages</strong>. Verify locally: <code>cd pygo_ai &amp;&amp; pdflatex resume.tex</code> twice.</p>
+<p><strong>Layout (revised):</strong> body <strong>10/12.3pt</strong> (was 9.4/10.15), margins <strong>0.6in</strong> left/right (was 0.2in), bullet itemsep 2.2pt (was 0.55pt), section spacing loosened, and a continuation footer carrying name + page number on page 2. The Java variant runs at 9.9/12.0 with marginally tighter spacing because the Spring Boot tech lines are wordier — content is identical, the difference is imperceptible.</p>
+<p>Because two pages freed up room, the bullets that had been <strong>merged purely to save space are restored</strong>: ANZ Driver Compliance is its own project block again, "Led 3 engineers" is its own bullet, Masters and GeeksforGeeks are back to 4 bullets each, the Summary is back to 3 bullets, and Achievements to 3.</p>
+<p>See <code>SCORECARD.md</code> for the audit against the original rejection reasons and per-JD ATS coverage.</p>
+<hr>
+<h2 id="1-claims-removed-and-why">1. Claims REMOVED, and why</h2>
+<p>Verified against the actual source in <code>~/Desktop/Agentic-Assort</code> (both repos) plus <code>KNOWLEDGE-MATERIAL/</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Removed</th>
+<th>Verdict</th>
+<th>Where it was</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MCP</strong> (Model Context Protocol)</td>
+<td><strong>Zero references</strong> in either repo — no <code>mcp</code>, <code>fastmcp</code>, <code>modelcontextprotocol</code>, no imports. Tools are LangChain <code>StructuredTool</code>.</td>
+<td>Was in the Tech line and Skills of the live resume</td>
+</tr>
+<tr>
+<td>"<strong>≥80% offline accuracy</strong>" phrased as an achievement</td>
+<td>It is a <em>configured gate</em>, and the agent <strong>fails it</strong>: <code>docs/TELEMETRY_GOLD200.md</code> records 4 models at <strong>57.0–63.2%</strong> vs a <strong>$0 deterministic baseline at 74%</strong>, with your own doc saying the free signal beats every model.</td>
+<td>Old bullet implied it was met</td>
+</tr>
+<tr>
+<td>"2.4B weekly rows / 106M rollup / 1.6M article-season / 335K articles / 16B combinations / 5 seasons"</td>
+<td><strong>None of these figures exist anywhere.</strong> Real numbers are in <code>assort_kd_flow/docs/TELEMETRY.md:145-165</code>.</td>
+<td>The AI-generated bullets you pasted</td>
+</tr>
+<tr>
+<td>"1,144 test functions"</td>
+<td>Actual count is <strong>1,227</strong> (<code>grep -rn "^func Test" --include=*.go</code>). Resume says "1,200+" so it cannot rot.</td>
+<td>pasted bullets</td>
+</tr>
+<tr>
+<td>"64-article batches in ~24 seconds"</td>
+<td>64 is real (<code>max_articles_per_llm_batch</code>). The 24s is not: real per-batch durations are <strong>94.8–268.7s</strong>, and the only nearby number is a <strong>572s timeout budget</strong>.</td>
+<td>pasted bullets</td>
+</tr>
+<tr>
+<td>"10 modules / 30 routes"</td>
+<td><strong>36 routes</strong> in the 8 shipping modules (the 4 in <code>internal/server/router.go</code> are commented-out examples; framework meta routes add 3). Only <strong>8 of 10 modules ship</strong> — <code>lineplanning</code> and <code>strategy</code> are <code>// TODO: register this module's routes</code> scaffolds.</td>
+<td>pasted bullets</td>
+</tr>
+<tr>
+<td>Terraform, deep Kubernetes</td>
+<td>Not in your evidence base; your own <code>GROUND_TRUTH.md</code> says omit them.</td>
+<td>(not added despite 2–3 JDs asking)</td>
+</tr>
+<tr>
+<td>C, C++</td>
+<td>Listed in Skills, used in zero bullets. Reads as keyword padding. Google Ads accepts "Python <strong>or</strong> C++" — Python satisfies it.</td>
+<td>old Skills line</td>
+</tr>
+</tbody>
+</table>
+<h3 id="claims-kept-because-they-verified">Claims KEPT because they verified</h3>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>189s → 12.3s (~15.5x) on 250M rows</td>
+<td><code>KNOWLEDGE-MATERIAL/Impact-Analytics-work/ClickHouse-vs-Postgres-POCs.docx</code>: <code>250M PG 189,408 / 250M CH 12,256</code> ms. <strong>Not</strong> in the repos — the artifact is the docx. Carry the caveat: the doc itself says ~13–15x, hosts were unequal (PG 48GB vs CH 3.3GB Docker), and ~90% of the gap is <code>COUNT(DISTINCT)</code>; strip it and typical aggregates are ~2–3x.</td>
+</tr>
+<tr>
+<td>100% statement-coverage CI gate, 1,200+ tests</td>
+<td><code>scripts/coverage.sh:12</code> THRESHOLD=100.0, <code>Makefile cover-check</code>, <code>lefthook.yml</code> pre-push, <code>bitbucket-pipelines.yml</code>. Committed <code>coverage.out</code> shows <strong>99.93%</strong> (5 uncovered blocks) — pre-empt this if asked.</td>
+</tr>
+<tr>
+<td>Google Wire DI, h2c, 10MiB cap, 10/30/130/120s budgets, 2s-per-hook SIGTERM drain</td>
+<td>All verified exactly: <code>go.mod</code> wire v0.7.0, <code>cmd/server/main.go:21</code> StartH2CServer, <code>httpserver/constant.go:9,31,33,37,43,49</code>, <code>app/shutdown.go:26,45</code>.</td>
+</tr>
+<tr>
+<td>SELECT-only enforcement, six layers</td>
+<td>Prompt ban (<code>assort_kd_flow/prompts/md/db_safety.md</code>), no-raw-SQL tool contract, regex statement guard (<code>assort_kd_flow/tools/ch_read.py:16-39</code>), table allowlist, per-run budgets, and <code>pipeline_registry/freeze.py:48-52</code> which <strong>refuses to boot</strong> if writes are enabled. Genuinely strong.</td>
+</tr>
+<tr>
+<td>88,863 articles / 20,265 LLM calls / 8.25h / $821</td>
+<td><code>docs/TELEMETRY.md:60-90</code>, real season-76 production run. <strong>205/min is the peak</strong> (session 4 of 4: 122/149/188/205); sustained over the pass is ~177/min. Resume says "peak 205".</td>
+</tr>
+<tr>
+<td>2.11B-row ClickHouse fact table</td>
+<td><code>TELEMETRY.md:157</code> (16.9B at <code>:162</code>, second tenant).</td>
+</tr>
+<tr>
+<td>300 gold cases</td>
+<td><code>evals/gold/cases.json</code> is exactly 300.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="late-corrections-from-the-adversarial-pass-applied-to-both-variants">Late corrections from the adversarial pass (applied to both variants)</h3>
+<table>
+<thead>
+<tr>
+<th>Was</th>
+<th>Now</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"LangGraph supervisor graph over 7 weighted evidence lenses"</td>
+<td>Lens scoring described as a <strong>bounded parallel fan-out over 8 gated, weighted lenses</strong>; <strong>LangGraph StateGraph/ToolNode</strong> moved onto the dig-deeper QnA bullet where it actually lives</td>
+<td>Two different subsystems. Lens scoring is a hand-written fan-out/fan-in orchestrator (<code>engines/agentic.py:4-5</code>, gate at <code>lenses/gate.py:8-42</code>) with no StateGraph. The LangGraph supervisor is <code>orchestration/graph.py:137-153</code>, and its nodes are worker agents serving the QnA plane. Anyone opening the repo sees this in a minute.</td>
+</tr>
+<tr>
+<td>"7 lenses"</td>
+<td>"<strong>8</strong> gated, weighted lenses"</td>
+<td><code>config/decision.json</code> defines 8 summing to 1.0. Typically 7 fire per article — say that verbally.</td>
+</tr>
+<tr>
+<td>"38 REST routes"</td>
+<td>"<strong>36</strong> REST routes"</td>
+<td>38 had no clean derivation.</td>
+</tr>
+<tr>
+<td>"4 LLMs at 57--63%"</td>
+<td>"<strong>4 models at 57--62%</strong>"</td>
+<td>63.2% is <code>gpt-4o-mini</code> at <strong>n=19 of 200</strong>, marked in your own <code>TELEMETRY_GOLD200.md:3</code> as "not a quality estimate". Never quote it.</td>
+</tr>
+<tr>
+<td>"it benchmarked 4 LLMs" (implying the 300 set)</td>
+<td>"a <strong>200-case balanced proxy run</strong> benchmarked..."</td>
+<td>The gold file holds 300 cases; the model benchmark ran on 200 (100 keep / 100 drop).</td>
+</tr>
+<tr>
+<td>"RBAC" in the bullet</td>
+<td>"<strong>UAM-backed store/product access checks</strong>"</td>
+<td>No role model in the Go repo; authorization is code/dimension-scope intersection delegated to UAM (<code>platform/uam/access_check.go:21-30</code>). RBAC stays in Skills only.</td>
+</tr>
+<tr>
+<td>"Redis ... degrades open"</td>
+<td>"over a Redis-fronted user store"</td>
+<td>"Degrades open" is security vocabulary for <em>bypassing</em> a check. The real behavior is cache-miss fallthrough to Postgres (<code>platform/usermaster/resolver.go:100-145</code>). A security interviewer would have caught it.</td>
+</tr>
+<tr>
+<td>"provider circuit breakers" / "adaptive per-call timeouts"</td>
+<td>folded into "bounded parallel fan-out"; details kept in Skills</td>
+<td>The breaker is <strong>run-level</strong> (fail-fraction + consecutive-fail abort, <code>engines/agentic.py:1386-1396</code>), not per-provider; timeouts are <strong>batch-size-derived</strong>, not feedback-adaptive.</td>
+</tr>
+<tr>
+<td>"hash-frozen CSV"</td>
+<td>"<strong>config-hash-stamped</strong> CSV bake-and-promote"</td>
+<td>The <em>config</em> is SHA-256 hashed (<code>freeze.py:95</code>), not the CSV.</td>
+</tr>
+<tr>
+<td>Skills: Liquibase, DynamoDB, pgvector</td>
+<td><strong>removed</strong></td>
+<td>Liquibase: zero hits anywhere. DynamoDB: appears only in your own old skills line — same argument that cut C/C++. pgvector: <code>36_skills_ai_agents_defense.md:22</code> tags it "literacy"; Milvus is the real one and is listed.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Kept with a known caveat:</strong> <code>gRPC</code> in Skills (only real evidence is <code>UBER_PORT_GRPC</code> opened by Uber's internal scaffold — say "exposed via the framework; I didn't author gRPC services"), and <code>BigQuery</code>/<code>GCS</code> on the IA Tech line (design-plane, not code you shipped).</p>
+<hr>
+<h2 id="2-what-the-rewrite-adds-that-wasnt-there">2. What the rewrite adds that wasn't there</h2>
+<p>Your old IA section was 4 bullets of mostly <em>design</em> language. The repos contain far stronger material that was going unused:</p>
+<ol>
+<li><strong>Go platform ownership with hard numbers</strong> — 36 routes, 8 modules, Wire DI, h2c, request budgets, SIGTERM drain.</li>
+<li><strong>CI/CD and engineering rigor</strong> — 100% coverage gate, 1,200+ tests, golangci-lint, race detection, SAST/SBOM. Hits <code>CI/CD</code> (3 JDs) and <code>testing</code> (4 JDs), both previously skills-only.</li>
+<li><strong>Security/authn/authz</strong> — Firebase → JWT/Google OIDC chain, tenant resolution, UAM access checks, constant-time API keys. <code>security</code> appears in <strong>5 of 8</strong> JDs and your resume had nothing on it.</li>
+<li><strong>Production scale, measured</strong> — 88,863 articles, 20,265 calls, $821, peak 205/min. Replaces vague design claims with a real run.</li>
+<li><strong>ML/eval infrastructure</strong> — the gold harness reframed honestly. This is the exact vocabulary Google Ads gates on ("model evaluation, optimization, debugging"), and it is now a <em>senior</em> bullet: you built the harness that killed your own rollout.</li>
+</ol>
+<p>That last one is the single strongest line on the resume. Interviewers see engineers oversell AI constantly; an engineer who built the measurement that said "not yet" is rare.</p>
+<hr>
+<h2 id="3-ats-coverage-vs-the-8-jds">3. ATS coverage vs the 8 JDs</h2>
+<p>Must-have set (appears in 4+ JDs): Python, Go, distributed systems, system design, scalability, APIs/REST, AWS, GCP, cloud-native, agents/agentic AI, LLMs, security, end-to-end ownership, code/design reviews, testing, collaboration.</p>
+<table>
+<thead>
+<tr>
+<th>Keyword</th>
+<th>JDs</th>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>7</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Go / goroutines</td>
+<td>5</td>
+<td>skills only</td>
+<td>✅ headline + 3 bullets</td>
+</tr>
+<tr>
+<td>Distributed systems</td>
+<td>6</td>
+<td>summary only</td>
+<td>✅ own skills group</td>
+</tr>
+<tr>
+<td>System design / architecture</td>
+<td>6</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>APIs / REST</td>
+<td>4</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>AWS</td>
+<td>5</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>GCP / cloud-native</td>
+<td>4</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Agents / agentic AI</td>
+<td>5</td>
+<td>partial</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>LLMs</td>
+<td>4</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Security / authn / authz</strong></td>
+<td>5</td>
+<td>❌</td>
+<td>✅ new bullet</td>
+</tr>
+<tr>
+<td><strong>Testing / TDD</strong></td>
+<td>4</td>
+<td>skills only</td>
+<td>✅ 1,200+ tests + gate</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>3</td>
+<td>skills only</td>
+<td>✅ pipeline bullet</td>
+</tr>
+<tr>
+<td>Code / design reviews</td>
+<td>4</td>
+<td>1 mention</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>End-to-end ownership</td>
+<td>5</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Kubernetes</td>
+<td>3</td>
+<td>skills only</td>
+<td>skills only ⚠️</td>
+</tr>
+<tr>
+<td>Terraform / IaC</td>
+<td>2</td>
+<td>❌</td>
+<td>❌ ⚠️</td>
+</tr>
+<tr>
+<td>gRPC</td>
+<td>1</td>
+<td>skills only</td>
+<td>skills only</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Still-open gaps:</strong> Kubernetes depth and Terraform. Rubrik Enterprise AI gates hard on <em>"building and operating clusters, not just deploying to them"</em> — you can't honestly claim that, and it's one reason that req is out of reach regardless of YoE.</p>
+<hr>
+<h2 id="4-where-to-send-which-and-honest-fit">4. Where to send which — and honest fit</h2>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>YoE gate</th>
+<th>You</th>
+<th>Send</th>
+<th>Real odds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Google Cloud SSE</strong> (Bengaluru)</td>
+<td>5 yrs <strong>Go or Python</strong> + distributed systems + LLM/GenAI/Agentic AI</td>
+<td>5</td>
+<td><code>pygo_ai</code></td>
+<td><strong>Best fit in the batch.</strong> The req reads like your resume. Level tag is internally "Mid", which matches your actual seniority.</td>
+</tr>
+<tr>
+<td><strong>Google Ads AI/ML GenAI</strong> (Bangalore)</td>
+<td>5 yrs Python/C++, <strong>3 yrs ML infrastructure</strong>, 1 yr GenAI</td>
+<td>5 / ~1.5 ML-infra</td>
+<td><code>pygo_ai</code></td>
+<td>Plausible. The gold-harness + model-benchmarking + cost-telemetry bullets are your ML-infra evidence. The 3-year ML depth is the stretch.</td>
+</tr>
+<tr>
+<td><strong>Salesforce MTS</strong> (Trailhead)</td>
+<td>Not stated; AWS + <strong>Terraform</strong> + CI/CD + web fundamentals + AI-<em>tool</em> usage</td>
+<td>Terraform ❌</td>
+<td><code>pygo_ai</code></td>
+<td>Mismatch of kind, not level. Wants a full-stack generalist who uses Claude/Cursor, not an AI engineer. Low priority.</td>
+</tr>
+<tr>
+<td><strong>Rubrik Sr SWE Enterprise AI</strong></td>
+<td><strong>9+ yrs</strong> + deep K8s cluster operation</td>
+<td>5, no K8s depth</td>
+<td>—</td>
+<td>Out of reach on two independent gates.</td>
+</tr>
+<tr>
+<td><strong>Rubrik Sr Backend</strong> (Israel)</td>
+<td>5+ yrs, Kafka/RabbitMQ/SQS/Celery, gRPC, asyncio</td>
+<td>5 ✅</td>
+<td><code>pygo_ai</code></td>
+<td>Skills fit is genuinely good (Kafka, Celery, asyncio, SQL all real). <strong>Tel Aviv hybrid</strong> is the blocker.</td>
+</tr>
+<tr>
+<td><strong>Rubrik Sr SWE Identity Infra</strong> (Palo Alto)</td>
+<td><strong>6+ yrs</strong> + Active Directory / Entra-ID / Okta</td>
+<td>5, no AD</td>
+<td><code>java_pygo_ia</code></td>
+<td>Weak. Domain knowledge is the real gate, not the language.</td>
+</tr>
+<tr>
+<td><strong>Rubrik SWE Cloud Native Protection</strong> (Bangalore)</td>
+<td><strong>2+ yrs</strong></td>
+<td>5</td>
+<td><code>java_pygo_ia</code></td>
+<td>You're over-level. Would likely be a downlevel offer.</td>
+</tr>
+<tr>
+<td><strong>Microsoft Sr SWE (MSEC)</strong></td>
+<td><strong>8+ yrs</strong> + Java/Python/.Net + <strong>agents/MCP</strong></td>
+<td>5</td>
+<td><code>java_pygo_ia</code></td>
+<td>Out of reach on YoE. Note it explicitly wants MCP — and you don't have it. Don't add it to get past the filter.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Blunt summary: this batch has one strong shot (Google Cloud), one credible one (Google Ads), and six that are gated on years, geography, or domain.</strong> The resume is now genuinely competitive — the constraint is the target list, not the document. Worth building a wider list of 5-YoE-appropriate reqs: Databricks, Snowflake, Atlassian, Confluent, Stripe, Uber (as FTE this time), plus Indian product companies where 5 years reads as senior.</p>
+<hr>
+<h2 id="5-interview-landmines-to-pre-empt">5. Interview landmines to pre-empt</h2>
+<p>Ranked by damage if an interviewer opens the repo.</p>
+<ol>
+<li><strong>Gold accuracy is 57–63% and the LLM loses to the deterministic rule (74%).</strong> Your own <code>TELEMETRY_GOLD200.md</code> says so in bold. The resume now states this deliberately. Have the story ready: <em>"I built the harness, it said the agent wasn't ready, so I blocked promotion."</em> Never imply you hit 80%.</li>
+<li><strong><code>lineplanning</code> and <code>strategy</code> are empty scaffolds.</strong> Resume says "8 modules", not 10. Keep it that way.</li>
+<li><strong><code>gold_min_accuracy: 1.0</code> in three <code>hindsight_*</code> pipelines</strong> — an unreachable 100% gate. If asked, call it a placeholder, not a design.</li>
+<li><strong>Python repo has no CI and no coverage measurement at all</strong>, while the Go repo advertises a 100% gate. Own the asymmetry: hardened service plane, research-grade pipeline plane.</li>
+<li><strong><code>coverage.out</code> shows 99.93%, not 100%</strong> — 5 uncovered blocks in <code>secrets/gcp.go</code> and <code>hindsight/service/</code>. Say "gate is 100%, last committed profile 99.93%."</li>
+<li><strong>The batch-size sweep used synthetic <code>A000xx</code> articles</strong>, and <code>bench_decision_architecture</code> is <code>"mock_only": true</code>. Label them as offline sweeps, never production evidence.</li>
+<li><strong>Datadog "correlation-ID-joined logs and traces"</strong> overstates it — there's no <code>dd.trace_id</code> log injection. The resume avoids the phrase; keep avoiding it.</li>
+<li><strong>Client data at repo root</strong> — <code>briscoes_by_item_table_top200.csv</code> (202KB), <code>keep_drop_season7.csv</code>. If anyone ever sees the repo, that's a data-hygiene question. Worth cleaning regardless.</li>
+</ol>
+<hr>
+<h2 id="6-structural-issues-i-did-not-fix-they-need-your-call">6. Structural issues I did NOT fix (they need your call)</h2>
+<ol>
+<li><strong>"Senior Software Engineer" on 4 months of the title.</strong> Restructured to lead with scope rather than level, but the date column still shows May 2026. Both Google reqs are internally "Mid" — you may do better not fighting this.</li>
+<li><strong>"UBER (via EPAM Systems)."</strong> Kept, honestly. It costs you brand credit; removing it would be misrepresentation.</li>
+<li><strong>Four tenures averaging under 2 years, with the newest at 4 months.</strong> Nothing on a resume fixes this. It gets asked. Have the answer.</li>
+<li><strong>Java framing.</strong> Per your instruction, <code>java_pygo_ia</code> keeps FRM and Masters as Spring Boot. Be aware: <code>KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/</code> is Python/FastAPI/Bazel with <code>mysql_manager.py</code> and Pydantic schemas. If a Microsoft or Rubrik interviewer asks you to walk through the FRM code, the story and the artifact diverge. That's your risk to carry, and I'd reconsider it for any role where a code-level FRM discussion is likely.</li>
+<li><strong>Achievements are 2020–2021</strong> (Code Jam, SIH) plus a HackerRank cert — junior signals. Compressed to 2 lines. Consider replacing with a talk, OSS contribution, or writeup within 6 months.</li>
+</ol>
+<hr>
+<h2 id="7-second-adversarial-pass-post-xyz-rewrite-corrections-applied">7. Second adversarial pass (post-XYZ rewrite) — corrections applied</h2>
+<p>After rewriting every bullet into XYZ format I re-verified against source. Fifteen claims failed. All corrected in both variants.</p>
+<p><strong>My own error, first:</strong> I proposed "~770 in-scope audit decisions per quarter (55 × 14)" in <code>METRIC-GAPS.md</code> and then used it. <strong>The multiplication is invalid.</strong> Per <code>11_uber_frm_deep_dive.md:195</code> the ~55 is a <em>sum</em> (~26 balance-sheet + ~29 income-statement line items) evaluated at <strong>group</strong> level; the 14 entities are a separate screen and a separate table (<code>threshold_table_v2.legal_entity</code>). They're two dimensions of the tool, not a grid — nothing shows 55 decisions per entity. Real entity scale is ~400 (<code>:194</code>); 14 was the Q4-2025 sample. "Audit decisions" was also the wrong noun: <code>11_...:24,:313</code> are emphatic that the tool produces PwC's evidence inputs and does not decide or block. <strong>Reverted to a non-multiplied claim. Do not reintroduce 770.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Problem</th>
+<th>Now reads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Scored 88,863 in a <strong>single production run</strong>… <strong>\$821 measured cost</strong>"</td>
+<td>Four sessions (1 run + 3 resumes), three ending <code>status:error</code>; <code>TELEMETRY.md:141</code>. Single-run estimate is 7.2h, not 8.25h. And <code>TELEMETRY.md:14</code>: token meters recorded <strong>0</strong> — every <code>cost_summary.json</code> is <code>total_cost_usd: 0.0</code>. \$821 is call-volume × a bench token shape, i.e. <strong>inferred, not metered</strong>.</td>
+<td>"across a full production season — 20,265 LLM calls over one run plus three resumes, 8.25 hours, ~\$821 <strong>inferred from measured call volume</strong>"</td>
+</tr>
+<tr>
+<td>"<strong>Secured every request path</strong>"</td>
+<td>2 of 36 routes mount outside <code>server.Protect</code>: <code>/v1/health</code> and <code>GET /v1/kpi-configurator/ui</code>, plus framework <code>/meta/*</code>.</td>
+<td>"Secured <strong>every tenant-facing route</strong> (health and meta endpoints excepted)"</td>
+</tr>
+<tr>
+<td>"<strong>SAST/SBOM on every run</strong>"</td>
+<td><code>bitbucket-pipelines.yml</code> runs AccuKnox only under <code>branches: {main,dev}</code> — the file says explicitly "not on PRs".</td>
+<td>"golangci-lint and <code>-race</code> on every run and SAST/SBOM <strong>on every merge to integration branches</strong>"</td>
+</tr>
+<tr>
+<td>"Firebase Admin <strong>falling back to</strong> local JWT and Google OIDC"</td>
+<td>Local JWT is an <strong>alternative chosen at startup</strong> (<code>firebase/auth.go:280-286</code>, when <code>AUTH_TOKEN_ISS</code> is set), not a fallback. Only request-time fallback is → Google OIDC.</td>
+<td>"Firebase Admin — <strong>or</strong> local JWT validation when a token issuer is configured — falling back to Google OIDC JWKS"</td>
+</tr>
+<tr>
+<td>"<strong>per-user store and product</strong> scope checks"</td>
+<td><code>BACKEND_UAM</code> defaults <strong>false</strong>; exactly <strong>one</strong> call site across 36 routes (<code>hierarchyconfig</code> <code>POST /v1/filters/values</code>), dimension <code>store</code> only. No product-dimension call site.</td>
+<td>"a <strong>store-scope check on hierarchy filter reads</strong> via the internal access service"</td>
+</tr>
+<tr>
+<td>"<strong>Guaranteed</strong> … <strong>six</strong> independent controls … 8-table <strong>allowlist</strong> … 250 queries/batch … <strong>aborts startup</strong>"</td>
+<td>Three of six don't hold: <code>allowed_tables</code> is never used as a membership check (and is bypassed on the <code>feature_cache</code> branch); <code>max_db_calls_per_batch: 250</code> has <strong>zero Python references</strong> (real budget is 4 calls/query); the assertion runs at freeze/run time in a package <code>assort_kd_flow</code> doesn't import. The other three verify cleanly.</td>
+<td>"<strong>Held</strong> the LLM agents SELECT-only … <strong>five</strong> independent controls … an <strong>8-table read set</strong> … per-query budgets (<strong>4 tool calls</strong>, 15s timeout) … <strong>fails the run</strong> if writes are enabled"</td>
+</tr>
+<tr>
+<td>"LangGraph <strong>supervisor graph</strong> … (4 steps, 10 tool calls per article)"</td>
+<td>Wrong graph. QnA runs <code>agents/tool_agent.py:40-54</code> — a plain two-node agent↔ToolNode loop. The real supervisor (<code>orchestration/graph.py</code>) serves a chat-only <code>/ws</code> surface that doesn't answer keep/drop. Both config bounds are <strong>dead</strong> — read by no Python file. Enforced: 4 tool calls/query (<code>qna/service.py:120</code>), 15s timeout.</td>
+<td>"a LangGraph <strong>tool-calling agent loop</strong> bounded to 4 read-only tool calls and a 15s timeout <strong>per question</strong>"</td>
+</tr>
+<tr>
+<td>"<strong>immutable</strong> decision snapshots"</td>
+<td>Bake tables are <code>SharedReplacingMergeTree</code> on <code>(season_code, article)</code> — a re-score silently replaces the prior snapshot; in-place <code>ALTER … DELETE/UPDATE</code> are routine.</td>
+<td>"hash-stamped, <strong>replace-on-rerun</strong> decision snapshots"</td>
+</tr>
+<tr>
+<td>"2.11B-row ClickHouse <strong>warehouse</strong>"</td>
+<td>2.11B is one <strong>fact table</strong> in one staging DB for one tenant. <code>kik_dev</code> is ~4.1B; Briscoes master is 16.9B.</td>
+<td>"2.11B-row ClickHouse <strong>fact table</strong>" (also fixed in Summary)</td>
+</tr>
+<tr>
+<td>"tables <strong>partitioned</strong> by tax quarter"</td>
+<td><code>12_masters_gfg_deep_dive.md:127</code> says the opposite — quarter <em>sharding</em> with routing owned in application code, explicitly traded off against native RANGE partitioning.</td>
+<td>"tables <strong>sharded</strong> by tax quarter"</td>
+</tr>
+<tr>
+<td>"<strong>cut operational load 70%</strong>"</td>
+<td>Direction inverted. Every source says "<strong>raised</strong> operational <strong>efficiency</strong> 70%", narrowed at <code>12_...:95</code> to "time saved on those workflows".</td>
+<td>"<strong>saved ~70% of the manual effort</strong> on those ops workflows"</td>
+</tr>
+<tr>
+<td>"~15x" ClickHouse</td>
+<td>Source and all six prep docs say <strong>15.5×</strong> (189.4/12.26 = 15.45). Understating created a mismatch with your own interview pack.</td>
+<td>"~<strong>15.5x</strong>"</td>
+</tr>
+<tr>
+<td>"across <strong>18 source files</strong>"</td>
+<td><code>11_...:127</code> — "18 <strong>files changed</strong>, 1,268 insertions" in the migration PR. "Source files" reads as 18 input spreadsheets.</td>
+<td>"in an <strong>18-file change across five layers</strong>"</td>
+</tr>
+<tr>
+<td>"staged timeouts (10/30/130/120s)"</td>
+<td>Five values exist, four named, and idle/request (both 120) were conflated.</td>
+<td>"<strong>nested</strong> timeout budgets (10s headers / 30s read / <strong>120s request</strong> / 130s write / 120s idle)"</td>
+</tr>
+<tr>
+<td>Summary "88,863 <strong>products</strong> per production <strong>run</strong>"</td>
+<td>Noun switched mid-document; "per run" implies a repeatable single-run rate.</td>
+<td>"88,863 <strong>articles</strong> scored per production <strong>season</strong>"</td>
+</tr>
+</tbody>
+</table>
+<h3 id="skills-hygiene-same-pass">Skills hygiene, same pass</h3>
+<p>Removed as orphaned or contradicted: <strong>gRPC</strong> (no service authored in either repo; only incidental driver deps), <strong>circuit breakers</strong> (<code>12_masters_gfg_deep_dive.md:52,:165</code> marks it verbal-only prep, explicitly not a resume claim), <strong>cost telemetry</strong> (its only support was the \$821 figure, which was never metered). Replaced with "bounded parallelism", which the config demonstrably supports.</p>
+<p>Fixed inconsistency: the Java variant claimed <strong>Django</strong> in its GfG bullet and <strong>Google Wire</strong> in its IA bullet and Tech line while omitting both from Skills. Both added back.</p>
+<p><strong>Still knowingly carried:</strong> <code>Kubernetes</code> in Skills. <code>GROUND_TRUTH.md:44</code> says omit K8s <em>ops</em>; <code>01_skills_trim_rationale.md:23</code> permits it as <em>ops literacy</em>. It appears in 3 of 8 JDs so it stays as a skills-line item — <strong>never let it become a bullet</strong>, and <code>16_ats_recruiter_report.md:346</code> already grades it "WEAK (listed, no cluster-ops proof)".</p>
+<h3 id="two-things-to-know-for-interviews">Two things to know for interviews</h3>
+<ul>
+<li><strong>8 lenses are configured but one is <code>is_active: false</code>, and TELEMETRY says "7 lenses" throughout.</strong> The resume says 8 (config truth). If asked, say "8 defined, 7 active." Also: config weights are passed as <code>weight_hint</code> — the operative mix is chosen per-article by the model, not fixed by config.</li>
+<li><strong>The ClickHouse 15.5× caveat still applies:</strong> ~90% of the gap is PostgreSQL's non-parallelizable grouped <code>COUNT(DISTINCT)</code>. Strip it and ClickHouse leads ~2–3×. Volunteer this before you're asked; it reads as rigor.</li>
+</ul>
+<h3 id="layout-note">Layout note</h3>
+<p>Both variants now share <strong>identical</strong> <code>resume.tex</code> — 9.9/12.0pt, 0.6in margins, itemsep 1.5pt — landing on 2 pages each (54/46 and 52/50 lines). The only differences between variants are the four intended experience lines plus Summary and Skills; <code>activities.tex</code> and <code>education.tex</code> are byte-identical.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

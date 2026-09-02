@@ -6,9 +6,9 @@
 \usepackage{array}
 \usepackage{TLCresume}
 
-% ---- Typography (compact single-page layout) ----
-\renewcommand\normalsize{\fontsize{9.4}{10.15}\selectfont}\normalsize
-\geometry{left=0.2in, right=0.2in, top=0.08in, bottom=0.14in, includehead}
+% ---- Typography (structured two-page layout; no running header) ----
+\renewcommand\normalsize{\fontsize{9.55}{11.35}\selectfont}\normalsize
+\geometry{left=0.46in, right=0.46in, top=0.38in, bottom=0.36in}
 
 % % COLOR: Modern Slate
 \definecolor{highlight}{RGB}{63, 81, 181}
@@ -28,14 +28,13 @@
 
 \titlespacing*{\section}
   {0em}
-  {0.25ex}
-  {0.2ex}
+  {0.15ex}
+  {0.12ex}
 
-% Tight bullets for single-page layout; raggedright reduces orphan 1--2 word wraps
 \renewenvironment{zitemize}{
-  \begin{itemize}\itemsep 0.55pt \parskip 0pt \parsep 0pt\raggedright
+  \begin{itemize}\itemsep 1.35pt \parskip 0pt \parsep 0pt\raggedright
 }{
-  \end{itemize}\vspace{-0.45em}
+  \end{itemize}\vspace{-0.15em}
 }
 
 % ====================
@@ -49,9 +48,9 @@
 \def\role{Senior Software Engineer}
 
 \begin{document}
-\input{_header}
-\thispagestyle{fancy}
 \pagestyle{empty}
+\thispagestyle{empty}
+\input{_header}
 
 \section{Summary}
 \input{sections/objective}

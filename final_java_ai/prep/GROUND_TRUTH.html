@@ -41,50 +41,89 @@ strong{color:#fff}
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/GROUND_TRUTH.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#ground-truth-final-java-ai">Ground Truth (Final Java + AI)</a>
-<a class="lvl2" href="#summary-pdf">Summary (PDF)</a>
-<a class="lvl2" href="#resume-pdf-ia-bullets-approved">Resume PDF IA bullets (approved)</a>
-<a class="lvl2" href="#verbal-only-not-on-pdf-building">Verbal only / not on PDF (building)</a>
-<a class="lvl2" href="#stack-framing-this-pdf">Stack framing (this PDF)</a>
+<a class="lvl2" href="#summary-pdf-3-lines">Summary (PDF — 3 lines)</a>
+<a class="lvl2" href="#skills-categories-pdf">Skills categories (PDF)</a>
+<a class="lvl2" href="#resume-pdf-impact-analytics-assortsmart-two-subsections">Resume PDF — Impact Analytics / AssortSmart (TWO subsections)</a>
+<a class="lvl2" href="#uber-frm-via-epam">Uber FRM (via EPAM)</a>
+<a class="lvl2" href="#uber-eats-menu">Uber Eats Menu</a>
+<a class="lvl2" href="#uber-mobility-anz">Uber Mobility ANZ</a>
+<a class="lvl2" href="#masters-india">Masters India</a>
+<a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
+<a class="lvl2" href="#verbal-only-not-on-pdf">Verbal only / not on PDF</a>
 <a class="lvl2" href="#evidence-boundary">Evidence boundary</a>
 <a class="lvl2" href="#deep-dives-this-track">Deep dives (this track)</a></nav>
 <main><h1 id="ground-truth-final-java-ai">Ground Truth (Final Java + AI)</h1>
 <p>Self-contained for this track. Do <strong>not</strong> treat <code>resume/</code>, <code>resume_v2/</code>, <code>resume_java/</code>, or <code>campaign_pygo_xyz/</code> as sources of truth (those tracks are being removed).</p>
-<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_Java_AI_Final.pdf</code> · Project title: <strong>Agentic AssortSmart (AI-Powered Retail Merchandise Planning)</strong></p>
+<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_Java_AI_Final.pdf</code> · Canonical claims: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a></p>
 <p><strong>Keep/Drop pipeline reference:</strong> track copy <a href="../docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a> · shared <a href="../../docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
-<h2 id="summary-pdf">Summary (PDF)</h2>
+<h2 id="summary-pdf-3-lines">Summary (PDF — 3 lines)</h2>
 <ol>
-<li>Senior Software Engineer with <strong>5 years</strong> of experience designing and owning cloud-native, high-throughput <strong>distributed systems</strong>.</li>
-<li>Expertise in <strong>Java and Python microservices</strong>, with applied experience in <strong>AI-assisted and RAG systems</strong>.</li>
-<li>Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</li>
+<li>Senior Software Engineer with <strong>5 years</strong> of experience architecting high-throughput, cloud-native <strong>distributed systems</strong> and leading zero-downtime monolithic migrations.</li>
+<li>Expert in <strong>Java and Python microservices</strong>, specializing in scaling event-driven pipelines, optimizing multi-billion row databases, and driving extreme latency reductions for enterprise platforms.</li>
+<li>Proven track record of bridging enterprise data with fault-tolerant AI by deploying <strong>LangGraph</strong> multi-agent systems, <strong>Milvus RAG</strong> architectures, and deterministic evaluation harnesses to deliver measurable business impact.</li>
 </ol>
-<p>Skills line still uses <strong>AI &amp; Agents</strong> (full list), not “Applied AI”.</p>
-<h2 id="resume-pdf-ia-bullets-approved">Resume PDF IA bullets (approved)</h2>
+<h2 id="skills-categories-pdf">Skills categories (PDF)</h2>
+<p>Languages · Backend &amp; APIs · <strong>AI &amp; Applied ML</strong> · <strong>Data &amp; Streaming</strong> · Databases &amp; Storage · <strong>Cloud &amp; DevOps</strong> · <strong>Architecture &amp; Core</strong></p>
+<h2 id="resume-pdf-impact-analytics-assortsmart-two-subsections">Resume PDF — Impact Analytics / AssortSmart (TWO subsections)</h2>
+<p>Project title on PDF: <strong>AssortSmart — Senior Software Engineer (Platform &amp; AI)</strong>. IA bullets are identical across tracks (Go/Python). Source: AssortSmart tab / PDF.</p>
+<h3 id="1-platform-engineering-infrastructure">1) Platform Engineering &amp; Infrastructure</h3>
 <ol>
-<li>Building <strong>AssortSmart</strong>, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions.</li>
-<li>Architected AssortSmart's <strong>Keep/Drop engine</strong> at article × plan-season grain, combining deterministic <strong>ST%/ROS</strong> scoring with <strong>LangGraph</strong> lenses, kept agents <strong>SELECT-only</strong> on ClickHouse through CSV-first bake-and-promote, with promotions gated on <strong>300 gold cases</strong> and <strong>≥80% offline accuracy</strong>.</li>
-<li>Built a <strong>read-only dig-deeper QnA agent</strong> over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes.</li>
-<li>Drove adoption of <strong>ClickHouse</strong> as AssortSmart's planning analytics engine, reducing pivot latency from <strong>189s to 12.3s</strong> (~<strong>15.5x</strong>) on <strong>250M rows</strong> through a row-identical Postgres-versus-ClickHouse POC.</li>
+<li>Multi-tenant <strong>Go/Gin</strong> platform scaling to <strong>10k peak RPS</strong>, <strong>Google Wire</strong> compile-time DI, self-protecting HTTP edge (no reverse proxy), native <strong>h2c</strong>, nested timeouts, <strong>Datadog</strong> distributed tracing.</li>
+<li>Retail analytics <strong>15.5x</strong>: pivot <strong>189s → 12s</strong> on <strong>250M-row</strong> operations. ClickHouse catalog <strong>1.6M</strong> article-season combinations and <strong>2.4B</strong> weekly rollup rows.</li>
+<li>Dynamic KPI configurator + formula parser: operator-authored math tokenized into safe <strong>ifNotFinite</strong>-wrapped ClickHouse SQL fragments (business logic decoupled from code releases).</li>
+<li>Multi-tenant + UAM-scoped hierarchy access. Redis-fronted <strong>Firebase Admin → JWT / Google OIDC</strong> waterfall, constant-time API keys, <strong>Postgres</strong>-backed role resolution.</li>
+<li><strong>100.0%</strong> statement-coverage CI gate (race and atomic) across <strong>1,200+</strong> Go tests. Bitbucket pipeline: golangci-lint, pre-push hooks, continuous <strong>SAST/SBOM</strong>.</li>
 </ol>
-<p><strong>Stack on this track:</strong> agent plane = Python, LangGraph, MCP; write plane = Spring Boot. IA agent plane Python; write APIs framed as Spring Boot on this track; ClickHouse is not accessed via Hibernate. Never claim shipped Java services in production at IA; say building / design ownership for Copilot/Hindsight verbal topics.</p>
-<p><strong>Honesty:</strong> Keep/Drop and QnA are real work from <code>assort_kd_flow</code>. The 300-gold / ≥80% offline accuracy line is a <strong>promotion gate / design</strong> — do <strong>not</strong> invent “shipped to all tenants.”</p>
-<h2 id="verbal-only-not-on-pdf-building">Verbal only / not on PDF (building)</h2>
+<h3 id="2-agentic-flows-orchestration">2) Agentic Flows &amp; Orchestration</h3>
+<ol>
+<li>Multi-pipeline AI merchandise engine (<strong>Keep/Drop</strong>, Missed Opportunities, Top Style) evaluating <strong>335K+</strong> products. <strong>88k</strong> items/pass under <strong>$100</strong> token spend; deterministic KPI math + structured LLM invokes across <strong>7 AI lenses</strong>.</li>
+<li>Zero-data-corruption on a <strong>2.11B-row</strong> ClickHouse fact table by <strong>air-gapping</strong> batch LLM execution from database queries. <strong>ReplacingMergeTree</strong> two-phase inserts; JSON payloads; fallback to deterministic scores on LLM failure.</li>
+<li>AI orchestration registry: circuit breakers, durable checkpoints, <strong>LangSmith</strong> + per-run JSON telemetry (token costs, step durations, batch fallbacks).</li>
+<li><strong>Shipped “Ask Iris”</strong> — WebSocket AI copilot (multi-billion-row KPIs, dynamic charts, drill-down). <strong>LangGraph</strong> Supervisor router + Evaluator loop; socket-level <strong>frozen scopes</strong>. Shipped <strong>capability</strong> — do not invent tenant-wide SLAs.</li>
+<li><strong>300-case</strong> offline evaluation harness and <strong>≥80%</strong> accuracy <strong>CI promotion gate</strong>. Candidate agents benched against a <strong>74%</strong> deterministic baseline. Gate ≠ “all tenants live.”</li>
+</ol>
+<p><strong>Stack:</strong> agent plane = Python, FastAPI, LangGraph; platform / write APIs = <strong>Go / Gin</strong>. MCP is <strong>not</strong> on this PDF.</p>
+<h2 id="uber-frm-via-epam">Uber FRM (via EPAM)</h2>
+<ul>
+<li><strong>70%</strong> recon cut, <strong>14 days to 3 days</strong>, <strong>$340M</strong> materiality, <strong>19M</strong> raw GL rows, <strong>36 Spring Boot endpoints</strong>, nested <strong>L1–L4 FSLI</strong>, quarter-annualization.</li>
+<li><strong>8-table</strong> MySQL SOADB, polymorphic review-status, optimistic row-locking, <strong>SHA-256</strong> natural keys.</li>
+<li>Led <strong>3</strong> engineers; Spring Data JPA / Hibernate migration <strong>100%</strong> statement coverage; stacked Bazel PRs; SQL allowlists; FSM <strong>50%</strong> delta-variance; SOX.</li>
+<li>Tech: Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker</li>
+</ul>
+<p>Older prep tagged 70% as TDD TARGET. <strong>The PDF now states 70% / 14→3 days as the outcome.</strong> Defend the PDF. If pressed: the TDD framed that cut; do not walk it back unprompted.</p>
+<h2 id="uber-eats-menu">Uber Eats Menu</h2>
+<ul>
+<li><strong>24 hours → 2 hours</strong>, <strong>$600K</strong>/yr, <strong>30K+</strong> menus/month, <strong>98%</strong> field fidelity (<strong>offline eval</strong>), Gemini 2.5 Pro + LangChain RAG + Milvus.</li>
+<li><strong>95%+</strong> success, Selenium proxies, <strong>Kafka</strong>, <strong>Flink</strong> keyed dedupe, <strong>exactly-once</strong> upserts.</li>
+<li><strong>Spark is not on the PDF.</strong> Verbal/study backfill only.</li>
+</ul>
+<h2 id="uber-mobility-anz">Uber Mobility ANZ</h2>
+<ul>
+<li><strong>99.9%</strong> compliance, <strong>20 hours/week</strong> saved. <strong>HISTORICAL Mobility</strong> (not Eats). Uber via EPAM.</li>
+</ul>
+<h2 id="masters-india">Masters India</h2>
+<ul>
+<li>p95 <strong>1.2s → 300ms</strong> (<strong>75%</strong>), <strong>1,500+</strong> clients, <strong>700 → 4,000</strong> rpm, mentored <strong>2</strong>.</li>
+<li>Kafka + PostgreSQL tax-quarter shard, <strong>1M+/day</strong>, <strong>100K+</strong> imports, idempotency, DLQ.</li>
+<li>ELK + New Relic, Redis <strong>−30%</strong> reads, coverage <strong>35% → 82%</strong>, <strong>98%</strong> deploy success.</li>
+<li>Stack on this PDF: <strong>Spring Boot</strong>. Tech: Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Docker, ELK, New Relic, AWS</li>
+</ul>
+<h2 id="geeksforgeeks">GeeksforGeeks</h2>
+<ul>
+<li><strong>Django</strong>, <strong>10K+</strong> daily queries, <strong>10x</strong> contest spikes, <strong>20%</strong> premium, <strong>30%</strong> course sales, <strong>70%</strong> ops.</li>
+</ul>
+<h2 id="verbal-only-not-on-pdf">Verbal only / not on PDF</h2>
 <ul>
 <li><strong>Cluster Recommendation Copilot</strong> — architecture / FRD / deep-dive; not a PDF headline bullet.</li>
 <li><strong>Hindsight</strong> — prior-season decision layer; not a PDF headline bullet.</li>
 <li>Off-PDF interview depth: 8.5% (37/437) → under 2% TARGET · 14 tools · 3 gates · 63/8 DDL · line-plan ~12B → ~25M · under 1h / ≥20 configs TARGET.</li>
-</ul>
-<h2 id="stack-framing-this-pdf">Stack framing (this PDF)</h2>
-<ul>
-<li>FRM / Masters APIs: Spring Boot framing where this track claims it.</li>
-<li>Menu scraping and AI extraction: <strong>Python unchanged</strong>.</li>
-<li>IA: IA agent plane Python; write APIs framed as Spring Boot on this track; ClickHouse is not accessed via Hibernate. Never claim shipped Java services in production at IA; say building / design ownership for Copilot/Hindsight verbal topics.</li>
-<li>GFG on PDF: <strong>PHP → Django (Python)</strong>.</li>
+<li>Packet stories <strong>OOM leak</strong> (Python/FastAPI connection leak) and <strong>CDC dual-write</strong> are <strong>not PDF bullets</strong>. Tag company + MEASURED vs DESIGN. Do <strong>not</strong> claim Kubernetes cluster operations or that you authored <code>pg2ch_cdc</code> (Ashvin Sharma).</li>
 </ul>
 <h2 id="evidence-boundary">Evidence boundary</h2>
 <ul>
-<li>Resume-safe: FRM ownership + layered architecture; Masters strangler + Kafka scale + idempotency/DLQ + ELK/New Relic on-call (experience). Skills use <strong>AI &amp; Agents</strong> full list.</li>
-<li>Menu has Kafka + Flink (keyed normalize/dedupe/replay) on PDF. Omit Spark, multi-region, K8s ops, Terraform from resume.</li>
-<li>Metric prose everywhere: <strong>from about 2 weeks to 3–4 days</strong>; <strong>from 24 hours to 2 hours</strong>; <strong>from 189s to 12.3s</strong> (not arrow form in spoken/written prose).</li>
+<li>Omit Spark, multi-region, K8s <strong>ops</strong>, Terraform from resume claims. Kubernetes may appear on Skills as literacy, not “I operated clusters.”</li>
+<li>Menu Kafka+Flink are on the PDF. IA does <strong>not</strong> claim Kafka/Flink/CDC as PDF bullets.</li>
+<li>Spoken prose: <strong>from 189 seconds to 12 seconds</strong>; <strong>from 14 days to 3 days</strong>; <strong>from 24 hours to 2 hours</strong>.</li>
 <li>CGPA removed from resume PDFs.</li>
 </ul>
 <h2 id="deep-dives-this-track">Deep dives (this track)</h2>
@@ -95,7 +134,7 @@ strong{color:#fff}
 <li><code>17_senior_systems_study_only.md</code> · <code>36_skills_ai_agents_defense.md</code></li>
 <li>Keep/Drop pipeline: <code>../docs/assort_kd_flow/PIPELINE.md</code></li>
 </ul>
-<p>Verified certificates: <strong>HackerRank Problem Solving</strong> and <strong>LangChain Academy</strong>.</p></main>
+<p>Verified certificates: <strong>HackerRank Problem Solving</strong> and <strong>LangChain Academy</strong>.\n</p></main>
 </div>
 
 <script type="module">

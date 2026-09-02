@@ -1,3 +1,7 @@
+> **PDF sync (Sep 2026):** Cluster Recommendation Copilot and Hindsight are **verbal only / not on PDF**.
+> Defend the live resume from `docs/ASSORTSMART_TAB_RESUME.md` (Platform + Agentic: 10k RPS, CH 189s→12s / 1.6M / 2.4B, Ask Iris shipped, 300-case / ≥80% promotion gate).
+> This file is interview **depth**, not a PDF bullet map.
+
 # Hindsight Module Defense (resume bullet)
 
 **Source:** `KNOWLEDGE-MATERIAL/Impact-Analytics-work/PRD'S/Hindsight_Module_Functional_Requirements-2.docx` (v1.2)

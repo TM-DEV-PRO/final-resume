@@ -15,9 +15,7 @@ real experience and the honesty tags in `GROUND_TRUTH.md`.
 - Company LP guides: [`company_behavior_guides.md`](../campaign_extras/behavioral/company_behavior_guides.md)
 
 <div class="callout warn">
-<b>Never break these.</b> Keep/Drop gold gate is a <b>promotion gate</b> (not multi-tenant GA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% is a TARGET</b>.
-Menu <b>98%/100% is offline eval</b>. <b>No Spark / SFT</b>. Uber work was <b>via EPAM</b>.
-ANZ 99.9% is HISTORICAL Mobility work. Do not invent a LeetCode rating.
+<b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> (not all tenants live). Ask Iris is <b>shipped capability</b> (no tenant SLA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% / 14d→3d is on the PDF</b>. Menu <b>98% is offline eval</b>. <b>No Spark / SFT / K8s-ops</b>. Uber <b>via EPAM</b>. ANZ 99.9% HISTORICAL Mobility. 10k RPS / 2.11B / 2.4B / $100 = PDF / AssortSmart tab.
 </div>
 
 ---
@@ -103,7 +101,7 @@ Stack on this track: FRM = **Spring Boot / MySQL** · AssortSmart writes = **Go 
 
 ### G1. Tell me about yourself (60–90s)
 
-"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Java, Python and Go**. Chronologically: GeeksforGeeks backend reliability → Masters India, where I led a **Spring Boot strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned the FRM Risk Scoping backend (30+ APIs, 8 screens, $340M materiality, led 3) and Uber Eats menu ingestion end to end (from 24 hours to 2 hours, $600K+/yr) → Impact Analytics, where I build AssortSmart Keep/Drop and dig-deeper QnA (**FastAPI, LangGraph, MCP**, write APIs in **Go / Gin**) and drove ClickHouse adoption with a measured 250M-row POC. I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
+"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Java, Python and Go**. Chronologically: GeeksforGeeks Django reliability → Masters India, where I led a **Spring Boot strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned FRM (**36 Spring Boot endpoints**, 19M GL, 70% from 14 days to 3, $340M, led 3) and Uber Eats menu ingestion (24 hours to 2 hours, $600K/yr, Kafka+Flink exactly-once) → Impact Analytics, where I own AssortSmart's Go/Gin platform (10k peak RPS) and agentic Keep/Drop + shipped Ask Iris (LangGraph Supervisor+Evaluator; 300-case / ≥80% promotion gate). I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
 
 Stop. Do not append hobbies unless asked.
 
@@ -125,7 +123,7 @@ Stop. Do not append hobbies unless asked.
 
 ### G6. Difficult customer / stakeholder (PwC-facing)
 
-"FRM releases were PwC-facing. Ambiguity in 'in scope' was expensive. I encoded materiality, qualitative override, residual risk, and the 5% component threshold as explicit rules against $340M / $170M thresholds so the system could reproduce and audit a decision. Weekly clarity with finance stakeholders beat arguing in a spreadsheet. Result: platform of 30+ APIs / 8 screens; the 70% reconciliation cut remains a TARGET."
+"FRM releases were PwC-facing. Ambiguity in 'in scope' was expensive. I encoded materiality, qualitative override, residual risk, and the 5% component threshold as explicit rules against $340M / $170M thresholds so the system could reproduce and audit a decision. Weekly clarity with finance stakeholders beat arguing in a spreadsheet. Result: 36 Spring Boot endpoints, 19M GL, 8-table SOADB; 70% from 14 days to 3 is on the PDF."
 
 ### G7. Missed a deadline
 
@@ -135,7 +133,7 @@ If pressed for a harder miss: use story 5 (refactor regression caught in CI befo
 
 ### G8. Significant change / comfort zone
 
-"Two real ones. (1) Masters: PHP monolith → **Spring Boot strangler** + Kafka under live filing traffic — I had to learn the strangler sequencing, not just the target architecture. (2) Impact Analytics: owning an agentic rebuild (LangGraph / MCP / RAG) when my prior strength was classical backends — I stayed in the comfort of APIs for the write plane (**Go / Gin**) and stretched on the agent plane with explicit human gates and offline eval. Lesson: change the workflow and the measurement first; the model second."
+"Two real ones. (1) Masters: PHP monolith → **Spring Boot strangler** + Kafka under live filing traffic — I had to learn the strangler sequencing, not just the target architecture. (2) Impact Analytics: owning AssortSmart platform + LangGraph Keep/Drop / Ask Iris when my prior strength was classical backends — Go/Gin edge, Python agent plane, 300-case / ≥80% promotion gate vs a 74% deterministic baseline. Lesson: change the workflow and the measurement first; the model second."
 
 ### G9. Explain technical to non-technical
 
@@ -167,7 +165,7 @@ If pressed for a harder miss: use story 5 (refactor regression caught in CI befo
 
 | Signal they want | Open with |
 |---|---|
-| Ownership | FRM led-3 / Menu end-to-end / Copilot architecture |
+| Ownership | FRM led-3 / Menu end-to-end / AssortSmart 10k RPS + Ask Iris |
 | Dive Deep | Story 6 coverage / Story 1 assumptions |
 | Bias for Action | Story 8 sequencing / Story 9 experiment loop |
 | Earn Trust | Story 10 near-miss / G13 Friday deploy |

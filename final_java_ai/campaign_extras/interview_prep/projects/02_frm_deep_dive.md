@@ -1,3 +1,5 @@
+> **PDF sync (Sep 2026):** FRM PDF claims are 36 endpoints, 19M GL, 70% 14d→3d, 8-table SOADB, SHA-256, 100% coverage, SOX 50% delta-variance. Older “30+ APIs / targeting 70% / do not say 36” language in this file is **obsolete**. Use `../../prep/11_uber_frm_deep_dive.md` §0.
+
 # 11. Uber FRM Risk Scoping Platform: Deep Dive
 
 > **Start here for interviews:** [`23b_uber_interview_packs.md`](../../../prep/23b_uber_interview_packs.md) § Uber FRM.

@@ -1,3 +1,5 @@
+> **PDF sync (Sep 2026):** FRM on the resume is **70% from 14 days to 3 days**, **$340M**, **19M** GL rows, **36 endpoints**, **L1–L4 FSLI**, **8-table SOADB**, **SHA-256** keys, led **3**, **100%** coverage, SOX **50%** delta-variance. Menu is **24h→2h**, **$600K**, **30K+**, **98% offline** RAG/Milvus, **95%+**, **Kafka+Flink exactly-once**. Spark is **not** on the PDF. Older “do not say 36 / 19M” and “70% is TARGET” lines below are **obsolete** — defend `prep/11_uber_frm_deep_dive.md` §0 and `GROUND_TRUTH.md`.
+
 > Canonical packs for FRM + Menu. Menu PDF includes **Kafka + Flink** (not Spark). Synced Jul 2026.
 
 # Uber FRM — Interview Pack
@@ -75,7 +77,7 @@ flowchart TB
 ### Bullet 1 — Owned FRM backend: 30+ APIs powering 8 screens, $340M, targeting 70% (~2 weeks → ~3–4 days)
 - **Own:** Backend design + architecture of scoping service (FastAPI/MySQL). ETL shared; collaboration service separate; UI not owned.
 - **Say:** 30+ REST APIs powering 8 screens; $340M group materiality (Q4 2025 sample); targeting 70% / ~2 weeks → ~3–4 days (TDD TARGET + ESTIMATED baseline).
-- **Do not say:** React/Fusion ownership; measured 70% post-launch; 36 APIs; 19M rows.
+- **Do not say:** React/Fusion ownership. **Do say (PDF):** 36 endpoints, 19M GL rows, 70% 14d→3d, 8-table SOADB, SHA-256 keys.
 
 ### Bullet 2 — Sheets → MySQL recon v2 (18 files); parallel /v2; L1→L2→L3; HFM vs 10-Q; durable line IDs
 - **Own:** Recon v2 migration end to end (models, repo, service, handlers, dual-run cutover).

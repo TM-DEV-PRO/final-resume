@@ -8,14 +8,20 @@ Role framing: Software Development Engineer 2 at Uber Finance via EPAM Systems, 
 
 ---
 
-## 0. The four bullets I am defending (Jul 2026 hardened wording)
+## 0. The PDF bullets I am defending (Sep 2026)
 
-1. **Owned** Uber's **FRM Risk Scoping backend (Spring Boot, MySQL)** across **30+ REST APIs** powering **8** scoping screens, automating quarterly close at **$340M group materiality**, targeting a **70% cut** in manual reconciliation (**~2 weeks → ~3–4 days**, ESTIMATED baseline; 70% is TDD TARGET).
-2. **Owned** the Sheets → **MySQL** recon v2 migration (**18 files**), shipping parallel **/v2** APIs that build **L1→L2→L3** FSLI trees, tie **HFM** amounts to public **10-Q** filings, and give each line a durable ID for audit.
-3. **Automated** in-scope decisions across **~55 line items × 14 entities** by encoding materiality, qualitative override, residual-risk, and **5%** component-threshold logic in the scoping services against **$340M / $170M** thresholds.
-4. **Led 3 engineers** on the FRM backend by owning API contracts and layered design reviews for Finance's quarterly scoping.
+Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. Uber via **EPAM**.
 
-Java track maps FastAPI layers to Spring Boot controller / service / repository / JPA. Same ownership and numbers. Do not say 36 endpoints or 19M GL rows.
+1. Owned FRM scoping backend, **70%** recon cut (**14 days to 3 days**) against **$340M** materiality. Sheets→MySQL across **19M** raw GL rows. **36 Spring Boot endpoints**. Nested **L1–L4 FSLI** with quarter-annualization.
+2. **8-table** normalized MySQL SOADB, polymorphic review-status, optimistic row-locking, atomic cross-table syncs, **SHA-256** natural keys.
+3. Led **3** engineers on a Spring Data JPA / Hibernate migration to **100%** statement coverage. Stacked Bazel PRs, SQL allowlists, FSM **50%** delta-variance gates for SOX.
+
+**Tech:** Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker
+
+**Verbal depth (not required on PDF):** 8 screens product list, ~55×14 materiality sample, 11 ORM models in the scoping service, 18-file recon v2 writeup, $170M residual. Older prep said “do not say 36 endpoints or 19M GL” — **that is obsolete**; both are on the PDF now.
+
+**70%:** On the PDF as the outcome (14→3 days). Older catalogs tagged TARGET. Defend the PDF; if pressed, the TDD framed that cut.
+
 
 ---
 

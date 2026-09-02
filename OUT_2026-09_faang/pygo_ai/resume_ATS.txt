@@ -1,0 +1,115 @@
+                                                     Summary
+•Senior backend engineer, 5 years building and owning cloud-native distributed systems in Python and Go on
+ GCP and AWS.
+•Currently owns both the Go API service and the LLM decision engine behind a multi-tenant retail planning
+ platform — deciding which of 88,863 products a retailer keeps each season, over a 2.11B-row ClickHouse fact table,
+ with agents held SELECT-only.
+•Ships and then hardens: 100% coverage CI gates, Kafka/Flink ingestion at 30K+ menus/month, and migrations
+ that cut p95 latency 4x.
+
+                                                       Skills
+•Languages – Python, Go (Golang), SQL.
+•Backend & APIs – FastAPI, Gin, Django, REST, Pydantic, asyncio, goroutines, Celery, Google Wire (DI).
+•AI & Agents – LLM agents (OpenAI/Anthropic/Gemini), LangGraph, LangChain, tool calling, prompt engineering,
+ RAG, embeddings, Milvus, offline evaluation, model benchmarking, LangSmith.
+•Distributed Systems – Data structures & algorithms, system design (HLD/LLD), microservices, concurrency,
+ bounded parallelism, idempotency, dead-letter queues, caching, sharding, reliability/SLOs.
+•Streaming & Data – Apache Kafka, Apache Flink, ClickHouse, BigQuery, ETL, batch processing.
+•Databases & Storage – PostgreSQL, MySQL, Redis, MongoDB, Elasticsearch, S3, GCS.
+•Cloud, CI/CD & Security – GCP, AWS, Docker, Kubernetes, Bazel, Bitbucket Pipelines, golangci-lint,
+ SAST/SBOM, JWT/OIDC, RBAC, Secret Manager, Datadog, New Relic, ELK, Linux.
+
+                                           Professional Experience
+Senior Software Engineer                    IMPACT ANALYTICS, Bangalore                           May 2026 – Present
+AssortSmart — AI planning platform that decides which products retailers stock each season
+•Own the Go service every tenant hits for planning APIs — 36 REST routes across 8 modules behind one
+ Google Wire compile-time injection root. It runs as the HTTP edge with no reverse proxy in front, so it enforces
+ its own protection rather than inheriting it: HTTP/2 cleartext (h2c), nested request timeouts, a 10 MiB body cap, and
+ graceful SIGTERM draining.
+•Keep regressions out of that service with a 100% statement-coverage gate over 1,200+ Go tests that fails a
+ local push and the CI pipeline alike, plus golangci-lint, race detection, and SAST/SBOM scanning on merges; author
+ and maintain its onboarding, architecture, and auth documentation.
+•Enforce tenant isolation on every request so no retailer can read another’s stores or products — Firebase
+ Admin or local JWT verification falling back to Google OIDC public keys, tenant resolved from header or hostname,
+ and constant-time internal API keys.
+•Built the engine that decides which products a retailer keeps or drops next season — 88,863 products
+ scored per full-season pass at under $1K in model spend — blending a deterministic sell-through and rate-of-sale
+ score with 8 weighted LLM checks — colour cannibalisation, size-curve health, trend velocity, margin resilience
+ among them — run in bounded parallel.
+•Ensured a hallucinated query can never write to the planning warehouse, holding agents SELECT-only on
+ a 2.11B-row ClickHouse table through five independent controls — prompt ban, a typed no-raw-SQL tool
+ contract, a write-statement guard, per-query budgets, and a config assertion that fails the run if writes are enabled
+ — with all mutations staged as CSV and promoted by hand.
+•Made every merchandising decision auditable without re-running the pipeline, shipping a read-only planner
+ assistant that explains why any style was kept or dropped — a LangGraph tool-calling loop bounded to 4 read-only
+ calls per question over frozen, versioned decision snapshots.
+•Took the planning grid from unusable to interactive — 189s to 12.3s (∼15.5x) on 250M rows — by
+ benchmarking ClickHouse against PostgreSQL on row-identical data, then leading its adoption as the platform’s
+ analytics store.
+•Tech – Go, Gin, Google Wire, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, GCS, GCP, Docker,
+ Datadog, LangSmith.
+Software Development Engineer 2           UBER (via EPAM Systems), Bangalore                    July 2024 – May 2026
+Financial Risk Management — backend deciding which of Uber’s accounts get audited each quarter
+•Owned the risk-scoping backend behind Uber’s quarterly financial close — 30+ REST APIs across 8
+ screens in Python, FastAPI, and MySQL — targeting a 70% reduction in manual reconciliation, from about 2 weeks
+ to 3–4 days.
+
+
+Tarun Mittal — Senior Software Engineer                                                                          Page
+•Encoded Uber’s in-scope scoping rules across ∼55 statement line items and 14 entities in the quarterly close,
+ implementing materiality, qualitative-override, residual-risk, and 5% component-threshold logic against $340M
+ materiality and a $170M residual threshold.
+•Migrated quarterly reconciliation from Google Sheets to MySQL in an 18-file change across five layers,
+ shipping parallel /v2 APIs that build the three-level statement-line-item hierarchy, reconcile internal HFM balances
+ against the published 10-Q, and assign every line a stable ID for audit.
+•Led 3 engineers on the backend, owning API contracts, code review, and layered design reviews across the scoping
+ services.
+•Tech – Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, Docker.
+
+Menu Ingestion & Automation — getting restaurant menus onto Uber Eats without humans typing them
+•Cut restaurant onboarding from 24 hours to 2 hours at 30K+ menus/month, owning ingestion end to end on
+ GCP: Selenium acquisition, a Kafka ingest bus, and Flink keyed normalize/dedupe.
+•Converted multilingual PDF and photo menus into catalog records at 98% field fidelity and 100% schema
+ validity (offline eval), building a LangChain RAG path over Milvus embeddings with Gemini 2.5 Pro and a
+ blocking schema-validation gate before catalog upsert.
+•Raised ingestion success to 95%+ by hardening the scrape fleet with IP rotation, dynamic proxy pools, and
+ adaptive retries.
+•Tech – Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
+
+ANZ Driver Document Compliance (Uber Mobility)
+•Reached 99.9% document compliance and eliminated ∼20 hours/week of manual verification by automating
+ driver and vehicle document checks for ANZ against local authority requirements.
+
+Software Development Engineer 2                MASTERS INDIA, Noida                       December 2022 – June 2024
+GST Compliance & E-Invoicing — filing tax invoices with the Indian government at scale
+•Cut p95 latency from 1.2s to 300ms for 1,500+ clients by migrating a PHP/Laravel monolith to FastAPI
+ microservices, while mentoring 2 engineers.
+•Raised throughput from 700 to 4,000 requests/min — sustaining 1M+ government submissions/day and
+ 100K+ per bulk import — on a Kafka and PostgreSQL pipeline with tables sharded by tax quarter.
+•Made government-portal filings safe to retry with idempotency keys, bounded retries, and a dead-letter
+ queue, and cut repeat DB reads 30% with Redis caching.
+•Cut incident triage and debugging time 70%, support tickets 35% with ELK and New Relic alerting plus a
+ client usage dashboard, raising test coverage from 35% to 82% at 98% deploy success.
+•Tech – Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
+
+Software Development Engineer                  GEEKSFORGEEKS, Noida                    August 2021 – November 2022
+
+•Stabilized doubt-support under 10K+ daily queries and 10x contest spikes by migrating the backend from
+ PHP to Django, and saved ∼70% of the manual effort on those ops workflows with scheduled jobs for video processing,
+ reminders, and cleanup.
+•Lifted premium subscriptions 15–20% by shipping voting, pinning, and locking REST APIs on MySQL, MongoDB,
+ Redis, and Elasticsearch, and raised course sales 30% with an influencer earnings and analytics dashboard.
+
+                                                    Education
+B.Tech (Information Technology)               Institute of Engineering &                     July 2017 – June 2021
+                                                 Technology, Lucknow
+
+                                          Achievements & Certifications
+•Google Code Jam 2021 — ranked 2260 / 37,000+ in the qualifier. Smart India Hackathon 2020 (MHRD) —
+ national finalist, top 3. LangChain Academy certified.
+
+
+
+
+Tarun Mittal — Senior Software Engineer                                                                         Page
+

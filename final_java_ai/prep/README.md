@@ -1,38 +1,34 @@
 # Final Java + AI — README
 
-JVM-leaning submit track for Amazon · LinkedIn · Apple · Atlassian · Salesforce · Rubrik. Uber and
-Masters India work is framed in Java / Spring, and the AssortSmart **write APIs are framed as Spring
-Boot** on this track (the Python/Go finals frame them as Go/Gin). The agent plane stays Python.
+Uber FRM / Masters framing: **Spring Boot / Spring Data JPA / Hibernate** / **Spring Boot**.
+AssortSmart platform on every track PDF: **Go / Gin**. Agent plane: **Python / LangGraph**.
+Contact block: (+91) 9079727197 · tmittaliet@gmail.com
 
 ## Layout
 
 ```
-final_java_ai/
   resume.tex                 compile this
   sections/*.tex             objective · skills · experience · education
   artifacts/
     Tarun_Mittal_SSE_Java_AI_Final.pdf
-    Tarun_Mittal_Java_AI_Overleaf.zip
   prep/                      grounded interview prep (this folder)
-    00_index.md              hub + stack mapping table
-    GROUND_TRUTH.md          every number, honesty tag, and omit list
-    38_why_hire_tarun_qa.md  screening & behavioral Q&A bank
+    00_index.md              hub + stack mapping
+    GROUND_TRUTH.md          every PDF number, honesty tag, omit list
+    38_why_hire_tarun_qa.md  screening & behavioral Q&A
   campaign_extras/           behavioral bank · architecture · tech depth
   ats/ · linkedin/ · outreach/
-  InterviewPrep.html         one-page hub (generated)
-  ApplicationKit.html        paste-ready application answers
 ```
-
-Do not mix tracks inside one interview loop — if you sent this PDF, the write plane is Spring Boot.
 
 ## Rebuild PDF
 
 ```bash
-mkdir -p /tmp/rb && cd final_java_ai && tectonic resume.tex --outdir /tmp/rb
+# from this track directory
+mkdir -p /tmp/rb
+tectonic resume.tex --outdir /tmp/rb
 cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_Java_AI_Final.pdf
 ```
 
-Or upload `artifacts/Tarun_Mittal_Java_AI_Overleaf.zip` to Overleaf (main file `resume.tex`).
+Or upload the Overleaf zip (main file `resume.tex`).
 
 ## Rebuild the published HTML
 
@@ -43,21 +39,16 @@ python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
 
 ## Stack on this resume
 
-- **Languages:** Java, Python, SQL, C, C++
-- **Backend & APIs:** Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, FastAPI,
-  Django, REST, gRPC, Spring Batch — **Design Patterns removed** (Aug 2026), defend verbally
-- **AI & Agents:** LLM agents, LangGraph, LangChain, MCP, tool calling, prompt engineering, RAG,
-  embeddings, Milvus, pgvector, offline eval, LangSmith (agent plane is Python, not Spring AI) —
-  see `36_skills_ai_agents_defense.md`
-- **Core Engineering:** Distributed Systems, System Design (HLD/LLD), Multithreading, Concurrency,
-  Caching, Sharding, Reliability, Testing — **JUnit removed** from Skills (Aug 2026); JUnit still
-  appears on the **Uber FRM experience Tech line**
-- **Streaming on the PDF:** Kafka and Flink only. **No Spark, no Pinot, no SFT** — study-only depth.
+- **Languages / Backend:** Java and Python · Spring Boot / Spring Data JPA / Hibernate · FastAPI · Gin · Django
+- **AI & Applied ML:** LangGraph, LangChain, RAG, Milvus, LLM agents, LangSmith, offline evaluation
+- **Data & Streaming:** Kafka, Flink, ClickHouse, BigQuery, ETL
+- **Cloud & DevOps:** GCP, AWS, Docker, Datadog, ELK, New Relic, CI/CD
+- **Architecture & Core:** distributed systems, microservices, HLD/LLD, sharding, concurrency, idempotency
+- **Streaming on the PDF:** Kafka and Flink on **Menu**. **No Spark, no Pinot.** No K8s-ops / Terraform ownership.
+- MCP is **not** a PDF skill.
 
 ## Summary block on the PDF
 
-1. Senior Software Engineer with **5 years** of experience designing and owning cloud-native,
-   high-throughput **distributed systems**.
-2. Expertise in **Java and Python microservices**, with applied experience in **AI-assisted and RAG systems**.
-3. Proven track record shipping production systems, leading backend migrations, and improving
-   reliability, performance, and scalability.
+1. Senior Software Engineer with **5 years** architecting high-throughput, cloud-native **distributed systems** and leading zero-downtime monolithic migrations.
+2. Expert in **Java and Python microservices** — event-driven pipelines, multi-billion-row databases, extreme latency reductions.
+3. LangGraph multi-agent systems, Milvus RAG architectures, and deterministic evaluation harnesses.\n

@@ -1,16 +1,12 @@
 # Final Java + AI (IA = Py/Go) — Interview Prep Hub
 
-**Tarun Mittal · Senior Software Engineer · Aug 2026**
+**Tarun Mittal · Senior Software Engineer · Sep 2026**
 
-Backs `final_java_pygo_ia/` (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`).
+Backs this track (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`). Canonical claims: [`docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMART_TAB_RESUME.md).
 
-**Same as** `final_java_ai` for Uber FRM / Menu / ANZ / Masters / GFG (Java/Spring framing).  
-**IA difference:** AssortSmart = FastAPI + LangGraph + MCP + **Go Gin** write APIs (same as `final_pygo_ai`).  
-**Project title on this PDF:** AssortSmart (Retail Merchandise Planning Platform).
+**Summary on the PDF:** 5 years architecting high-throughput cloud-native distributed systems and leading zero-downtime migrations · Expert in **Java, Python and Go microservices** · LangGraph multi-agent systems, Milvus RAG, deterministic eval harnesses.
 
-**Summary on the PDF:** Senior Software Engineer with 5 years designing and owning cloud-native, high-throughput distributed systems · Expertise in Java, Python and Go microservices, with applied experience in AI-assisted and RAG systems. · proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
-
-**Keep/Drop pipeline reference:** track copy [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md) · shared [`docs/assort_kd_flow/PIPELINE.md`](../../docs/assort_kd_flow/PIPELINE.md).
+**Keep/Drop pipeline:** [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md).
 
 ## Study order
 
@@ -21,25 +17,32 @@ Backs `final_java_pygo_ia/` (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`).
 5. [`36_skills_ai_agents_defense.md`](36_skills_ai_agents_defense.md) · diagrams/schemas `33`/`34`/`35`
 6. Keep/Drop pipeline: [`../docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md)
 
-## Stack mapping (this hybrid)
+## Stack mapping (this PDF)
 
 | Area | Claim on this PDF |
 |---|---|
-| AssortSmart chat / Keep/Drop / QnA | FastAPI, LangGraph, MCP |
-| AssortSmart writes | **Go Gin** |
-| FRM / Masters | Spring Boot / JPA / Hibernate |
-| Menu / GFG | Python (Selenium→Kafka→Flink; PHP→Django) |
+| AssortSmart platform / HTTP edge | **Go / Gin**, Wire, h2c, Datadog, 10k peak RPS |
+| AssortSmart agentic flows | Python, FastAPI, LangGraph · Keep/Drop + Missed Opp + Top Style · Ask Iris LangGraph Supervisor+Evaluator |
+| FRM / Masters | Spring Boot / Spring Data JPA / Hibernate / Spring Boot |
+| Menu / GFG | Python (Selenium→Kafka→Flink exactly-once; PHP→Django) |
 
 <div class="callout warn">
-<b>Honesty.</b> Keep/Drop + QnA are real assort_kd_flow work; gold gate is promotion/design — not “shipped to all tenants.” Cluster Recommendation Copilot and Hindsight are <b>verbal only / not on PDF</b>. FRM 70% is TARGET. Do not say Spring Boot write APIs for IA on this track — that is <code>final_java_ai</code> only. No Spark on PDF.
+<b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> — not “all tenants live.”
+Ask Iris is <b>Shipped</b> on the PDF as a capability — do not invent tenant-wide SLAs.
+10k peak RPS / 2.11B / 2.4B / $100 token / 1.6M article-seasons / 335K+ products are <b>on the PDF</b> (source: AssortSmart tab / PDF).
+Cluster Recommendation Copilot / Hindsight are <b>verbal only / not on PDF</b>.
+Menu <b>98% is offline eval</b>. Uber work was <b>via EPAM</b>. ANZ 99.9% is <b>HISTORICAL Mobility</b>.
+Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafka/Flink belongs on <b>Menu</b>, not IA.
 </div>
+
 
 ## Resume at a glance
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | Product-first AssortSmart Keep/Drop + QnA; FastAPI+Go Gin; CH POC; see `23a` |
-| Uber FRM | Spring Boot + JPA; 30+ APIs; targeting 70% from about 2 weeks to 3–4 days; led 3; see `23b` |
-| Uber Menu | Python Selenium→Kafka→Flink + RAG/Gemini/Milvus + ANZ Mobility; from 24 hours to 2 hours; see `23b` |
-| Masters India | Laravel→Spring Boot; Kafka + PG; see `23c` |
-| GeeksforGeeks | PHP → Django (Python); 10K+ daily; see `23c` |
+| Impact Analytics | Two IA subsections: Platform (10k RPS, CH 189s→12s / 1.6M / 2.4B, KPI parser, Firebase/OIDC, 100% / 1200+ tests) and Agentic (335K+, 88k/<$100, 7 lenses, 2.11B air-gap, Ask Iris shipped, 300-case / ≥80% gate vs 74% baseline) |
+| Uber FRM | 36 Spring Boot endpoints; 70% 14d→3d; $340M; 19M GL; L1–L4; 8-table SOADB; SHA-256; led 3; 100% coverage; SOX 50% |
+| Uber Menu | 24h→2h; $600K; 30K+; 98% offline RAG/Milvus; 95%+; Kafka+Flink exactly-once |
+| ANZ | 99.9% HISTORICAL Mobility; 20h/week |
+| Masters India | Spring Boot; 1.2s→300ms; 1M+/day; 35%→82%; 98% deploy |
+| GeeksforGeeks | Django; 10K+; 10x; 20% / 30% / 70% |\n

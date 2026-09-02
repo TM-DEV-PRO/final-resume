@@ -4,7 +4,7 @@
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Aug 2026):** Menu PDF = owned E2E on GCP (**Selenium → Kafka → Flink** keyed normalize/dedupe; 24h→2h / $600K+/yr / 30K+); **LangChain RAG + Gemini 2.5 Pro + Milvus** with hard schema gate (98%/100% offline; no SFT); scrape fleet **95%+** (IP rotation / dynamic proxies / adaptive retries). **ANZ** separate Uber Mobility project — driver+vehicle docs vs local authorities to **99.9%** / ~20h/week HISTORICAL. Masters Kafka is GST IRP (different product). Canonical pack: [`23b_uber_interview_packs.md`](23b_uber_interview_packs.md).
+> **RESUME ALIGNMENT (Sep 2026):** Menu PDF = **24h→2h**, **$600K/yr**, **30K+**, **98%** field fidelity (**offline**) Gemini 2.5 Pro + LangChain RAG + Milvus; **95%+**; **Kafka + Flink keyed dedupe, exactly-once upserts**. **Spark is NOT on the PDF** — verbal/study backfill only. **ANZ** Uber Mobility **99.9%** / 20h/week **HISTORICAL**. Masters Kafka ≠ Menu Kafka.
 
 ---
 
@@ -12,7 +12,7 @@ Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ES
 
 | Option | Verdict | Why |
 |---|---|---|
-| **Uber Menu** | **Selected** | Burst scrapers need a durable bus (Kafka), online normalize/dedupe (Flink), and large reprocess/backfill jobs (Spark). Matches original resume claim and production pattern used at Uber-scale ingestion teams. |
+| **Uber Menu** | **Selected for Kafka+Flink (on PDF)** | Burst scrapers need a durable bus (Kafka) and online keyed dedupe (Flink, exactly-once upserts). **Spark is not a PDF claim** — if asked, Spark is a verbal backfill option, not resume ownership. |
 | Masters India | Rejected for Flink/Spark | Already has Kafka + Celery/Spring Batch for IRP bulk. Adding Flink/Spark there duplicates without stronger evidence. |
 | Impact Analytics | Rejected | Analytics path is ClickHouse POC / CQRS, not a Spark/Flink job you owned. |
 | Skills-only | Too weak | Big-tech data/backend screens (Databricks, Airbnb data, Netflix data platform) want experience bullets, not only a skills chip. |
@@ -33,7 +33,7 @@ Kafka (keyed by vendor_id)                ← buffer, replay, fan-out
         |         +--> catalog upsert (idempotent)
         |         +--> low-confidence → RAG/Gemini path
         |
-        +--> Spark (batch / micro-batch)  ← backfills, reprocess windows, joins
+        +--> Spark (verbal/study only — NOT on PDF)  ← backfills if asked
         |
         +--> ANZ compliance jobs (separate Python track)
 ```
@@ -50,7 +50,7 @@ Industry grounding (interview citations, not personal claims): Flink for true st
 
 ### 1. Selenium → Kafka → Flink + Spark, 30K menus/mo, 24h→2h, $600K+
 
-**Resume wording (Jul 2026):** no peak events/sec on the PDF. Kafka is the ingest bus; Flink online normalize/dedupe; Spark backfills. Outcomes stay **24h→2h**, **30K+ menus/month**, **$600K+/yr**.
+**Resume wording (Sep 2026):** Kafka ingest bus; Flink keyed dedupe; **exactly-once** catalog upserts. Outcomes **24h→2h**, **$600K**, **30K+**. Spark backfills = **not on PDF**.
 
 **Acquire (HISTORICAL).** Python Selenium on GCP hits JS-heavy vendor sites through proxy pools; emits menu/item/scrape-health events.
 
@@ -165,3 +165,10 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 | ANZ 99.9% / 20h | SOLID HISTORICAL | Separate track from streaming |
 
 **Honesty:** Do not claim Pinot on the current PDF. Do not claim Spark at IA. Do not claim Flink at Masters India.
+
+
+## Kafka / Flink backpressure (packet, Menu-only)
+
+Ordering: partition by vendor/tenant so a restaurant’s events stay FIFO on one partition.
+Backpressure: Flink credit-based flow control. If the catalog/CH sink slows, buffers fill, credits drop, upstream Kafka consumption slows — that is how you avoid OOM, not “add more pods and hope.”
+Do not tell this story as an AssortSmart PDF bullet.

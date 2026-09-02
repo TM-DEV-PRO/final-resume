@@ -1,3 +1,5 @@
+> **PDF sync (Sep 2026):** IA **10k peak RPS / 2.11B / 2.4B / $100** are on the PDF (AssortSmart tab). Do not invent *additional* IA TPS. Catalog: `18_resume_number_catalog.md`.
+
 # Metrics Derivations (resume v2 + Java tracks)
 
 Every TPS / RPS / from-to / money number on the **current** v2 and Java PDFs. Interview line: say **"estimated, derived from X"** for ESTIMATED and **"measured / documented"** for MEASURED or HISTORICAL. Do not invent finer precision than this table.
@@ -15,7 +17,8 @@ Every TPS / RPS / from-to / money number on the **current** v2 and Java PDFs. In
 
 | Tech | Resume decision | Why |
 |---|---|---|
-| **Spark + Flink on Uber Menu** | **ON resume (restored Jul 2026)** | Best fit: scrapers → Kafka → Flink online → Spark backfills. Matches original event-driven Menu bullet. Peak events/sec and Spark row counts ESTIMATED. |
+| **Flink on Uber Menu** | **ON resume** | Scrapers → Kafka → Flink keyed dedupe, exactly-once upserts. |
+| **Spark on Uber Menu** | **NOT on PDF** | Verbal/study backfill only. Do not claim Spark ownership on this resume. |
 | **Pinot** | Off one-pager | Space + weaker need vs Flink/Spark for ATS; keep verbal if asked about health dashboards. |
 | **Kafka** | Skills + Menu + Masters | Menu bus + Masters e-invoice async. |
 | **Terraform / multi-region / K8s cluster ops** | **OMIT** experience; STUDY ONLY in `17_senior_systems_study_only.md` | No 95%+ personal ownership evidence. Kubernetes stays skills-listed only. |

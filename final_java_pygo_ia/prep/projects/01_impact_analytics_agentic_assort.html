@@ -40,33 +40,44 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final Java+PyGo IA</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/prep/projects/01_impact_analytics_agentic_assort.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-assortsmart-retail-merchandise-planning-platform">Impact Analytics — AssortSmart (Retail Merchandise Planning Platform)</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-assortsmart-platform-ai">Impact Analytics — AssortSmart (Platform &amp; AI)</a>
 <a class="lvl2" href="#pdf-bullets-say-these">PDF bullets (say these)</a>
 <a class="lvl2" href="#elevator-pitch-30-seconds">Elevator pitch (30 seconds)</a>
 <a class="lvl2" href="#honesty">Honesty</a>
 <a class="lvl2" href="#clickhouse-poc">ClickHouse POC</a>
 <a class="lvl2" href="#qa">Q&amp;A</a></nav>
-<main><h1 id="impact-analytics-assortsmart-retail-merchandise-planning-platform">Impact Analytics — AssortSmart (Retail Merchandise Planning Platform)</h1>
-<p><strong>Role:</strong> Senior Software Engineer · 14 May 2026 – Present · Bangalore<br>
-<strong>Resume tech:</strong> FastAPI, LangGraph, MCP · write plane <strong>Go / Gin</strong> · ClickHouse · BigQuery · GCS · Datadog · LangSmith · PostHog · Docker  </p>
+<main><h1 id="impact-analytics-assortsmart-platform-ai">Impact Analytics — AssortSmart (Platform &amp; AI)</h1>
+<p><strong>Role:</strong> Senior Software Engineer · May 2026 – Present · Bangalore
+<strong>Resume tech:</strong> Go, Gin, Wire, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker
+<strong>PDF title:</strong> AssortSmart — Senior Software Engineer (Platform &amp; AI)</p>
 <blockquote>
-<p>Ground truth: <a href="../GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>. Keep/Drop pipeline: <a href="../../docs/assort_kd_flow/PIPELINE.html"><code>../../docs/assort_kd_flow/PIPELINE.md</code></a> · shared <a href="../../../docs/assort_kd_flow/PIPELINE.html"><code>../../../docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
+<p>Ground truth: <a href="../GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>. Canonical: <a href="../../../docs/ASSORTSMART_TAB_RESUME.html"><code>../../../docs/ASSORTSMART_TAB_RESUME.md</code></a>. Pipeline: <a href="../../docs/assort_kd_flow/PIPELINE.html"><code>../../docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
 </blockquote>
 <hr>
 <h2 id="pdf-bullets-say-these">PDF bullets (say these)</h2>
+<h3 id="platform-engineering-infrastructure">Platform Engineering &amp; Infrastructure</h3>
 <ol>
-<li>Building <strong>AssortSmart</strong>, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions.</li>
-<li>Architected AssortSmart's <strong>Keep/Drop engine</strong> at article × plan-season grain, combining deterministic <strong>ST%/ROS</strong> scoring with <strong>LangGraph</strong> lenses, kept agents <strong>SELECT-only</strong> on ClickHouse through CSV-first bake-and-promote, with promotions gated on <strong>300 gold cases</strong> and <strong>≥80% offline accuracy</strong>.</li>
-<li>Built a <strong>read-only dig-deeper QnA agent</strong> over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes.</li>
-<li>Drove adoption of <strong>ClickHouse</strong> as AssortSmart's planning analytics engine, reducing pivot latency from <strong>189s to 12.3s</strong> (~<strong>15.5x</strong>) on <strong>250M rows</strong> through a row-identical Postgres-versus-ClickHouse POC.</li>
+<li>Multi-tenant <strong>Go/Gin</strong> to <strong>10k peak RPS</strong>, <strong>Google Wire</strong>, self-protecting HTTP edge (h2c, nested timeouts, <strong>Datadog</strong>).</li>
+<li><strong>15.5x</strong> analytics: <strong>189s → 12s</strong> on <strong>250M</strong> rows; ClickHouse <strong>1.6M</strong> article-seasons and <strong>2.4B</strong> weekly rollups.</li>
+<li>KPI configurator + <strong>ifNotFinite</strong> formula parser → safe ClickHouse SQL fragments.</li>
+<li>UAM-scoped tenancy; Redis-fronted Firebase → JWT/OIDC; constant-time API keys; Postgres roles.</li>
+<li><strong>100.0%</strong> statement-coverage CI (race/atomic) · <strong>1,200+</strong> Go tests · golangci-lint · SAST/SBOM.</li>
+</ol>
+<h3 id="agentic-flows-orchestration">Agentic Flows &amp; Orchestration</h3>
+<ol>
+<li>Keep/Drop + Missed Opportunities + Top Style · <strong>335K+</strong> products · <strong>88k</strong>/pass under <strong>$100</strong> · <strong>7</strong> AI lenses.</li>
+<li><strong>2.11B-row</strong> fact table · physical <strong>air-gap</strong> LLM vs DB · <strong>ReplacingMergeTree</strong> two-phase · deterministic fallback.</li>
+<li>Orchestration registry · circuit breakers · checkpoints · <strong>LangSmith</strong> + per-run JSON telemetry.</li>
+<li><strong>Shipped Ask Iris</strong> — WebSocket copilot · LangGraph <strong>Supervisor + Evaluator</strong> · frozen scopes. Capability, not tenant-wide SLA.</li>
+<li><strong>300-case</strong> offline eval · <strong>≥80%</strong> CI <strong>promotion gate</strong> · <strong>74%</strong> deterministic baseline. Gate ≠ all tenants live.</li>
 </ol>
 <h2 id="elevator-pitch-30-seconds">Elevator pitch (30 seconds)</h2>
-<p>"Four PDF stories on AssortSmart. Keep/Drop scores article × plan-season with ST%/ROS plus LangGraph lenses; agents stay SELECT-only on ClickHouse via CSV bake-and-promote; promotions gate on 300 gold cases and ≥80% offline accuracy. Dig-deeper QnA explains locked Keep/Drop without writing outcomes. ClickHouse POC took a planning pivot from 189s to 12.3s on 250M rows. Write plane on this track is Go / Gin; agent plane stays Python/LangGraph."</p>
+<p>"AssortSmart has two PDF chapters. Platform: I architected the multi-tenant Go/Gin edge to 10k peak RPS with Wire, h2c, and Datadog, moved planning analytics to ClickHouse — 189 seconds to 12 on 250 million rows, 1.6 million article-seasons, 2.4 billion weekly rollups — plus a KPI formula parser and Firebase/OIDC tenancy, held by a 100% coverage gate over 1,200+ Go tests. Agentic: Keep/Drop, Missed Opportunities, and Top Style over 335 thousand products, 88k items a pass under $100 across 7 lenses, air-gapped from a 2.11 billion-row fact table. I shipped Ask Iris, a WebSocket LangGraph Supervisor+Evaluator copilot with frozen scopes. Promotions require a 300-case offline harness and an 80% CI gate against a 74% deterministic baseline — that is a promotion gate, not a claim every tenant is live."</p>
 <h2 id="honesty">Honesty</h2>
 <ul>
-<li>Keep/Drop + QnA = real <code>assort_kd_flow</code> work.</li>
-<li>300-gold / ≥80% = <strong>promotion gate / design</strong> — not “shipped to all tenants.”</li>
-<li><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight (building / deep-dive via <code>01b_hindsight_defense.md</code> if asked).</li>
+<li>10k RPS / 2.11B / 2.4B / $100 / 1.6M / 335K+ = <strong>on PDF</strong> (AssortSmart tab).</li>
+<li>300 / ≥80% = <strong>promotion gate</strong>. Ask Iris = <strong>shipped capability</strong>.</li>
+<li><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight (<code>01b_hindsight_defense.md</code> if asked).</li>
 </ul>
 <h2 id="clickhouse-poc">ClickHouse POC</h2>
 <table>
@@ -79,17 +90,22 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>from <strong>189s to 12.3s</strong> (~15.5×) on <strong>250M</strong> row-identical PG vs CH</td>
+<td><strong>189s → 12s</strong> (~15.5×) on <strong>250M</strong> row-identical PG vs CH</td>
 <td>MEASURED</td>
-<td><code>pivot-poc/</code> · <code>21_ia_pivot_benchmark_source.md</code></td>
+<td><code>pivot-poc/</code> · <code>21_ia_pivot_benchmark_source.md</code>. PDF rounds 12.3s→12s.</td>
+</tr>
+<tr>
+<td>1.6M article-seasons · 2.4B weekly rollups · 2.11B fact</td>
+<td>PDF / AssortSmart tab</td>
+<td>Catalog + fact-table scale on the resume.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="qa">Q&amp;A</h2>
 <ul>
-<li><strong>"Shipped to all tenants?"</strong> No — gold gate is the promotion bar; say continuous present / gated rollout.</li>
-<li><strong>"What about Cluster Copilot / Hindsight?"</strong> Verbal only / not on PDF — building context if they ask.</li>
-<li><strong>"Hibernate on ClickHouse?"</strong> No.</li>
+<li><strong>"Shipped to all tenants?"</strong> No — gold/≥80% is the promotion bar. Ask Iris is a shipped capability without invented SLAs.</li>
+<li><strong>"What about Cluster Copilot / Hindsight?"</strong> Verbal only / not on PDF.</li>
+<li><strong>"Did you run Kafka/Flink/K8s on IA?"</strong> Not PDF claims. Kafka+Flink are <strong>Menu</strong>. K8s ops / CDC authorship are packet overclaims — do not take them.\n</li>
 </ul></main>
 </div>
 

@@ -51,12 +51,15 @@ strong{color:#fff}
 <a class="lvl2" href="#8-the-migration-nobody-could-pause-the-business-for-deliver-results">8. The migration nobody could pause the business for (deliver results)</a>
 <a class="lvl2" href="#9-the-anti-bot-arms-race-learn-and-be-curious">9. The anti-bot arms race (learn and be curious)</a>
 <a class="lvl2" href="#10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust / do the right thing)</a>
+<a class="lvl2" href="#11-oom-connection-leak-packet-star-not-a-pdf-bullet">11. OOM / connection leak (packet STAR — not a PDF bullet)</a>
+<a class="lvl2" href="#12-clickhouse-rfc-migration-bias-for-action-technical-leadership">12. ClickHouse RFC migration (Bias for Action / technical leadership)</a>
 <a class="lvl2" href="#rapid-fire-answers-30-seconds-each">Rapid-fire answers (30 seconds each)</a>
 <a class="lvl2" href="#stack-wording-quick-answers-say-these-on-this-track">Stack-wording quick answers (say these on this track)</a></nav>
 <main><h1 id="behavioral-star-stories-final-java-ai">Behavioral / STAR stories — Final Java + AI</h1>
 <blockquote>
-<p><strong>PDF IA (Aug 2026):</strong> Keep/Drop · dig-deeper QnA · ClickHouse POC. <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight. Pipeline: <code>docs/assort_kd_flow/PIPELINE.md</code>.</p>
+<p><strong>PDF IA (Sep 2026):</strong> Platform Engineering &amp; Infrastructure + Agentic Flows &amp; Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / ≥80% gate). <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
 </blockquote>
+<p>On this track Uber FRM and Masters India are <strong>Spring Boot</strong>; AssortSmart platform APIs on the PDF are still <strong>Go / Gin</strong> (identical IA bullets across tracks); the agent plane stays <strong>Python</strong>. Do <strong>not</strong> claim Spring Boot write APIs at IA — that framing is obsolete.</p>
 <p><strong>Self-contained</strong> behavioral bank — the full 10 stories are below, so you never leave this track
 to prep. Outcomes, Amazon Leadership Principle mapping, and Googliness signals are identical across
 every resume track; only the <strong>stack wording</strong> differs. On this track the AssortSmart write plane is framed as <strong>Spring Boot</strong>; the agent plane (planner, RAG, evals) stays <strong>Python</strong>.</p>
@@ -90,9 +93,19 @@ Atlassian, Salesforce) lives in <code>../campaign_extras/behavioral/company_beha
 <td>Problem-first thinking</td>
 </tr>
 <tr>
-<td>4. Clustering copilot inversion</td>
+<td>4. Clustering copilot inversion (<strong>verbal / not on PDF</strong>)</td>
 <td>Think Big · Customer Obsession · Deliver Results</td>
 <td>Ambiguity · user empathy</td>
+</tr>
+<tr>
+<td>11. OOM / connection leak (<strong>packet; not PDF</strong>)</td>
+<td>Ownership · Dive Deep</td>
+<td>Ambiguity</td>
+</tr>
+<tr>
+<td>12. ClickHouse RFC migration</td>
+<td>Bias for Action · technical leadership</td>
+<td>Measurement</td>
 </tr>
 <tr>
 <td>5. Constants-refactor regression</td>
@@ -165,6 +178,7 @@ Atlassian, Salesforce) lives in <code>../campaign_extras/behavioral/company_beha
 </ul>
 <h2 id="4-inverting-the-clustering-workflow-customer-obsession-think-big">4. Inverting the clustering workflow (customer obsession + think big)</h2>
 <blockquote>
+<p><strong>Verbal only / not on PDF.</strong> Cluster Recommendation Copilot is not a current resume bullet. Use if they ask about clustering-agent roadmap.</p>
 <p><strong>final_java_ai wording:</strong> Product/workflow content is unchanged; the copilot is a <strong>Python FastAPI + LangGraph</strong> microservice. The write-back into existing product tables goes through the <strong>Spring Boot</strong> APIs.</p>
 </blockquote>
 <p><strong>Use for:</strong> "A time you challenged the status quo / product thinking / ambiguity."</p>
@@ -218,7 +232,7 @@ Atlassian, Salesforce) lives in <code>../campaign_extras/behavioral/company_beha
 <p><strong>Use for:</strong> "Delivering under pressure / leading a project end-to-end."</p>
 <ul>
 <li><strong>S:</strong> Masters India's PHP monolith was collapsing during monthly GST deadline peaks — worker pools exhausted by blocking government-portal calls — while <strong>1,500+</strong> enterprise clients kept filing.</li>
-<li><strong>T:</strong> Lead the migration to async FastAPI microservices with zero downtime tolerance during deadline windows.</li>
+<li><strong>T:</strong> Lead the migration to Spring Boot microservices with zero downtime tolerance during deadline windows.</li>
 <li><strong>A:</strong> Strangler pattern per endpoint behind the gateway; shadow traffic on read paths first; moved bulk/async Kafka paths before interactive filing; kept data in place (PostgreSQL quarter sharding) to avoid a risky data migration during cutover; froze cutovers during deadline weeks; hardened bulk IRP with idempotency keys, retries, and DLQ.</li>
 <li><strong>R:</strong> p95 <strong>1.2 s → 300 ms</strong>, <strong>1M+ IRP submissions/day</strong>, <strong>100K+/import</strong>, throughput <strong>700 → 4,000 requests/min</strong>, no deadline-window outage during the migration.</li>
 <li><strong>Lesson:</strong> sequencing is the risk-management tool — the migration plan mattered more than the target architecture.</li>
@@ -248,6 +262,27 @@ Atlassian, Salesforce) lives in <code>../campaign_extras/behavioral/company_beha
 <li><strong>Lesson:</strong> trust is built in the moments where you could have stayed quiet.</li>
 </ul>
 <hr>
+<h2 id="11-oom-connection-leak-packet-star-not-a-pdf-bullet">11. OOM / connection leak (packet STAR — not a PDF bullet)</h2>
+<blockquote>
+<p><strong>Tag:</strong> Impact Analytics · Python/FastAPI worker · DESIGN/packet for any Kubernetes-pod wording. Do <strong>not</strong> claim cluster-ops ownership. Not on the resume.</p>
+</blockquote>
+<p><strong>Use for:</strong> production bug / cascading failure / Dive Deep.</p>
+<ul>
+<li><strong>S:</strong> Peak traffic, 504s, memory climbing on an async ingestion/agent worker.</li>
+<li><strong>T:</strong> Diagnose without a local repro.</li>
+<li><strong>A:</strong> Correlated APM + heap: DB/HTTP clients and cursors created inside a long-lived async loop without context managers. Patched with <code>async with</code>, pool limits/timeouts, and consumer backpressure so the worker could not outrun downstream.</li>
+<li><strong>R:</strong> Memory stabilized; 504s cleared. Follow-up: 3x-peak load test in CI and pool metrics.</li>
+<li><strong>Lesson:</strong> In async Python, resource lifetime is a correctness bug, not an infra ticket.</li>
+</ul>
+<h2 id="12-clickhouse-rfc-migration-bias-for-action-technical-leadership">12. ClickHouse RFC migration (Bias for Action / technical leadership)</h2>
+<p><strong>Use for:</strong> driving a migration / incomplete information / Are Right, A Lot.</p>
+<ul>
+<li><strong>S:</strong> Planner pivots on Postgres blew past 30s and toward <strong>189s</strong> at <strong>250M</strong> rows.</li>
+<li><strong>T:</strong> RFC + PoC + adoption without pretending CH is a generic PG replacement.</li>
+<li><strong>A:</strong> Wrote the RFC (hybrid vs insert-only agentic store). Ran row-identical POC. Chose CH for analytical reads (PDF: <strong>189s to 12s</strong>, then <strong>1.6M</strong> article-seasons / <strong>2.4B</strong> rollups). Kept PG for roles/OLTP cells. Air-gapped LLM from the <strong>2.11B</strong> fact table.</li>
+<li><strong>R:</strong> Org committed to CH for planning analytics; KPI parser + RMT two-phase landed on the PDF.</li>
+<li><strong>Lesson:</strong> Measure first; split write-models; do not dual-write a religion.</li>
+</ul>
 <h2 id="rapid-fire-answers-30-seconds-each">Rapid-fire answers (30 seconds each)</h2>
 <ul>
 <li><strong>"Why are you leaving / why big tech?"</strong> "I've now built and owned systems end-to-end — an agentic platform, streaming pipelines, a finance-grade audit tool. I want the scale ceiling removed: harder distributed-systems problems, deeper peer bench, and infrastructure where a 1% improvement matters."</li>

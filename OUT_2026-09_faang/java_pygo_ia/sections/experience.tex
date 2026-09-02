@@ -1,0 +1,99 @@
+%============================================================================%
+%  COLUMN & LIST DEFINITIONS
+%============================================================================%
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+%====================
+% EXPERIENCE A — IMPACT ANALYTICS
+%====================
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{May 2026 -- Present}\\
+\end{tabularx}
+\vspace{-1.6ex}
+
+\textcolor{Project}{\textbf{AssortSmart --- AI planning platform that decides which products retailers stock each season}}
+\vspace{-0.6ex}
+\begin{zitemize}
+    \item \textbf{Own the Go service every tenant hits for planning APIs} --- \textbf{36 REST routes} across \textbf{8 modules} behind one \textbf{Google Wire} compile-time injection root. It runs as the HTTP edge with \textbf{no reverse proxy in front}, so it enforces its own protection rather than inheriting it: HTTP/2 cleartext (\textbf{h2c}), nested request timeouts, a 10\,MiB body cap, and graceful \textbf{SIGTERM} draining.
+    \item \textbf{Keep regressions out of that service} with a \textbf{100\% statement-coverage gate} over \textbf{1,200+ Go tests} that fails a local push and the CI pipeline alike, plus \textbf{golangci-lint}, race detection, and \textbf{SAST/SBOM} scanning on merges; author and maintain its onboarding, architecture, and auth \textbf{documentation}.
+    \item \textbf{Enforce tenant isolation on every request} so no retailer can read another's stores or products --- \textbf{Firebase Admin} or local \textbf{JWT} verification falling back to \textbf{Google OIDC} public keys, tenant resolved from header or hostname, and constant-time internal API keys.
+    \item \textbf{Built the engine that decides which products a retailer keeps or drops next season} --- \textbf{88,863 products scored per full-season pass} at \textbf{under \$1K} in model spend --- blending a deterministic sell-through and rate-of-sale score with \textbf{8 weighted LLM checks} --- colour cannibalisation, size-curve health, trend velocity, margin resilience among them --- run in bounded parallel.
+    \item \textbf{Ensured a hallucinated query can never write to the planning warehouse}, holding agents \textbf{SELECT-only} on a \textbf{2.11B-row ClickHouse} table through \textbf{five independent controls} --- prompt ban, a typed no-raw-SQL tool contract, a write-statement guard, per-query budgets, and a config assertion that \textbf{fails the run if writes are enabled} --- with all mutations staged as \textbf{CSV} and promoted by hand.
+    \item \textbf{Made every merchandising decision auditable without re-running the pipeline}, shipping a read-only planner assistant that explains why any style was kept or dropped --- a \textbf{LangGraph} tool-calling loop bounded to 4 read-only calls per question over frozen, versioned decision snapshots.
+    \item \textbf{Took the planning grid from unusable to interactive --- 189s to 12.3s} ($\sim$\textbf{15.5x}) on \textbf{250M rows} --- by benchmarking \textbf{ClickHouse} against \textbf{PostgreSQL} on row-identical data, then leading its adoption as the platform's analytics store.
+    \item \textbf{Tech} -- Go, Gin, Google Wire, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, GCS, GCP, Docker, Datadog, LangSmith.
+\end{zitemize}
+
+%====================
+% EXPERIENCE B — UBER
+%====================
+\vspace{0.6ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
+\end{tabularx}
+\vspace{-1.6ex}
+
+\textcolor{Project}{\textbf{Financial Risk Management --- backend deciding which of Uber's accounts get audited each quarter}}
+\vspace{-0.6ex}
+\begin{zitemize}
+    \item \textbf{Owned the risk-scoping backend behind Uber's quarterly financial close} --- \textbf{30+ REST APIs} across \textbf{8} screens in Java, Spring Boot, and MySQL --- targeting a \textbf{70\%} reduction in manual reconciliation, from about \textbf{2 weeks to 3--4 days}.
+    \item \textbf{Encoded Uber's in-scope scoping rules} across \textbf{$\sim$55} statement line items and \textbf{14} entities in the quarterly close, implementing materiality, qualitative-override, residual-risk, and \textbf{5\%} component-threshold logic against \textbf{\$340M} materiality and a \textbf{\$170M} residual threshold.
+    \item \textbf{Migrated quarterly reconciliation from Google Sheets to MySQL} in an \textbf{18-file} change across five layers, shipping parallel \textbf{/v2} APIs that build the three-level statement-line-item hierarchy, reconcile internal \textbf{HFM} balances against the published \textbf{10-Q}, and assign every line a stable ID for audit.
+    \item \textbf{Led 3 engineers} on the backend, owning API contracts, \textbf{code review}, and layered \textbf{design reviews} across the scoping services.
+    \item \textbf{Tech} -- Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Docker.
+\end{zitemize}
+\vspace{0.5ex}
+
+\textcolor{Project}{\textbf{Menu Ingestion \& Automation --- getting restaurant menus onto Uber Eats without humans typing them}}
+\vspace{-0.6ex}
+\begin{zitemize}
+    \item \textbf{Cut restaurant onboarding from 24 hours to 2 hours} at \textbf{30K+ menus/month}, owning ingestion end to end on \textbf{GCP}: \textbf{Selenium} acquisition, a \textbf{Kafka} ingest bus, and \textbf{Flink} keyed normalize/dedupe.
+    \item \textbf{Converted multilingual PDF and photo menus into catalog records at 98\% field fidelity} and \textbf{100\% schema validity} (offline eval), building a \textbf{LangChain RAG} path over \textbf{Milvus} embeddings with \textbf{Gemini 2.5 Pro} and a blocking schema-validation gate before catalog upsert.
+    \item \textbf{Raised ingestion success to 95\%+} by hardening the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries.
+    \item \textbf{Tech} -- Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
+\end{zitemize}
+\vspace{0.5ex}
+
+\textcolor{Project}{\textbf{ANZ Driver Document Compliance (Uber Mobility)}}
+\vspace{-0.6ex}
+\begin{zitemize}
+    \item \textbf{Reached 99.9\% document compliance} and eliminated $\sim$\textbf{20 hours/week} of manual verification by automating driver and vehicle document checks for \textbf{ANZ} against local authority requirements.
+\end{zitemize}
+
+%====================
+% EXPERIENCE C — MASTERS INDIA
+%====================
+\vspace{0.6ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
+\end{tabularx}
+\vspace{-1.6ex}
+
+\textcolor{Project}{\textbf{GST Compliance \& E-Invoicing --- filing tax invoices with the Indian government at scale}}
+\vspace{-0.6ex}
+\begin{zitemize}
+    \item \textbf{Cut p95 latency from 1.2s to 300ms for 1,500+ clients} by migrating a PHP/\textbf{Laravel} monolith to \textbf{Spring Boot} microservices, while mentoring \textbf{2 engineers}.
+    \item \textbf{Raised throughput from 700 to 4,000 requests/min} --- sustaining \textbf{1M+ government submissions/day} and \textbf{100K+} per bulk import --- on a \textbf{Kafka} and \textbf{PostgreSQL} pipeline with tables sharded by tax quarter.
+    \item \textbf{Made government-portal filings safe to retry} with \textbf{idempotency keys}, bounded retries, and a \textbf{dead-letter queue}, and cut repeat DB reads \textbf{30\%} with \textbf{Redis} caching.
+    \item \textbf{Cut incident triage and debugging time 70\%, support tickets 35\%} with \textbf{ELK} and \textbf{New Relic} alerting plus a client usage dashboard, raising test coverage from \textbf{35\% to 82\%} at \textbf{98\%} deploy success.
+    \item \textbf{Tech} -- Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Spring Batch, Docker, ELK, New Relic, AWS.
+\end{zitemize}
+
+%====================
+% EXPERIENCE D — GEEKSFORGEEKS
+%====================
+\vspace{0.6ex}
+\noindent
+\begin{tabularx}{\textwidth}{@{}L C R@{}}
+\textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
+\end{tabularx}
+\vspace{-2.4ex}
+\begin{zitemize}
+    \item \textbf{Stabilized doubt-support under 10K+ daily queries and 10x contest spikes} by migrating the backend from PHP to \textbf{Django}, and saved $\sim$\textbf{70\%} of the manual effort on those ops workflows with scheduled jobs for video processing, reminders, and cleanup.
+    \item \textbf{Lifted premium subscriptions 15--20\%} by shipping voting, pinning, and locking REST APIs on MySQL, MongoDB, Redis, and Elasticsearch, and \textbf{raised course sales 30\%} with an influencer earnings and analytics dashboard.
+\end{zitemize}

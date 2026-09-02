@@ -1,7 +1,10 @@
 # Behavioral / STAR stories — Final Java + AI
 
 
-> **PDF IA (Aug 2026):** Keep/Drop · dig-deeper QnA · ClickHouse POC. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`.
+> **PDF IA (Sep 2026):** Platform Engineering & Infrastructure + Agentic Flows & Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / ≥80% gate). **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
+
+On this track Uber FRM and Masters India are **Spring Boot**; AssortSmart platform APIs on the PDF are still **Go / Gin** (identical IA bullets across tracks); the agent plane stays **Python**. Do **not** claim Spring Boot write APIs at IA — that framing is obsolete.
+
 
 **Self-contained** behavioral bank — the full 10 stories are below, so you never leave this track
 to prep. Outcomes, Amazon Leadership Principle mapping, and Googliness signals are identical across
@@ -19,7 +22,9 @@ Atlassian, Salesforce) lives in `../campaign_extras/behavioral/company_behavior_
 | 1. Reconciled ClickHouse verdict | Are Right, A Lot · Have Backbone; Disagree & Commit · Dive Deep | Intellectual humility · ambiguity |
 | 2. BQ→CH ingestion lane (freshness as a feature) | Ownership · Invent & Simplify · Insist on Highest Standards | Bias to action |
 | 3. Malformed-plan validator | Customer Obsession · Insist on Highest Standards | Problem-first thinking |
-| 4. Clustering copilot inversion | Think Big · Customer Obsession · Deliver Results | Ambiguity · user empathy |
+| 4. Clustering copilot inversion (**verbal / not on PDF**) | Think Big · Customer Obsession · Deliver Results | Ambiguity · user empathy |
+| 11. OOM / connection leak (**packet; not PDF**) | Ownership · Dive Deep | Ambiguity |
+| 12. ClickHouse RFC migration | Bias for Action · technical leadership | Measurement |
 | 5. Constants-refactor regression | Insist on Highest Standards · Earn Trust | Humility · owning mistakes |
 | 6. Coverage-gap fix (test where code lives) | Dive Deep · Learn & Be Curious | Rigor |
 | 7. ORM-vs-repository disagreement | Have Backbone; Disagree & Commit · Earn Trust | Healthy conflict |
@@ -66,6 +71,8 @@ Atlassian, Salesforce) lives in `../campaign_extras/behavioral/company_behavior_
 - **Lesson:** with LLMs, don't chase a perfect prompt — put a deterministic contract around a probabilistic component.
 
 ## 4. Inverting the clustering workflow (customer obsession + think big)
+
+> **Verbal only / not on PDF.** Cluster Recommendation Copilot is not a current resume bullet. Use if they ask about clustering-agent roadmap.
 
 > **final_java_ai wording:** Product/workflow content is unchanged; the copilot is a **Python FastAPI + LangGraph** microservice. The write-back into existing product tables goes through the **Spring Boot** APIs.
 
@@ -120,7 +127,7 @@ Atlassian, Salesforce) lives in `../campaign_extras/behavioral/company_behavior_
 **Use for:** "Delivering under pressure / leading a project end-to-end."
 
 - **S:** Masters India's PHP monolith was collapsing during monthly GST deadline peaks — worker pools exhausted by blocking government-portal calls — while **1,500+** enterprise clients kept filing.
-- **T:** Lead the migration to async FastAPI microservices with zero downtime tolerance during deadline windows.
+- **T:** Lead the migration to Spring Boot microservices with zero downtime tolerance during deadline windows.
 - **A:** Strangler pattern per endpoint behind the gateway; shadow traffic on read paths first; moved bulk/async Kafka paths before interactive filing; kept data in place (PostgreSQL quarter sharding) to avoid a risky data migration during cutover; froze cutovers during deadline weeks; hardened bulk IRP with idempotency keys, retries, and DLQ.
 - **R:** p95 **1.2 s → 300 ms**, **1M+ IRP submissions/day**, **100K+/import**, throughput **700 → 4,000 requests/min**, no deadline-window outage during the migration.
 - **Lesson:** sequencing is the risk-management tool — the migration plan mattered more than the target architecture.
@@ -150,6 +157,31 @@ Atlassian, Salesforce) lives in `../campaign_extras/behavioral/company_behavior_
 - **Lesson:** trust is built in the moments where you could have stayed quiet.
 
 ---
+
+
+
+## 11. OOM / connection leak (packet STAR — not a PDF bullet)
+
+> **Tag:** Impact Analytics · Python/FastAPI worker · DESIGN/packet for any Kubernetes-pod wording. Do **not** claim cluster-ops ownership. Not on the resume.
+
+**Use for:** production bug / cascading failure / Dive Deep.
+
+- **S:** Peak traffic, 504s, memory climbing on an async ingestion/agent worker.
+- **T:** Diagnose without a local repro.
+- **A:** Correlated APM + heap: DB/HTTP clients and cursors created inside a long-lived async loop without context managers. Patched with `async with`, pool limits/timeouts, and consumer backpressure so the worker could not outrun downstream.
+- **R:** Memory stabilized; 504s cleared. Follow-up: 3x-peak load test in CI and pool metrics.
+- **Lesson:** In async Python, resource lifetime is a correctness bug, not an infra ticket.
+
+## 12. ClickHouse RFC migration (Bias for Action / technical leadership)
+
+**Use for:** driving a migration / incomplete information / Are Right, A Lot.
+
+- **S:** Planner pivots on Postgres blew past 30s and toward **189s** at **250M** rows.
+- **T:** RFC + PoC + adoption without pretending CH is a generic PG replacement.
+- **A:** Wrote the RFC (hybrid vs insert-only agentic store). Ran row-identical POC. Chose CH for analytical reads (PDF: **189s to 12s**, then **1.6M** article-seasons / **2.4B** rollups). Kept PG for roles/OLTP cells. Air-gapped LLM from the **2.11B** fact table.
+- **R:** Org committed to CH for planning analytics; KPI parser + RMT two-phase landed on the PDF.
+- **Lesson:** Measure first; split write-models; do not dual-write a religion.
+
 
 ## Rapid-fire answers (30 seconds each)
 

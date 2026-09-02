@@ -20,14 +20,13 @@ Every markdown file is mirrored to HTML beside it. Entry points:
 - `<track>/InterviewPrep.html` — full prep hub
 - [`docs/assort_kd_flow/PIPELINE.md`](docs/assort_kd_flow/PIPELINE.md) — Keep/Drop bake→promote pipeline source
 
-## Current PDF facts (Aug 2026)
+## Current PDF facts (Sep 2026)
 
-- Summary line 2: `<stack> microservices, with applied experience in AI-assisted and RAG systems`
-  (no event-driven / real-time-batch phrasing).
-- IA bullets: AssortSmart product · Keep/Drop engine · dig-deeper QnA · ClickHouse POC.
-- Cluster Recommendation Copilot and Hindsight are **verbal / deep-dive only**, not PDF bullets.
-- Metric prose: `189s to 12.3s`, `2 weeks to 3–4 days`, `24 hours to 2 hours`.
-- **Design Patterns** / **JUnit** omitted from skills (JUnit may still appear on FRM Tech line).
+- Two-page layout; contact identity is on page 1 only (no repeating header on page 2).
+- IA is structured as **Platform Engineering & Infrastructure** + **Agentic Flows & Orchestration**.
+- Headline IA numbers: Go/Gin 10k RPS, ClickHouse 189s → 12s (15.5x) on 250M, 1.6M article-seasons, 2.4B weekly rollups, Keep/Drop + Ask Iris, 300-case / ≥80% promotion gate.
+- FRM: 70% (14 days → 3 days), 19M GL rows, 36 endpoints, L1–L4. Menu: 24 hours → 2 hours, $600K.
+- Cluster Recommendation Copilot and Hindsight remain **verbal / deep-dive only**.
 - `final_java_pygo_ia` and `final_pygo_ai` share email/phone.
 
 ## Rebuild

@@ -47,14 +47,15 @@ strong{color:#fff}
 <a class="lvl2" href="#spark-deep-dive-must-know-for-interviews">Spark deep dive (must-know for interviews)</a>
 <a class="lvl2" href="#money-and-rate-math-rapid-fire">Money and rate math (rapid fire)</a>
 <a class="lvl2" href="#mock-interview-hardest-questions">Mock interview: hardest questions</a>
-<a class="lvl2" href="#confidence-audit">Confidence audit</a></nav>
+<a class="lvl2" href="#confidence-audit">Confidence audit</a>
+<a class="lvl2" href="#kafka-flink-backpressure-packet-menu-only">Kafka / Flink backpressure (packet, Menu-only)</a></nav>
 <main><h1 id="uber-menu-ingestion-deep-dive-v2-java-tracks">Uber Menu Ingestion Deep Dive (v2 + Java tracks)</h1>
 <blockquote>
 <p><strong>Start here for interviews:</strong> <a href="23b_uber_interview_packs.html"><code>23b_uber_interview_packs.md</code></a> § Menu.</p>
 </blockquote>
 <p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Rates tagged ESTIMATED where derived.</p>
 <blockquote>
-<p><strong>RESUME ALIGNMENT (Aug 2026):</strong> Menu PDF = owned E2E on GCP (<strong>Selenium → Kafka → Flink</strong> keyed normalize/dedupe; 24h→2h / $600K+/yr / 30K+); <strong>LangChain RAG + Gemini 2.5 Pro + Milvus</strong> with hard schema gate (98%/100% offline; no SFT); scrape fleet <strong>95%+</strong> (IP rotation / dynamic proxies / adaptive retries). <strong>ANZ</strong> separate Uber Mobility project — driver+vehicle docs vs local authorities to <strong>99.9%</strong> / ~20h/week HISTORICAL. Masters Kafka is GST IRP (different product). Canonical pack: <a href="23b_uber_interview_packs.html"><code>23b_uber_interview_packs.md</code></a>.</p>
+<p><strong>RESUME ALIGNMENT (Sep 2026):</strong> Menu PDF = <strong>24h→2h</strong>, <strong>$600K/yr</strong>, <strong>30K+</strong>, <strong>98%</strong> field fidelity (<strong>offline</strong>) Gemini 2.5 Pro + LangChain RAG + Milvus; <strong>95%+</strong>; <strong>Kafka + Flink keyed dedupe, exactly-once upserts</strong>. <strong>Spark is NOT on the PDF</strong> — verbal/study backfill only. <strong>ANZ</strong> Uber Mobility <strong>99.9%</strong> / 20h/week <strong>HISTORICAL</strong>. Masters Kafka ≠ Menu Kafka.</p>
 </blockquote>
 <hr>
 <h2 id="why-this-project-is-the-best-fit-for-flink-and-spark">Why this project is the best fit for Flink and Spark</h2>
@@ -69,8 +70,8 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td><strong>Uber Menu</strong></td>
-<td><strong>Selected</strong></td>
-<td>Burst scrapers need a durable bus (Kafka), online normalize/dedupe (Flink), and large reprocess/backfill jobs (Spark). Matches original resume claim and production pattern used at Uber-scale ingestion teams.</td>
+<td><strong>Selected for Kafka+Flink (on PDF)</strong></td>
+<td>Burst scrapers need a durable bus (Kafka) and online keyed dedupe (Flink, exactly-once upserts). <strong>Spark is not a PDF claim</strong> — if asked, Spark is a verbal backfill option, not resume ownership.</td>
 </tr>
 <tr>
 <td>Masters India</td>
@@ -103,7 +104,7 @@ Kafka (keyed by vendor_id)                ← buffer, replay, fan-out
         |         +--&gt; catalog upsert (idempotent)
         |         +--&gt; low-confidence → RAG/Gemini path
         |
-        +--&gt; Spark (batch / micro-batch)  ← backfills, reprocess windows, joins
+        +--&gt; Spark (verbal/study only — NOT on PDF)  ← backfills if asked
         |
         +--&gt; ANZ compliance jobs (separate Python track)
 </code></pre>
@@ -114,7 +115,7 @@ Kafka (keyed by vendor_id)                ← buffer, replay, fan-out
 <hr>
 <h2 id="bullet-defenses">Bullet defenses</h2>
 <h3 id="1-selenium-kafka-flink-spark-30k-menusmo-24h2h-600k">1. Selenium → Kafka → Flink + Spark, 30K menus/mo, 24h→2h, $600K+</h3>
-<p><strong>Resume wording (Jul 2026):</strong> no peak events/sec on the PDF. Kafka is the ingest bus; Flink online normalize/dedupe; Spark backfills. Outcomes stay <strong>24h→2h</strong>, <strong>30K+ menus/month</strong>, <strong>$600K+/yr</strong>.</p>
+<p><strong>Resume wording (Sep 2026):</strong> Kafka ingest bus; Flink keyed dedupe; <strong>exactly-once</strong> catalog upserts. Outcomes <strong>24h→2h</strong>, <strong>$600K</strong>, <strong>30K+</strong>. Spark backfills = <strong>not on PDF</strong>.</p>
 <p><strong>Acquire (HISTORICAL).</strong> Python Selenium on GCP hits JS-heavy vendor sites through proxy pools; emits menu/item/scrape-health events.</p>
 <p><strong>Bus.</strong> Kafka topic(s) keyed by <code>vendor_id</code> for per-vendor ordering, replay, and fan-out. <strong>Verbal only if asked:</strong> peak <strong>~200–500 events/sec</strong> during fleet runs (ESTIMATED) — 30K menus/mo ≈ 1K menus/day; item-level events + retries + health amplify bursts. Steady-state much lower. Consumer lag is the primary SLO.</p>
 <p><strong>Flink online (HISTORICAL role / ESTIMATED load).</strong> Consume Kafka; keyed process by vendor; schema validate; dedupe by content hash / menu version; route structured items to catalog upsert; route unstructured payloads to RAG/Gemini.</p>
@@ -304,7 +305,11 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 </tr>
 </tbody>
 </table>
-<p><strong>Honesty:</strong> Do not claim Pinot on the current PDF. Do not claim Spark at IA. Do not claim Flink at Masters India.</p></main>
+<p><strong>Honesty:</strong> Do not claim Pinot on the current PDF. Do not claim Spark at IA. Do not claim Flink at Masters India.</p>
+<h2 id="kafka-flink-backpressure-packet-menu-only">Kafka / Flink backpressure (packet, Menu-only)</h2>
+<p>Ordering: partition by vendor/tenant so a restaurant’s events stay FIFO on one partition.
+Backpressure: Flink credit-based flow control. If the catalog/CH sink slows, buffers fill, credits drop, upstream Kafka consumption slows — that is how you avoid OOM, not “add more pods and hope.”
+Do not tell this story as an AssortSmart PDF bullet.</p></main>
 </div>
 
 <script type="module">

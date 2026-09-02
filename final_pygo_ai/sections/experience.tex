@@ -6,93 +6,97 @@
 \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
 
 %====================
-% EXPERIENCE A — IMPACT ANALYTICS
+% EXPERIENCE A — IMPACT ANALYTICS / ASSORTSMART
 %====================
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Senior Software Engineer} & \textcolor{company}{IMPACT ANALYTICS, Bangalore} & \textcolor{date}{May 2026 -- Present}\\
 \end{tabularx}
-\vspace{-2ex}
+\vspace{-1.6ex}
 
-\textcolor{Project}{\textbf{Agentic AssortSmart (AI-Powered Retail Merchandise Planning)}}
-\vspace{-1ex}
+\textcolor{Project}{\textbf{AssortSmart --- Senior Software Engineer (Platform \& AI)}}
+\vspace{0.2ex}
+
+\textcolor{Project}{\textit{Platform Engineering \& Infrastructure}}
+\vspace{-0.8ex}
 \begin{zitemize}
-    \item Building \textbf{AssortSmart}, a retail merchandise planning platform for seasonal buying, store clustering, and assortment decisions.
-    \item Architected AssortSmart's \textbf{Keep/Drop engine} at article $\times$ plan-season grain, combining deterministic \textbf{ST\%/ROS} scoring with \textbf{LangGraph} lenses, kept agents \textbf{SELECT-only} on ClickHouse through CSV-first bake-and-promote, with promotions gated on \textbf{300 gold cases} and $\geq$\textbf{80\% offline accuracy}.
-    \item Built a \textbf{read-only dig-deeper QnA agent} over locked Keep/Drop decisions, enabling planners to understand why styles were kept or dropped while schema constraints preserved frozen decisions and blocked writes to ClickHouse, CSVs, and outcomes.
-    \item Drove adoption of \textbf{ClickHouse} as AssortSmart's planning analytics engine, reducing pivot latency from \textbf{189s to 12.3s} ($\sim$\textbf{15.5x}) on \textbf{250M rows} through a row-identical Postgres-versus-ClickHouse POC.
-    \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, MCP, ClickHouse, BigQuery, GCS, Datadog, LangSmith, PostHog, GCP, Docker.
+    \item Architected a multi-tenant \textbf{Go/Gin} platform scaling to \textbf{10k peak RPS}, utilizing \textbf{Google Wire} for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native \textbf{h2c}, nested timeouts, and \textbf{Datadog} distributed tracing.
+    \item Accelerated retail analytics performance by \textbf{15.5x}, slashing pivot query latency from \textbf{189s to 12s} on \textbf{250M-row} operations. Migrated the data layer to \textbf{ClickHouse}, scaling the catalog to process \textbf{1.6M} article-season combinations and \textbf{2.4B} weekly rollup rows.
+    \item Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into safe, \texttt{ifNotFinite}-wrapped ClickHouse SQL fragments, decoupling business logic from code releases.
+    \item Guaranteed strict multi-tenant data boundaries and UAM-scoped hierarchy access across the platform. Secured system entry by implementing a Redis-fronted Firebase Admin to JWT/Google OIDC verification waterfall, constant-time API keys, and Postgres-backed role resolution.
+    \item Enforced zero-regression engineering practices by designing a \textbf{100.0\%} statement-coverage CI gate (race and atomic) across \textbf{1,200+} Go tests. Hardened the Bitbucket deployment pipeline with automated golangci-linting, pre-push hooks, and continuous SAST/SBOM security scanning.
+\end{zitemize}
+
+\textcolor{Project}{\textit{Agentic Flows \& Orchestration}}
+\vspace{-0.8ex}
+\begin{zitemize}
+    \item Architected a multi-pipeline AI merchandise decision engine (\textbf{Keep/Drop}, Missed Opportunities, Top Style) evaluating \textbf{335K+} products across multiple seasons. Optimized inference at scale---processing \textbf{88k} items per pass for under \textbf{\$100} token spend---by blending deterministic KPI math with structured LLM invokes across \textbf{7 AI lenses}.
+    \item Guaranteed zero-data-corruption across a \textbf{2.11B-row} ClickHouse fact table by physically air-gapping batch LLM execution from database queries. Ensured fault tolerance using ClickHouse \texttt{ReplacingMergeTree} for two-phase inserts, feeding models via JSON payloads and falling back to deterministic scores upon LLM failure.
+    \item Engineered a resilient AI orchestration registry to safely manage high-throughput LLM workloads across millions of tokens. Guaranteed stable parallel batch processing via custom circuit breakers and durable checkpoints, embedding \textbf{LangSmith} and custom per-run JSON telemetry to track exact token costs, step durations, and batch fallbacks.
+    \item Shipped ``Ask Iris,'' a WebSocket AI copilot enabling planners to interactively query multi-billion-row KPIs, generate dynamic charts, and drill down into AI decisions. Architected the underlying \textbf{LangGraph} orchestration---featuring a Supervisor router and Evaluator loop---enforcing socket-level frozen scopes to guarantee data isolation and prevent infinite LLM loops.
+    \item Established rigorous AI deployment guardrails by building a \textbf{300-case} offline evaluation harness and a $\geq$\textbf{80\%} accuracy CI promotion gate. Prevented degraded rollouts by benching candidate agent configurations against a \textbf{74\%} deterministic baseline, ensuring provable business value before production release.
+    \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.
 \end{zitemize}
 
 %====================
 % EXPERIENCE B — UBER
 %====================
-\vspace{0.2ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer 2} & \textcolor{company}{UBER (via EPAM Systems), Bangalore} & \textcolor{date}{July 2024 -- May 2026}\\
 \end{tabularx}
-\vspace{-2ex}
+\vspace{-1.6ex}
 
-\textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform (Uber Finance)}}
-\vspace{-1ex}
+\textcolor{Project}{\textbf{Financial Risk Management (FRM) Scoping Platform}}
+\vspace{-0.8ex}
 \begin{zitemize}
-    \item Owned Uber's \textbf{FRM Risk Scoping backend (FastAPI, MySQL)} across \textbf{30+ REST APIs} powering \textbf{8} scoping screens, automating quarterly close at \textbf{\$340M group materiality} and targeting a \textbf{70\%} cut in manual reconciliation, from about \textbf{2 weeks to 3--4 days}.
-    \item Owned the Sheets $\rightarrow$ \textbf{MySQL} recon v2 migration (\textbf{18 files}), shipping parallel \textbf{/v2} APIs that build \textbf{L1$\rightarrow$L2$\rightarrow$L3} FSLI trees, tie \textbf{HFM} amounts to public \textbf{10-Q} filings, and give each line a durable ID for audit.
-    \item Automated in-scope decisions across \mbox{\textbf{$\sim$55 line items $\times$ 14 entities}} by encoding materiality, qualitative override, residual-risk, and \textbf{5\%} component-threshold logic in the scoping services against \textbf{\$340M / \$170M} thresholds.
-    \item \textbf{Led 3 engineers} on the FRM backend by owning API contracts and layered design reviews for Finance's quarterly scoping.
+    \item Owned the Financial Risk Management scoping backend, reducing quarterly reconciliation time by \textbf{70\%} (from \textbf{14 days to 3 days}) against a \textbf{\$340M} materiality threshold. Engineered the Sheets-to-MySQL migration across \textbf{19M} raw GL rows, shipping \textbf{36 FastAPI} endpoints to automate custom financial math and a nested 4-level FSLI (L1--L4) hierarchy with dynamic quarter-annualization.
+    \item Resolved ETL pipeline lock contention during financial close by designing an 8-table normalized MySQL schema on Uber's SOADB featuring a polymorphic review-status model. Guaranteed real-time, multi-user collaboration integrity by implementing optimistic row-locking, atomic cross-table syncs, and deterministic SHA-256 natural-key hashing to eliminate data duplication across quarterly audit trails.
+    \item Led \textbf{3 engineers} in a core SQLAlchemy 2.0 ORM migration that eliminated latent column-aliasing bugs and raised module statement coverage to \textbf{100\%}. Orchestrated zero-downtime releases via stacked Bazel PRs, embedding reporting SQL allowlists and automated FSM gates with \textbf{50\%} delta-variance checks to enforce SOX compliance.
     \item \textbf{Tech} -- Python, FastAPI, SQLAlchemy 2.0, Pydantic, MySQL, Bazel, Docker.
 \end{zitemize}
-\vspace{0.3ex}
 
-\textcolor{Project}{\textbf{Menu Ingestion \& Automation Platform (Uber Eats)}}
-\vspace{-1ex}
+\textcolor{Project}{\textbf{Menu Ingestion \& Automation (Uber Eats)}}
+\vspace{-0.8ex}
 \begin{zitemize}
-    \item Owned Uber Eats menu ingestion end to end on \textbf{GCP}, landing partner menus through \textbf{Selenium} acquisition, a \textbf{Kafka} ingest bus, and \textbf{Flink} keyed normalize/dedupe --- cutting onboarding from \textbf{24 hours to 2 hours} and saving \textbf{\$600K+/yr} at \textbf{30K+ menus/month}.
-    \item Turned multilingual \textbf{PDF/image} menus into Uber Eats catalog schema at \textbf{98\% fidelity / 100\% schema consistency} (offline eval) by owning a \textbf{LangChain RAG} + \textbf{Gemini 2.5 Pro} path over \textbf{Milvus} embeddings with a hard schema validation gate before upsert.
-    \item Raised successful menu ingestions to \textbf{95\%+} by hardening the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries.
+    \item Accelerated restaurant onboarding from \textbf{24 hours to 2 hours} and saved \textbf{\$600K} annually by architecting an automated ingestion pipeline processing \textbf{30K+} menus monthly. Converted unstructured, multilingual PDFs into a strict catalog schema at \textbf{98\%} field fidelity utilizing a \textbf{Gemini 2.5 Pro} and \textbf{LangChain RAG} pipeline over \textbf{Milvus} vector embeddings.
+    \item Scaled menu extraction success to \textbf{95\%+} by hardening a Selenium fleet with dynamic proxy pools and adaptive retries, orchestrating downstream data ingestion via a \textbf{Kafka} event bus. Engineered a resilient streaming pipeline using \textbf{Apache Flink} to execute stateful keyed deduplication and schema normalization, guaranteeing exactly-once processing for catalog upserts.
     \item \textbf{Tech} -- Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
 \end{zitemize}
-\vspace{0.15ex}
 
-\textcolor{Project}{\textbf{ANZ Driver Document Compliance (Uber Mobility)}}
-\vspace{-1ex}
+\textcolor{Project}{\textbf{Document Compliance (Uber Mobility)}}
+\vspace{-0.8ex}
 \begin{zitemize}
-    \item Automated Uber Mobility driver and vehicle document checks for \textbf{ANZ} against local authority requirements, reaching \textbf{99.9\%} compliance and removing $\sim$\textbf{20 hours/week} of manual verification.
+    \item Achieved \textbf{99.9\%} regulatory compliance for Uber Mobility ANZ by automating driver and vehicle document verification workflows against local authority requirements. Eliminated \textbf{20 hours} of manual operational overhead per week by replacing manual review queues with a deterministic validation backend.
 \end{zitemize}
 
 %====================
 % EXPERIENCE C — MASTERS INDIA
 %====================
-\vspace{0.15ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer 2} & \textcolor{company}{MASTERS INDIA, Noida} & \textcolor{date}{December 2022 -- June 2024}\\
 \end{tabularx}
-\vspace{-2ex}
+\vspace{-1.6ex}
 
 \textcolor{Project}{\textbf{GST Compliance \& E-Invoicing Platform}}
-\vspace{-1ex}
+\vspace{-0.8ex}
 \begin{zitemize}
-    \item Migrated a PHP (\textbf{Laravel}) monolith to \textbf{FastAPI microservices} for \textbf{1,500+ clients}, bringing p95 from \textbf{1.2s to 300ms} while mentoring \textbf{2 engineers}.
-    \item Built a bulk e-invoice path on \textbf{Kafka} and \textbf{PostgreSQL} (tables split by tax quarter) that processed \textbf{1M+ government submissions/day} and \textbf{100K+/import}, lifting throughput from \textbf{700 to 4,000 requests/min}.
-    \item Made IRP retries safe with \textbf{idempotency keys, retries, and a dead-letter queue}, and used Redis caching to lower repeat DB reads by \textbf{30\%}.
-    \item Set up \textbf{ELK and New Relic} alerting plus a client usage dashboard that lowered incident triage \textbf{70\%} and support tickets \textbf{35\%}, raising coverage \textbf{35\% to 82\%} at \textbf{98\%} deploy success.
+    \item Reduced p95 API latency by \textbf{75\%} (from \textbf{1.2s to 300ms}) across \textbf{1,500+} enterprise clients by spearheading the migration of a legacy PHP monolith to a \textbf{FastAPI} microservices architecture. Mentored two engineers through the transition, optimizing backend design to drive overall system throughput from \textbf{700 to 4,000 requests per minute}.
+    \item Architected a bulk e-invoicing pipeline processing \textbf{1M+} daily government submissions by orchestrating a \textbf{Kafka} event bus and a \textbf{PostgreSQL} database horizontally sharded by tax quarter. Guaranteed exactly-once processing for \textbf{100K+} concurrent imports by implementing idempotency keys, dead-letter queues, and bounded retries against volatile state IRP portals.
+    \item Decreased incident triage time by \textbf{70\%} and lowered database read load by \textbf{30\%} by instrumenting \textbf{ELK} and \textbf{New Relic} distributed tracing alongside a Redis caching layer. Hardened the CI/CD release cycle by driving test coverage from \textbf{35\% to 82\%}, achieving a \textbf{98\%} deployment success rate across the microservices ecosystem.
     \item \textbf{Tech} -- Python, FastAPI, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Celery, Docker, ELK, New Relic, AWS.
 \end{zitemize}
 
 %====================
 % EXPERIENCE D — GEEKSFORGEEKS
 %====================
-\vspace{0.15ex}
 \noindent
 \begin{tabularx}{\textwidth}{@{}L C R@{}}
 \textcolor{role}{Software Development Engineer} & \textcolor{company}{GEEKSFORGEEKS, Noida} & \textcolor{date}{August 2021 -- November 2022}\\
 \end{tabularx}
-\vspace{-3ex}
+\vspace{-1.8ex}
 \begin{zitemize}
-    \item Stabilized doubt-support for \textbf{10K+ daily queries} and \textbf{10x} contest spikes by migrating the backend from PHP to \textbf{Django (Python)}.
-    \item Lifted premium subscriptions \textbf{15--20\%} by shipping voting, pinning, and locking REST APIs on MySQL, MongoDB, Redis, and Elasticsearch.
-    \item Raised course sales \textbf{30\%} by launching an influencer earnings and analytics dashboard (transactions, coupons, filters).
-    \item Raised operational efficiency \textbf{70\%} with scheduled jobs for video processing, reminders, and recording cleanup.
+    \item Stabilized the doubt-support platform to handle \textbf{10K+} daily queries and \textbf{10x} traffic spikes during live coding contests by migrating the backend to \textbf{Django}. Engineered high-throughput REST APIs for voting, pinning, and locking threads utilizing MySQL, MongoDB, Redis, and Elasticsearch, driving a \textbf{20\%} lift in premium subscriptions.
+    \item Accelerated platform course sales by \textbf{30\%} by launching an influencer analytics and earnings dashboard to dynamically track transactions and affiliate coupon conversions. Increased engineering operational efficiency by \textbf{70\%} by designing asynchronous scheduled workflows for automated video processing, user reminders, and data cleanup.
 \end{zitemize}

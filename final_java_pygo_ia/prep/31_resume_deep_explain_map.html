@@ -41,407 +41,150 @@ strong{color:#fff}
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+PyGo IA</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/prep/31_resume_deep_explain_map.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#resume-deep-explain-map-study-this-before-loops">Resume deep-explain map (study this before loops)</a>
-<a class="lvl2" href="#how-to-answer-any-tech-template">How to answer any tech (template)</a>
-<a class="lvl2" href="#impact-analytics-assortsmart-building-not-shipped">Impact Analytics — AssortSmart (building, not shipped)</a>
-<a class="lvl2" href="#uber-frm-finance">Uber FRM (Finance)</a>
-<a class="lvl2" href="#uber-menu-eats-anz-mobility-separate">Uber Menu (Eats) + ANZ (Mobility — separate)</a>
-<a class="lvl2" href="#masters-india-gst">Masters India GST</a>
-<a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
-<a class="lvl2" href="#quick-why-this-tech-cheat-sheet">Quick “why this tech” cheat sheet</a>
-<a class="lvl2" href="#study-checklist-can-you-whiteboard-this">Study checklist (can you whiteboard this?)</a></nav>
+<a class="lvl2" href="#how-to-answer-any-tech">How to answer any tech</a>
+<a class="lvl2" href="#impact-analytics-assortsmart-platform-ai">Impact Analytics — AssortSmart (Platform + AI)</a>
+<a class="lvl2" href="#uber-frm">Uber FRM</a>
+<a class="lvl2" href="#uber-menu-anz">Uber Menu + ANZ</a>
+<a class="lvl2" href="#masters-gfg">Masters / GFG</a></nav>
 <main><h1 id="resume-deep-explain-map-study-this-before-loops">Resume deep-explain map (study this before loops)</h1>
-<p><strong>Purpose:</strong> Anything on the PDF you can defend in depth — each tech (where / why / problem solved), numbers, user flows, architecture, ER-ish schema notes. Prep keeps jargon; <strong>PDF uses simple English</strong>.</p>
-<p><strong>PDF IA bullets (Aug 2026):</strong> product · Keep/Drop engine (LangGraph + SELECT-only CH + 300-gold/≥80%) · dig-deeper QnA · ClickHouse POC from 189s to 12.3s. Project title: <strong>AssortSmart (Retail Merchandise Planning Platform)</strong>. Pipeline: <code>../docs/assort_kd_flow/PIPELINE.md</code>. <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight · 14 tools / 8.5% / 63/8. Full defense: <a href="23a_ia_interview_pack.html"><code>23a_ia_interview_pack.md</code></a>.</p>
-<p><strong>Honesty:</strong> MEASURED / TARGET / HISTORICAL / ESTIMATED — see <a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>.</p>
-<p><strong>Packs:</strong> <a href="23a_ia_interview_pack.html"><code>23a</code></a> · <a href="23b_uber_interview_packs.html"><code>23b</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c</code></a><br>
-<strong>Diagrams:</strong> <code>campaign_extras/interview_prep/architecture/</code> · deep dives <code>10</code>/<code>11</code>/<code>12</code>/<code>14</code>/<code>29</code><br>
-<strong>Schemas + APIs:</strong> <a href="34_er_tables_tech_why.html"><code>34</code></a> (ER/why) · <a href="35_table_schemas_api_design.html"><code>35</code></a> (columns + contracts)</p>
+<p><strong>Purpose:</strong> Anything on <code>Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf</code> you can defend in depth.
+Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
+<p><strong>PDF IA (Sep 2026):</strong> Platform (10k RPS, CH 189s→12s / 1.6M / 2.4B, KPI parser, OIDC, 100%/1200+ tests) + Agentic (335K+, 88k/&lt;$100, 7 lenses, 2.11B air-gap, Ask Iris shipped, 300-case / ≥80% vs 74%).
+<strong>Verbal only:</strong> Cluster Copilot · Hindsight · 14 tools / 8.5% / 63/8.</p>
+<div class="callout warn">
+<p><b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> — not “all tenants live.”
+Ask Iris is <b>Shipped</b> on the PDF as a capability — do not invent tenant-wide SLAs.
+10k peak RPS / 2.11B / 2.4B / $100 token / 1.6M article-seasons / 335K+ products are <b>on the PDF</b> (source: AssortSmart tab / PDF).
+Cluster Recommendation Copilot / Hindsight are <b>verbal only / not on PDF</b>.
+Menu <b>98% is offline eval</b>. Uber work was <b>via EPAM</b>. ANZ 99.9% is <b>HISTORICAL Mobility</b>.
+Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafka/Flink belongs on <b>Menu</b>, not IA.</p>
+</div>
+<p><strong>Packs:</strong> <a href="23a_ia_interview_pack.html"><code>23a</code></a> · <a href="23b_uber_interview_packs.html"><code>23b</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c</code></a></p>
 <hr>
-<h2 id="how-to-answer-any-tech-template">How to answer any tech (template)</h2>
+<h2 id="how-to-answer-any-tech">How to answer any tech</h2>
 <ol>
-<li><strong>Where</strong> — which product + which path (user click → API → store).  </li>
-<li><strong>Why</strong> — the failure mode it fixed (not “industry standard”).  </li>
-<li><strong>Rejected</strong> — one alternative you didn’t pick and why.  </li>
-<li><strong>Number</strong> — MEASURED vs TARGET vs HISTORICAL; never invent TPS for IA.  </li>
-<li><strong>Failure</strong> — what still breaks if this piece dies.</li>
+<li><strong>Where</strong> — product + path.</li>
+<li><strong>Why</strong> — failure mode, not “industry standard.”</li>
+<li><strong>Rejected</strong> — one alternative.</li>
+<li><strong>Number</strong> — PDF vs MEASURED vs TARGET vs HISTORICAL. IA extra TPS beyond <strong>10k peak RPS</strong> = fail.</li>
+<li><strong>Failure</strong> — what breaks if this dies.</li>
 </ol>
 <hr>
-<h2 id="impact-analytics-assortsmart-building-not-shipped">Impact Analytics — AssortSmart (building, not shipped)</h2>
+<h2 id="impact-analytics-assortsmart-platform-ai">Impact Analytics — AssortSmart (Platform + AI)</h2>
 <h3 id="user-flow">User flow</h3>
-<p>Planner opens AssortSmart → Keep/Drop scores article × plan-season (ST%/ROS + LangGraph lenses) → CSV bake-and-promote behind gold gate → dig-deeper QnA explains locked decisions read-only → ClickHouse planning analytics (POC from 189s to 12.3s). <strong>Verbal only:</strong> Cluster Copilot / Hindsight if asked.</p>
-<h3 id="architecture-flow">Architecture flow</h3>
-<pre><code>Planner UI (chat + grid)
-    │
-FastAPI + LangGraph + MCP (agent plane: sequence tools, explain)
-    │  read-only tools (14) + 3 confirm steps
-Go Gin write APIs on this PDF (doing layer: Manual UI + agent share same auth; Spring Boot is for Uber/Masters only)
-    │
-ClickHouse planning store (per tenant) ← ingest ← BigQuery / GCS
-Obs: LangSmith (agent) · Datadog (platform) · PostHog (product) · shared trace_id
+<p>Planner opens AssortSmart → platform APIs (Go/Gin, OIDC, UAM) → CH grids (ifNotFinite KPIs) → Keep/Drop / Missed Opp / Top Style run (7 lenses, air-gapped) → Ask Iris explains / charts over frozen scope.</p>
+<h3 id="architecture">Architecture</h3>
+<pre><code>Planner UI / Ask Iris WS
+    → Go/Gin (Wire, h2c, 10k RPS, Datadog)
+    → Redis + Postgres roles + ClickHouse (2.11B / 2.4B / RMT)
+    → Python LangGraph (lenses + Supervisor/Evaluator)
+    → LangSmith + JSON telemetry
 </code></pre>
 <h3 id="tech-on-pdf">Tech on PDF</h3>
 <table>
 <thead>
 <tr>
 <th>Tech</th>
-<th>Where used</th>
-<th>Why / problem solved</th>
-<th>Rejected / trade-off</th>
-<th>Number defense</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>FastAPI + LangGraph + MCP</strong></td>
-<td>Planner chat / copilot</td>
-<td>Orchestrate tool calls + prompts; MCP = typed tool surface</td>
-<td>Raw LLM SQL → agent invents queries</td>
-<td>Turnaround <strong>days → under 1h</strong>, configs <strong>1 → ≥20</strong> = <strong>TARGET</strong></td>
-</tr>
-<tr>
-<td><strong>Go Gin</strong> (v2/PyGo) / <strong>Spring Boot</strong> (Java)</td>
-<td>Write/doing APIs</td>
-<td>Same write path as Manual UI; auth once; not “LLM writes DB”</td>
-<td>Agent-only writes</td>
-<td>Design; load test pending</td>
-</tr>
-<tr>
-<td><strong>14 read-only tools + 3 confirm steps</strong></td>
-<td>Agent safety</td>
-<td>Stop bad clustering inputs before engine</td>
-<td>Silent auto-finalize</td>
-<td>Failures <strong>8.5% (37/437 kik) → under 2%</strong> MEASURED→TARGET</td>
-</tr>
-<tr>
-<td><strong>ClickHouse 63/8</strong></td>
-<td>Planning store</td>
-<td>Fast pivots + versioned inserts; agent SELECT only</td>
-<td>Postgres-only OLAP; CH <code>ALTER UPDATE</code></td>
-<td><strong>189s→12.3s</strong> on <strong>250M</strong> MEASURED POC; <strong>63/8</strong> from DDL Phase-1 (<code>29</code>)</td>
-</tr>
-<tr>
-<td><strong>Insert-only + swap partitions</strong></td>
-<td>Facts/cubes refresh</td>
-<td>Avoid mutation queue; atomic refresh</td>
-<td>Row UPDATEs</td>
-<td>Say “refresh by swapping partitions” on PDF; <code>argMax</code>/<code>FINAL</code> verbally</td>
-</tr>
-<tr>
-<td><strong>~25M aggregate vs 12B store-week</strong></td>
-<td>Line-plan grain (<strong>not on PDF</strong>)</td>
-<td>Avoid table explosion</td>
-<td>Flat store-week</td>
-<td><strong>~0.4 ms</strong> edits MEASURED; month rollups sub-second — verbal only</td>
-</tr>
-<tr>
-<td><strong>BigQuery / GCS</strong></td>
-<td>Upstream truth / files</td>
-<td>Warehouse + object store for feeds</td>
-<td>CH as sole system of record for all company data</td>
-<td>Design</td>
-</tr>
-<tr>
-<td><strong>Datadog / LangSmith / PostHog</strong></td>
-<td>Ops / agent quality / product</td>
-<td>Different questions each answers</td>
-<td>One tool for everything</td>
-<td>Design</td>
-</tr>
-</tbody>
-</table>
-<p><strong>ER / schema talk track:</strong> 8 layers (stage twins, facts, dims, cubes, decisions/events…); agent <code>readonly=1</code>; services INSERT-only. Detail: <a href="29_ia_ch_ddl_phase1_source.html"><code>29_ia_ch_ddl_phase1_source.md</code></a>, pack <code>23a</code>, deep dive <code>10</code>.</p>
-<hr>
-<h2 id="uber-frm-finance">Uber FRM (Finance)</h2>
-<h3 id="user-flow_1">User flow</h3>
-<p>Finance opens Recon → loads HFM lines → Materiality / EMI / Group &amp; Component Scoping / Residual Risk / Summary → flags material lines → exports feed PwC work papers.</p>
-<h3 id="architecture-flow_1">Architecture flow</h3>
-<pre><code>Finance UI (8 screens, not owned) → FastAPI or Spring Boot backend (30+ REST)
-    → handler/controller → service → repository
-    → MySQL (11 tables, SQLAlchemy 2.0 or JPA)
-Auth: gateway email header · Bazel/JUnit CI · PwC-facing releases
-</code></pre>
-<h3 id="tech-on-pdf_1">Tech on PDF</h3>
-<table>
-<thead>
-<tr>
-<th>Tech</th>
 <th>Where</th>
 <th>Why</th>
 <th>Rejected</th>
-<th>Numbers</th>
+<th>Number</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>FastAPI / Spring Boot backend</strong></td>
-<td>FRM scoping APIs</td>
-<td>Replace Sheets close; API ownership</td>
-<td>Keep Sheets</td>
-<td><strong>30+ APIs powering 8 screens</strong></td>
-</tr>
-<tr>
-<td><strong>MySQL + 11-table schema</strong></td>
-<td>System of record</td>
-<td>Durable line IDs + audit trail</td>
-<td>Sheets forever</td>
-<td><strong>55 lines / 14 entities</strong>; <strong>$340M</strong> materiality sample</td>
-</tr>
-<tr>
-<td><strong>SQLAlchemy 2.0 / JPA</strong></td>
-<td>ORM + joins</td>
-<td>Typed models; explicit column labels</td>
-<td>Raw SQL everywhere</td>
-<td>Join bug: two columns same name → wrong identity (<strong>HISTORICAL</strong> fix story)</td>
-</tr>
-<tr>
-<td><strong>HFM + 10-Q</strong></td>
-<td>Recon truth</td>
-<td>Internal extract vs public filing</td>
-<td>Trust one source</td>
-<td>Recon v2 <strong>18 files</strong></td>
-</tr>
-<tr>
-<td><strong>Led 3</strong></td>
-<td>Delivery</td>
-<td>Design reviews, contracts, CI</td>
-<td>IC-only</td>
-<td>Leadership claim</td>
-</tr>
-</tbody>
-</table>
-<p>Diagrams: <code>architecture/02_uber_frm.md</code> · pack <code>23b</code> · deep dive <code>11</code>.</p>
-<hr>
-<h2 id="uber-menu-eats-anz-mobility-separate">Uber Menu (Eats) + ANZ (Mobility — separate)</h2>
-<h3 id="user-flow-menu">User flow (Menu)</h3>
-<p>Partner menu URL/PDF/image → Selenium fetch → Kafka → Flink normalize → structured catalog <strong>or</strong> RAG/Milvus + Gemini extract → schema gate → low confidence human review → live menu.</p>
-<h3 id="architecture-flow_2">Architecture flow</h3>
-<pre><code>Selenium fleet (IP rotate, proxies, retries)
-    → Kafka → Flink
-         ├─ structured HTML → catalog
-         └─ PDF/image → chunk → Milvus retrieve → Gemini → validate → review
-</code></pre>
-<h3 id="tech-on-pdf_2">Tech on PDF</h3>
-<table>
-<thead>
-<tr>
-<th>Tech</th>
-<th>Where</th>
-<th>Why</th>
-<th>Rejected</th>
-<th>Numbers</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Selenium</strong></td>
-<td>Acquisition</td>
-<td>JS-heavy partner sites</td>
-<td>Static curl only</td>
-<td>Part of <strong>24h→2h</strong>, <strong>30K+/mo</strong>, <strong>$600K+</strong>/yr</td>
-</tr>
-<tr>
-<td><strong>Kafka + Flink</strong></td>
-<td>Ingest pipeline</td>
-<td>Buffer spikes; stream transform</td>
-<td>Sync batch only</td>
-<td>Same economics; don’t mix with Masters Kafka story</td>
-</tr>
-<tr>
-<td><strong>LangChain RAG + Gemini + Milvus</strong></td>
-<td>Unstructured menus</td>
-<td>Multilingual PDF/image → schema</td>
-<td>Pure regex OCR</td>
-<td><strong>98% fidelity / 100% schema</strong> = <strong>offline HISTORICAL eval</strong>; 100% = validation gate</td>
-</tr>
-<tr>
-<td><strong>IP rotation / dynamic proxies / adaptive retries</strong></td>
-<td>Anti-bot scrape fleet</td>
-<td>Partner sites block bots</td>
-<td>Fixed IP</td>
-<td><strong>95%+</strong> menu ingestions</td>
-</tr>
-<tr>
-<td><strong>ANZ docs</strong></td>
-<td><strong>Mobility</strong> drivers/vehicles vs <strong>local authorities</strong></td>
-<td>Compliance automation</td>
-<td>Manual checks</td>
-<td><strong>99.9%</strong>; <strong>~20h/week</strong> HISTORICAL — <strong>not Eats</strong></td>
-</tr>
-</tbody>
-</table>
-<p>Diagrams: <code>architecture/03_uber_menu.md</code> · pack <code>23b</code> · deep dive <code>14</code> · panel <code>30</code>.</p>
-<hr>
-<h2 id="masters-india-gst">Masters India GST</h2>
-<h3 id="user-flow_2">User flow</h3>
-<p>Client ERP/dashboard → submit or bulk import invoices → validate → register with government IRP → IRN/QR back → webhook / dashboard progress.</p>
-<h3 id="architecture-flow_3">Architecture flow</h3>
-<pre><code>Gateway canary (% FastAPI|Spring | fallback PHP)
-    → microservices
-    → Kafka (bulk chunks, IRP jobs, webhooks)
-    → PostgreSQL (tables by tax quarter) + Redis + MongoDB payloads
-    → IRP (gov) with idempotency keys, retries, DLQ
-Obs: ELK + New Relic
-</code></pre>
-<p><strong>Plain English for “strangler”:</strong> migrate endpoint-by-endpoint behind the gateway with canaries so filing day never goes dark; rollback = traffic flip. PDF just says migrated Laravel → microservices.</p>
-<h3 id="tech-on-pdf_3">Tech on PDF</h3>
-<table>
-<thead>
-<tr>
-<th>Tech</th>
-<th>Where</th>
-<th>Why</th>
-<th>Rejected</th>
-<th>Numbers</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Laravel → FastAPI / Spring</strong></td>
-<td>Gradual cutover</td>
-<td>Unblock PHP-FPM; ship services</td>
-<td>Big-bang rewrite</td>
-<td><strong>p95 1.2s→300ms</strong>; <strong>1,500+</strong> clients; mentored <strong>2</strong></td>
-</tr>
-<tr>
-<td><strong>Kafka</strong></td>
-<td>Bulk IRP path</td>
-<td>Ordering, replay, fan-out</td>
-<td>Sync-only / Rabbit alone</td>
-<td><strong>1M+/day</strong>, <strong>100K+/import</strong>, <strong>700→4,000 req/min</strong> HISTORICAL</td>
-</tr>
-<tr>
-<td><strong>PostgreSQL by tax quarter</strong></td>
-<td>Hot writes</td>
-<td>GST is quarter-scoped; archive cold</td>
-<td>One fat table</td>
-<td>Same throughput story</td>
-</tr>
-<tr>
-<td><strong>Idempotency + retries + DLQ</strong></td>
-<td>Safe IRP retry</td>
-<td>Double-register with gov is bad</td>
-<td>Fire-and-forget</td>
-<td>Narrative HISTORICAL</td>
-</tr>
-<tr>
-<td><strong>Redis caching</strong></td>
-<td>Hot GSTIN/config</td>
-<td>Cut repeat reads on bulk</td>
-<td>Hit DB every row</td>
-<td><strong>−30%</strong> reads</td>
-</tr>
-<tr>
-<td><strong>ELK + New Relic + usage dashboard</strong></td>
-<td>Ops</td>
-<td>Faster triage; fewer tickets</td>
-<td>SSH/grep only</td>
-<td>Triage <strong>−70%</strong>, tickets <strong>−35%</strong>, coverage <strong>35→82</strong>, deploy <strong>98%</strong></td>
-</tr>
-</tbody>
-</table>
-<p>Diagrams: <code>architecture/04_masters_gst.md</code> · pack <code>23c</code> · deep dive <code>12</code>.</p>
-<hr>
-<h2 id="geeksforgeeks">GeeksforGeeks</h2>
-<h3 id="user-flow_3">User flow</h3>
-<p>Learner asks doubt / votes / pins → APIs → dashboards for influencers → crons process video/reminders offline.</p>
-<h3 id="tech-on-pdf_4">Tech on PDF</h3>
-<table>
-<thead>
-<tr>
-<th>Tech</th>
-<th>Where</th>
-<th>Why</th>
-<th>Numbers</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Django / Spring Boot</strong></td>
-<td>Backend rewrite</td>
-<td>Survive <strong>10K+</strong> daily + <strong>10×</strong> contest spikes</td>
-<td>HISTORICAL</td>
-</tr>
-<tr>
-<td><strong>MySQL / MongoDB / Redis / ES</strong></td>
-<td>Votes, pins, locks, search</td>
-<td>Premium features</td>
-<td>Premium <strong>+15–20%</strong></td>
-</tr>
-<tr>
-<td><strong>Influencer dashboard</strong></td>
-<td>Sales</td>
-<td>Earnings/coupons/filters</td>
-<td>Course sales <strong>+30%</strong> (not video cron)</td>
-</tr>
-<tr>
-<td><strong>Scheduled jobs</strong></td>
-<td>Video / reminders / cleanup</td>
-<td>Ops automation</td>
-<td>Ops <strong>+70%</strong> — <strong>separate</strong> from sales bullet</td>
-</tr>
-</tbody>
-</table>
-<p>Diagrams: <code>architecture/05_geeksforgeeks.md</code> · pack <code>23c</code>.</p>
-<hr>
-<h2 id="quick-why-this-tech-cheat-sheet">Quick “why this tech” cheat sheet</h2>
-<table>
-<thead>
-<tr>
-<th>If they point at…</th>
-<th>One-line why</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Go/Spring write APIs</td>
-<td>Agent never owns writes; Manual UI and chat share one auth surface</td>
-</tr>
-<tr>
-<td>LangGraph/MCP</td>
-<td>Sequence audited tools; MCP keeps tools typed and reviewable</td>
+<td>Go/Gin + Wire</td>
+<td>HTTP edge</td>
+<td>10k RPS, compile-time DI</td>
+<td>Python public edge</td>
+<td>10k peak RPS PDF</td>
 </tr>
 <tr>
 <td>ClickHouse</td>
-<td>Pivot/grid speed + insert-only planning; agent read-only</td>
+<td>Analytics + fact</td>
+<td>Columnar pivots</td>
+<td>PG OLAP; Snowflake for this UI</td>
+<td>189s→12s; 1.6M; 2.4B; 2.11B</td>
 </tr>
 <tr>
-<td>Kafka (Menu)</td>
-<td>Decouple scrape from transform at menu volume</td>
+<td>ifNotFinite parser</td>
+<td>KPI config</td>
+<td>No-deploy math</td>
+<td>Hard-coded SQL</td>
+<td>PDF</td>
 </tr>
 <tr>
-<td>Kafka (Masters)</td>
-<td>Ordered durable IRP work with replay for disputes</td>
+<td>Firebase/OIDC/Redis/PG</td>
+<td>Authz</td>
+<td>Tenant bleed</td>
+<td>Gateway-header-only</td>
+<td>PDF</td>
 </tr>
 <tr>
-<td>Milvus</td>
-<td>Similar labeled menus for RAG before Gemini extract</td>
+<td>LangGraph</td>
+<td>Lenses + Ask Iris</td>
+<td>Supervisor+Evaluator, frozen scopes</td>
+<td>Single-shot chat</td>
+<td>Shipped capability</td>
 </tr>
 <tr>
-<td>Flink</td>
-<td>Stream normalize after Kafka</td>
+<td>300-case / ≥80% / 74%</td>
+<td>CI</td>
+<td>Beat free baseline</td>
+<td>Vibe-ship</td>
+<td>promotion gate</td>
 </tr>
 <tr>
-<td>Redis</td>
-<td>Hot lookups on bulk paths</td>
-</tr>
-<tr>
-<td>DLQ</td>
-<td>Poison batch doesn’t poison the whole import</td>
+<td>Datadog / LangSmith</td>
+<td>Edge vs agent</td>
+<td>Different questions</td>
+<td>One tool for everything</td>
+<td>PDF</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Verbal:</strong> 14 tools, 3 gates, 63/8, Copilot, Hindsight — <code>23a</code> verbal section.</p>
 <hr>
-<h2 id="study-checklist-can-you-whiteboard-this">Study checklist (can you whiteboard this?)</h2>
-<ul>
-<li>[ ] AssortSmart user flow + where agent stops (no SQL write)  </li>
-<li>[ ] CH 63/8 layers + why insert-only / partition swap (plain English)  </li>
-<li>[ ] Defend 8.5% and 189s→12.3s without saying “shipped under 2%”  </li>
-<li>[ ] FRM 8 screens + materiality rules + join-bug story  </li>
-<li>[ ] Menu Selenium→Kafka→Flink vs RAG path; ANZ ≠ Eats  </li>
-<li>[ ] Masters migration cutover + IRP idempotency key shape  </li>
-<li>[ ] GFG: sales dashboard vs video crons are <strong>two</strong> claims  </li>
-</ul>
-<p>When PDF wording changes, update this file + packs’ “Resume XYZ” lines in the same PR.</p></main>
+<h2 id="uber-frm">Uber FRM</h2>
+<h3 id="user-flow_1">User flow</h3>
+<p>Finance Recon → HFM vs 10-Q → materiality / EMI / group / component / residual → PwC work papers.</p>
+<h3 id="architecture_1">Architecture</h3>
+<pre><code>Finance UI → Spring Boot / Spring Data JPA / Hibernate (36 Spring Boot endpoints)
+  → 8-table MySQL SOADB, SHA-256 natural keys, optimistic locking
+  → L1–L4 FSLI, 19M GL rows, $340M materiality
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spring Boot / Spring Data JPA / Hibernate</td>
+<td>36 Spring Boot endpoints</td>
+</tr>
+<tr>
+<td>70% 14d→3d</td>
+<td>PDF outcome</td>
+</tr>
+<tr>
+<td>Led 3 · 100% coverage · SOX 50% delta-variance</td>
+<td>PDF</td>
+</tr>
+</tbody>
+</table>
+<p>8 screens / ~55×14 / 11 ORM models / 18-file recon = <strong>verbal depth</strong> if asked.</p>
+<hr>
+<h2 id="uber-menu-anz">Uber Menu + ANZ</h2>
+<p>Selenium → Kafka → Flink keyed dedupe → catalog <strong>or</strong> RAG/Milvus/Gemini → schema gate.
+<strong>24h→2h · $600K · 30K+ · 95%+ · 98% offline · exactly-once.</strong> Spark not on PDF.
+ANZ 99.9% / 20h HISTORICAL Mobility.</p>
+<hr>
+<h2 id="masters-gfg">Masters / GFG</h2>
+<p>Spring Boot strangler: p95 1.2s→300ms (75%), 700→4000 rpm, Kafka+PG tax-quarter shard, 1M+/day, 35%→82%, 98% deploy.
+GFG Django 10K+ / 10x / 20% / 30% / 70%.</p></main>
 </div>
 
 <script type="module">

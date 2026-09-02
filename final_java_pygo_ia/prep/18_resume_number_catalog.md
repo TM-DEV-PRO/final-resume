@@ -1,64 +1,59 @@
-# Resume Number Catalog (every PDF metric, money, and rationale)
+# Resume Number Catalog (every PDF metric)
 
-Single interview sheet for **v2 and Java** PDFs. Cross-links: `GROUND_TRUTH.md`, `09_metrics_derivations.md`, project deep dives.
+Single interview sheet for `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`. Cross-links: `GROUND_TRUTH.md`, `09_metrics_derivations.md`, `23a`/`11`/`14`.
+Source for new IA scale numbers: **AssortSmart tab / PDF**.
 
-## Impact Analytics
+## Impact Analytics — on PDF
 
-| Resume number | Why / how | Tag | Defense file |
+| Resume number | Why / how | Tag | Defense |
 |---|---|---|---|
-| what-to-buy / how-much / which-stores | AssortSmart product job for retail planners | MEASURED framing | Overview / Copilot FRD |
-| ≥20 configs vs 1 (batch design 20–100) | Copilot batch explore vs one manual attempt | TARGET / DESIGN | `10_impact_analytics_deep_dive.md` |
-| Under 1 hour (from days) | Hierarchy-to-approved-plan design goal | TARGET | same |
-| **8.5% (37/437 kik)** → under 2% (target) | Measured baseline; under 2% TARGET | MEASURED / TARGET | same |
-| 14 read-only tools + 3 confirm gates | Agent never writes SQL | DESIGN | Overview / FRD |
-| **~0.4 ms** cell edit + **sub-second** month rollup | Line-plan aggregate on PG (measured) | MEASURED | LinePlanning / `20_…` |
-| Projected **12B** → **~25M** aggregate | Schema win; 12B PROJECTED | PROJECTED / MEASURED | same |
-| **ONE CH bullet:** 63/8 insert-only / partition-swapped + agent R/O + **250M 189s→12.3s (~15.5×)** | Store design + pivot POC | MEASURED design + MEASURED | DDL Phase-1 (`29_…`) + `pivot-poc/` |
-| Typical CH aggs ~2–3× if DISTINCT stripped | Adversarial correction — verbal only | MEASURED | `21_…` |
-| p95 probes <500ms vs 1–20s BQ | Shared BQ variance vs dedicated CH | MEASURED / TARGET | Copilot FRD |
-| building not shipping | Phase 1 design PASS; load test pending | DESIGN status | Overview |
+| **10k peak RPS** | Go/Gin HTTP edge | PDF / AssortSmart tab | `23a` P1 |
+| Wire · h2c · Datadog · no reverse proxy | Self-protecting edge | PDF | `23a` P1 |
+| **189s → 12s** (~15.5×) on **250M** | Row-identical PG vs CH POC (PDF rounds 12.3→12) | MEASURED POC | `21_…` |
+| **1.6M** article-seasons · **2.4B** weekly rollups | Catalog scale after CH migration | PDF / AssortSmart tab | `23a` P2 |
+| ifNotFinite KPI parser | Operator math → safe CH SQL | PDF | `23a` P3 |
+| Firebase → JWT/OIDC · Redis · Postgres roles | Auth waterfall + UAM | PDF | `23a` P4 |
+| **100.0%** coverage · **1,200+** Go tests · golangci-lint · SAST/SBOM | CI gate (race/atomic) | PDF | `23a` P5 |
+| **335K+** products · Keep/Drop + Missed Opp + Top Style | Multi-pipeline engine | PDF | `23a` A1 |
+| **88k** items/pass under **$100** · **7** AI lenses | Token-efficient inference | PDF / AssortSmart tab | `23a` A1 |
+| **2.11B-row** CH fact · air-gap LLM vs DB · RMT two-phase | Corruption control | PDF / AssortSmart tab | `23a` A2 |
+| Registry · circuit breakers · checkpoints · LangSmith | Orchestration | PDF | `23a` A3 |
+| Ask Iris shipped · Supervisor+Evaluator · frozen scopes | WebSocket copilot | PDF shipped capability | `23a` A4 |
+| **300-case** · **≥80%** CI promotion gate · **74%** deterministic baseline | Eval harness | promotion gate ≠ all tenants live | `23a` A5 |
 
-**Do NOT invent IA TPS/RPM** — none measured in IA docs.
+## Impact Analytics — verbal only (not on PDF)
 
-## Uber FRM
-
-| Resume number | Why / how | Tag | Defense file |
-|---|---|---|---|
-| 8 screens / 30+ APIs | Product surface; code ~32 routes | MEASURED | `11_uber_frm_deep_dive.md` |
-| $340M materiality | Q4 2025 sample metric | MEASURED | same |
-| 70% (~2 weeks → ~3–4 days) | TDD target; baseline ESTIMATED | TARGET + EST. | same |
-| ~55 lines × 14 entities + $340M/$170M + 5% thresholds | Materiality engine on PDF; 11 ORM models = verbal schema depth | MEASURED | same |
-| 18 files recon v2 | `RECON_API_MIGRATION.md` | MEASURED | same |
-| Led 3 engineers | User-confirmed EPAM pod | Confirmed | same |
-
-## Uber Menu
-
-| Resume number | Why / how | Tag | Defense file |
-|---|---|---|---|
-| Owned E2E on GCP · Selenium→Kafka→Flink · 30K+/mo · 24h→2h · $600K+/yr | Historical ops; PDF ownership claim | HISTORICAL | `14` · `23b` |
-| 98%/100% · LangChain RAG + Gemini 2.5 Pro + Milvus · hard schema gate (no SFT) | Multilingual PDF/image → catalog schema | HISTORICAL offline eval | `23b` |
-| 95%+ menu ingestions · IP rotation / dynamic proxies / adaptive retries | Anti-bot scrape fleet | HISTORICAL | `23b` |
-
-## ANZ Driver Docs (Uber Mobility)
-
-| Resume number | Why / how | Tag | Defense file |
-|---|---|---|---|
-| 99.9% · ~20h/week · vs **local authority requirements** | Driver **and vehicle** docs for **Uber Mobility / ANZ** | HISTORICAL (past resume; 20h **not** re-measured here) | 4yr resume + `23b` |
-| Not Uber Eats · no “main-app” | Separate Mobility project on PDF | Decision | `GROUND_TRUTH.md` |
-
-## Masters India (consensus across past resumes)
-
-| Resume number | Why / how | Tag |
+| Number | Tag | Notes |
 |---|---|---|
-| p95 **1.2s → 300ms** | All past resumes | HISTORICAL |
-| **1,500+ clients** (not 2,500+) | Consensus | HISTORICAL |
-| **1M+/day** · **100K+/import** · **700 → 4,000 req/min** | 4yr + current | HISTORICAL |
-| Redis −30% · triage −70% · support tickets −35% · coverage 35→82% · 98% deploy | HISTORICAL |
-| No ~12 TPS / ~67 RPS on PDF | ESTIMATED derivations — verbal only | ESTIMATED |
+| ≥20 configs / under 1h / 8.5% (37/437) → under 2% / 14 tools / 3 gates | TARGET / DESIGN / MEASURED baseline | Cluster Copilot — not a PDF bullet |
+| 63/8 DDL · ~12B → ~25M · ~0.4 ms cell | DESIGN / PROJECTED / MEASURED agg | Interview depth |
+| p95 probes <500ms vs 1–20s BQ | TARGET / MEASURED BQ variance | Verbal |
 
-## GeeksforGeeks
+Do **not** invent extra IA TPS beyond PDF **10k peak RPS**.
 
-| Resume number | Why / how | Tag |
+## Uber FRM (PDF)
+
+| Resume number | Tag | Notes |
 |---|---|---|
-| **10K+ daily queries · 10× contest spikes** | Standardized (not 1K / not 100K) | HISTORICAL / user |
-| Premium +15–20% (voting / pinning / **locking**) · course sales +30% (**dashboard only**) · ops +70% (**crons separate**) | HISTORICAL |
+| **70%** · **14 days → 3 days** | PDF outcome | Older prep said TARGET; defend PDF |
+| **$340M** materiality · **19M** raw GL rows | PDF | |
+| **36 Spring Boot endpoints** · L1–L4 FSLI · quarter-annualization | PDF | 8 screens remain verbal product depth |
+| **8-table** MySQL SOADB · SHA-256 keys · optimistic locking | PDF | 11 ORM models = verbal schema depth |
+| Led **3** · **100%** statement coverage · SOX **50%** delta-variance | PDF | |
+
+## Uber Menu / ANZ
+
+| Resume number | Tag |
+|---|---|
+| 24h→2h · $600K/yr · 30K+/mo · 95%+ | HISTORICAL |
+| 98% field fidelity Gemini+LangChain+Milvus | **offline eval** |
+| Kafka + Flink keyed dedupe · exactly-once upserts | PDF |
+| Spark | **not on PDF** — verbal backfill only |
+| ANZ 99.9% · 20h/week | HISTORICAL Mobility |
+
+## Masters / GFG
+
+| Resume number | Tag |
+|---|---|
+| p95 1.2s→300ms (75%) · 1,500+ · 700→4,000 rpm · 1M+/day · 100K+ · Redis −30% · coverage 35→82% · 98% deploy | HISTORICAL · Spring Boot |
+| GFG 10K+ · 10x · 20% premium · 30% sales · 70% ops | HISTORICAL Django |\n

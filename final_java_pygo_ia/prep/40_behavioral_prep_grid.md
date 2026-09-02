@@ -2,69 +2,55 @@
 
 **Track:** Final Java + AI (IA = Py/Go) · **PDF:** `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`
 
-Inspired by the Cracking-the-Coding-Interview-style grid recommended in
-[awesome-behavioral-interviews](https://github.com/ashishps1/awesome-behavioral-interviews).
-Fill one cell before each loop. Keep answers to 4 bullets: **S / T / A / R** (plus tag).
+Stack: FRM = **Spring Boot / Spring Data JPA / Hibernate** · IA platform = **Go / Gin** · agent = **Python, FastAPI, LangGraph** · Masters = **Spring Boot**.
 
-Stack on this track: FRM = **Spring Boot / MySQL** · writes = **Go / Gin** · agent = **Python FastAPI + LangGraph** · Masters = **Spring Boot strangler**.
-
-Full answers live in [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) and
-[`39_behavioral_question_bank.md`](39_behavioral_question_bank.md). This sheet is for recall drill.
-
----
-
-## How to use
-
-1. Pick the company → open `company_behavior_guides` (or Amazon/Google rows in §1 of `39`).
-2. Pick 2–3 stories you will allow yourself in that loop — mark them below.
-3. For each project column, jot a 1-line S and the number you will say.
-4. After the interview, mark cells you actually used so you never repeat in a follow-up.
+Full answers: [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) · [`39_behavioral_question_bank.md`](39_behavioral_question_bank.md).
 
 ---
 
 ## Grid
 
-| Question theme | IA Keep/Drop / QnA / CH (Copilot·Hindsight verbal) | Uber FRM | Uber Menu | Masters India | GFG |
+| Question theme | IA Platform + Agentic (Copilot·Hindsight verbal) | Uber FRM | Uber Menu | Masters | GFG |
 |---|---|---|---|---|---|
-| Ownership / end-to-end | Arch owner; writes=Go / Gin; agent=Python FastAPI + LangGraph; CH POC from 189s to 12.3s MEASURED | 30+ APIs, 8 screens, $340M, led 3 | Selenium→Kafka→Flink→RAG gate; 24h→2h; $600K+/yr | Spring Boot strangler; 1M+/day; mentored 2 | Django reliability |
-| Disagreement / backbone | Story 1 CH camps | Story 7 ORM vs repository | — | Sequencing debates | — |
-| Failure / mistake | — | Story 5 constants refactor | Early anti-bot misses | Story 10 near-miss | — |
-| Dive deep / debug | Schema choice×cluster×week | Story 6 coverage lie | Block-rate instrumentation | Idempotency class bug | — |
-| Deadline / pressure | Design targets (TARGET) | PwC-facing release trains | Partner onboarding SLA | GST deadline freeze cutovers | — |
-| Customer / stakeholder | Planner UX inversion (story 4) | G6 PwC materiality rules | Partner menus multilingual | Enterprise filers 1,500+ | — |
-| Mentorship / feedback | — | Led 3 via contracts | — | Mentored 2; G4 feedback | — |
-| Initiative / prevention | CH PoC; freshness lane (story 2) | Recon v2 design | Schema gate before catalog | Idempotency + DLQ | — |
-| Ambiguity / incomplete info | Story 1 gates; story 4 intent-only inputs | Materiality encoding | Adversarial sources | Peak vs migration sequencing | — |
-| Ethics / trust | Human gates before writes | Audit reproducibility | Low-confidence → human review | Story 10 raised near-miss | — |
-| Why this work matters | MEASURED 8.5% failure baseline | Finance system of record | $600K+/yr ops | Compliance filings | Learning foundation |
+| Ownership | 10k RPS, 100% Go tests, Ask Iris shipped, 300-case gate | 36 Spring Boot endpoints, $340M, led 3 | Selenium→Kafka→Flink; 24h→2h; $600K | Spring Boot; 1M+/day; mentored 2 | Django |
+| Disagreement | Story 1 CH camps | Story 7 ORM | — | Sequencing | — |
+| Failure | Packet OOM leak (not PDF) | Story 5 refactor | Early anti-bot | Story 10 near-miss | — |
+| Dive deep | Air-gap 2.11B / ifNotFinite | Story 6 coverage | Block-rate | Idempotency | — |
+| Deadline | Eval gate vs ship pressure | PwC trains | Partner SLA | GST freeze | — |
+| Customer | Frozen Ask Iris scopes | PwC materiality | Multilingual menus | 1,500+ filers | — |
+| Mentorship | — | Led 3 | — | Mentored 2 | — |
+| Initiative | CH POC + KPI parser | Recon SOADB | Schema gate | Idempotency + DLQ | — |
+| Ambiguity | Story 1; 74% vs ≥80% gate | Materiality encoding | Adversarial sources | Peak vs migration | — |
+| Ethics | Promotion gate over vibe-ship | Audit reproducibility | Low-confidence review | Story 10 | — |
+| Why it matters | 2.11B corruption risk | Finance SoR | $600K/yr | Compliance filings | Learning |
 
 ---
 
-## Per-project one-liners (memorize)
+## Per-project one-liners
 
-**IA — AssortSmart Keep/Drop + QnA (PDF)**  
-Keep/Drop + dig-deeper QnA from assort_kd_flow; agents SELECT-only; 300-gold / ≥80% offline = promotion gate (not multi-tenant GA). Write APIs Go / Gin; agent plane FastAPI, LangGraph, MCP; ClickHouse POC from 189s to 12.3s (~15.5×) MEASURED. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight (building).
+**IA — Platform + Agentic (PDF)**
+Go/Gin 10k RPS, Wire, h2c, Datadog; CH 189s→12s / 1.6M / 2.4B; ifNotFinite; OIDC waterfall; 100%/1200+ tests. Keep/Drop + Missed Opp + Top Style, 335K+, 88k/<$100, 7 lenses; 2.11B air-gap; Ask Iris shipped; 300-case / ≥80% vs 74% (gate, not GA). **Verbal:** Copilot · Hindsight.
 
-**Uber FRM (via EPAM)**  
-Spring Boot / MySQL; 30+ REST APIs; 8 screens; $340M materiality; ~55×14; led 3; 70% recon cut = TARGET.
+**Uber FRM (via EPAM)**
+Spring Boot / Spring Data JPA / Hibernate; 36 Spring Boot endpoints; 19M GL; L1–L4; 8-table SOADB; SHA-256; 70% 14d→3d; $340M; led 3; 100% coverage; SOX 50%.
 
-**Uber Menu (via EPAM)**  
-Python · Selenium · Kafka · Flink · LangChain · Gemini · RAG · Milvus · GCP. 24h→2h; $600K+/yr; 30K+ menus/mo; 95%+ ingest; 98%/100% offline eval. No Spark. No SFT.
+**Uber Menu**
+24h→2h; $600K; 30K+; 95%+; 98% **offline** RAG/Milvus; Kafka+Flink exactly-once. No Spark on PDF. No SFT.
 
-**Masters India**  
-Spring Boot strangler; Kafka IRP 1M+/day; p95 1.2s→300ms; 700→4,000 req/min; 1,500+ clients; mentored 2; ELK/New Relic triage ~70% faster HISTORICAL.
+**Masters**
+Spring Boot; 1.2s→300ms (75%); 1M+/day; 700→4,000 rpm; 35%→82%; 98% deploy; mentored 2.
 
-**GeeksforGeeks**  
-Django reliability / early career — use only if asked for first job; keep short.
+**GFG**
+Django 10K+ / 10x / 20% / 30% / 70% — keep short.
 
 ---
 
-## Loop checklist (print this)
+## Loop checklist
 
-- [ ] 2–3 stories pre-chosen for this company
-- [ ] Numbers tagged MEASURED / TARGET / HISTORICAL
-- [ ] Uber = via EPAM said once
-- [ ] Copilot = building said once
+- [ ] 2–3 stories pre-chosen
+- [ ] Numbers tagged PDF / MEASURED / TARGET / HISTORICAL / gate
+- [ ] Uber = via EPAM once
+- [ ] Ask Iris = shipped capability; ≥80% = promotion gate
+- [ ] Copilot/Hindsight not claimed as PDF bullets
 - [ ] Masters Kafka ≠ Menu Kafka
-- [ ] 3 reverse questions picked from `39` §4
-- [ ] No LeetCode / Spark / SFT / Design-Patterns-as-Skills claims
+- [ ] No Spark / SFT / K8s-ops / extra IA TPS

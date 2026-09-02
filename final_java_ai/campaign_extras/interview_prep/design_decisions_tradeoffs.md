@@ -1,58 +1,73 @@
 # Design Decisions and Tradeoffs (resume-aligned)
 
-Every major decision on the campaign resume with how / why / what / alternatives.
+Every major decision on `Tarun_Mittal_SSE_Java_AI_Final.pdf` with how / why / alternatives. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
-## Impact Analytics
+## Impact Analytics — Platform
 
-### Planner copilot on FastAPI + LangGraph + MCP with Go doing layer
-**What:** Chat agent plans tool calls. Deterministic Go engines execute clustering/hindsight/strategy.
-**Why:** LLMs are good at intent and narration, bad at correct merch math. Shared Go layer keeps Manual UI and Agent on one auth surface.
-**Tradeoff:** Two runtimes (Python + Go) vs one. Chose correctness and reuse over language purity.
-**Alt rejected:** Giving the LLM a raw SQL shell. Pure Python rewrite of merch engines.
+### Go/Gin HTTP edge (Wire, h2c, 10k peak RPS, Datadog)
+**What:** Self-protecting multi-tenant edge without a reverse proxy.
+**Why:** Compile-time DI, native h2c, nested timeouts, tracing at the process that serves peak RPS.
+**Tradeoff:** You own body caps/SIGTERM drain vs inheriting nginx.
+**Alt rejected:** Python monolith as the public edge; “just put it behind GFE/nginx and don’t think.”
 
-### 14 audited read tools + 3 human confirm gates
-**What:** Agent tools only **read** planning data. Writes go through human gates then product write-back APIs.
-**Why:** Measured failures were mostly input-boundary mistakes. Buy decisions move real money.
-**Say in interview:** Do not say "never writes SQL" as a slogan. Say tools are read-scoped and writes are gated.
-**Tradeoff:** Slower full autonomy vs auditability.
+### ClickHouse vs Postgres vs Snowflake (packet defense, PDF-honest)
+**What:** 189s→12s on 250M; 1.6M article-seasons; 2.4B weekly rollups.
+**Why Postgres failed for planner pivots:** row store scans whole rows for multi-column GROUP BY; lock/IO.
+**Why ClickHouse:** columnar + vectorized execution; only the pivot columns hit disk.
+**Why not Snowflake/BQ for this UI:** interactive latency + cost of shared slots (BQ probes 1–20s+ MEASURED). Self-hosted CH matched the read pattern.
+**Tradeoff:** CH is a poor keyed-UPDATE OLTP store — insert-only / ReplacingMergeTree, thin PG for roles.
 
-### Hindsight prior-season decision layer
-**What:** Carry-forward / underperformance flags (FR-6.1), Keep/Shop/Drop on item grid (FR-16.5), scorecard + contribution, overnight narration grounded in metrics (FR-8.1), tenant catalogs without code deploy (FR-1.3).
-**Why:** First stage of planning pipeline — next-season buys need last-season evidence.
-**Safety:** Narration number-checked before save; visuals deterministic (FR-9.1); permission-scoped filters (FR-0.1).
-**Defense file:** `projects/01b_hindsight_defense.md`
+### ifNotFinite KPI parser
+**What:** Operator math → tokenized CH SQL fragments.
+**Why:** KPI changes without deploys; NaN/Inf cannot poison rollups.
+**Alt:** hard-coded SQL in releases.
 
-### Choice-cluster-week aggregates (~25M) for interactive edits
-**What:** Editable plan grain stays aggregate so cell edits ~0.4 ms and month rollups stay sub-second (MEASURED on aggregate path).
-**Why:** Flat store-week grids are not interactive for planners.
-**Honesty:** Do **not** put projected 12B on the PDF. If asked verbally, 12B is a projected flat explosion used in internal benchmarks, not a shipped table size claim.
+### Firebase → JWT/OIDC waterfall + Redis + Postgres roles
+**What:** UAM-scoped hierarchy; constant-time API keys.
+**Why:** Multi-tenant bleed is a company-ending bug.
+**Alt:** “trust the gateway header only.”
 
-### Per-tenant ClickHouse (63 tables / 8 layers)
-**What:** Append-only planning store after pivot POC 250M 189s→12.3s (~15.5×).
-**Why:** Shared BigQuery probe variance 1–20s+ kills agent UX.
-**Kafka on IA tech line:** Product uses Kafka for async embedding jobs (playbook). Planning-store ingest remains batch ELT. Be precise in interview.
+### 100% coverage / 1,200+ tests / SAST/SBOM
+**What:** race+atomic CI gate.
+**Why:** zero-regression on a 10k RPS edge.
+**Honesty:** last committed profile may be 99.93% — say gate is 100%, last profile if asked.
+
+## Impact Analytics — Agentic
+
+### Deterministic KPI + 7 lenses vs LLM-only
+**What:** 335K+ products; 88k/pass under $100.
+**Why:** Merch math must be auditable; LLM adds judgment, not the SoR.
+**Alt:** free-form SQL tool.
+
+### Air-gap LLM vs 2.11B fact + RMT two-phase
+**What:** JSON payloads in; two-phase inserts; deterministic fallback.
+**Why:** A hallucinated write on 2.11B rows is unrecoverable.
+**Do not say:** you built Flink CDC on IA. `pg2ch_cdc` = Ashvin Sharma (DESIGN against, not authored).
+
+### Ask Iris: Supervisor + Evaluator + frozen scopes
+**What:** Shipped WebSocket copilot.
+**Why:** Evaluator loop + socket-level freeze stop infinite loops and cross-tenant reads.
+**Honesty:** shipped **capability**, no invented tenant SLA.
+
+### 300-case / ≥80% gate vs 74% baseline
+**What:** CI promotion gate.
+**Why:** Free deterministic rule is the bar models must beat.
+**Do not say:** all tenants live at ≥80%.
+
+### Cluster Copilot / Hindsight
+**Verbal only / not on PDF.** Do not list as resume bullets.
 
 ## Uber FRM
-### FastAPI + MySQL SSOT replacing Sheets
-**What:** 8 screens, 30+ APIs, HFM↔10-Q recon as durable MySQL SoR for PwC.
-**Why:** Sheets had no stable line IDs, history, or real-time collaboration for audit.
-**Removed from PDF:** “11-table” and “18-file migration” wording — keep as verbal depth.
-### Group/component/residual/EMI auto-flag
-**What:** Auto-flag material FSLIs/entities vs $340M materiality and $170M residual (Q4 2025 sample), 55 lines / 14 entities.
-**Why:** Scoping correctness is the SOX-style control PwC consumes.
-### Leadership + 1,100+ tests
-**What:** Led 3 via design reviews/API contracts/CI; Bazel pytest suite ~1,100+.
-**Honesty:** 70% recon cut is TARGET. Do not claim collab-service ownership.
+### Spring Boot / Spring Data JPA / Hibernate + 8-table SOADB + SHA-256 keys
+**What:** 36 Spring Boot endpoints, 19M GL, L1–L4, optimistic locking.
+**Why:** Sheets had no stable IDs or SOX-grade collaboration.
+**PDF:** 70% from 14 days to 3; 100% coverage; SOX 50% delta-variance; led 3.
 
 ## Uber Menu
-### Selenium + Kafka ingest bus + RAG/Gemini
-Scrapers on GCP cut 24h→2h and $600K+/yr on 30K+ menus/month. Kafka holds replayable ordered scrape events before downstream extract/catalog write-back (HISTORICAL streaming path from prior resume materials / prep). RAG + Gemini + Milvus with a hard schema gate for unstructured menus (98%/100% offline; no SFT on PDF).
-**Flink:** On Menu PDF (hot-path normalize/dedupe after Kafka). **Spark:** Study/verbal backfill only unless a JD needs it on the PDF.
+### Selenium → Kafka → Flink exactly-once + RAG/Milvus
+**What:** 24h→2h, $600K, 30K+, 98% **offline**, 95%+.
+**Backpressure (packet, Menu-only):** partition by vendor/tenant for ordering; Flink credit-based backpressure if CH/catalog sink slows — buffers fill, upstream Kafka consumption slows, avoid OOM.
+**Spark:** not on PDF.
 
-## Masters India
-### PHP → FastAPI strangler + Kafka IRP + on-call
-p95 1.2s→300ms, 1500+ clients, mentored 2. Kafka + PG quarter shard for 1M+/day and 700→4000 req/min. Idempotency/DLQ. ELK/New Relic triage −70%.
-
-## GeeksforGeeks
-### PHP → Django
-10K+ daily queries, 10× contest spikes, voting/pinning, influencer analytics.
+## Masters / GFG
+Spring Boot strangler + Kafka/PG shard. GFG PHP→Django.\n

@@ -1,3 +1,5 @@
+> **PDF sync (Sep 2026):** 300-case / ≥80% is a **CI promotion gate** vs 74% deterministic baseline — not all-tenants-live. Ask Iris is shipped capability.
+
 # Agentic AssortSmart — flow, guardrails, evals, benchmarking honesty
 
 **PDF sync:** failures **8.5% (37/437)** MEASURED · under **2%** TARGET · **14** read tools + **3** gates · LangSmith on Tech · load test **pending** (say **building**).
