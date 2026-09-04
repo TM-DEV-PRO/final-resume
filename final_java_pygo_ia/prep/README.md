@@ -49,6 +49,6 @@ python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
 
 ## Summary block on the PDF
 
-1. Senior Software Engineer with **5 years** architecting high-throughput, cloud-native **distributed systems** and leading zero-downtime monolithic migrations.
-2. Expert in **Java, Python and Go microservices** — event-driven pipelines, multi-billion-row databases, extreme latency reductions.
-3. LangGraph multi-agent systems, Milvus RAG architectures, and deterministic evaluation harnesses.\n
+1. Senior Software Engineer with **5 years** of experience designing and owning cloud-native, high-throughput **distributed systems**.
+
+3. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.

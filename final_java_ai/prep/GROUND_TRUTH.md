@@ -8,9 +8,9 @@ Self-contained for this track. Do **not** treat `resume/`, `resume_v2/`, `resume
 
 ## Summary (PDF — 3 lines)
 
-1. Senior Software Engineer with **5 years** of experience architecting high-throughput, cloud-native **distributed systems** and leading zero-downtime monolithic migrations.
-2. Expert in **Java and Python microservices**, specializing in scaling event-driven pipelines, optimizing multi-billion row databases, and driving extreme latency reductions for enterprise platforms.
-3. Proven track record of bridging enterprise data with fault-tolerant AI by deploying **LangGraph** multi-agent systems, **Milvus RAG** architectures, and deterministic evaluation harnesses to deliver measurable business impact.
+1. Senior Software Engineer with **5 years** of experience designing and owning cloud-native, high-throughput **distributed systems**.
+2. Expertise in **Java and Python** microservices, with applied experience in **AI-assisted** and **RAG** systems.
+3. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
 ## Skills categories (PDF)
 

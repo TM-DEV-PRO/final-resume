@@ -4,11 +4,13 @@ Canonical experience/summary/skills from the AssortSmart tab. Stack wording on F
 
 ## Summary
 
-Senior Software Engineer with 5 years of experience architecting high-throughput, cloud-native distributed systems and leading zero-downtime monolithic migrations.
+Current PDF (Sep 2026):
 
-Expert in {Java and Python | Python and Go | Java, Python and Go} microservices, specializing in scaling event-driven pipelines, optimizing multi-billion row databases, and driving extreme latency reductions for enterprise platforms.
+Senior Software Engineer with 5 years of experience designing and owning cloud-native, high-throughput distributed systems.
 
-Proven track record of bridging enterprise data with fault-tolerant AI by deploying LangGraph multi-agent systems, Milvus RAG architectures, and deterministic evaluation harnesses to deliver measurable business impact.
+Expertise in {Java and Python | Python and Go | Java, Python and Go} microservices, with applied experience in AI-assisted and RAG systems.
+
+Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
 ## Skills (AssortSmart tab)
 

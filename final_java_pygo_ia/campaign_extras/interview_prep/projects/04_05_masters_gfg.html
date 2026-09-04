@@ -62,19 +62,19 @@ strong{color:#fff}
 <hr>
 <h2 id="1-30s-2min-explain">1. 30s / 2min explain</h2>
 <p><strong>30 seconds</strong><br>
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We strangled a PHP Laravel monolith into FastAPI microservices and built an event-driven bulk IRP pipeline on Kafka and PostgreSQL quarter sharding. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency, retries, and DLQ so we never double-register with the government.</p>
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We strangled a PHP Laravel monolith into Spring Boot microservices and built an event-driven bulk IRP pipeline on Kafka and PostgreSQL quarter sharding. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with high-concurrency idempotent processing, DLQ/fault-tolerant state, and bounded retries so we never double-register with the government.</p>
 <p><strong>2 minutes</strong><br>
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.</p>
-<p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. I led a strangler: FastAPI services cut over behind the gateway endpoint-by-endpoint with canaries, shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
+<p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. I led a strangler: Spring Boot services cut over behind the gateway endpoint-by-endpoint with canaries, shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
 <p>The bulk path is where Kafka earns its keep. Import file → object storage → chunk validate → Kafka topics for IRP submit / signed-response persistence / webhook fan-out → PostgreSQL quarter shards for hot-quarter writes. Partition key by client GSTIN for per-taxpayer ordering. Idempotency keys (<code>client + fileHash + batchIndex</code>), exponential backoff, and DLQ replay for poison batches. Redis cache-aside cut redundant DB reads ~30%. Ops: ELK + New Relic request-ID correlation cut triage ~70%; pytest coverage 35% → 82%; 98% deployment success.</p>
 <p>If they ask “why Kafka?” — ordering, durable replay for GST disputes, and independent consumer groups on the same log. Admit RabbitMQ could dispatch work at our scale; replay and multi-consumer audit won.</p>
 <hr>
 <h2 id="2-architecture">2. Architecture</h2>
 <pre><code>Client ERP / Dashboard
         │
-   API Gateway (Nginx canary % → FastAPI | fallback PHP)
+   API Gateway (Nginx canary % → Spring Boot | fallback PHP)
         │
-   FastAPI services (auth, e-invoice submit, bulk import, recon)
+   Spring Boot services (auth, e-invoice submit, bulk import, recon)
         │
    ┌────┴────┬──────────────┬─────────────┐
    │         │              │             │
@@ -90,7 +90,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </code></pre>
 <p><strong>Hot path (single invoice):</strong> validate → optional Redis lookups → 202/async or sync submit → IRP → persist IRN/QR → webhook.<br>
 <strong>Bulk path:</strong> S3 file → chunk validate → Kafka → IRP workers → progress on dashboard.<br>
-<strong>Migration rule:</strong> shared DB until traffic 100% on FastAPI; then carve service-owned tables.</p>
+<strong>Migration rule:</strong> shared DB until traffic 100% on Spring Boot; then carve service-owned tables.</p>
 <hr>
 <h2 id="3-design-decisions">3. Design decisions</h2>
 <table>
@@ -111,7 +111,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 <tr>
 <td>Async runtime</td>
-<td>FastAPI + workers</td>
+<td>Spring Boot + workers</td>
 <td>Django sync / keep PHP</td>
 <td>IRP fan-out must not pin workers</td>
 </tr>
@@ -155,7 +155,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </table>
 <hr>
 <h2 id="4-bullet-by-bullet-defense">4. Bullet-by-bullet defense</h2>
-<h3 id="bullet-1-php-fastapi-strangler-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → FastAPI strangler · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
+<h3 id="bullet-1-php-spring-boot-strangler-1500-clients-p95-12s-300ms-mentored-2">Bullet 1 — PHP → Spring Boot strangler · 1,500+ clients · p95 1.2s → 300ms · mentored 2</h3>
 <table>
 <thead>
 <tr>
@@ -280,7 +280,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tbody>
 </table>
 <h3 id="tech-line-defend-if-pressed">Tech line — defend if pressed</h3>
-<p>Python, FastAPI, Kafka, PostgreSQL, MongoDB (payload snapshots), Redis, Elasticsearch (search + ELK), Celery, Docker, New Relic, AWS.</p>
+<p>Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB (payload snapshots), Redis, Elasticsearch (search + ELK), Docker, ELK, New Relic, AWS.</p>
 <hr>
 <h2 id="5-mock-interview-10-qa">5. Mock interview — 10 Q&amp;A</h2>
 <p><strong>Q1. Why Kafka over SQS or RabbitMQ for e-invoicing?</strong><br>
@@ -300,7 +300,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 <p><strong>Q8. ELK + New Relic triage −70% — vanity or real?</strong><br>
 <strong>A.</strong> Before: SSH + grep, no correlation. After: request ID through API → Kafka consumer → IRP worker; NR APM; alerts on error/latency. ~30→&lt;10 min ESTIMATED under HISTORICAL 70%. Claim alerting, not unproven pager ownership. Coverage 35→82 on money paths; 98% deploy HISTORICAL.</p>
 <p><strong>Q9. Dual writes during migration?</strong><br>
-<strong>A.</strong> Avoided. Shared DB through traffic cutover so one truth; table ownership split only after 100% FastAPI. Contract tests pinned PHP response shapes field-for-field.</p>
+<strong>A.</strong> Avoided. Shared DB through traffic cutover so one truth; table ownership split only after 100% Spring Boot. Contract tests pinned PHP response shapes field-for-field.</p>
 <p><strong>Q10. What broke in early canary?</strong><br>
 <strong>A.</strong> Timeout mismatch: PHP 60s vs we set 10s. Legitimate long IRP calls failed. Fix: move IRP fully async, return 202 + poll. Canary caught it before full ramp.</p>
 <hr>
@@ -316,7 +316,7 @@ At GeeksforGeeks I migrated the doubt-support backend from PHP to Django to hard
 Doubt support is the Q&amp;A layer on articles and courses — high read volume, contest spikes, messy legacy PHP. We migrated page-by-page behind the same URLs to Django + DRF: transactions, validation, cleaner read/write split, staging discipline.</p>
 <p>Voting/pinning: unique <code>(user_id, content_id)</code> for idempotent votes; Redis display counters reconciled async to MySQL to avoid hot rows on viral posts; pinning as per-context order columns. Premium gating on some interactions — own the APIs; attribute +15–20% to growth.</p>
 <p>Influencer dashboard: near-real-time Redis counters + daily cron rollups for partners. Crons: video processing handoffs, reminders, recording cleanup — leased so hosts don’t double-run. Own engineering; sales/efficiency are HISTORICAL business metrics.</p>
-<p>Why Django then FastAPI at Masters? CMS/admin/ORM batteries in 2021 vs async IRP fan-out later.</p>
+<p>Why Django then Spring Boot at Masters? CMS/admin/ORM batteries in 2021 vs async IRP fan-out later.</p>
 <hr>
 <h2 id="2-architecture_1">2. Architecture</h2>
 <pre><code>Learners / influencers
@@ -476,8 +476,8 @@ Doubt support is the Q&amp;A layer on articles and courses — high read volume,
 <strong>A.</strong> Unique <code>(user_id, content_id)</code> for idempotency. Redis display counters, async reconcile to MySQL. MySQL = threads/permissions/truth. Mongo = variable bodies/attachments. Elasticsearch = search. Pinning = ordered columns per context. Premium +15–20% = growth attribution.</p>
 <p><strong>Q3. Cron pipelines claimed +70% ops efficiency — how do you keep crons honest?</strong><br>
 <strong>A.</strong> Lease/advisory lock so two hosts don’t double-run; idempotent job keys; structured logs; retry or dead-letter partial batches. 70% = HISTORICAL time saved on manual video/reminder/cleanup workflows. Course +30% = business attribution on influencer analytics; own engineering.</p>
-<p><strong>Q4. Why Django at GFG but FastAPI at Masters?</strong><br>
-<strong>A.</strong> 2021 CMS-style product: admin, auth, ORM batteries. Masters needed async IO against flaky government IRP APIs and an event-driven bulk pipeline — FastAPI + Kafka fit that job.</p>
+<p><strong>Q4. Why Django at GFG but Spring Boot at Masters?</strong><br>
+<strong>A.</strong> 2021 CMS-style product: admin, auth, ORM batteries. Masters needed async IO against flaky government IRP APIs and an event-driven bulk pipeline — Spring Boot + Kafka fit that job.</p>
 <p><strong>Q5. SMTP 50% faster — is that real?</strong><br>
 <strong>A.</strong> Prep depth from older resumes: reuse one SMTP connection across a batch instead of TCP+TLS per message (often 100–400ms handshake). Amortizing that halves wall-clock for reminder/promo traffic. GFG detail, not a Masters claim.</p>
 <p><strong>Q6. What would you change today?</strong><br>

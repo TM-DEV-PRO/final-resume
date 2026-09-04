@@ -36,7 +36,7 @@ GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoice
 
 ### Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)
 
-**Resume XYZ:** Scaled bulk e-invoicing with async Kafka and PostgreSQL quarter sharding (X/Y) to 100K+ per import and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).
+**Resume XYZ:** Architected a high-concurrency bulk e-invoicing pipeline on Kafka + PostgreSQL quarter sharding (X/Y) with exactly-once/idempotent processing for 100K+ concurrent imports and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).
 
 - Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.
 - 1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.

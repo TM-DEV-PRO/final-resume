@@ -14,7 +14,7 @@ Agent plane: **Python, FastAPI, LangGraph**. Platform APIs: **Go / Gin**.
 
 ### 30 seconds
 
-AssortSmart has two PDF chapters. Platform: I architected the multi-tenant Go/Gin edge to **10k peak RPS** (Wire, h2c, Datadog), moved planning analytics to ClickHouse — **189s to 12s** on **250M** rows, **1.6M** article-seasons, **2.4B** weekly rollups — plus an ifNotFinite KPI parser, Firebase/JWT/OIDC tenancy, and a **100%** coverage gate over **1,200+** Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on **335K+** products, **88k** items/pass under **$100**, **7** lenses; air-gapped LLM vs a **2.11B-row** fact table; **shipped Ask Iris** (LangGraph Supervisor+Evaluator, frozen scopes); **300-case** offline eval and **≥80%** CI promotion gate vs a **74%** deterministic baseline.
+AssortSmart has two PDF chapters. Platform: I architected the multi-tenant Go/Gin edge to **10k peak RPS** (Wire, h2c, Datadog), moved planning analytics to ClickHouse — **189s to 12s** on **250M** rows, **1.6M** article-seasons, **2.4B** weekly rollups — plus an ifNotFinite KPI parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), and a **100%** coverage gate over **1,200+** Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on **335K+** products, **88k** items/pass under **$100**, **7** lenses; air-gapped LLM vs a **2.11B-row** fact table; **shipped Ask Iris** (LangGraph Supervisor+Evaluator, frozen scopes); **300-case** offline eval and **≥80%** CI promotion gate vs a **74%** deterministic baseline.
 
 ### 2 minutes
 

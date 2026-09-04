@@ -11,7 +11,7 @@
 ## 1. 30s / 2min explain
 
 **30 seconds**  
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to Spring Boot microservices and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to Spring Boot microservices and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with high-concurrency idempotent processing, DLQ/fault-tolerant state, and bounded retries so we never double-register with the government.
 
 **2 minutes**  
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.

@@ -72,7 +72,7 @@ strong{color:#fff}
 - Connection pooling per service instead of PHP-FPM per-request connections.</p>
 <p><strong>Mentoring 2 engineers.</strong> Two juniors owned individual service extractions. I set the conventions (router, service, repository layering, Pydantic schemas at the boundary, retry and idempotency helpers), reviewed every PR for the first months, and paired on the first canary cutover. Both were independently shipping services by the end.</p>
 <h3 id="bullet-2-100k-per-import-1m-daily-transactions-700-to-4000-rpm-12-tps-67-rps">Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)</h3>
-<p><strong>Resume XYZ:</strong> Scaled bulk e-invoicing with async Kafka and PostgreSQL quarter sharding (X/Y) to 100K+ per import and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
+<p><strong>Resume XYZ:</strong> Architected a high-concurrency bulk e-invoicing pipeline on Kafka + PostgreSQL quarter sharding (X/Y) with exactly-once/idempotent processing for 100K+ concurrent imports and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
 <ul>
 <li>Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.</li>
 <li>1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.</li>

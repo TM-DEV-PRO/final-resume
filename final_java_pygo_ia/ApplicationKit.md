@@ -20,7 +20,7 @@ AssortSmart agentic flows: structured LLM invokes across 7 lenses blended with d
 **Verbal only / not on PDF:** Cluster Recommendation Copilot and Hindsight (building) — use only if the form asks for a broader agentic roadmap.
 
 ### Largest scale
-AssortSmart: 10k peak RPS (PDF); 2.11B-row CH fact; 2.4B weekly rollups; 335K+ products; 88k items/pass. Masters: Kafka e-invoicing 1M+ IRP/day, 100K+/import, 700 to 4,000 rpm. ClickHouse pivot POC 189s to 12s on 250M rows (MEASURED).
+AssortSmart: 10k peak RPS (PDF); 2.11B-row CH fact; 2.4B weekly rollups; 335K+ products; 88k items/pass. Masters: high-concurrency Kafka e-invoicing, 1M+ IRP/day, 100K+ idempotent imports, 700 to 4,000 rpm. ClickHouse pivot POC 189s to 12s on 250M rows (MEASURED).
 
 ### Leadership
 Led 3 (Uber/EPAM FRM). Mentored 2 (Masters).

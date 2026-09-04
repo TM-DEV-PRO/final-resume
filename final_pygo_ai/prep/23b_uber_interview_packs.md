@@ -1,4 +1,4 @@
-> Canonical interviewer packs for current resume_v2 FRM + Menu bullets. Menu PDF has NO Kafka/Flink/Spark. Synced Jul 2026.
+> Canonical interviewer packs for current resume_v2 FRM + Menu bullets. Menu PDF has Kafka + Flink (data ingestion and processing pipeline). Spark is not on the PDF. Synced Sep 2026.
 
 # Uber FRM — Interview Pack
 
@@ -7,7 +7,7 @@
 **30s:** At Uber Finance I owned the FRM Risk Scoping backend—FastAPI, MySQL—that replaced a quarterly Google Sheets close. **30+ REST APIs** powering **8** screens decide which FSLIs and entities are in scope for PwC, at $340M group materiality on the Q4 2025 close, targeting a 70% cut in manual recon (~2 weeks → ~3–4 days). I owned the Sheets→MySQL recon v2 migration (18 files, parallel /v2 L1→L2→L3 APIs), encoded materiality/residual/5% threshold logic across ~55×14, and led a 3-engineer EPAM pod through API contracts and handler/service/repository design reviews.
 
 
-**2min:** Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive retries so fleet success lands in the mid-90s. Structured HTML lands via a **Kafka** ingest bus and **Flink** keyed normalize/dedupe into catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from **Milvus** (LangChain RAG) → **Gemini 2.5 Pro** generate Uber Eats schema fields → **hard schema validation gate** → low-confidence human review (**no SFT on PDF** — 100% schema is the gate). This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend *your* LangChain/RAG/Gemini/Milvus ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are **offline**—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Uber Mobility compliance track for driver/vehicle docs vs **local authority requirements** (99.9%, ~20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
+**2min:** Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive retries so fleet success lands in the mid-90s. Structured HTML lands via a **Kafka + Flink** large-scale data ingestion and processing pipeline with keyed normalize/dedupe into catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from **Milvus** (LangChain RAG) → **Gemini 2.5 Pro** generate Uber Eats schema fields → **hard schema validation gate** → low-confidence human review (**no SFT on PDF** — 100% schema is the gate). This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend *your* LangChain/RAG/Gemini/Milvus ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are **offline**—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Uber Mobility compliance track for driver/vehicle docs vs **local authority requirements** (99.9%, ~20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
 
 
 ---
@@ -144,7 +144,7 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 
 ## 1. 30s / 2min explain
 
-**30s:** At Uber Eats I owned menu ingestion end to end on GCP — Selenium acquisition, Kafka ingest, Flink keyed normalize/dedupe — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month. I hardened the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries to 95%+ successful ingestions. For multilingual PDF/image menus I owned a LangChain RAG + Gemini 2.5 Pro path over Milvus with a hard schema validation gate before upsert (98% fidelity / 100% schema consistency, offline eval). Separately, under **Uber Mobility**, I automated driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20 hours/week of manual verification (HISTORICAL — not re-measured here).
+**30s:** At Uber Eats I owned menu ingestion end to end on GCP — Selenium acquisition plus a Kafka + Flink data ingestion and processing pipeline — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month. I hardened the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries to 95%+ successful ingestions. For multilingual PDF/image menus I owned a LangChain RAG + Gemini 2.5 Pro path over Milvus with a hard schema validation gate before upsert (98% fidelity / 100% schema consistency, offline eval). Separately, under **Uber Mobility**, I automated driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20 hours/week of manual verification (HISTORICAL — not re-measured here).
 
 **2min:** Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from **Milvus** (LangChain RAG) → **Gemini 2.5 Pro** generate Uber Eats schema fields → schema validate → low-confidence human review, This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend *your* LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are **offline**—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.
 
@@ -212,7 +212,7 @@ flowchart LR
 ### Bullet 1 — Owned Eats ingestion E2E on GCP; Selenium + Kafka + Flink; 24h → 2h; $600K+/yr; 30K+ menus/mo
 - **Outcomes:** HISTORICAL ops numbers. Onboarding cycle compressed ~90%.
 - **Money:** ~$2/menu × 30K × 12 = $720K list → resume **$600K+** conservative floor.
-- **How:** Own end-to-end path: Selenium acquisition → Kafka ingest bus → Flink keyed normalize/dedupe vs paid third-party menu tool.
+- **How:** Own end-to-end path: Selenium acquisition → Kafka + Flink data ingestion and processing pipeline (keyed normalize/dedupe) vs paid third-party menu tool.
 - **Own:** End-to-end menu ingestion path on GCP—not a claim of owning all Eats catalog infra.
 
 ### Bullet 2 — Multilingual PDF/image → catalog schema; LangChain RAG + Gemini 2.5 Pro + Milvus; hard schema gate; 98%/100% offline (no SFT)
@@ -288,7 +288,7 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 
 ## PDF exact bullets (Aug 2026 — memorize)
 
-1. Owned Uber Eats menu ingestion end to end on GCP, landing partner menus through Selenium acquisition, a Kafka ingest bus, and Flink keyed normalize/dedupe — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month.
+1. Owned Uber Eats menu ingestion end to end on GCP, landing partner menus through Selenium acquisition, a Kafka + Flink data ingestion and processing pipeline (keyed normalize/dedupe) — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month.
 2. Turned multilingual PDF/image menus into Uber Eats catalog schema at 98% fidelity / 100% schema consistency (offline eval) by owning a LangChain RAG + Gemini 2.5 Pro path over Milvus embeddings with a hard schema validation gate before upsert.
 3. Raised successful menu ingestions to 95%+ by hardening the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries.
 4. Automated Uber Mobility driver and vehicle document checks for ANZ against local authority requirements, reaching 99.9% compliance and removing ~20 hours/week of manual verification.

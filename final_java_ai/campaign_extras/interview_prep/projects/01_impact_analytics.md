@@ -12,7 +12,7 @@
 
 ### 30 seconds (PDF first)
 
-AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with 1.6M article-seasons and 2.4B weekly rollups, KPI ifNotFinite parser, Firebase/JWT/OIDC tenancy, 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 335K+ products, 88k items/pass under $100, 7 lenses; air-gapped LLM vs a 2.11B-row fact table; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / ≥80% CI promotion gate vs 74% deterministic baseline.
+AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with 1.6M article-seasons and 2.4B weekly rollups, KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 335K+ products, 88k items/pass under $100, 7 lenses; air-gapped LLM vs a 2.11B-row fact table; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / ≥80% CI promotion gate vs 74% deterministic baseline.
 
 ### 2 minutes (architecture + evidence)
 

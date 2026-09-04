@@ -779,20 +779,20 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>S1</td>
-<td>5y architecting high-throughput cloud-native distributed systems; zero-downtime monolithic migrations</td>
-<td>this track objective · <code>31_resume_deep_explain_map.md</code></td>
+<td>5y designing and owning cloud-native high-throughput distributed systems</td>
+<td>this track objective · <code>31</code> · <code>41</code></td>
 <td>HISTORICAL tenure</td>
 </tr>
 <tr>
 <td>S2</td>
-<td>Expert in Python and Go microservices; event-driven pipelines; multi-billion-row DBs; extreme latency cuts</td>
-<td><code>36_skills_ai_agents_defense.md</code></td>
+<td>Expertise in Python and Go microservices; AI-assisted and RAG</td>
+<td><code>36</code> · <code>41</code></td>
 <td>framing</td>
 </tr>
 <tr>
 <td>S3</td>
-<td>LangGraph multi-agent systems, Milvus RAG, deterministic evaluation harnesses</td>
-<td><code>23a</code> · <code>14</code> Menu RAG</td>
+<td>Shipping production systems; backend migrations; reliability / performance / scalability</td>
+<td><code>41</code></td>
 <td>framing</td>
 </tr>
 <tr>
@@ -990,7 +990,7 @@ strong{color:#fff}
 <h1 id="final-pygo-ai-interview-prep-hub">Final PyGo + AI — Interview Prep Hub</h1>
 <p><strong>Tarun Mittal · Senior Software Engineer · Sep 2026</strong></p>
 <p>Backs this track (PDF: <code>Tarun_Mittal_SSE_5yr.pdf</code>). Canonical claims: <a href="../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a>.</p>
-<p><strong>Summary on the PDF:</strong> 5 years architecting high-throughput cloud-native distributed systems and leading zero-downtime migrations · Expert in <strong>Python and Go microservices</strong> · LangGraph multi-agent systems, Milvus RAG, deterministic eval harnesses.</p>
+<p><strong>Summary on the PDF:</strong> 5 years designing and owning cloud-native high-throughput <strong>distributed systems</strong> · Expertise in <strong>Python and Go</strong> microservices with <strong>AI-assisted</strong> and <strong>RAG</strong> · shipping systems, backend migrations, reliability.</p>
 <p><strong>Keep/Drop pipeline:</strong> <a href="docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
 <h2 id="study-order">Study order</h2>
 <ol>
@@ -1078,9 +1078,9 @@ Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafk
 <p><strong>Keep/Drop pipeline reference:</strong> track copy <a href="docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a> · shared <a href="../docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
 <h2 id="summary-pdf-3-lines">Summary (PDF — 3 lines)</h2>
 <ol>
-<li>Senior Software Engineer with <strong>5 years</strong> of experience architecting high-throughput, cloud-native <strong>distributed systems</strong> and leading zero-downtime monolithic migrations.</li>
-<li>Expert in <strong>Python and Go microservices</strong>, specializing in scaling event-driven pipelines, optimizing multi-billion row databases, and driving extreme latency reductions for enterprise platforms.</li>
-<li>Proven track record of bridging enterprise data with fault-tolerant AI by deploying <strong>LangGraph</strong> multi-agent systems, <strong>Milvus RAG</strong> architectures, and deterministic evaluation harnesses to deliver measurable business impact.</li>
+<li>Senior Software Engineer with <strong>5 years</strong> of experience designing and owning cloud-native, high-throughput <strong>distributed systems</strong>.</li>
+<li>Expertise in <strong>Python and Go</strong> microservices, with applied experience in <strong>AI-assisted</strong> and <strong>RAG</strong> systems.</li>
+<li>Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</li>
 </ol>
 <h2 id="skills-categories-pdf">Skills categories (PDF)</h2>
 <p>Languages · Backend &amp; APIs · <strong>AI &amp; Applied ML</strong> · <strong>Data &amp; Streaming</strong> · Databases &amp; Storage · <strong>Cloud &amp; DevOps</strong> · <strong>Architecture &amp; Core</strong></p>
@@ -2147,7 +2147,7 @@ Aggregation identity errors, because L1 and L2 amounts are sums of children, so 
 - Connection pooling per service instead of PHP-FPM per-request connections.</p>
 <p><strong>Mentoring 2 engineers.</strong> Two juniors owned individual service extractions. I set the conventions (router, service, repository layering, Pydantic schemas at the boundary, retry and idempotency helpers), reviewed every PR for the first months, and paired on the first canary cutover. Both were independently shipping services by the end.</p>
 <h3 id="bullet-2-100k-per-import-1m-daily-transactions-700-to-4000-rpm-12-tps-67-rps">Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)</h3>
-<p><strong>Resume XYZ:</strong> Scaled bulk e-invoicing with async Kafka and PostgreSQL quarter sharding (X/Y) to 100K+ per import and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
+<p><strong>Resume XYZ:</strong> Architected a high-concurrency bulk e-invoicing pipeline on Kafka + PostgreSQL quarter sharding (X/Y) with exactly-once/idempotent processing for 100K+ concurrent imports and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
 <ul>
 <li>Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.</li>
 <li>1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.</li>
@@ -2955,7 +2955,7 @@ Reliability is a gate, not a slogan: a 300-case offline harness and a ≥80% acc
 <hr>
 <h2 id="1-30s-2min">1. 30s / 2min</h2>
 <h3 id="30-seconds">30 seconds</h3>
-<p>AssortSmart has two PDF chapters. Platform: I architected the multi-tenant Go/Gin edge to <strong>10k peak RPS</strong> (Wire, h2c, Datadog), moved planning analytics to ClickHouse — <strong>189s to 12s</strong> on <strong>250M</strong> rows, <strong>1.6M</strong> article-seasons, <strong>2.4B</strong> weekly rollups — plus an ifNotFinite KPI parser, Firebase/JWT/OIDC tenancy, and a <strong>100%</strong> coverage gate over <strong>1,200+</strong> Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on <strong>335K+</strong> products, <strong>88k</strong> items/pass under <strong>$100</strong>, <strong>7</strong> lenses; air-gapped LLM vs a <strong>2.11B-row</strong> fact table; <strong>shipped Ask Iris</strong> (LangGraph Supervisor+Evaluator, frozen scopes); <strong>300-case</strong> offline eval and <strong>≥80%</strong> CI promotion gate vs a <strong>74%</strong> deterministic baseline.</p>
+<p>AssortSmart has two PDF chapters. Platform: I architected the multi-tenant Go/Gin edge to <strong>10k peak RPS</strong> (Wire, h2c, Datadog), moved planning analytics to ClickHouse — <strong>189s to 12s</strong> on <strong>250M</strong> rows, <strong>1.6M</strong> article-seasons, <strong>2.4B</strong> weekly rollups — plus an ifNotFinite KPI parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), and a <strong>100%</strong> coverage gate over <strong>1,200+</strong> Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on <strong>335K+</strong> products, <strong>88k</strong> items/pass under <strong>$100</strong>, <strong>7</strong> lenses; air-gapped LLM vs a <strong>2.11B-row</strong> fact table; <strong>shipped Ask Iris</strong> (LangGraph Supervisor+Evaluator, frozen scopes); <strong>300-case</strong> offline eval and <strong>≥80%</strong> CI promotion gate vs a <strong>74%</strong> deterministic baseline.</p>
 <h3 id="2-minutes">2 minutes</h3>
 <p><strong>Platform path:</strong> tenant request → Go/Gin (Wire) → Redis-fronted OIDC waterfall → UAM/Postgres roles → ClickHouse (RMT, ifNotFinite KPI SQL) → Datadog traces.</p>
 <p><strong>Agentic path:</strong> registry starts a pipeline (Keep/Drop / Missed Opp / Top Style) → deterministic KPI math + 7 structured LLM lenses on JSON payloads <strong>never</strong> issued as CH writes → two-phase ReplacingMergeTree insert → checkpoints / circuit breakers → LangSmith + JSON telemetry. Ask Iris: WebSocket → Supervisor routes → Evaluator loop → frozen socket scope.</p>
@@ -3282,12 +3282,12 @@ Ask Iris — LangGraph Supervisor + Evaluator, frozen scopes
 </ul>
 <hr>
 <blockquote>
-<p>Canonical interviewer packs for current resume_v2 FRM + Menu bullets. Menu PDF has NO Kafka/Flink/Spark. Synced Jul 2026.</p>
+<p>Canonical interviewer packs for current resume_v2 FRM + Menu bullets. Menu PDF has Kafka + Flink (data ingestion and processing pipeline). Spark is not on the PDF. Synced Sep 2026.</p>
 </blockquote>
 <h1 id="uber-frm-interview-pack">Uber FRM — Interview Pack</h1>
 <h2 id="1-30s-2min-explain">1. 30s / 2min explain</h2>
 <p><strong>30s:</strong> At Uber Finance I owned the FRM Risk Scoping backend—FastAPI, MySQL—that replaced a quarterly Google Sheets close. <strong>30+ REST APIs</strong> powering <strong>8</strong> screens decide which FSLIs and entities are in scope for PwC, at $340M group materiality on the Q4 2025 close, targeting a 70% cut in manual recon (~2 weeks → ~3–4 days). I owned the Sheets→MySQL recon v2 migration (18 files, parallel /v2 L1→L2→L3 APIs), encoded materiality/residual/5% threshold logic across ~55×14, and led a 3-engineer EPAM pod through API contracts and handler/service/repository design reviews.</p>
-<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive retries so fleet success lands in the mid-90s. Structured HTML lands via a <strong>Kafka</strong> ingest bus and <strong>Flink</strong> keyed normalize/dedupe into catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → <strong>Gemini 2.5 Pro</strong> generate Uber Eats schema fields → <strong>hard schema validation gate</strong> → low-confidence human review (<strong>no SFT on PDF</strong> — 100% schema is the gate). This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend <em>your</em> LangChain/RAG/Gemini/Milvus ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are <strong>offline</strong>—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Uber Mobility compliance track for driver/vehicle docs vs <strong>local authority requirements</strong> (99.9%, ~20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
+<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive retries so fleet success lands in the mid-90s. Structured HTML lands via a <strong>Kafka + Flink</strong> large-scale data ingestion and processing pipeline with keyed normalize/dedupe into catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → <strong>Gemini 2.5 Pro</strong> generate Uber Eats schema fields → <strong>hard schema validation gate</strong> → low-confidence human review (<strong>no SFT on PDF</strong> — 100% schema is the gate). This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend <em>your</em> LangChain/RAG/Gemini/Milvus ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are <strong>offline</strong>—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Uber Mobility compliance track for driver/vehicle docs vs <strong>local authority requirements</strong> (99.9%, ~20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
 <hr>
 <h2 id="2-architecture">2. Architecture</h2>
 <pre><code>Oracle HFM (consolidation)
@@ -3449,7 +3449,7 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 <hr>
 <h1 id="uber-menu-interview-pack">Uber Menu — Interview Pack</h1>
 <h2 id="1-30s-2min-explain_1">1. 30s / 2min explain</h2>
-<p><strong>30s:</strong> At Uber Eats I owned menu ingestion end to end on GCP — Selenium acquisition, Kafka ingest, Flink keyed normalize/dedupe — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month. I hardened the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries to 95%+ successful ingestions. For multilingual PDF/image menus I owned a LangChain RAG + Gemini 2.5 Pro path over Milvus with a hard schema validation gate before upsert (98% fidelity / 100% schema consistency, offline eval). Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20 hours/week of manual verification (HISTORICAL — not re-measured here).</p>
+<p><strong>30s:</strong> At Uber Eats I owned menu ingestion end to end on GCP — Selenium acquisition plus a Kafka + Flink data ingestion and processing pipeline — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month. I hardened the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries to 95%+ successful ingestions. For multilingual PDF/image menus I owned a LangChain RAG + Gemini 2.5 Pro path over Milvus with a hard schema validation gate before upsert (98% fidelity / 100% schema consistency, offline eval). Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20 hours/week of manual verification (HISTORICAL — not re-measured here).</p>
 <p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images in multiple languages. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive backoff against anti-bot so fleet success lands in the mid-90s. Structured HTML paths land in catalog; unstructured payloads go through: chunk/OCR-ish parse → embed/retrieve similar labeled menus from <strong>Milvus</strong> (LangChain RAG) → <strong>Gemini 2.5 Pro</strong> generate Uber Eats schema fields → schema validate → low-confidence human review, This matches the industry pattern used by delivery platforms (OCR/LLM structure + retrieval grounding + human gate) — defend <em>your</em> LangChain/RAG/Gemini/vector-store ownership, not Uber INCA internals. Eval numbers (98% fidelity, 100% schema consistency) are <strong>offline</strong>—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Mobility compliance track for driver/vehicle docs (99.9%, 20h/week HISTORICAL)—not the menu pipeline. Stack: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
 <hr>
 <h2 id="2-architecture_1">2. Architecture</h2>
@@ -3560,7 +3560,7 @@ Separate track (not on hot menu path):
 <ul>
 <li><strong>Outcomes:</strong> HISTORICAL ops numbers. Onboarding cycle compressed ~90%.</li>
 <li><strong>Money:</strong> ~$2/menu × 30K × 12 = $720K list → resume <strong>$600K+</strong> conservative floor.</li>
-<li><strong>How:</strong> Own end-to-end path: Selenium acquisition → Kafka ingest bus → Flink keyed normalize/dedupe vs paid third-party menu tool.</li>
+<li><strong>How:</strong> Own end-to-end path: Selenium acquisition → Kafka + Flink data ingestion and processing pipeline (keyed normalize/dedupe) vs paid third-party menu tool.</li>
 <li><strong>Own:</strong> End-to-end menu ingestion path on GCP—not a claim of owning all Eats catalog infra.</li>
 </ul>
 <h3 id="bullet-2-multilingual-pdfimage-catalog-schema-langchain-rag-gemini-25-pro-milvus-hard-schema-gate-98100-offline-no-sft">Bullet 2 — Multilingual PDF/image → catalog schema; LangChain RAG + Gemini 2.5 Pro + Milvus; hard schema gate; 98%/100% offline (no SFT)</h3>
@@ -3625,7 +3625,7 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 <hr>
 <h2 id="pdf-exact-bullets-aug-2026-memorize">PDF exact bullets (Aug 2026 — memorize)</h2>
 <ol>
-<li>Owned Uber Eats menu ingestion end to end on GCP, landing partner menus through Selenium acquisition, a Kafka ingest bus, and Flink keyed normalize/dedupe — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month.</li>
+<li>Owned Uber Eats menu ingestion end to end on GCP, landing partner menus through Selenium acquisition, a Kafka + Flink data ingestion and processing pipeline (keyed normalize/dedupe) — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month.</li>
 <li>Turned multilingual PDF/image menus into Uber Eats catalog schema at 98% fidelity / 100% schema consistency (offline eval) by owning a LangChain RAG + Gemini 2.5 Pro path over Milvus embeddings with a hard schema validation gate before upsert.</li>
 <li>Raised successful menu ingestions to 95%+ by hardening the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries.</li>
 <li>Automated Uber Mobility driver and vehicle document checks for ANZ against local authority requirements, reaching 99.9% compliance and removing ~20 hours/week of manual verification.</li>
@@ -3641,7 +3641,7 @@ DOM change or CAPTCHA shift that green-lights empty/partial menus; or LLM invent
 <hr>
 <h2 id="1-30s-2min-explain_2">1. 30s / 2min explain</h2>
 <p><strong>30 seconds</strong><br>
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency keys, retries, and a dead-letter queue so we never double-register with the government.</p>
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We migrated a PHP Laravel monolith to FastAPI microservices and built a bulk IRP pipeline on Kafka and PostgreSQL tables split by tax quarter. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with high-concurrency idempotent processing, DLQ/fault-tolerant state, and bounded retries so we never double-register with the government.</p>
 <p><strong>2 minutes</strong><br>
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.</p>
 <p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. We cut over FastAPI services behind the gateway endpoint-by-endpoint with canaries (interviewers may call this a strangler migration), shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
@@ -7324,7 +7324,7 @@ Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
 <p>AssortSmart agentic flows: structured LLM invokes across 7 lenses blended with deterministic KPI math; air-gapped batch LLM from CH queries; fallback to deterministic scores. Shipped Ask Iris — LangGraph Supervisor + Evaluator, socket-level frozen scopes. Guardrails: 300-case offline harness, ≥80% CI promotion gate, 74% deterministic baseline. Uber Eats: Gemini 2.5 Pro + LangChain RAG + Milvus at 98% field fidelity (<strong>offline eval</strong>), hard schema gate, 95%+ scrape success, Kafka+Flink exactly-once. ANZ 99.9% is HISTORICAL Mobility.</p>
 <p><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot and Hindsight (building) — use only if the form asks for a broader agentic roadmap.</p>
 <h3 id="largest-scale">Largest scale</h3>
-<p>AssortSmart: 10k peak RPS (PDF); 2.11B-row CH fact; 2.4B weekly rollups; 335K+ products; 88k items/pass. Masters: Kafka e-invoicing 1M+ IRP/day, 100K+/import, 700 to 4,000 rpm. ClickHouse pivot POC 189s to 12s on 250M rows (MEASURED).</p>
+<p>AssortSmart: 10k peak RPS (PDF); 2.11B-row CH fact; 2.4B weekly rollups; 335K+ products; 88k items/pass. Masters: high-concurrency Kafka e-invoicing, 1M+ IRP/day, 100K+ idempotent imports, 700 to 4,000 rpm. ClickHouse pivot POC 189s to 12s on 250M rows (MEASURED).</p>
 <h3 id="leadership">Leadership</h3>
 <p>Led 3 (Uber/EPAM FRM). Mentored 2 (Masters).</p>
 <h3 id="production-bug-you-resolved-packet-star-tag-honestly">Production bug you resolved (packet STAR — tag honestly)</h3>
@@ -7349,11 +7349,11 @@ Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
 </ol>
 <p><strong>Recommended:</strong> #2 (metric-led for recruiter search)</p>
 <h2 id="about-short">About — short</h2>
-<p>Senior Software Engineer with 5 years of experience architecting high-throughput, cloud-native distributed systems and leading zero-downtime monolithic migrations. Expert in Python and Go microservices, specializing in event-driven pipelines, multi-billion-row databases, and extreme latency reductions. Proven track record bridging enterprise data with fault-tolerant AI — LangGraph multi-agent systems, Milvus RAG, and deterministic evaluation harnesses.</p>
+<p>Senior Software Engineer with 5 years of experience designing and owning cloud-native, high-throughput distributed systems. Expertise in Python and Go microservices, with applied experience in AI-assisted and RAG systems. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</p>
 <h2 id="about-long">About — long</h2>
 <p>I am a Senior Software Engineer focused on backend, data, and production AI platforms in Python and Go.</p>
 <p>What I am known for:
-- Platform: at Impact Analytics I architected AssortSmart's multi-tenant Go/Gin edge (Wire, h2c, Datadog) to 10k peak RPS, migrated planning analytics to ClickHouse (189s to 12s on 250M rows; 1.6M article-seasons; 2.4B weekly rollups), and hold a 100% statement-coverage CI gate across 1,200+ Go tests.
+- Platform: at Impact Analytics I architected AssortSmart's multi-tenant Go/Gin edge (Wire, h2c, Datadog) to 10k peak RPS, migrated planning analytics to ClickHouse (189s to 12s on 250M rows; 1.6M article-seasons; 2.4B weekly rollups), enforce multi-tenant data isolation across PostgreSQL and ClickHouse, and hold a 100% statement-coverage CI gate across 1,200+ Go tests.
 - Agentic: Keep/Drop + Missed Opportunities + Top Style over 335K+ products (88k items/pass under $100, 7 lenses), air-gapped LLM vs a 2.11B-row fact table, and shipped Ask Iris — a WebSocket LangGraph Supervisor+Evaluator copilot with frozen scopes. Promotions gated on a 300-case offline harness and a ≥80% CI gate vs a 74% deterministic baseline (gate, not all-tenants-live).
 - Uber via EPAM: FRM scoping (36 FastAPI endpoints, 19M GL rows, L1–L4 FSLI, 8-table SOADB, SHA-256 keys, led 3, 100% coverage, SOX 50% delta-variance) cutting recon 70% from 14 days to 3 against $340M materiality. Menu ingestion 24 hours to 2 hours, $600K/yr, 30K+ menus/month, 98% offline RAG/Milvus, Kafka+Flink exactly-once.
 - Masters India: FastAPI strangler, p95 1.2s to 300ms (75%), Kafka + PostgreSQL tax-quarter shard at 1M+/day, coverage 35% to 82% at 98% deploy. Mentored 2.</p>
@@ -7371,7 +7371,7 @@ Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
 <p><strong>Menu (Uber Eats):</strong> 24 hours to 2 hours, $600K/yr, 30K+ menus/month. Gemini 2.5 Pro + LangChain RAG + Milvus at 98% field fidelity (offline eval). 95%+ scrape success. Kafka + Flink keyed dedupe, exactly-once catalog upserts.</p>
 <p><strong>ANZ (Uber Mobility):</strong> 99.9% document compliance, ~20h/week saved (HISTORICAL Mobility — not Eats).</p>
 <h3 id="masters-india-sde2-dec-2022-jun-2024">Masters India — SDE2 (Dec 2022 – Jun 2024)</h3>
-<p>Cut p95 from 1.2s to 300ms (75%) for 1,500+ clients by migrating a PHP monolith to FastAPI microservices; mentored 2. 700 to 4,000 rpm and 1M+ IRP/day on Kafka + PostgreSQL sharded by tax quarter. Idempotency, DLQ, Redis −30% reads. Coverage 35% to 82% at 98% deploy.</p>
+<p>Cut p95 from 1.2s to 300ms (75%) for 1,500+ clients by migrating a PHP monolith to FastAPI microservices; mentored 2. 700 to 4,000 rpm and 1M+ IRP/day on a high-concurrency Kafka + PostgreSQL quarter-shard pipeline. Idempotent processing, DLQ/fault-tolerant state, Redis −30% reads. Coverage 35% to 82% at 98% deploy.</p>
 <h3 id="geeksforgeeks-sde-aug-2021-nov-2022">GeeksforGeeks — SDE (Aug 2021 – Nov 2022)</h3>
 <p>Django doubt-support for 10K+ daily queries and 10× contest spikes. Voting/pinning/locking APIs lifted premium 20%. Influencer dashboard raised course sales 30%. Scheduled jobs raised ops efficiency 70%.</p>
 <h2 id="featured-section">Featured section</h2>
@@ -7504,7 +7504,7 @@ Tarun Mittal
 <p>AssortSmart agentic flows: structured LLM invokes across 7 lenses blended with deterministic KPI math; air-gapped batch LLM from CH queries; fallback to deterministic scores. Shipped Ask Iris — LangGraph Supervisor + Evaluator, socket-level frozen scopes. Guardrails: 300-case offline harness, ≥80% CI promotion gate, 74% deterministic baseline. Uber Eats: Gemini 2.5 Pro + LangChain RAG + Milvus at 98% field fidelity (<strong>offline eval</strong>), hard schema gate, 95%+ scrape success, Kafka+Flink exactly-once. ANZ 99.9% is HISTORICAL Mobility.</p>
 <p><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot and Hindsight (building) — use only if the form asks for a broader agentic roadmap.</p>
 <h3 id="largest-scale_1">Largest scale</h3>
-<p>AssortSmart: 10k peak RPS (PDF); 2.11B-row CH fact; 2.4B weekly rollups; 335K+ products; 88k items/pass. Masters: Kafka e-invoicing 1M+ IRP/day, 100K+/import, 700 to 4,000 rpm. ClickHouse pivot POC 189s to 12s on 250M rows (MEASURED).</p>
+<p>AssortSmart: 10k peak RPS (PDF); 2.11B-row CH fact; 2.4B weekly rollups; 335K+ products; 88k items/pass. Masters: high-concurrency Kafka e-invoicing, 1M+ IRP/day, 100K+ idempotent imports, 700 to 4,000 rpm. ClickHouse pivot POC 189s to 12s on 250M rows (MEASURED).</p>
 <h3 id="leadership_1">Leadership</h3>
 <p>Led 3 (Uber/EPAM FRM). Mentored 2 (Masters).</p>
 <h3 id="production-bug-you-resolved-packet-star-tag-honestly_1">Production bug you resolved (packet STAR — tag honestly)</h3>
@@ -11819,7 +11819,7 @@ distribution_centres       ─daily─►  distribution_centres
 <hr>
 <h2 id="1-30s-2min-project-explain">1. 30s / 2min project explain</h2>
 <h3 id="30-seconds-pdf-first">30 seconds (PDF first)</h3>
-<p>AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with 1.6M article-seasons and 2.4B weekly rollups, KPI ifNotFinite parser, Firebase/JWT/OIDC tenancy, 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 335K+ products, 88k items/pass under $100, 7 lenses; air-gapped LLM vs a 2.11B-row fact table; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / ≥80% CI promotion gate vs 74% deterministic baseline.</p>
+<p>AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with 1.6M article-seasons and 2.4B weekly rollups, KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 335K+ products, 88k items/pass under $100, 7 lenses; air-gapped LLM vs a 2.11B-row fact table; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / ≥80% CI promotion gate vs 74% deterministic baseline.</p>
 <h3 id="2-minutes-architecture-evidence">2 minutes (architecture + evidence)</h3>
 <pre><code>Planner UI / Ask Iris WebSocket
         │
@@ -12338,8 +12338,8 @@ Yes on volume, no on risk. Hardness is recursive tree correctness, parent=sum(ch
 <hr>
 <h1 id="uber-menu-interview-pack_1">Uber Menu — Interview Pack</h1>
 <h2 id="1-30s-2min-explain_5">1. 30s / 2min explain</h2>
-<p><strong>30s:</strong> At Uber Eats I owned menu ingestion end to end on GCP — Selenium acquisition, Kafka ingest, Flink keyed normalize/dedupe — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month. I hardened the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries to 95%+ successful ingestions. For multilingual PDF/image menus I owned a LangChain RAG + Gemini 2.5 Pro path over Milvus with a hard schema validation gate before upsert (98% fidelity / 100% schema consistency, offline eval). Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20 hours/week of manual verification (HISTORICAL — not re-measured here).</p>
-<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive retries against anti-bot so fleet success lands in the mid-90s. Structured HTML lands via Kafka ingest + Flink keyed normalize/dedupe into catalog; unstructured payloads go through LangChain RAG → Milvus retrieve similar labeled menus → Gemini 2.5 Pro generate → hard schema validate → low-confidence human review (no SFT on PDF). Eval numbers (98% fidelity, 100% schema consistency) are offline—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Uber Mobility compliance track for driver/vehicle docs vs local authorities (99.9%, ~20h/week HISTORICAL)—not the menu pipeline. Stack on the resume: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
+<p><strong>30s:</strong> At Uber Eats I owned menu ingestion end to end on GCP — Selenium acquisition plus a Kafka + Flink data ingestion and processing pipeline — cutting onboarding 24h → 2h and saving $600K+/yr at 30K+ menus/month. I hardened the scrape fleet with IP rotation, dynamic proxy pools, and adaptive retries to 95%+ successful ingestions. For multilingual PDF/image menus I owned a LangChain RAG + Gemini 2.5 Pro path over Milvus with a hard schema validation gate before upsert (98% fidelity / 100% schema consistency, offline eval). Separately, under <strong>Uber Mobility</strong>, I automated driver/vehicle document checks for ANZ against local authority requirements to 99.9%, removing ~20 hours/week of manual verification (HISTORICAL — not re-measured here).</p>
+<p><strong>2min:</strong> Partner menus arrive as JS-heavy sites, PDFs, and images. Acquisition is Python Selenium on GCP: rotate IPs, dynamic proxy pools, adaptive retries against anti-bot so fleet success lands in the mid-90s. Structured HTML lands via a Kafka + Flink large-scale data ingestion and processing pipeline with keyed normalize/dedupe into catalog; unstructured payloads go through LangChain RAG → Milvus retrieve similar labeled menus → Gemini 2.5 Pro generate → hard schema validate → low-confidence human review (no SFT on PDF). Eval numbers (98% fidelity, 100% schema consistency) are offline—say that. Economics: killing ~$2/menu third-party tool × 30K × 12 ≈ $720K list → resume floor $600K+. Cycle time 24h → 2h is the ops win. ANZ is a separate Uber Mobility compliance track for driver/vehicle docs vs local authorities (99.9%, ~20h/week HISTORICAL)—not the menu pipeline. Stack on the resume: Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker.</p>
 <hr>
 <h2 id="2-architecture_5">2. Architecture</h2>
 <pre><code>Partner sites (JS)          PDFs / images / scans
@@ -13103,7 +13103,7 @@ Different problems. Menu backfill = ETL over scrape history. IA Order Batching =
 <hr>
 <h2 id="1-30s-2min-explain_6">1. 30s / 2min explain</h2>
 <p><strong>30 seconds</strong><br>
-At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We strangled a PHP Laravel monolith into FastAPI microservices and built an event-driven bulk IRP pipeline on Kafka and PostgreSQL quarter sharding. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with idempotency, retries, and DLQ so we never double-register with the government.</p>
+At Masters India I owned the GST e-invoicing path for 1,500+ enterprise clients. We strangled a PHP Laravel monolith into FastAPI microservices and built an event-driven bulk IRP pipeline on Kafka and PostgreSQL quarter sharding. That cut p95 from 1.2s to 300ms, lifted sustained throughput from 700 to 4,000 requests/min, and reliably processed 1M+ IRP submissions/day with 100K+ per import — with high-concurrency idempotent processing, DLQ/fault-tolerant state, and bounded retries so we never double-register with the government.</p>
 <p><strong>2 minutes</strong><br>
 GST e-invoicing is a compliance product: clients push invoices, we validate, register with the government Invoice Registration Portal, and return signed IRN + QR. Filing-deadline days spike load; correctness beats raw speed, but timeouts still lose clients.</p>
 <p>The Laravel monolith was synchronous — one slow IRP call blocked a PHP-FPM worker, deploys were all-or-nothing, and scaling meant scaling everything. I led a strangler: FastAPI services cut over behind the gateway endpoint-by-endpoint with canaries, shared DB during traffic move (no dual writes), contract tests against old PHP payloads, then table ownership split later. Mentored 2 engineers on the extraction conventions.</p>
@@ -13551,7 +13551,7 @@ Doubt support is the Q&amp;A layer on articles and courses — high read volume,
 - Connection pooling per service instead of PHP-FPM per-request connections.</p>
 <p><strong>Mentoring 2 engineers.</strong> Two juniors owned individual service extractions. I set the conventions (router, service, repository layering, Pydantic schemas at the boundary, retry and idempotency helpers), reviewed every PR for the first months, and paired on the first canary cutover. Both were independently shipping services by the end.</p>
 <h3 id="bullet-2-100k-per-import-1m-daily-transactions-700-to-4000-rpm-12-tps-67-rps_1">Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)</h3>
-<p><strong>Resume XYZ:</strong> Scaled bulk e-invoicing with async Kafka and PostgreSQL quarter sharding (X/Y) to 100K+ per import and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
+<p><strong>Resume XYZ:</strong> Architected a high-concurrency bulk e-invoicing pipeline on Kafka + PostgreSQL quarter sharding (X/Y) with exactly-once/idempotent processing for 100K+ concurrent imports and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
 <ul>
 <li>Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.</li>
 <li>1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.</li>
@@ -23276,7 +23276,7 @@ real experience and the honesty tags in <code>GROUND_TRUTH.md</code>.</p>
 <hr>
 <h2 id="per-project-one-liners">Per-project one-liners</h2>
 <p><strong>IA — Platform + Agentic (PDF)</strong>
-Go/Gin 10k RPS, Wire, h2c, Datadog; CH 189s→12s / 1.6M / 2.4B; ifNotFinite; OIDC waterfall; 100%/1200+ tests. Keep/Drop + Missed Opp + Top Style, 335K+, 88k/&lt;$100, 7 lenses; 2.11B air-gap; Ask Iris shipped; 300-case / ≥80% vs 74% (gate, not GA). <strong>Verbal:</strong> Copilot · Hindsight.</p>
+Go/Gin 10k RPS, Wire, h2c, Datadog; CH 189s→12s / 1.6M / 2.4B; ifNotFinite; PG+CH data isolation + OIDC; 100%/1200+ tests. Keep/Drop + Missed Opp + Top Style, 335K+, 88k/&lt;$100, 7 lenses; 2.11B air-gap; Ask Iris shipped; 300-case / ≥80% vs 74% (gate, not GA). <strong>Verbal:</strong> Copilot · Hindsight.</p>
 <p><strong>Uber FRM (via EPAM)</strong>
 FastAPI / SQLAlchemy 2.0; 36 FastAPI endpoints; 19M GL; L1–L4; 8-table SOADB; SHA-256; 70% 14d→3d; $340M; led 3; 100% coverage; SOX 50%.</p>
 <p><strong>Uber Menu</strong>
@@ -23892,9 +23892,9 @@ python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
 </ul>
 <h2 id="summary-block-on-the-pdf">Summary block on the PDF</h2>
 <ol>
-<li>Senior Software Engineer with <strong>5 years</strong> architecting high-throughput, cloud-native <strong>distributed systems</strong> and leading zero-downtime monolithic migrations.</li>
-<li>Expert in <strong>Python and Go microservices</strong> — event-driven pipelines, multi-billion-row databases, extreme latency reductions.</li>
-<li>LangGraph multi-agent systems, Milvus RAG architectures, and deterministic evaluation harnesses.\n</li>
+<li>Senior Software Engineer with <strong>5 years</strong> of experience designing and owning cloud-native, high-throughput <strong>distributed systems</strong>.</li>
+<li>Expertise in <strong>Python and Go</strong> microservices, with applied experience in <strong>AI-assisted</strong> and <strong>RAG</strong> systems.</li>
+<li>Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</li>
 </ol>
 <hr>
 <h1 id="impact-analytics-assortsmart-platform-ai_1">Impact Analytics — AssortSmart (Platform &amp; AI)</h1>

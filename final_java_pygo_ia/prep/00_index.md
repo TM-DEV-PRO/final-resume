@@ -4,7 +4,7 @@
 
 Backs this track (PDF: `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`). Canonical claims: [`docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMART_TAB_RESUME.md).
 
-**Summary on the PDF:** 5 years architecting high-throughput cloud-native distributed systems and leading zero-downtime migrations · Expert in **Java, Python and Go microservices** · LangGraph multi-agent systems, Milvus RAG, deterministic eval harnesses.
+**Summary on the PDF:** 5 years designing and owning cloud-native high-throughput **distributed systems** · Expertise in **Java, Python and Go** microservices with **AI-assisted** and **RAG** · shipping systems, backend migrations, reliability.
 
 **Keep/Drop pipeline:** [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md).
 

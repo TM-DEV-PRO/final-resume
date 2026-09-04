@@ -10,13 +10,13 @@ Aligned to **Final Java + AI** resume (`Tarun_Mittal_SSE_5yr_Java_AI.pdf`). Past
 **Recommended:** #2 (metric-led for recruiter search)
 
 ## About — short
-Senior Software Engineer with 5 years of experience architecting high-throughput, cloud-native distributed systems and leading zero-downtime monolithic migrations. Expert in Java and Python microservices, specializing in event-driven pipelines, multi-billion-row databases, and extreme latency reductions. Proven track record bridging enterprise data with fault-tolerant AI — LangGraph multi-agent systems, Milvus RAG, and deterministic evaluation harnesses.
+Senior Software Engineer with 5 years of experience designing and owning cloud-native, high-throughput distributed systems. Expertise in Java and Python microservices, with applied experience in AI-assisted and RAG systems. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.
 
 ## About — long
 I am a Senior Software Engineer focused on backend, data, and production AI platforms in Java and Python.
 
 What I am known for:
-- Platform: at Impact Analytics I architected AssortSmart's multi-tenant Go/Gin edge (Wire, h2c, Datadog) to 10k peak RPS, migrated planning analytics to ClickHouse (189s to 12s on 250M rows; 1.6M article-seasons; 2.4B weekly rollups), and hold a 100% statement-coverage CI gate across 1,200+ Go tests.
+- Platform: at Impact Analytics I architected AssortSmart's multi-tenant Go/Gin edge (Wire, h2c, Datadog) to 10k peak RPS, migrated planning analytics to ClickHouse (189s to 12s on 250M rows; 1.6M article-seasons; 2.4B weekly rollups), enforce multi-tenant data isolation across PostgreSQL and ClickHouse, and hold a 100% statement-coverage CI gate across 1,200+ Go tests.
 - Agentic: Keep/Drop + Missed Opportunities + Top Style over 335K+ products (88k items/pass under $100, 7 lenses), air-gapped LLM vs a 2.11B-row fact table, and shipped Ask Iris — a WebSocket LangGraph Supervisor+Evaluator copilot with frozen scopes. Promotions gated on a 300-case offline harness and a ≥80% CI gate vs a 74% deterministic baseline (gate, not all-tenants-live).
 - Uber via EPAM: FRM scoping (36 Spring Boot endpoints, 19M GL rows, L1–L4 FSLI, 8-table SOADB, SHA-256 keys, led 3, 100% coverage, SOX 50% delta-variance) cutting recon 70% from 14 days to 3 against $340M materiality. Menu ingestion 24 hours to 2 hours, $600K/yr, 30K+ menus/month, 98% offline RAG/Milvus, Kafka+Flink exactly-once.
 - Masters India: Spring Boot strangler, p95 1.2s to 300ms (75%), Kafka + PostgreSQL tax-quarter shard at 1M+/day, coverage 35% to 82% at 98% deploy. Mentored 2.
@@ -46,7 +46,7 @@ Stack on this PDF: Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Re
 **ANZ (Uber Mobility):** 99.9% document compliance, ~20h/week saved (HISTORICAL Mobility — not Eats).
 
 ### Masters India — SDE2 (Dec 2022 – Jun 2024)
-Cut p95 from 1.2s to 300ms (75%) for 1,500+ clients by migrating a PHP monolith to Spring Boot microservices; mentored 2. 700 to 4,000 rpm and 1M+ IRP/day on Kafka + PostgreSQL sharded by tax quarter. Idempotency, DLQ, Redis −30% reads. Coverage 35% to 82% at 98% deploy.
+Cut p95 from 1.2s to 300ms (75%) for 1,500+ clients by migrating a PHP monolith to Spring Boot microservices; mentored 2. 700 to 4,000 rpm and 1M+ IRP/day on a high-concurrency Kafka + PostgreSQL quarter-shard pipeline. Idempotent processing, DLQ/fault-tolerant state, Redis −30% reads. Coverage 35% to 82% at 98% deploy.
 
 ### GeeksforGeeks — SDE (Aug 2021 – Nov 2022)
 Django doubt-support for 10K+ daily queries and 10× contest spikes. Voting/pinning/locking APIs lifted premium 20%. Influencer dashboard raised course sales 30%. Scheduled jobs raised ops efficiency 70%.

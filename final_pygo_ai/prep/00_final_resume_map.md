@@ -9,9 +9,9 @@ Canonical claims: [`../../docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMAR
 ## Summary
 | # | PDF claim | Defense pack | Tag |
 |---|---|---|---|
-| S1 | 5y architecting high-throughput cloud-native distributed systems; zero-downtime monolithic migrations | this track objective · `31_resume_deep_explain_map.md` | HISTORICAL tenure |
-| S2 | Expert in Python and Go microservices; event-driven pipelines; multi-billion-row DBs; extreme latency cuts | `36_skills_ai_agents_defense.md` | framing |
-| S3 | LangGraph multi-agent systems, Milvus RAG, deterministic evaluation harnesses | `23a` · `14` Menu RAG | framing |
+| S1 | 5y designing and owning cloud-native high-throughput distributed systems | this track objective · `31` · `41` | HISTORICAL tenure |
+| S2 | Expertise in Python and Go microservices; AI-assisted and RAG | `36` · `41` | framing |
+| S3 | Shipping production systems; backend migrations; reliability / performance / scalability | `41` | framing |
 | IA0 | Project title: **AssortSmart — Senior Software Engineer (Platform & AI)** | `23a` · PIPELINE.md | product |
 
 ## IA — Platform Engineering & Infrastructure
