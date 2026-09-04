@@ -1,4 +1,4 @@
-> Canonical interviewer pack for `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf` IA bullets (Platform + Agentic). Project title: **AssortSmart — Senior Software Engineer (Platform & AI)**. Synced Sep 2026. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
+> Canonical interviewer pack for `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf` IA bullets (Platform + Agentic). Project title: **AssortSmart — Senior Software Engineer (Platform & AI)**. Synced Sep 2026. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
 # Impact Analytics — Interview Pack
 
@@ -95,9 +95,9 @@ Packet sketches that put Kafka→Flink or K8s-ops on IA are **overclaim**. Menu 
 
 | | |
 |---|---|
-| **Claim** | UAM-scoped hierarchy; Redis-fronted Firebase Admin → JWT/Google OIDC waterfall; constant-time API keys; Postgres roles |
+| **Claim** | Multi-tenant **data isolation** + UAM **access control** across **PostgreSQL** and **ClickHouse**; Redis-fronted Firebase Admin → JWT/Google OIDC waterfall; constant-time API keys; Postgres roles |
 | **Tag** | PDF |
-| **Reply** | “Cache-miss falls through to Postgres — it does not ‘degrade open.’ Constant-time compare on API keys. UAM intersects store/product scope. I do not claim I built a generic RBAC product.” |
+| **Reply** | “Same tenant id on PG (identity/UAM) and CH (facts). Cache-miss falls through to Postgres — it does not degrade open. Constant-time compare on API keys. This is access control, not encryption and not a privacy program. Milvus is Menu RAG, not this bullet.” |
 
 ### P5 — 100% coverage / 1200+ tests / SAST/SBOM
 

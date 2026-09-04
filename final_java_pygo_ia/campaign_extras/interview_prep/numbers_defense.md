@@ -1,6 +1,6 @@
 # Resume Number Catalog / Numbers Defense
 
-Interview sheet for `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. Cross-links: `../../prep/GROUND_TRUTH.md`, `../../prep/18_resume_number_catalog.md`.
+Interview sheet for `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. Cross-links: `../../prep/GROUND_TRUTH.md`, `../../prep/18_resume_number_catalog.md`.
 
 ## Impact Analytics (PDF)
 

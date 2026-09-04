@@ -4,7 +4,7 @@
 
 Numbers match `GROUND_TRUTH.md` and `09_metrics_derivations.md`. Rates tagged ESTIMATED where derived.
 
-> **RESUME ALIGNMENT (Sep 2026):** Menu PDF = **24h→2h**, **$600K/yr**, **30K+**, **98%** field fidelity (**offline**) Gemini 2.5 Pro + LangChain RAG + Milvus; **95%+**; **Kafka + Flink keyed dedupe, exactly-once upserts**. **Spark is NOT on the PDF** — verbal/study backfill only. **ANZ** Uber Mobility **99.9%** / 20h/week **HISTORICAL**. Masters Kafka ≠ Menu Kafka.
+> **RESUME ALIGNMENT (Sep 2026):** Menu PDF = **24h→2h**, **$600K/yr**, **30K+**, **98%** field fidelity (**offline**) Gemini 2.5 Pro + LangChain RAG + Milvus; **95%+**; **Kafka + Flink large-scale data ingestion and processing pipeline**, keyed dedupe, exactly-once catalog upserts. ClickHouse is IA, not this pipeline. Do not say zero message loss. **Spark is NOT on the PDF** — verbal/study backfill only. **ANZ** Uber Mobility **99.9%** / 20h/week **HISTORICAL**. Masters Kafka ≠ Menu Kafka.
 
 ---
 
@@ -50,7 +50,7 @@ Industry grounding (interview citations, not personal claims): Flink for true st
 
 ### 1. Selenium → Kafka → Flink + Spark, 30K menus/mo, 24h→2h, $600K+
 
-**Resume wording (Sep 2026):** Kafka ingest bus; Flink keyed dedupe; **exactly-once** catalog upserts. Outcomes **24h→2h**, **$600K**, **30K+**. Spark backfills = **not on PDF**.
+**Resume wording (Sep 2026):** **large-scale data ingestion and processing pipeline** using Kafka + Flink; keyed dedupe; **exactly-once** catalog upserts. Outcomes **24h→2h**, **$600K**, **30K+**, **95%+**. Spark backfills = **not on PDF**. Do not attach ClickHouse or “hundreds of millions of transactions.”
 
 **Acquire (HISTORICAL).** Python Selenium on GCP hits JS-heavy vendor sites through proxy pools; emits menu/item/scrape-health events.
 

@@ -20,7 +20,7 @@ Canonical claims: [`../../docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMAR
 | P1 | Go/Gin 10k peak RPS · Wire · h2c · Datadog · no reverse proxy | `23a` P1 · `10` | PDF / AssortSmart tab |
 | P2 | 15.5x · 189s→12s on 250M · 1.6M article-seasons · 2.4B weekly rollups | `21_ia_pivot_benchmark_source.md` · `23a` P2 | MEASURED POC + PDF catalog scale |
 | P3 | KPI configurator / ifNotFinite formula parser | `23a` P3 · `10` | PDF |
-| P4 | Firebase→JWT/OIDC + Redis + Postgres roles · UAM · constant-time API keys | `23a` P4 | PDF |
+| P4 | Multi-tenant data isolation + UAM access control on PG + ClickHouse · OIDC · API keys | `23a` P4 · `41` | PDF |
 | P5 | 100.0% coverage CI · 1200+ Go tests · golangci-lint · SAST/SBOM | `23a` P5 | PDF |
 
 ## IA — Agentic Flows & Orchestration
@@ -36,9 +36,9 @@ Canonical claims: [`../../docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMAR
 | # | PDF claim | Defense pack | Tag |
 |---|---|---|---|
 | FRM | 70% · 14d→3d · $340M · 19M GL · 36 Spring Boot endpoints · L1–L4 · 8-table SOADB · SHA-256 · led 3 · 100% coverage · SOX 50% delta-variance | `11_uber_frm_deep_dive.md` · `23b` | PDF |
-| Menu | 24h→2h · $600K · 30K+/mo · 98% Gemini+LangChain RAG+Milvus (offline) · 95%+ · Kafka+Flink exactly-once | `14_uber_menu_deep_dive.md` · `23b` | MEASURED / offline / HISTORICAL |
+| Menu | 24h→2h · $600K · 30K+/mo · 98% Gemini+LangChain RAG+Milvus (offline) · 95%+ · Kafka+Flink **ingestion/processing** exactly-once | `14_uber_menu_deep_dive.md` · `23b` · `41` | MEASURED / offline / HISTORICAL |
 | ANZ | 99.9% · 20h/week | `23b` | HISTORICAL Mobility |
-| Masters | Spring Boot · 1.2s→300ms (75%) · 1500+ · 700→4000 rpm · Kafka+PG shard · 1M+/day · 35%→82% · 98% deploy | `12_masters_gfg_deep_dive.md` · `23c` | HISTORICAL |
+| Masters | 1.2s→300ms (75%) · 1500+ · 700→4000 rpm · Kafka+PG **high-concurrency idempotent** 1M+/day · 35%→82% · 98% deploy | `12_masters_gfg_deep_dive.md` · `23c` · `41` | HISTORICAL |
 | GFG | Django · 10K+ · 10x · 20% premium · 30% sales · 70% ops | `12` · `23c` | HISTORICAL |
 
 ## Schemas · ER · APIs · design decisions

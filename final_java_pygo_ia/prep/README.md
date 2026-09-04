@@ -10,7 +10,7 @@ Contact block: (+91) 9079727197 · tmittaliet@gmail.com
   resume.tex                 compile this
   sections/*.tex             objective · skills · experience · education
   artifacts/
-    Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf
+    Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf
   prep/                      grounded interview prep (this folder)
     00_index.md              hub + stack mapping
     GROUND_TRUTH.md          every PDF number, honesty tag, omit list
@@ -25,7 +25,7 @@ Contact block: (+91) 9079727197 · tmittaliet@gmail.com
 # from this track directory
 mkdir -p /tmp/rb
 tectonic resume.tex --outdir /tmp/rb
-cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf
+cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf
 ```
 
 Or upload the Overleaf zip (main file `resume.tex`).

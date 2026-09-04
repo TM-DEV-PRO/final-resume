@@ -1,6 +1,6 @@
 # Cold Mail Recruiter / Sourcer
 
-Aligned to **Final Java + AI** (`Tarun_Mittal_SSE_Java_AI_Final.pdf`). Paste-ready. Adapted from the AssortSmart-tab packet templates; claims match the **current PDF**, not packet overclaims (no K8s-ops, no IA Flink/CDC).
+Aligned to **Final Java + AI** (`Tarun_Mittal_SSE_5yr_Java_AI.pdf`). Paste-ready. Adapted from the AssortSmart-tab packet templates; claims match the **current PDF**, not packet overclaims (no K8s-ops, no IA Flink/CDC).
 
 ## Email subject lines (pick one)
 - Senior Software Engineer Java Spring Uber FRM + AssortSmart platform/AI

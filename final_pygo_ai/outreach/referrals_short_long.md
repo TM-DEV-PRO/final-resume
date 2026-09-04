@@ -1,6 +1,6 @@
 # Referral Asks (short and long)
 
-Aligned to **Final PyGo + AI** (`Tarun_Mittal_SSE_PyGo_AI_Final.pdf`). Packet Template 1 adapted so every metric is on the current PDF.
+Aligned to **Final PyGo + AI** (`Tarun_Mittal_SSE_5yr.pdf`). Packet Template 1 adapted so every metric is on the current PDF.
 
 ## Short (LinkedIn DM / Slack)
 Hi [Name] I am Tarun, a Senior Software Engineer (Python and Go, 5y). I owned Uber FRM scoping (36 FastAPI endpoints, led 3) and now scale AssortSmart — Go/Gin 10k RPS, ClickHouse 189s→12s on 250M, LangGraph Keep/Drop + shipped Ask Iris. Could you refer me for [Role link]? Happy to send a 5-bullet fit summary.

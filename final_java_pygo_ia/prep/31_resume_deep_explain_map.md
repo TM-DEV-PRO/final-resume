@@ -1,6 +1,6 @@
 # Resume deep-explain map (study this before loops)
 
-**Purpose:** Anything on `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf` you can defend in depth.
+**Purpose:** Anything on `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf` you can defend in depth.
 Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
 **PDF IA (Sep 2026):** Platform (10k RPS, CH 189s→12s / 1.6M / 2.4B, KPI parser, OIDC, 100%/1200+ tests) + Agentic (335K+, 88k/<$100, 7 lenses, 2.11B air-gap, Ask Iris shipped, 300-case / ≥80% vs 74%).
@@ -51,7 +51,7 @@ Planner UI / Ask Iris WS
 | Go/Gin + Wire | HTTP edge | 10k RPS, compile-time DI | Python public edge | 10k peak RPS PDF |
 | ClickHouse | Analytics + fact | Columnar pivots | PG OLAP; Snowflake for this UI | 189s→12s; 1.6M; 2.4B; 2.11B |
 | ifNotFinite parser | KPI config | No-deploy math | Hard-coded SQL | PDF |
-| Firebase/OIDC/Redis/PG | Authz | Tenant bleed | Gateway-header-only | PDF |
+| Firebase/OIDC/Redis/PG+CH | Isolation + access control | Tenant bleed | Encryption product; Milvus privacy store | PDF |
 | LangGraph | Lenses + Ask Iris | Supervisor+Evaluator, frozen scopes | Single-shot chat | Shipped capability |
 | 300-case / ≥80% / 74% | CI | Beat free baseline | Vibe-ship | promotion gate |
 | Datadog / LangSmith | Edge vs agent | Different questions | One tool for everything | PDF |

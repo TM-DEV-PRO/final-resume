@@ -81,11 +81,13 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 | Mentoring day-to-day? | Router/service/repository + Pydantic + idempotency helpers; paired first canary |
 | Resume XYZ | Cut p95 **1.2s→300ms** for **1,500+** by Laravel→FastAPI microservices + mentoring **2** |
 
-### Bullet 2 — Kafka + PG quarter sharding · 1M+/day · 100K+/import · 700 → 4,000 req/min
+### Bullet 2 — High-concurrency Kafka + PG quarter sharding · 1M+/day · 100K+ idempotent imports · fault-tolerant state
 
 | Probe | Defense |
 |---|---|
 | Where is Kafka? | Import chunks, IRP jobs, signed-response persistence, webhooks, audit projector |
+| High-concurrency? | Bulk IRP import workers — **not** payment / money-movement products |
+| Fault-tolerant state? | Kafka offsets + PG job rows + DLQ. IRP is outside your transaction (at-least-once + idempotency key) |
 | Throughput claim? | HISTORICAL sustained gateway/service capacity under load + peaks |
 | TPS/RPS on PDF? | **Do not put on resume.** Verbal only if asked: ~12 TPS avg from 1M/86400; 4,000/min ≈ 67 RPS |
 | Quarter sharding? | Hot writes in current quarter; archive cold quarters; app routes by invoice date |

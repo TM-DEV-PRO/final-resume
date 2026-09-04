@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>41_pdf_bullet_tech_defense — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/41_pdf_bullet_tech_defense.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#pdf-bullet-tech-defense-study-this">PDF bullet + tech defense (study this)</a>
+<a class="lvl2" href="#a-three-google-vocab-rewrites-sep-2026">A. Three Google-vocab rewrites (Sep 2026)</a>
+<a class="lvl2" href="#b-every-pdf-bullet-this-track">B. Every PDF bullet (this track)</a>
+<a class="lvl2" href="#c-why-this-tech-cheat-card">C. “Why this tech?” cheat card</a>
+<a class="lvl2" href="#d-30-second-traps">D. 30-second traps</a></nav>
+<main><h1 id="pdf-bullet-tech-defense-study-this">PDF bullet + tech defense (study this)</h1>
+<p><strong>Purpose:</strong> Defend <strong>every line on the current PDF</strong> — claim, why that tech, what you rejected, what you must not say.</p>
+<p><strong>PDF name:</strong> <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code><br>
+Canonical metrics: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a> · packs: <a href="23a_ia_interview_pack.html"><code>23a</code></a> · <a href="23b_uber_interview_packs.html"><code>23b</code></a> · <a href="23c_masters_gfg_interview_packs.html"><code>23c</code></a> · ER/why: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a></p>
+<div class="callout warn">
+<p><b>Hard no.</b> Do not fuse Kafka+Flink (Menu) with ClickHouse (IA) into one pipeline.
+Do not say payments / money movement. Do not say encryption or a privacy program.
+Do not say sub-second ClickHouse pivots (the PDF is 189s→12s). Do not say zero message loss.
+Exactly-once on Menu = idempotent catalog upserts + Flink keyed state — not 2PC across Gemini.
+Exactly-once on Masters = idempotency keys vs IRP (at-least-once + unique key). IRP is outside your transaction.
+300-case / ≥80% is a <b>CI promotion gate</b>, not all tenants live. Menu 98% is <b>offline eval</b>. Uber <b>via EPAM</b>. ANZ is <b>HISTORICAL Mobility</b>.
+Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF claims.</p>
+</div>
+<p>How to answer any tech: <strong>where → failure mode → rejected alternative → PDF number → what dies if it fails.</strong></p>
+<hr>
+<h2 id="a-three-google-vocab-rewrites-sep-2026">A. Three Google-vocab rewrites (Sep 2026)</h2>
+<h3 id="1-menu-large-scale-data-ingestion-and-processing-pipeline">1. Menu — “large-scale data ingestion and processing pipeline”</h3>
+<p><strong>PDF:</strong> Selenium 95%+; then Kafka + Apache Flink keyed dedupe / schema normalize; exactly-once catalog upserts.</p>
+<table>
+<thead>
+<tr>
+<th>Probe</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>What is the pipeline?</td>
+<td>Acquire (Selenium) → Kafka (<code>vendor_id</code>) → Flink keyed state (dedupe, schema) → catalog upsert <strong>or</strong> RAG/Gemini for unstructured PDFs</td>
+</tr>
+<tr>
+<td>Why Kafka?</td>
+<td>Scrapers must not block on catalog; replay after a bad parser; multiple consumers</td>
+</tr>
+<tr>
+<td>Why Flink, not Spark on the hot path?</td>
+<td>Burst scrapes, per-vendor keyed state, event-time for late pages. Spark = verbal backfill only, <strong>not on PDF</strong></td>
+</tr>
+<tr>
+<td>Why not ClickHouse here?</td>
+<td>ClickHouse is <strong>IA analytics</strong>. Menu land is catalog + Milvus for RAG</td>
+</tr>
+<tr>
+<td>Exactly-once?</td>
+<td>Idempotent upsert on catalog keys + Flink checkpoints. Not 2PC to Gemini or partner sites</td>
+</tr>
+<tr>
+<td>Scale words</td>
+<td>30K+ menus/month is the PDF volume — do <strong>not</strong> say hundreds of millions of <strong>transactions</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-masters-high-concurrency-idempotent-fault-tolerant-state">2. Masters — “high-concurrency” / “idempotent” / “fault-tolerant state”</h3>
+<p><strong>PDF:</strong> Kafka + PostgreSQL quarter-shard; 1M+ daily IRP submissions; 100K+ concurrent imports; idempotency + DLQ + bounded retries.</p>
+<table>
+<thead>
+<tr>
+<th>Probe</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High-concurrency of what?</td>
+<td>Bulk <strong>import workers</strong> hitting IRP, not Google Pay money movement</td>
+</tr>
+<tr>
+<td>Idempotency key?</td>
+<td><code>client + fileHash + batchIndex</code> (+ invoice refs). Unique constraint so replay cannot double-register</td>
+</tr>
+<tr>
+<td>Fault-tolerant state?</td>
+<td>In-flight Kafka offsets + PG job rows + DLQ for poison batches. Not a custom consensus store</td>
+</tr>
+<tr>
+<td>Why Kafka?</td>
+<td>Per-GSTIN order, durable replay for GST disputes, independent consumer groups</td>
+</tr>
+<tr>
+<td>Why PG quarter shards?</td>
+<td>GST returns are quarter-scoped; hot writes stay in current quarter</td>
+</tr>
+<tr>
+<td>Stack on <strong>this</strong> PDF</td>
+<td><strong>Spring Boot</strong> (hybrid / Java). PyGo PDF = FastAPI. Never say Go for Masters</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-ia-multi-tenant-data-isolation-access-control-pg-clickhouse">3. IA — “multi-tenant data isolation” / “access control” / PG + ClickHouse</h3>
+<p><strong>PDF:</strong> Isolation + UAM across PostgreSQL and ClickHouse; Redis-fronted Firebase Admin → JWT / Google OIDC; constant-time API keys; Postgres roles.</p>
+<table>
+<thead>
+<tr>
+<th>Probe</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Isolation vs encryption?</td>
+<td><strong>Access control + tenant scope</strong>, not an encryption product. Do not say you implemented encryption-at-rest</td>
+</tr>
+<tr>
+<td>Why both PG and CH?</td>
+<td>PG = identity / UAM / roles (ACID). CH = planner facts / pivots (columnar). Same tenant id on both; CH queries run under frozen tenant scope</td>
+</tr>
+<tr>
+<td>Why not Milvus here?</td>
+<td>Milvus is <strong>Menu RAG</strong>, not IA governance</td>
+</tr>
+<tr>
+<td>Cache miss?</td>
+<td>Redis miss falls through to Postgres — it does <strong>not</strong> degrade open</td>
+</tr>
+<tr>
+<td>UAM?</td>
+<td>Hierarchy intersects store/product scope. You did not build a generic RBAC product</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="b-every-pdf-bullet-this-track">B. Every PDF bullet (this track)</h2>
+<h3 id="summary">Summary</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Defend</th>
+<th>Do not say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S1</td>
+<td>5 years; cloud-native high-throughput <strong>distributed systems</strong></td>
+<td>Tenure + IA 10k RPS + Masters/FRM services</td>
+<td>Staff/principal</td>
+</tr>
+<tr>
+<td>S2</td>
+<td><strong>Java and Python</strong> microservices; <strong>AI-assisted</strong> + <strong>RAG</strong></td>
+<td>Java=FRM/Masters + IA write APIs on this track; Python=IA agents + Menu RAG</td>
+<td>Do not hide Go on IA edge if asked — IA HTTP is still Go/Gin</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>Shipping, migrations, reliability</td>
+<td>Masters strangler; FRM Sheets→MySQL; Menu 24h→2h</td>
+<td>“I ran Uber production” — <strong>via EPAM</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="skills-why-the-row-exists">Skills (why the row exists)</h3>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Why on PDF</th>
+<th>Rejected / trap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Languages</td>
+<td>Java (FRM/Masters), Python (agents/Menu/GFG), Go (IA edge), SQL everywhere</td>
+<td>Do not claim Rust/C++ production ownership</td>
+</tr>
+<tr>
+<td>Backend</td>
+<td>Spring (FRM/Masters + IA write APIs on this track), FastAPI/Gin/Django where the PDF says</td>
+<td>IA public edge is still Go/Gin</td>
+</tr>
+<tr>
+<td>AI</td>
+<td>LangGraph/LangChain/RAG/Milvus/pgvector/Tool Calling/MCP/Prompt Eng/LangSmith/offline eval</td>
+<td>MCP is <strong>skills literacy</strong>; not an IA PDF bullet</td>
+</tr>
+<tr>
+<td>Data &amp; streaming</td>
+<td>Kafka+Flink = <strong>Menu</strong>; ClickHouse+BQ = <strong>IA</strong>; ETL = Masters/FRM</td>
+<td>No Flink-on-IA, no Spark-on-PDF</td>
+</tr>
+<tr>
+<td>Databases</td>
+<td>PG/MySQL/Redis/Mongo/ES/Dynamo/S3 as used</td>
+<td>Dynamo = literacy / AWS history, not IA SoR</td>
+</tr>
+<tr>
+<td>Cloud</td>
+<td>GCP (IA, Menu), AWS (Masters), Docker, K8s <strong>literacy</strong>, Maven/Bazel (FRM)</td>
+<td>K8s ≠ you operated clusters</td>
+</tr>
+<tr>
+<td>Architecture</td>
+<td>HLD/LLD, DSA, caching, reliability, multithreading, sharding, concurrency, idempotency</td>
+<td>Idempotency story = Masters (+ Menu upserts)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ia-platform">IA — Platform</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Why this tech</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Go/Gin 10k peak RPS, Wire, h2c, no reverse proxy, Datadog</td>
+<td>Compile-time DI; process owns timeouts/h2c; traces at the edge</td>
+<td>Python public edge; nginx as the only timeout story</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>15.5×; 189s→12s / 250M; 1.6M article-seasons; 2.4B weekly rollups</td>
+<td>Columnar CH for planner pivots</td>
+<td>PG OLAP; Snowflake cost/latency for this UI; <strong>sub-second</strong> (false)</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Dynamic KPI configurator; ifNotFinite SQL fragments</td>
+<td>Operators change math without deploys; NaN must not poison rollups</td>
+<td>Hard-coded SQL in Go</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Isolation + UAM on <strong>PG + CH</strong>; OIDC waterfall; API keys</td>
+<td>Tenant bleed is a career-ending bug</td>
+<td>Encryption product; Milvus; “privacy program”</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>100% statement coverage, race+atomic, 1200+ tests, SAST/SBOM</td>
+<td>Zero-regression on a multi-tenant edge</td>
+<td>Claiming the same gate for Python agents</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ia-agentic">IA — Agentic</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Why this tech</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>Keep/Drop + Missed Opp + Top Style; 335K+; 88k/&lt;$100; 7 lenses</td>
+<td>Mix deterministic KPI math + structured LLM; named pipelines not a chatbot</td>
+<td>One giant prompt</td>
+</tr>
+<tr>
+<td>A2</td>
+<td>2.11B fact; air-gap LLM vs DB; RMT two-phase; JSON; fallback</td>
+<td>Hallucinated SQL must not write 2.11B rows</td>
+<td>LLM-issued CH writes; you authored CDC</td>
+</tr>
+<tr>
+<td>A3</td>
+<td>Resilient AI orchestration registry; breakers; checkpoints; LangSmith</td>
+<td>Batch LLM must pause/resume and show token cost</td>
+<td>Ad-hoc scripts; one APM for agents and HTTP</td>
+</tr>
+<tr>
+<td>A4</td>
+<td>Shipped Ask Iris; WebSocket; Supervisor+Evaluator; frozen scopes</td>
+<td>Interactive KPI/charts without unfreezing warehouse or looping</td>
+<td>Tenant-wide SLA; questions/week</td>
+</tr>
+<tr>
+<td>A5</td>
+<td>300-case / ≥80% CI gate vs 74% baseline</td>
+<td>Models must beat a <strong>free</strong> deterministic baseline</td>
+<td>“All tenants live at 80%”</td>
+</tr>
+<tr>
+<td>Tech</td>
+<td>Go, Gin, Python, FastAPI, LangGraph, CH, BQ, Redis, PG, Datadog, LangSmith, GCP, Docker</td>
+<td>Split: Go edge vs Python graph vs CH facts</td>
+<td>Kafka/Flink on this line</td>
+</tr>
+</tbody>
+</table>
+<h3 id="uber-frm-via-epam-spring-on-this-pdf">Uber FRM (via EPAM) — Spring on this PDF</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F1</td>
+<td>70% recon 14d→3d; $340M; 19M GL; 36 Spring Boot endpoints; L1–L4</td>
+<td>Automate Sheets math into MySQL; PwC work papers</td>
+<td>Inventing you were an Uber FTE</td>
+</tr>
+<tr>
+<td>F2</td>
+<td>8-table SOADB; optimistic lock; SHA-256 natural keys; atomic syncs</td>
+<td>Close-week lock contention; no duplicate audit rows</td>
+<td>Pessimistic lock everywhere</td>
+</tr>
+<tr>
+<td>F3</td>
+<td>Led 3; JPA/Hibernate 100% coverage; Bazel; SQL allowlists; SOX 50% delta-variance</td>
+<td>SOX needs explainable SQL and coverage</td>
+<td>Skipping allowlists</td>
+</tr>
+<tr>
+<td>Tech</td>
+<td>Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker</td>
+<td>Uber JVM standard</td>
+<td>FastAPI on <strong>this</strong> FRM line</td>
+</tr>
+</tbody>
+</table>
+<h3 id="uber-menu-anz">Uber Menu + ANZ</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M1</td>
+<td>24h→2h; $600K; 30K+/mo; 98% Gemini+LangChain RAG+Milvus</td>
+<td>Unstructured PDFs need retrieve→generate→schema gate</td>
+<td>98% as <strong>online</strong> prod SLA</td>
+</tr>
+<tr>
+<td>M2</td>
+<td>95%+ Selenium; <strong>Kafka+Flink ingestion/processing</strong>; exactly-once upserts</td>
+<td>See section A.1</td>
+<td>ClickHouse on Menu; Spark on PDF; zero message loss</td>
+</tr>
+<tr>
+<td>ANZ</td>
+<td>99.9% Mobility docs; 20h/week</td>
+<td>Deterministic validation vs local authorities</td>
+<td>Calling it Eats; claiming Selenium/RAG here</td>
+</tr>
+<tr>
+<td>Tech</td>
+<td>Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker</td>
+<td>Acquire vs bus vs RAG vs catalog</td>
+<td>Mixing Masters Kafka into this story</td>
+</tr>
+</tbody>
+</table>
+<h3 id="masters-gst-spring-on-this-pdf">Masters GST — Spring on this PDF</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>G1</td>
+<td>p95 1.2s→300ms; 1500+ clients; PHP→Spring Boot; 700→4000 rpm; mentored 2</td>
+<td>Strangler/canary; async IRP so workers do not pin</td>
+<td>Big-bang rewrite</td>
+</tr>
+<tr>
+<td>G2</td>
+<td>High-concurrency Kafka+PG quarter shard; 1M+/day; 100K+ idempotent imports; DLQ</td>
+<td>See section A.2</td>
+<td>Payments; Go; Flink</td>
+</tr>
+<tr>
+<td>G3</td>
+<td>ELK+New Relic; triage −70%; Redis −30% reads; 35%→82% coverage; 98% deploy</td>
+<td>Request-ID across API/consumer; cache hot GSTIN</td>
+<td>Invented SEV commander title</td>
+</tr>
+<tr>
+<td>Tech</td>
+<td>Java, Spring Boot, Hibernate, Kafka, PG, Mongo, Redis, ES, Docker, ELK, New Relic, AWS</td>
+<td>JVM ATS track</td>
+<td>FastAPI on Masters for this PDF</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gfg">GFG</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Claim</th>
+<th>Why</th>
+<th>Rejected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>Courses Platform and Influencer Dashboard</td>
+<td>Two products under one role</td>
+<td>Inventing a third GFG product</td>
+</tr>
+<tr>
+<td>C1</td>
+<td>Django; 10K+ queries; 10x contest; MySQL/Mongo/Redis/ES; 20% premium</td>
+<td>Contest spikes; vote/pin/lock APIs</td>
+<td>Claiming Kafka here</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Influencer dashboard; 30% course sales; 70% ops via async jobs</td>
+<td>Affiliate coupons + video/reminder crons</td>
+<td>Claiming Flink/CH</td>
+</tr>
+</tbody>
+</table>
+<h3 id="education-achievements">Education / Achievements</h3>
+<p>B.Tech IT, IET Lucknow (2017–2021). Code Jam 2260/37k; SIH 2020 top-3 nationally; EPAM Global AI Hackathon; HackerRank + LangChain certs (links on PDF). Do not inflate ranks.</p>
+<hr>
+<h2 id="c-why-this-tech-cheat-card">C. “Why this tech?” cheat card</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Home</th>
+<th>Because</th>
+<th>Not because</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Go/Gin</strong></td>
+<td>IA edge</td>
+<td>10k RPS, Wire, h2c in-process</td>
+<td>“Go is faster” as a slogan</td>
+</tr>
+<tr>
+<td><strong>Python/FastAPI/LangGraph</strong></td>
+<td>IA agents, Ask Iris</td>
+<td>Graph + typed steps + WS copilot</td>
+<td>Replacing the Go edge</td>
+</tr>
+<tr>
+<td><strong>ClickHouse</strong></td>
+<td>IA facts/pivots</td>
+<td>Columnar 250M-row grids</td>
+<td>OLTP mutations; Menu ingest</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL</strong></td>
+<td>IA roles; Masters shards</td>
+<td>ACID identity / quarter GST tables</td>
+<td>Planner cube store</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>IA auth cache; Masters GSTIN</td>
+<td>Stampede/TTL; not source of truth</td>
+<td>“We used Redis so we are scaled”</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Menu ingest; Masters IRP</td>
+<td>Replay + ordering + fan-out</td>
+<td>One bus across all companies</td>
+</tr>
+<tr>
+<td><strong>Flink</strong></td>
+<td>Menu only</td>
+<td>Keyed dedupe / event-time</td>
+<td>IA; Masters; Spark-on-PDF</td>
+</tr>
+<tr>
+<td><strong>Milvus + Gemini + LangChain</strong></td>
+<td>Menu unstructured</td>
+<td>Retrieve similar menus → generate → schema gate</td>
+<td>IA privacy store</td>
+</tr>
+<tr>
+<td><strong>Spring Boot / JPA / Hibernate</strong></td>
+<td>FRM + Masters (this PDF)</td>
+<td>Uber/Masters JVM</td>
+<td>IA on this hybrid PDF</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>FRM SOADB</td>
+<td>Existing Uber store; optimistic lock</td>
+<td>ClickHouse for GL</td>
+</tr>
+<tr>
+<td><strong>Bazel / JUnit</strong></td>
+<td>FRM</td>
+<td>Uber release graph; SOX coverage</td>
+<td>Claiming Bazel at IA</td>
+</tr>
+<tr>
+<td><strong>Firebase / OIDC / JWT</strong></td>
+<td>IA</td>
+<td>Tenant IdP waterfall</td>
+<td>Homegrown auth</td>
+</tr>
+<tr>
+<td><strong>Datadog vs LangSmith</strong></td>
+<td>IA HTTP vs agent</td>
+<td>Different questions</td>
+<td>One tool for both</td>
+</tr>
+<tr>
+<td><strong>Docker</strong></td>
+<td>everywhere</td>
+<td>Reproducible deploys</td>
+<td>“I ran prod K8s”</td>
+</tr>
+<tr>
+<td><strong>GCP vs AWS</strong></td>
+<td>IA+Menu vs Masters</td>
+<td>Where the workload lived</td>
+<td>Multi-cloud hero story</td>
+</tr>
+<tr>
+<td><strong>Django</strong></td>
+<td>GFG</td>
+<td>Fast product APIs on existing Python</td>
+<td>Spring at GFG</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="d-30-second-traps">D. 30-second traps</h2>
+<ol>
+<li>“You built a data platform with Kafka, Flink, <strong>and</strong> ClickHouse.” → <strong>Two jobs.</strong> Menu stream vs IA OLAP.  </li>
+<li>“So you did payments.” → <strong>GST IRP + FRM recon</strong>, not money movement.  </li>
+<li>“Encryption and privacy.” → <strong>Isolation + SOX + ANZ docs.</strong> No encryption bullet.  </li>
+<li>“Sub-second analytics.” → <strong>12s</strong> pivot after 189s. Masters <strong>300ms</strong> is an <strong>API p95</strong>, not CH.  </li>
+<li>“Is Ask Iris GA for every tenant?” → <strong>Shipped capability</strong>; ≥80% is a <strong>gate</strong>.</li>
+</ol></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

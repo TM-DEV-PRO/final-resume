@@ -29,7 +29,7 @@ Tab list (Python/Go). Java and hybrid tracks add Java + Spring Boot/MVC/Security
 - Architected a multi-tenant Go/Gin platform scaling to 10k peak RPS, utilizing Google Wire for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native h2c, nested timeouts, and Datadog distributed tracing.
 - Accelerated retail analytics performance by 15.5x, slashing pivot query latency from 189s to 12s on 250M-row operations. Migrated the data layer to ClickHouse, scaling the catalog to process 1.6M article-season combinations and 2.4B weekly rollup rows.
 - Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into safe, ifNotFinite-wrapped ClickHouse SQL fragments, decoupling business logic from code releases.
-- Guaranteed strict multi-tenant data boundaries and UAM-scoped hierarchy access across the platform. Secured system entry by implementing a Redis-fronted Firebase Admin to JWT/Google OIDC verification waterfall, constant-time API keys, and Postgres-backed role resolution.
+- Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.
 - Enforced zero-regression engineering practices by designing a 100.0% statement-coverage CI gate (race and atomic) across 1,200+ Go tests. Hardened the Bitbucket deployment pipeline with automated golangci-linting, pre-push hooks, and continuous SAST/SBOM security scanning.
 
 ## Impact Analytics / AssortSmart — Agentic Flows & Orchestration
@@ -50,7 +50,7 @@ Tab list (Python/Go). Java and hybrid tracks add Java + Spring Boot/MVC/Security
 ## Uber Eats Menu
 
 - 24 hours to 2 hours, $600K/yr, 30K+ menus/month, 98% field fidelity, Gemini 2.5 Pro + LangChain RAG + Milvus
-- 95%+ success, Selenium proxies, Kafka, Flink keyed dedupe, exactly-once upserts
+- 95%+ success, Selenium proxies, Kafka + Flink **large-scale data ingestion and processing pipeline**, keyed dedupe, exactly-once catalog upserts
 
 ## Uber Mobility ANZ
 
@@ -59,7 +59,7 @@ Tab list (Python/Go). Java and hybrid tracks add Java + Spring Boot/MVC/Security
 ## Masters India
 
 - p95 1.2s to 300ms (75%), 1,500+ clients, 700 to 4,000 rpm, mentored 2
-- Kafka + PostgreSQL tax-quarter shard, 1M+/day, 100K+ imports, idempotency, DLQ
+- Kafka + PostgreSQL tax-quarter shard, **high-concurrency** 1M+/day, 100K+ **idempotent** imports, DLQ / fault-tolerant state, bounded retries
 - ELK + New Relic, Redis −30% reads, coverage 35% to 82%, 98% deploy success
 - PyGo: FastAPI. Java/hybrid: Spring Boot
 

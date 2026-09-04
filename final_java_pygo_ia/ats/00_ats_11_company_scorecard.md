@@ -1,7 +1,7 @@
 # ATS scorecard — Final Java + AI (IA = Python/Go)
 
 **Date:** Aug 2026  
-**PDF:** `artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`  
+**PDF:** `artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`  
 **What this is:** Same JVM/Spring Uber·Masters·Menu story as `final_java_ai`, but **IA AssortSmart matches PyGo** (FastAPI + LangGraph + MCP + **Go Gin** write APIs). Skills/summary include Java + Python + Go.
 
 **Submit when:** Amazon/LinkedIn/Apple/Atlassian/Salesforce want Java history **and** you want truthful Py/Go IA wording.

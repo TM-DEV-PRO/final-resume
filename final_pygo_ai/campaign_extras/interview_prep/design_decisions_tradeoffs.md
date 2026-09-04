@@ -1,6 +1,6 @@
 # Design Decisions and Tradeoffs (resume-aligned)
 
-Every major decision on `Tarun_Mittal_SSE_PyGo_AI_Final.pdf` with how / why / alternatives. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
+Every major decision on `Tarun_Mittal_SSE_5yr.pdf` with how / why / alternatives. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
 ## Impact Analytics — Platform
 

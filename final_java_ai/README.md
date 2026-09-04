@@ -5,8 +5,8 @@
 **Stack framing:** Java / Spring Boot for product APIs (FRM, Masters, GFG, AssortSmart write APIs). Python for agentic plane (LangGraph, MCP) and Menu RAG. ClickHouse / Kafka / Flink unchanged.
 
 ## Artifacts
-- PDF: [`artifacts/Tarun_Mittal_SSE_Java_AI_Final.pdf`](artifacts/Tarun_Mittal_SSE_Java_AI_Final.pdf)
-- Overleaf: [`artifacts/Tarun_Mittal_SSE_Java_AI_Final_Overleaf.zip`](artifacts/Tarun_Mittal_SSE_Java_AI_Final_Overleaf.zip)
+- PDF: [`artifacts/Tarun_Mittal_SSE_5yr_Java_AI.pdf`](artifacts/Tarun_Mittal_SSE_5yr_Java_AI.pdf)
+- Overleaf: [`artifacts/Tarun_Mittal_SSE_5yr_Java_AI_Overleaf.zip`](artifacts/Tarun_Mittal_SSE_5yr_Java_AI_Overleaf.zip)
 - Hub: [`InterviewPrep.html`](InterviewPrep.html) · [`index.html`](index.html)
 
 ## Support material

@@ -2,7 +2,7 @@
 
 **Tarun Mittal · Senior Software Engineer · Sep 2026**
 
-Backs this track (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`). Canonical claims: [`docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMART_TAB_RESUME.md).
+Backs this track (PDF: `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`). Canonical claims: [`docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMART_TAB_RESUME.md).
 
 **Summary on the PDF:** 5 years architecting high-throughput cloud-native distributed systems and leading zero-downtime migrations · Expert in **Java, Python and Go microservices** · LangGraph multi-agent systems, Milvus RAG, deterministic eval harnesses.
 
@@ -11,7 +11,7 @@ Backs this track (PDF: `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`). Canonical clai
 ## Study order
 
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) · [`00_final_resume_map.md`](00_final_resume_map.md)
-2. [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)
+2. [`41_pdf_bullet_tech_defense.md`](41_pdf_bullet_tech_defense.md) · [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)
 3. [`37_senior_screen_deep_qa.md`](37_senior_screen_deep_qa.md) · [`32_common_interview_qa.md`](32_common_interview_qa.md)
 4. FRM/Menu/Masters: [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) · [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
 5. [`36_skills_ai_agents_defense.md`](36_skills_ai_agents_defense.md) · diagrams/schemas `33`/`34`/`35`

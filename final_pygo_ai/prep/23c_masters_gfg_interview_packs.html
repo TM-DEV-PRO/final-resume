@@ -194,7 +194,7 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 </tr>
 </tbody>
 </table>
-<h3 id="bullet-2-kafka-pg-quarter-sharding-1mday-100kimport-700-4000-reqmin">Bullet 2 — Kafka + PG quarter sharding · 1M+/day · 100K+/import · 700 → 4,000 req/min</h3>
+<h3 id="bullet-2-high-concurrency-kafka-pg-quarter-sharding-1mday-100k-idempotent-imports-fault-tolerant-state">Bullet 2 — High-concurrency Kafka + PG quarter sharding · 1M+/day · 100K+ idempotent imports · fault-tolerant state</h3>
 <table>
 <thead>
 <tr>
@@ -206,6 +206,14 @@ PostgreSQL  Redis      Kafka topics    MongoDB
 <tr>
 <td>Where is Kafka?</td>
 <td>Import chunks, IRP jobs, signed-response persistence, webhooks, audit projector</td>
+</tr>
+<tr>
+<td>High-concurrency?</td>
+<td>Bulk IRP import workers — <strong>not</strong> payment / money-movement products</td>
+</tr>
+<tr>
+<td>Fault-tolerant state?</td>
+<td>Kafka offsets + PG job rows + DLQ. IRP is outside your transaction (at-least-once + idempotency key)</td>
 </tr>
 <tr>
 <td>Throughput claim?</td>

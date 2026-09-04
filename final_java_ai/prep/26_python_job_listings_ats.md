@@ -196,7 +196,7 @@ Summary/objective left unchanged.
 
 **Apply routing reminder:** Airbnb JVM → `Tarun_Mittal_SSE_Java_5yr.pdf` · Airbnb GenAI/CSE + PlanetScale → v2/pygo · Databricks Runtime JVM lean → java OK · Rubrik Senior Backend → v2/pygo.
 
-> **Routing note (Aug 2026):** map the old names to the finals — JVM → `final_java_ai/artifacts/Tarun_Mittal_SSE_Java_AI_Final.pdf`, Python/AI → `final_pygo_ai/artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf`, general/public → `final_java_pygo_ia/artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`.
+> **Routing note (Aug 2026):** map the old names to the finals — JVM → `final_java_ai/artifacts/Tarun_Mittal_SSE_5yr_Java_AI.pdf`, Python/AI → `final_pygo_ai/artifacts/Tarun_Mittal_SSE_5yr.pdf`, general/public → `final_java_pygo_ia/artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`.
 
 ## Related
 

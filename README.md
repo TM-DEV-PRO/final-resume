@@ -4,9 +4,9 @@ Three maintained, self-contained final tracks: LaTeX · PDF · Overleaf zip · p
 
 | Track | Folder | PDF | Notes |
 |---|---|---|---|
-| **Primary (site download)** | [`final_java_pygo_ia/`](final_java_pygo_ia/) | `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf` | Java/Spring history + PyGo IA (FastAPI/Go Gin) |
-| Final Java + Python | [`final_java_ai/`](final_java_ai/) | `Tarun_Mittal_SSE_Java_AI_Final.pdf` | IA write APIs = Spring Boot |
-| Final Python + Go | [`final_pygo_ai/`](final_pygo_ai/) | `Tarun_Mittal_SSE_PyGo_AI_Final.pdf` | Python/Go full stack |
+| **Primary (site download)** | [`final_java_pygo_ia/`](final_java_pygo_ia/) | `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf` | Java/Spring history + PyGo IA (FastAPI/Go Gin) |
+| Final Java + Python | [`final_java_ai/`](final_java_ai/) | `Tarun_Mittal_SSE_5yr_Java_AI.pdf` | IA write APIs = Spring Boot |
+| Final Python + Go | [`final_pygo_ai/`](final_pygo_ai/) | `Tarun_Mittal_SSE_5yr.pdf` | Python/Go full stack |
 
 Repo hub (GitHub Pages): [`index.html`](index.html) → https://tm-dev-pro.github.io/final-resume/
 
@@ -33,7 +33,7 @@ Every markdown file is mirrored to HTML beside it. Entry points:
 
 ```bash
 mkdir -p /tmp/rb && cd final_java_pygo_ia && tectonic resume.tex --outdir /tmp/rb
-cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf
+cp /tmp/rb/resume.pdf artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf
 cd ..
 
 python3 build_pages_html.py       # every .md → .html, folder indexes, all_pages.html

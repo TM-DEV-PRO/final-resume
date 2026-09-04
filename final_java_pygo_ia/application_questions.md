@@ -1,6 +1,6 @@
 # Application Kit (paste-ready)
 
-Aligned to **Final Java + AI (IA = Py/Go)** (`Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`). Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
+Aligned to **Final Java + AI (IA = Py/Go)** (`Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`). Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
 ## One-liners
 - **Headline fit:** Senior SWE Java · Python · Go · Go/Gin 10k RPS · ClickHouse 2.11B · 36 Spring Boot endpoints · Kafka 1M+/day · LangGraph Ask Iris
@@ -37,7 +37,7 @@ Pivot to technical alignment: their [distributed store / event bus / applied-AI 
 Phone (+91) 9079727197 · tmittaliet@gmail.com · linkedin.com/in/t-mittal · github.com/TM-DEV-PRO
 
 ## Attach
-`artifacts/Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf`
+`artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`
 
 ## Deeper answers
 Track screening bank: `prep/22_application_questions.md`\n

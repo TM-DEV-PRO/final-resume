@@ -1,6 +1,6 @@
 # Senior screen deep Q&A — millions / prod / perf / product / deploy
 
-**PDF:** `Tarun_Mittal_SSE_Java_AI_Final.pdf`. Tags per `GROUND_TRUTH.md`.
+**PDF:** `Tarun_Mittal_SSE_5yr_Java_AI.pdf`. Tags per `GROUND_TRUTH.md`.
 **Stack:** FRM/Masters = **Spring Boot / Spring Data JPA / Hibernate** / **Spring Boot**. AssortSmart platform = **Go Gin**. Agent = **Python, FastAPI, LangGraph**. MCP not on PDF.
 
 ---

@@ -1,6 +1,6 @@
 # Senior screen deep Q&A — millions / prod / perf / product / deploy
 
-**PDF:** `Tarun_Mittal_SSE_PyGo_AI_Final.pdf`. Tags per `GROUND_TRUTH.md`.
+**PDF:** `Tarun_Mittal_SSE_5yr.pdf`. Tags per `GROUND_TRUTH.md`.
 **Stack:** FRM/Masters = **FastAPI / SQLAlchemy 2.0** / **FastAPI**. AssortSmart platform = **Go Gin**. Agent = **Python, FastAPI, LangGraph**. MCP not on PDF.
 
 ---

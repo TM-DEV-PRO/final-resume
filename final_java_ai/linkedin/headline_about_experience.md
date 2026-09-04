@@ -1,6 +1,6 @@
 # LinkedIn Profile Pack (stand out)
 
-Aligned to **Final Java + AI** resume (`Tarun_Mittal_SSE_Java_AI_Final.pdf`). Paste-ready. Avoid colon-heavy AI voice in About.
+Aligned to **Final Java + AI** resume (`Tarun_Mittal_SSE_5yr_Java_AI.pdf`). Paste-ready. Avoid colon-heavy AI voice in About.
 
 ## Headline (pick one)
 1. Senior Software Engineer | Java · Python | Distributed Systems · Kafka · ClickHouse · LangGraph

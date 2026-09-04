@@ -1,6 +1,6 @@
 # Cold Mail Recruiter / Sourcer
 
-Aligned to **Final PyGo + AI** (`Tarun_Mittal_SSE_PyGo_AI_Final.pdf`). Paste-ready. Adapted from the AssortSmart-tab packet templates; claims match the **current PDF**, not packet overclaims (no K8s-ops, no IA Flink/CDC).
+Aligned to **Final PyGo + AI** (`Tarun_Mittal_SSE_5yr.pdf`). Paste-ready. Adapted from the AssortSmart-tab packet templates; claims match the **current PDF**, not packet overclaims (no K8s-ops, no IA Flink/CDC).
 
 ## Email subject lines (pick one)
 - Senior Software Engineer Python/Go Uber FRM + AssortSmart platform/AI

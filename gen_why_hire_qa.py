@@ -16,7 +16,7 @@ TRACKS = [
     dict(
         d="final_java_pygo_ia/prep", label="Final Java + AI (IA = Py/Go)",
         langs="Java, Python and Go", frm="Spring Boot, MySQL", writes="Go, Gin",
-        pdf="Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf",
+        pdf="Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf",
         email="tm.eng2021@gmail.com", phone="(+91) 9001542418",
         stack="Java, Python, Go, Spring Boot, FastAPI, Gin, Kafka, Flink, Redis, "
               "PostgreSQL, ClickHouse, and cloud platforms (AWS, GCP)",
@@ -24,7 +24,7 @@ TRACKS = [
     dict(
         d="final_java_ai/prep", label="Final Java + AI",
         langs="Java and Python", frm="Spring Boot, MySQL", writes="Spring Boot",
-        pdf="Tarun_Mittal_SSE_Java_AI_Final.pdf",
+        pdf="Tarun_Mittal_SSE_5yr_Java_AI.pdf",
         email="tmittaliet@gmail.com", phone="(+91) 9079727197",
         stack="Java, Python, Spring Boot, FastAPI, Kafka, Flink, Redis, PostgreSQL, "
               "ClickHouse, and cloud platforms (AWS, GCP)",
@@ -32,7 +32,7 @@ TRACKS = [
     dict(
         d="final_pygo_ai/prep", label="Final Python + Go + AI",
         langs="Python and Go", frm="FastAPI, MySQL", writes="Go, Gin",
-        pdf="Tarun_Mittal_SSE_PyGo_AI_Final.pdf",
+        pdf="Tarun_Mittal_SSE_5yr.pdf",
         email="tm.eng2021@gmail.com", phone="(+91) 9001542418",
         stack="Python, Go, FastAPI, Gin, Kafka, Flink, Redis, PostgreSQL, ClickHouse, "
               "and cloud platforms (AWS, GCP)",

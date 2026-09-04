@@ -1,6 +1,6 @@
 # LinkedIn Profile Pack (stand out)
 
-Aligned to **Final PyGo + AI** resume (`Tarun_Mittal_SSE_PyGo_AI_Final.pdf`). Paste-ready. Avoid colon-heavy AI voice in About.
+Aligned to **Final PyGo + AI** resume (`Tarun_Mittal_SSE_5yr.pdf`). Paste-ready. Avoid colon-heavy AI voice in About.
 
 ## Headline (pick one)
 1. Senior Software Engineer | Python · Go | Distributed Systems · Kafka · ClickHouse · LangGraph

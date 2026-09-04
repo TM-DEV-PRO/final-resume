@@ -1,7 +1,7 @@
 # ATS scorecard — Final Python + Go + AI (11 companies)
 
 **Date:** Aug 2026 (post Menu E2E + ANZ Mobility + AI skills refresh)  
-**PDF:** `artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf` (1 page · ~1014 words extractable)  
+**PDF:** `artifacts/Tarun_Mittal_SSE_5yr.pdf` (1 page · ~1014 words extractable)  
 **Method:** space-tolerant keyword groups on PDF text (pdfminer) + recruiter adjust (lane fit, L5 bar, Spark honesty). Not an interview pass score.
 
 **Parser hygiene:** email/phone/LinkedIn/GitHub/Bangalore present · shared+track keyword bank **37/37** · Spark **absent** (correct) · Menu E2E ownership + schema gate + ANZ local-authority wording **present**.

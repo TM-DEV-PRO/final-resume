@@ -2,7 +2,7 @@
 
 Self-contained for this track. Do **not** treat `resume/`, `resume_v2/`, `resume_java/`, or `campaign_pygo_xyz/` as sources of truth (those tracks are being removed).
 
-**PDF:** `Tarun_Mittal_SSE_Java_PyGoIA_Final.pdf` · Canonical claims: [`docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMART_TAB_RESUME.md)
+**PDF:** `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf` · Canonical claims: [`docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMART_TAB_RESUME.md)
 
 **Keep/Drop pipeline reference:** track copy [`docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flow/PIPELINE.md) · shared [`docs/assort_kd_flow/PIPELINE.md`](../../docs/assort_kd_flow/PIPELINE.md).
 
@@ -25,7 +25,7 @@ Project title on PDF: **AssortSmart — Senior Software Engineer (Platform & AI)
 1. Multi-tenant **Go/Gin** platform scaling to **10k peak RPS**, **Google Wire** compile-time DI, self-protecting HTTP edge (no reverse proxy), native **h2c**, nested timeouts, **Datadog** distributed tracing.
 2. Retail analytics **15.5x**: pivot **189s → 12s** on **250M-row** operations. ClickHouse catalog **1.6M** article-season combinations and **2.4B** weekly rollup rows.
 3. Dynamic KPI configurator + formula parser: operator-authored math tokenized into safe **ifNotFinite**-wrapped ClickHouse SQL fragments (business logic decoupled from code releases).
-4. Multi-tenant + UAM-scoped hierarchy access. Redis-fronted **Firebase Admin → JWT / Google OIDC** waterfall, constant-time API keys, **Postgres**-backed role resolution.
+4. **Multi-tenant data isolation** + UAM-scoped hierarchy **access control** across **PostgreSQL** and **ClickHouse**. Redis-fronted **Firebase Admin → JWT / Google OIDC** waterfall, constant-time API keys, **Postgres**-backed role resolution. Isolation ≠ encryption.
 5. **100.0%** statement-coverage CI gate (race and atomic) across **1,200+** Go tests. Bitbucket pipeline: golangci-lint, pre-push hooks, continuous **SAST/SBOM**.
 
 ### 2) Agentic Flows & Orchestration
@@ -50,7 +50,7 @@ Older prep tagged 70% as TDD TARGET. **The PDF now states 70% / 14→3 days as t
 ## Uber Eats Menu
 
 - **24 hours → 2 hours**, **$600K**/yr, **30K+** menus/month, **98%** field fidelity (**offline eval**), Gemini 2.5 Pro + LangChain RAG + Milvus.
-- **95%+** success, Selenium proxies, **Kafka**, **Flink** keyed dedupe, **exactly-once** upserts.
+- **95%+** success, Selenium proxies, **Kafka** + **Flink** large-scale data ingestion and processing pipeline, keyed dedupe, **exactly-once** catalog upserts. Not ClickHouse. Not zero message loss.
 - **Spark is not on the PDF.** Verbal/study backfill only.
 
 ## Uber Mobility ANZ
@@ -60,7 +60,7 @@ Older prep tagged 70% as TDD TARGET. **The PDF now states 70% / 14→3 days as t
 ## Masters India
 
 - p95 **1.2s → 300ms** (**75%**), **1,500+** clients, **700 → 4,000** rpm, mentored **2**.
-- Kafka + PostgreSQL tax-quarter shard, **1M+/day**, **100K+** imports, idempotency, DLQ.
+- Kafka + PostgreSQL tax-quarter shard, **high-concurrency** **1M+/day**, **100K+** **idempotent** imports, DLQ / fault-tolerant state.
 - ELK + New Relic, Redis **−30%** reads, coverage **35% → 82%**, **98%** deploy success.
 - Stack on this PDF: **Spring Boot**. Tech: Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Docker, ELK, New Relic, AWS
 

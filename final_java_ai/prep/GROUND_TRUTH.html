@@ -54,7 +54,7 @@ strong{color:#fff}
 <a class="lvl2" href="#deep-dives-this-track">Deep dives (this track)</a></nav>
 <main><h1 id="ground-truth-final-java-ai">Ground Truth (Final Java + AI)</h1>
 <p>Self-contained for this track. Do <strong>not</strong> treat <code>resume/</code>, <code>resume_v2/</code>, <code>resume_java/</code>, or <code>campaign_pygo_xyz/</code> as sources of truth (those tracks are being removed).</p>
-<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_Java_AI_Final.pdf</code> · Canonical claims: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a></p>
+<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code> · Canonical claims: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a></p>
 <p><strong>Keep/Drop pipeline reference:</strong> track copy <a href="../docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a> · shared <a href="../../docs/assort_kd_flow/PIPELINE.html"><code>docs/assort_kd_flow/PIPELINE.md</code></a>.</p>
 <h2 id="summary-pdf-3-lines">Summary (PDF — 3 lines)</h2>
 <ol>
@@ -71,7 +71,7 @@ strong{color:#fff}
 <li>Multi-tenant <strong>Go/Gin</strong> platform scaling to <strong>10k peak RPS</strong>, <strong>Google Wire</strong> compile-time DI, self-protecting HTTP edge (no reverse proxy), native <strong>h2c</strong>, nested timeouts, <strong>Datadog</strong> distributed tracing.</li>
 <li>Retail analytics <strong>15.5x</strong>: pivot <strong>189s → 12s</strong> on <strong>250M-row</strong> operations. ClickHouse catalog <strong>1.6M</strong> article-season combinations and <strong>2.4B</strong> weekly rollup rows.</li>
 <li>Dynamic KPI configurator + formula parser: operator-authored math tokenized into safe <strong>ifNotFinite</strong>-wrapped ClickHouse SQL fragments (business logic decoupled from code releases).</li>
-<li>Multi-tenant + UAM-scoped hierarchy access. Redis-fronted <strong>Firebase Admin → JWT / Google OIDC</strong> waterfall, constant-time API keys, <strong>Postgres</strong>-backed role resolution.</li>
+<li><strong>Multi-tenant data isolation</strong> + UAM-scoped hierarchy <strong>access control</strong> across <strong>PostgreSQL</strong> and <strong>ClickHouse</strong>. Redis-fronted <strong>Firebase Admin → JWT / Google OIDC</strong> waterfall, constant-time API keys, <strong>Postgres</strong>-backed role resolution. Isolation ≠ encryption.</li>
 <li><strong>100.0%</strong> statement-coverage CI gate (race and atomic) across <strong>1,200+</strong> Go tests. Bitbucket pipeline: golangci-lint, pre-push hooks, continuous <strong>SAST/SBOM</strong>.</li>
 </ol>
 <h3 id="2-agentic-flows-orchestration">2) Agentic Flows &amp; Orchestration</h3>
@@ -94,7 +94,7 @@ strong{color:#fff}
 <h2 id="uber-eats-menu">Uber Eats Menu</h2>
 <ul>
 <li><strong>24 hours → 2 hours</strong>, <strong>$600K</strong>/yr, <strong>30K+</strong> menus/month, <strong>98%</strong> field fidelity (<strong>offline eval</strong>), Gemini 2.5 Pro + LangChain RAG + Milvus.</li>
-<li><strong>95%+</strong> success, Selenium proxies, <strong>Kafka</strong>, <strong>Flink</strong> keyed dedupe, <strong>exactly-once</strong> upserts.</li>
+<li><strong>95%+</strong> success, Selenium proxies, <strong>Kafka</strong> + <strong>Flink</strong> large-scale data ingestion and processing pipeline, keyed dedupe, <strong>exactly-once</strong> catalog upserts. Not ClickHouse. Not zero message loss.</li>
 <li><strong>Spark is not on the PDF.</strong> Verbal/study backfill only.</li>
 </ul>
 <h2 id="uber-mobility-anz">Uber Mobility ANZ</h2>
@@ -104,7 +104,7 @@ strong{color:#fff}
 <h2 id="masters-india">Masters India</h2>
 <ul>
 <li>p95 <strong>1.2s → 300ms</strong> (<strong>75%</strong>), <strong>1,500+</strong> clients, <strong>700 → 4,000</strong> rpm, mentored <strong>2</strong>.</li>
-<li>Kafka + PostgreSQL tax-quarter shard, <strong>1M+/day</strong>, <strong>100K+</strong> imports, idempotency, DLQ.</li>
+<li>Kafka + PostgreSQL tax-quarter shard, <strong>high-concurrency</strong> <strong>1M+/day</strong>, <strong>100K+</strong> <strong>idempotent</strong> imports, DLQ / fault-tolerant state.</li>
 <li>ELK + New Relic, Redis <strong>−30%</strong> reads, coverage <strong>35% → 82%</strong>, <strong>98%</strong> deploy success.</li>
 <li>Stack on this PDF: <strong>Spring Boot</strong>. Tech: Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Docker, ELK, New Relic, AWS</li>
 </ul>

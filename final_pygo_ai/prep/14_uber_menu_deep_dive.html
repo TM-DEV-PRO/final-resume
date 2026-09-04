@@ -55,7 +55,7 @@ strong{color:#fff}
 </blockquote>
 <p>Numbers match <code>GROUND_TRUTH.md</code> and <code>09_metrics_derivations.md</code>. Rates tagged ESTIMATED where derived.</p>
 <blockquote>
-<p><strong>RESUME ALIGNMENT (Sep 2026):</strong> Menu PDF = <strong>24h→2h</strong>, <strong>$600K/yr</strong>, <strong>30K+</strong>, <strong>98%</strong> field fidelity (<strong>offline</strong>) Gemini 2.5 Pro + LangChain RAG + Milvus; <strong>95%+</strong>; <strong>Kafka + Flink keyed dedupe, exactly-once upserts</strong>. <strong>Spark is NOT on the PDF</strong> — verbal/study backfill only. <strong>ANZ</strong> Uber Mobility <strong>99.9%</strong> / 20h/week <strong>HISTORICAL</strong>. Masters Kafka ≠ Menu Kafka.</p>
+<p><strong>RESUME ALIGNMENT (Sep 2026):</strong> Menu PDF = <strong>24h→2h</strong>, <strong>$600K/yr</strong>, <strong>30K+</strong>, <strong>98%</strong> field fidelity (<strong>offline</strong>) Gemini 2.5 Pro + LangChain RAG + Milvus; <strong>95%+</strong>; <strong>Kafka + Flink large-scale data ingestion and processing pipeline</strong>, keyed dedupe, exactly-once catalog upserts. ClickHouse is IA, not this pipeline. Do not say zero message loss. <strong>Spark is NOT on the PDF</strong> — verbal/study backfill only. <strong>ANZ</strong> Uber Mobility <strong>99.9%</strong> / 20h/week <strong>HISTORICAL</strong>. Masters Kafka ≠ Menu Kafka.</p>
 </blockquote>
 <hr>
 <h2 id="why-this-project-is-the-best-fit-for-flink-and-spark">Why this project is the best fit for Flink and Spark</h2>
@@ -115,7 +115,7 @@ Kafka (keyed by vendor_id)                ← buffer, replay, fan-out
 <hr>
 <h2 id="bullet-defenses">Bullet defenses</h2>
 <h3 id="1-selenium-kafka-flink-spark-30k-menusmo-24h2h-600k">1. Selenium → Kafka → Flink + Spark, 30K menus/mo, 24h→2h, $600K+</h3>
-<p><strong>Resume wording (Sep 2026):</strong> Kafka ingest bus; Flink keyed dedupe; <strong>exactly-once</strong> catalog upserts. Outcomes <strong>24h→2h</strong>, <strong>$600K</strong>, <strong>30K+</strong>. Spark backfills = <strong>not on PDF</strong>.</p>
+<p><strong>Resume wording (Sep 2026):</strong> <strong>large-scale data ingestion and processing pipeline</strong> using Kafka + Flink; keyed dedupe; <strong>exactly-once</strong> catalog upserts. Outcomes <strong>24h→2h</strong>, <strong>$600K</strong>, <strong>30K+</strong>, <strong>95%+</strong>. Spark backfills = <strong>not on PDF</strong>. Do not attach ClickHouse or “hundreds of millions of transactions.”</p>
 <p><strong>Acquire (HISTORICAL).</strong> Python Selenium on GCP hits JS-heavy vendor sites through proxy pools; emits menu/item/scrape-health events.</p>
 <p><strong>Bus.</strong> Kafka topic(s) keyed by <code>vendor_id</code> for per-vendor ordering, replay, and fan-out. <strong>Verbal only if asked:</strong> peak <strong>~200–500 events/sec</strong> during fleet runs (ESTIMATED) — 30K menus/mo ≈ 1K menus/day; item-level events + retries + health amplify bursts. Steady-state much lower. Consumer lag is the primary SLO.</p>
 <p><strong>Flink online (HISTORICAL role / ESTIMATED load).</strong> Consume Kafka; keyed process by vendor; schema validate; dedupe by content hash / menu version; route structured items to catalog upsert; route unstructured payloads to RAG/Gemini.</p>

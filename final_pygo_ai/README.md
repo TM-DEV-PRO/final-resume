@@ -5,8 +5,8 @@
 **Stack framing:** FastAPI / Go Gin for backends. LangGraph MCP for agents. ClickHouse / Kafka / Flink / BigQuery for data. Same projects and metrics as other tracks.
 
 ## Artifacts
-- PDF: [`artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf`](artifacts/Tarun_Mittal_SSE_PyGo_AI_Final.pdf)
-- Overleaf: [`artifacts/Tarun_Mittal_SSE_PyGo_AI_Final_Overleaf.zip`](artifacts/Tarun_Mittal_SSE_PyGo_AI_Final_Overleaf.zip)
+- PDF: [`artifacts/Tarun_Mittal_SSE_5yr.pdf`](artifacts/Tarun_Mittal_SSE_5yr.pdf)
+- Overleaf: [`artifacts/Tarun_Mittal_SSE_5yr_Overleaf.zip`](artifacts/Tarun_Mittal_SSE_5yr_Overleaf.zip)
 - Hub: [`InterviewPrep.html`](InterviewPrep.html) · [`index.html`](index.html)
 
 ## Support material
