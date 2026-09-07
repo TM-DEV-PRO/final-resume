@@ -14,7 +14,7 @@ Self-contained for this track. Do **not** treat `resume/`, `resume_v2/`, `resume
 
 ## Skills categories (PDF)
 
-Languages · Backend & APIs · **AI & Applied ML** · **Data & Streaming** · Databases & Storage · **Cloud & DevOps** · **Architecture & Core**
+Languages · Backend & APIs · **Generative AI** · **Data & Streaming** · Databases & Storage · **Cloud & DevOps** · **Architecture & Core**
 
 ## Resume PDF — Impact Analytics / AssortSmart (TWO subsections)
 

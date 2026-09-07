@@ -1,6 +1,6 @@
-# Final resume — AI & Applied ML skills defense
+# Final resume — Generative AI skills defense
 
-**PDF categories (Sep 2026):** Languages · Backend & APIs · **AI & Applied ML** · Data & Streaming · Databases & Storage · Cloud & DevOps · Architecture & Core.
+**PDF categories (Sep 2026):** Languages · Backend & APIs · **Generative AI** · Data & Streaming · Databases & Storage · Cloud & DevOps · Architecture & Core.
 
 Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. MCP is **not** on this PDF.
 

@@ -77,7 +77,7 @@ How to answer any tech: **where → failure mode → rejected alternative → PD
 |---|---|---|
 | Languages | Java (FRM/Masters), Python (agents/Menu/GFG), Go (IA edge), SQL everywhere | Do not claim Rust/C++ production ownership |
 | Backend | Spring (FRM/Masters + IA write APIs on this track), FastAPI/Gin/Django where the PDF says | IA public edge is still Go/Gin |
-| AI | LangGraph/LangChain/RAG/Milvus/pgvector/Tool Calling/MCP/Prompt Eng/LangSmith/offline eval | MCP is **skills literacy**; not an IA PDF bullet |
+| Generative AI | LangGraph/LangChain/RAG/Milvus/pgvector/Tool Calling/MCP/Prompt Eng/LangSmith/offline eval | MCP is **skills literacy**; not an IA PDF bullet |
 | Data & streaming | Kafka+Flink = **Menu**; ClickHouse+BQ = **IA**; ETL = Masters/FRM | No Flink-on-IA, no Spark-on-PDF |
 | Databases | PG/MySQL/Redis/Mongo/ES/Dynamo/S3 as used | Dynamo = literacy / AWS history, not IA SoR |
 | Cloud | GCP (IA, Menu), AWS (Masters), Docker, K8s **literacy**, Maven/Bazel (FRM) | K8s ≠ you operated clusters |
@@ -138,6 +138,7 @@ How to answer any tech: **where → failure mode → rejected alternative → PD
 | Title | Courses Platform and Influencer Dashboard | Two products under one role | Inventing a third GFG product |
 | C1 | Django; 10K+ queries; 10x contest; MySQL/Mongo/Redis/ES; 20% premium | Contest spikes; vote/pin/lock APIs | Claiming Kafka here |
 | C2 | Influencer dashboard; 30% course sales; 70% ops via async jobs | Affiliate coupons + video/reminder crons | Claiming Flink/CH |
+| Tech | Python, Django, MySQL, MongoDB, Redis, Elasticsearch | Same stores as the two bullets | Kafka / Flink / ClickHouse at GFG |
 
 ### Education / Achievements
 

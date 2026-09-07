@@ -40,7 +40,7 @@ python3 build_interview_prep.py   # rebuilds each track's InterviewPrep.html
 ## Stack on this resume
 
 - **Languages / Backend:** Java, Python and Go · Spring Boot / Spring Data JPA / Hibernate · FastAPI · Gin · Django
-- **AI & Applied ML:** LangGraph, LangChain, RAG, Milvus, LLM agents, LangSmith, offline evaluation
+- **Generative AI:** LangGraph, LangChain, RAG, Milvus, LLM agents, LangSmith, offline evaluation
 - **Data & Streaming:** Kafka, Flink, ClickHouse, BigQuery, ETL
 - **Cloud & DevOps:** GCP, AWS, Docker, Datadog, ELK, New Relic, CI/CD
 - **Architecture & Core:** distributed systems, microservices, HLD/LLD, sharding, concurrency, idempotency
