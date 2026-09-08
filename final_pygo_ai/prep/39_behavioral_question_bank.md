@@ -15,7 +15,7 @@ real experience and the honesty tags in `GROUND_TRUTH.md`.
 - Company LP guides: [`company_behavior_guides.md`](../campaign_extras/behavioral/company_behavior_guides.md)
 
 <div class="callout warn">
-<b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> (not all tenants live). Ask Iris is <b>shipped capability</b> (no tenant SLA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% / 14d→3d is on the PDF</b>. Menu <b>98% is offline eval</b>. <b>No Spark / SFT / K8s-ops</b>. Uber <b>via EPAM</b>. ANZ 99.9% HISTORICAL Mobility. 10k RPS / 2.11B / 2.4B / $100 = PDF / AssortSmart tab.
+<b>Never break these.</b> 300-case / 80% is a <b>CI promotion gate</b> (not all tenants live). Ask Iris is <b>shipped capability</b> (no tenant SLA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% / 14d→3d is on the PDF</b>. Menu <b>98% is offline eval</b>. <b>No Spark / SFT / K8s-ops</b>. Uber <b>via EPAM</b>. ANZ 99.9% HISTORICAL Mobility. 10k RPS / 2.11B / 2.4B / $100 = PDF / AssortSmart tab.
 </div>
 
 ---
@@ -101,7 +101,7 @@ Stack on this track: FRM = **FastAPI / MySQL** · AssortSmart writes = **Go / Gi
 
 ### G1. Tell me about yourself (60–90s)
 
-"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Python and Go**. Chronologically: GeeksforGeeks Django reliability → Masters India, where I led a **FastAPI strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned FRM (**36 FastAPI endpoints**, 19M GL, 70% from 14 days to 3, $340M, led 3) and Uber Eats menu ingestion (24 hours to 2 hours, $600K/yr, Kafka+Flink exactly-once) → Impact Analytics, where I own AssortSmart's Go/Gin platform (10k peak RPS) and agentic Keep/Drop + shipped Ask Iris (LangGraph Supervisor+Evaluator; 300-case / ≥80% promotion gate). I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
+"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Python and Go**. Chronologically: GeeksforGeeks Django reliability → Masters India, where I led a **FastAPI strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned FRM (**36 FastAPI endpoints**, 19M GL, 70% from 14 days to 3, $340M, led 3) and Uber Eats menu ingestion (24 hours to 2 hours, $600K/yr, Kafka+Flink exactly-once) → Impact Analytics, where I own AssortSmart's Go/Gin platform (10k peak RPS) and agentic Keep/Drop + shipped Ask Iris (LangGraph Supervisor+Evaluator; 300-case / 80% promotion gate). I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
 
 Stop. Do not append hobbies unless asked.
 
@@ -133,7 +133,7 @@ If pressed for a harder miss: use story 5 (refactor regression caught in CI befo
 
 ### G8. Significant change / comfort zone
 
-"Two real ones. (1) Masters: PHP monolith → **FastAPI strangler** + Kafka under live filing traffic — I had to learn the strangler sequencing, not just the target architecture. (2) Impact Analytics: owning AssortSmart platform + LangGraph Keep/Drop / Ask Iris when my prior strength was classical backends — Go/Gin edge, Python agent plane, 300-case / ≥80% promotion gate vs a 74% deterministic baseline. Lesson: change the workflow and the measurement first; the model second."
+"Two real ones. (1) Masters: PHP monolith → **FastAPI strangler** + Kafka under live filing traffic — I had to learn the strangler sequencing, not just the target architecture. (2) Impact Analytics: owning AssortSmart platform + LangGraph Keep/Drop / Ask Iris when my prior strength was classical backends — Go/Gin edge, Python agent plane, 300-case / 80% promotion gate vs a 74% deterministic baseline. Lesson: change the workflow and the measurement first; the model second."
 
 ### G9. Explain technical to non-technical
 

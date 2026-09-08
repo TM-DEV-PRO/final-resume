@@ -11,7 +11,7 @@ Do not say payments / money movement. Do not say encryption or a privacy program
 Do not say sub-second ClickHouse pivots (the PDF is 189s→12s). Do not say zero message loss.
 Exactly-once on Menu = idempotent catalog upserts + Flink keyed state — not 2PC across Gemini.
 Exactly-once on Masters = idempotency keys vs IRP (at-least-once + unique key). IRP is outside your transaction.
-300-case / ≥80% is a <b>CI promotion gate</b>, not all tenants live. Menu 98% is <b>offline eval</b>. Uber <b>via EPAM</b>. ANZ is <b>HISTORICAL Mobility</b>.
+300-case / 80% is a <b>CI promotion gate</b>, not all tenants live. Menu 98% is <b>offline eval</b>. Uber <b>via EPAM</b>. ANZ is <b>HISTORICAL Mobility</b>.
 Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF claims.
 </div>
 
@@ -68,7 +68,7 @@ How to answer any tech: **where → failure mode → rejected alternative → PD
 | # | Claim | Defend | Do not say |
 |---|---|---|---|
 | S1 | 5 years; cloud-native high-throughput **distributed systems** | Tenure + IA 10k RPS + Masters/FRM services | Staff/principal |
-| S2 | **Java and Python** microservices; **AI-assisted** + **RAG** | Java=FRM/Masters + IA write APIs on this track; Python=IA agents + Menu RAG | Do not hide Go on IA edge if asked — IA HTTP is still Go/Gin |
+| S2 | **Java, Python and Go** microservices; **AI-assisted** + **RAG** | Java=FRM/Masters; Go=IA edge; Python=IA agents + Menu RAG | All three languages on every project |
 | S3 | Shipping, migrations, reliability | Masters strangler; FRM Sheets→MySQL; Menu 24h→2h | “I ran Uber production” — **via EPAM** |
 
 ### Skills (why the row exists)
@@ -76,32 +76,32 @@ How to answer any tech: **where → failure mode → rejected alternative → PD
 | Row | Why on PDF | Rejected / trap |
 |---|---|---|
 | Languages | Java (FRM/Masters), Python (agents/Menu/GFG), Go (IA edge), SQL everywhere | Do not claim Rust/C++ production ownership |
-| Backend | Spring (FRM/Masters + IA write APIs on this track), FastAPI/Gin/Django where the PDF says | IA public edge is still Go/Gin |
+| Backend | Spring (history), FastAPI/Gin/Django where the PDF says | Do not put Spring on IA on **this** hybrid PDF |
 | Generative AI | LangGraph/LangChain/RAG/Milvus/pgvector/Tool Calling/MCP/Prompt Eng/LangSmith/offline eval | MCP is **skills literacy**; not an IA PDF bullet |
 | Data & streaming | Kafka+Flink = **Menu**; ClickHouse+BQ = **IA**; ETL = Masters/FRM | No Flink-on-IA, no Spark-on-PDF |
 | Databases | PG/MySQL/Redis/Mongo/ES/Dynamo/S3 as used | Dynamo = literacy / AWS history, not IA SoR |
 | Cloud | GCP (IA, Menu), AWS (Masters), Docker, K8s **literacy**, Maven/Bazel (FRM) | K8s ≠ you operated clusters |
 | Architecture | HLD/LLD, DSA, caching, reliability, multithreading, sharding, concurrency, idempotency | Idempotency story = Masters (+ Menu upserts) |
 
-### IA — Platform
+### IA — Core Infrastructure
 
 | # | Claim | Why this tech | Rejected |
 |---|---|---|---|
-| P1 | Go/Gin 10k peak RPS, Wire, h2c, no reverse proxy, Datadog | Compile-time DI; process owns timeouts/h2c; traces at the edge | Python public edge; nginx as the only timeout story |
-| P2 | 15.5×; 189s→12s / 250M; 1.6M article-seasons; 2.4B weekly rollups | Columnar CH for planner pivots | PG OLAP; Snowflake cost/latency for this UI; **sub-second** (false) |
-| P3 | Dynamic KPI configurator; ifNotFinite SQL fragments | Operators change math without deploys; NaN must not poison rollups | Hard-coded SQL in Go |
-| P4 | Isolation + UAM on **PG + CH**; OIDC waterfall; API keys | Tenant bleed is a career-ending bug | Encryption product; Milvus; “privacy program” |
-| P5 | 100% statement coverage, race+atomic, 1200+ tests, SAST/SBOM | Zero-regression on a multi-tenant edge | Claiming the same gate for Python agents |
+| C1 | Go/Gin 10k peak RPS, Wire, h2c, no reverse proxy, Datadog | Compile-time DI; process owns timeouts/h2c; traces at the edge | Python public edge; nginx as the only timeout story |
+| C2 | KPI tokenizer; parameterized CH SQL; native division-by-zero (`ifNotFinite` wrap) | Operators change math without deploys; NaN must not poison rollups | Hard-coded SQL; raw string concat |
+| C3 | Isolation + UAM on **PG + CH**; OIDC waterfall; API keys | Tenant bleed is a career-ending bug | Encryption product; Milvus; “privacy program” |
+| C4 | 15.5× (189s to 12s on 250M-row ops), season/weekly rollups, 170GB OOM, temporal chunks, memory/spill caps | Columnar CH for planner pivots. Week-sliced INSERT so weekly grain fits | PG OLAP; **sub-second**; claiming OOM caused 15.5× |
+| C5 | ~344k rows/s Go native-TLS pump, allowlist bypass, up to 4.09B, 500k double-buffer, TSV + atomic partition rollbacks | Copy season partitions between Cloud clusters | 344k TPS; finished 4.09B cutover; TSV is the copier; live-reader atomic swap |
 
 ### IA — Agentic
 
 | # | Claim | Why this tech | Rejected |
 |---|---|---|---|
-| A1 | Keep/Drop + Missed Opp + Top Style; 335K+; 88k/<$100; 7 lenses | Mix deterministic KPI math + structured LLM; named pipelines not a chatbot | One giant prompt |
-| A2 | 2.11B fact; air-gap LLM vs DB; RMT two-phase; JSON; fallback | Hallucinated SQL must not write 2.11B rows | LLM-issued CH writes; you authored CDC |
-| A3 | Resilient AI orchestration registry; breakers; checkpoints; LangSmith | Batch LLM must pause/resume and show token cost | Ad-hoc scripts; one APM for agents and HTTP |
-| A4 | Shipped Ask Iris; WebSocket; Supervisor+Evaluator; frozen scopes | Interactive KPI/charts without unfreezing warehouse or looping | Tenant-wide SLA; questions/week |
-| A5 | 300-case / ≥80% CI gate vs 74% baseline | Models must beat a **free** deterministic baseline | “All tenants live at 80%” |
+| A1 | Keep/Drop + Missed Opp + Top Style; 348k article-seasons; 88k/pass; 7 lenses | Mix deterministic KPI math + structured LLM; named pipelines not a chatbot | One giant prompt; 348k = 1.6M catalog |
+| A2 | 2.11B master; JSON payloads not direct DB querying; RMT; timeout → det | Hallucinated SQL must not hit 2.11B rows | LLM-issued CH writes; you authored CDC |
+| A3 | Shared registry; 88k survive provider failure; breakers; checkpoints skip det; config_hash; JSON telemetry | Batch LLM must pause/resume and show USD | Ad-hoc scripts; HITL queues |
+| A4 | Shipped Ask Iris; JWT WebSocket; supervisor; 3-attempt evaluator; LangSmith; handshake freeze | Interactive KPI inspect without tenant bleed or loops | Tenant-wide SLA; questions/week |
+| A5 | 300-case proxy / 80% CI; 73% cost at 100% coverage; 74% det; freeze weights | Models must beat a **free** baseline; cheaper complete model | “All tenants live at 80%”; 73% from the 300-case file |
 | Tech | Go, Gin, Python, FastAPI, LangGraph, CH, BQ, Redis, PG, Datadog, LangSmith, GCP, Docker | Split: Go edge vs Python graph vs CH facts | Kafka/Flink on this line |
 
 ### Uber FRM (via EPAM) — Spring on this PDF
@@ -129,7 +129,7 @@ How to answer any tech: **where → failure mode → rejected alternative → PD
 | G1 | p95 1.2s→300ms; 1500+ clients; PHP→Spring Boot; 700→4000 rpm; mentored 2 | Strangler/canary; async IRP so workers do not pin | Big-bang rewrite |
 | G2 | High-concurrency Kafka+PG quarter shard; 1M+/day; 100K+ idempotent imports; DLQ | See section A.2 | Payments; Go; Flink |
 | G3 | ELK+New Relic; triage −70%; Redis −30% reads; 35%→82% coverage; 98% deploy | Request-ID across API/consumer; cache hot GSTIN | Invented SEV commander title |
-| Tech | Java, Spring Boot, Hibernate, Kafka, PG, Mongo, Redis, ES, Docker, ELK, New Relic, AWS | JVM ATS track | FastAPI on Masters for this PDF |
+| Tech | Java, Spring Boot, Hibernate, Kafka, PG, Mongo, Redis, ES, Docker, ELK, New Relic, AWS | JVM ATS track | FastAPI on **this** PDF |
 
 ### GFG
 

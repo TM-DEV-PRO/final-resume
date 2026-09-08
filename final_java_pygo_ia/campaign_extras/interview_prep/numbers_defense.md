@@ -8,12 +8,12 @@ Interview sheet for `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`. Canonical: `docs/AS
 |---|---|---|
 | 10k peak RPS | PDF / AssortSmart tab | Go/Gin edge; do not invent extra TPS |
 | 189s→12s on 250M (~15.5×) | MEASURED POC | `21_ia_pivot_benchmark_source.md`; PDF rounds 12.3→12 |
-| 1.6M article-seasons · 2.4B weekly rollups | PDF / AssortSmart tab | Catalog after CH migration |
+| 1.6M article-seasons · six ClickHouse rollup tables | PDF / AssortSmart tab | Catalog after CH migration |
 | 100.0% · 1,200+ Go tests | PDF | race/atomic gate |
-| 335K+ · 88k/pass · <$100 · 7 lenses | PDF / AssortSmart tab | Keep/Drop + Missed Opp + Top Style |
+| 348k article-seasons · 88k/pass · <$100 · 7 lenses | PDF / AssortSmart tab | Keep/Drop + Missed Opp + Top Style |
 | 2.11B-row fact · air-gap · RMT | PDF / AssortSmart tab | |
 | Ask Iris shipped | PDF capability | no tenant-wide SLA |
-| 300-case · ≥80% CI gate · 74% baseline | promotion gate | not all tenants live |
+| 300-case · 80% CI gate · 74% baseline | promotion gate | not all tenants live |
 
 | Hindsight / Cluster Copilot numbers | verbal / not on PDF | `projects/01b_hindsight_defense.md` |
 

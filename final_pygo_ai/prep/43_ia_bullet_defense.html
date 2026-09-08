@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>43_ia_bullet_defense — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_pygo_ai/prep/43_ia_bullet_defense.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#ia-bullet-defense-agentic-core-pdf-sep-2026">IA bullet defense — Agentic + Core (PDF Sep 2026)</a>
+<a class="lvl1" href="#section-1-agentic-flows-orchestration">SECTION 1 — Agentic Flows &amp; Orchestration</a>
+<a class="lvl2" href="#a1-multi-pipeline-engine-348k-88kpass-7-lenses">A1 — Multi-pipeline engine · 348k · 88k/pass · 7 lenses</a>
+<a class="lvl2" href="#a2-json-payloads-replacingmergetree-timeout-fallback">A2 — JSON payloads · ReplacingMergeTree · timeout fallback</a>
+<a class="lvl2" href="#a3-registry-timeouts-breakers-checkpoints-config_hash">A3 — Registry · timeouts · breakers · checkpoints · config_hash</a>
+<a class="lvl2" href="#a4-ask-iris-jwt-websocket-3-attempt-evaluator-frozen-handshake">A4 — Ask Iris · JWT WebSocket · 3-attempt evaluator · frozen handshake</a>
+<a class="lvl2" href="#a5-300-case-proxy-80-ci-73-cost-74-det-frozen-weights">A5 — 300-case proxy · 80% CI · 73% cost · 74% det · frozen weights</a>
+<a class="lvl1" href="#section-2-core-infrastructure-pipeline">SECTION 2 — Core Infrastructure &amp; Pipeline</a>
+<a class="lvl2" href="#c1-gogin-10k-peak-rps-wire-h2c-datadog">C1 — Go/Gin 10k peak RPS · Wire · h2c · Datadog</a>
+<a class="lvl2" href="#c2-kpi-configurator-tokenizer-division-by-zero">C2 — KPI configurator · tokenizer · division-by-zero</a>
+<a class="lvl2" href="#c3-isolation-oidc-waterfall-constant-time-keys">C3 — Isolation · OIDC waterfall · constant-time keys</a>
+<a class="lvl2" href="#c4-155-170gb-oom-temporal-chunks-spill-caps">C4 — 15.5× · 170GB OOM · temporal chunks · spill caps</a>
+<a class="lvl2" href="#c5-go-native-tls-pump-344k-rowss-409b-tsv-partition-rollbacks">C5 — Go native-TLS pump · ~344k rows/s · 4.09B · TSV · partition rollbacks</a>
+<a class="lvl1" href="#section-3-screening-answers-that-match-this-pdf">SECTION 3 — Screening answers that match this PDF</a>
+<a class="lvl2" href="#why-should-we-hire-you-l5">Why should we hire you? (L5)</a>
+<a class="lvl2" href="#production-bug-you-resolved-use-the-170gb-oom">Production bug you resolved (use the 170GB OOM)</a>
+<a class="lvl2" href="#complex-system-you-developed-assortsmart-not-cdc">Complex system you developed (AssortSmart, not CDC)</a>
+<a class="lvl2" href="#agentic-pipeline-you-owned-keepdrop-ask-iris-not-document-rag">Agentic pipeline you owned (Keep/Drop + Ask Iris, not document RAG)</a>
+<a class="lvl1" href="#section-4-do-not-import">SECTION 4 — Do not import</a></nav>
+<main><h1 id="ia-bullet-defense-agentic-core-pdf-sep-2026">IA bullet defense — Agentic + Core (PDF Sep 2026)</h1>
+<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_5yr.pdf</code> · Canonical: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a></p>
+<p>This is the interview sheet for <strong>every current IA PDF line</strong>. Answers use your AssortSmart work. They do <strong>not</strong> import Kafka, Flink, CDC, Kubernetes ops, Milvus, sub-second ClickHouse, or a 70% document-RAG pipeline onto IA.</p>
+<div class="callout warn">
+<p><b>Split these numbers.</b> 348k article-seasons = scored Keep/Drop volume on the PDF. 1.6M = catalog (verbal). $100/pass is off PDF. 300-case / 80% = CI gate. 73% cheaper at 100% coverage = gold-200 Luna vs mini, n=200. 74% = production det threshold on that bench. 55 GB / 16 GB / one fiscal week = verbal OOM knobs; PDF says temporal chunks + memory/spill caps. Partition rollback = DROP PARTITION then recopy; not a live reader swap. 4.09B copy was in flight. Gate ≠ all tenants live. Ask Iris = shipped capability, no SLA.</p>
+</div>
+<hr>
+<h1 id="section-1-agentic-flows-orchestration">SECTION 1 — Agentic Flows &amp; Orchestration</h1>
+<h2 id="a1-multi-pipeline-engine-348k-88kpass-7-lenses">A1 — Multi-pipeline engine · 348k · 88k/pass · 7 lenses</h2>
+<p><strong>PDF:</strong> Architected a multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style) evaluating <strong>348k article-seasons</strong>. Optimized inference at scale—processing <strong>88k items per pass</strong>—by blending deterministic KPI math with structured LLM invokes across <strong>7 AI lenses</strong>.</p>
+<p><strong>What:</strong> Distributed batch scoring across three named pipelines. Deterministic Python owns KPI math. The LLM sees packed JSON and returns structured lens scores.</p>
+<p><strong>Why:</strong> LLMs are bad at arithmetic. Hardcoded KPI math stays financially correct; lenses do qualitative pattern work.</p>
+<p><strong>Decisions:</strong> Separate det layer from prompt payloads; strict JSON schemas; 88k batch cap for memory and provider rate limits.</p>
+<p><strong>Q: Why not let the LLM calculate KPIs via Python tools?</strong>
+A: Security, speed, determinism. A scoring agent with a code or SQL tool at 88k items is a latency and injection surface. We pre-compute KPIs and pass JSON. Math accuracy does not depend on the model.</p>
+<p><strong>Q: How did you handle rate limits at 88k?</strong>
+A: Parallel article batches, hard per-batch timeouts, backoff, and a circuit breaker in the orchestration registry. A throttle does not wipe the run; checkpoints resume the LLM phase without recomputing det.</p>
+<p><strong>Do not say:</strong> 348k = 1.6M catalog. $100 is on this PDF (it is off). One giant chatbot.</p>
+<hr>
+<h2 id="a2-json-payloads-replacingmergetree-timeout-fallback">A2 — JSON payloads · ReplacingMergeTree · timeout fallback</h2>
+<p><strong>PDF:</strong> Decoupled AI inference from a <strong>2.11B-row</strong> ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via <code>ReplacingMergeTree</code> that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.</p>
+<p><strong>What:</strong> Scoring LLMs do not query the 2.11B master. Context is packed JSON. Writes go through engine <code>insert</code> onto ReplacingMergeTree. Timeout → det score, run continues.</p>
+<p><strong>Why:</strong> Direct SQL from an LLM against a production analytical table is runaway queries, pool exhaustion, and prompt-injection risk.</p>
+<p><strong>Decisions:</strong> No DB tool on the scoring path (<code>db_safety.md</code>). Async batch mapper. RMT version column so retries do not duplicate articles. Keep/Drop default still CSV-first; CH publish is a separate ops step.</p>
+<p><strong>Q: Why ReplacingMergeTree instead of MergeTree?</strong>
+A: Retries and overlapping waves can land twice. RMT keeps the latest version per key in the background. We read with <code>argMax</code> / <code>LIMIT 1 BY</code>, not <code>OPTIMIZE FINAL</code> as a runtime requirement.</p>
+<p><strong>Q: What happens on LLM timeout?</strong>
+A: Hard timeout on the in-flight batch. Exception → mark fallback → write the precomputed deterministic score. The pipeline does not block the rest of the 88k on one vendor 504.</p>
+<p><strong>Do not say:</strong> “Physical air-gap” as the PDF phrase (old wording). “Zero corruption” as a 2PC guarantee. LLM issues CH writes. You authored CDC.</p>
+<p><strong>If they say “so the LLM still queries CH, just async?”</strong> Correct them: async is the batch executor. The model never gets a SQL tool. JSON in, engine writes out.</p>
+<hr>
+<h2 id="a3-registry-timeouts-breakers-checkpoints-config_hash">A3 — Registry · timeouts · breakers · checkpoints · config_hash</h2>
+<p><strong>PDF:</strong> Engineered a <strong>shared orchestration registry</strong> to guarantee <strong>88k-article</strong> batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.</p>
+<p><strong>What:</strong> One harness across Keep/Drop, Missed Opp, Top Style: freeze config, claim ledger, timed LLM batches, circuit, resume files, telemetry JSON.</p>
+<p><strong>Why:</strong> Provider 502/504 midway through 88k must not force a full det recompute.</p>
+<p><strong>Decisions:</strong> <code>--resume</code> checkpoints (<code>det.json</code>, <code>agent_progress.json</code>). Circuit trips after consecutive / fail-fraction thresholds (default ~5). <code>config_hash</code> is SHA-256 of frozen guardrails + params + prompts + catalog.</p>
+<p><strong>Q: How do checkpoints work?</strong>
+A: Det results land first. As LLM chunks complete we append per-article progress. Restart reloads det, skips finished articles, continues the LLM map. That is “bypass redundant deterministic scoring.”</p>
+<p><strong>Q: Why not Airflow / Temporal?</strong>
+A: This workload needed application-native resume tightly coupled to CH inserts, config hashing, and per-run token/USD JSON. A heavy external orchestrator was extra infra for a batch CLI + HTTP start path we already owned.</p>
+<p><strong>Do not say:</strong> HITL validation queues (not in this repo). LangSmith on this bullet (LangSmith is Ask Iris on this PDF). Netflix Hystrix as the product.</p>
+<hr>
+<h2 id="a4-ask-iris-jwt-websocket-3-attempt-evaluator-frozen-handshake">A4 — Ask Iris · JWT WebSocket · 3-attempt evaluator · frozen handshake</h2>
+<p><strong>PDF:</strong> Shipped “Ask Iris,” a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a <strong>LangGraph</strong> supervisor with a <strong>3-attempt</strong> evaluator loop, utilizing <strong>LangSmith</strong> for observability, and strictly freezing hierarchy access on the initial socket handshake.</p>
+<p><strong>What:</strong> FastAPI WebSocket chat. JWT on handshake (<code>Authorization: Bearer</code> or <code>?token=</code>). <code>plan_scope</code> frozen once. Supervisor routes workers; evaluator retries up to <code>MAX_ATTEMPTS = 3</code>; LangSmith traces.</p>
+<p><strong>Why:</strong> Chat is a tenant-bleed and token-loop surface if scope can change mid-session.</p>
+<p><strong>Q: How do you prevent multi-tenant leaks?</strong>
+A: Tenant / hierarchy / plan scope bind at JWT handshake. Tool calls inherit that frozen <code>plan_scope</code>. A later chat message cannot pivot into another tenant’s hierarchy.</p>
+<p><strong>Q: How do you stop infinite LangGraph loops?</strong>
+A: Evaluator loop is capped at 3 attempts. Recursion limit on the supervisor graph. Fail closed with a graceful response rather than another tool hop.</p>
+<p><strong>Do not say:</strong> Tenant-wide SLA, questions/week, “generate dynamic charts” as a PDF claim (dropped). HITL review queue.</p>
+<hr>
+<h2 id="a5-300-case-proxy-80-ci-73-cost-74-det-frozen-weights">A5 — 300-case proxy · 80% CI · 73% cost · 74% det · frozen weights</h2>
+<p><strong>PDF:</strong> Built a <strong>300-case</strong> proxy evaluation harness and an <strong>80%</strong> accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by <strong>73%</strong> at <strong>100% coverage</strong> by benchmarking models against a <strong>74%</strong> deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.</p>
+<p><strong>Split (say this unprompted if they fuse the numbers):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Source</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>300-case / 80%</td>
+<td><code>eval.json</code> <code>gold_min_accuracy: 0.8</code>, <code>cases.json</code></td>
+<td>CI <strong>promotion gate</strong></td>
+</tr>
+<tr>
+<td>73% cheaper, 100% coverage</td>
+<td>gold-200 bench, Luna vs <code>gpt-5.4-mini</code>, 200/200 complete</td>
+<td>Model pick for live scoring</td>
+</tr>
+<tr>
+<td>74%</td>
+<td>production det threshold 0.65 on that 200-set</td>
+<td>Free rule the LLM must beat</td>
+</tr>
+<tr>
+<td>Frozen blend weights</td>
+<td>same bench: blended LLM ~63% &lt; det 74%</td>
+<td>Do not retune 0.4/0.6 from a small proxy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Q: What did you do when the LLM scored below det?</strong>
+A: Held blend weights frozen. We do not ship a “smarter” model that loses to a free rule on the proxy set. Promotion still requires the 80% CI gate on the 300-case file.</p>
+<p><strong>Q: How did you choose Luna?</strong>
+A: Gold-200: Luna 200/200 complete, 73% cheaper than mini, 100% lens coverage. Nano was slightly cheaper but returned pending rows. Completion reliability won. <strong>Do not</strong> say the 300-case suite measured 73%.</p>
+<p><strong>Do not say:</strong> All tenants live at 80%. gpt-5.6-luna is printed on the PDF (it is not). 73% came from the 300-case file.</p>
+<hr>
+<h1 id="section-2-core-infrastructure-pipeline">SECTION 2 — Core Infrastructure &amp; Pipeline</h1>
+<h2 id="c1-gogin-10k-peak-rps-wire-h2c-datadog">C1 — Go/Gin 10k peak RPS · Wire · h2c · Datadog</h2>
+<p><strong>PDF:</strong> Architected a multi-tenant <strong>Go/Gin</strong> platform scaling to <strong>10k peak RPS</strong>, utilizing <strong>Google Wire</strong> for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native <strong>h2c</strong>, nested timeouts, and <strong>Datadog</strong> distributed tracing.</p>
+<p><strong>Q: Why Wire over Fx / Dig?</strong>
+A: Compile-time. Wire generates Go. Wiring errors fail the build, not a request path. Zero reflection at runtime.</p>
+<p><strong>Q: Why no reverse proxy?</strong>
+A: The process owns h2c, nested context timeouts, and traces. One less hop and one less ops surface. I do not invent a 99.9% SLA.</p>
+<p><strong>Do not say:</strong> Nginx/Envoy as the timeout story. K8s cluster operations.</p>
+<hr>
+<h2 id="c2-kpi-configurator-tokenizer-division-by-zero">C2 — KPI configurator · tokenizer · division-by-zero</h2>
+<p><strong>PDF:</strong> Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into parameterized ClickHouse SQL fragments with native division-by-zero protection, decoupling business logic from code releases.</p>
+<p><strong>What actually ships:</strong> Go tokenizer + parser, allowlisted functions, logical names mapped to physical columns, SELECT wrapped with <code>ifNotFinite(toFloat64(&lt;expr&gt;), 0)</code>.</p>
+<p><strong>Q: SQL injection?</strong>
+A: We do not concatenate raw operator SQL. Tokens must parse; functions are allowlisted; identifiers resolve through the catalog. Unknown tokens fail closed.</p>
+<p><strong>Q: Division by zero?</strong>
+A: Compilation wraps the expression in <code>ifNotFinite(..., 0)</code> so Inf/NaN never poison planner JSON. That is the “native division-by-zero protection” on the PDF.</p>
+<p><strong>Do not say:</strong> Operators can paste arbitrary SQL. Prepared-statement bind of free-form SQL if they press implementation — the guard is parse + allowlist + <code>ifNotFinite</code>, not a generic JDBC prepared statement.</p>
+<hr>
+<h2 id="c3-isolation-oidc-waterfall-constant-time-keys">C3 — Isolation · OIDC waterfall · constant-time keys</h2>
+<p><strong>PDF:</strong> Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.</p>
+<p><strong>Q: Constant-time API keys?</strong>
+A: Normal <code>==</code> short-circuits. Timing leaks let an attacker probe the key. Constant-time compare keeps cost identical on mismatch.</p>
+<p><strong>Q: Auth latency?</strong>
+A: Redis fronts verified tokens so we are not hitting Firebase/OIDC on every API. Miss falls through to Postgres — it does not degrade open.</p>
+<p><strong>Do not say:</strong> Encryption product. Privacy program. Milvus. Sub-millisecond as a published SLA unless they only want the cache-hit anecdote — keep it qualitative (“Redis-fronted”).</p>
+<hr>
+<h2 id="c4-155-170gb-oom-temporal-chunks-spill-caps">C4 — 15.5× · 170GB OOM · temporal chunks · spill caps</h2>
+<p><strong>PDF:</strong> Reduced planner pivot latency by <strong>15.5×</strong> (<strong>189s to 12s</strong> on <strong>250M-row</strong> operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented <strong>170GB</strong> OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
+<p><strong>Split:</strong> 15.5× is <strong>request-time</strong> pivot on 250M. 170GB is <strong>write-time</strong> whole-season weekly <code>GROUP BY</code>. They are not cause and effect.</p>
+<p><strong>Verbal knobs (off PDF, true):</strong> unit of work = one fiscal week; <strong>55 GB</strong> memory cap; <strong>16 GB</strong> spill; attr week &gt;40 GB; product week ~11 GB.</p>
+<p><strong>Q: Why did it OOM?</strong>
+A: ClickHouse holds aggregation state in RAM. A whole-season weekly GROUP BY pushed ~170 GB. We sliced to one fiscal week and enabled external GROUP BY spill.</p>
+<p><strong>Q: Rollup shape?</strong>
+A: Six MergeTree tables, <code>PARTITION BY season_code</code>: product/store/attr × season and weekly. Planners read rollups, not raw daily facts.</p>
+<p><strong>Do not say:</strong> Sub-second pivots. OOM fix caused 15.5×. 4.09B is this bullet.</p>
+<hr>
+<h2 id="c5-go-native-tls-pump-344k-rowss-409b-tsv-partition-rollbacks">C5 — Go native-TLS pump · ~344k rows/s · 4.09B · TSV · partition rollbacks</h2>
+<p><strong>PDF:</strong> Migrated ClickHouse rollups across Cloud clusters at <strong>~344k rows/s</strong> by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to <strong>4.09B</strong> rows using <strong>500k-row</strong> double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
+<p><strong>Q: Why not <code>remoteSecure</code> / distributed tables?</strong>
+A: Cross-cluster IP allowlists blocked it. A laptop Go pump on native TLS (9440) was the workaround. PDF says allowlist, not the protocol name.</p>
+<p><strong>Q: Ghost rows / TSV / rollback?</strong>
+A: A failed INSERT can still commit blocks. <code>count() &gt; 0</code> is a lie. Loader TSV stamps successful chunks. Copier uses <code>.done</code> files per table. Restart issues <code>DROP PARTITION</code> for that season and recopies. That is the PDF “atomic partition rollback.” It is <strong>not</strong> an atomic swap with live readers.</p>
+<p><strong>Q: 344k — is that HTTP RPS?</strong>
+A: No. Combined native-protocol ingest of two season streams (~150–190k each), 500k columnar batches, double-buffer (read next while <code>Send()</code> previous). Not REST.</p>
+<p><strong>Do not say:</strong> Finished 4.09B cutover. 344k TPS. Open-sourced the copier. TSV is the copier ledger.</p>
+<p>Full whiteboard: <a href="42_clickhouse_rollup_migration.html"><code>42_clickhouse_rollup_migration.md</code></a>.</p>
+<hr>
+<h1 id="section-3-screening-answers-that-match-this-pdf">SECTION 3 — Screening answers that match this PDF</h1>
+<p>Use these instead of generic L5 drafts that put Kafka/Flink/CDC/K8s/Milvus on AssortSmart.</p>
+<h2 id="why-should-we-hire-you-l5">Why should we hire you? (L5)</h2>
+<p>You should hire me because I own systems through design, failure, and measurement — classical backends and production AI.</p>
+<p>At Uber via EPAM I owned FRM scoping (36 Spring Boot endpoints, 19M GL rows, L1–L4, SHA-256 keys) and cut recon 70% from 14 days to 3 against $340M, leading 3 engineers. On Uber Eats I owned menu ingestion — Selenium, Kafka, Flink, exactly-once catalog upserts — 24 hours to 2, $600K/yr, plus Gemini/Milvus RAG at 98% offline fidelity.</p>
+<p>At Impact Analytics I own AssortSmart in two PDF chapters. Agentic: Keep/Drop + Missed Opp + Top Style on 348k article-seasons, 88k/pass, 7 lenses, JSON payloads off a 2.11B ClickHouse master, Ask Iris as a JWT WebSocket with a 3-attempt LangGraph evaluator, 300-case / 80% CI gate, 73% cheaper model at 100% coverage vs a 74% det baseline with frozen weights. Core: Go/Gin 10k peak RPS, KPI tokenizer with <code>ifNotFinite</code>, 15.5× pivots (189s to 12s on 250M), 170GB OOM fixed by temporal chunks and spill caps, Go native-TLS pump ~344k rows/s on partitions up to 4.09B.</p>
+<p>If you need someone who can independently design, debug, and refuse a bad agent with a gate, that is the work I already do.</p>
+<p><strong>Do not</strong> say Kubernetes as IA production, Kafka on IA, or “sub-second ClickHouse.”</p>
+<h2 id="production-bug-you-resolved-use-the-170gb-oom">Production bug you resolved (use the 170GB OOM)</h2>
+<p><strong>Context:</strong> Weekly ClickHouse rollups for planner pivots.</p>
+<p><strong>Crisis:</strong> Whole-season weekly <code>INSERT SELECT</code> built ~170 GB aggregator state and hit <code>MEMORY_LIMIT_EXCEEDED</code> (failed even at 80 GB and 200 GB caps).</p>
+<p><strong>Investigation:</strong> Profiled grain. Product week ~11 GB. Attr week &gt;40 GB. The atomic unit was too big.</p>
+<p><strong>Fix:</strong> One fiscal week per INSERT, 55 GB cap, 16 GB spill, bounded in-flight weeks.</p>
+<p><strong>Prevention:</strong> Spill settings in generated SQL; do not GROUP BY a whole season for weekly grain.</p>
+<p><strong>Alternate (Masters, people/process):</strong> IRP timeout canary — too-aggressive timeouts on government calls; moved async + idempotency. Do <strong>not</strong> lead with a FastAPI/Kafka heap-leak packet story as if it were an IA PDF bullet.</p>
+<h2 id="complex-system-you-developed-assortsmart-not-cdc">Complex system you developed (AssortSmart, not CDC)</h2>
+<p><strong>Problem:</strong> Planner pivots on PostgreSQL were too slow (250M harness ~189s). Agents could not be allowed to SQL a 2.11B fact table.</p>
+<p><strong>Architecture:</strong> Go/Gin edge (Wire, h2c, Datadog) → Postgres UAM + Redis-fronted OIDC → ClickHouse six rollup tables for reads → Python batch agents on JSON payloads → Ask Iris WebSocket with frozen plan scope.</p>
+<p><strong>Hard part:</strong> Weekly grain OOM + cluster copy blocked by allowlists. Temporal INSERT chunks + Go native-TLS pump, not Kafka CDC.</p>
+<p><strong>Result:</strong> 15.5× on 250M; Keep/Drop 348k article-seasons; Ask Iris shipped; 80% CI gate.</p>
+<p><strong>Do not</strong> draw Kafka → Flink → ClickHouse for IA. That picture is <strong>Uber Menu</strong>.</p>
+<h2 id="agentic-pipeline-you-owned-keepdrop-ask-iris-not-document-rag">Agentic pipeline you owned (Keep/Drop + Ask Iris, not document RAG)</h2>
+<p><strong>Business:</strong> Merchandise Keep/Drop / Missed Opp / Top Style.</p>
+<p><strong>Stack:</strong> Python batch + LangGraph Ask Iris. Not Milvus. Milvus is Menu.</p>
+<p><strong>Loop:</strong> Det KPI JSON → 7 structured lenses → blend → RMT insert or CSV bake. Failures: timeout → det fallback; circuit; checkpoint resume.</p>
+<p><strong>Interactive path:</strong> JWT WS → frozen hierarchy → supervisor → 3-attempt evaluator → LangSmith.</p>
+<p><strong>Guardrails:</strong> 300-case proxy, 80% CI, freeze weights if LLM loses to 74% det.</p>
+<p><strong>Do not</strong> tell a 70% invoice-extraction RAG story as this IA bullet. Menu RAG is a <strong>different</strong> PDF chapter.</p>
+<hr>
+<h1 id="section-4-do-not-import">SECTION 4 — Do not import</h1>
+<table>
+<thead>
+<tr>
+<th>Draft idea</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IA architecture = Kafka + Flink + CDC + K8s</td>
+<td><strong>No.</strong> Menu owns Kafka/Flink. CDC author is Ashvin. K8s = skills literacy</td>
+</tr>
+<tr>
+<td>Sub-second CH dashboards</td>
+<td><strong>No.</strong> PDF is 189s → 12s</td>
+</tr>
+<tr>
+<td>HITL queues / human review of low-confidence scores</td>
+<td><strong>No.</strong> Offline evals replaced critic/evaluator agents</td>
+</tr>
+<tr>
+<td>Open-source the copier</td>
+<td><strong>No.</strong> Whiteboard it</td>
+</tr>
+<tr>
+<td>“I stream 4.09B at 344k” as a finished job</td>
+<td><strong>No.</strong> Measured in flight</td>
+</tr>
+<tr>
+<td>70% document extraction as AssortSmart</td>
+<td><strong>No.</strong></td>
+</tr>
+<tr>
+<td>FastAPI Kafka memory leak as the IA outage STAR</td>
+<td><strong>No.</strong> Use 170GB OOM or Masters IRP</td>
+</tr>
+</tbody>
+</table></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

@@ -47,16 +47,16 @@ strong{color:#fff}
 <a class="lvl2" href="#4-mock-notes">4. Mock notes</a>
 <a class="lvl2" href="#5-do-not-say">5. Do NOT say</a></nav>
 <main><blockquote>
-<p><strong>PDF sync (Sep 2026):</strong> AssortSmart has TWO PDF subsections — Platform Engineering &amp; Infrastructure, and Agentic Flows &amp; Orchestration. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>. <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/3 gates · 63/8 DDL · line-plan 12B. Hindsight defense: <code>01b_hindsight_defense.md</code>.</p>
+<p><strong>PDF sync (Sep 2026):</strong> AssortSmart has TWO PDF subsections — Core Infrastructure &amp; Pipeline, and Agentic Flows &amp; Orchestration. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>. <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/3 gates · 63/8 DDL · line-plan 12B. Hindsight defense: <code>01b_hindsight_defense.md</code>.</p>
 </blockquote>
 <h1 id="impact-analytics-interview-pack">Impact Analytics — Interview Pack</h1>
 <p><strong>Role:</strong> Senior Software Engineer · Impact Analytics, Bangalore · May 2026 – Present (IC)
 <strong>Product:</strong> AssortSmart — retail merchandise planning (Platform &amp; AI)
-<strong>Honesty:</strong> 300-case / ≥80% = promotion gate. Ask Iris = shipped capability. 10k RPS / 2.11B / 2.4B / $100 = on PDF. No IA Kafka/Flink/K8s-ops ownership.</p>
+<strong>Honesty:</strong> 300-case / 80% = promotion gate. Ask Iris = shipped capability. 10k RPS / 2.11B / 2.4B / $100 = on PDF. No IA Kafka/Flink/K8s-ops ownership.</p>
 <hr>
 <h2 id="1-30s-2min-project-explain">1. 30s / 2min project explain</h2>
 <h3 id="30-seconds-pdf-first">30 seconds (PDF first)</h3>
-<p>AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with 1.6M article-seasons and 2.4B weekly rollups, KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 335K+ products, 88k items/pass under $100, 7 lenses; air-gapped LLM vs a 2.11B-row fact table; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / ≥80% CI promotion gate vs 74% deterministic baseline.</p>
+<p>AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with six ClickHouse rollup tables (product, store, attr at season and weekly grains), KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 348k article-seasons, 88k items/pass, 7 lenses; JSON payloads vs a 2.11B-row ClickHouse master; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / 80% CI promotion gate vs 74% deterministic baseline.</p>
 <h3 id="2-minutes-architecture-evidence">2 minutes (architecture + evidence)</h3>
 <pre><code>Planner UI / Ask Iris WebSocket
         │
@@ -66,11 +66,11 @@ Go/Gin HTTP edge (Wire DI, h2c, 10k peak RPS, Datadog tracing)
 Redis  Postgres      ClickHouse                 Python agent plane
 auth   roles/UAM     2.11B fact, 2.4B rollups   Keep/Drop + Missed Opp + Top Style
 cache                ReplacingMergeTree         7 lenses, 88k/pass &lt;$100
-                     ifNotFinite KPI SQL        air-gap LLM vs DB
+                     ifNotFinite KPI SQL        JSON payloads vs CH master
                                                 registry / breakers / checkpoints
                                                 LangSmith + JSON telemetry
                                                 Ask Iris Supervisor+Evaluator
-                                                300-case / ≥80% gate vs 74% baseline
+                                                300-case / 80% gate vs 74% baseline
 </code></pre>
 <p><strong>Evidence:</strong> pivot POC 250M <strong>189s → 12s</strong> (~15.5×, MEASURED). Catalog/fact numbers are <strong>PDF / AssortSmart tab</strong>.</p>
 <p><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot (days → under 1h TARGET, 8.5% baseline, 14 tools, 3 gates) and Hindsight.</p>
@@ -112,7 +112,7 @@ cache                ReplacingMergeTree         7 lenses, 88k/pass &lt;$100
 <td>Tenant-wide Ask Iris SLA</td>
 </tr>
 <tr>
-<td>300-case / ≥80% CI gate vs 74% baseline</td>
+<td>300-case / 80% CI gate vs 74% baseline</td>
 <td>Promotion requires beating a free deterministic rule, not vibes</td>
 <td>Gate can fail models (that is the point)</td>
 <td>“We hit 80% in production for all tenants”</td>

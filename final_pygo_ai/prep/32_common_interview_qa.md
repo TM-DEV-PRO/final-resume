@@ -10,21 +10,21 @@ HTML: [`32_common_interview_qa.html`](32_common_interview_qa.html) · Hub: [`App
 **1. Tell me about yourself.**
 
 **Answer:**  
-I am a Senior Software Engineer with about 5 years building backend and data platforms in Python and Go. I have worked across Impact Analytics, Uber via EPAM, Masters India, and GeeksforGeeks. At Uber I owned the FRM Risk Scoping backend (FastAPI, MySQL — 30+ APIs powering 8 screens) at $340M group materiality, and I worked on Uber Eats menu automation that cut onboarding from 24 hours to 2 hours and saved $600K+ a year on 30K+ menus a month. At Masters India I migrated a PHP Laravel GST platform to FastAPI microservices for 1,500+ clients, cutting p95 from 1.2s to 300ms, and scaled bulk e-invoicing on Kafka to 1M+ government submissions a day. Now at Impact Analytics I am building AssortSmart’s planner copilot with LangGraph, MCP, and ClickHouse — say building, not fully shipped. I care about honest metrics, clear design tradeoffs, and owning systems end to end.
+I am a Senior Software Engineer with about 5 years building backend and data platforms in Python and Go. I have worked across Impact Analytics, Uber via EPAM, Masters India, and GeeksforGeeks. At Uber I owned the FRM Risk Scoping backend (FastAPI, MySQL — 36 endpoints) at $340M group materiality, and Uber Eats menu automation that cut onboarding from 24 hours to 2 hours and saved $600K+ a year. At Masters India I migrated a PHP GST platform to FastAPI microservices for 1,500+ clients, cutting p95 from 1.2s to 300ms, and scaled bulk e-invoicing on Kafka to 1M+ government submissions a day. Now at Impact Analytics I own AssortSmart: a Go/Gin platform at 10k peak RPS, ClickHouse 189s to 12s, and an agentic Keep/Drop engine on 348k article-seasons plus shipped Ask Iris (JWT WebSocket, LangGraph, 3-attempt evaluator). I care about honest metrics, clear design tradeoffs, and owning systems end to end.
 
 ---
 
 **2. Why should we hire you?**
 
 **Answer:**  
-I bring architecture ownership, production discipline, and mentorship — not only ticket delivery. With my background in distributed backends and event-driven systems, I have successfully owned Uber Finance FRM design while leading 3 engineers, cut Uber Eats menu ops cost by $600K+ a year, and scaled Masters India IRP traffic from 700 to 4,000 requests/min with Kafka while mentoring 2 engineers. I am skilled in Python, FastAPI, Go, Kafka, and agentic systems (LangGraph/MCP), and adaptable across product domains from GST compliance to retail planning. My ability to defend every resume number with MEASURED vs TARGET honesty lets me drive results without overclaiming. I am committed to adding value to your team and aligning with how you ship reliable systems at scale.
+I bring architecture ownership, production discipline, and mentorship — not only ticket delivery. I owned Uber Finance FRM design while leading 3 engineers, cut Uber Eats menu ops cost by $600K+ a year, and scaled Masters India IRP traffic from 700 to 4,000 requests/min with Kafka while mentoring 2. At Impact Analytics I own AssortSmart's Go/Gin edge at 10k peak RPS, ClickHouse 15.5× pivots, Keep/Drop on 348k article-seasons, and shipped Ask Iris behind an 80% CI gate. I defend every resume number with MEASURED vs gate vs historical honesty. Kafka and Flink on my profile are Uber Menu, not AssortSmart.
 
 ---
 
 **3. What is your greatest strength?**
 
 **Answer:**  
-My greatest strength is turning messy production constraints into clear system designs and shipping them safely. I thrive when correctness, latency, and ownership collide. For example, at Uber Finance we still ran quarterly FRM scoping on Google Sheets with no durable line IDs or audit trail. I designed a layered FastAPI + MySQL backend, owned the Sheets→MySQL recon v2 migration across 18 files with L1→L2→L3 APIs and HFM vs 10-Q checks, and encoded materiality/residual/5% threshold logic across ~55×14 for PwC-facing work. That helped Finance move from a fragile workbook close toward a system of record targeting a large cut in manual reconciliation. It shows I can handle pressure and think in both product and engineering terms.
+My greatest strength is turning messy production constraints into clear system designs and shipping them safely. I thrive when correctness, latency, and ownership collide. For example, at Uber Finance we still ran quarterly FRM scoping on Google Sheets with no durable line IDs or audit trail. I designed a layered Spring Boot + MySQL backend, owned the Sheets→MySQL recon v2 migration across 18 files with L1→L2→L3 APIs and HFM vs 10-Q checks, and encoded materiality/residual/5% threshold logic across ~55×14 for PwC-facing work. That helped Finance move from a fragile workbook close toward a system of record targeting a large cut in manual reconciliation. It shows I can handle pressure and think in both product and engineering terms.
 
 ---
 

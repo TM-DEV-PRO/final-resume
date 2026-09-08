@@ -15,17 +15,17 @@ Cluster Copilot / 14 tools / 8.5% = **verbal / interview depth**, not PDF bullet
 ### Full answer
 
 ```
-At Impact Analytics I own AssortSmart's agentic merchandise engine and the Ask Iris copilot. Orchestration is LangGraph (not LlamaIndex or ADK). Keep/Drop, Missed Opportunities, and Top Style evaluate 335K+ products — 88k items per pass under $100 — by blending deterministic KPI math with structured LLM invokes across 7 lenses. Batch LLM execution is physically air-gapped from a 2.11B-row ClickHouse fact table: models see JSON, writes go through ReplacingMergeTree two-phase inserts, and we fall back to deterministic scores on LLM failure. An orchestration registry provides circuit breakers, durable checkpoints, LangSmith, and per-run JSON telemetry for token cost, step duration, and fallbacks.
+At Impact Analytics I own AssortSmart's agentic merchandise engine and the Ask Iris copilot. Orchestration is LangGraph (not LlamaIndex or ADK). Keep/Drop, Missed Opportunities, and Top Style evaluate 348k article-seasons — 88k items per pass — by blending deterministic KPI math with structured LLM invokes across 7 lenses. Models see JSON, not SQL, against a 2.11B-row ClickHouse master; writes go through ReplacingMergeTree with timeout fallback to det scores. An orchestration registry provides circuit breakers, durable checkpoints, config_hash, and JSON telemetry for tokens, USD, step duration, and fallbacks.
 
 Ask Iris is a shipped WebSocket copilot. A LangGraph Supervisor routes planner questions; an Evaluator loop plus socket-level frozen scopes stop infinite LLM loops and cross-tenant reads. Planners query multi-billion-row KPIs, generate charts, and drill into AI decisions without unfreezing the warehouse.
 
-Reliability is a gate, not a slogan: a 300-case offline harness and a ≥80% accuracy CI promotion bar versus a 74% deterministic baseline. I describe that as how we refuse a bad agent, not as “every tenant already runs the promoted graph.” The HTTP edge in front of this is Go/Gin at 10k peak RPS with Datadog traces; I do not claim Kubernetes cluster operations or Flink on this product (Kafka+Flink are Uber Eats menu).
+Reliability is a gate, not a slogan: a 300-case offline harness and an 80% accuracy CI promotion bar versus a 74% deterministic baseline. I describe that as how we refuse a bad agent, not as “every tenant already runs the promoted graph.” The HTTP edge in front of this is Go/Gin at 10k peak RPS with Datadog traces; I do not claim Kubernetes cluster operations or Flink on this product (Kafka+Flink are Uber Eats menu).
 ```
 
 ### Short answer
 
 ```
-AssortSmart uses LangGraph for Keep/Drop (7 lenses, 88k/pass under $100, air-gapped from a 2.11B-row fact table) and for Ask Iris (Supervisor + Evaluator, frozen WebSocket scopes). Promotions require a 300-case offline eval and a ≥80% CI gate against a 74% deterministic baseline. That gate is not all-tenant GA. Platform APIs are Go/Gin.
+AssortSmart uses LangGraph for Keep/Drop (7 lenses, 88k/pass, air-gapped from a 2.11B-row fact table) and for Ask Iris (Supervisor + Evaluator, frozen WebSocket scopes). Promotions require a 300-case offline eval and a 80% CI gate against a 74% deterministic baseline. That gate is not all-tenant GA. Platform APIs are Go/Gin.
 ```
 
 ### Bullet checklist
@@ -35,7 +35,7 @@ AssortSmart uses LangGraph for Keep/Drop (7 lenses, 88k/pass under $100, air-gap
 • Product: AssortSmart Keep/Drop + Ask Iris
 • Data: air-gapped LLM vs 2.11B CH fact; RMT two-phase
 • Monitoring: LangSmith + per-run JSON + Datadog on the Go edge
-• Reliability: 300-case / ≥80% CI promotion gate vs 74% baseline
+• Reliability: 300-case / 80% CI promotion gate vs 74% baseline
 • Status: Ask Iris shipped capability; gate ≠ all tenants live
 ```
 

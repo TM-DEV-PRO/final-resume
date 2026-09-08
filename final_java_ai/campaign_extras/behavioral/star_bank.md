@@ -1,6 +1,6 @@
 # Behavioral / managerial rounds — STAR stories (Final Java + AI)
 
-> **PDF IA (Sep 2026):** TWO subsections — Platform Engineering & Infrastructure + Agentic Flows & Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / ≥80% gate). **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
+> **PDF IA (Sep 2026):** TWO subsections — Core Infrastructure & Pipeline + Agentic Flows & Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / 80% gate). **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Pipeline: `docs/assort_kd_flow/PIPELINE.md`. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
 > Stack-correct wording: [`../../prep/07_behavioral_star_stories.md`](../../prep/07_behavioral_star_stories.md). On this track Uber FRM and Masters India are **Spring Boot**; AssortSmart platform APIs on the PDF are still **Go / Gin** (identical IA bullets across tracks); the agent plane stays **Python**. Do **not** claim Spring Boot write APIs at IA — that framing is obsolete.
 

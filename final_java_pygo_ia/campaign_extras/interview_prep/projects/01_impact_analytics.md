@@ -1,10 +1,10 @@
-> **PDF sync (Sep 2026):** AssortSmart has TWO PDF subsections — Platform Engineering & Infrastructure, and Agentic Flows & Orchestration. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/3 gates · 63/8 DDL · line-plan 12B. Hindsight defense: `01b_hindsight_defense.md`.
+> **PDF sync (Sep 2026):** AssortSmart has TWO PDF subsections — Core Infrastructure & Pipeline, and Agentic Flows & Orchestration. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/3 gates · 63/8 DDL · line-plan 12B. Hindsight defense: `01b_hindsight_defense.md`.
 
 # Impact Analytics — Interview Pack
 
 **Role:** Senior Software Engineer · Impact Analytics, Bangalore · May 2026 – Present (IC)
 **Product:** AssortSmart — retail merchandise planning (Platform & AI)
-**Honesty:** 300-case / ≥80% = promotion gate. Ask Iris = shipped capability. 10k RPS / 2.11B / 2.4B / $100 = on PDF. No IA Kafka/Flink/K8s-ops ownership.
+**Honesty:** 300-case / 80% = promotion gate. Ask Iris = shipped capability. 10k RPS / 2.11B / 2.4B / $100 = on PDF. No IA Kafka/Flink/K8s-ops ownership.
 
 ---
 
@@ -12,7 +12,7 @@
 
 ### 30 seconds (PDF first)
 
-AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with 1.6M article-seasons and 2.4B weekly rollups, KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 335K+ products, 88k items/pass under $100, 7 lenses; air-gapped LLM vs a 2.11B-row fact table; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / ≥80% CI promotion gate vs 74% deterministic baseline.
+AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with six ClickHouse rollup tables (product, store, attr at season and weekly grains), KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 348k article-seasons, 88k items/pass, 7 lenses; JSON payloads vs a 2.11B-row ClickHouse master; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / 80% CI promotion gate vs 74% deterministic baseline.
 
 ### 2 minutes (architecture + evidence)
 
@@ -25,11 +25,11 @@ Go/Gin HTTP edge (Wire DI, h2c, 10k peak RPS, Datadog tracing)
 Redis  Postgres      ClickHouse                 Python agent plane
 auth   roles/UAM     2.11B fact, 2.4B rollups   Keep/Drop + Missed Opp + Top Style
 cache                ReplacingMergeTree         7 lenses, 88k/pass <$100
-                     ifNotFinite KPI SQL        air-gap LLM vs DB
+                     ifNotFinite KPI SQL        JSON payloads vs CH master
                                                 registry / breakers / checkpoints
                                                 LangSmith + JSON telemetry
                                                 Ask Iris Supervisor+Evaluator
-                                                300-case / ≥80% gate vs 74% baseline
+                                                300-case / 80% gate vs 74% baseline
 ```
 
 **Evidence:** pivot POC 250M **189s → 12s** (~15.5×, MEASURED). Catalog/fact numbers are **PDF / AssortSmart tab**.
@@ -48,7 +48,7 @@ cache                ReplacingMergeTree         7 lenses, 88k/pass <$100
 | ClickHouse vs Postgres vs Snowflake | Columnar + SIMD for planner pivots; self-hosted latency vs Snowflake/BQ slot variance and cost | CH is weak at keyed UPDATEs — insert-only / RMT, not OLTP cells | “I chose Snowflake” / “CH replaces PG for edits” |
 | Air-gap LLM vs 2.11B fact | Hallucinated SQL must never write the warehouse; JSON payloads in, two-phase RMT out | Extra hop; fallback to deterministic scores when LLM fails | Agents have a SQL shell |
 | LangGraph Supervisor+Evaluator on Ask Iris | Frozen socket scopes + eval loop stop infinite LLM loops and tenant bleed | Framework surface | Tenant-wide Ask Iris SLA |
-| 300-case / ≥80% CI gate vs 74% baseline | Promotion requires beating a free deterministic rule, not vibes | Gate can fail models (that is the point) | “We hit 80% in production for all tenants” |
+| 300-case / 80% CI gate vs 74% baseline | Promotion requires beating a free deterministic rule, not vibes | Gate can fail models (that is the point) | “We hit 80% in production for all tenants” |
 | Kafka/Flink | **Menu**, not IA | — | Flink/CDC/K8s-ops on AssortSmart |
 
 Packet CH vs PG vs Snowflake one-liner: Postgres is row-store OLTP — multi-column planner pivots scan whole rows and lock. ClickHouse reads only needed columns and vectorizes. Snowflake/BQ lose when the UI needs interactive, self-hosted, sub-20s pivots you already pay to operate.

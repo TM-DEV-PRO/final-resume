@@ -10,7 +10,7 @@
 
 ## PDF bullets (say these)
 
-### Platform Engineering & Infrastructure
+### Core Infrastructure & Pipeline
 1. Multi-tenant **Go/Gin** to **10k peak RPS**, **Google Wire**, self-protecting HTTP edge (h2c, nested timeouts, **Datadog**).
 2. **15.5x** analytics: **189s → 12s** on **250M** rows; ClickHouse **1.6M** article-seasons and **2.4B** weekly rollups.
 3. KPI configurator + **ifNotFinite** formula parser → safe ClickHouse SQL fragments.
@@ -18,7 +18,7 @@
 5. **100.0%** statement-coverage CI (race/atomic) · **1,200+** Go tests · golangci-lint · SAST/SBOM.
 
 ### Agentic Flows & Orchestration
-1. Keep/Drop + Missed Opportunities + Top Style · **335K+** products · **88k**/pass under **$100** · **7** AI lenses.
+1. Keep/Drop + Missed Opportunities + Top Style · **348k article-seasons** products · **88k**/pass under **$100** · **7** AI lenses.
 2. **2.11B-row** fact table · physical **air-gap** LLM vs DB · **ReplacingMergeTree** two-phase · deterministic fallback.
 3. Orchestration registry · circuit breakers · checkpoints · **LangSmith** + per-run JSON telemetry.
 4. **Shipped Ask Iris** — WebSocket copilot · LangGraph **Supervisor + Evaluator** · frozen scopes. Capability, not tenant-wide SLA.
@@ -30,7 +30,7 @@
 
 ## Honesty
 
-- 10k RPS / 2.11B / 2.4B / $100 / 1.6M / 335K+ = **on PDF** (AssortSmart tab).
+- 10k RPS / 2.11B / 2.4B / $100 / 1.6M / 348k article-seasons = **on PDF** (AssortSmart tab).
 - 300 / ≥80% = **promotion gate**. Ask Iris = **shipped capability**.
 - **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight (`01b_hindsight_defense.md` if asked).
 
@@ -39,7 +39,7 @@
 | Claim | Tag | Defense |
 |---|---|---|
 | **189s → 12s** (~15.5×) on **250M** row-identical PG vs CH | MEASURED | `pivot-poc/` · `21_ia_pivot_benchmark_source.md`. PDF rounds 12.3s→12s. |
-| 1.6M article-seasons · 2.4B weekly rollups · 2.11B fact | PDF / AssortSmart tab | Catalog + fact-table scale on the resume. |
+| 1.6M article-seasons · six ClickHouse rollup tables · 2.11B fact | PDF / AssortSmart tab | Catalog + fact-table scale on the resume. |
 
 ## Q&A
 

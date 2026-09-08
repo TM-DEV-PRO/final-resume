@@ -55,7 +55,7 @@ strong{color:#fff}
 <strong>Tradeoff:</strong> You own body caps/SIGTERM drain vs inheriting nginx.
 <strong>Alt rejected:</strong> Python monolith as the public edge; “just put it behind GFE/nginx and don’t think.”</p>
 <h3 id="clickhouse-vs-postgres-vs-snowflake-packet-defense-pdf-honest">ClickHouse vs Postgres vs Snowflake (packet defense, PDF-honest)</h3>
-<p><strong>What:</strong> 189s→12s on 250M; 1.6M article-seasons; 2.4B weekly rollups.
+<p><strong>What:</strong> 189s→12s on 250M; six ClickHouse rollup tables (product, store, attr at season and weekly grains).
 <strong>Why Postgres failed for planner pivots:</strong> row store scans whole rows for multi-column GROUP BY; lock/IO.
 <strong>Why ClickHouse:</strong> columnar + vectorized execution; only the pivot columns hit disk.
 <strong>Why not Snowflake/BQ for this UI:</strong> interactive latency + cost of shared slots (BQ probes 1–20s+ MEASURED). Self-hosted CH matched the read pattern.
@@ -74,7 +74,7 @@ strong{color:#fff}
 <strong>Honesty:</strong> last committed profile may be 99.93% — say gate is 100%, last profile if asked.</p>
 <h2 id="impact-analytics-agentic">Impact Analytics — Agentic</h2>
 <h3 id="deterministic-kpi-7-lenses-vs-llm-only">Deterministic KPI + 7 lenses vs LLM-only</h3>
-<p><strong>What:</strong> 335K+ products; 88k/pass under $100.
+<p><strong>What:</strong> 348k article-seasons; 88k/pass.
 <strong>Why:</strong> Merch math must be auditable; LLM adds judgment, not the SoR.
 <strong>Alt:</strong> free-form SQL tool.</p>
 <h3 id="air-gap-llm-vs-211b-fact-rmt-two-phase">Air-gap LLM vs 2.11B fact + RMT two-phase</h3>
@@ -85,7 +85,7 @@ strong{color:#fff}
 <p><strong>What:</strong> Shipped WebSocket copilot.
 <strong>Why:</strong> Evaluator loop + socket-level freeze stop infinite loops and cross-tenant reads.
 <strong>Honesty:</strong> shipped <strong>capability</strong>, no invented tenant SLA.</p>
-<h3 id="300-case-80-gate-vs-74-baseline">300-case / ≥80% gate vs 74% baseline</h3>
+<h3 id="300-case-80-gate-vs-74-baseline">300-case / 80% gate vs 74% baseline</h3>
 <p><strong>What:</strong> CI promotion gate.
 <strong>Why:</strong> Free deterministic rule is the bar models must beat.
 <strong>Do not say:</strong> all tenants live at ≥80%.</p>

@@ -14,23 +14,23 @@
 \textcolor{Project}{\textbf{AssortSmart --- Senior Software Engineer (Platform \& AI)}}
 \vspace{0.25ex}
 
-\textcolor{Project}{\textit{Platform Engineering \& Infrastructure}}
-\vspace{-0.65ex}
-\begin{zitemize}
-    \item Architected a multi-tenant \textbf{Go/Gin} platform scaling to \textbf{10k peak RPS}, utilizing \textbf{Google Wire} for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native \textbf{h2c}, nested timeouts, and \textbf{Datadog} distributed tracing.
-    \item Accelerated retail analytics performance by \textbf{15.5x}, slashing pivot query latency from \textbf{189s to 12s} on \textbf{250M-row} operations. Migrated the data layer to \textbf{ClickHouse}, scaling the catalog to process \textbf{1.6M} article-season combinations and \textbf{2.4B} weekly rollup rows.
-    \item Eliminated deployment bottlenecks by \textbf{architecting a dynamic KPI configurator} and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into safe, \texttt{ifNotFinite}-wrapped ClickHouse SQL fragments, \textbf{decoupling business logic from code releases}.
-    \item Guaranteed strict \textbf{multi-tenant data isolation} and UAM-scoped hierarchy \textbf{access control} across \textbf{PostgreSQL} and \textbf{ClickHouse}. Secured system entry by implementing a Redis-fronted Firebase Admin to JWT/Google OIDC verification waterfall, constant-time API keys, and Postgres-backed role resolution.
-    \item Enforced zero-regression engineering practices by designing a \textbf{100.0\%} statement-coverage CI gate (race and atomic) across \textbf{1,200+} Go tests. Hardened the Bitbucket deployment pipeline with automated golangci-linting, pre-push hooks, and continuous SAST/SBOM security scanning.
-\end{zitemize}
-
 \textcolor{Project}{\textit{Agentic Flows \& Orchestration}}
 \vspace{-0.65ex}
 \begin{zitemize}
-    \item Architected a \textbf{multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style)} evaluating \textbf{335K+} products across multiple seasons. Optimized inference at scale---processing \textbf{88k} items per pass for under \textbf{\$100} token spend---by blending deterministic KPI math with structured LLM invokes across \textbf{7 AI lenses}.
-    \item Guaranteed zero-data-corruption across a \textbf{2.11B-row} ClickHouse fact table by physically air-gapping batch LLM execution from database queries. Ensured fault tolerance using ClickHouse \texttt{ReplacingMergeTree} for two-phase inserts, feeding models via JSON payloads and falling back to deterministic scores upon LLM failure.
-    \item Engineered a \textbf{resilient AI orchestration} registry to safely manage high-throughput LLM workloads across millions of tokens. Guaranteed stable parallel batch processing via custom circuit breakers and durable checkpoints, embedding \textbf{LangSmith} and custom per-run JSON telemetry to track exact token costs, step durations, and batch fallbacks.
-    \item \textbf{Shipped ``Ask Iris,'' a WebSocket AI copilot} enabling planners to interactively query multi-billion-row KPIs, generate dynamic charts, and drill down into AI decisions. Architected the underlying \textbf{LangGraph} orchestration---featuring a Supervisor router and Evaluator loop---enforcing socket-level frozen scopes to guarantee data isolation and prevent infinite LLM loops.
-    \item Established rigorous \textbf{AI deployment guardrails} by building a \textbf{300-case} offline evaluation harness and a $\geq$\textbf{80\%} accuracy CI promotion gate. Prevented degraded rollouts by benching candidate agent configurations against a \textbf{74\%} deterministic baseline, ensuring provable business value before production release.
+    \item Architected a \textbf{multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style)} evaluating \textbf{348k} article-seasons. Optimized inference at scale---processing \textbf{88k} items per pass---by blending deterministic KPI math with structured LLM invokes across \textbf{7 AI lenses}.
+    \item Decoupled AI inference from a \textbf{2.11B-row} ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via \texttt{ReplacingMergeTree} that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.
+    \item Engineered a \textbf{shared orchestration registry} to guarantee \textbf{88k-article} batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.
+    \item \textbf{Shipped ``Ask Iris,''} a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a \textbf{LangGraph} supervisor with a 3-attempt evaluator loop, utilizing \textbf{LangSmith} for observability, and strictly freezing hierarchy access on the initial socket handshake.
+    \item Built a \textbf{300-case} proxy evaluation harness and an \textbf{80\%} accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by \textbf{73\%} at \textbf{100\%} coverage by benchmarking models against a \textbf{74\%} deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.
+\end{zitemize}
+
+\textcolor{Project}{\textit{Core Infrastructure \& Pipeline}}
+\vspace{-0.65ex}
+\begin{zitemize}
+    \item Architected a multi-tenant \textbf{Go/Gin} platform scaling to \textbf{10k peak RPS}, utilizing \textbf{Google Wire} for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native \textbf{h2c}, nested timeouts, and \textbf{Datadog} distributed tracing.
+    \item Eliminated deployment bottlenecks by \textbf{architecting a dynamic KPI configurator} and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into parameterized ClickHouse SQL fragments with native division-by-zero protection, \textbf{decoupling business logic from code releases}.
+    \item Guaranteed strict \textbf{multi-tenant data isolation} and UAM-scoped hierarchy \textbf{access control} across \textbf{PostgreSQL} and \textbf{ClickHouse}. Secured system entry by implementing a Redis-fronted Firebase Admin to JWT/Google OIDC verification waterfall, constant-time API keys, and Postgres-backed role resolution.
+    \item Reduced planner pivot latency by \textbf{15.5$\times$} (\textbf{189s to 12s} on \textbf{250M-row} operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented \textbf{170GB} OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.
+    \item Migrated ClickHouse rollups across Cloud clusters at $\sim$\textbf{344k rows/s} by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to \textbf{4.09B} rows using \textbf{500k-row} double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.
     \item \textbf{Tech} -- Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.
 \end{zitemize}

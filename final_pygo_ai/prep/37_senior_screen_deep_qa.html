@@ -50,7 +50,7 @@ strong{color:#fff}
 <a class="lvl2" href="#6-l5-fit-packet">6. L5 fit (packet)</a></nav>
 <main><h1 id="senior-screen-deep-qa-millions-prod-perf-product-deploy">Senior screen deep Q&amp;A — millions / prod / perf / product / deploy</h1>
 <p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_5yr.pdf</code>. Tags per <code>GROUND_TRUTH.md</code>.
-<strong>Stack:</strong> FRM/Masters = <strong>FastAPI / SQLAlchemy 2.0</strong> / <strong>FastAPI</strong>. AssortSmart platform = <strong>Go Gin</strong>. Agent = <strong>Python, FastAPI, LangGraph</strong>. MCP not on PDF.</p>
+<strong>Stack:</strong> FRM/Masters = <strong>Spring Boot / Spring Data JPA / Hibernate</strong> / <strong>Spring Boot</strong>. AssortSmart platform = <strong>Go Gin</strong>. Agent = <strong>Python, FastAPI, LangGraph</strong>. MCP not on PDF.</p>
 <hr>
 <h2 id="0-thirty-second-cheat-sheet">0. Thirty-second cheat sheet</h2>
 <table>
@@ -65,15 +65,15 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>Millions of requests / rows?</td>
-<td>IA 10k RPS + 2.11B fact <strong>or</strong> Masters IRP</td>
-<td>10k peak RPS; 2.11B; 2.4B rollups; 1M+/day</td>
+<td>IA 10k RPS + 2.11B master <strong>or</strong> Masters IRP</td>
+<td>10k peak RPS; 2.11B; 348k article-seasons; 1M+/day</td>
 <td>PDF / HISTORICAL</td>
 </tr>
 <tr>
 <td>Production issue?</td>
-<td>Packet OOM leak (tag not-PDF) <strong>or</strong> Menu anti-bot <strong>or</strong> IRP near-miss</td>
-<td>95%+; zero dup filings</td>
-<td>HISTORICAL / packet</td>
+<td><strong>170GB weekly OOM</strong> (IA, on PDF) <strong>or</strong> Menu anti-bot <strong>or</strong> IRP near-miss</td>
+<td>170GB; 95%+</td>
+<td>PDF / HISTORICAL</td>
 </tr>
 <tr>
 <td>Perf?</td>
@@ -83,20 +83,20 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>Core product?</td>
-<td>AssortSmart Platform+AI / FRM / Eats / GST / GFG</td>
+<td>AssortSmart Agentic+Core / FRM / Eats / GST / GFG</td>
 <td>—</td>
 <td></td>
 </tr>
 <tr>
 <td>Complex system?</td>
-<td>AssortSmart air-gap+Ask Iris <strong>or</strong> Menu E2E <strong>or</strong> FRM SOADB</td>
+<td>AssortSmart JSON payloads + Ask Iris <strong>or</strong> Menu E2E <strong>or</strong> FRM SOADB</td>
 <td>2.11B; exactly-once</td>
 <td>PDF / HISTORICAL</td>
 </tr>
 <tr>
 <td>Deploy?</td>
-<td>Go 100% coverage gate <strong>or</strong> Masters canary <strong>or</strong> Menu Kafka rewind</td>
-<td>100%; 98% deploy</td>
+<td>80% agent CI gate <strong>or</strong> Masters canary <strong>or</strong> Menu Kafka rewind</td>
+<td>80% gate; 98% deploy</td>
 <td>PDF / HISTORICAL</td>
 </tr>
 </tbody>
@@ -104,8 +104,8 @@ strong{color:#fff}
 <hr>
 <h2 id="1-core-products">1. Core products</h2>
 <h3 id="q11-impact-analytics-assortsmart">Q1.1 Impact Analytics / AssortSmart</h3>
-<p><strong>Answer:</strong> Merchandise-planning SaaS. On this PDF I own <strong>two</strong> chapters. Platform: Go/Gin <strong>10k peak RPS</strong>, Wire, h2c, Datadog; ClickHouse <strong>189s to 12s</strong> on <strong>250M</strong>, <strong>1.6M</strong> article-seasons, <strong>2.4B</strong> weekly rollups; ifNotFinite KPI parser; Firebase/JWT/OIDC; <strong>100%</strong> / <strong>1,200+</strong> Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on <strong>335K+</strong> products, <strong>88k</strong>/pass under <strong>$100</strong>, <strong>7</strong> lenses; <strong>2.11B-row</strong> fact air-gapped from batch LLM; <strong>shipped Ask Iris</strong> (Supervisor+Evaluator, frozen scopes); <strong>300-case</strong> / <strong>≥80%</strong> CI promotion gate vs <strong>74%</strong> baseline. <strong>Verbal only:</strong> Cluster Copilot · Hindsight.</p>
-<p><strong>Honesty:</strong> Gate ≠ all tenants live. Do not invent extra TPS. Do not claim K8s-ops or Flink on IA.</p>
+<p><strong>Answer:</strong> Merchandise-planning SaaS. On this PDF I own <strong>two</strong> chapters. Agentic: Keep/Drop + Missed Opportunities + Top Style on <strong>348k article-seasons</strong>, <strong>88k</strong>/pass, <strong>7</strong> lenses; JSON payloads vs a <strong>2.11B-row</strong> ClickHouse master; <strong>shipped Ask Iris</strong> (JWT WebSocket, supervisor, <strong>3-attempt</strong> evaluator, handshake freeze); <strong>300-case</strong> / <strong>80%</strong> CI gate, <strong>73%</strong> cheaper at <strong>100%</strong> coverage vs <strong>74%</strong> det with frozen weights. Core: Go/Gin <strong>10k peak RPS</strong>, Wire, h2c, Datadog; ClickHouse <strong>189s to 12s</strong> on <strong>250M</strong>; KPI tokenizer with division-by-zero protection; Firebase/JWT/OIDC; Go pump ~<strong>344k rows/s</strong> up to <strong>4.09B</strong>. <strong>Verbal only:</strong> Cluster Copilot · Hindsight. <strong>1.6M catalog / 100% Go tests / $100/pass / 55GB·16GB</strong> are off PDF.</p>
+<p><strong>Honesty:</strong> Gate ≠ all tenants live. 73% is gold-200, not the 300-case file. Do not invent extra TPS. Do not claim K8s-ops or Flink on IA.</p>
 <h3 id="q12-uber-via-epam">Q1.2 Uber via EPAM</h3>
 <ol>
 <li><strong>FRM:</strong> 36 FastAPI endpoints, 19M GL, L1–L4, 8-table SOADB, SHA-256, 70% from 14 days to 3, $340M, led 3, 100% coverage, SOX 50% delta-variance.</li>

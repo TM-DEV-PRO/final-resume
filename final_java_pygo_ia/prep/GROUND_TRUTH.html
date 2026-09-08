@@ -65,22 +65,22 @@ strong{color:#fff}
 <h2 id="skills-categories-pdf">Skills categories (PDF)</h2>
 <p>Languages · Backend &amp; APIs · <strong>Generative AI</strong> · <strong>Data &amp; Streaming</strong> · Databases &amp; Storage · <strong>Cloud &amp; DevOps</strong> · <strong>Architecture &amp; Core</strong></p>
 <h2 id="resume-pdf-impact-analytics-assortsmart-two-subsections">Resume PDF — Impact Analytics / AssortSmart (TWO subsections)</h2>
-<p>Project title on PDF: <strong>AssortSmart — Senior Software Engineer (Platform &amp; AI)</strong>. IA bullets are identical across tracks (Go/Python). Source: AssortSmart tab / PDF.</p>
-<h3 id="1-platform-engineering-infrastructure">1) Platform Engineering &amp; Infrastructure</h3>
+<p>Project title on PDF: <strong>AssortSmart — Senior Software Engineer (Platform &amp; AI)</strong>. Order on PDF: <strong>Agentic Flows</strong> then <strong>Core Infrastructure</strong>. IA bullets are identical across tracks (Go/Python). Source: AssortSmart tab / PDF. Defense: <a href="43_ia_bullet_defense.html"><code>43_ia_bullet_defense.md</code></a>.</p>
+<h3 id="1-agentic-flows-orchestration">1) Agentic Flows &amp; Orchestration</h3>
+<ol>
+<li>Multi-pipeline AI merchandise engine (<strong>Keep/Drop</strong>, Missed Opportunities, Top Style) evaluating <strong>348k article-seasons</strong>. <strong>88k</strong> items/pass; deterministic KPI math + structured LLM invokes across <strong>7 AI lenses</strong>. <strong>$100/pass</strong> still true, <strong>off PDF</strong>.</li>
+<li>Decoupled inference from a <strong>2.11B-row</strong> ClickHouse master via JSON payloads (no direct DB querying from the LLM). <strong>ReplacingMergeTree</strong> eventually-consistent writes; fallback to deterministic baselines on <strong>LLM timeouts</strong>.</li>
+<li>Shared orchestration registry: hard timeouts, circuit breakers, durable checkpoints that skip redundant det scoring; frozen <strong>config_hash</strong> on output rows; JSON telemetry (tokens, USD, step duration, batch fallbacks).</li>
+<li><strong>Shipped “Ask Iris”</strong> — JWT-secured WebSocket copilot. <strong>LangGraph</strong> supervisor + <strong>3-attempt</strong> evaluator; <strong>LangSmith</strong>; hierarchy frozen on socket handshake. Shipped <strong>capability</strong> — do not invent tenant-wide SLAs.</li>
+<li><strong>300-case</strong> proxy harness and <strong>80%</strong> accuracy <strong>CI gate</strong>. <strong>73%</strong> live cost cut at <strong>100% coverage</strong> (gold-200 Luna vs mini — <strong>not</strong> the 300-case file). <strong>74%</strong> deterministic baseline; freeze blend weights when the LLM loses. Gate ≠ “all tenants live.”</li>
+</ol>
+<h3 id="2-core-infrastructure-pipeline">2) Core Infrastructure &amp; Pipeline</h3>
 <ol>
 <li>Multi-tenant <strong>Go/Gin</strong> platform scaling to <strong>10k peak RPS</strong>, <strong>Google Wire</strong> compile-time DI, self-protecting HTTP edge (no reverse proxy), native <strong>h2c</strong>, nested timeouts, <strong>Datadog</strong> distributed tracing.</li>
-<li>Retail analytics <strong>15.5x</strong>: pivot <strong>189s → 12s</strong> on <strong>250M-row</strong> operations. ClickHouse catalog <strong>1.6M</strong> article-season combinations and <strong>2.4B</strong> weekly rollup rows.</li>
-<li>Dynamic KPI configurator + formula parser: operator-authored math tokenized into safe <strong>ifNotFinite</strong>-wrapped ClickHouse SQL fragments (business logic decoupled from code releases).</li>
+<li>Dynamic KPI configurator + formula parser: operator math tokenized into parameterized ClickHouse SQL fragments with native division-by-zero protection (<code>ifNotFinite</code> wrap — verbal mechanism).</li>
 <li><strong>Multi-tenant data isolation</strong> + UAM-scoped hierarchy <strong>access control</strong> across <strong>PostgreSQL</strong> and <strong>ClickHouse</strong>. Redis-fronted <strong>Firebase Admin → JWT / Google OIDC</strong> waterfall, constant-time API keys, <strong>Postgres</strong>-backed role resolution. Isolation ≠ encryption.</li>
-<li><strong>100.0%</strong> statement-coverage CI gate (race and atomic) across <strong>1,200+</strong> Go tests. Bitbucket pipeline: golangci-lint, pre-push hooks, continuous <strong>SAST/SBOM</strong>.</li>
-</ol>
-<h3 id="2-agentic-flows-orchestration">2) Agentic Flows &amp; Orchestration</h3>
-<ol>
-<li>Multi-pipeline AI merchandise engine (<strong>Keep/Drop</strong>, Missed Opportunities, Top Style) evaluating <strong>335K+</strong> products. <strong>88k</strong> items/pass under <strong>$100</strong> token spend; deterministic KPI math + structured LLM invokes across <strong>7 AI lenses</strong>.</li>
-<li>Zero-data-corruption on a <strong>2.11B-row</strong> ClickHouse fact table by <strong>air-gapping</strong> batch LLM execution from database queries. <strong>ReplacingMergeTree</strong> two-phase inserts; JSON payloads; fallback to deterministic scores on LLM failure.</li>
-<li>AI orchestration registry: circuit breakers, durable checkpoints, <strong>LangSmith</strong> + per-run JSON telemetry (token costs, step durations, batch fallbacks).</li>
-<li><strong>Shipped “Ask Iris”</strong> — WebSocket AI copilot (multi-billion-row KPIs, dynamic charts, drill-down). <strong>LangGraph</strong> Supervisor router + Evaluator loop; socket-level <strong>frozen scopes</strong>. Shipped <strong>capability</strong> — do not invent tenant-wide SLAs.</li>
-<li><strong>300-case</strong> offline evaluation harness and <strong>≥80%</strong> accuracy <strong>CI promotion gate</strong>. Candidate agents benched against a <strong>74%</strong> deterministic baseline. Gate ≠ “all tenants live.”</li>
+<li>Reduced planner pivot latency by <strong>15.5×</strong> (<strong>189s to 12s</strong> on <strong>250M-row</strong> operations) via ClickHouse season/weekly rollups. Prevented <strong>170GB</strong> OOM by slicing inserts into temporal chunks and enforcing distributed memory + disk-spill caps. Verbal knobs: one fiscal week, <strong>55GB</strong> / <strong>16GB</strong>. Six tables stay the interview drawing. <strong>1.6M</strong> catalog article-seasons still true, off PDF.</li>
+<li>Migrated ClickHouse rollups across Cloud clusters at <strong>~344k rows/s</strong> with a custom Go native-TLS data pump (allowlist bypass). Partitions up to <strong>4.09B</strong>, <strong>500k-row</strong> double-buffered batches, TSV ledgers, atomic <strong>partition rollbacks</strong> (<code>DROP PARTITION</code> then recopy — not a live reader swap). Copy of 4.09B was in flight. <strong>100% / 1,200+ tests</strong> off PDF (LinkedIn / verbal).</li>
 </ol>
 <p><strong>Stack:</strong> agent plane = Python, FastAPI, LangGraph; platform / write APIs = <strong>Go / Gin</strong>. MCP is <strong>not</strong> on this PDF.</p>
 <h2 id="uber-frm-via-epam">Uber FRM (via EPAM)</h2>
@@ -128,7 +128,7 @@ strong{color:#fff}
 </ul>
 <h2 id="deep-dives-this-track">Deep dives (this track)</h2>
 <ul>
-<li><code>10_impact_analytics_deep_dive.md</code> · <code>23a_ia_interview_pack.md</code></li>
+<li><code>10_impact_analytics_deep_dive.md</code> · <code>23a_ia_interview_pack.md</code> · <code>42_clickhouse_rollup_migration.md</code></li>
 <li><code>11_uber_frm_deep_dive.md</code> · <code>14_uber_menu_deep_dive.md</code></li>
 <li><code>12_masters_gfg_deep_dive.md</code> · <code>13_behavioral_why_switch.md</code></li>
 <li><code>17_senior_systems_study_only.md</code> · <code>36_skills_ai_agents_defense.md</code></li>

@@ -26,21 +26,42 @@ Tab list (Python/Go). Java and hybrid tracks add Java + Spring Boot/MVC/Security
 - Cloud & DevOps: GCP, AWS, Docker, Kubernetes, Bazel, CI/CD, Datadog, ELK, New Relic
 - Architecture & Core Concepts: Distributed Systems, Microservices, System Design (HLD/LLD), Database Sharding, Concurrency, Idempotency
 
-## Impact Analytics / AssortSmart — Platform Engineering & Infrastructure
-
-- Architected a multi-tenant Go/Gin platform scaling to 10k peak RPS, utilizing Google Wire for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native h2c, nested timeouts, and Datadog distributed tracing.
-- Accelerated retail analytics performance by 15.5x, slashing pivot query latency from 189s to 12s on 250M-row operations. Migrated the data layer to ClickHouse, scaling the catalog to process 1.6M article-season combinations and 2.4B weekly rollup rows.
-- Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into safe, ifNotFinite-wrapped ClickHouse SQL fragments, decoupling business logic from code releases.
-- Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.
-- Enforced zero-regression engineering practices by designing a 100.0% statement-coverage CI gate (race and atomic) across 1,200+ Go tests. Hardened the Bitbucket deployment pipeline with automated golangci-linting, pre-push hooks, and continuous SAST/SBOM security scanning.
-
 ## Impact Analytics / AssortSmart — Agentic Flows & Orchestration
 
-- Architected a multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style) evaluating 335K+ products across multiple seasons. Optimized inference at scale—processing 88k items per pass for under $100 token spend—by blending deterministic KPI math with structured LLM invokes across 7 AI lenses.
-- Guaranteed zero-data-corruption across a 2.11B-row ClickHouse fact table by physically air-gapping batch LLM execution from database queries. Ensured fault tolerance using ClickHouse ReplacingMergeTree for two-phase inserts, feeding models via JSON payloads and falling back to deterministic scores upon LLM failure.
-- Engineered a resilient AI orchestration registry to safely manage high-throughput LLM workloads across millions of tokens. Guaranteed stable parallel batch processing via custom circuit breakers and durable checkpoints, embedding LangSmith and custom per-run JSON telemetry to track exact token costs, step durations, and batch fallbacks.
-- Shipped “Ask Iris,” a WebSocket AI copilot enabling planners to interactively query multi-billion-row KPIs, generate dynamic charts, and drill down into AI decisions. Architected the underlying LangGraph orchestration—featuring a Supervisor router and Evaluator loop—enforcing socket-level frozen scopes to guarantee data isolation and prevent infinite LLM loops.
-- Established rigorous AI deployment guardrails by building a 300-case offline evaluation harness and a ≥80% accuracy CI promotion gate. Prevented degraded rollouts by benching candidate agent configurations against a 74% deterministic baseline, ensuring provable business value before production release.
+PDF order: **Agentic first**, then Core Infrastructure. Exact PDF lines:
+
+- Architected a multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style) evaluating 348k article-seasons. Optimized inference at scale—processing 88k items per pass—by blending deterministic KPI math with structured LLM invokes across 7 AI lenses.
+- Decoupled AI inference from a 2.11B-row ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via ReplacingMergeTree that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.
+- Engineered a shared orchestration registry to guarantee 88k-article batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.
+- Shipped “Ask Iris,” a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a LangGraph supervisor with a 3-attempt evaluator loop, utilizing LangSmith for observability, and strictly freezing hierarchy access on the initial socket handshake.
+- Built a 300-case proxy evaluation harness and an 80% accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by 73% at 100% coverage by benchmarking models against a 74% deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.
+
+## Impact Analytics / AssortSmart — Core Infrastructure & Pipeline
+
+- Architected a multi-tenant Go/Gin platform scaling to 10k peak RPS, utilizing Google Wire for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native h2c, nested timeouts, and Datadog distributed tracing.
+- Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into parameterized ClickHouse SQL fragments with native division-by-zero protection, decoupling business logic from code releases.
+- Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.
+- Reduced planner pivot latency by 15.5× (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.
+- Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.
+
+**Tech (PDF):** Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.
+
+## Interview honesty (off PDF, still true)
+
+- **1.6M article-seasons** = product × season catalog. PDF now uses **348k article-seasons** for scored Keep/Drop volume. Do not mix them.
+- **$100 / pass** token spend is still true, **off PDF**.
+- Weekly INSERT settings **55 GB cap / 16 GB spill / one fiscal week** remain the verbal OOM story. PDF says “temporal chunks” and “memory and disk-spill caps.”
+- **100.0%** statement-coverage CI (race and atomic) across **1,200+** Go tests, golangci-lint, SAST/SBOM = LinkedIn / verbal.
+- Six tables remain product/store/attr × season and weekly.
+- TSV ledger on the PDF is the weekly *loader* skip file. Copier ledger is `migrate-checkpoints/<table>.done`.
+- **Atomic partition rollbacks** = `DROP PARTITION` then recopy that season. Not an atomic swap with live readers.
+- **4.09B** is attr weekly two seasons; copy in flight at snapshot. Do not say the cutover finished.
+- **73% cost / 100% coverage** = gold-200 model bench (`gpt-5.6-luna` vs `gpt-5.4-mini`, 200/200 complete). **300-case / 80%** = proxy gold CI gate (`eval.json`). Do not fuse them into one measured run.
+- **80%** is a **CI promotion gate**, not all tenants live.
+- JSON payloads + no DB tool on the scoring path is the isolation invariant. “Async” is how batches run; the LLM does not issue ClickHouse SQL.
+- Ask Iris = **shipped capability**. No invented tenant-wide SLAs.
+- Cluster Recommendation Copilot / Hindsight = **verbal only**.
+- Do **not** put Kafka, Flink, CDC, K8s-ops, Milvus, or sub-second ClickHouse on IA.
 
 ## Uber FRM
 

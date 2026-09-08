@@ -42,8 +42,8 @@ strong{color:#fff}
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#final-java-ai-every-pdf-point-deep-defense">Final Java + AI — every PDF point → deep defense</a>
 <a class="lvl2" href="#summary">Summary</a>
-<a class="lvl2" href="#ia-platform-engineering-infrastructure">IA — Platform Engineering &amp; Infrastructure</a>
-<a class="lvl2" href="#ia-agentic-flows-orchestration">IA — Agentic Flows &amp; Orchestration</a>
+<a class="lvl2" href="#ia-agentic-flows-orchestration-pdf-first">IA — Agentic Flows &amp; Orchestration (PDF first)</a>
+<a class="lvl2" href="#ia-core-infrastructure-pipeline">IA — Core Infrastructure &amp; Pipeline</a>
 <a class="lvl2" href="#rest-of-pdf">Rest of PDF</a>
 <a class="lvl2" href="#schemas-er-apis-design-decisions">Schemas · ER · APIs · design decisions</a>
 <a class="lvl2" href="#verbal-only-not-on-pdf">Verbal only (not on PDF)</a></nav>
@@ -70,7 +70,7 @@ strong{color:#fff}
 </tr>
 <tr>
 <td>S2</td>
-<td>Expertise in Java and Python microservices; AI-assisted and RAG</td>
+<td>Expertise in Java, Python and Go microservices; AI-assisted and RAG</td>
 <td><code>36</code> · <code>41</code></td>
 <td>framing</td>
 </tr>
@@ -88,50 +88,7 @@ strong{color:#fff}
 </tr>
 </tbody>
 </table>
-<h2 id="ia-platform-engineering-infrastructure">IA — Platform Engineering &amp; Infrastructure</h2>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>PDF claim</th>
-<th>Defense pack</th>
-<th>Tag</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>P1</td>
-<td>Go/Gin 10k peak RPS · Wire · h2c · Datadog · no reverse proxy</td>
-<td><code>23a</code> P1 · <code>10</code></td>
-<td>PDF / AssortSmart tab</td>
-</tr>
-<tr>
-<td>P2</td>
-<td>15.5x · 189s→12s on 250M · 1.6M article-seasons · 2.4B weekly rollups</td>
-<td><code>21_ia_pivot_benchmark_source.md</code> · <code>23a</code> P2</td>
-<td>MEASURED POC + PDF catalog scale</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>KPI configurator / ifNotFinite formula parser</td>
-<td><code>23a</code> P3 · <code>10</code></td>
-<td>PDF</td>
-</tr>
-<tr>
-<td>P4</td>
-<td>Multi-tenant data isolation + UAM access control on PG + ClickHouse · OIDC · API keys</td>
-<td><code>23a</code> P4 · <code>41</code></td>
-<td>PDF</td>
-</tr>
-<tr>
-<td>P5</td>
-<td>100.0% coverage CI · 1200+ Go tests · golangci-lint · SAST/SBOM</td>
-<td><code>23a</code> P5</td>
-<td>PDF</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ia-agentic-flows-orchestration">IA — Agentic Flows &amp; Orchestration</h2>
+<h2 id="ia-agentic-flows-orchestration-pdf-first">IA — Agentic Flows &amp; Orchestration (PDF first)</h2>
 <table>
 <thead>
 <tr>
@@ -144,33 +101,76 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>A1</td>
-<td>Keep/Drop + Missed Opportunities + Top Style · 335K+ · 88k/pass under $100 · 7 lenses</td>
-<td><code>23a</code> A1 · PIPELINE.md</td>
-<td>PDF</td>
+<td>Keep/Drop + Missed Opportunities + Top Style · 348k article-seasons · 88k/pass · 7 lenses</td>
+<td><code>43</code> A1 · <code>23a</code> A1 · PIPELINE.md</td>
+<td>PDF. $100/pass off PDF</td>
 </tr>
 <tr>
 <td>A2</td>
-<td>2.11B-row CH fact · air-gap LLM vs DB · ReplacingMergeTree two-phase</td>
-<td><code>23a</code> A2</td>
+<td>2.11B-row CH master · JSON payloads not direct DB querying · RMT · timeout → det baseline</td>
+<td><code>43</code> A2 · <code>23a</code> A2</td>
 <td>PDF</td>
 </tr>
 <tr>
 <td>A3</td>
-<td>Orchestration registry · circuit breakers · checkpoints · LangSmith telemetry</td>
-<td><code>23a</code> A3</td>
+<td>Shared registry · 88k survive provider failure · timeouts / breakers / checkpoints · config_hash · JSON telemetry</td>
+<td><code>43</code> A3 · <code>23a</code> A3</td>
 <td>PDF</td>
 </tr>
 <tr>
 <td>A4</td>
-<td>Shipped Ask Iris WebSocket · LangGraph Supervisor+Evaluator · frozen scopes</td>
-<td><code>23a</code> A4</td>
+<td>Shipped Ask Iris JWT WebSocket · LangGraph supervisor · 3-attempt evaluator · LangSmith · freeze hierarchy on handshake</td>
+<td><code>43</code> A4 · <code>23a</code> A4</td>
 <td>PDF shipped capability</td>
 </tr>
 <tr>
 <td>A5</td>
-<td>300-case offline eval · ≥80% CI promotion gate · 74% deterministic baseline</td>
-<td><code>23a</code> A5</td>
-<td>promotion gate ≠ all tenants live</td>
+<td>300-case proxy · 80% CI gate · 73% cost / 100% coverage · 74% det · freeze blend weights</td>
+<td><code>43</code> A5 · <code>23a</code> A5</td>
+<td>73% = gold-200. Gate ≠ all tenants live</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ia-core-infrastructure-pipeline">IA — Core Infrastructure &amp; Pipeline</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>PDF claim</th>
+<th>Defense pack</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>Go/Gin 10k peak RPS · Wire · h2c · Datadog · no reverse proxy</td>
+<td><code>43</code> C1 · <code>23a</code> · <code>10</code></td>
+<td>PDF / AssortSmart tab</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>KPI configurator / tokenizer · parameterized CH SQL · native division-by-zero (<code>ifNotFinite</code> verbal)</td>
+<td><code>43</code> C2 · <code>23a</code></td>
+<td>PDF</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Multi-tenant data isolation + UAM access control on PG + ClickHouse · OIDC · API keys</td>
+<td><code>43</code> C3 · <code>41</code></td>
+<td>PDF</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>15.5× · 189s to 12s on 250M-row ops · season/weekly rollups · 170GB OOM · temporal chunks · memory/spill caps</td>
+<td><code>21_ia_pivot_benchmark_source.md</code> · <code>43</code> C4 · <code>42_clickhouse_rollup_migration.md</code></td>
+<td>MEASURED POC + PDF. 55GB/16GB verbal</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>~344k rows/s Go native-TLS pump · allowlist bypass · 4.09B · 500k double-buffer · TSV + atomic partition rollbacks</td>
+<td><code>43</code> C5 · <code>42</code></td>
+<td>PDF. Copy in flight. TSV is loader. Rollback = DROP then recopy</td>
 </tr>
 </tbody>
 </table>
@@ -226,6 +226,10 @@ strong{color:#fff}
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>IA bullet defense (current PDF Q&amp;A)</td>
+<td><code>43_ia_bullet_defense.md</code></td>
+</tr>
 <tr>
 <td>Architecture diagrams</td>
 <td><code>33_architecture_diagrams.md</code> · <code>campaign_extras/interview_prep/architecture/</code></td>

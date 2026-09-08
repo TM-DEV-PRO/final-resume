@@ -4,9 +4,9 @@
 **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/63/8/12B.
 
 <div class="callout warn">
-<b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> — not “all tenants live.”
+<b>Never break these.</b> 300-case / 80% is a <b>CI promotion gate</b> — not “all tenants live.”
 Ask Iris is <b>Shipped</b> on the PDF as a capability — do not invent tenant-wide SLAs.
-10k peak RPS / 2.11B / 2.4B / $100 token / 1.6M article-seasons / 335K+ products are <b>on the PDF</b> (source: AssortSmart tab / PDF).
+10k peak RPS / 2.11B fact / six rollup tables / 170 GB weekly OOM / ~344k rows/s copy / 4.09B attr weekly (two seasons) / $100 token / 348k article-seasons are <b>on the PDF</b>. 1.6M article-seasons and 100% Go coverage are <b>LinkedIn / verbal</b>.
 Cluster Recommendation Copilot / Hindsight are <b>verbal only / not on PDF</b>.
 Menu <b>98% is offline eval</b>. Uber work was <b>via EPAM</b>. ANZ 99.9% is <b>HISTORICAL Mobility</b>.
 Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafka/Flink belongs on <b>Menu</b>, not IA.
@@ -23,17 +23,20 @@ Keep/Drop pipeline: [`../docs/assort_kd_flow/PIPELINE.md`](../docs/assort_kd_flo
 
 Platform: Go/Gin **10k peak RPS**, Wire, h2c, Datadog; CH **189s→12s** on **250M**, **1.6M** article-seasons, **2.4B** weekly rollups; ifNotFinite KPI parser; Firebase/JWT/OIDC + Redis + Postgres roles; **100%** / **1200+** Go tests / golangci-lint / SAST/SBOM.
 
-Agentic: Keep/Drop + Missed Opportunities + Top Style, **335K+**, **88k**/pass under **$100**, **7** lenses; **2.11B** fact air-gap + RMT two-phase; registry/breakers/checkpoints/LangSmith; **shipped Ask Iris**; **300-case** / **≥80%** CI gate vs **74%** baseline.
+Agentic: Keep/Drop + Missed Opportunities + Top Style, **348k article-seasons**, **88k**/pass under **$100**, **7** lenses; **2.11B** fact air-gap + RMT two-phase; registry/breakers/checkpoints/LangSmith; **shipped Ask Iris**; **300-case** / **≥80%** CI gate vs **74%** baseline.
 
 ---
 
-## 1. Platform Engineering & Infrastructure
+## 1. Core Infrastructure & Pipeline
 
 ### 10k RPS / Wire / h2c / Datadog
 Self-protecting edge (no reverse proxy). Nested timeouts, body cap, SIGTERM drain. **Tag:** PDF / AssortSmart tab. Do not invent uptime %.
 
-### ClickHouse 189s→12s, 1.6M, 2.4B
-MEASURED POC at 250M (PDF rounds 12.3s to 12s). Hardware was unfair to CH (Docker 3.3GB vs PG 48GB host) and CH still won the heavy grid. Verbal: DISTINCT caveat ~2–3× vs ~13–15×. Catalog numbers 1.6M / 2.4B are **on the PDF**.
+### ClickHouse 189s to 12s, six tables, 170 GB OOM
+MEASURED POC at 250M (PDF rounds 12.3s to 12s). Hardware was unfair to CH (Docker 3.3GB vs PG 48GB host) and CH still won the heavy grid. Verbal: DISTINCT caveat ~2 to 3x vs ~13 to 15x. PDF P2 is six rollup tables plus week-sliced INSERT after a roughly 170 GB aggregator OOM. 1.6M article-seasons is true, off PDF. Full pack: `42_clickhouse_rollup_migration.md`.
+
+### Go cluster copy (~344k rows/s)
+PDF P5. Native TLS pump, 500k-row columnar batches, double buffering, season DROP PARTITION. Measured on a 4.09B-row attr weekly set covering two seasons. Copy was in flight. Not API RPS. See `42`.
 
 ### ifNotFinite parser
 Operator-authored KPI math compiled to safe CH fragments so merch logic is not a release train.
@@ -42,14 +45,14 @@ Operator-authored KPI math compiled to safe CH fragments so merch logic is not a
 Redis-fronted Firebase Admin → JWT / Google OIDC; constant-time API keys; Postgres roles; UAM hierarchy. Cache miss ≠ fail-open.
 
 ### CI
-100.0% statement coverage gate (race + atomic), 1,200+ Go tests, golangci-lint, SAST/SBOM. Own 99.93% profile if asked.
+100.0% statement coverage gate (race + atomic), 1,200+ Go tests, golangci-lint, SAST/SBOM. Own 99.93% profile if asked. **Off this PDF.** LinkedIn / verbal.
 
 ---
 
 ## 2. Agentic Flows & Orchestration
 
 ### Three pipelines, not one chatbot
-Keep/Drop, Missed Opportunities, Top Style over 335K+ products. 88k items/pass under $100 token spend. 7 AI lenses + deterministic KPI math.
+Keep/Drop, Missed Opportunities, Top Style over 348k article-seasons. 88k items/pass token spend. 7 AI lenses + deterministic KPI math.
 
 ### Air-gap + ReplacingMergeTree
 LLM sees JSON, never issues CH writes. Two-phase inserts on RMT. Fallback to deterministic scores. **2.11B-row fact is on the PDF.**
@@ -105,7 +108,7 @@ Prior-season decision layer (carry-forward, Keep/Shop/Drop narration, no-code ca
 Two chapters: platform Go/Gin 10k RPS + CH 15.5x, then agentic Keep/Drop / Ask Iris / eval gate. Write plane Go; agent plane Python.
 
 **Q: Millions of rows?**
-2.11B fact, 2.4B weekly rollups, 250M pivot POC — all PDF. Masters 1M+/day is a different product.
+2.11B fact, six ClickHouse rollup tables, 250M pivot POC — all PDF. Masters 1M+/day is a different product.
 
 **Q: Is the agent in production?**
 Ask Iris is shipped as a capability. ≥80% is how we refuse a bad config. I will not say every tenant is on the promoted agent.

@@ -15,7 +15,7 @@ real experience and the honesty tags in `GROUND_TRUTH.md`.
 - Company LP guides: [`company_behavior_guides.md`](../campaign_extras/behavioral/company_behavior_guides.md)
 
 <div class="callout warn">
-<b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> (not all tenants live). Ask Iris is <b>shipped capability</b> (no tenant SLA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% / 14d→3d is on the PDF</b>. Menu <b>98% is offline eval</b>. <b>No Spark / SFT / K8s-ops</b>. Uber <b>via EPAM</b>. ANZ 99.9% HISTORICAL Mobility. 10k RPS / 2.11B / 2.4B / $100 = PDF / AssortSmart tab.
+<b>Never break these.</b> 300-case / 80% is a <b>CI promotion gate</b> (not all tenants live). Ask Iris is <b>shipped capability</b> (no tenant SLA). Cluster Copilot / Hindsight are <b>verbal only / not on PDF</b>. FRM <b>70% / 14d→3d is on the PDF</b>. Menu <b>98% is offline eval</b>. <b>No Spark / SFT / K8s-ops</b>. Uber <b>via EPAM</b>. ANZ 99.9% HISTORICAL Mobility. 10k RPS / 2.11B / 2.4B / $100 = PDF / AssortSmart tab.
 </div>
 
 ---
@@ -101,7 +101,7 @@ Stack on this track: FRM = **Spring Boot / MySQL** · AssortSmart writes = **Spr
 
 ### G1. Tell me about yourself (60–90s)
 
-"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Java and Python**. Chronologically: GeeksforGeeks Django reliability → Masters India, where I led a **Spring Boot strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned FRM (**36 Spring Boot endpoints**, 19M GL, 70% from 14 days to 3, $340M, led 3) and Uber Eats menu ingestion (24 hours to 2 hours, $600K/yr, Kafka+Flink exactly-once) → Impact Analytics, where I own AssortSmart's Go/Gin platform (10k peak RPS) and agentic Keep/Drop + shipped Ask Iris (LangGraph Supervisor+Evaluator; 300-case / ≥80% promotion gate). I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
+"I'm Tarun Mittal, a Senior Software Engineer with 5 years designing and owning cloud-native distributed systems in **Java and Python**. Chronologically: GeeksforGeeks Django reliability → Masters India, where I led a **Spring Boot strangler** and a Kafka e-invoicing path to 1M+ submissions a day → Uber via EPAM, where I owned FRM (**36 Spring Boot endpoints**, 19M GL, 70% from 14 days to 3, $340M, led 3) and Uber Eats menu ingestion (24 hours to 2 hours, $600K/yr, Kafka+Flink exactly-once) → Impact Analytics, where I own AssortSmart's Go/Gin platform (10k peak RPS) and agentic Keep/Drop + shipped Ask Iris (LangGraph Supervisor+Evaluator; 300-case / 80% promotion gate). I want a senior role where I keep owning systems end to end, with a stronger design-review bar."
 
 Stop. Do not append hobbies unless asked.
 

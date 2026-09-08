@@ -55,7 +55,7 @@ Do not say payments / money movement. Do not say encryption or a privacy program
 Do not say sub-second ClickHouse pivots (the PDF is 189s→12s). Do not say zero message loss.
 Exactly-once on Menu = idempotent catalog upserts + Flink keyed state — not 2PC across Gemini.
 Exactly-once on Masters = idempotency keys vs IRP (at-least-once + unique key). IRP is outside your transaction.
-300-case / ≥80% is a <b>CI promotion gate</b>, not all tenants live. Menu 98% is <b>offline eval</b>. Uber <b>via EPAM</b>. ANZ is <b>HISTORICAL Mobility</b>.
+300-case / 80% is a <b>CI promotion gate</b>, not all tenants live. Menu 98% is <b>offline eval</b>. Uber <b>via EPAM</b>. ANZ is <b>HISTORICAL Mobility</b>.
 Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF claims.</p>
 </div>
 <p>How to answer any tech: <strong>where → failure mode → rejected alternative → PDF number → what dies if it fails.</strong></p>
@@ -129,7 +129,7 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 <tr>
 <td>Stack on <strong>this</strong> PDF</td>
-<td><strong>FastAPI</strong>. Never say Go or Spring for Masters on this PDF</td>
+<td><strong>Spring Boot</strong> (hybrid / Java). PyGo PDF = FastAPI. Never say Go for Masters</td>
 </tr>
 </tbody>
 </table>
@@ -186,9 +186,9 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 <tr>
 <td>S2</td>
-<td><strong>Python and Go</strong> microservices; <strong>AI-assisted</strong> + <strong>RAG</strong></td>
-<td>Go=IA edge; Python=IA agents + Menu RAG + FastAPI history</td>
-<td>Do not invent Spring on this PDF</td>
+<td><strong>Java, Python and Go</strong> microservices; <strong>AI-assisted</strong> + <strong>RAG</strong></td>
+<td>Java=FRM/Masters; Go=IA edge; Python=IA agents + Menu RAG</td>
+<td>All three languages on every project</td>
 </tr>
 <tr>
 <td>S3</td>
@@ -215,8 +215,8 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 <tr>
 <td>Backend</td>
-<td>FastAPI/Gin/Django; no Spring on this PDF</td>
-<td>Do not say Spring Boot on FRM/Masters for this track</td>
+<td>Spring (history), FastAPI/Gin/Django where the PDF says</td>
+<td>Do not put Spring on IA on <strong>this</strong> hybrid PDF</td>
 </tr>
 <tr>
 <td>Generative AI</td>
@@ -245,7 +245,7 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 </tbody>
 </table>
-<h3 id="ia-platform">IA — Platform</h3>
+<h3 id="ia-core-infrastructure">IA — Core Infrastructure</h3>
 <table>
 <thead>
 <tr>
@@ -257,34 +257,34 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </thead>
 <tbody>
 <tr>
-<td>P1</td>
+<td>C1</td>
 <td>Go/Gin 10k peak RPS, Wire, h2c, no reverse proxy, Datadog</td>
 <td>Compile-time DI; process owns timeouts/h2c; traces at the edge</td>
 <td>Python public edge; nginx as the only timeout story</td>
 </tr>
 <tr>
-<td>P2</td>
-<td>15.5×; 189s→12s / 250M; 1.6M article-seasons; 2.4B weekly rollups</td>
-<td>Columnar CH for planner pivots</td>
-<td>PG OLAP; Snowflake cost/latency for this UI; <strong>sub-second</strong> (false)</td>
-</tr>
-<tr>
-<td>P3</td>
-<td>Dynamic KPI configurator; ifNotFinite SQL fragments</td>
+<td>C2</td>
+<td>KPI tokenizer; parameterized CH SQL; native division-by-zero (<code>ifNotFinite</code> wrap)</td>
 <td>Operators change math without deploys; NaN must not poison rollups</td>
-<td>Hard-coded SQL in Go</td>
+<td>Hard-coded SQL; raw string concat</td>
 </tr>
 <tr>
-<td>P4</td>
+<td>C3</td>
 <td>Isolation + UAM on <strong>PG + CH</strong>; OIDC waterfall; API keys</td>
 <td>Tenant bleed is a career-ending bug</td>
 <td>Encryption product; Milvus; “privacy program”</td>
 </tr>
 <tr>
-<td>P5</td>
-<td>100% statement coverage, race+atomic, 1200+ tests, SAST/SBOM</td>
-<td>Zero-regression on a multi-tenant edge</td>
-<td>Claiming the same gate for Python agents</td>
+<td>C4</td>
+<td>15.5× (189s to 12s on 250M-row ops), season/weekly rollups, 170GB OOM, temporal chunks, memory/spill caps</td>
+<td>Columnar CH for planner pivots. Week-sliced INSERT so weekly grain fits</td>
+<td>PG OLAP; <strong>sub-second</strong>; claiming OOM caused 15.5×</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>~344k rows/s Go native-TLS pump, allowlist bypass, up to 4.09B, 500k double-buffer, TSV + atomic partition rollbacks</td>
+<td>Copy season partitions between Cloud clusters</td>
+<td>344k TPS; finished 4.09B cutover; TSV is the copier; live-reader atomic swap</td>
 </tr>
 </tbody>
 </table>
@@ -301,33 +301,33 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 <tbody>
 <tr>
 <td>A1</td>
-<td>Keep/Drop + Missed Opp + Top Style; 335K+; 88k/&lt;$100; 7 lenses</td>
+<td>Keep/Drop + Missed Opp + Top Style; 348k article-seasons; 88k/pass; 7 lenses</td>
 <td>Mix deterministic KPI math + structured LLM; named pipelines not a chatbot</td>
-<td>One giant prompt</td>
+<td>One giant prompt; 348k = 1.6M catalog</td>
 </tr>
 <tr>
 <td>A2</td>
-<td>2.11B fact; air-gap LLM vs DB; RMT two-phase; JSON; fallback</td>
-<td>Hallucinated SQL must not write 2.11B rows</td>
+<td>2.11B master; JSON payloads not direct DB querying; RMT; timeout → det</td>
+<td>Hallucinated SQL must not hit 2.11B rows</td>
 <td>LLM-issued CH writes; you authored CDC</td>
 </tr>
 <tr>
 <td>A3</td>
-<td>Resilient AI orchestration registry; breakers; checkpoints; LangSmith</td>
-<td>Batch LLM must pause/resume and show token cost</td>
-<td>Ad-hoc scripts; one APM for agents and HTTP</td>
+<td>Shared registry; 88k survive provider failure; breakers; checkpoints skip det; config_hash; JSON telemetry</td>
+<td>Batch LLM must pause/resume and show USD</td>
+<td>Ad-hoc scripts; HITL queues</td>
 </tr>
 <tr>
 <td>A4</td>
-<td>Shipped Ask Iris; WebSocket; Supervisor+Evaluator; frozen scopes</td>
-<td>Interactive KPI/charts without unfreezing warehouse or looping</td>
+<td>Shipped Ask Iris; JWT WebSocket; supervisor; 3-attempt evaluator; LangSmith; handshake freeze</td>
+<td>Interactive KPI inspect without tenant bleed or loops</td>
 <td>Tenant-wide SLA; questions/week</td>
 </tr>
 <tr>
 <td>A5</td>
-<td>300-case / ≥80% CI gate vs 74% baseline</td>
-<td>Models must beat a <strong>free</strong> deterministic baseline</td>
-<td>“All tenants live at 80%”</td>
+<td>300-case proxy / 80% CI; 73% cost at 100% coverage; 74% det; freeze weights</td>
+<td>Models must beat a <strong>free</strong> baseline; cheaper complete model</td>
+<td>“All tenants live at 80%”; 73% from the 300-case file</td>
 </tr>
 <tr>
 <td>Tech</td>
@@ -337,7 +337,7 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 </tbody>
 </table>
-<h3 id="uber-frm-via-epam-fastapi-on-this-pdf">Uber FRM (via EPAM) — FastAPI on this PDF</h3>
+<h3 id="uber-frm-via-epam-spring-on-this-pdf">Uber FRM (via EPAM) — Spring on this PDF</h3>
 <table>
 <thead>
 <tr>
@@ -350,9 +350,9 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 <tbody>
 <tr>
 <td>F1</td>
-<td>70% recon 14d→3d; $340M; 19M GL; FastAPI endpoints; L1–L4</td>
+<td>70% recon 14d→3d; $340M; 19M GL; 36 Spring Boot endpoints; L1–L4</td>
 <td>Automate Sheets math into MySQL; PwC work papers</td>
-<td>Inventing you were an Uber FTE; quoting 36 Spring Boot endpoints on this PDF</td>
+<td>Inventing you were an Uber FTE</td>
 </tr>
 <tr>
 <td>F2</td>
@@ -362,15 +362,15 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 <tr>
 <td>F3</td>
-<td>Led 3; SQLAlchemy 100% coverage; Bazel; SQL allowlists; SOX 50% delta-variance</td>
+<td>Led 3; JPA/Hibernate 100% coverage; Bazel; SQL allowlists; SOX 50% delta-variance</td>
 <td>SOX needs explainable SQL and coverage</td>
 <td>Skipping allowlists</td>
 </tr>
 <tr>
 <td>Tech</td>
-<td>Python, FastAPI, SQLAlchemy, MySQL, pytest, Bazel, Docker</td>
-<td>This track’s FRM stack</td>
-<td>Spring on <strong>this</strong> FRM line</td>
+<td>Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker</td>
+<td>Uber JVM standard</td>
+<td>FastAPI on <strong>this</strong> FRM line</td>
 </tr>
 </tbody>
 </table>
@@ -411,7 +411,7 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 </tbody>
 </table>
-<h3 id="masters-gst-fastapi-on-this-pdf">Masters GST — FastAPI on this PDF</h3>
+<h3 id="masters-gst-spring-on-this-pdf">Masters GST — Spring on this PDF</h3>
 <table>
 <thead>
 <tr>
@@ -424,7 +424,7 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 <tbody>
 <tr>
 <td>G1</td>
-<td>p95 1.2s→300ms; 1500+ clients; PHP→FastAPI; 700→4000 rpm; mentored 2</td>
+<td>p95 1.2s→300ms; 1500+ clients; PHP→Spring Boot; 700→4000 rpm; mentored 2</td>
 <td>Strangler/canary; async IRP so workers do not pin</td>
 <td>Big-bang rewrite</td>
 </tr>
@@ -442,9 +442,9 @@ Cluster Copilot / Hindsight / Spark / Pinot / K8s-ops / CDC authorship = not PDF
 </tr>
 <tr>
 <td>Tech</td>
-<td>Python, FastAPI, Kafka, PG, Mongo, Redis, ES, Docker, ELK, New Relic, AWS</td>
-<td>This track</td>
-<td>Spring Boot on <strong>this</strong> PDF</td>
+<td>Java, Spring Boot, Hibernate, Kafka, PG, Mongo, Redis, ES, Docker, ELK, New Relic, AWS</td>
+<td>JVM ATS track</td>
+<td>FastAPI on <strong>this</strong> PDF</td>
 </tr>
 </tbody>
 </table>

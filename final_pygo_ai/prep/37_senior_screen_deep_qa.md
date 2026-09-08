@@ -1,7 +1,7 @@
 # Senior screen deep Q&A — millions / prod / perf / product / deploy
 
 **PDF:** `Tarun_Mittal_SSE_5yr.pdf`. Tags per `GROUND_TRUTH.md`.
-**Stack:** FRM/Masters = **FastAPI / SQLAlchemy 2.0** / **FastAPI**. AssortSmart platform = **Go Gin**. Agent = **Python, FastAPI, LangGraph**. MCP not on PDF.
+**Stack:** FRM/Masters = **Spring Boot / Spring Data JPA / Hibernate** / **Spring Boot**. AssortSmart platform = **Go Gin**. Agent = **Python, FastAPI, LangGraph**. MCP not on PDF.
 
 ---
 
@@ -9,12 +9,12 @@
 
 | Question | Lead with | Number | Honesty |
 |---|---|---|---|
-| Millions of requests / rows? | IA 10k RPS + 2.11B fact **or** Masters IRP | 10k peak RPS; 2.11B; 2.4B rollups; 1M+/day | PDF / HISTORICAL |
-| Production issue? | Packet OOM leak (tag not-PDF) **or** Menu anti-bot **or** IRP near-miss | 95%+; zero dup filings | HISTORICAL / packet |
+| Millions of requests / rows? | IA 10k RPS + 2.11B master **or** Masters IRP | 10k peak RPS; 2.11B; 348k article-seasons; 1M+/day | PDF / HISTORICAL |
+| Production issue? | **170GB weekly OOM** (IA, on PDF) **or** Menu anti-bot **or** IRP near-miss | 170GB; 95%+ | PDF / HISTORICAL |
 | Perf? | CH pivot **or** Masters p95 **or** Menu 24h→2h | 189s→12s; 1.2s→300ms | MEASURED / HISTORICAL |
-| Core product? | AssortSmart Platform+AI / FRM / Eats / GST / GFG | — | |
-| Complex system? | AssortSmart air-gap+Ask Iris **or** Menu E2E **or** FRM SOADB | 2.11B; exactly-once | PDF / HISTORICAL |
-| Deploy? | Go 100% coverage gate **or** Masters canary **or** Menu Kafka rewind | 100%; 98% deploy | PDF / HISTORICAL |
+| Core product? | AssortSmart Agentic+Core / FRM / Eats / GST / GFG | — | |
+| Complex system? | AssortSmart JSON payloads + Ask Iris **or** Menu E2E **or** FRM SOADB | 2.11B; exactly-once | PDF / HISTORICAL |
+| Deploy? | 80% agent CI gate **or** Masters canary **or** Menu Kafka rewind | 80% gate; 98% deploy | PDF / HISTORICAL |
 
 ---
 
@@ -22,9 +22,9 @@
 
 ### Q1.1 Impact Analytics / AssortSmart
 
-**Answer:** Merchandise-planning SaaS. On this PDF I own **two** chapters. Platform: Go/Gin **10k peak RPS**, Wire, h2c, Datadog; ClickHouse **189s to 12s** on **250M**, **1.6M** article-seasons, **2.4B** weekly rollups; ifNotFinite KPI parser; Firebase/JWT/OIDC; **100%** / **1,200+** Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on **335K+** products, **88k**/pass under **$100**, **7** lenses; **2.11B-row** fact air-gapped from batch LLM; **shipped Ask Iris** (Supervisor+Evaluator, frozen scopes); **300-case** / **≥80%** CI promotion gate vs **74%** baseline. **Verbal only:** Cluster Copilot · Hindsight.
+**Answer:** Merchandise-planning SaaS. On this PDF I own **two** chapters. Agentic: Keep/Drop + Missed Opportunities + Top Style on **348k article-seasons**, **88k**/pass, **7** lenses; JSON payloads vs a **2.11B-row** ClickHouse master; **shipped Ask Iris** (JWT WebSocket, supervisor, **3-attempt** evaluator, handshake freeze); **300-case** / **80%** CI gate, **73%** cheaper at **100%** coverage vs **74%** det with frozen weights. Core: Go/Gin **10k peak RPS**, Wire, h2c, Datadog; ClickHouse **189s to 12s** on **250M**; KPI tokenizer with division-by-zero protection; Firebase/JWT/OIDC; Go pump ~**344k rows/s** up to **4.09B**. **Verbal only:** Cluster Copilot · Hindsight. **1.6M catalog / 100% Go tests / $100/pass / 55GB·16GB** are off PDF.
 
-**Honesty:** Gate ≠ all tenants live. Do not invent extra TPS. Do not claim K8s-ops or Flink on IA.
+**Honesty:** Gate ≠ all tenants live. 73% is gold-200, not the 300-case file. Do not invent extra TPS. Do not claim K8s-ops or Flink on IA.
 
 ### Q1.2 Uber via EPAM
 

@@ -63,80 +63,92 @@ Source for new IA scale numbers: <strong>AssortSmart tab / PDF</strong>.</p>
 <tr>
 <td><strong>10k peak RPS</strong></td>
 <td>Go/Gin HTTP edge</td>
-<td>PDF / AssortSmart tab</td>
-<td><code>23a</code> P1</td>
+<td>PDF</td>
+<td><code>43</code> C1 · <code>23a</code></td>
 </tr>
 <tr>
 <td>Wire · h2c · Datadog · no reverse proxy</td>
 <td>Self-protecting edge</td>
 <td>PDF</td>
-<td><code>23a</code> P1</td>
+<td><code>43</code> C1</td>
 </tr>
 <tr>
-<td><strong>189s → 12s</strong> (~15.5×) on <strong>250M</strong></td>
+<td><strong>189s → 12s</strong> (~15.5×) on <strong>250M-row</strong> ops</td>
 <td>Row-identical PG vs CH POC (PDF rounds 12.3→12)</td>
 <td>MEASURED POC</td>
-<td><code>21_…</code></td>
+<td><code>21</code> · <code>43</code> C4</td>
 </tr>
 <tr>
-<td><strong>1.6M</strong> article-seasons · <strong>2.4B</strong> weekly rollups</td>
-<td>Catalog scale after CH migration</td>
-<td>PDF / AssortSmart tab</td>
-<td><code>23a</code> P2</td>
+<td><strong>170GB</strong> OOM · temporal chunks · memory/spill caps</td>
+<td>Write-time weekly GROUP BY</td>
+<td>PDF. 55GB/16GB verbal</td>
+<td><code>42</code> · <code>43</code> C4</td>
 </tr>
 <tr>
-<td>ifNotFinite KPI parser</td>
-<td>Operator math → safe CH SQL</td>
+<td><strong>348k article-seasons</strong> · Keep/Drop + Missed Opp + Top Style</td>
+<td>Scored volume</td>
 <td>PDF</td>
-<td><code>23a</code> P3</td>
+<td><code>43</code> A1</td>
+</tr>
+<tr>
+<td><strong>88k</strong> items/pass · <strong>7</strong> AI lenses</td>
+<td>Batch inference</td>
+<td>PDF. $100/pass off PDF</td>
+<td><code>43</code> A1</td>
+</tr>
+<tr>
+<td><strong>2.11B-row</strong> CH master · JSON payloads · RMT · timeout fallback</td>
+<td>Isolation</td>
+<td>PDF</td>
+<td><code>43</code> A2</td>
+</tr>
+<tr>
+<td>Registry · breakers · checkpoints skip det · config_hash</td>
+<td>Orchestration</td>
+<td>PDF</td>
+<td><code>43</code> A3</td>
+</tr>
+<tr>
+<td>Ask Iris JWT WS · 3-attempt evaluator · handshake freeze · LangSmith</td>
+<td>Copilot</td>
+<td>PDF shipped capability</td>
+<td><code>43</code> A4</td>
+</tr>
+<tr>
+<td><strong>300-case</strong> · <strong>80%</strong> CI gate</td>
+<td>Proxy gold <code>eval.json</code></td>
+<td>promotion gate ≠ all tenants live</td>
+<td><code>43</code> A5</td>
+</tr>
+<tr>
+<td><strong>73%</strong> cost · <strong>100%</strong> coverage</td>
+<td>gold-200 Luna vs mini</td>
+<td><strong>not</strong> the 300-case file</td>
+<td><code>43</code> A5</td>
+</tr>
+<tr>
+<td><strong>74%</strong> det baseline · freeze weights</td>
+<td>Production det threshold 0.65 on gold-200</td>
+<td>PDF</td>
+<td><code>43</code> A5</td>
+</tr>
+<tr>
+<td>~<strong>344k rows/s</strong> · <strong>4.09B</strong> · 500k double-buffer · partition rollbacks</td>
+<td>Go native-TLS pump</td>
+<td>PDF. Copy in flight</td>
+<td><code>43</code> C5 · <code>42</code></td>
+</tr>
+<tr>
+<td>KPI tokenizer · division-by-zero</td>
+<td><code>ifNotFinite</code> wrap</td>
+<td>PDF</td>
+<td><code>43</code> C2</td>
 </tr>
 <tr>
 <td>Firebase → JWT/OIDC · Redis · Postgres roles</td>
 <td>Auth waterfall + UAM</td>
 <td>PDF</td>
-<td><code>23a</code> P4</td>
-</tr>
-<tr>
-<td><strong>100.0%</strong> coverage · <strong>1,200+</strong> Go tests · golangci-lint · SAST/SBOM</td>
-<td>CI gate (race/atomic)</td>
-<td>PDF</td>
-<td><code>23a</code> P5</td>
-</tr>
-<tr>
-<td><strong>335K+</strong> products · Keep/Drop + Missed Opp + Top Style</td>
-<td>Multi-pipeline engine</td>
-<td>PDF</td>
-<td><code>23a</code> A1</td>
-</tr>
-<tr>
-<td><strong>88k</strong> items/pass under <strong>$100</strong> · <strong>7</strong> AI lenses</td>
-<td>Token-efficient inference</td>
-<td>PDF / AssortSmart tab</td>
-<td><code>23a</code> A1</td>
-</tr>
-<tr>
-<td><strong>2.11B-row</strong> CH fact · air-gap LLM vs DB · RMT two-phase</td>
-<td>Corruption control</td>
-<td>PDF / AssortSmart tab</td>
-<td><code>23a</code> A2</td>
-</tr>
-<tr>
-<td>Registry · circuit breakers · checkpoints · LangSmith</td>
-<td>Orchestration</td>
-<td>PDF</td>
-<td><code>23a</code> A3</td>
-</tr>
-<tr>
-<td>Ask Iris shipped · Supervisor+Evaluator · frozen scopes</td>
-<td>WebSocket copilot</td>
-<td>PDF shipped capability</td>
-<td><code>23a</code> A4</td>
-</tr>
-<tr>
-<td><strong>300-case</strong> · <strong>≥80%</strong> CI promotion gate · <strong>74%</strong> deterministic baseline</td>
-<td>Eval harness</td>
-<td>promotion gate ≠ all tenants live</td>
-<td><code>23a</code> A5</td>
+<td><code>43</code> C3</td>
 </tr>
 </tbody>
 </table>
@@ -150,6 +162,26 @@ Source for new IA scale numbers: <strong>AssortSmart tab / PDF</strong>.</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><strong>$100</strong>/pass token spend</td>
+<td>MEASURED, off PDF</td>
+<td>Dropped from this PDF for space</td>
+</tr>
+<tr>
+<td><strong>1.6M</strong> article-seasons (catalog)</td>
+<td>verbal</td>
+<td>Do not mix with 348k scored</td>
+</tr>
+<tr>
+<td><strong>55GB</strong> cap / <strong>16GB</strong> spill / one fiscal week</td>
+<td>verbal OOM knobs</td>
+<td>PDF says temporal chunks</td>
+</tr>
+<tr>
+<td><strong>100.0%</strong> coverage · <strong>1,200+</strong> Go tests</td>
+<td>LinkedIn / verbal</td>
+<td>Off PDF</td>
+</tr>
 <tr>
 <td>≥20 configs / under 1h / 8.5% (37/437) → under 2% / 14 tools / 3 gates</td>
 <td>TARGET / DESIGN / MEASURED baseline</td>

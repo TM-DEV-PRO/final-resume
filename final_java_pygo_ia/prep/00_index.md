@@ -11,7 +11,7 @@ Backs this track (PDF: `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`). Canonical claim
 ## Study order
 
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) · [`00_final_resume_map.md`](00_final_resume_map.md)
-2. [`41_pdf_bullet_tech_defense.md`](41_pdf_bullet_tech_defense.md) · [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)
+2. [`43_ia_bullet_defense.md`](43_ia_bullet_defense.md) · [`41_pdf_bullet_tech_defense.md`](41_pdf_bullet_tech_defense.md) · [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`42_clickhouse_rollup_migration.md`](42_clickhouse_rollup_migration.md) · [`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)
 3. [`37_senior_screen_deep_qa.md`](37_senior_screen_deep_qa.md) · [`32_common_interview_qa.md`](32_common_interview_qa.md)
 4. FRM/Menu/Masters: [`11_uber_frm_deep_dive.md`](11_uber_frm_deep_dive.md) · [`14_uber_menu_deep_dive.md`](14_uber_menu_deep_dive.md) · [`12_masters_gfg_deep_dive.md`](12_masters_gfg_deep_dive.md)
 5. [`36_skills_ai_agents_defense.md`](36_skills_ai_agents_defense.md) · diagrams/schemas `33`/`34`/`35`
@@ -27,10 +27,12 @@ Backs this track (PDF: `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`). Canonical claim
 | Menu / GFG | Python (Selenium→Kafka→Flink exactly-once; PHP→Django) |
 
 <div class="callout warn">
-<b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> — not “all tenants live.”
-Ask Iris is <b>Shipped</b> on the PDF as a capability — do not invent tenant-wide SLAs.
-10k peak RPS / 2.11B / 2.4B / $100 token / 1.6M article-seasons / 335K+ products are <b>on the PDF</b> (source: AssortSmart tab / PDF).
-Cluster Recommendation Copilot / Hindsight are <b>verbal only / not on PDF</b>.
+<b>Never break these.</b> 300-case / 80% is a <b>CI promotion gate</b> — not “all tenants live.”
+73% cost / 100% coverage is the <b>gold-200</b> model bench, not the 300-case file.
+Ask Iris is <b>Shipped</b> (JWT WebSocket, 3-attempt evaluator) — do not invent tenant-wide SLAs.
+On PDF: 10k peak RPS · 2.11B master · 348k article-seasons · 88k/pass · 15.5× / 170GB OOM · ~344k rows/s · 4.09B · 74% det · frozen weights.
+Off PDF / verbal: $100/pass · 1.6M catalog · 55GB/16GB knobs · 100% Go coverage.
+Cluster Recommendation Copilot / Hindsight are <b>verbal only</b>.
 Menu <b>98% is offline eval</b>. Uber work was <b>via EPAM</b>. ANZ 99.9% is <b>HISTORICAL Mobility</b>.
 Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafka/Flink belongs on <b>Menu</b>, not IA.
 </div>
@@ -40,7 +42,7 @@ Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafk
 
 | Company | Lead claims |
 |---|---|
-| Impact Analytics | Two IA subsections: Platform (10k RPS, CH 189s→12s / 1.6M / 2.4B, KPI parser, Firebase/OIDC, 100% / 1200+ tests) and Agentic (335K+, 88k/<$100, 7 lenses, 2.11B air-gap, Ask Iris shipped, 300-case / ≥80% gate vs 74% baseline) |
+| Impact Analytics | Two IA subsections: Agentic (348k article-seasons, 88k/pass, 7 lenses, JSON payloads vs 2.11B master, registry/checkpoints, Ask Iris JWT+3-attempt, 300-case / 80% gate, 73% cost / 100% coverage vs 74% det) then Core (10k RPS, KPI tokenizer + div-by-zero, isolation, 15.5× / 170GB OOM / temporal chunks, Go pump ~344k rows/s up to 4.09B, partition rollbacks). Coverage 100%/1200+ is LinkedIn / verbal. |
 | Uber FRM | 36 Spring Boot endpoints; 70% 14d→3d; $340M; 19M GL; L1–L4; 8-table SOADB; SHA-256; led 3; 100% coverage; SOX 50% |
 | Uber Menu | 24h→2h; $600K; 30K+; 98% offline RAG/Milvus; 95%+; Kafka+Flink exactly-once |
 | ANZ | 99.9% HISTORICAL Mobility; 20h/week |

@@ -29,7 +29,7 @@ Full answers: [`07_behavioral_star_stories.md`](07_behavioral_star_stories.md) �
 ## Per-project one-liners
 
 **IA — Platform + Agentic (PDF)**
-Go/Gin 10k RPS, Wire, h2c, Datadog; CH 189s→12s / 1.6M / 2.4B; ifNotFinite; PG+CH data isolation + OIDC; 100%/1200+ tests. Keep/Drop + Missed Opp + Top Style, 335K+, 88k/<$100, 7 lenses; 2.11B air-gap; Ask Iris shipped; 300-case / ≥80% vs 74% (gate, not GA). **Verbal:** Copilot · Hindsight.
+Go/Gin 10k RPS, Wire, h2c, Datadog; CH 189s to 12s / six tables / 170 GB OOM; ifNotFinite; PG+CH data isolation + OIDC; 100%/1200+ tests. Keep/Drop + Missed Opp + Top Style, 348k article-seasons, 88k/pass, 7 lenses; 2.11B JSON payloads; Ask Iris shipped; 300-case / 80% vs 74% (gate, not GA). **Verbal:** Copilot · Hindsight.
 
 **Uber FRM (via EPAM)**
 Spring Boot / Spring Data JPA / Hibernate; 36 Spring Boot endpoints; 19M GL; L1–L4; 8-table SOADB; SHA-256; 70% 14d→3d; $340M; led 3; 100% coverage; SOX 50%.

@@ -23,8 +23,9 @@ Every markdown file is mirrored to HTML beside it. Entry points:
 ## Current PDF facts (Sep 2026)
 
 - Two-page layout; contact identity is on page 1 only (no repeating header on page 2).
-- IA is structured as **Platform Engineering & Infrastructure** + **Agentic Flows & Orchestration**.
-- Headline IA numbers: Go/Gin 10k RPS, ClickHouse 189s → 12s (15.5x) on 250M, 1.6M article-seasons, 2.4B weekly rollups, Keep/Drop + Ask Iris, 300-case / ≥80% promotion gate.
+- IA is structured as **Agentic Flows & Orchestration** then **Core Infrastructure & Pipeline**.
+- Headline IA numbers: 348k article-seasons, 88k/pass, JSON payloads vs 2.11B master, Ask Iris JWT + 3-attempt evaluator, 300-case / 80% gate, 73% cost / 100% coverage vs 74% det; Go/Gin 10k RPS, KPI tokenizer, isolation, 15.5× (189s to 12s on 250M-row ops) with 170GB OOM / temporal chunks, Go pump ~344k rows/s up to 4.09B with partition rollbacks.
+- Off PDF / verbal: $100/pass, 1.6M catalog, 55GB/16GB knobs, 100% Go coverage / 1,200+ tests.
 - FRM: 70% (14 days → 3 days), 19M GL rows, 36 endpoints, L1–L4. Menu: 24 hours → 2 hours, $600K.
 - Cluster Recommendation Copilot and Hindsight remain **verbal / deep-dive only**.
 - `final_java_pygo_ia` and `final_pygo_ai` share email/phone.

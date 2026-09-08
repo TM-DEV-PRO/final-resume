@@ -1,7 +1,7 @@
 # Behavioral / managerial rounds — 10 STAR stories
 
 
-> **PDF IA (Sep 2026):** Platform Engineering & Infrastructure + Agentic Flows & Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / ≥80% gate). **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
+> **PDF IA (Sep 2026):** Core Infrastructure & Pipeline + Agentic Flows & Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / 80% gate). **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight. Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
 On this track Uber FRM is **FastAPI / SQLAlchemy 2.0** and Masters India is **FastAPI**; AssortSmart platform APIs are **Go / Gin**; the agent plane stays **Python**.
 
@@ -141,9 +141,19 @@ Each story is mapped to **Amazon Leadership Principles (LP)** and **Googliness s
 
 - **S:** Planner pivots on Postgres blew past 30s and toward **189s** at **250M** rows.
 - **T:** RFC + PoC + adoption without pretending CH is a generic PG replacement.
-- **A:** Wrote the RFC (hybrid vs insert-only agentic store). Ran row-identical POC. Chose CH for analytical reads (PDF: **189s to 12s**, then **1.6M** article-seasons / **2.4B** rollups). Kept PG for roles/OLTP cells. Air-gapped LLM from the **2.11B** fact table.
-- **R:** Org committed to CH for planning analytics; KPI parser + RMT two-phase landed on the PDF.
+- **A:** Wrote the RFC (hybrid vs insert-only agentic store). Ran row-identical POC. Chose CH for analytical reads (PDF: **189s to 12s** on **250M**, six rollup tables, weekly grain after a **170 GB** OOM). Kept PG for roles/OLTP cells. Air-gapped LLM from the **2.11B** fact table.
+- **R:** Org committed to CH for planning analytics; KPI parser + RMT two-phase landed on the PDF. Six rollup tables and the 170 GB weekly OOM story are now P2. The Go pump is P5.
 - **Lesson:** Measure first; split write-models; do not dual-write a religion.
+
+## 12b. Weekly rollup OOM (hardest technical hurdle)
+
+**Use for:** technical hurdle / failure / how you debug memory at scale. Full pack: `42_clickhouse_rollup_migration.md`.
+
+- **S:** Whole-season weekly INSERT SELECT sat around 170 GB of aggregator state and failed MEMORY_LIMIT_EXCEEDED at 80 GB and 200 GB.
+- **T:** Keep weekly grain without melting a ~59 core / 236 GiB replica.
+- **A:** Slice to one fiscal week. Cap 55 GB, 16 GB spill, 4 weeks in flight. Attr weeks peaked over 40 GB. Product weeks around 11 GB.
+- **R:** Weekly grain builds. Do not say this caused the 15.5x pivot. That is a 250M request-time harness.
+- **Lesson:** Shrink the unit of work before you buy RAM.
 
 
 ## Rapid-fire answers (30 seconds each)

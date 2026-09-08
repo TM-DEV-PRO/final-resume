@@ -42,7 +42,7 @@ strong{color:#fff}
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-assortsmart-deep-dive-final-pygo-ai">Impact Analytics — AssortSmart deep dive (Final PyGo + AI)</a>
 <a class="lvl2" href="#0-what-to-lead-with-60s">0. What to lead with (60s)</a>
-<a class="lvl2" href="#1-platform-engineering-infrastructure">1. Platform Engineering &amp; Infrastructure</a>
+<a class="lvl2" href="#1-core-infrastructure-pipeline">1. Core Infrastructure &amp; Pipeline</a>
 <a class="lvl2" href="#2-agentic-flows-orchestration">2. Agentic Flows &amp; Orchestration</a>
 <a class="lvl2" href="#3-ch-vs-pg-vs-snowflake-packet-pdf-honest">3. CH vs PG vs Snowflake (packet, PDF-honest)</a>
 <a class="lvl2" href="#4-architecture-ascii">4. Architecture ASCII</a>
@@ -53,9 +53,9 @@ strong{color:#fff}
 <p><strong>PDF (Sep 2026):</strong> two subsections. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.
 <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/63/8/12B.</p>
 <div class="callout warn">
-<p><b>Never break these.</b> 300-case / ≥80% is a <b>CI promotion gate</b> — not “all tenants live.”
+<p><b>Never break these.</b> 300-case / 80% is a <b>CI promotion gate</b> — not “all tenants live.”
 Ask Iris is <b>Shipped</b> on the PDF as a capability — do not invent tenant-wide SLAs.
-10k peak RPS / 2.11B / 2.4B / $100 token / 1.6M article-seasons / 335K+ products are <b>on the PDF</b> (source: AssortSmart tab / PDF).
+10k peak RPS / 2.11B fact / six rollup tables / 170 GB weekly OOM / ~344k rows/s copy / 4.09B attr weekly (two seasons) / $100 token / 348k article-seasons are <b>on the PDF</b>. 1.6M article-seasons and 100% Go coverage are <b>LinkedIn / verbal</b>.
 Cluster Recommendation Copilot / Hindsight are <b>verbal only / not on PDF</b>.
 Menu <b>98% is offline eval</b>. Uber work was <b>via EPAM</b>. ANZ 99.9% is <b>HISTORICAL Mobility</b>.
 Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafka/Flink belongs on <b>Menu</b>, not IA.</p>
@@ -65,23 +65,25 @@ Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafk
 <hr>
 <h2 id="0-what-to-lead-with-60s">0. What to lead with (60s)</h2>
 <p>Platform: Go/Gin <strong>10k peak RPS</strong>, Wire, h2c, Datadog; CH <strong>189s→12s</strong> on <strong>250M</strong>, <strong>1.6M</strong> article-seasons, <strong>2.4B</strong> weekly rollups; ifNotFinite KPI parser; Firebase/JWT/OIDC + Redis + Postgres roles; <strong>100%</strong> / <strong>1200+</strong> Go tests / golangci-lint / SAST/SBOM.</p>
-<p>Agentic: Keep/Drop + Missed Opportunities + Top Style, <strong>335K+</strong>, <strong>88k</strong>/pass under <strong>$100</strong>, <strong>7</strong> lenses; <strong>2.11B</strong> fact air-gap + RMT two-phase; registry/breakers/checkpoints/LangSmith; <strong>shipped Ask Iris</strong>; <strong>300-case</strong> / <strong>≥80%</strong> CI gate vs <strong>74%</strong> baseline.</p>
+<p>Agentic: Keep/Drop + Missed Opportunities + Top Style, <strong>348k article-seasons</strong>, <strong>88k</strong>/pass under <strong>$100</strong>, <strong>7</strong> lenses; <strong>2.11B</strong> fact air-gap + RMT two-phase; registry/breakers/checkpoints/LangSmith; <strong>shipped Ask Iris</strong>; <strong>300-case</strong> / <strong>≥80%</strong> CI gate vs <strong>74%</strong> baseline.</p>
 <hr>
-<h2 id="1-platform-engineering-infrastructure">1. Platform Engineering &amp; Infrastructure</h2>
+<h2 id="1-core-infrastructure-pipeline">1. Core Infrastructure &amp; Pipeline</h2>
 <h3 id="10k-rps-wire-h2c-datadog">10k RPS / Wire / h2c / Datadog</h3>
 <p>Self-protecting edge (no reverse proxy). Nested timeouts, body cap, SIGTERM drain. <strong>Tag:</strong> PDF / AssortSmart tab. Do not invent uptime %.</p>
-<h3 id="clickhouse-189s12s-16m-24b">ClickHouse 189s→12s, 1.6M, 2.4B</h3>
-<p>MEASURED POC at 250M (PDF rounds 12.3s to 12s). Hardware was unfair to CH (Docker 3.3GB vs PG 48GB host) and CH still won the heavy grid. Verbal: DISTINCT caveat ~2–3× vs ~13–15×. Catalog numbers 1.6M / 2.4B are <strong>on the PDF</strong>.</p>
+<h3 id="clickhouse-189s-to-12s-six-tables-170-gb-oom">ClickHouse 189s to 12s, six tables, 170 GB OOM</h3>
+<p>MEASURED POC at 250M (PDF rounds 12.3s to 12s). Hardware was unfair to CH (Docker 3.3GB vs PG 48GB host) and CH still won the heavy grid. Verbal: DISTINCT caveat ~2 to 3x vs ~13 to 15x. PDF P2 is six rollup tables plus week-sliced INSERT after a roughly 170 GB aggregator OOM. 1.6M article-seasons is true, off PDF. Full pack: <code>42_clickhouse_rollup_migration.md</code>.</p>
+<h3 id="go-cluster-copy-344k-rowss">Go cluster copy (~344k rows/s)</h3>
+<p>PDF P5. Native TLS pump, 500k-row columnar batches, double buffering, season DROP PARTITION. Measured on a 4.09B-row attr weekly set covering two seasons. Copy was in flight. Not API RPS. See <code>42</code>.</p>
 <h3 id="ifnotfinite-parser">ifNotFinite parser</h3>
 <p>Operator-authored KPI math compiled to safe CH fragments so merch logic is not a release train.</p>
 <h3 id="auth-waterfall">Auth waterfall</h3>
 <p>Redis-fronted Firebase Admin → JWT / Google OIDC; constant-time API keys; Postgres roles; UAM hierarchy. Cache miss ≠ fail-open.</p>
 <h3 id="ci">CI</h3>
-<p>100.0% statement coverage gate (race + atomic), 1,200+ Go tests, golangci-lint, SAST/SBOM. Own 99.93% profile if asked.</p>
+<p>100.0% statement coverage gate (race + atomic), 1,200+ Go tests, golangci-lint, SAST/SBOM. Own 99.93% profile if asked. <strong>Off this PDF.</strong> LinkedIn / verbal.</p>
 <hr>
 <h2 id="2-agentic-flows-orchestration">2. Agentic Flows &amp; Orchestration</h2>
 <h3 id="three-pipelines-not-one-chatbot">Three pipelines, not one chatbot</h3>
-<p>Keep/Drop, Missed Opportunities, Top Style over 335K+ products. 88k items/pass under $100 token spend. 7 AI lenses + deterministic KPI math.</p>
+<p>Keep/Drop, Missed Opportunities, Top Style over 348k article-seasons. 88k items/pass token spend. 7 AI lenses + deterministic KPI math.</p>
 <h3 id="air-gap-replacingmergetree">Air-gap + ReplacingMergeTree</h3>
 <p>LLM sees JSON, never issues CH writes. Two-phase inserts on RMT. Fallback to deterministic scores. <strong>2.11B-row fact is on the PDF.</strong></p>
 <h3 id="registry">Registry</h3>
@@ -137,7 +139,7 @@ Do not invent Spark / Pinot / Kubernetes-operations / CDC ownership. Packet Kafk
 <p><strong>Q: Walk AssortSmart.</strong>
 Two chapters: platform Go/Gin 10k RPS + CH 15.5x, then agentic Keep/Drop / Ask Iris / eval gate. Write plane Go; agent plane Python.</p>
 <p><strong>Q: Millions of rows?</strong>
-2.11B fact, 2.4B weekly rollups, 250M pivot POC — all PDF. Masters 1M+/day is a different product.</p>
+2.11B fact, six ClickHouse rollup tables, 250M pivot POC — all PDF. Masters 1M+/day is a different product.</p>
 <p><strong>Q: Is the agent in production?</strong>
 Ask Iris is shipped as a capability. ≥80% is how we refuse a bad config. I will not say every tenant is on the promoted agent.</p>
 <p><strong>Q: Spark on IA?</strong>

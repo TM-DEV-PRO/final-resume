@@ -1,6 +1,6 @@
 # Architecture — Impact Analytics AssortSmart (Platform & AI)
 
-**PDF (Sep 2026):** two subsections — Platform Engineering & Infrastructure, Agentic Flows & Orchestration.
+**PDF (Sep 2026):** two subsections — Core Infrastructure & Pipeline, Agentic Flows & Orchestration.
 **Verbal only / not on PDF:** Cluster Recommendation Copilot · Hindsight (keep FRD notes below labeled as such).
 Canonical: `docs/ASSORTSMART_TAB_RESUME.md`.
 
@@ -36,7 +36,7 @@ Kafka / Flink / Spark / K8s-ops are **not** IA PDF claims (Menu owns Kafka+Flink
                         ifNotFinite KPI   breakers / checkpoints
                                           Ask Iris Supervisor+Evaluator
                                           frozen socket scopes
-                                          300-case / ≥80% gate vs 74% baseline
+                                          300-case / 80% gate vs 74% baseline
 ```
 
 Packet diagrams that show Kafka→Flink→CH on IA, or K8s as “owned ops,” are **overclaim**. Use them only as generic study sketches, never as “what I shipped on AssortSmart.”

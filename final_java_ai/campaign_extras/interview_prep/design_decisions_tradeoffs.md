@@ -11,7 +11,7 @@ Every major decision on `Tarun_Mittal_SSE_5yr_Java_AI.pdf` with how / why / alte
 **Alt rejected:** Python monolith as the public edge; “just put it behind GFE/nginx and don’t think.”
 
 ### ClickHouse vs Postgres vs Snowflake (packet defense, PDF-honest)
-**What:** 189s→12s on 250M; 1.6M article-seasons; 2.4B weekly rollups.
+**What:** 189s→12s on 250M; six ClickHouse rollup tables (product, store, attr at season and weekly grains).
 **Why Postgres failed for planner pivots:** row store scans whole rows for multi-column GROUP BY; lock/IO.
 **Why ClickHouse:** columnar + vectorized execution; only the pivot columns hit disk.
 **Why not Snowflake/BQ for this UI:** interactive latency + cost of shared slots (BQ probes 1–20s+ MEASURED). Self-hosted CH matched the read pattern.
@@ -35,7 +35,7 @@ Every major decision on `Tarun_Mittal_SSE_5yr_Java_AI.pdf` with how / why / alte
 ## Impact Analytics — Agentic
 
 ### Deterministic KPI + 7 lenses vs LLM-only
-**What:** 335K+ products; 88k/pass under $100.
+**What:** 348k article-seasons; 88k/pass.
 **Why:** Merch math must be auditable; LLM adds judgment, not the SoR.
 **Alt:** free-form SQL tool.
 
@@ -49,7 +49,7 @@ Every major decision on `Tarun_Mittal_SSE_5yr_Java_AI.pdf` with how / why / alte
 **Why:** Evaluator loop + socket-level freeze stop infinite loops and cross-tenant reads.
 **Honesty:** shipped **capability**, no invented tenant SLA.
 
-### 300-case / ≥80% gate vs 74% baseline
+### 300-case / 80% gate vs 74% baseline
 **What:** CI promotion gate.
 **Why:** Free deterministic rule is the bar models must beat.
 **Do not say:** all tenants live at ≥80%.

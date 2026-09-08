@@ -14,23 +14,23 @@ Canonical claims: [`../../docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMAR
 | S3 | Shipping production systems; backend migrations; reliability / performance / scalability | `41` | framing |
 | IA0 | Project title: **AssortSmart — Senior Software Engineer (Platform & AI)** | `23a` · PIPELINE.md | product |
 
-## IA — Platform Engineering & Infrastructure
+## IA — Agentic Flows & Orchestration (PDF first)
 | # | PDF claim | Defense pack | Tag |
 |---|---|---|---|
-| P1 | Go/Gin 10k peak RPS · Wire · h2c · Datadog · no reverse proxy | `23a` P1 · `10` | PDF / AssortSmart tab |
-| P2 | 15.5x · 189s→12s on 250M · 1.6M article-seasons · 2.4B weekly rollups | `21_ia_pivot_benchmark_source.md` · `23a` P2 | MEASURED POC + PDF catalog scale |
-| P3 | KPI configurator / ifNotFinite formula parser | `23a` P3 · `10` | PDF |
-| P4 | Multi-tenant data isolation + UAM access control on PG + ClickHouse · OIDC · API keys | `23a` P4 · `41` | PDF |
-| P5 | 100.0% coverage CI · 1200+ Go tests · golangci-lint · SAST/SBOM | `23a` P5 | PDF |
+| A1 | Keep/Drop + Missed Opportunities + Top Style · 348k article-seasons · 88k/pass · 7 lenses | `43` A1 · `23a` A1 · PIPELINE.md | PDF. $100/pass off PDF |
+| A2 | 2.11B-row CH master · JSON payloads not direct DB querying · RMT · timeout → det baseline | `43` A2 · `23a` A2 | PDF |
+| A3 | Shared registry · 88k survive provider failure · timeouts / breakers / checkpoints · config_hash · JSON telemetry | `43` A3 · `23a` A3 | PDF |
+| A4 | Shipped Ask Iris JWT WebSocket · LangGraph supervisor · 3-attempt evaluator · LangSmith · freeze hierarchy on handshake | `43` A4 · `23a` A4 | PDF shipped capability |
+| A5 | 300-case proxy · 80% CI gate · 73% cost / 100% coverage · 74% det · freeze blend weights | `43` A5 · `23a` A5 | 73% = gold-200. Gate ≠ all tenants live |
 
-## IA — Agentic Flows & Orchestration
+## IA — Core Infrastructure & Pipeline
 | # | PDF claim | Defense pack | Tag |
 |---|---|---|---|
-| A1 | Keep/Drop + Missed Opportunities + Top Style · 335K+ · 88k/pass under $100 · 7 lenses | `23a` A1 · PIPELINE.md | PDF |
-| A2 | 2.11B-row CH fact · air-gap LLM vs DB · ReplacingMergeTree two-phase | `23a` A2 | PDF |
-| A3 | Orchestration registry · circuit breakers · checkpoints · LangSmith telemetry | `23a` A3 | PDF |
-| A4 | Shipped Ask Iris WebSocket · LangGraph Supervisor+Evaluator · frozen scopes | `23a` A4 | PDF shipped capability |
-| A5 | 300-case offline eval · ≥80% CI promotion gate · 74% deterministic baseline | `23a` A5 | promotion gate ≠ all tenants live |
+| C1 | Go/Gin 10k peak RPS · Wire · h2c · Datadog · no reverse proxy | `43` C1 · `23a` · `10` | PDF / AssortSmart tab |
+| C2 | KPI configurator / tokenizer · parameterized CH SQL · native division-by-zero (`ifNotFinite` verbal) | `43` C2 · `23a` | PDF |
+| C3 | Multi-tenant data isolation + UAM access control on PG + ClickHouse · OIDC · API keys | `43` C3 · `41` | PDF |
+| C4 | 15.5× · 189s to 12s on 250M-row ops · season/weekly rollups · 170GB OOM · temporal chunks · memory/spill caps | `21_ia_pivot_benchmark_source.md` · `43` C4 · `42_clickhouse_rollup_migration.md` | MEASURED POC + PDF. 55GB/16GB verbal |
+| C5 | ~344k rows/s Go native-TLS pump · allowlist bypass · 4.09B · 500k double-buffer · TSV + atomic partition rollbacks | `43` C5 · `42` | PDF. Copy in flight. TSV is loader. Rollback = DROP then recopy |
 
 ## Rest of PDF
 | # | PDF claim | Defense pack | Tag |
@@ -44,6 +44,7 @@ Canonical claims: [`../../docs/ASSORTSMART_TAB_RESUME.md`](../../docs/ASSORTSMAR
 ## Schemas · ER · APIs · design decisions
 | Topic | File |
 |---|---|
+| IA bullet defense (current PDF Q&A) | `43_ia_bullet_defense.md` |
 | Architecture diagrams | `33_architecture_diagrams.md` · `campaign_extras/interview_prep/architecture/` |
 | ER + tables + why tech | `34_er_tables_tech_why.md` |
 | Column schemas + API design | `35_table_schemas_api_design.md` |

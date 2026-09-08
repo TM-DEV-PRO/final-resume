@@ -7,24 +7,30 @@ Source for new IA scale numbers: **AssortSmart tab / PDF**.
 
 | Resume number | Why / how | Tag | Defense |
 |---|---|---|---|
-| **10k peak RPS** | Go/Gin HTTP edge | PDF / AssortSmart tab | `23a` P1 |
-| Wire · h2c · Datadog · no reverse proxy | Self-protecting edge | PDF | `23a` P1 |
-| **189s → 12s** (~15.5×) on **250M** | Row-identical PG vs CH POC (PDF rounds 12.3→12) | MEASURED POC | `21_…` |
-| **1.6M** article-seasons · **2.4B** weekly rollups | Catalog scale after CH migration | PDF / AssortSmart tab | `23a` P2 |
-| ifNotFinite KPI parser | Operator math → safe CH SQL | PDF | `23a` P3 |
-| Firebase → JWT/OIDC · Redis · Postgres roles | Auth waterfall + UAM | PDF | `23a` P4 |
-| **100.0%** coverage · **1,200+** Go tests · golangci-lint · SAST/SBOM | CI gate (race/atomic) | PDF | `23a` P5 |
-| **335K+** products · Keep/Drop + Missed Opp + Top Style | Multi-pipeline engine | PDF | `23a` A1 |
-| **88k** items/pass under **$100** · **7** AI lenses | Token-efficient inference | PDF / AssortSmart tab | `23a` A1 |
-| **2.11B-row** CH fact · air-gap LLM vs DB · RMT two-phase | Corruption control | PDF / AssortSmart tab | `23a` A2 |
-| Registry · circuit breakers · checkpoints · LangSmith | Orchestration | PDF | `23a` A3 |
-| Ask Iris shipped · Supervisor+Evaluator · frozen scopes | WebSocket copilot | PDF shipped capability | `23a` A4 |
-| **300-case** · **≥80%** CI promotion gate · **74%** deterministic baseline | Eval harness | promotion gate ≠ all tenants live | `23a` A5 |
+| **10k peak RPS** | Go/Gin HTTP edge | PDF | `43` C1 · `23a` |
+| Wire · h2c · Datadog · no reverse proxy | Self-protecting edge | PDF | `43` C1 |
+| **189s → 12s** (~15.5×) on **250M-row** ops | Row-identical PG vs CH POC (PDF rounds 12.3→12) | MEASURED POC | `21` · `43` C4 |
+| **170GB** OOM · temporal chunks · memory/spill caps | Write-time weekly GROUP BY | PDF. 55GB/16GB verbal | `42` · `43` C4 |
+| **348k article-seasons** · Keep/Drop + Missed Opp + Top Style | Scored volume | PDF | `43` A1 |
+| **88k** items/pass · **7** AI lenses | Batch inference | PDF. $100/pass off PDF | `43` A1 |
+| **2.11B-row** CH master · JSON payloads · RMT · timeout fallback | Isolation | PDF | `43` A2 |
+| Registry · breakers · checkpoints skip det · config_hash | Orchestration | PDF | `43` A3 |
+| Ask Iris JWT WS · 3-attempt evaluator · handshake freeze · LangSmith | Copilot | PDF shipped capability | `43` A4 |
+| **300-case** · **80%** CI gate | Proxy gold `eval.json` | promotion gate ≠ all tenants live | `43` A5 |
+| **73%** cost · **100%** coverage | gold-200 Luna vs mini | **not** the 300-case file | `43` A5 |
+| **74%** det baseline · freeze weights | Production det threshold 0.65 on gold-200 | PDF | `43` A5 |
+| ~**344k rows/s** · **4.09B** · 500k double-buffer · partition rollbacks | Go native-TLS pump | PDF. Copy in flight | `43` C5 · `42` |
+| KPI tokenizer · division-by-zero | `ifNotFinite` wrap | PDF | `43` C2 |
+| Firebase → JWT/OIDC · Redis · Postgres roles | Auth waterfall + UAM | PDF | `43` C3 |
 
 ## Impact Analytics — verbal only (not on PDF)
 
 | Number | Tag | Notes |
 |---|---|---|
+| **$100**/pass token spend | MEASURED, off PDF | Dropped from this PDF for space |
+| **1.6M** article-seasons (catalog) | verbal | Do not mix with 348k scored |
+| **55GB** cap / **16GB** spill / one fiscal week | verbal OOM knobs | PDF says temporal chunks |
+| **100.0%** coverage · **1,200+** Go tests | LinkedIn / verbal | Off PDF |
 | ≥20 configs / under 1h / 8.5% (37/437) → under 2% / 14 tools / 3 gates | TARGET / DESIGN / MEASURED baseline | Cluster Copilot — not a PDF bullet |
 | 63/8 DDL · ~12B → ~25M · ~0.4 ms cell | DESIGN / PROJECTED / MEASURED agg | Interview depth |
 | p95 probes <500ms vs 1–20s BQ | TARGET / MEASURED BQ variance | Verbal |

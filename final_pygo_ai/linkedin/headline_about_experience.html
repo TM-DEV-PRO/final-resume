@@ -48,34 +48,38 @@ strong{color:#fff}
 <a class="lvl2" href="#featured-section">Featured section</a>
 <a class="lvl2" href="#skills-order-linkedin">Skills order (LinkedIn)</a></nav>
 <main><h1 id="linkedin-profile-pack-stand-out">LinkedIn Profile Pack (stand out)</h1>
-<p>Aligned to <strong>Final PyGo + AI</strong> resume (<code>Tarun_Mittal_SSE_5yr.pdf</code>). Paste-ready. Avoid colon-heavy AI voice in About.</p>
+<p>Aligned to <strong>Final Python + Go + AI</strong> resume (<code>Tarun_Mittal_SSE_5yr.pdf</code>). Paste-ready. Avoid colon-heavy AI voice in About.</p>
 <h2 id="headline-pick-one">Headline (pick one)</h2>
 <ol>
-<li>Senior Software Engineer | Python · Go | Distributed Systems · Kafka · ClickHouse · LangGraph</li>
+<li>Senior Software Engineer | Python · Go | High throughput backends and data platforms | Go · ClickHouse · Kafka · Agentic AI</li>
+<li>Senior Software Engineer | Go · ClickHouse · Kafka · LangGraph | 4B-row weekly rollups · 10k RPS</li>
 <li>Backend SSE (Python and Go) | Uber (via EPAM) FRM · Kafka 1M+/day · Go/Gin 10k RPS · LangGraph</li>
-<li>Senior Software Engineer | Go/Gin 10k RPS · ClickHouse 2.11B · LangGraph Ask Iris · Kafka/Flink</li>
 </ol>
-<p><strong>Recommended:</strong> #2 (metric-led for recruiter search)</p>
+<p><strong>Recommended:</strong> #1 for Staff / data platform search. Use #2 if the recruiter is hunting scale numbers. Do not write “scaled to 4B+ rows” as if every table is 4B. The 4.09B figure is attr weekly, two seasons.</p>
 <h2 id="about-short">About — short</h2>
 <p>Senior Software Engineer with 5 years of experience designing and owning cloud-native, high-throughput distributed systems. Expertise in Python and Go microservices, with applied experience in AI-assisted and RAG systems. Proven track record shipping production systems, leading backend migrations, and improving reliability, performance, and scalability.</p>
 <h2 id="about-long">About — long</h2>
 <p>I am a Senior Software Engineer focused on backend, data, and production AI platforms in Python and Go.</p>
 <p>What I am known for:
-- Platform: at Impact Analytics I architected AssortSmart's multi-tenant Go/Gin edge (Wire, h2c, Datadog) to 10k peak RPS, migrated planning analytics to ClickHouse (189s to 12s on 250M rows; 1.6M article-seasons; 2.4B weekly rollups), enforce multi-tenant data isolation across PostgreSQL and ClickHouse, and hold a 100% statement-coverage CI gate across 1,200+ Go tests.
-- Agentic: Keep/Drop + Missed Opportunities + Top Style over 335K+ products (88k items/pass under $100, 7 lenses), air-gapped LLM vs a 2.11B-row fact table, and shipped Ask Iris — a WebSocket LangGraph Supervisor+Evaluator copilot with frozen scopes. Promotions gated on a 300-case offline harness and a ≥80% CI gate vs a 74% deterministic baseline (gate, not all-tenants-live).
+- Platform: at Impact Analytics I architected AssortSmart's multi-tenant Go/Gin edge (Wire, h2c, Datadog) to 10k peak RPS, cut planner pivots from 189s to 12s on 250M rows, and serve six ClickHouse rollup tables (product, store, and attr at season and weekly grains). I keep a 100% statement-coverage CI gate across 1,200+ Go tests.
+- Scale and infrastructure: weekly grain is built one fiscal week at a time after a full-season weekly aggregate sat around 170 GB and OOM'd. I wrote a Go native TLS pump to copy season partitions between ClickHouse Cloud clusters, about 150 to 190k rows/s per stream and about 344k combined, using 500k row columnar batches and double buffering so SELECT of the next batch overlaps INSERT of the last. Largest object I timed is attr weekly at 4.09B rows across two seasons. That copy was measured in flight, not a finished 4.09B cutover. Kafka and Flink on my profile are Uber Menu, not AssortSmart.
+- Agentic: Keep/Drop + Missed Opportunities + Top Style over 348k article-seasons (88k items/pass, 7 lenses), JSON payloads vs a 2.11B-row ClickHouse master, and shipped Ask Iris, a JWT-secured WebSocket LangGraph supervisor with a 3-attempt evaluator and handshake-frozen hierarchy. Promotions gated on a 300-case proxy harness and an 80% CI gate; we cut live scoring cost 73% at 100% coverage vs a 74% deterministic baseline and froze blend weights when the LLM lost (gate, not all-tenants-live).
 - Uber via EPAM: FRM scoping (36 FastAPI endpoints, 19M GL rows, L1–L4 FSLI, 8-table SOADB, SHA-256 keys, led 3, 100% coverage, SOX 50% delta-variance) cutting recon 70% from 14 days to 3 against $340M materiality. Menu ingestion 24 hours to 2 hours, $600K/yr, 30K+ menus/month, 98% offline RAG/Milvus, Kafka+Flink exactly-once.
 - Masters India: FastAPI strangler, p95 1.2s to 300ms (75%), Kafka + PostgreSQL tax-quarter shard at 1M+/day, coverage 35% to 82% at 98% deploy. Mentored 2.</p>
 <p>I care about honest metrics (measured vs promotion-gate vs historical) and mentoring people to ship safely.</p>
-<p>Open to Senior Software Engineer / SDE2+ backend, platform, and applied-AI systems roles.</p>
+<p>Open to Senior Software Engineer / SDE2+ backend, platform, data infrastructure, and applied-AI systems roles.</p>
 <h2 id="experience-blurbs">Experience blurbs</h2>
 <h3 id="impact-analytics-senior-software-engineer-may-2026-present">Impact Analytics — Senior Software Engineer (May 2026 – Present)</h3>
-<p><strong>AssortSmart — Platform &amp; AI.</strong> Two PDF chapters:</p>
-<p><strong>Platform Engineering &amp; Infrastructure.</strong> Multi-tenant Go/Gin at 10k peak RPS (Wire, h2c, Datadog). ClickHouse: 189s to 12s on 250M, 1.6M article-seasons, 2.4B weekly rollups. KPI formula parser (ifNotFinite). Firebase/JWT/OIDC + Redis + Postgres roles. 100% coverage / 1,200+ Go tests / golangci-lint / SAST/SBOM.</p>
-<p><strong>Agentic Flows &amp; Orchestration.</strong> Keep/Drop + Missed Opportunities + Top Style, 335K+ products, 88k items/pass under $100, 7 lenses. 2.11B-row fact table air-gapped from batch LLM; ReplacingMergeTree two-phase. Orchestration registry, circuit breakers, checkpoints, LangSmith telemetry. Shipped Ask Iris (WebSocket, LangGraph Supervisor+Evaluator, frozen scopes). 300-case offline eval, ≥80% CI promotion gate, 74% deterministic baseline.</p>
+<p><strong>AssortSmart — Platform &amp; AI.</strong> Two PDF chapters (Agentic first):</p>
+<p><strong>Agentic Flows &amp; Orchestration.</strong> Keep/Drop + Missed Opportunities + Top Style, 348k article-seasons, 88k items/pass, 7 lenses. JSON payloads vs a 2.11B-row ClickHouse master; ReplacingMergeTree timeout fallback. Shared orchestration registry, circuit breakers, checkpoints that skip redundant det, config_hash, JSON telemetry. Shipped Ask Iris (JWT WebSocket, LangGraph supervisor, 3-attempt evaluator, handshake-frozen hierarchy, LangSmith). 300-case proxy eval, 80% CI gate, 73% cheaper at 100% coverage vs 74% det, frozen blend weights.</p>
+<p><strong>Core Infrastructure &amp; Pipeline.</strong> Multi-tenant Go/Gin at 10k peak RPS (Wire, h2c, Datadog). KPI formula tokenizer with native division-by-zero protection. Firebase/JWT/OIDC + Redis + Postgres roles.</p>
+<p>Reduced planner pivot latency by 15.5× (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
+<p>Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
+<p>Catalog still includes 1.6M article-seasons. $100/pass and 100% coverage / 1,200+ Go tests / golangci-lint / SAST/SBOM stay LinkedIn / verbal.</p>
 <p>Stack on this PDF: Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.</p>
 <p><strong>Verbal only / not on PDF (building):</strong> Cluster Recommendation Copilot and Hindsight remain deep-dive context if asked — not resume headline bullets.</p>
 <h3 id="uber-via-epam-sde2-jul-2024-may-2026">Uber via EPAM — SDE2 (Jul 2024 – May 2026)</h3>
-<p><strong>FRM:</strong> Owned FRM scoping backend (FastAPI / SQLAlchemy 2.0) — 36 FastAPI endpoints, 19M raw GL rows, L1–L4 FSLI, 8-table MySQL SOADB, SHA-256 natural keys, optimistic locking. 70% recon cut from 14 days to 3 against $340M. Led 3 on the SQLAlchemy 2.0 migration to 100% statement coverage; Bazel PRs; SQL allowlists; FSM 50% delta-variance for SOX.</p>
+<p><strong>FRM:</strong> Owned FRM scoping backend (Spring Boot / Spring Data JPA / Hibernate) — 36 FastAPI endpoints, 19M raw GL rows, L1–L4 FSLI, 8-table MySQL SOADB, SHA-256 natural keys, optimistic locking. 70% recon cut from 14 days to 3 against $340M. Led 3 on the Spring Data JPA / Hibernate migration to 100% statement coverage; Bazel PRs; SQL allowlists; FSM 50% delta-variance for SOX.</p>
 <p><strong>Menu (Uber Eats):</strong> 24 hours to 2 hours, $600K/yr, 30K+ menus/month. Gemini 2.5 Pro + LangChain RAG + Milvus at 98% field fidelity (offline eval). 95%+ scrape success. Kafka + Flink keyed dedupe, exactly-once catalog upserts.</p>
 <p><strong>ANZ (Uber Mobility):</strong> 99.9% document compliance, ~20h/week saved (HISTORICAL Mobility — not Eats).</p>
 <h3 id="masters-india-sde2-dec-2022-jun-2024">Masters India — SDE2 (Dec 2022 – Jun 2024)</h3>
@@ -84,13 +88,13 @@ strong{color:#fff}
 <p>Django doubt-support for 10K+ daily queries and 10× contest spikes. Voting/pinning/locking APIs lifted premium 20%. Influencer dashboard raised course sales 30%. Scheduled jobs raised ops efficiency 70%.</p>
 <h2 id="featured-section">Featured section</h2>
 <ul>
-<li>Resume PDF (Python/Go FRM + AssortSmart platform/AI)</li>
+<li>Resume PDF (Java FRM + Py/Go IA)</li>
 <li>LangChain Academy cert</li>
 <li>HackerRank Problem Solving cert</li>
 <li>Optional: GitHub TM-DEV-PRO</li>
 </ul>
 <h2 id="skills-order-linkedin">Skills order (LinkedIn)</h2>
-<p>Python · Go · Gin · FastAPI · Distributed Systems · Microservices · Kafka · ClickHouse · System Design · Docker · AWS · GCP · PostgreSQL · MySQL · Redis · LangGraph · RAG · Mentorship\n</p></main>
+<p>Java · Spring Boot · Hibernate · Python · Go · Gin · FastAPI · Distributed Systems · Microservices · Kafka · ClickHouse · System Design · Docker · AWS · GCP · PostgreSQL · MySQL · Redis · LangGraph · RAG · Mentorship\n</p></main>
 </div>
 
 <script type="module">

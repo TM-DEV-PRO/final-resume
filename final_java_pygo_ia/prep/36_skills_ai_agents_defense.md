@@ -13,7 +13,7 @@ Canonical: `docs/ASSORTSMART_TAB_RESUME.md`. MCP is **not** on this PDF.
 | **tool calling / structured invokes** | Typed LLM calls; never raw SQL writes | Air-gapped Keep/Drop; Ask Iris frozen scopes | PDF |
 | **prompt engineering** | Structured outputs, schema-shaped extraction | IA lenses; Menu extraction | PDF / HISTORICAL |
 | **RAG / embeddings / Milvus** | Retrieve → generate → schema gate | **Menu** (98% offline) | HISTORICAL offline |
-| **offline evaluation** | Harness, not live SLA | IA **300-case / ≥80% CI promotion gate** vs **74%** baseline; Menu 98% | PDF gate / HISTORICAL |
+| **offline evaluation** | Harness, not live SLA | IA **300-case / 80% CI promotion gate** vs **74%** baseline; Menu 98% | PDF gate / HISTORICAL |
 | **LangSmith** | Token/step/fallback telemetry | IA orchestration registry | PDF |
 
 **Verbal only / not on PDF:** Cluster Recommendation Copilot, MCP, 14 tools.
