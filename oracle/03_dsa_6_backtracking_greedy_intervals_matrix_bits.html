@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_dsa_6_backtracking_greedy_intervals_matrix_bits — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/03_dsa_6_backtracking_greedy_intervals_matrix_bits.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#036-backtracking-greedy-intervals-matrix-bit-manipulation-math">03.6 Backtracking, greedy, intervals, matrix, bit manipulation, math</a>
+<a class="lvl2" href="#a-backtracking">A. Backtracking</a>
+<a class="lvl2" href="#b-greedy">B. Greedy</a>
+<a class="lvl2" href="#c-intervals">C. Intervals</a>
+<a class="lvl2" href="#d-matrix">D. Matrix</a>
+<a class="lvl2" href="#e-bit-manipulation">E. Bit manipulation</a>
+<a class="lvl2" href="#f-math-essentials">F. Math essentials</a></nav>
+<main><h1 id="036-backtracking-greedy-intervals-matrix-bit-manipulation-math">03.6 Backtracking, greedy, intervals, matrix, bit manipulation, math</h1>
+<hr>
+<h2 id="a-backtracking">A. Backtracking</h2>
+<p><strong>Intuition:</strong> build candidates step by step. At each step choose, recurse, then <strong>un-choose</strong>. Prune as early as possible. Complexity is usually exponential: say it (O(2^n) subsets, O(n!) permutations).</p>
+<p><strong>Template:</strong></p>
+<pre><code class="language-python">def backtrack(path, choices):
+    if is_solution(path):
+        res.append(path[:])          # copy!
+        return
+    for c in choices:
+        if not valid(c, path):
+            continue
+        path.append(c)
+        backtrack(path, next_choices)
+        path.pop()
+</code></pre>
+<h3 id="a1-subsets-and-subsets-ii-with-duplicates">A1. Subsets (and Subsets II with duplicates)</h3>
+<pre><code class="language-python">def subsets_with_dup(nums):
+    nums.sort()
+    res, path = [], []
+    def bt(start):
+        res.append(path[:])
+        for i in range(start, len(nums)):
+            if i &gt; start and nums[i] == nums[i - 1]:
+                continue                     # skip duplicate at the same depth
+            path.append(nums[i])
+            bt(i + 1)
+            path.pop()
+    bt(0)
+    return res
+</code></pre>
+<p>O(n · 2^n).</p>
+<h3 id="a2-permutations">A2. Permutations</h3>
+<pre><code class="language-python">def permute(nums):
+    res, path, used = [], [], [False] * len(nums)
+    def bt():
+        if len(path) == len(nums):
+            res.append(path[:]); return
+        for i, x in enumerate(nums):
+            if not used[i]:
+                used[i] = True; path.append(x)
+                bt()
+                path.pop(); used[i] = False
+    bt()
+    return res
+</code></pre>
+<p>O(n · n!). Permutations II: sort, and skip <code>nums[i] == nums[i-1] and not used[i-1]</code>.</p>
+<h3 id="a3-combination-sum-reuse-allowed">A3. Combination Sum (reuse allowed)</h3>
+<pre><code class="language-python">def combination_sum(cands, target):
+    cands.sort()
+    res, path = [], []
+    def bt(start, remain):
+        if remain == 0:
+            res.append(path[:]); return
+        for i in range(start, len(cands)):
+            if cands[i] &gt; remain:
+                break                        # sorted, so prune
+            path.append(cands[i])
+            bt(i, remain - cands[i])         # i, not i + 1: reuse allowed
+            path.pop()
+    bt(0, target)
+    return res
+</code></pre>
+<h3 id="a4-word-search-grid-backtracking">A4. Word Search (grid backtracking)</h3>
+<p>Mark the cell as visited (<code>board[r][c] = '#'</code>), recurse in 4 directions, then restore it. O(R·C·4^L).</p>
+<h3 id="a5-n-queens">A5. N-Queens</h3>
+<p>Track the sets <code>cols</code>, <code>diag1 = r - c</code>, and <code>diag2 = r + c</code>. Place row by row. O(n!).</p>
+<pre><code class="language-python">def solve_n_queens(n):
+    res, cols, d1, d2 = [], set(), set(), set()
+    board = [[&quot;.&quot;] * n for _ in range(n)]
+    def bt(r):
+        if r == n:
+            res.append([&quot;&quot;.join(row) for row in board]); return
+        for c in range(n):
+            if c in cols or r - c in d1 or r + c in d2:
+                continue
+            cols.add(c); d1.add(r - c); d2.add(r + c); board[r][c] = &quot;Q&quot;
+            bt(r + 1)
+            cols.remove(c); d1.remove(r - c); d2.remove(r + c); board[r][c] = &quot;.&quot;
+    bt(0)
+    return res
+</code></pre>
+<h3 id="a6-palindrome-partitioning-letter-combinations-of-a-phone-number-generate-parentheses-track-openclose-counts-sudoku-solver">A6. Palindrome Partitioning, Letter Combinations of a Phone Number, Generate Parentheses (track open/close counts), Sudoku Solver.</h3>
+<hr>
+<h2 id="b-greedy">B. Greedy</h2>
+<p><strong>Intuition:</strong> take the locally best choice. <strong>Only correct if you can argue it</strong>: the exchange argument ("swapping any optimal solution's choice for the greedy one doesn't make it worse") or "greedy stays ahead." If you can't argue it, it's probably DP.</p>
+<h3 id="b1-jump-game-i-and-ii">B1. Jump Game I and II</h3>
+<pre><code class="language-python">def can_jump(nums):
+    reach = 0
+    for i, x in enumerate(nums):
+        if i &gt; reach:
+            return False
+        reach = max(reach, i + x)
+    return True
+
+def jump(nums):                       # min jumps, BFS by layers
+    jumps = end = far = 0
+    for i in range(len(nums) - 1):
+        far = max(far, i + nums[i])
+        if i == end:
+            jumps += 1
+            end = far
+    return jumps
+</code></pre>
+<h3 id="b2-gas-station">B2. Gas Station</h3>
+<p>If total gas &lt; total cost, the answer is -1. Otherwise, reset the start whenever the running tank goes negative.</p>
+<pre><code class="language-python">def can_complete_circuit(gas, cost):
+    if sum(gas) &lt; sum(cost):
+        return -1
+    tank = start = 0
+    for i in range(len(gas)):
+        tank += gas[i] - cost[i]
+        if tank &lt; 0:
+            start, tank = i + 1, 0
+    return start
+</code></pre>
+<h3 id="b3-partition-labels">B3. Partition Labels</h3>
+<p>Record the last index of each char. Extend the current partition's end to the max last-index seen, and cut when <code>i == end</code>.</p>
+<h3 id="b4-hand-of-straights-task-scheduler-math-greedy-minimum-number-of-arrows-sort-by-end-boats-to-save-people-two-pointers">B4. Hand of Straights, Task Scheduler (math greedy), Minimum Number of Arrows (sort by end), Boats to Save People (two pointers).</h3>
+<hr>
+<h2 id="c-intervals">C. Intervals</h2>
+<p><strong>Intuition:</strong> sort by start (or by end for "max non-overlapping"). Then sweep.</p>
+<h3 id="c1-merge-intervals">C1. Merge Intervals</h3>
+<pre><code class="language-python">def merge(intervals):
+    intervals.sort()
+    out = [intervals[0]]
+    for s, e in intervals[1:]:
+        if s &lt;= out[-1][1]:
+            out[-1][1] = max(out[-1][1], e)
+        else:
+            out.append([s, e])
+    return out
+</code></pre>
+<p>O(n log n).</p>
+<h3 id="c2-insert-interval">C2. Insert Interval</h3>
+<p>Add everything that ends before the new one, merge the overlaps, then add the rest. O(n).</p>
+<h3 id="c3-non-overlapping-intervals-min-removals">C3. Non-overlapping Intervals (min removals)</h3>
+<p><strong>Greedy:</strong> sort by <strong>end</strong>, and keep the interval that ends earliest. That's classic activity selection.</p>
+<pre><code class="language-python">def erase_overlap_intervals(intervals):
+    intervals.sort(key=lambda x: x[1])
+    end, removed = float(&quot;-inf&quot;), 0
+    for s, e in intervals:
+        if s &gt;= end:
+            end = e
+        else:
+            removed += 1
+    return removed
+</code></pre>
+<h3 id="c4-meeting-rooms-ii-min-rooms-oci-relevant-resource-allocation">C4. Meeting Rooms II (min rooms, OCI-relevant: resource allocation)</h3>
+<p><strong>Heap:</strong> sort by start. A min-heap of end times. If the earliest end ≤ the current start, reuse that room.</p>
+<pre><code class="language-python">def min_meeting_rooms(intervals):
+    intervals.sort()
+    ends = []
+    for s, e in intervals:
+        if ends and ends[0] &lt;= s:
+            heapq.heapreplace(ends, e)
+        else:
+            heapq.heappush(ends, e)
+    return len(ends)
+</code></pre>
+<p><strong>Sweep alternative:</strong> +1 at each start, -1 at each end, sorted. The max running sum is the answer. That's the same idea as "max concurrent connections" from logs.</p>
+<h3 id="c5-employee-free-time-interval-list-intersections-two-pointers-my-calendar-iii-sorted-list-or-segment-tree-car-pooling-difference-array">C5. Employee Free Time, Interval List Intersections (two pointers), My Calendar I/II (sorted list or segment tree), Car Pooling (difference array).</h3>
+<hr>
+<h2 id="d-matrix">D. Matrix</h2>
+<h3 id="d1-rotate-image-90-clockwise-in-place">D1. Rotate Image 90° clockwise in place</h3>
+<p>Transpose, then reverse each row.</p>
+<pre><code class="language-python">def rotate(m):
+    n = len(m)
+    for i in range(n):
+        for j in range(i + 1, n):
+            m[i][j], m[j][i] = m[j][i], m[i][j]
+    for row in m:
+        row.reverse()
+</code></pre>
+<h3 id="d2-spiral-matrix">D2. Spiral Matrix</h3>
+<p>Shrink four boundaries: top, bottom, left, right.</p>
+<pre><code class="language-python">def spiral_order(m):
+    res = []
+    top, bot, left, right = 0, len(m) - 1, 0, len(m[0]) - 1
+    while top &lt;= bot and left &lt;= right:
+        for c in range(left, right + 1): res.append(m[top][c])
+        top += 1
+        for r in range(top, bot + 1): res.append(m[r][right])
+        right -= 1
+        if top &lt;= bot:
+            for c in range(right, left - 1, -1): res.append(m[bot][c])
+            bot -= 1
+        if left &lt;= right:
+            for r in range(bot, top - 1, -1): res.append(m[r][left])
+            left += 1
+    return res
+</code></pre>
+<h3 id="d3-set-matrix-zeroes-o1-space">D3. Set Matrix Zeroes (O(1) space)</h3>
+<p>Use the first row and first column as markers, with a separate flag for the first column.</p>
+<h3 id="d4-search-a-2d-matrix">D4. Search a 2D Matrix</h3>
+<ul>
+<li>Fully sorted (each row starts after the previous ends): binary search as a 1D array, <code>r, c = divmod(mid, C)</code>.</li>
+<li>Rows and columns sorted separately (II): start at the top-right. Go left if too big, down if too small. O(R + C).</li>
+</ul>
+<h3 id="d5-valid-sudoku">D5. Valid Sudoku</h3>
+<p>Sets per row, column, and box, where <code>box = (r // 3) * 3 + c // 3</code>.</p>
+<h3 id="d6-game-of-life-in-place">D6. Game of Life (in place)</h3>
+<p>Encode the next state in extra bits: <code>2</code> = alive to dead, <code>3</code> = dead to alive, or use bit 1 for the next state.</p>
+<h3 id="d7-grid-bfsdfs-problems-islands-rotting-oranges-shortest-path-in-a-binary-matrix-see-graphs">D7. Grid BFS/DFS problems (islands, rotting oranges, shortest path in a binary matrix): see <a href="03_dsa_4_graphs_dsu.html">graphs</a>.</h3>
+<hr>
+<h2 id="e-bit-manipulation">E. Bit manipulation</h2>
+<table>
+<thead>
+<tr>
+<th>Trick</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Check bit i</td>
+<td><code>(x &gt;&gt; i) &amp; 1</code></td>
+</tr>
+<tr>
+<td>Set / clear / toggle</td>
+<td><code>x | (1&lt;&lt;i)</code>, <code>x &amp; ~(1&lt;&lt;i)</code>, <code>x ^ (1&lt;&lt;i)</code></td>
+</tr>
+<tr>
+<td>Lowest set bit</td>
+<td><code>x &amp; -x</code></td>
+</tr>
+<tr>
+<td>Clear lowest set bit</td>
+<td><code>x &amp; (x - 1)</code></td>
+</tr>
+<tr>
+<td>Power of two</td>
+<td><code>x &gt; 0 and x &amp; (x - 1) == 0</code></td>
+</tr>
+<tr>
+<td>Count bits</td>
+<td><code>bin(x).count("1")</code> or <code>x.bit_count()</code></td>
+</tr>
+<tr>
+<td>XOR facts</td>
+<td><code>a ^ a = 0</code>, <code>a ^ 0 = a</code>, commutative</td>
+</tr>
+</tbody>
+</table>
+<h3 id="e1-single-number-every-other-number-appears-twice">E1. Single Number (every other number appears twice)</h3>
+<p>XOR everything. O(n), O(1).</p>
+<h3 id="e2-single-number-ii-others-appear-three-times">E2. Single Number II (others appear three times)</h3>
+<p>Count each bit mod 3, or use the <code>ones/twos</code> state machine.</p>
+<h3 id="e3-counting-bits">E3. Counting Bits</h3>
+<p><code>dp[i] = dp[i &gt;&gt; 1] + (i &amp; 1)</code>.</p>
+<h3 id="e4-missing-number">E4. Missing Number</h3>
+<p><code>XOR of 0..n</code> XOR <code>XOR of nums</code>, or <code>n(n+1)/2 - sum</code>.</p>
+<h3 id="e5-sum-of-two-integers-without-python-needs-a-32-bit-mask">E5. Sum of Two Integers without + (Python needs a 32-bit mask)</h3>
+<pre><code class="language-python">def get_sum(a, b):
+    mask = 0xFFFFFFFF
+    while b &amp; mask:
+        a, b = a ^ b, (a &amp; b) &lt;&lt; 1
+    return a &amp; mask if b &gt; 0 else a
+</code></pre>
+<h3 id="e6-subsets-via-bitmask">E6. Subsets via bitmask</h3>
+<p><code>for m in range(1 &lt;&lt; n): [nums[i] for i in range(n) if m &gt;&gt; i &amp; 1]</code>.</p>
+<p>Systems tie-in: bitmaps and Bloom filters (ClickHouse bloom skip indexes, which I used on product/store/attr), permission bitmasks, and consistent-hash ring positions.</p>
+<hr>
+<h2 id="f-math-essentials">F. Math essentials</h2>
+<ul>
+<li>GCD: <code>math.gcd</code>. LCM = <code>a * b // gcd</code>.</li>
+<li>Sieve of Eratosthenes for primes ≤ n: O(n log log n).</li>
+<li>Fast power: <code>pow(a, b, mod)</code>.</li>
+<li>Modular arithmetic: <code>(a + b) % m</code>. In Python, integers don't overflow; in Go they do.</li>
+<li>Reservoir sampling (pick k from a stream of unknown length): keep item i with probability k/i. Good for "sample logs uniformly."</li>
+<li>Random pick with weight: prefix sums + binary search.</li>
+<li>Pow(x, n), Sqrt(x) by binary search, Happy Number (cycle detection), Plus One, Multiply Strings.</li>
+</ul>
+<pre><code class="language-python">def reservoir_sample(stream, k):
+    res = []
+    for i, x in enumerate(stream, 1):
+        if i &lt;= k:
+            res.append(x)
+        else:
+            j = random.randint(1, i)
+            if j &lt;= k:
+                res[j - 1] = x
+    return res
+</code></pre></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

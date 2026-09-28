@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_dsa_4_graphs_dsu — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/03_dsa_4_graphs_dsu.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#034-graphs-bfs-dfs-topological-sort-shortest-paths-mst-dsu">03.4 Graphs: BFS, DFS, topological sort, shortest paths, MST, DSU</a>
+<a class="lvl2" href="#a-representations-and-the-three-questions">A. Representations and the three questions</a>
+<a class="lvl2" href="#b-dfs-and-bfs-templates">B. DFS and BFS templates</a>
+<a class="lvl2" href="#c-cycle-detection">C. Cycle detection</a>
+<a class="lvl2" href="#d-topological-sort">D. Topological sort</a>
+<a class="lvl2" href="#e-shortest-paths">E. Shortest paths</a>
+<a class="lvl2" href="#f-dsu-union-find">F. DSU (Union-Find)</a>
+<a class="lvl2" href="#g-advanced-know-the-idea">G. Advanced (know the idea)</a>
+<a class="lvl2" href="#graph-problem-checklist">Graph problem checklist</a></nav>
+<main><h1 id="034-graphs-bfs-dfs-topological-sort-shortest-paths-mst-dsu">03.4 Graphs: BFS, DFS, topological sort, shortest paths, MST, DSU</h1>
+<hr>
+<h2 id="a-representations-and-the-three-questions">A. Representations and the three questions</h2>
+<ul>
+<li><strong>Adjacency list</strong> <code>graph = defaultdict(list)</code>: O(V + E) space, the default.</li>
+<li><strong>Adjacency matrix:</strong> O(V²), for dense graphs or quick edge checks.</li>
+<li><strong>Grid as a graph:</strong> cell = node, 4 or 8 neighbors.</li>
+<li><strong>Implicit graph:</strong> states generated on the fly (Word Ladder, lock combinations).</li>
+</ul>
+<p>Ask: <strong>directed or undirected? weighted? cycles possible? connected?</strong></p>
+<table>
+<thead>
+<tr>
+<th>Need</th>
+<th>Algorithm</th>
+<th>Complexity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reachability, components, cycle detection</td>
+<td>DFS / BFS / DSU</td>
+<td>O(V + E)</td>
+</tr>
+<tr>
+<td>Shortest path, unweighted</td>
+<td>BFS</td>
+<td>O(V + E)</td>
+</tr>
+<tr>
+<td>Shortest path, weights 0/1</td>
+<td>0-1 BFS (deque)</td>
+<td>O(V + E)</td>
+</tr>
+<tr>
+<td>Shortest path, non-negative weights</td>
+<td>Dijkstra</td>
+<td>O((V + E) log V)</td>
+</tr>
+<tr>
+<td>Shortest path, negative weights / at most k edges</td>
+<td>Bellman-Ford</td>
+<td>O(V·E) or O(k·E)</td>
+</tr>
+<tr>
+<td>All pairs</td>
+<td>Floyd-Warshall</td>
+<td>O(V³)</td>
+</tr>
+<tr>
+<td>Ordering with dependencies</td>
+<td>Topological sort (Kahn / DFS)</td>
+<td>O(V + E)</td>
+</tr>
+<tr>
+<td>Min spanning tree</td>
+<td>Kruskal (DSU) / Prim (heap)</td>
+<td>O(E log E)</td>
+</tr>
+<tr>
+<td>Dynamic connectivity (only unions)</td>
+<td>DSU</td>
+<td>~O(α(n)) per op</td>
+</tr>
+<tr>
+<td>Strongly connected components</td>
+<td>Tarjan / Kosaraju</td>
+<td>O(V + E)</td>
+</tr>
+<tr>
+<td>Bridges / articulation points</td>
+<td>Tarjan low-link</td>
+<td>O(V + E)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="b-dfs-and-bfs-templates">B. DFS and BFS templates</h2>
+<pre><code class="language-python">def dfs_iter(graph, start):
+    seen, st = {start}, [start]
+    while st:
+        u = st.pop()
+        for v in graph[u]:
+            if v not in seen:
+                seen.add(v)
+                st.append(v)
+    return seen
+
+def bfs_dist(graph, start):
+    dist = {start: 0}
+    q = deque([start])
+    while q:
+        u = q.popleft()
+        for v in graph[u]:
+            if v not in dist:
+                dist[v] = dist[u] + 1
+                q.append(v)
+    return dist
+</code></pre>
+<p>Mark visited <strong>when you enqueue</strong>, not when you pop. Otherwise nodes get enqueued many times.</p>
+<h3 id="b1-number-of-islands-grid-dfsbfs">B1. Number of Islands (grid DFS/BFS)</h3>
+<pre><code class="language-python">def num_islands(grid):
+    R, C = len(grid), len(grid[0])
+    def sink(r, c):
+        st = [(r, c)]
+        grid[r][c] = &quot;0&quot;
+        while st:
+            r, c = st.pop()
+            for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):
+                if 0 &lt;= nr &lt; R and 0 &lt;= nc &lt; C and grid[nr][nc] == &quot;1&quot;:
+                    grid[nr][nc] = &quot;0&quot;
+                    st.append((nr, nc))
+    count = 0
+    for r in range(R):
+        for c in range(C):
+            if grid[r][c] == &quot;1&quot;:
+                count += 1
+                sink(r, c)
+    return count
+</code></pre>
+<p>O(R·C). Variants: Max Area of Island, Surrounded Regions (flood from the border first), Pacific Atlantic (reverse flow: BFS from each ocean, then intersect).</p>
+<h3 id="b2-rotting-oranges-multi-source-bfs">B2. Rotting Oranges (multi-source BFS)</h3>
+<p>Put <strong>all</strong> rotten oranges in the queue at time 0, then BFS level by level. The answer is the number of levels, or -1 if fresh oranges remain. Same idea: Walls and Gates, 01 Matrix, and distance from the nearest server.</p>
+<pre><code class="language-python">def oranges_rotting(grid):
+    R, C = len(grid), len(grid[0])
+    q, fresh = deque(), 0
+    for r in range(R):
+        for c in range(C):
+            if grid[r][c] == 2: q.append((r, c))
+            elif grid[r][c] == 1: fresh += 1
+    minutes = 0
+    while q and fresh:
+        for _ in range(len(q)):
+            r, c = q.popleft()
+            for nr, nc in ((r + 1, c), (r - 1, c), (r, c + 1), (r, c - 1)):
+                if 0 &lt;= nr &lt; R and 0 &lt;= nc &lt; C and grid[nr][nc] == 1:
+                    grid[nr][nc] = 2
+                    fresh -= 1
+                    q.append((nr, nc))
+        minutes += 1
+    return -1 if fresh else minutes
+</code></pre>
+<h3 id="b3-clone-graph">B3. Clone Graph</h3>
+<p>DFS with a hashmap old → clone. Create the clone before recursing into neighbors (handles cycles).</p>
+<h3 id="b4-word-ladder-implicit-bfs">B4. Word Ladder (implicit BFS)</h3>
+<p><strong>Intuition:</strong> each word is a node, and there's an edge if words differ by one letter. Pre-build wildcard buckets: <code>h*t → [hot, hit]</code>. BFS from the begin word. Bidirectional BFS halves the explored frontier.</p>
+<pre><code class="language-python">def ladder_length(begin, end, words):
+    words = set(words)
+    if end not in words:
+        return 0
+    buckets = defaultdict(list)
+    for w in words | {begin}:
+        for i in range(len(w)):
+            buckets[w[:i] + &quot;*&quot; + w[i + 1:]].append(w)
+    q, seen = deque([(begin, 1)]), {begin}
+    while q:
+        w, d = q.popleft()
+        if w == end:
+            return d
+        for i in range(len(w)):
+            key = w[:i] + &quot;*&quot; + w[i + 1:]
+            for nxt in buckets[key]:
+                if nxt not in seen:
+                    seen.add(nxt)
+                    q.append((nxt, d + 1))
+            buckets[key] = []          # each bucket expanded once
+    return 0
+</code></pre>
+<p>O(N · L²).</p>
+<hr>
+<h2 id="c-cycle-detection">C. Cycle detection</h2>
+<ul>
+<li><strong>Undirected:</strong> DFS where a visited neighbor that isn't the parent means a cycle. Or DSU: union returns false if both ends are already connected.</li>
+<li><strong>Directed:</strong> three colors (white = unvisited, gray = on the current stack, black = done). An edge to a <strong>gray</strong> node means a cycle. Or Kahn's algorithm: if the topological order has fewer than V nodes, there's a cycle.</li>
+</ul>
+<pre><code class="language-python">def has_cycle_directed(n, edges):
+    g = defaultdict(list)
+    for u, v in edges:
+        g[u].append(v)
+    color = [0] * n        # 0 white, 1 gray, 2 black
+    def dfs(u):
+        color[u] = 1
+        for v in g[u]:
+            if color[v] == 1 or (color[v] == 0 and dfs(v)):
+                return True
+        color[u] = 2
+        return False
+    return any(color[u] == 0 and dfs(u) for u in range(n))
+</code></pre>
+<hr>
+<h2 id="d-topological-sort">D. Topological sort</h2>
+<p><strong>Intuition:</strong> order tasks so every dependency comes first. Only possible in a DAG. This maps directly to build systems (Bazel), deployment ordering, and package managers. Mention that.</p>
+<h3 id="d1-course-schedule-ii-kahns-algorithm-bfs-on-in-degree">D1. Course Schedule II (Kahn's algorithm, BFS on in-degree)</h3>
+<pre><code class="language-python">def find_order(n, prereqs):
+    g = defaultdict(list)
+    indeg = [0] * n
+    for course, pre in prereqs:
+        g[pre].append(course)
+        indeg[course] += 1
+    q = deque(i for i in range(n) if indeg[i] == 0)
+    order = []
+    while q:
+        u = q.popleft()
+        order.append(u)
+        for v in g[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0:
+                q.append(v)
+    return order if len(order) == n else []     # [] means a cycle
+</code></pre>
+<p>O(V + E). Follow-ups: parallel scheduling (process a level at a time, and the number of levels is the minimum semesters) and lexicographically smallest order (use a min-heap instead of a queue).</p>
+<h3 id="d2-alien-dictionary-hard">D2. Alien Dictionary (hard)</h3>
+<p><strong>Steps:</strong> compare adjacent words. The first differing char gives an edge <code>a → b</code>. Edge case: if the prefix is longer than the next word (<code>abc</code> before <code>ab</code>), it's invalid. Then run a topological sort over all chars that appear.</p>
+<pre><code class="language-python">def alien_order(words):
+    g = {c: set() for w in words for c in w}
+    indeg = {c: 0 for c in g}
+    for a, b in zip(words, words[1:]):
+        for x, y in zip(a, b):
+            if x != y:
+                if y not in g[x]:
+                    g[x].add(y)
+                    indeg[y] += 1
+                break
+        else:
+            if len(a) &gt; len(b):
+                return &quot;&quot;
+    q = deque(c for c in g if indeg[c] == 0)
+    out = []
+    while q:
+        c = q.popleft()
+        out.append(c)
+        for d in g[c]:
+            indeg[d] -= 1
+            if indeg[d] == 0:
+                q.append(d)
+    return &quot;&quot;.join(out) if len(out) == len(g) else &quot;&quot;
+</code></pre>
+<hr>
+<h2 id="e-shortest-paths">E. Shortest paths</h2>
+<h3 id="e1-dijkstra-network-delay-time">E1. Dijkstra: Network Delay Time</h3>
+<pre><code class="language-python">def network_delay_time(times, n, k):
+    g = defaultdict(list)
+    for u, v, w in times:
+        g[u].append((v, w))
+    dist = {}
+    h = [(0, k)]
+    while h:
+        d, u = heapq.heappop(h)
+        if u in dist:
+            continue                # stale entry (lazy deletion)
+        dist[u] = d
+        for v, w in g[u]:
+            if v not in dist:
+                heapq.heappush(h, (d + w, v))
+    return max(dist.values()) if len(dist) == n else -1
+</code></pre>
+<p>O((V + E) log V). <strong>Why no negative weights:</strong> once a node is popped it's final, and a negative edge could later make it shorter. Variants: Path with Minimum Effort (the weight is the max edge on the path), Swim in Rising Water, Cheapest route by cost.</p>
+<h3 id="e2-cheapest-flights-within-k-stops-bellman-ford-limited-to-k1-edges">E2. Cheapest Flights Within K Stops (Bellman-Ford limited to k+1 edges)</h3>
+<pre><code class="language-python">def find_cheapest_price(n, flights, src, dst, k):
+    dist = [float(&quot;inf&quot;)] * n
+    dist[src] = 0
+    for _ in range(k + 1):
+        nxt = dist[:]                     # copy so one round = one more edge
+        for u, v, w in flights:
+            if dist[u] + w &lt; nxt[v]:
+                nxt[v] = dist[u] + w
+        dist = nxt
+    return -1 if dist[dst] == float(&quot;inf&quot;) else dist[dst]
+</code></pre>
+<p>O(k · E).</p>
+<h3 id="e3-0-1-bfs">E3. 0-1 BFS</h3>
+<p>If weights are only 0 or 1: use a deque, pushing 0-weight edges to the front and 1-weight edges to the back. O(V + E). Example: Minimum Cost to Make at Least One Valid Path in a Grid.</p>
+<h3 id="e4-floyd-warshall-all-pairs-small-v">E4. Floyd-Warshall (all pairs, small V)</h3>
+<p><code>for k: for i: for j: d[i][j] = min(d[i][j], d[i][k] + d[k][j])</code>. O(V³). Example: Find the City With the Smallest Number of Neighbors.</p>
+<hr>
+<h2 id="f-dsu-union-find">F. DSU (Union-Find)</h2>
+<p><strong>Intuition:</strong> keep a forest where each set has a representative. <code>find</code> with <strong>path compression</strong> plus <code>union</code> by <strong>rank/size</strong> gives nearly O(1) (inverse Ackermann) per operation. Use it when edges arrive over time and you only ask "are these connected?" or "how many groups?"</p>
+<pre><code class="language-python">class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.size = [1] * n
+        self.components = n
+
+    def find(self, x):
+        while self.parent[x] != x:
+            self.parent[x] = self.parent[self.parent[x]]   # path halving
+            x = self.parent[x]
+        return x
+
+    def union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        if ra == rb:
+            return False
+        if self.size[ra] &lt; self.size[rb]:
+            ra, rb = rb, ra
+        self.parent[rb] = ra
+        self.size[ra] += self.size[rb]
+        self.components -= 1
+        return True
+</code></pre>
+<h3 id="f1-number-of-connected-components-graph-valid-tree">F1. Number of Connected Components / Graph Valid Tree</h3>
+<p>Valid tree: exactly n - 1 edges <strong>and</strong> every union succeeds (no cycle).</p>
+<h3 id="f2-redundant-connection">F2. Redundant Connection</h3>
+<p>Return the first edge whose union returns False.</p>
+<h3 id="f3-accounts-merge">F3. Accounts Merge</h3>
+<p>Union emails that appear in the same account (map each email to an id). Group emails by root, sort, and attach the name.</p>
+<pre><code class="language-python">def accounts_merge(accounts):
+    dsu = DSU(len(accounts))
+    owner = {}
+    for i, acc in enumerate(accounts):
+        for email in acc[1:]:
+            if email in owner:
+                dsu.union(i, owner[email])
+            else:
+                owner[email] = i
+    groups = defaultdict(list)
+    for email, i in owner.items():
+        groups[dsu.find(i)].append(email)
+    return [[accounts[i][0]] + sorted(es) for i, es in groups.items()]
+</code></pre>
+<p>O(N·α + N log N) for the sorting.</p>
+<h3 id="f4-number-of-islands-ii-islands-added-over-time">F4. Number of Islands II (islands added over time)</h3>
+<p>Each new land cell unions with its land neighbors. Record the component count after each addition. That's online connectivity, which BFS can't do efficiently.</p>
+<h3 id="f5-min-cost-to-connect-all-points-kruskal">F5. Min Cost to Connect All Points (Kruskal)</h3>
+<p>Sort all edges by weight and union greedily. Stop at n - 1 edges. For dense graphs, Prim's O(V²) without a heap is better.</p>
+<pre><code class="language-python">def min_cost_connect_points(points):
+    n = len(points)
+    edges = []
+    for i in range(n):
+        for j in range(i + 1, n):
+            d = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1])
+            edges.append((d, i, j))
+    edges.sort()
+    dsu, cost, used = DSU(n), 0, 0
+    for d, i, j in edges:
+        if dsu.union(i, j):
+            cost += d
+            used += 1
+            if used == n - 1:
+                break
+    return cost
+</code></pre>
+<h3 id="dsu-uses-in-systems-good-talking-points">DSU uses in systems (good talking points)</h3>
+<ul>
+<li>Grouping duplicate records (entity resolution). The same idea as my SHA-256 natural keys at Uber FRM, but for fuzzy matches.</li>
+<li>Network partition detection: which nodes can still reach each other.</li>
+<li>Kruskal for cheap network links.</li>
+</ul>
+<hr>
+<h2 id="g-advanced-know-the-idea">G. Advanced (know the idea)</h2>
+<ul>
+<li><strong>Tarjan SCC / bridges:</strong> <code>low[u] = min(disc[u], low of children, disc of back edges)</code>. An edge u-v is a bridge if <code>low[v] &gt; disc[u]</code>. Example: Critical Connections in a Network. That's <strong>single points of failure</strong> in a network, a nice OCI tie-in.</li>
+<li><strong>Bipartite check:</strong> BFS 2-coloring. Example: Is Graph Bipartite, Possible Bipartition.</li>
+<li><strong>Eulerian path:</strong> Hierholzer's algorithm. Example: Reconstruct Itinerary (use a min-heap for lexical order).</li>
+<li><strong>A*:</strong> Dijkstra plus an admissible heuristic.</li>
+</ul>
+<hr>
+<h2 id="graph-problem-checklist">Graph problem checklist</h2>
+<ol>
+<li>Build the graph correctly (directed? both directions for undirected).</li>
+<li>Choose BFS for fewest steps, Dijkstra for weights, topo for dependencies, DSU for dynamic grouping.</li>
+<li>Visited set: mark on push.</li>
+<li>Disconnected graphs: loop over all nodes as possible starts.</li>
+<li>Complexity: O(V + E) for traversal. State it with V and E defined.</li>
+</ol></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

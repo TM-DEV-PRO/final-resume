@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>04_system_design_questions — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/04_system_design_questions.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#04-system-design-interview-framework-and-top-questions-with-answers">04. System design: interview framework and top questions with answers</a>
+<a class="lvl2" href="#a-the-45-to-60-minute-framework">A. The 45 to 60 minute framework</a>
+<a class="lvl2" href="#b-top-questions-with-answers">B. Top questions with answers</a>
+<a class="lvl2" href="#c-common-follow-up-questions-and-short-answers">C. Common follow-up questions and short answers</a></nav>
+<main><h1 id="04-system-design-interview-framework-and-top-questions-with-answers">04. System design: interview framework and top questions with answers</h1>
+<p>Background concepts: <a href="04_system_design_fundamentals.html">fundamentals</a>. Reliability depth: <a href="02_jd_technical_map.html">JD map</a>.</p>
+<hr>
+<h2 id="a-the-45-to-60-minute-framework">A. The 45 to 60 minute framework</h2>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Time</th>
+<th>What you do</th>
+<th>What you say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Requirements</td>
+<td>5–8 min</td>
+<td>Functional (3–5 core features), non-functional (scale, latency, availability, consistency, durability, security), out of scope</td>
+<td>"Let me confirm scope before designing."</td>
+</tr>
+<tr>
+<td>2. Estimates</td>
+<td>3–5 min</td>
+<td>QPS (avg/peak), storage, bandwidth, read:write</td>
+<td>"About 12k QPS peak writes, mostly reads, so read path optimization matters most."</td>
+</tr>
+<tr>
+<td>3. API</td>
+<td>3–5 min</td>
+<td>3–6 endpoints with key parameters, idempotency tokens, pagination</td>
+<td></td>
+</tr>
+<tr>
+<td>4. Data model</td>
+<td>5 min</td>
+<td>Entities, keys, partition key, which store and why</td>
+<td>"Partition by tenant_id plus hash, to avoid hot shards."</td>
+</tr>
+<tr>
+<td>5. High-level design</td>
+<td>10 min</td>
+<td>Boxes: client, LB, services, stores, queues, caches</td>
+<td>Draw the <strong>write path</strong> and the <strong>read path</strong> separately</td>
+</tr>
+<tr>
+<td>6. Deep dives</td>
+<td>15 min</td>
+<td>2–3 hardest parts: consistency, hot keys, failure handling, scaling the bottleneck</td>
+<td>Offer options and choose with a trade-off</td>
+</tr>
+<tr>
+<td>7. Reliability and ops</td>
+<td>5 min</td>
+<td>Failure modes, multi-AD, monitoring, deployment, security</td>
+<td>OCI weighs this heavily</td>
+</tr>
+<tr>
+<td>8. Wrap up</td>
+<td>2 min</td>
+<td>Summarize, bottlenecks, what you'd do next</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3 id="senior-signals-interviewers-look-for">Senior signals interviewers look for</h3>
+<ul>
+<li>You drive. You don't wait for prompts.</li>
+<li>Trade-offs named explicitly: "I choose X over Y because of Z. If Z changes, Y is better."</li>
+<li>Numbers used to justify decisions.</li>
+<li>Failure handling designed in, not added at the end.</li>
+<li>Operability: how would I know it's broken? How do I deploy safely? How do I roll back?</li>
+<li>Simplicity: don't add Kafka and 5 databases without a reason.</li>
+</ul>
+<h3 id="non-functional-checklist-read-it-out">Non-functional checklist (read it out)</h3>
+<p>Availability target (99.9 = 8.7h/year, 99.99 = 52 min/year) · latency p99 · consistency per operation · durability · throughput · multi-tenancy · security/compliance · cost · operability.</p>
+<hr>
+<h2 id="b-top-questions-with-answers">B. Top questions with answers</h2>
+<h3 id="q1-design-a-distributed-rate-limiter-oci-api-throttling">Q1. Design a distributed rate limiter (OCI API throttling)</h3>
+<p><strong>Requirements:</strong> limit per tenant/API key/operation (e.g. 100 req/s with bursts to 200). Low overhead (&lt; 1 ms). Highly available: <strong>fail open</strong> or closed? Usually fail open for availability, except security-sensitive limits. Return 429 with <code>Retry-After</code>.</p>
+<p><strong>Estimate:</strong> 1M QPS across the fleet, 10M keys.</p>
+<p><strong>Algorithm:</strong> token bucket per key: <code>(tokens, last_refill_ts)</code>. On request: <code>tokens = min(cap, tokens + (now - last) * rate)</code>; if tokens ≥ 1, decrement and allow.</p>
+<p><strong>Design options:</strong>
+1. <strong>Central store (Redis cluster):</strong> a Lua script does refill + decrement atomically. Keys are sharded by hash. Accurate. Adds a network hop (~0.5 ms). Redis failure needs a fallback (local limits).
+2. <strong>Local buckets + async sync:</strong> each API node holds buckets with <code>rate / N_nodes</code> or a leased share of the global budget, periodically reconciled. No hop, slightly inaccurate. Good at huge scale.
+3. <strong>Hybrid:</strong> local first, and consult central only for tenants near their limit.</p>
+<pre><code>client → LB → API gateway [local token bucket] ──(async)── limiter service / Redis
+                         │
+                         └→ backend
+</code></pre>
+<p><strong>Deep dives:</strong>
+- <strong>Hot tenant:</strong> its key lives on one Redis shard. Use local pre-aggregation or split the key.
+- <strong>Clock:</strong> use the Redis server time inside the script, not client clocks.
+- <strong>Config:</strong> limits come from the control plane, cached in the data plane (static stability).
+- <strong>Multi-region:</strong> limits are per region (simple), or global with an approximate sync.
+- <strong>Observability:</strong> metrics for throttled requests per tenant, so throttling is visible.</p>
+<p><strong>My tie-in:</strong> the Masters IRP pipeline used bounded concurrency + backoff against a rate-limited government API. That's the client side of the same problem.</p>
+<hr>
+<h3 id="q2-design-a-distributed-key-value-store-dynamo-etcd-style">Q2. Design a distributed key-value store (Dynamo / etcd style)</h3>
+<p><strong>Requirements:</strong> <code>put(k, v)</code>, <code>get(k)</code>, <code>delete(k)</code>. Billions of keys, 100k+ QPS, p99 &lt; 10 ms, highly available, durable, tunable consistency.</p>
+<p><strong>Partitioning:</strong> consistent hashing with virtual nodes. Each key has a <strong>preference list</strong> of N = 3 replicas on distinct ADs.</p>
+<p><strong>Replication:</strong>
+- <em>AP design (Dynamo):</em> leaderless with quorums W = 2, R = 2, N = 3. Sloppy quorum + hinted handoff when a node is down. Read repair. Anti-entropy with Merkle trees. Vector clocks or LWW for conflicts.
+- <em>CP design (etcd/Spanner-like):</em> each partition is a <strong>Raft group</strong> of 3 across ADs. The leader serves linearizable reads (with a lease or read index).</p>
+<p><strong>Storage engine per node:</strong> LSM tree (WAL → memtable → SSTables + compaction + Bloom filters). Write-optimized.</p>
+<p><strong>Request path:</strong></p>
+<pre><code>client → router (knows ring/partition map, cached) → coordinator node
+   put: write to N replicas, ack after W
+   get: read R replicas, return newest (by version), repair stale
+</code></pre>
+<p><strong>Membership:</strong> gossip + failure detector (phi accrual). Or a small Raft-based metadata service holding the partition map.</p>
+<p><strong>Deep dives:</strong>
+- <strong>Rebalancing on node add:</strong> move only the affected vnode ranges, throttled.
+- <strong>Hot keys:</strong> a cache in front, key splitting.
+- <strong>Durability:</strong> fsync WAL per batch (group commit), replication across ADs.
+- <strong>Deletes:</strong> tombstones, removed after the grace period during compaction.
+- <strong>Consistency trade-off:</strong> say when you'd pick each design (bucket names: CP; session data: AP).</p>
+<hr>
+<h3 id="q3-design-object-storage-like-oci-object-storage-s3">Q3. Design object storage (like OCI Object Storage / S3)</h3>
+<p><strong>Requirements:</strong> buckets and objects (KB to TB), PUT/GET/DELETE/LIST, multipart upload, 11 nines durability, high availability, strong read-after-write consistency (OCI Object Storage offers this), versioning, lifecycle policies, encryption at rest, IAM.</p>
+<p><strong>Architecture (split metadata from data):</strong></p>
+<pre><code>client → LB → API front end (auth, throttling)
+                 ├→ metadata service (bucket/object → chunk locations, versions)  [sharded, Raft-replicated DB]
+                 └→ storage nodes (chunks, erasure coded across ADs)
+</code></pre>
+<p><strong>PUT flow:</strong>
+1. Authenticate, authorize (IAM policy on the compartment), check quotas.
+2. Split into chunks (e.g. 8–64 MB). Stream to storage nodes. <strong>Erasure code</strong> (e.g. 8 data + 4 parity) placed across ADs and fault domains. Much cheaper than 3x replication at the same durability.
+3. Checksums per chunk, verified end to end.
+4. <strong>Commit metadata last</strong> (atomic write of the object version → chunk list). The object becomes visible only after the metadata commit, which gives read-after-write consistency.
+5. Orphaned chunks from failed uploads get cleaned up by a garbage collector.</p>
+<p><strong>GET:</strong> metadata lookup (cached), then fetch chunks in parallel, reconstruct from any k of n chunks if some nodes are slow (<strong>hedged reads</strong>).</p>
+<p><strong>LIST:</strong> the metadata store is ordered by <code>(bucket, key)</code>, so a range scan with pagination tokens. Partition big buckets by key range, and split hot ranges automatically.</p>
+<p><strong>Multipart upload:</strong> upload parts in parallel with part numbers and ETags, then a commit that stitches the metadata. Resumable.</p>
+<p><strong>Durability operations:</strong> background <strong>scrubbing</strong> verifies checksums; repair re-encodes lost chunks on node failure; prioritize repair by the number of missing chunks.</p>
+<p><strong>Security:</strong> TLS, envelope encryption per object (DEK wrapped by a KEK in Vault), customer-managed keys, pre-authenticated requests with expiry.</p>
+<p><strong>Deep dives:</strong> hot objects (CDN, cache), small-object overhead (pack small objects together), metadata scaling (shard by bucket + key hash, with range partitioning inside), consistency of overwrite (version IDs; last committed wins).</p>
+<p><strong>My tie-in:</strong> "metadata commit last" is the same principle as my partition ledger. The data being present isn't success; the commit record is.</p>
+<hr>
+<h3 id="q4-design-a-url-shortener-warm-up-often-first">Q4. Design a URL shortener (warm-up, often first)</h3>
+<ul>
+<li><strong>Requirements:</strong> create a short URL, redirect, optional custom alias and expiry. 100M new URLs/month, 10:1 read:write.</li>
+<li><strong>Estimate:</strong> ~40 writes/s, ~400 reads/s avg; 5 years ≈ 6B URLs × 500 B ≈ 3 TB.</li>
+<li><strong>Key generation:</strong> base62 of a unique ID. 7 chars = 62^7 ≈ 3.5 trillion. IDs come from a distributed ID generator (Snowflake: time + machine + sequence) or pre-allocated ranges per server (a ticket server hands out blocks of 1M). Avoid hash + collision checks at scale.</li>
+<li><strong>Store:</strong> KV (short → long, created, expiry). Partition by the short key.</li>
+<li><strong>Read path:</strong> cache (Redis/CDN) in front, since hot links dominate. Use 301 (cacheable by browsers) vs 302 (so you count analytics).</li>
+<li><strong>Analytics:</strong> emit click events to a log, aggregate asynchronously.</li>
+<li><strong>Abuse:</strong> rate limit creation, malware URL scanning.</li>
+</ul>
+<hr>
+<h3 id="q5-design-a-distributed-cache-like-memcachedredis-cluster">Q5. Design a distributed cache (like Memcached/Redis cluster)</h3>
+<ul>
+<li><strong>API:</strong> get, set with TTL, delete.</li>
+<li><strong>Partitioning:</strong> consistent hashing (the client library or a proxy knows the ring).</li>
+<li><strong>Eviction:</strong> LRU per node (hashmap + doubly linked list, see <a href="05_lld_problems.html">LLD</a>), with memory limits.</li>
+<li><strong>Replication:</strong> optional primary-replica per shard for availability. Cache data is usually rebuildable.</li>
+<li><strong>Failure:</strong> a node dies and its keys miss, so the DB load spikes. Protect with request coalescing, gradual warm-up, and a replica promotion.</li>
+<li><strong>Hot keys:</strong> replicate hot keys to multiple nodes, plus a local in-process L1 cache with a short TTL.</li>
+<li><strong>Consistency:</strong> cache-aside with delete-on-write; TTL as a safety net. Stampede protection (singleflight, SETNX lock, TTL jitter), which is exactly what I did at Masters.</li>
+</ul>
+<hr>
+<h3 id="q6-design-a-distributed-job-scheduler-cron-at-scale">Q6. Design a distributed job scheduler (cron at scale)</h3>
+<p><strong>Requirements:</strong> schedule one-off and recurring jobs (millions), run at the right time (±seconds), <strong>at-least-once</strong> with idempotent jobs, retries, timeouts, priorities, visibility (status, logs), and no job lost if a node dies.</p>
+<pre><code>API → jobs DB (job definitions, next_run_at, indexed)       [partitioned by job_id hash]
+scheduler shards (each owns partitions; leader per partition via lease)
+   poll: SELECT due jobs WHERE next_run_at &lt;= now LIMIT n  → enqueue
+queue (per priority) → worker pool → execution records (attempt, status, heartbeat)
+</code></pre>
+<p><strong>Key decisions:</strong>
+- <strong>Ownership:</strong> partitions assigned to scheduler instances via leases (etcd/ZooKeeper) with fencing tokens, so two schedulers don't fire the same job.
+- <strong>Exactly-once firing is hard:</strong> use at-least-once + idempotency. The job run ID = <code>(job_id, scheduled_time)</code>, and a unique constraint dedups.
+- <strong>Time wheel / timing wheel</strong> for near-term timers in memory; the DB for long-term.
+- <strong>Worker heartbeats:</strong> if the heartbeat stops, the attempt is presumed dead and re-enqueued after a visibility timeout.
+- <strong>Retries</strong> with backoff, max attempts, then DLQ.
+- <strong>Checkpoints</strong> for long jobs so a retry resumes. That's my Keep/Drop registry pattern.
+- <strong>Backpressure:</strong> don't enqueue faster than workers drain. Priority lanes.
+- <strong>Missed schedules</strong> after an outage: a policy per job (catch up all, run once, skip).
+- <strong>Observability:</strong> schedule lag (actual start − scheduled), failure rate, queue depth.</p>
+<p><strong>My tie-in:</strong> I built the application-level version of this. The orchestration registry runs 88k-article batches with hard timeouts, circuit breakers, durable checkpoints, a claim ledger, and per-run telemetry. I chose not to add Airflow/Temporal for that workload, and I'd explain when I <em>would</em> (many teams, many DAGs, cross-service workflows).</p>
+<hr>
+<h3 id="q7-design-a-metrics-and-alerting-system-like-oci-monitoring">Q7. Design a metrics and alerting system (like OCI Monitoring)</h3>
+<p><strong>Requirements:</strong> ingest metrics from millions of resources (e.g. 10M series, 1 point per 10–60 s), query with aggregations over time windows, alarms with thresholds, retention with downsampling, and multi-tenant.</p>
+<p><strong>Estimate:</strong> 10M series / 10 s = 1M points/s, ~16 bytes compressed per point → ~16 MB/s raw.</p>
+<pre><code>agents → ingestion front end (auth, throttle) → Kafka/Streaming (partitioned by series id)
+       → aggregators (pre-aggregate 1-minute rollups) → time-series store (sharded by tenant+metric+time)
+       → query service (fan-out, merge)          → dashboards
+       → alarm evaluator (streaming, per alarm window) → notification service (dedupe, escalation)
+</code></pre>
+<p><strong>Deep dives:</strong>
+- <strong>Storage:</strong> time-series DB with columnar chunks per series (Gorilla compression: delta-of-delta timestamps, XOR floats), time-partitioned. Hot recent data in memory/SSD, older data downsampled (1 min → 1 h) in object storage.
+- <strong>Cardinality explosion</strong> (someone puts a request ID in a label): per-tenant series limits and rejection.
+- <strong>Alarm evaluation:</strong> streaming evaluation on ingest vs periodic queries. Handle late data with a grace window. <strong>Missing data</strong> policy (treat as breaching or not).
+- <strong>Alerting on the monitoring system itself:</strong> a separate "meta-monitoring" stack; synthetic heartbeats ("dead man's switch").
+- <strong>Multi-AD:</strong> replicate ingestion. Alarm evaluators are active-passive per partition with leases.
+- <strong>Notification:</strong> dedupe, grouping, suppression during maintenance, and escalation policies.</p>
+<p><strong>My tie-in:</strong> I built telemetry on the application side: Datadog traces on the Go edge, per-run JSON telemetry (tokens, USD, step duration, fallbacks), and ELK + New Relic alerting at Masters.</p>
+<hr>
+<h3 id="q8-design-a-notification-service-emailsmspushwebhooks">Q8. Design a notification service (email/SMS/push/webhooks)</h3>
+<ul>
+<li><strong>Flow:</strong> producers → API (validate, idempotency key) → queue per channel → workers → providers (SES, SMS gateway, APNs/FCM).</li>
+<li><strong>Preferences and templates:</strong> a user preference service, templating, localization.</li>
+<li><strong>Reliability:</strong> at-least-once with dedup by notification ID; retries with backoff per provider; circuit breaker per provider; failover to a secondary provider; DLQ.</li>
+<li><strong>Rate limits:</strong> per user (don't spam), per provider quota.</li>
+<li><strong>Priority:</strong> OTP/security first, marketing last (separate queues).</li>
+<li><strong>Tracking:</strong> delivery status callbacks → event store.</li>
+<li><strong>Webhooks:</strong> sign payloads (HMAC), retry with backoff for 24h, and let customers replay.</li>
+</ul>
+<hr>
+<h3 id="q9-design-a-distributed-message-queue-log-like-kafka-oci-streaming">Q9. Design a distributed message queue / log (like Kafka / OCI Streaming)</h3>
+<ul>
+<li><strong>Model:</strong> topics → partitions (ordered append-only logs) → segments on disk. Offset = position.</li>
+<li><strong>Producers:</strong> partition by key hash (ordering per key); batch + compress; <code>acks=all</code> for durability; idempotent producer (producer ID + sequence) for dedup.</li>
+<li><strong>Replication:</strong> each partition has a leader and followers in other ADs. The <strong>ISR</strong> (in-sync replicas) set; a commit needs all ISR (with <code>min.insync.replicas = 2</code>). Controller (Raft, KRaft) handles leader election.</li>
+<li><strong>Consumers:</strong> consumer groups, one partition per consumer in a group; offsets committed to an internal topic; rebalancing.</li>
+<li><strong>Retention:</strong> by time/size; log compaction keeps the latest per key.</li>
+<li><strong>Performance:</strong> sequential IO, OS page cache, zero-copy <code>sendfile</code>, batching.</li>
+<li><strong>Exactly-once:</strong> idempotent producer + transactions across partitions + read-committed consumers. External sinks must be idempotent.</li>
+<li><strong>Ops:</strong> consumer lag alerts, partition skew, under-replicated partitions alarms.</li>
+</ul>
+<p><strong>My tie-in:</strong> I used Kafka at Masters (partition by client GSTIN for per-taxpayer ordering, offset reset for replay after a parser bug) and at Uber Menu (keyed by vendor_id, Flink keyed dedup).</p>
+<hr>
+<h3 id="q10-design-a-log-aggregation-and-search-system-like-elk-oci-logging">Q10. Design a log aggregation and search system (like ELK / OCI Logging)</h3>
+<ul>
+<li>Agents tail logs → ingestion (throttle, parse, enrich with tenant/host) → a durable buffer (Kafka) → indexers → a search index (inverted index, time-based indices, sharded) + cold storage in object storage.</li>
+<li>Query: time-bounded first (prune indices), then full-text.</li>
+<li>Retention tiers: hot (7 days searchable), warm, cold (archive in object storage, rehydrate on demand).</li>
+<li>Protect from log storms: per-source rate limits and sampling for debug logs.</li>
+<li>Correlation: trace ID in every log line.</li>
+</ul>
+<p><strong>My tie-in:</strong> the ELK rollout at Masters with request IDs that follow an invoice across services and workers; triage 70% faster.</p>
+<hr>
+<h3 id="q11-design-a-vm-provisioning-control-plane-oci-compute-launchinstance">Q11. Design a VM provisioning control plane (OCI Compute "LaunchInstance")</h3>
+<p>This is very OCI-specific. It tests control plane thinking.</p>
+<p><strong>Requirements:</strong> <code>LaunchInstance(shape, image, subnet, AD)</code> returns quickly with an OCID in PROVISIONING state; <code>GetInstance</code> shows the state; terminate. Must be idempotent, handle capacity, and survive component failures mid-workflow.</p>
+<pre><code>API (auth, validate, quota, idempotency via retry token) → instances DB (desired state)
+  → workflow engine (durable state machine per request)
+       1. reserve capacity (placement service: pick host in AD/FD with capacity, anti-affinity)
+       2. allocate network (VNIC, IP) via network control plane
+       3. attach boot volume (block storage control plane)
+       4. tell host agent to start VM
+       5. health check → RUNNING
+  → each step idempotent, with compensation on failure (release IP, release capacity)
+host agents: reconcile loop (desired vs actual), report status
+</code></pre>
+<p><strong>Key points:</strong>
+- <strong>Desired state + reconciliation</strong> (like Kubernetes controllers): agents converge the actual state to the desired state. This handles lost messages naturally.
+- <strong>Durable workflow</strong> (saga) with a persisted step state. On a crash, resume from the last completed step. Same idea as my checkpoints.
+- <strong>Idempotency:</strong> a retry token maps to the same instance OCID.
+- <strong>Placement:</strong> bin packing with constraints (shape, FD, anti-affinity). Scoring function. Optimistic reservation with conflict retry.
+- <strong>Static stability:</strong> running VMs don't depend on the control plane. If the control plane is down, launches fail but existing workloads are fine.
+- <strong>Cells:</strong> per AD control planes to limit the blast radius.
+- <strong>Throttling:</strong> per tenancy limits and service limits.
+- <strong>Observability:</strong> per-step latency and failure metrics, stuck-workflow alarms.</p>
+<hr>
+<h3 id="q12-design-a-distributed-lock-configuration-service-like-zookeeperetcd">Q12. Design a distributed lock / configuration service (like ZooKeeper/etcd)</h3>
+<ul>
+<li>A 3 or 5 node Raft cluster across ADs. Linearizable writes. Reads via the leader, or followers with read index for linearizability.</li>
+<li>API: create/get/set/delete with versions (CAS), <strong>watches</strong> (notify on change), <strong>ephemeral keys tied to sessions/leases</strong> (disappear when the client dies), and sequential keys (for fair locks and leader election).</li>
+<li><strong>Lock recipe:</strong> create an ephemeral sequential key under <code>/locks/x</code>. The lowest sequence holds the lock; others watch their predecessor (avoids herd). Return a <strong>fencing token</strong> (the key's revision).</li>
+<li><strong>Leader election:</strong> the same recipe; the holder of the lowest key is the leader.</li>
+<li><strong>Scale:</strong> small data (MBs), not a database. Writes limited by consensus (~10k/s). Scale reads with followers/learners.</li>
+<li><strong>Config distribution:</strong> clients cache config and watch for changes. Data planes keep the last known config if the service is down (static stability).</li>
+</ul>
+<hr>
+<h3 id="q13-design-a-chat-real-time-copilot-service-websocket">Q13. Design a chat / real-time copilot service (WebSocket)</h3>
+<ul>
+<li>Clients hold WebSocket connections to gateway nodes (stateful). A connection registry (user → gateway node) in Redis.</li>
+<li>Messages: persist first (DB partitioned by conversation ID, time-ordered), then fan out via pub/sub to the gateways holding recipients.</li>
+<li>Ordering per conversation: a sequence number from the conversation's partition.</li>
+<li>Delivery receipts, offline sync by last-seen sequence.</li>
+<li>Scale gateways horizontally; drain connections on deploy (clients reconnect with backoff + jitter to avoid a reconnect storm).</li>
+<li><strong>Auth at handshake:</strong> verify the JWT on connect and bind identity and scope to the connection.</li>
+</ul>
+<p><strong>My tie-in:</strong> Ask Iris is exactly this pattern for an AI copilot. JWT on the WebSocket handshake, plan scope frozen at handshake (tenant isolation), a LangGraph supervisor with a 3-attempt evaluator cap (no infinite loops), and LangSmith traces.</p>
+<hr>
+<h3 id="q14-design-top-k-heavy-hitters-trending-top-api-callers">Q14. Design top-K / heavy hitters (trending, top API callers)</h3>
+<ul>
+<li>Exact at small scale: hashmap counts + a min-heap of size k.</li>
+<li>At scale: stream → partition by key → per-partition counts in windows → merge the partial top-k (careful: the top-k of partitions isn't exact globally unless you partition by key).</li>
+<li>Approximate: <strong>Count-Min Sketch</strong> + heap, or the Space-Saving algorithm. Sliding windows via bucketed counts.</li>
+<li>Serve from a precomputed cache refreshed every N seconds.</li>
+</ul>
+<hr>
+<h3 id="q15-design-a-large-scale-batch-ai-scoring-system-your-own-system-they-may-ask">Q15. Design a large-scale batch AI scoring system (your own system; they may ask)</h3>
+<p>This is the Keep/Drop engine generalized. Draw it confidently.</p>
+<pre><code>trigger (CLI / HTTP start) → freeze config (prompts, params, catalog) → config_hash
+   → deterministic phase: KPI math over the catalog (pure Python, no LLM) → det.json checkpoint
+   → claim ledger → batch mapper (88k items per pass, bounded parallel batches)
+        each batch: packed JSON context → LLM (hard timeout) → schema-validated lens scores
+        breaker per provider; on timeout/open → deterministic fallback score
+        progress appended per article (agent_progress.json)
+   → blend (frozen weights) → write via engine insert → ReplacingMergeTree (versioned, idempotent)
+   → telemetry JSON: tokens, USD, step duration, fallback count; config_hash on every row
+eval: 300-case proxy harness, 80% CI gate for promotion; gold-200 bench for model choice
+</code></pre>
+<p>Talking points: why the LLM never gets SQL (safety, cost, determinism); why RMT (retries don't duplicate); why checkpoints (a provider outage at item 70k doesn't redo det math); why frozen weights (the LLM lost to the 74% baseline on gold-200); cost (the model picked was 73% cheaper at 100% coverage).</p>
+<hr>
+<h2 id="c-common-follow-up-questions-and-short-answers">C. Common follow-up questions and short answers</h2>
+<table>
+<thead>
+<tr>
+<th>Follow-up</th>
+<th>Answer shape</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"What if the DB goes down?"</td>
+<td>Replicas across ADs, automatic failover (Raft/managed), clients retry with backoff; writes queue up or fail fast; reads served from cache/replica (stale OK?)</td>
+</tr>
+<tr>
+<td>"What if traffic is 10x tomorrow?"</td>
+<td>Which component saturates first (by the numbers), autoscale stateless tiers, add partitions, shed load, protect with rate limits</td>
+</tr>
+<tr>
+<td>"How do you avoid a hot partition?"</td>
+<td>Better key (add hash/salt), split hot tenants into their own cell, caching, and write sharding with read aggregation</td>
+</tr>
+<tr>
+<td>"How do you deploy without downtime?"</td>
+<td>Rolling deploy waves, backwards compatible schemas (expand/contract), feature flags, automatic rollback on alarms</td>
+</tr>
+<tr>
+<td>"Exactly once?"</td>
+<td>At-least-once + idempotent processing (dedup keys, upserts, versioned writes)</td>
+</tr>
+<tr>
+<td>"Consistency vs availability here?"</td>
+<td>Pick per operation and justify</td>
+</tr>
+<tr>
+<td>"How do you know it's working?"</td>
+<td>SLIs, burn-rate alarms, canaries, dashboards, traces</td>
+</tr>
+<tr>
+<td>"How do you secure it?"</td>
+<td>AuthN/AuthZ at the edge, tenant from the token, TLS, encryption at rest with KMS, least privilege, audit logs</td>
+</tr>
+<tr>
+<td>"Cost?"</td>
+<td>Erasure coding vs replication, tiered storage, caching, batch vs real time, and right-sizing</td>
+</tr>
+</tbody>
+</table></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

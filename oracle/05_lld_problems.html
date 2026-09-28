@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>05_lld_problems — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/05_lld_problems.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#05-lld-problems-with-full-designs-and-code">05. LLD problems with full designs and code</a>
+<a class="lvl2" href="#1-lru-cache-most-asked-often-with-make-it-thread-safe">1. LRU cache (most asked, often with "make it thread safe")</a>
+<a class="lvl2" href="#2-lfu-cache-o1">2. LFU cache (O(1))</a>
+<a class="lvl2" href="#3-rate-limiter-library-strategy-thread-safety">3. Rate limiter library (Strategy + thread safety)</a>
+<a class="lvl2" href="#4-parking-lot">4. Parking lot</a>
+<a class="lvl2" href="#5-in-memory-key-value-store-with-ttl-and-transactions">5. In-memory key-value store with TTL and transactions</a>
+<a class="lvl2" href="#6-logger-logging-framework">6. Logger / logging framework</a>
+<a class="lvl2" href="#7-in-memory-pub-sub-message-broker">7. In-memory pub-sub / message broker</a>
+<a class="lvl2" href="#8-circuit-breaker-class-state-pattern">8. Circuit breaker class (State pattern)</a>
+<a class="lvl2" href="#9-consistent-hashing-ring">9. Consistent hashing ring</a>
+<a class="lvl2" href="#10-vending-machine-state-pattern">10. Vending machine (State pattern)</a>
+<a class="lvl2" href="#11-elevator-system">11. Elevator system</a>
+<a class="lvl2" href="#12-movie-ticket-booking-bookmyshow-the-concurrency-part">12. Movie ticket booking (BookMyShow): the concurrency part</a>
+<a class="lvl2" href="#13-splitwise-expense-sharing">13. Splitwise (expense sharing)</a>
+<a class="lvl2" href="#14-in-memory-file-system">14. In-memory file system</a>
+<a class="lvl2" href="#15-task-scheduler-delayed-job-executor-lld-version">15. Task scheduler / delayed job executor (LLD version)</a>
+<a class="lvl2" href="#lld-answer-checklist-say-it-at-the-end">LLD answer checklist (say it at the end)</a></nav>
+<main><h1 id="05-lld-problems-with-full-designs-and-code">05. LLD problems with full designs and code</h1>
+<p>Each problem: requirements, entities, key decisions, code for the core, concurrency, and extensions. Foundations: <a href="05_lld_foundations.html">05 LLD foundations</a>.</p>
+<hr>
+<h2 id="1-lru-cache-most-asked-often-with-make-it-thread-safe">1. LRU cache (most asked, often with "make it thread safe")</h2>
+<p><strong>Requirements:</strong> <code>get(key)</code> and <code>put(key, value)</code> in O(1). Capacity limit; evict the least recently used.</p>
+<p><strong>Design:</strong> hashmap key → node, plus a doubly linked list ordered by recency (head = most recent). Sentinel head/tail nodes remove edge cases.</p>
+<pre><code class="language-python">import threading
+
+class Node:
+    __slots__ = (&quot;key&quot;, &quot;val&quot;, &quot;prev&quot;, &quot;next&quot;)
+    def __init__(self, key=None, val=None):
+        self.key, self.val, self.prev, self.next = key, val, None, None
+
+class LRUCache:
+    def __init__(self, capacity: int):
+        self.cap = capacity
+        self.map = {}
+        self.head, self.tail = Node(), Node()
+        self.head.next, self.tail.prev = self.tail, self.head
+        self.lock = threading.Lock()
+
+    def _remove(self, n):
+        n.prev.next, n.next.prev = n.next, n.prev
+
+    def _add_front(self, n):
+        n.prev, n.next = self.head, self.head.next
+        self.head.next.prev = n
+        self.head.next = n
+
+    def get(self, key):
+        with self.lock:
+            n = self.map.get(key)
+            if not n:
+                return None
+            self._remove(n)
+            self._add_front(n)
+            return n.val
+
+    def put(self, key, val):
+        with self.lock:
+            n = self.map.get(key)
+            if n:
+                n.val = val
+                self._remove(n)
+                self._add_front(n)
+                return
+            if len(self.map) &gt;= self.cap:
+                lru = self.tail.prev
+                self._remove(lru)
+                del self.map[lru.key]
+            n = Node(key, val)
+            self.map[key] = n
+            self._add_front(n)
+</code></pre>
+<p>Python shortcut (say you know it): <code>collections.OrderedDict</code> with <code>move_to_end</code> and <code>popitem(last=False)</code>.</p>
+<p><strong>Go version with a mutex</strong> (uses <code>container/list</code>):</p>
+<pre><code class="language-go">type entry struct {
+    key string
+    val []byte
+}
+
+type LRU struct {
+    mu    sync.Mutex
+    cap   int
+    ll    *list.List
+    items map[string]*list.Element
+}
+
+func NewLRU(cap int) *LRU {
+    return &amp;LRU{cap: cap, ll: list.New(), items: make(map[string]*list.Element)}
+}
+
+func (c *LRU) Get(k string) ([]byte, bool) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    if e, ok := c.items[k]; ok {
+        c.ll.MoveToFront(e)
+        return e.Value.(*entry).val, true
+    }
+    return nil, false
+}
+
+func (c *LRU) Put(k string, v []byte) {
+    c.mu.Lock()
+    defer c.mu.Unlock()
+    if e, ok := c.items[k]; ok {
+        e.Value.(*entry).val = v
+        c.ll.MoveToFront(e)
+        return
+    }
+    if c.ll.Len() &gt;= c.cap {
+        old := c.ll.Back()
+        c.ll.Remove(old)
+        delete(c.items, old.Value.(*entry).key)
+    }
+    c.items[k] = c.ll.PushFront(&amp;entry{k, v})
+}
+</code></pre>
+<p><strong>Concurrency discussion:</strong>
+- Even <code>get</code> mutates the list, so a read-write lock doesn't help (every op writes). Use one mutex.
+- To scale: <strong>shard</strong> the cache into N segments by <code>hash(key) % N</code>, each with its own lock (like Java's old ConcurrentHashMap). That's approximate LRU globally, which is fine.
+- Or sample-based LRU (Redis evicts the oldest of 5 random keys), which has no list and less contention.
+- <strong>Extensions:</strong> TTL per entry (store an expiry, check on get, plus a background sweeper), size-based capacity (track bytes), eviction callbacks, and metrics (hit rate).</p>
+<hr>
+<h2 id="2-lfu-cache-o1">2. LFU cache (O(1))</h2>
+<p><strong>Design:</strong> <code>key → (value, freq)</code>, <code>freq → OrderedDict of keys</code> (LRU order within a frequency), and a <code>min_freq</code> pointer.</p>
+<pre><code class="language-python">from collections import defaultdict, OrderedDict
+
+class LFUCache:
+    def __init__(self, capacity):
+        self.cap = capacity
+        self.vals = {}                         # key -&gt; (val, freq)
+        self.buckets = defaultdict(OrderedDict)
+        self.min_freq = 0
+
+    def _touch(self, key):
+        val, f = self.vals[key]
+        del self.buckets[f][key]
+        if not self.buckets[f]:
+            del self.buckets[f]
+            if self.min_freq == f:
+                self.min_freq += 1
+        self.vals[key] = (val, f + 1)
+        self.buckets[f + 1][key] = None
+
+    def get(self, key):
+        if key not in self.vals:
+            return -1
+        self._touch(key)
+        return self.vals[key][0]
+
+    def put(self, key, value):
+        if self.cap == 0:
+            return
+        if key in self.vals:
+            self.vals[key] = (value, self.vals[key][1])
+            self._touch(key)
+            return
+        if len(self.vals) &gt;= self.cap:
+            old, _ = self.buckets[self.min_freq].popitem(last=False)
+            if not self.buckets[self.min_freq]:
+                del self.buckets[self.min_freq]
+            del self.vals[old]
+        self.vals[key] = (value, 1)
+        self.buckets[1][key] = None
+        self.min_freq = 1
+</code></pre>
+<hr>
+<h2 id="3-rate-limiter-library-strategy-thread-safety">3. Rate limiter library (Strategy + thread safety)</h2>
+<p><strong>Requirements:</strong> <code>allow(key) -&gt; bool</code>. Pluggable algorithms (token bucket, sliding window). Per-key limits. Thread-safe. An injectable clock for tests.</p>
+<pre><code class="language-python">import threading, time
+from abc import ABC, abstractmethod
+from collections import deque
+
+class RateLimiter(ABC):
+    @abstractmethod
+    def allow(self, key: str) -&gt; bool: ...
+
+class TokenBucketLimiter(RateLimiter):
+    def __init__(self, rate: float, capacity: int, clock=time.monotonic):
+        self.rate, self.cap, self.clock = rate, capacity, clock
+        self.buckets = {}                     # key -&gt; [tokens, last]
+        self.lock = threading.Lock()
+
+    def allow(self, key):
+        now = self.clock()
+        with self.lock:
+            tokens, last = self.buckets.get(key, (self.cap, now))
+            tokens = min(self.cap, tokens + (now - last) * self.rate)
+            if tokens &gt;= 1:
+                self.buckets[key] = (tokens - 1, now)
+                return True
+            self.buckets[key] = (tokens, now)
+            return False
+
+class SlidingWindowLogLimiter(RateLimiter):
+    def __init__(self, limit: int, window_s: float, clock=time.monotonic):
+        self.limit, self.window, self.clock = limit, window_s, clock
+        self.logs = {}
+        self.lock = threading.Lock()
+
+    def allow(self, key):
+        now = self.clock()
+        with self.lock:
+            q = self.logs.setdefault(key, deque())
+            while q and q[0] &lt;= now - self.window:
+                q.popleft()
+            if len(q) &lt; self.limit:
+                q.append(now)
+                return True
+            return False
+</code></pre>
+<p><strong>Go token bucket</strong> (per-key, lock striping would be the next step):</p>
+<pre><code class="language-go">type bucket struct {
+    tokens float64
+    last   time.Time
+}
+
+type TokenBucket struct {
+    mu      sync.Mutex
+    rate    float64 // tokens per second
+    cap     float64
+    buckets map[string]*bucket
+    now     func() time.Time
+}
+
+func (tb *TokenBucket) Allow(key string) bool {
+    tb.mu.Lock()
+    defer tb.mu.Unlock()
+    t := tb.now()
+    b, ok := tb.buckets[key]
+    if !ok {
+        b = &amp;bucket{tokens: tb.cap, last: t}
+        tb.buckets[key] = b
+    }
+    b.tokens = math.Min(tb.cap, b.tokens+t.Sub(b.last).Seconds()*tb.rate)
+    b.last = t
+    if b.tokens &gt;= 1 {
+        b.tokens--
+        return true
+    }
+    return false
+}
+</code></pre>
+<p><strong>Discussion:</strong> a global lock is a bottleneck, so use a lock per key (a map of locks, itself guarded) or striped locks. Evict idle keys (LRU/TTL) so memory doesn't grow forever. Distributed version: <a href="04_system_design_questions.html">system design Q1</a>.</p>
+<hr>
+<h2 id="4-parking-lot">4. Parking lot</h2>
+<p><strong>Requirements (clarify):</strong> multiple floors; spot types (motorcycle, compact, large, EV); vehicles park in a fitting spot; tickets on entry; pay on exit with pluggable pricing; show free spots per type; multiple entry gates at once (concurrency).</p>
+<p><strong>Entities:</strong> <code>ParkingLot</code>, <code>Floor</code>, <code>Spot</code> (type, id, occupied), <code>Vehicle</code> (type, plate), <code>Ticket</code>, <code>SpotAssignmentStrategy</code>, <code>PricingStrategy</code>, <code>Payment</code>.</p>
+<pre><code class="language-python">from dataclasses import dataclass, field
+from enum import Enum
+import itertools, threading, time, uuid
+
+class VehicleType(Enum):
+    BIKE = 1; CAR = 2; TRUCK = 3
+
+class SpotType(Enum):
+    SMALL = 1; MEDIUM = 2; LARGE = 3
+
+FITS = {
+    VehicleType.BIKE: [SpotType.SMALL, SpotType.MEDIUM, SpotType.LARGE],
+    VehicleType.CAR: [SpotType.MEDIUM, SpotType.LARGE],
+    VehicleType.TRUCK: [SpotType.LARGE],
+}
+
+@dataclass
+class Spot:
+    id: str
+    floor: int
+    type: SpotType
+    vehicle: &quot;Vehicle | None&quot; = None
+
+@dataclass(frozen=True)
+class Vehicle:
+    plate: str
+    type: VehicleType
+
+@dataclass
+class Ticket:
+    id: str
+    vehicle: Vehicle
+    spot: Spot
+    entry_ts: float
+
+class PricingStrategy:
+    def price(self, ticket: Ticket, exit_ts: float) -&gt; float:
+        raise NotImplementedError
+
+class HourlyPricing(PricingStrategy):
+    RATES = {SpotType.SMALL: 1.0, SpotType.MEDIUM: 2.0, SpotType.LARGE: 4.0}
+    def price(self, ticket, exit_ts):
+        hours = max(1, -(-int(exit_ts - ticket.entry_ts) // 3600))   # ceil
+        return hours * self.RATES[ticket.spot.type]
+
+class ParkingLot:
+    def __init__(self, spots, pricing: PricingStrategy, clock=time.time):
+        self.free = {t: [] for t in SpotType}       # free spot stacks per type
+        for s in spots:
+            self.free[s.type].append(s)
+        self.active = {}                            # ticket_id -&gt; Ticket
+        self.pricing, self.clock = pricing, clock
+        self.lock = threading.Lock()
+
+    def park(self, vehicle: Vehicle) -&gt; Ticket:
+        with self.lock:                             # two gates can't grab the same spot
+            for st in FITS[vehicle.type]:
+                if self.free[st]:
+                    spot = self.free[st].pop()
+                    spot.vehicle = vehicle
+                    t = Ticket(str(uuid.uuid4()), vehicle, spot, self.clock())
+                    self.active[t.id] = t
+                    return t
+        raise RuntimeError(&quot;lot full for this vehicle type&quot;)
+
+    def leave(self, ticket_id: str) -&gt; float:
+        with self.lock:
+            t = self.active.pop(ticket_id)
+            fee = self.pricing.price(t, self.clock())
+            t.spot.vehicle = None
+            self.free[t.spot.type].append(t.spot)
+            return fee
+
+    def availability(self):
+        with self.lock:
+            return {t.name: len(v) for t, v in self.free.items()}
+</code></pre>
+<p><strong>Talking points:</strong>
+- Spot assignment is a <strong>strategy</strong> (nearest to the gate: a min-heap per type keyed by distance).
+- Pricing is a <strong>strategy</strong> (hourly, flat, weekend, EV surcharge).
+- <strong>Concurrency:</strong> one lock is simple and correct at gate throughput. At scale: a lock per spot type, or a DB with <code>SELECT ... FOR UPDATE SKIP LOCKED</code> to claim a free spot.
+- <strong>Extensions:</strong> reservations, display boards (<strong>observer</strong> on availability changes), and payment methods (strategy).</p>
+<hr>
+<h2 id="5-in-memory-key-value-store-with-ttl-and-transactions">5. In-memory key-value store with TTL and transactions</h2>
+<p><strong>Requirements:</strong> <code>set</code>, <code>get</code>, <code>delete</code>, <code>set(key, val, ttl)</code>, <code>begin</code>, <code>commit</code>, <code>rollback</code> (nested transactions). Thread-safe.</p>
+<pre><code class="language-python">import heapq, threading, time
+
+class KVStore:
+    def __init__(self, clock=time.monotonic):
+        self.data = {}              # key -&gt; (value, expires_at or None)
+        self.expiry = []            # heap of (expires_at, key)
+        self.tx = []                # stack of dicts: key -&gt; old value or _MISSING
+        self.clock = clock
+        self.lock = threading.RLock()
+
+    _MISSING = object()
+
+    def _expired(self, key):
+        v = self.data.get(key)
+        return v is not None and v[1] is not None and v[1] &lt;= self.clock()
+
+    def get(self, key):
+        with self.lock:
+            if self._expired(key):
+                del self.data[key]                  # lazy expiry
+            v = self.data.get(key)
+            return None if v is None else v[0]
+
+    def _record(self, key):
+        if self.tx and key not in self.tx[-1]:
+            self.tx[-1][key] = self.data.get(key, self._MISSING)
+
+    def set(self, key, value, ttl=None):
+        with self.lock:
+            self._record(key)
+            exp = self.clock() + ttl if ttl else None
+            self.data[key] = (value, exp)
+            if exp:
+                heapq.heappush(self.expiry, (exp, key))
+
+    def delete(self, key):
+        with self.lock:
+            self._record(key)
+            self.data.pop(key, None)
+
+    def begin(self):
+        with self.lock:
+            self.tx.append({})
+
+    def rollback(self):
+        with self.lock:
+            if not self.tx:
+                raise RuntimeError(&quot;no transaction&quot;)
+            for key, old in self.tx.pop().items():
+                if old is self._MISSING:
+                    self.data.pop(key, None)
+                else:
+                    self.data[key] = old
+
+    def commit(self):
+        with self.lock:
+            if not self.tx:
+                raise RuntimeError(&quot;no transaction&quot;)
+            changes = self.tx.pop()
+            if self.tx:                         # nested: merge undo info into the parent
+                for k, old in changes.items():
+                    self.tx[-1].setdefault(k, old)
+
+    def sweep(self):
+        &quot;&quot;&quot;Active expiry, run by a background thread.&quot;&quot;&quot;
+        with self.lock:
+            now = self.clock()
+            while self.expiry and self.expiry[0][0] &lt;= now:
+                exp, key = heapq.heappop(self.expiry)
+                v = self.data.get(key)
+                if v and v[1] == exp:           # skip stale heap entries
+                    del self.data[key]
+</code></pre>
+<p><strong>Talking points:</strong> lazy + active expiry (like Redis). The undo log per transaction level makes rollback O(changes). Note this transaction model is single-client (global); multi-client isolation would need MVCC or per-session write sets with commit-time conflict checks (optimistic concurrency). Persistence: an append-only log (AOF) + snapshots.</p>
+<hr>
+<h2 id="6-logger-logging-framework">6. Logger / logging framework</h2>
+<p><strong>Requirements:</strong> levels (DEBUG, INFO, WARN, ERROR), multiple sinks (console, file, remote), formatting, async (don't block callers), and thread-safe.</p>
+<p><strong>Design:</strong>
+- <code>Logger</code> has a level filter and a list of <code>Handler</code>s (chain of responsibility / observer).
+- <code>Formatter</code> is a strategy (JSON, text).
+- <code>AsyncHandler</code> decorates another handler: a bounded queue + a worker thread. When the queue is full, it drops DEBUG and blocks or drops with a counter for others. Say which you choose.</p>
+<pre><code class="language-python">import queue, threading, json, time, sys
+
+class Handler:
+    def emit(self, record: dict): raise NotImplementedError
+
+class ConsoleHandler(Handler):
+    def emit(self, record):
+        sys.stdout.write(json.dumps(record) + &quot;\n&quot;)
+
+class AsyncHandler(Handler):
+    def __init__(self, inner: Handler, maxsize=10_000):
+        self.inner, self.q = inner, queue.Queue(maxsize)
+        self.dropped = 0
+        threading.Thread(target=self._run, daemon=True).start()
+
+    def emit(self, record):
+        try:
+            self.q.put_nowait(record)
+        except queue.Full:
+            self.dropped += 1                   # never block the request path
+
+    def _run(self):
+        while True:
+            self.inner.emit(self.q.get())
+
+class Logger:
+    LEVELS = {&quot;DEBUG&quot;: 10, &quot;INFO&quot;: 20, &quot;WARN&quot;: 30, &quot;ERROR&quot;: 40}
+
+    def __init__(self, name, level=&quot;INFO&quot;, handlers=()):
+        self.name, self.level, self.handlers = name, self.LEVELS[level], list(handlers)
+
+    def log(self, level, msg, **fields):
+        if self.LEVELS[level] &lt; self.level:
+            return
+        rec = {&quot;ts&quot;: time.time(), &quot;level&quot;: level, &quot;logger&quot;: self.name, &quot;msg&quot;: msg, **fields}
+        for h in self.handlers:
+            h.emit(rec)
+
+    def info(self, msg, **f): self.log(&quot;INFO&quot;, msg, **f)
+    def error(self, msg, **f): self.log(&quot;ERROR&quot;, msg, **f)
+</code></pre>
+<p>My tie-in: structured JSON logs with a <code>request_id</code> field is what made ELK triage 70% faster at Masters.</p>
+<hr>
+<h2 id="7-in-memory-pub-sub-message-broker">7. In-memory pub-sub / message broker</h2>
+<p><strong>Requirements:</strong> topics, publish, subscribe with a callback or pull; each subscriber gets every message (fan-out); consumer offsets (replay); bounded memory.</p>
+<pre><code class="language-python">import threading
+from collections import defaultdict
+
+class Topic:
+    def __init__(self, retention=100_000):
+        self.log, self.retention = [], retention
+        self.base = 0                    # offset of log[0]
+        self.cond = threading.Condition()
+
+    def publish(self, msg):
+        with self.cond:
+            self.log.append(msg)
+            if len(self.log) &gt; self.retention:
+                drop = len(self.log) - self.retention
+                del self.log[:drop]
+                self.base += drop
+            self.cond.notify_all()
+
+    def read(self, offset, max_n=100, timeout=1.0):
+        with self.cond:
+            if offset &gt;= self.base + len(self.log):
+                self.cond.wait(timeout)
+            start = max(offset, self.base) - self.base
+            batch = self.log[start:start + max_n]
+            return batch, self.base + start + len(batch)
+
+class Broker:
+    def __init__(self):
+        self.topics = defaultdict(Topic)
+        self.offsets = defaultdict(int)          # (topic, group) -&gt; offset
+
+    def publish(self, topic, msg):
+        self.topics[topic].publish(msg)
+
+    def poll(self, topic, group):
+        batch, nxt = self.topics[topic].read(self.offsets[(topic, group)])
+        return batch, nxt
+
+    def commit(self, topic, group, offset):     # commit after processing = at-least-once
+        self.offsets[(topic, group)] = offset
+</code></pre>
+<p><strong>Talking points:</strong> offsets committed after processing give at-least-once delivery. Retention drops old messages, and a slow group can fall behind retention (detect it and alert). Partitioning for parallelism. Backpressure: bounded logs. It's Kafka in miniature (<a href="04_system_design_questions.html">SD Q9</a>).</p>
+<hr>
+<h2 id="8-circuit-breaker-class-state-pattern">8. Circuit breaker class (State pattern)</h2>
+<pre><code class="language-python">import threading, time
+
+class CircuitOpen(Exception):
+    pass
+
+class CircuitBreaker:
+    CLOSED, OPEN, HALF_OPEN = &quot;closed&quot;, &quot;open&quot;, &quot;half_open&quot;
+
+    def __init__(self, failure_threshold=5, cooldown_s=30, clock=time.monotonic):
+        self.threshold, self.cooldown, self.clock = failure_threshold, cooldown_s, clock
+        self.state, self.failures, self.opened_at = self.CLOSED, 0, 0.0
+        self.lock = threading.Lock()
+
+    def call(self, fn, *args, **kwargs):
+        with self.lock:
+            if self.state == self.OPEN:
+                if self.clock() - self.opened_at &gt;= self.cooldown:
+                    self.state = self.HALF_OPEN      # allow one trial
+                else:
+                    raise CircuitOpen()
+            elif self.state == self.HALF_OPEN:
+                raise CircuitOpen()                  # trial already in flight
+        try:
+            result = fn(*args, **kwargs)
+        except Exception:
+            with self.lock:
+                self.failures += 1
+                if self.state == self.HALF_OPEN or self.failures &gt;= self.threshold:
+                    self.state, self.opened_at = self.OPEN, self.clock()
+            raise
+        with self.lock:
+            self.state, self.failures = self.CLOSED, 0
+        return result
+</code></pre>
+<p>Fallback belongs to the caller: <code>try: breaker.call(llm) except (CircuitOpen, TimeoutError): score = deterministic_score(item)</code>. That's exactly the Keep/Drop registry behavior.</p>
+<hr>
+<h2 id="9-consistent-hashing-ring">9. Consistent hashing ring</h2>
+<pre><code class="language-python">import bisect, hashlib
+
+class HashRing:
+    def __init__(self, vnodes=100):
+        self.vnodes = vnodes
+        self.ring = []            # sorted hashes
+        self.owner = {}           # hash -&gt; node
+
+    @staticmethod
+    def _h(s: str) -&gt; int:
+        return int(hashlib.md5(s.encode()).hexdigest(), 16)
+
+    def add(self, node):
+        for i in range(self.vnodes):
+            h = self._h(f&quot;{node}#{i}&quot;)
+            bisect.insort(self.ring, h)
+            self.owner[h] = node
+
+    def remove(self, node):
+        for i in range(self.vnodes):
+            h = self._h(f&quot;{node}#{i}&quot;)
+            self.ring.remove(h)
+            del self.owner[h]
+
+    def get(self, key):
+        if not self.ring:
+            return None
+        i = bisect.bisect(self.ring, self._h(key)) % len(self.ring)
+        return self.owner[self.ring[i]]
+
+    def get_n(self, key, n):                 # replicas: next n distinct nodes clockwise
+        out, i = [], bisect.bisect(self.ring, self._h(key))
+        while len(out) &lt; n and len(out) &lt; len(set(self.owner.values())):
+            node = self.owner[self.ring[i % len(self.ring)]]
+            if node not in out:
+                out.append(node)
+            i += 1
+        return out
+</code></pre>
+<hr>
+<h2 id="10-vending-machine-state-pattern">10. Vending machine (State pattern)</h2>
+<p><strong>States:</strong> Idle → HasMoney → Dispensing → Idle, plus an OutOfStock check. Each state class handles <code>insert_coin</code>, <code>select</code>, <code>refund</code>, and <code>dispense</code>, and returns the next state. That replaces nested ifs. Inventory is a map of slot → (product, count). Change-making is greedy for canonical coin systems.</p>
+<pre><code class="language-python">class State:
+    def insert(self, m, amount): raise RuntimeError(&quot;invalid&quot;)
+    def select(self, m, slot): raise RuntimeError(&quot;invalid&quot;)
+    def refund(self, m): raise RuntimeError(&quot;invalid&quot;)
+
+class Idle(State):
+    def insert(self, m, amount):
+        m.balance += amount
+        m.state = HasMoney()
+
+class HasMoney(State):
+    def insert(self, m, amount):
+        m.balance += amount
+    def select(self, m, slot):
+        product, price, count = m.inventory[slot]
+        if count == 0:
+            raise RuntimeError(&quot;out of stock&quot;)
+        if m.balance &lt; price:
+            raise RuntimeError(&quot;insufficient funds&quot;)
+        m.inventory[slot] = (product, price, count - 1)
+        change, m.balance = m.balance - price, 0
+        m.state = Idle()
+        return product, change
+    def refund(self, m):
+        amount, m.balance = m.balance, 0
+        m.state = Idle()
+        return amount
+
+class VendingMachine:
+    def __init__(self, inventory):
+        self.inventory, self.balance, self.state = inventory, 0, Idle()
+    def insert(self, amount): return self.state.insert(self, amount)
+    def select(self, slot): return self.state.select(self, slot)
+    def refund(self): return self.state.refund(self)
+</code></pre>
+<hr>
+<h2 id="11-elevator-system">11. Elevator system</h2>
+<p><strong>Requirements:</strong> N elevators, M floors, hall calls (up/down) and car calls (floor buttons), minimize wait time, and concurrency (requests arrive anytime).</p>
+<p><strong>Entities:</strong> <code>Elevator</code> (current floor, direction, stop set, state: IDLE/MOVING_UP/MOVING_DOWN/DOORS_OPEN/MAINTENANCE), <code>Request</code> (floor, direction), <code>Dispatcher</code> with a pluggable <code>SchedulingStrategy</code>, and a <code>Controller</code> loop per elevator.</p>
+<p><strong>Scheduling:</strong>
+- <strong>SCAN / LOOK</strong> per elevator: keep moving in the current direction serving stops (two heaps: up-stops as a min-heap, down-stops as a max-heap), and reverse when none remain.
+- <strong>Dispatch</strong> a hall call to the elevator with the lowest cost: an idle elevator's distance; the distance if moving toward the call in the same direction; otherwise the distance to the turnaround plus back.</p>
+<p><strong>Concurrency:</strong> a request queue (thread-safe) feeds the dispatcher; each elevator runs in its own thread/goroutine with a lock on its stop set. In Go: a channel per elevator for assigned requests and a <code>select</code> loop with a ticker for movement.</p>
+<hr>
+<h2 id="12-movie-ticket-booking-bookmyshow-the-concurrency-part">12. Movie ticket booking (BookMyShow): the concurrency part</h2>
+<p><strong>Hard part:</strong> two users selecting the same seat.</p>
+<ul>
+<li><strong>Temporary hold:</strong> <code>hold(show_id, seats, user)</code> sets the seat status to HELD with <code>hold_expires_at = now + 10 min</code>, atomically:</li>
+<li>DB: <code>UPDATE seats SET status='HELD', user=?, expires=? WHERE show_id=? AND seat_id IN (...) AND (status='FREE' OR expires &lt; now)</code>, and check that the affected row count equals the seat count, otherwise roll back.</li>
+<li>Or optimistic versions per seat, or Redis <code>SET seat:{show}:{id} user NX PX 600000</code> per seat (then all-or-nothing with a Lua script).</li>
+<li><strong>Confirm</strong> after payment: HELD by this user and not expired → BOOKED. Payment uses an idempotency key.</li>
+<li><strong>Expiry:</strong> lazy (the condition in the UPDATE) plus a sweeper.</li>
+<li><strong>Entities:</strong> Movie, Theater, Screen, Show, Seat, Booking, Payment. Pricing strategy per seat class.</li>
+</ul>
+<p>This is the same <strong>optimistic row locking</strong> idea I used at Uber FRM so concurrent reviewers never overwrite each other.</p>
+<hr>
+<h2 id="13-splitwise-expense-sharing">13. Splitwise (expense sharing)</h2>
+<ul>
+<li>Entities: User, Group, Expense (payer, amount, split strategy: EQUAL, EXACT, PERCENT), and a Balance sheet <code>balances[a][b]</code>.</li>
+<li>The split strategy is a <strong>Strategy</strong> that validates the sums (percentages add to 100).</li>
+<li><strong>Simplify debts:</strong> compute each user's net balance. Then greedily match the largest creditor with the largest debtor (two heaps). That gives at most n-1 transactions. (The true minimum is NP-hard in general, so say greedy.)</li>
+<li>Use integer cents, never floats, for money. Distribute rounding remainders deterministically.</li>
+</ul>
+<hr>
+<h2 id="14-in-memory-file-system">14. In-memory file system</h2>
+<ul>
+<li>A <code>Node</code> base with <code>Directory</code> (children map) and <code>File</code> (content) (<strong>Composite</strong>).</li>
+<li><code>mkdir -p</code>, <code>ls</code> (sorted), <code>addContentToFile</code>, <code>readContentFromFile</code>: path parsing by <code>/</code>, walking from the root.</li>
+<li>Extensions: permissions, size (composite <code>size()</code>), search by name (DFS), and a trie-shaped path index.</li>
+</ul>
+<hr>
+<h2 id="15-task-scheduler-delayed-job-executor-lld-version">15. Task scheduler / delayed job executor (LLD version)</h2>
+<p><strong>Requirements:</strong> <code>schedule(task, delay)</code>, <code>schedule_at_fixed_rate(task, period)</code>, cancel, and a worker pool.</p>
+<p><strong>Design:</strong> a min-heap of <code>(run_at, seq, task)</code> guarded by a <code>Condition</code>. A scheduler thread waits until the earliest <code>run_at</code> (<code>cond.wait(timeout=run_at - now)</code>), wakes early when a sooner task is added, and hands due tasks to a worker pool (a <code>ThreadPoolExecutor</code>). Recurring tasks re-push themselves. Cancel by marking a flag (lazy deletion).</p>
+<pre><code class="language-python">import heapq, itertools, threading, time
+from concurrent.futures import ThreadPoolExecutor
+
+class Scheduler:
+    def __init__(self, workers=4):
+        self.heap, self.seq = [], itertools.count()
+        self.cond = threading.Condition()
+        self.pool = ThreadPoolExecutor(workers)
+        self.running = True
+        threading.Thread(target=self._loop, daemon=True).start()
+
+    def schedule(self, fn, delay, period=None):
+        job = {&quot;fn&quot;: fn, &quot;period&quot;: period, &quot;cancelled&quot;: False}
+        with self.cond:
+            heapq.heappush(self.heap, (time.monotonic() + delay, next(self.seq), job))
+            self.cond.notify()
+        return job
+
+    def cancel(self, job):
+        job[&quot;cancelled&quot;] = True
+
+    def _loop(self):
+        while self.running:
+            with self.cond:
+                while not self.heap:
+                    self.cond.wait()
+                run_at, _, job = self.heap[0]
+                now = time.monotonic()
+                if run_at &gt; now:
+                    self.cond.wait(run_at - now)     # may wake early on a new job
+                    continue
+                heapq.heappop(self.heap)
+                if job[&quot;period&quot;] and not job[&quot;cancelled&quot;]:
+                    heapq.heappush(self.heap, (run_at + job[&quot;period&quot;], next(self.seq), job))
+            if not job[&quot;cancelled&quot;]:
+                self.pool.submit(job[&quot;fn&quot;])
+</code></pre>
+<hr>
+<h2 id="lld-answer-checklist-say-it-at-the-end">LLD answer checklist (say it at the end)</h2>
+<ol>
+<li>Which parts vary, and which interface hides them.</li>
+<li>Which objects are shared across threads, and how they're protected.</li>
+<li>How it fails (invalid input, full capacity, timeouts) and what the caller sees.</li>
+<li>How I'd test it (fakes via DI, a concurrency stress test, property tests).</li>
+<li>How it would become distributed (sharding, persistence, replication), which connects to system design.</li>
+</ol></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

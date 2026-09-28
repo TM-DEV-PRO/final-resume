@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>04_system_design_fundamentals — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/04_system_design_fundamentals.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#04-system-design-fundamentals-basics-to-distributed-systems">04. System design fundamentals: basics to distributed systems</a>
+<a class="lvl2" href="#1-numbers-and-estimation">1. Numbers and estimation</a>
+<a class="lvl2" href="#2-scaling">2. Scaling</a>
+<a class="lvl2" href="#3-networking-and-the-request-path">3. Networking and the request path</a>
+<a class="lvl2" href="#4-storage">4. Storage</a>
+<a class="lvl2" href="#5-partitioning-sharding-and-distributed-state">5. Partitioning (sharding) and distributed state</a>
+<a class="lvl2" href="#6-replication-and-consistency">6. Replication and consistency</a>
+<a class="lvl2" href="#7-consensus-coordination-time">7. Consensus, coordination, time</a>
+<a class="lvl2" href="#8-resilience-patterns">8. Resilience patterns</a>
+<a class="lvl2" href="#9-caching">9. Caching</a>
+<a class="lvl2" href="#10-messaging-and-streams">10. Messaging and streams</a>
+<a class="lvl2" href="#11-observability-and-operations">11. Observability and operations</a>
+<a class="lvl2" href="#12-security-basics">12. Security basics</a>
+<a class="lvl2" href="#13-cloud-provider-architecture-patterns-what-oci-interviewers-love">13. Cloud-provider architecture patterns (what OCI interviewers love)</a>
+<a class="lvl2" href="#14-data-structure-building-blocks-for-big-systems">14. Data-structure building blocks for big systems</a>
+<a class="lvl2" href="#15-batch-vs-stream-processing">15. Batch vs stream processing</a></nav>
+<main><h1 id="04-system-design-fundamentals-basics-to-distributed-systems">04. System design fundamentals: basics to distributed systems</h1>
+<p>Everything you need to <em>reason</em> in a design round. Questions with full answers are in <a href="04_system_design_questions.html">04 System design questions</a>.</p>
+<hr>
+<h2 id="1-numbers-and-estimation">1. Numbers and estimation</h2>
+<h3 id="latency-numbers-order-of-magnitude">Latency numbers (order of magnitude)</h3>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L1 cache</td>
+<td>1 ns</td>
+</tr>
+<tr>
+<td>Main memory</td>
+<td>100 ns</td>
+</tr>
+<tr>
+<td>Compress 1 KB (fast codec)</td>
+<td>~2 µs</td>
+</tr>
+<tr>
+<td>SSD random read</td>
+<td>~16–100 µs</td>
+</tr>
+<tr>
+<td>Read 1 MB sequential from memory</td>
+<td>~3 µs–10 µs</td>
+</tr>
+<tr>
+<td>Round trip within a data center (same AD)</td>
+<td>~0.5 ms</td>
+</tr>
+<tr>
+<td>Read 1 MB sequential from SSD</td>
+<td>~50 µs–1 ms</td>
+</tr>
+<tr>
+<td>Disk seek (HDD)</td>
+<td>~10 ms</td>
+</tr>
+<tr>
+<td>Cross-AD round trip (same region)</td>
+<td>~1–2 ms</td>
+</tr>
+<tr>
+<td>Cross-region round trip</td>
+<td>50–150 ms</td>
+</tr>
+</tbody>
+</table>
+<h3 id="useful-conversions">Useful conversions</h3>
+<ul>
+<li>1 day ≈ 86,400 s ≈ <strong>10^5 s</strong>. 1M requests/day ≈ <strong>12 QPS</strong> (I used that exact math for Masters: 1M/86,400 ≈ 11.6 TPS).</li>
+<li>1 month ≈ 2.5 × 10^6 s.</li>
+<li>QPS peak ≈ 2 to 10× average (filing deadlines were ~8 to 10× at Masters).</li>
+<li>Storage/year = writes/s × size × 3 × 10^7 s.</li>
+<li>1 server can do roughly 1k–50k simple HTTP QPS depending on work per request. Go/Gin at 10k peak RPS was our platform.</li>
+</ul>
+<h3 id="estimation-procedure-2-to-3-minutes-out-loud">Estimation procedure (2 to 3 minutes, out loud)</h3>
+<ol>
+<li>Users → DAU → requests per user per day → average QPS → peak QPS.</li>
+<li>Read:write ratio.</li>
+<li>Object size → storage per day → retention → total (× replication factor).</li>
+<li>Bandwidth = QPS × size.</li>
+<li>Memory for cache = 20% of hot data (80/20 rule).</li>
+</ol>
+<hr>
+<h2 id="2-scaling">2. Scaling</h2>
+<ul>
+<li><strong>Vertical (scale up):</strong> bigger CPU/RAM. Simple, no code change. Hard ceiling, expensive at the top, still one failure domain.</li>
+<li><strong>Horizontal (scale out):</strong> more nodes. Needs stateless services + a load balancer, or partitioned state. Near-linear if there's no shared bottleneck.</li>
+<li><strong>Stateless service:</strong> any instance can serve any request. State lives in a DB, cache, or client token (JWT). My Go/Gin platform is stateless; identity is resolved from the token and a Redis-fronted lookup.</li>
+<li><strong>Autoscaling:</strong> on CPU, QPS, or <strong>queue depth</strong> (better for workers; I scaled Masters workers on queue depth).</li>
+<li><strong>Bottlenecks move:</strong> scale the web tier and the DB connection pool breaks; scale the DB and a hot partition breaks. Always ask "what's the next bottleneck?"</li>
+<li><strong>Amdahl's law:</strong> the serial part limits speedup. Locks, single leaders, and global counters are serial parts.</li>
+</ul>
+<hr>
+<h2 id="3-networking-and-the-request-path">3. Networking and the request path</h2>
+<ul>
+<li><strong>DNS:</strong> name → IP, TTL-based caching, geo-DNS / latency routing for multi-region, and health-checked failover records.</li>
+<li><strong>CDN / edge cache:</strong> static content and cacheable GETs near users.</li>
+<li><strong>Load balancers:</strong></li>
+<li><strong>L4</strong> (TCP/UDP): fast, connection-level, no content awareness.</li>
+<li><strong>L7</strong> (HTTP): routing by path/header, TLS termination, retries, and rate limiting.</li>
+<li>Algorithms: round robin, least connections, least latency (EWMA), consistent hashing (sticky by key), <strong>power of two choices</strong> (pick 2 random, choose the less loaded; near-optimal and cheap).</li>
+<li>Health checks: active (probe) + passive (outlier detection). Drain connections on deploy.</li>
+<li><strong>Protocols:</strong></li>
+<li>HTTP/1.1: one request at a time per connection (head-of-line blocking).</li>
+<li><strong>HTTP/2:</strong> multiplexed streams over one connection, header compression. <strong>h2c</strong> = HTTP/2 cleartext (no TLS), used internally. My Go edge serves native h2c without a reverse proxy.</li>
+<li>HTTP/3 / QUIC: over UDP, no TCP head-of-line blocking.</li>
+<li><strong>gRPC:</strong> HTTP/2 + protobuf, streaming, deadlines built in. Good for service to service.</li>
+<li><strong>WebSocket:</strong> full duplex over one TCP connection (Ask Iris chat). Needs sticky routing or a pub/sub backplane to scale.</li>
+<li>Long polling / SSE: simpler server push.</li>
+<li><strong>TLS:</strong> handshake cost (1-RTT with TLS 1.3), session resumption, mTLS for service identity.</li>
+<li><strong>Connection pooling:</strong> reuse TCP/TLS connections. At GFG, reusing the SMTP connection cut send time roughly in half.</li>
+</ul>
+<hr>
+<h2 id="4-storage">4. Storage</h2>
+<h3 id="sql-vs-nosql">SQL vs NoSQL</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Relational (Oracle DB, MySQL, Postgres)</th>
+<th>Key-value / wide-column (Cassandra, DynamoDB-like, Redis)</th>
+<th>Document (Mongo)</th>
+<th>Columnar OLAP (ClickHouse, BigQuery)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Tables, joins, schema</td>
+<td>Key → value / row</td>
+<td>JSON documents</td>
+<td>Columns stored separately</td>
+</tr>
+<tr>
+<td>Transactions</td>
+<td>Full ACID</td>
+<td>Per key (usually)</td>
+<td>Per document (multi-doc exists)</td>
+<td>Weak; append-oriented</td>
+</tr>
+<tr>
+<td>Scale</td>
+<td>Vertical + read replicas + sharding (manual)</td>
+<td>Horizontal by design</td>
+<td>Horizontal</td>
+<td>Horizontal, scan-optimized</td>
+</tr>
+<tr>
+<td>Use</td>
+<td>Metadata, money, control plane</td>
+<td>High QPS lookups, sessions, counters</td>
+<td>Flexible payloads</td>
+<td>Aggregations over billions of rows</td>
+</tr>
+</tbody>
+</table>
+<p>My stack across all four: MySQL (Uber FRM), Postgres (IA roles/OLTP, Masters), Redis, Mongo (invoice payload snapshots), ClickHouse and BigQuery (analytics).</p>
+<h3 id="indexes">Indexes</h3>
+<ul>
+<li><strong>B+ tree:</strong> balanced, sorted, range scans, in-place updates. Read-optimized. Used by Oracle, MySQL InnoDB, and Postgres.</li>
+<li><strong>LSM tree</strong> (RocksDB, Cassandra): writes go to a memtable + WAL, flush to sorted SSTables, and compact in the background. Write-optimized. Reads may check several levels (Bloom filters help).</li>
+<li><strong>Composite index</strong> order matters (leftmost prefix). At Masters, <code>(client_id, invoice_date)</code> fixed slow lists.</li>
+<li><strong>Covering index:</strong> the query is served from the index alone.</li>
+<li>The cost of indexes: slower writes and more storage.</li>
+</ul>
+<h3 id="acid-and-isolation">ACID and isolation</h3>
+<ul>
+<li><strong>Atomicity</strong> (all or nothing, via WAL/undo), <strong>Consistency</strong> (constraints), <strong>Isolation</strong>, <strong>Durability</strong> (fsync, replication).</li>
+<li>Isolation levels and anomalies:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Dirty read</th>
+<th>Non-repeatable read</th>
+<th>Phantom</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read uncommitted</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td></td>
+</tr>
+<tr>
+<td>Read committed</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>Oracle and Postgres default</td>
+</tr>
+<tr>
+<td>Repeatable read</td>
+<td>no</td>
+<td>no</td>
+<td>maybe</td>
+<td>MySQL InnoDB default (gap locks prevent most phantoms)</td>
+</tr>
+<tr>
+<td>Snapshot isolation</td>
+<td>no</td>
+<td>no</td>
+<td>no*</td>
+<td>*write skew possible</td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>Costly</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Optimistic concurrency:</strong> a version column; <code>UPDATE ... WHERE id = ? AND version = ?</code>; 0 rows updated means a conflict, so retry or report it. I used <strong>optimistic row locking</strong> at Uber FRM so two reviewers can't overwrite each other.</li>
+<li><strong>Pessimistic:</strong> <code>SELECT ... FOR UPDATE</code>. Holds locks, risks deadlocks, fine for short hot sections.</li>
+<li><strong>MVCC:</strong> readers don't block writers. Each transaction sees a snapshot.</li>
+</ul>
+<h3 id="oltp-vs-olap">OLTP vs OLAP</h3>
+<ul>
+<li>OLTP: many small transactions, row-oriented, indexes.</li>
+<li>OLAP: few big scans, <strong>columnar</strong>, compression, vectorized execution, partition pruning, skip indexes. My ClickHouse move: 189s to 12s on 250M rows.</li>
+<li>ClickHouse specifics I can explain: MergeTree parts and background merges, <code>ORDER BY</code> as the sparse primary index, <code>PARTITION BY</code> for pruning and partition-level ops, <strong>ReplacingMergeTree</strong> for versioned upserts (dedup at merge time, so read with <code>argMax</code>/<code>FINAL</code>), and materialized views and rollup tables.</li>
+</ul>
+<h3 id="object-and-block-storage">Object and block storage</h3>
+<ul>
+<li><strong>Block</strong> (OCI Block Volume): a raw disk for one VM, low latency.</li>
+<li><strong>File</strong> (OCI File Storage, NFS): shared POSIX.</li>
+<li><strong>Object</strong> (OCI Object Storage): immutable blobs by key, massive scale, HTTP API, 11 nines durability via erasure coding/replication across ADs, and a metadata service + storage nodes split.</li>
+</ul>
+<hr>
+<h2 id="5-partitioning-sharding-and-distributed-state">5. Partitioning (sharding) and distributed state</h2>
+<ul>
+<li><strong>Why:</strong> data or write load bigger than one node.</li>
+<li><strong>Range partitioning:</strong> by key range (time, alphabetical). Good for range scans. Risks hot spots (all writes on "today"). ClickHouse <code>PARTITION BY season_code</code> and Postgres sharded <strong>by tax quarter</strong> at Masters are range-style partitions.</li>
+<li><strong>Hash partitioning:</strong> <code>hash(key) % N</code>. Even spread, but no range scans and resharding moves almost everything.</li>
+<li><strong>Consistent hashing:</strong> nodes and keys on a ring. Adding a node moves only ~1/N of the keys. <strong>Virtual nodes</strong> smooth the load and handle heterogeneous machines. Used by Dynamo, Cassandra, and cache clusters.</li>
+<li><strong>Rendezvous (HRW) hashing:</strong> for each key pick the node with the highest <code>hash(key, node)</code>. Simple, minimal movement.</li>
+<li><strong>Directory-based:</strong> a lookup service maps key → shard. Flexible (move a hot tenant) at the cost of an extra dependency (cache it).</li>
+<li><strong>Hot keys / celebrities:</strong> split the key (<code>key#1..#k</code>) and aggregate on read, cache aggressively, isolate hot tenants in their own cell, and use request coalescing.</li>
+<li><strong>Rebalancing:</strong> move partitions, not keys (fixed number of partitions &gt; nodes), throttle it, and never rebalance during an incident.</li>
+<li><strong>Secondary indexes on sharded data:</strong> local (scatter-gather reads) vs global (partitioned by the index term, with async updates).</li>
+<li><strong>Distributed state tools:</strong> see <a href="02_jd_technical_map.html">02 JD map §13</a>.</li>
+</ul>
+<hr>
+<h2 id="6-replication-and-consistency">6. Replication and consistency</h2>
+<h3 id="replication-topologies">Replication topologies</h3>
+<ul>
+<li><strong>Single leader:</strong> all writes to the leader, followers replicate the log. Simple and consistent on the leader. Failover is needed. Read replicas can be stale (<strong>replication lag</strong>).</li>
+<li><strong>Multi-leader:</strong> writes in each region. Conflicts need resolution (LWW, CRDTs, app merge). Used for multi-region active-active.</li>
+<li><strong>Leaderless (Dynamo-style):</strong> write to W of N replicas, read from R. <strong>R + W &gt; N</strong> gives overlap (the read sees the latest write). Sloppy quorum + <strong>hinted handoff</strong> when nodes are down, <strong>read repair</strong> and <strong>anti-entropy with Merkle trees</strong> to converge.</li>
+</ul>
+<h3 id="sync-vs-async">Sync vs async</h3>
+<ul>
+<li><strong>Synchronous:</strong> the write is acknowledged after the replica confirms. RPO = 0, higher latency, availability depends on the replica.</li>
+<li><strong>Asynchronous:</strong> fast, but a leader failover can lose the last writes (RPO &gt; 0).</li>
+<li><strong>Semi-sync / quorum:</strong> ack after a majority. Raft does this.</li>
+</ul>
+<h3 id="consistency-models-strong-to-weak">Consistency models (strong to weak)</h3>
+<ol>
+<li><strong>Linearizable:</strong> acts like a single copy. Every read sees the latest completed write. Needed for locks, leader election, and unique constraints.</li>
+<li><strong>Sequential:</strong> all see the same order, not necessarily real time.</li>
+<li><strong>Causal:</strong> cause before effect for everyone (a reply after its question).</li>
+<li><strong>Read-your-writes, monotonic reads:</strong> session guarantees. Route a user's reads to the leader for a few seconds after a write, or use version tokens.</li>
+<li><strong>Eventual:</strong> replicas converge if writes stop. My <code>ReplacingMergeTree</code> writes are eventually consistent: duplicates collapse at merge, and reads use <code>argMax</code> to be correct before the merge.</li>
+</ol>
+<h3 id="cap-and-pacelc">CAP and PACELC</h3>
+<ul>
+<li><strong>CAP:</strong> during a network <strong>P</strong>artition you choose <strong>C</strong>onsistency (reject some requests) or <strong>A</strong>vailability (serve possibly stale data). You can't avoid partitions, so it's really C vs A under partition.</li>
+<li><strong>PACELC:</strong> if Partition, choose A or C; <strong>E</strong>lse, choose <strong>L</strong>atency or <strong>C</strong>onsistency. Example: DynamoDB-style is PA/EL; Spanner-style is PC/EC.</li>
+<li>Say which one your design picks <strong>per operation</strong>: "creating a bucket name must be unique, so it's CP; reading an object listing can be slightly stale, so it's AP."</li>
+</ul>
+<h3 id="rpo-and-rto">RPO and RTO</h3>
+<ul>
+<li><strong>RPO:</strong> how much data you can lose (time since the last replicated point).</li>
+<li><strong>RTO:</strong> how long until you're serving again.</li>
+<li>Backups (RPO hours), async replication (seconds), sync replication (zero).</li>
+</ul>
+<hr>
+<h2 id="7-consensus-coordination-time">7. Consensus, coordination, time</h2>
+<h3 id="raft-know-it-well-enough-to-explain-in-2-minutes">Raft (know it well enough to explain in 2 minutes)</h3>
+<ul>
+<li>Roles: leader, follower, candidate. <strong>Terms</strong> are monotonically increasing epochs.</li>
+<li><strong>Leader election:</strong> a follower times out (randomized 150–300ms), becomes a candidate, increments its term, and requests votes. A majority wins. It votes only for candidates whose log is at least as up to date.</li>
+<li><strong>Log replication:</strong> the leader appends an entry and sends AppendEntries. The entry is <strong>committed</strong> once a majority stores it. Then it's applied to the state machine.</li>
+<li><strong>Safety:</strong> a committed entry is present in all future leaders' logs.</li>
+<li>3 nodes tolerate 1 failure; 5 tolerate 2. Spread them across <strong>3 ADs</strong>.</li>
+<li>Used in: etcd, Consul, CockroachDB, TiKV. <strong>Paxos</strong> is the older equivalent (Multi-Paxos in Chubby/Spanner). <strong>ZAB</strong> is ZooKeeper's.</li>
+</ul>
+<h3 id="leases-locks-and-fencing">Leases, locks, and fencing</h3>
+<ul>
+<li><strong>Lease:</strong> a lock with a timeout. The holder must renew. If it pauses (GC, network) past the lease, someone else takes over.</li>
+<li><strong>Fencing token:</strong> the lock service hands out an increasing number with each lease. The storage rejects writes with an older token. This prevents a paused old leader from corrupting data (<strong>split brain</strong>).</li>
+<li><strong>Redis lock (SET NX PX):</strong> fine for efficiency (avoid duplicate work), not for correctness without fencing. Redlock is debated. Use etcd/ZooKeeper for correctness locks.</li>
+</ul>
+<h3 id="clocks">Clocks</h3>
+<ul>
+<li>Physical clocks drift, and NTP can jump backwards. <strong>Never</strong> use wall-clock timestamps to order events across machines for correctness (LWW with skew loses writes).</li>
+<li><strong>Lamport clock:</strong> a counter, <code>max(local, received) + 1</code>. Gives a total order consistent with causality.</li>
+<li><strong>Vector clock:</strong> a counter per node. It can detect <strong>concurrent</strong> writes (conflicts).</li>
+<li><strong>Hybrid logical clock (HLC):</strong> physical time + a logical counter. Used by CockroachDB.</li>
+<li><strong>TrueTime</strong> (Spanner): bounded uncertainty. Commit waits out the uncertainty for external consistency.</li>
+</ul>
+<h3 id="distributed-transactions">Distributed transactions</h3>
+<ul>
+<li><strong>2PC:</strong> the coordinator runs prepare (all vote) then commit. <strong>Blocking</strong> if the coordinator dies after prepare. Use it within one database system, and avoid it across services.</li>
+<li><strong>Saga:</strong> a sequence of local transactions, each with a <strong>compensating action</strong> (refund, release). Orchestrated (central coordinator) or choreographed (events).</li>
+<li><strong>Transactional outbox:</strong> write the business row and an outbox row in one local transaction. A relay publishes the outbox to the queue. That solves "DB updated but message not sent."</li>
+<li><strong>Idempotent consumers</strong> + at-least-once delivery ≈ effectively once.</li>
+</ul>
+<h3 id="gossip-and-membership">Gossip and membership</h3>
+<ul>
+<li>Nodes periodically exchange state with random peers. Converges in O(log N) rounds. Used for membership and failure detection (SWIM, phi-accrual detectors).</li>
+</ul>
+<hr>
+<h2 id="8-resilience-patterns">8. Resilience patterns</h2>
+<p>(Deep version with Go code: <a href="02_jd_technical_map.html">02 JD map §3</a>.)</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>What</th>
+<th>My use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Timeout</strong></td>
+<td>Bound every remote call. Propagate deadlines.</td>
+<td>Nested Go context timeouts at the edge; hard per-batch LLM timeouts</td>
+</tr>
+<tr>
+<td><strong>Retry + backoff + jitter</strong></td>
+<td>Only idempotent ops. Cap attempts, use a retry budget.</td>
+<td>Bounded retries against the IRP (Masters)</td>
+</tr>
+<tr>
+<td><strong>Circuit breaker</strong></td>
+<td>Fail fast when a dependency is unhealthy. Half-open probe.</td>
+<td>Orchestration registry, per provider</td>
+</tr>
+<tr>
+<td><strong>Fallback / graceful degradation</strong></td>
+<td>A degraded but useful answer</td>
+<td>Deterministic baseline score on LLM timeout</td>
+</tr>
+<tr>
+<td><strong>Bulkhead</strong></td>
+<td>Separate pools per dependency or tenant</td>
+<td>Per-worker connection budgets in the copier</td>
+</tr>
+<tr>
+<td><strong>Backpressure</strong></td>
+<td>Slow the producer when the consumer lags</td>
+<td>Kafka consumer lag as the SLO (Menu); bounded queues</td>
+</tr>
+<tr>
+<td><strong>Load shedding</strong></td>
+<td>Reject early with 429/503 when overloaded</td>
+<td>Admission control at the edge</td>
+</tr>
+<tr>
+<td><strong>Rate limiting</strong></td>
+<td>Per tenant/key quotas</td>
+<td>See the rate limiter design</td>
+</tr>
+<tr>
+<td><strong>Idempotency keys</strong></td>
+<td>Safe retries of non-idempotent operations</td>
+<td><code>client + fileHash + batchIndex</code> (Masters)</td>
+</tr>
+<tr>
+<td><strong>Checkpointing</strong></td>
+<td>Resume long work</td>
+<td>det.json + agent_progress.json; partition ledger</td>
+</tr>
+<tr>
+<td><strong>Dead-letter queue</strong></td>
+<td>Park poison messages</td>
+<td>Masters DLQ replay</td>
+</tr>
+<tr>
+<td><strong>Health checks</strong></td>
+<td>Liveness vs readiness</td>
+<td>Readiness gates traffic during deploys</td>
+</tr>
+</tbody>
+</table>
+<h3 id="rate-limiting-algorithms">Rate limiting algorithms</h3>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>How</th>
+<th>Pros / cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Token bucket</strong></td>
+<td>Tokens refill at rate r up to capacity b. Each request takes one.</td>
+<td>Allows bursts up to b. Most common (OCI API throttling behaves like this)</td>
+</tr>
+<tr>
+<td><strong>Leaky bucket</strong></td>
+<td>A queue drains at a fixed rate</td>
+<td>Smooths output, adds latency</td>
+</tr>
+<tr>
+<td><strong>Fixed window counter</strong></td>
+<td>Count per minute</td>
+<td>Simple. Double burst at the window edge</td>
+</tr>
+<tr>
+<td><strong>Sliding window log</strong></td>
+<td>Store the timestamps</td>
+<td>Exact, memory heavy</td>
+</tr>
+<tr>
+<td><strong>Sliding window counter</strong></td>
+<td>Weighted current + previous window</td>
+<td>Good approximation, cheap</td>
+</tr>
+</tbody>
+</table>
+<p>Distributed: Redis <code>INCR</code> + <code>EXPIRE</code>, or a Lua script for an atomic token bucket. Or local buckets with a periodically synced global budget (fast, slightly inaccurate).</p>
+<hr>
+<h2 id="9-caching">9. Caching</h2>
+<ul>
+<li><strong>Where:</strong> client, CDN, load balancer, application (in-process), distributed (Redis/Memcached), and DB buffer cache.</li>
+<li><strong>Patterns:</strong></li>
+<li><strong>Cache-aside</strong> (lazy): read cache; on a miss, read the DB and set the cache with a TTL. Most common. I used it at Masters (Redis cut redundant DB reads 30%).</li>
+<li><strong>Read-through:</strong> the cache loads from the DB itself.</li>
+<li><strong>Write-through:</strong> write the cache and DB together (consistent, slower writes).</li>
+<li><strong>Write-behind:</strong> write the cache, flush to the DB async (fast, risk of loss).</li>
+<li><strong>Refresh-ahead:</strong> refresh hot keys before expiry.</li>
+<li><strong>Invalidation:</strong> TTL, explicit delete on write (delete, don't update, to avoid race ordering), versioned keys, or CDC-driven invalidation.</li>
+<li><strong>Stampede / thundering herd:</strong> a hot key expires and 1,000 requests hit the DB. Fixes: <strong>singleflight / request coalescing</strong> (one fetch, others wait), a lock with <code>SETNX</code>, <strong>TTL jitter</strong>, serving stale while revalidating, and probabilistic early refresh.</li>
+<li><strong>Eviction:</strong> LRU, LFU, TTL, and size-aware.</li>
+<li><strong>Consistency:</strong> the cache is always potentially stale. Say how stale is acceptable per data type.</li>
+<li><strong>Negative caching:</strong> cache "not found" briefly to protect against scans for missing keys.</li>
+</ul>
+<hr>
+<h2 id="10-messaging-and-streams">10. Messaging and streams</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Queue (SQS, RabbitMQ, OCI Queue)</th>
+<th>Log (Kafka, OCI Streaming)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Consumption</td>
+<td>A message is deleted after ack</td>
+<td>Messages are retained; consumers track offsets</td>
+</tr>
+<tr>
+<td>Replay</td>
+<td>No</td>
+<td>Yes (reset offset)</td>
+</tr>
+<tr>
+<td>Multiple consumers</td>
+<td>Competing consumers</td>
+<td>Many independent consumer groups</td>
+</tr>
+<tr>
+<td>Ordering</td>
+<td>FIFO variants, limited</td>
+<td>Per partition</td>
+</tr>
+<tr>
+<td>Use</td>
+<td>Task dispatch</td>
+<td>Event streaming, audit, replay, fan-out</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Delivery semantics:</strong> at-most-once (ack before processing), <strong>at-least-once</strong> (ack after processing; duplicates possible), and exactly-once (transactions inside Kafka + idempotent or transactional sinks). <strong>In practice: at-least-once + idempotent consumer.</strong> I say that honestly about Uber Menu's Kafka + Flink "exactly-once upserts."</li>
+<li><strong>Ordering:</strong> partition by key (vendor_id at Uber Menu, client GSTIN at Masters) for per-entity order.</li>
+<li><strong>Consumer lag</strong> is the key SLO. Alert on lag growth, not just the lag value.</li>
+<li><strong>Poison messages:</strong> bounded retries, then DLQ with a replay tool.</li>
+<li><strong>Backpressure:</strong> bounded buffers. Stream processors (Flink) propagate backpressure upstream.</li>
+<li><strong>Stream processing concepts:</strong> event time vs processing time, watermarks (how late data can be), windows (tumbling, sliding, session), keyed state + checkpoints (Flink uses RocksDB state + checkpoint barriers).</li>
+</ul>
+<hr>
+<h2 id="11-observability-and-operations">11. Observability and operations</h2>
+<ul>
+<li><strong>Logs</strong> (structured JSON, correlation IDs), <strong>metrics</strong> (counters, gauges, histograms; percentiles from histograms), <strong>traces</strong> (spans across services; W3C trace context).</li>
+<li>SLI / SLO / error budget. Burn-rate alerts. Page on symptoms.</li>
+<li>Dashboards: golden signals per service and per dependency, with deploy markers.</li>
+<li>Synthetic canaries from outside.</li>
+<li>Full detail: <a href="02_jd_technical_map.html">02 JD map §4 to §6</a>.</li>
+</ul>
+<hr>
+<h2 id="12-security-basics">12. Security basics</h2>
+<ul>
+<li>AuthN (who: passwords, OAuth2/OIDC, mTLS, API keys, instance principals) vs AuthZ (what: RBAC, ABAC, policies).</li>
+<li><strong>JWT:</strong> signed claims (verify the signature, <code>exp</code>, <code>aud</code>, <code>iss</code>); short-lived; revocation is hard, so keep TTLs short and use refresh tokens.</li>
+<li>TLS in transit, envelope encryption at rest with KMS/Vault, key rotation.</li>
+<li>Least privilege, secret management, audit logs.</li>
+<li>Multi-tenant: tenant ID from the token, enforced at the data layer; per-tenant quotas; noisy-neighbor isolation.</li>
+<li>OWASP basics: injection (parameterize), SSRF (egress allowlists, block the metadata IP), and timing attacks (constant-time compare, as I did for API keys).</li>
+</ul>
+<hr>
+<h2 id="13-cloud-provider-architecture-patterns-what-oci-interviewers-love">13. Cloud-provider architecture patterns (what OCI interviewers love)</h2>
+<ol>
+<li><strong>Control plane vs data plane:</strong> keep the data plane simple and highly available. The data plane caches config and keeps working if the control plane is down (<strong>static stability</strong>).</li>
+<li><strong>Cells:</strong> N independent copies of the full stack, each serving a subset of tenants. A cell router (thin, simple) maps tenant → cell. A bad deploy or poison request hurts one cell.</li>
+<li><strong>Shuffle sharding:</strong> each tenant gets a random subset of k workers out of N. Two tenants rarely share all workers, so one noisy tenant can't take down the others.</li>
+<li><strong>Multi-AD by default:</strong> replicas in 3 ADs with quorum writes. Spread instances across fault domains.</li>
+<li><strong>Region independence:</strong> no cross-region synchronous dependency in the request path. Regions fail independently.</li>
+<li><strong>Constant work:</strong> systems that do the same amount of work regardless of load (e.g. push full config every N seconds instead of deltas) have no surprise modes.</li>
+<li><strong>Avoid bimodal behavior:</strong> fallback paths that are rarely exercised break when needed. Exercise them (fault injection).</li>
+<li><strong>Safe deployment:</strong> one-box, FD, AD, region waves with bake times and automatic rollback.</li>
+<li><strong>Idempotent APIs</strong> with client tokens (OCI APIs take an <code>opc-retry-token</code> header for this).</li>
+<li><strong>Quotas and limits</strong> per tenancy, with throttling (429) instead of falling over.</li>
+<li><strong>Backpressure and admission control</strong> at every tier.</li>
+<li><strong>Everything is metered:</strong> usage events flow to billing through a durable log.</li>
+</ol>
+<hr>
+<h2 id="14-data-structure-building-blocks-for-big-systems">14. Data-structure building blocks for big systems</h2>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>What it answers</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bloom filter</strong></td>
+<td>"Definitely not present" / "maybe present"</td>
+<td>LSM reads, ClickHouse skip indexes, cache guard</td>
+</tr>
+<tr>
+<td><strong>Count-Min Sketch</strong></td>
+<td>Approximate frequency</td>
+<td>Heavy hitters, top-k at scale</td>
+</tr>
+<tr>
+<td><strong>HyperLogLog</strong></td>
+<td>Approximate distinct count (~1.6% error, KBs)</td>
+<td>Unique visitors</td>
+</tr>
+<tr>
+<td><strong>Merkle tree</strong></td>
+<td>Which ranges differ between replicas</td>
+<td>Anti-entropy (Dynamo, Cassandra), Git</td>
+</tr>
+<tr>
+<td><strong>Consistent hash ring</strong></td>
+<td>Key → node with minimal movement</td>
+<td>Caches, KV stores</td>
+</tr>
+<tr>
+<td><strong>Skip list</strong></td>
+<td>Sorted set with O(log n) ops</td>
+<td>Redis ZSET, memtables</td>
+</tr>
+<tr>
+<td><strong>LSM tree</strong></td>
+<td>Write-heavy storage</td>
+<td>RocksDB, Cassandra</td>
+</tr>
+<tr>
+<td><strong>B+ tree</strong></td>
+<td>Read-heavy indexed storage</td>
+<td>Oracle DB, InnoDB</td>
+</tr>
+<tr>
+<td><strong>Write-ahead log</strong></td>
+<td>Durability and replication</td>
+<td>Every DB; Raft log</td>
+</tr>
+<tr>
+<td><strong>Geohash / quadtree</strong></td>
+<td>Spatial lookup</td>
+<td>Nearby search</td>
+</tr>
+<tr>
+<td><strong>Inverted index</strong></td>
+<td>Term → documents</td>
+<td>Search (Elasticsearch)</td>
+</tr>
+<tr>
+<td><strong>t-digest / HDR histogram</strong></td>
+<td>Latency percentiles</td>
+<td>Monitoring</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="15-batch-vs-stream-processing">15. Batch vs stream processing</h2>
+<ul>
+<li><strong>Batch</strong> (MapReduce, Spark, SQL over a lake): high throughput, minutes to hours of latency, easy reprocessing.</li>
+<li><strong>Stream</strong> (Flink, Kafka Streams): seconds, stateful, harder to operate.</li>
+<li><strong>Lambda architecture:</strong> batch + speed layer (complex). <strong>Kappa:</strong> stream only, reprocess by replaying the log.</li>
+<li>My examples:</li>
+<li><strong>Batch:</strong> the Keep/Drop engine (88k per pass, checkpoints) and the ClickHouse rollups (week-sliced).</li>
+<li><strong>Stream:</strong> Uber Menu's Kafka + Flink keyed dedup.</li>
+<li>Memory-bounded aggregation: shrink the unit of work (my one-fiscal-week slicing), external spill, and cap parallelism.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

@@ -135,8 +135,17 @@ def rel_hub_links(rel_path: str) -> str:
                 f'<a href="{track_up}ApplicationKit.html">Application Kit</a>'
                 f'<a href="{root_up}all_pages.html">All pages</a>'
             )
-    # Repo-root page (README, cross-track ATS, …)
-    return '<a href="index.html">← All tracks</a><a href="all_pages.html">All pages</a>'
+    if rel_path.startswith("oracle/"):
+        return (
+            f'<a href="{root_up}index.html">← All tracks</a>'
+            f'<a href="{root_up}oracle/index.html">Oracle OCI hub</a>'
+            f'<a href="{root_up}all_pages.html">All pages</a>'
+        )
+    # Repo-root page (README, cross-track ATS, …) or other nested folders
+    return (
+        f'<a href="{root_up}index.html">← All tracks</a>'
+        f'<a href="{root_up}all_pages.html">All pages</a>'
+    )
 
 
 def convert_file(md_path: str) -> str:
@@ -216,6 +225,7 @@ def write_folder_indexes() -> None:
         os.path.join(BASE, "final_java_ai"),
         os.path.join(BASE, "final_java_pygo_ia"),
         os.path.join(BASE, "final_pygo_ai"),
+        os.path.join(BASE, "oracle"),  # oracle/index.md renders the hub
     }
     skip.add(BASE)  # repo root index.html is the hand-written track hub
     dirs = set()

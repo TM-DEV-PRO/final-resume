@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_dsa_2_linkedlist_stack_queue_heap — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/03_dsa_2_linkedlist_stack_queue_heap.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#032-linked-list-stack-monotonic-stack-queue-deque-heap">03.2 Linked list, stack, monotonic stack, queue, deque, heap</a>
+<a class="lvl2" href="#a-linked-list">A. Linked list</a>
+<a class="lvl2" href="#b-stack">B. Stack</a>
+<a class="lvl2" href="#c-monotonic-stack">C. Monotonic stack</a>
+<a class="lvl2" href="#d-queue-and-deque">D. Queue and deque</a>
+<a class="lvl2" href="#e-heap-priority-queue">E. Heap / priority queue</a>
+<a class="lvl2" href="#heap-facts-to-say-out-loud">Heap facts to say out loud</a></nav>
+<main><h1 id="032-linked-list-stack-monotonic-stack-queue-deque-heap">03.2 Linked list, stack, monotonic stack, queue, deque, heap</h1>
+<hr>
+<h2 id="a-linked-list">A. Linked list</h2>
+<p><strong>Intuition:</strong> pointer manipulation. Draw it. Use a <strong>dummy head</strong> whenever the head might change. Use <strong>fast/slow</strong> pointers for middle, cycles, and k-th from the end.</p>
+<pre><code class="language-python">class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val, self.next = val, next
+</code></pre>
+<h3 id="a1-reverse-linked-list-iterative-then-recursive">A1. Reverse Linked List (iterative, then recursive)</h3>
+<pre><code class="language-python">def reverse(head):
+    prev = None
+    while head:
+        head.next, prev, head = prev, head, head.next
+    return prev
+
+def reverse_rec(head):
+    if not head or not head.next:
+        return head
+    new_head = reverse_rec(head.next)
+    head.next.next = head
+    head.next = None
+    return new_head
+</code></pre>
+<p>O(n) time. Iterative is O(1) space, recursive O(n) stack.</p>
+<h3 id="a2-merge-two-sorted-lists">A2. Merge Two Sorted Lists</h3>
+<pre><code class="language-python">def merge(a, b):
+    dummy = tail = ListNode()
+    while a and b:
+        if a.val &lt;= b.val:
+            tail.next, a = a, a.next
+        else:
+            tail.next, b = b, b.next
+        tail = tail.next
+    tail.next = a or b
+    return dummy.next
+</code></pre>
+<h3 id="a3-linked-list-cycle-and-cycle-start-floyd">A3. Linked List Cycle and cycle start (Floyd)</h3>
+<p><strong>Intuition:</strong> fast moves 2, slow moves 1. If there's a cycle they meet. To find the start, reset one pointer to the head and move both by 1; they meet at the cycle start (distance math: <code>a = k·c - b</code>).</p>
+<pre><code class="language-python">def detect_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+        if slow is fast:
+            slow = head
+            while slow is not fast:
+                slow, fast = slow.next, fast.next
+            return slow
+    return None
+</code></pre>
+<p>O(n) time, O(1) space. Same trick: Find the Duplicate Number (array as a linked list).</p>
+<h3 id="a4-remove-nth-from-end">A4. Remove Nth From End</h3>
+<p>Move <code>fast</code> n steps ahead, then move both until <code>fast.next</code> is None. Use a dummy for the "remove head" case.</p>
+<h3 id="a5-reorder-list-l0-ln-l1-ln-1">A5. Reorder List (L0 → Ln → L1 → Ln-1)</h3>
+<p>Find the middle (fast/slow), reverse the second half, then merge alternately. O(n), O(1).</p>
+<h3 id="a6-copy-list-with-random-pointer">A6. Copy List with Random Pointer</h3>
+<p>Hashmap old → new (O(n) space), or interleave copies <code>A → A' → B → B'</code>, set randoms, then split (O(1) extra).</p>
+<pre><code class="language-python">def copy_random_list(head):
+    m = {None: None}
+    cur = head
+    while cur:
+        m[cur] = Node(cur.val)
+        cur = cur.next
+    cur = head
+    while cur:
+        m[cur].next = m[cur.next]
+        m[cur].random = m[cur.random]
+        cur = cur.next
+    return m[head]
+</code></pre>
+<h3 id="a7-reverse-nodes-in-k-group-hard">A7. Reverse Nodes in k-Group (hard)</h3>
+<p>For each group: check that k nodes exist, reverse them, then connect the previous group's tail to the new head.</p>
+<pre><code class="language-python">def reverse_k_group(head, k):
+    dummy = ListNode(0, head)
+    group_prev = dummy
+    while True:
+        kth = group_prev
+        for _ in range(k):
+            kth = kth.next
+            if not kth:
+                return dummy.next
+        group_next = kth.next
+        prev, cur = group_next, group_prev.next
+        while cur is not group_next:
+            cur.next, prev, cur = prev, cur, cur.next
+        first = group_prev.next
+        group_prev.next = kth
+        group_prev = first
+</code></pre>
+<h3 id="a8-lru-cache-see-lld-problems-hashmap-doubly-linked-list-o1-getput">A8. LRU Cache: see <a href="05_lld_problems.html">LLD problems</a> (hashmap + doubly linked list, O(1) get/put).</h3>
+<hr>
+<h2 id="b-stack">B. Stack</h2>
+<p><strong>Intuition:</strong> last in, first out. Use it for nesting (brackets, expressions, directories), undo, and DFS without recursion.</p>
+<h3 id="b1-valid-parentheses">B1. Valid Parentheses</h3>
+<pre><code class="language-python">def is_valid(s):
+    pairs = {&quot;)&quot;: &quot;(&quot;, &quot;]&quot;: &quot;[&quot;, &quot;}&quot;: &quot;{&quot;}
+    st = []
+    for c in s:
+        if c in pairs:
+            if not st or st.pop() != pairs[c]:
+                return False
+        else:
+            st.append(c)
+    return not st
+</code></pre>
+<h3 id="b2-min-stack-o1-getmin">B2. Min Stack (O(1) getMin)</h3>
+<p>Push <code>(value, current_min)</code> pairs.</p>
+<pre><code class="language-python">class MinStack:
+    def __init__(self):
+        self.st = []
+    def push(self, x):
+        self.st.append((x, min(x, self.st[-1][1]) if self.st else x))
+    def pop(self):
+        self.st.pop()
+    def top(self):
+        return self.st[-1][0]
+    def get_min(self):
+        return self.st[-1][1]
+</code></pre>
+<h3 id="b3-evaluate-reverse-polish-notation">B3. Evaluate Reverse Polish Notation</h3>
+<p>Push numbers. On an operator, pop b, then a, and push <code>a op b</code>. Use <code>int(a / b)</code> for truncation toward zero.</p>
+<h3 id="b4-decode-string-3a2c-accaccacc">B4. Decode String <code>3[a2[c]]</code> → <code>accaccacc</code></h3>
+<pre><code class="language-python">def decode_string(s):
+    st = []            # (prev_string, repeat)
+    cur, num = &quot;&quot;, 0
+    for c in s:
+        if c.isdigit():
+            num = num * 10 + int(c)
+        elif c == &quot;[&quot;:
+            st.append((cur, num))
+            cur, num = &quot;&quot;, 0
+        elif c == &quot;]&quot;:
+            prev, k = st.pop()
+            cur = prev + cur * k
+        else:
+            cur += c
+    return cur
+</code></pre>
+<h3 id="b5-basic-calculator-with-and-parentheses">B5. Basic Calculator (with + - and parentheses)</h3>
+<p>Keep <code>result</code>, <code>sign</code>, and a stack of <code>(result, sign)</code> pushed at <code>(</code>.</p>
+<h3 id="b6-asteroid-collision-simplify-path-abc-c-classic-stack-simulations">B6. Asteroid Collision, Simplify Path (<code>/a/./b/../../c</code> → <code>/c</code>): classic stack simulations.</h3>
+<hr>
+<h2 id="c-monotonic-stack">C. Monotonic stack</h2>
+<p><strong>Intuition:</strong> keep the stack increasing (or decreasing). When a new element breaks the order, everything it pops has just found its <strong>next greater (or smaller)</strong> element. Each index is pushed and popped once, so O(n).</p>
+<p><strong>Template (next greater element to the right):</strong></p>
+<pre><code class="language-python">def next_greater(nums):
+    res = [-1] * len(nums)
+    st = []                       # indices, values decreasing
+    for i, x in enumerate(nums):
+        while st and nums[st[-1]] &lt; x:
+            res[st.pop()] = x
+        st.append(i)
+    return res
+</code></pre>
+<h3 id="c1-daily-temperatures">C1. Daily Temperatures</h3>
+<p>Same template: <code>res[j] = i - j</code>.</p>
+<h3 id="c2-largest-rectangle-in-histogram-hard-very-common">C2. Largest Rectangle in Histogram (hard, very common)</h3>
+<p><strong>Intuition:</strong> for each bar, the widest rectangle using its height extends to the first shorter bar on each side. With an increasing stack, when bar i is shorter than the top, the top's right boundary is i and its left boundary is the new top after popping.</p>
+<pre><code class="language-python">def largest_rectangle(heights):
+    st = []                  # indices, heights increasing
+    best = 0
+    for i, h in enumerate(heights + [0]):     # sentinel flushes the stack
+        while st and heights[st[-1]] &gt; h:
+            height = heights[st.pop()]
+            left = st[-1] if st else -1
+            best = max(best, height * (i - left - 1))
+        st.append(i)
+    return best
+</code></pre>
+<p>O(n). Extension: Maximal Rectangle in a binary matrix is this per row, over accumulated column heights.</p>
+<h3 id="c3-car-fleet">C3. Car Fleet</h3>
+<p>Sort by position descending. Compute time to reach the target. A car forms a new fleet only if its time is greater than the fleet ahead of it.</p>
+<h3 id="c4-sum-of-subarray-minimums-stock-span-remove-k-digits">C4. Sum of Subarray Minimums, Stock Span, Remove K Digits</h3>
+<p>Remove K Digits: pop while the top is greater than the current digit and k &gt; 0, which makes the smallest number greedily.</p>
+<hr>
+<h2 id="d-queue-and-deque">D. Queue and deque</h2>
+<p><strong>Queue:</strong> FIFO, used for BFS, producer/consumer, and task scheduling. In Python use <code>collections.deque</code>.</p>
+<h3 id="d1-sliding-window-maximum-monotonic-deque">D1. Sliding Window Maximum (monotonic deque)</h3>
+<p><strong>Intuition:</strong> keep a deque of indices with decreasing values. The front is the max. Pop the front when it leaves the window, and pop the back while it's smaller than the new element (it can never be a max again).</p>
+<pre><code class="language-python">def max_sliding_window(nums, k):
+    dq, res = deque(), []
+    for i, x in enumerate(nums):
+        if dq and dq[0] &lt;= i - k:
+            dq.popleft()
+        while dq and nums[dq[-1]] &lt; x:
+            dq.pop()
+        dq.append(i)
+        if i &gt;= k - 1:
+            res.append(nums[dq[0]])
+    return res
+</code></pre>
+<p>O(n). Related: Shortest Subarray with Sum at Least K (prefix sums + monotonic deque, handles negatives).</p>
+<h3 id="d2-implement-a-queue-using-two-stacks">D2. Implement a Queue using two stacks</h3>
+<p><code>in</code> stack for push, <code>out</code> stack for pop. Refill <code>out</code> only when it's empty. Amortized O(1).</p>
+<h3 id="d3-design-circular-queue">D3. Design Circular Queue</h3>
+<p>A fixed array with <code>head</code> and <code>count</code>. <code>tail = (head + count) % cap</code>. This is also the core of a bounded ring buffer (see <a href="06_concurrency.html">concurrency</a>).</p>
+<h3 id="d4-design-hit-counter-hits-in-the-last-300s">D4. Design Hit Counter (hits in the last 300s)</h3>
+<p>A deque of timestamps, popping old ones from the left. Or, for high volume, 300 buckets of <code>(timestamp, count)</code> indexed by <code>ts % 300</code>, which is O(1) memory per second. That's a rate limiter warmup.</p>
+<hr>
+<h2 id="e-heap-priority-queue">E. Heap / priority queue</h2>
+<p><strong>Intuition:</strong> always need the min or max of a changing set. Push/pop O(log n), peek O(1). <strong>Top K largest:</strong> keep a <em>min</em>-heap of size k (the smallest of the top k is on top, and you evict it).</p>
+<h3 id="e1-kth-largest-element-in-an-array">E1. Kth Largest Element in an Array</h3>
+<p>Min-heap of size k: O(n log k). Quickselect: O(n) average, O(n²) worst.</p>
+<pre><code class="language-python">def find_kth_largest(nums, k):
+    h = nums[:k]
+    heapq.heapify(h)
+    for x in nums[k:]:
+        if x &gt; h[0]:
+            heapq.heapreplace(h, x)
+    return h[0]
+</code></pre>
+<h3 id="e2-k-closest-points-to-origin">E2. K Closest Points to Origin</h3>
+<p>Max-heap of size k on distance (push the negative distance). O(n log k).</p>
+<h3 id="e3-merge-k-sorted-lists-also-merge-k-sorted-log-files">E3. Merge K Sorted Lists (also "merge k sorted log files")</h3>
+<pre><code class="language-python">def merge_k_lists(lists):
+    h = []
+    for i, node in enumerate(lists):
+        if node:
+            heapq.heappush(h, (node.val, i, node))
+    dummy = tail = ListNode()
+    while h:
+        _, i, node = heapq.heappop(h)
+        tail.next = tail = node
+        if node.next:
+            heapq.heappush(h, (node.next.val, i, node.next))
+    return dummy.next
+</code></pre>
+<p>O(N log k). The index <code>i</code> breaks ties because nodes aren't comparable. At scale this is <strong>external merge sort</strong>: sort chunks that fit in memory, write them, then k-way merge with a heap and buffered IO.</p>
+<h3 id="e4-find-median-from-data-stream-two-heaps">E4. Find Median from Data Stream (two heaps)</h3>
+<p><strong>Intuition:</strong> a max-heap for the lower half and a min-heap for the upper half. Keep sizes balanced (lower can have one extra).</p>
+<pre><code class="language-python">class MedianFinder:
+    def __init__(self):
+        self.lo = []   # max-heap (negated)
+        self.hi = []   # min-heap
+
+    def add_num(self, x):
+        heapq.heappush(self.lo, -x)
+        heapq.heappush(self.hi, -heapq.heappop(self.lo))
+        if len(self.hi) &gt; len(self.lo):
+            heapq.heappush(self.lo, -heapq.heappop(self.hi))
+
+    def find_median(self):
+        if len(self.lo) &gt; len(self.hi):
+            return -self.lo[0]
+        return (-self.lo[0] + self.hi[0]) / 2
+</code></pre>
+<p>add O(log n), median O(1). Follow-ups: sliding-window median (lazy deletion with a hashmap of to-delete counts). For p99 latency at scale use histograms or t-digest, not exact medians.</p>
+<h3 id="e5-task-scheduler-cooldown-n">E5. Task Scheduler (cooldown n)</h3>
+<p><strong>Math answer:</strong> <code>max(len(tasks), (maxFreq - 1) * (n + 1) + countOfMaxFreq)</code>. The simulation uses a max-heap plus a cooldown queue.</p>
+<h3 id="e6-reorganize-string-no-two-adjacent-the-same">E6. Reorganize String (no two adjacent the same)</h3>
+<p>Max-heap by count. Pop the top, append it, and hold it back one step (push the previous one back).</p>
+<h3 id="e7-meeting-rooms-ii-see-intervals-min-heap-of-end-times">E7. Meeting Rooms II: see <a href="03_dsa_6_backtracking_greedy_intervals_matrix_bits.html">intervals</a> (min-heap of end times).</h3>
+<h3 id="e8-dijkstra-and-prim-use-heaps-see-graphs">E8. Dijkstra and Prim use heaps: see <a href="03_dsa_4_graphs_dsu.html">graphs</a>.</h3>
+<h3 id="e9-design-twitter-news-feed-of-top-10">E9. Design Twitter (news feed of top 10)</h3>
+<p>Per-user tweet lists with timestamps. The feed is a k-way merge over the user and their followees with a heap, taking 10. That's the same idea as fan-out-on-read in system design.</p>
+<hr>
+<h2 id="heap-facts-to-say-out-loud">Heap facts to say out loud</h2>
+<ul>
+<li><code>heapify</code> is O(n), not O(n log n).</li>
+<li>Python has only a min-heap. Negate for max, or push <code>(-priority, ...)</code>.</li>
+<li>There's no decrease-key in heapq. Push a new entry and skip stale ones on pop (lazy deletion). Dijkstra does exactly this.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

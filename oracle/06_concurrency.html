@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>06_concurrency — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/06_concurrency.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#06-multithreading-and-concurrency-in-depth-python-go">06. Multithreading and concurrency in depth (Python + Go)</a>
+<a class="lvl2" href="#1-core-concepts">1. Core concepts</a>
+<a class="lvl2" href="#2-what-goes-wrong">2. What goes wrong</a>
+<a class="lvl2" href="#3-synchronization-primitives">3. Synchronization primitives</a>
+<a class="lvl2" href="#4-python-concurrency">4. Python concurrency</a>
+<a class="lvl2" href="#5-go-concurrency-in-depth">5. Go concurrency in depth</a>
+<a class="lvl2" href="#6-classic-concurrency-problems-with-code">6. Classic concurrency problems with code</a>
+<a class="lvl2" href="#7-concurrency-across-machines-connect-to-system-design">7. Concurrency across machines (connect to system design)</a>
+<a class="lvl2" href="#8-rapid-fire-qa">8. Rapid-fire Q&amp;A</a></nav>
+<main><h1 id="06-multithreading-and-concurrency-in-depth-python-go">06. Multithreading and concurrency in depth (Python + Go)</h1>
+<hr>
+<h2 id="1-core-concepts">1. Core concepts</h2>
+<ul>
+<li><strong>Concurrency:</strong> dealing with many things at once (structure). <strong>Parallelism:</strong> doing many things at the same instant (execution on multiple cores). Concurrency is possible on one core.</li>
+<li><strong>CPU-bound vs IO-bound:</strong> IO-bound work (network, disk) benefits from concurrency even on one core. CPU-bound work needs parallelism (multiple cores, and in Python, multiple processes).</li>
+<li><strong>Process:</strong> its own memory space; heavy; isolation; IPC needed. <strong>Thread:</strong> shares the process's memory; OS-scheduled; ~1 MB stack. <strong>Goroutine:</strong> a user-space thread managed by the Go runtime; starts at ~2 KB of stack; millions possible. <strong>Coroutine (asyncio):</strong> cooperative; yields at <code>await</code>; one thread.</li>
+<li><strong>Context switch:</strong> saving and restoring registers and the stack. OS thread switches cost ~µs; goroutine and coroutine switches are much cheaper.</li>
+<li><strong>Preemptive vs cooperative scheduling:</strong> OS threads and goroutines (since Go 1.14, async preemption) are preempted. Asyncio coroutines are not, so one blocking call freezes everything.</li>
+</ul>
+<hr>
+<h2 id="2-what-goes-wrong">2. What goes wrong</h2>
+<h3 id="race-condition">Race condition</h3>
+<p>The result depends on timing. The classic is <strong>read-modify-write</strong>: <code>count += 1</code> is load, add, store. Two threads interleave and one increment is lost.</p>
+<p><strong>Check-then-act</strong> is the other classic: <code>if key not in cache: cache[key] = compute()</code>. Two threads both see a miss and both compute (a cache stampede; fix with singleflight).</p>
+<h3 id="data-race-go-term">Data race (Go term)</h3>
+<p>Two goroutines access the same memory concurrently, at least one writes, and there's no synchronization. It's undefined behavior in Go's memory model. Detect with <code>go test -race</code>.</p>
+<h3 id="visibility-and-ordering-memory-model">Visibility and ordering (memory model)</h3>
+<p>CPUs and compilers reorder instructions and cache values. Without synchronization, one thread may <strong>never see</strong> another's write, or see writes out of order. Synchronization primitives (mutex unlock/lock, channel send/receive, atomics) create <strong>happens-before</strong> edges.
+- Go: a send on a channel happens before the corresponding receive completes. An unlock happens before the next lock.
+- Java: <code>volatile</code> and <code>synchronized</code>. Python: the GIL makes most single bytecode operations appear atomic, but compound operations aren't.</p>
+<h3 id="deadlock">Deadlock</h3>
+<p>Four <strong>Coffman conditions</strong>, all required:
+1. Mutual exclusion.
+2. Hold and wait.
+3. No preemption.
+4. Circular wait.</p>
+<p>Break any one:
+- <strong>Lock ordering</strong> (always acquire locks in a global order, e.g. by account ID) breaks circular wait. This is the most common fix.
+- <strong>Try-lock with timeout</strong> and back off.
+- Acquire all locks at once.
+- Avoid holding locks while calling unknown code or doing IO.</p>
+<pre><code class="language-python">def transfer(a, b, amount):
+    first, second = (a, b) if a.id &lt; b.id else (b, a)    # global lock order
+    with first.lock, second.lock:
+        a.balance -= amount
+        b.balance += amount
+</code></pre>
+<h3 id="livelock">Livelock</h3>
+<p>Threads keep responding to each other and make no progress (two people stepping aside in a corridor). Fix: randomized backoff.</p>
+<h3 id="starvation">Starvation</h3>
+<p>A thread never gets the resource (writers starved by a stream of readers). Fix: fair locks, writer preference, aging.</p>
+<h3 id="priority-inversion">Priority inversion</h3>
+<p>A low-priority thread holds a lock needed by a high-priority one while a medium one runs. Fix: priority inheritance.</p>
+<h3 id="thundering-herd">Thundering herd</h3>
+<p>Many waiters are woken for one resource. Fix: <code>notify()</code> instead of <code>notify_all()</code> where correct; in distributed locks, watch only your predecessor.</p>
+<hr>
+<h2 id="3-synchronization-primitives">3. Synchronization primitives</h2>
+<table>
+<thead>
+<tr>
+<th>Primitive</th>
+<th>What it does</th>
+<th>Use for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mutex / Lock</strong></td>
+<td>One holder at a time</td>
+<td>Protect shared state</td>
+</tr>
+<tr>
+<td><strong>Reentrant lock (RLock)</strong></td>
+<td>The same thread can re-acquire</td>
+<td>Recursive code paths</td>
+</tr>
+<tr>
+<td><strong>Read-write lock</strong></td>
+<td>Many readers OR one writer</td>
+<td>Read-heavy data (config, routing tables)</td>
+</tr>
+<tr>
+<td><strong>Semaphore(n)</strong></td>
+<td>n permits</td>
+<td>Bound concurrency (connection pools, max parallel calls)</td>
+</tr>
+<tr>
+<td><strong>Condition variable</strong></td>
+<td>Wait until a predicate is true; signal</td>
+<td>Bounded queues, producer/consumer</td>
+</tr>
+<tr>
+<td><strong>Barrier</strong></td>
+<td>N threads wait until all arrive</td>
+<td>Phased computation</td>
+</tr>
+<tr>
+<td><strong>Latch / WaitGroup</strong></td>
+<td>Wait for N events</td>
+<td>Wait for workers to finish</td>
+</tr>
+<tr>
+<td><strong>Atomic / CAS</strong></td>
+<td>Lock-free single-word update</td>
+<td>Counters, flags, lock-free structures</td>
+</tr>
+<tr>
+<td><strong>Spinlock</strong></td>
+<td>Busy-wait</td>
+<td>Very short sections in kernels; rarely in app code</td>
+</tr>
+<tr>
+<td><strong>Future / Promise</strong></td>
+<td>A placeholder for a result</td>
+<td>Async results</td>
+</tr>
+<tr>
+<td><strong>Channel</strong></td>
+<td>Typed pipe with synchronization</td>
+<td>Go communication</td>
+</tr>
+</tbody>
+</table>
+<h3 id="condition-variable-rule">Condition variable rule</h3>
+<p><strong>Always wait in a <code>while</code> loop</strong>, not an <code>if</code>. There are spurious wakeups, and another thread may take the item first.</p>
+<pre><code class="language-python">with cond:
+    while not predicate():
+        cond.wait()
+    # predicate true and lock held
+</code></pre>
+<h3 id="compare-and-swap-cas">Compare-and-swap (CAS)</h3>
+<p><code>CAS(addr, expected, new)</code>: atomically set it to <code>new</code> if it currently equals <code>expected</code>. Lock-free algorithms loop on CAS. The <strong>ABA problem</strong>: the value changes A → B → A and CAS succeeds wrongly. Fix: version tags. The same idea is <strong>optimistic concurrency</strong> in databases (a version column), which I used at Uber FRM.</p>
+<pre><code class="language-go">func incrementMax(addr *int64, v int64) {
+    for {
+        old := atomic.LoadInt64(addr)
+        if v &lt;= old || atomic.CompareAndSwapInt64(addr, old, v) {
+            return
+        }
+    }
+}
+</code></pre>
+<hr>
+<h2 id="4-python-concurrency">4. Python concurrency</h2>
+<h3 id="the-gil">The GIL</h3>
+<ul>
+<li>CPython's <strong>Global Interpreter Lock</strong> lets only one thread execute Python bytecode at a time.</li>
+<li>So <strong>threads don't speed up CPU-bound Python</strong>. They do help IO-bound work, because the GIL is released during blocking IO and in many C extensions (NumPy, hashlib, compression).</li>
+<li>The GIL does <strong>not</strong> make your code thread-safe. <code>x += 1</code> is several bytecodes and can interleave. Compound operations on dicts/lists need locks.</li>
+<li>Python 3.13+ has an experimental <strong>free-threaded</strong> build (PEP 703) without the GIL. Mention it as awareness.</li>
+</ul>
+<h3 id="choosing-the-tool">Choosing the tool</h3>
+<table>
+<thead>
+<tr>
+<th>Workload</th>
+<th>Tool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Many network calls</td>
+<td><code>asyncio</code> (best), or threads</td>
+</tr>
+<tr>
+<td>Blocking library (no async version)</td>
+<td><code>ThreadPoolExecutor</code>, or <code>asyncio.to_thread</code></td>
+</tr>
+<tr>
+<td>CPU-heavy pure Python</td>
+<td><code>multiprocessing</code> / <code>ProcessPoolExecutor</code></td>
+</tr>
+<tr>
+<td>CPU-heavy in NumPy / C</td>
+<td>Threads can work (the GIL is released)</td>
+</tr>
+<tr>
+<td>Distributed tasks</td>
+<td>Celery workers (I used this at Masters), a queue</td>
+</tr>
+</tbody>
+</table>
+<h3 id="threading-and-concurrentfutures">threading and concurrent.futures</h3>
+<pre><code class="language-python">from concurrent.futures import ThreadPoolExecutor, as_completed
+
+def fetch_all(urls, max_workers=16):
+    results = {}
+    with ThreadPoolExecutor(max_workers) as ex:
+        futs = {ex.submit(fetch, u): u for u in urls}
+        for f in as_completed(futs):
+            u = futs[f]
+            try:
+                results[u] = f.result()
+            except Exception as e:
+                results[u] = e
+    return results
+</code></pre>
+<h3 id="asyncio-in-depth">asyncio in depth</h3>
+<ul>
+<li>One thread and an <strong>event loop</strong>. <code>async def</code> defines a coroutine; <code>await</code> yields control until the awaited thing is ready.</li>
+<li><code>asyncio.create_task</code> schedules concurrently. <code>asyncio.gather</code> waits for many. <code>asyncio.TaskGroup</code> (3.11+) gives structured concurrency: if one fails, the others are cancelled.</li>
+<li><strong>Timeouts:</strong> <code>asyncio.timeout(5)</code> (3.11+) or <code>asyncio.wait_for</code>.</li>
+<li><strong>Bounded concurrency:</strong> <code>asyncio.Semaphore(n)</code>.</li>
+<li><strong>Cancellation:</strong> raises <code>CancelledError</code> inside the task at the next await. Clean up in <code>finally</code>. Don't swallow it.</li>
+<li><strong>Never block the loop:</strong> <code>time.sleep</code>, sync DB drivers, CPU loops, and <code>requests.get</code> freeze every request. Use <code>await asyncio.sleep</code>, async drivers, or <code>await asyncio.to_thread(fn)</code>.</li>
+<li><strong>Resource lifetime:</strong> always <code>async with</code> for clients, sessions, and cursors. My packet story: a FastAPI worker leaked DB/HTTP clients created inside a long-lived async loop without context managers, so memory climbed and 504s followed. Fixed with <code>async with</code>, pool limits/timeouts, and backpressure.</li>
+</ul>
+<pre><code class="language-python">import asyncio
+
+async def fetch_with_limits(session, urls, concurrency=20, timeout_s=5):
+    sem = asyncio.Semaphore(concurrency)
+
+    async def one(url):
+        async with sem:
+            async with asyncio.timeout(timeout_s):
+                async with session.get(url) as r:
+                    return await r.text()
+
+    async with asyncio.TaskGroup() as tg:
+        tasks = [tg.create_task(one(u)) for u in urls]
+    return [t.result() for t in tasks]
+</code></pre>
+<p>Retry with backoff and jitter in async:</p>
+<pre><code class="language-python">async def call_with_retry(fn, attempts=3, base=0.1, cap=2.0):
+    for i in range(attempts):
+        try:
+            return await fn()
+        except (asyncio.TimeoutError, ConnectionError):
+            if i == attempts - 1:
+                raise
+            await asyncio.sleep(random.uniform(0, min(cap, base * 2 ** i)))
+</code></pre>
+<p>An async producer/consumer with a bounded <code>asyncio.Queue</code> (backpressure built in):</p>
+<pre><code class="language-python">async def pipeline(items, workers=8):
+    q = asyncio.Queue(maxsize=100)
+
+    async def producer():
+        for it in items:
+            await q.put(it)            # blocks when full = backpressure
+        for _ in range(workers):
+            await q.put(None)          # poison pills
+
+    async def worker():
+        while (it := await q.get()) is not None:
+            await process(it)
+
+    await asyncio.gather(producer(), *(worker() for _ in range(workers)))
+</code></pre>
+<p><strong>FastAPI note:</strong> <code>async def</code> endpoints run on the event loop, so they must not block. Plain <code>def</code> endpoints run in a threadpool. That's why IRP calls at Masters moved to async IO plus Celery workers.</p>
+<h3 id="multiprocessing">multiprocessing</h3>
+<ul>
+<li>Separate interpreters, so no GIL contention. Data is pickled between processes (overhead).</li>
+<li>Use <code>ProcessPoolExecutor</code> for CPU work. Shared memory via <code>multiprocessing.shared_memory</code> or <code>Manager</code> (slow).</li>
+<li>The start method matters (<code>fork</code> vs <code>spawn</code>): don't fork after starting threads.</li>
+</ul>
+<hr>
+<h2 id="5-go-concurrency-in-depth">5. Go concurrency in depth</h2>
+<h3 id="the-scheduler-gmp">The scheduler (GMP)</h3>
+<ul>
+<li><strong>G</strong> = goroutine, <strong>M</strong> = OS thread, <strong>P</strong> = processor (a logical CPU context, <code>GOMAXPROCS</code> of them).</li>
+<li>Each P has a local run queue of Gs, with <strong>work stealing</strong> between Ps.</li>
+<li>On a blocking syscall, the M is detached and the P gets another M. Network IO uses the <strong>netpoller</strong> (epoll/kqueue), so goroutines waiting on sockets don't hold threads.</li>
+<li>That's why a Go server can hold 100k+ connections with cheap goroutines per connection.</li>
+</ul>
+<h3 id="channels">Channels</h3>
+<ul>
+<li><strong>Unbuffered:</strong> send blocks until a receiver takes it (synchronous handoff).</li>
+<li><strong>Buffered(n):</strong> send blocks only when full. That gives bounded queues and semaphores.</li>
+<li><code>close(ch)</code> signals no more values. Receivers get the zero value with <code>ok == false</code>. <code>for v := range ch</code> stops at close. <strong>Only the sender closes.</strong> Closing twice or sending on a closed channel panics.</li>
+<li>A <strong>nil channel</strong> blocks forever. That's useful in <code>select</code> to disable a case.</li>
+<li>"Don't communicate by sharing memory; share memory by communicating." But a mutex is fine and often simpler for protecting a map.</li>
+</ul>
+<h3 id="select">select</h3>
+<pre><code class="language-go">select {
+case msg := &lt;-in:
+    handle(msg)
+case &lt;-ctx.Done():
+    return ctx.Err()
+case &lt;-time.After(2 * time.Second):
+    return errTimeout
+}
+</code></pre>
+<h3 id="context">context</h3>
+<ul>
+<li>Carries <strong>cancellation, deadlines, and request-scoped values</strong> down the call tree.</li>
+<li><code>context.WithTimeout(parent, d)</code>: children inherit the <em>earlier</em> deadline. That's how nested timeouts work on my Go/Gin edge. The edge sets the budget and every DB/HTTP call beneath gets the remaining time.</li>
+<li>Always <code>defer cancel()</code>. Pass <code>ctx</code> as the first parameter. Check <code>ctx.Err()</code> in long loops.</li>
+</ul>
+<h3 id="sync-package">sync package</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sync.Mutex</code></td>
+<td>Don't copy after first use (pass pointers). Not reentrant</td>
+</tr>
+<tr>
+<td><code>sync.RWMutex</code></td>
+<td><code>RLock</code> for readers. Writers get priority once waiting</td>
+</tr>
+<tr>
+<td><code>sync.WaitGroup</code></td>
+<td><code>Add</code> before starting the goroutine, <code>Done</code> in a defer, <code>Wait</code></td>
+</tr>
+<tr>
+<td><code>sync.Once</code></td>
+<td>Lazy init, thread-safe</td>
+</tr>
+<tr>
+<td><code>sync.Cond</code></td>
+<td>Rarely needed; channels usually replace it</td>
+</tr>
+<tr>
+<td><code>sync.Pool</code></td>
+<td>Reuse temporary objects (buffers) to cut GC. Items may be dropped at any GC</td>
+</tr>
+<tr>
+<td><code>sync.Map</code></td>
+<td>For write-once/read-many or disjoint key sets. Otherwise a map + mutex is better</td>
+</tr>
+<tr>
+<td><code>sync/atomic</code></td>
+<td><code>atomic.Int64</code>, <code>atomic.Bool</code>, <code>atomic.Pointer[T]</code> (Go 1.19+)</td>
+</tr>
+<tr>
+<td><code>golang.org/x/sync/errgroup</code></td>
+<td>Run goroutines, return the first error, cancel the others via ctx. <code>SetLimit(n)</code> bounds concurrency</td>
+</tr>
+<tr>
+<td><code>golang.org/x/sync/singleflight</code></td>
+<td>Coalesce duplicate concurrent calls for the same key (stampede protection)</td>
+</tr>
+<tr>
+<td><code>golang.org/x/sync/semaphore</code></td>
+<td>Weighted semaphore</td>
+</tr>
+</tbody>
+</table>
+<h3 id="worker-pool-bounded-parallelism">Worker pool (bounded parallelism)</h3>
+<pre><code class="language-go">func WorkerPool(ctx context.Context, jobs []Job, workers int) ([]Result, error) {
+    in := make(chan Job)
+    out := make(chan Result, len(jobs))
+    g, ctx := errgroup.WithContext(ctx)
+
+    for i := 0; i &lt; workers; i++ {
+        g.Go(func() error {
+            for j := range in {
+                r, err := process(ctx, j)
+                if err != nil {
+                    return err            // cancels ctx for everyone
+                }
+                out &lt;- r
+            }
+            return nil
+        })
+    }
+
+    g.Go(func() error {
+        defer close(in)
+        for _, j := range jobs {
+            select {
+            case in &lt;- j:
+            case &lt;-ctx.Done():
+                return ctx.Err()
+            }
+        }
+        return nil
+    })
+
+    err := g.Wait()
+    close(out)
+    var results []Result
+    for r := range out {
+        results = append(results, r)
+    }
+    return results, err
+}
+</code></pre>
+<h3 id="pipeline-and-fan-out-fan-in">Pipeline and fan-out / fan-in</h3>
+<pre><code class="language-go">func gen(ctx context.Context, nums ...int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for _, n := range nums {
+            select {
+            case out &lt;- n:
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+
+func square(ctx context.Context, in &lt;-chan int) &lt;-chan int {
+    out := make(chan int)
+    go func() {
+        defer close(out)
+        for n := range in {
+            select {
+            case out &lt;- n * n:
+            case &lt;-ctx.Done():
+                return
+            }
+        }
+    }()
+    return out
+}
+
+func merge(ctx context.Context, cs ...&lt;-chan int) &lt;-chan int {
+    var wg sync.WaitGroup
+    out := make(chan int)
+    wg.Add(len(cs))
+    for _, c := range cs {
+        go func(c &lt;-chan int) {
+            defer wg.Done()
+            for v := range c {
+                select {
+                case out &lt;- v:
+                case &lt;-ctx.Done():
+                    return
+                }
+            }
+        }(c)
+    }
+    go func() { wg.Wait(); close(out) }()
+    return out
+}
+</code></pre>
+<h3 id="double-buffering-the-pattern-behind-my-go-pump-344k-rowss">Double buffering: the pattern behind my Go pump (~344k rows/s)</h3>
+<p>Read batch N+1 while batch N is being sent. Two buffers alternate through channels, so the SELECT stream never sits idle. That was the fix for HTTP <code>unexpected EOF</code>.</p>
+<pre><code class="language-go">func pump(ctx context.Context, src Reader, dst Writer, batchSize int) error {
+    free := make(chan *Batch, 2)
+    full := make(chan *Batch, 2)
+    free &lt;- NewBatch(batchSize)
+    free &lt;- NewBatch(batchSize)
+
+    g, ctx := errgroup.WithContext(ctx)
+
+    g.Go(func() error {                       // reader
+        defer close(full)
+        for {
+            var b *Batch
+            select {
+            case b = &lt;-free:
+            case &lt;-ctx.Done():
+                return ctx.Err()
+            }
+            b.Reset()
+            n, err := src.Fill(ctx, b)        // columnar append, no per-row reflection
+            if n &gt; 0 {
+                full &lt;- b
+            }
+            if err == io.EOF {
+                return nil
+            }
+            if err != nil {
+                return err
+            }
+        }
+    })
+
+    g.Go(func() error {                       // writer
+        for b := range full {
+            if err := dst.Send(ctx, b); err != nil {
+                return err                    // never retry a spent batch; the unit is restarted
+            }
+            free &lt;- b
+        }
+        return nil
+    })
+
+    return g.Wait()
+}
+</code></pre>
+<h3 id="rate-limiting-in-go">Rate limiting in Go</h3>
+<p><code>golang.org/x/time/rate</code>: <code>limiter := rate.NewLimiter(rate.Limit(100), 200)</code>, then <code>limiter.Wait(ctx)</code> or <code>limiter.Allow()</code>. Or a <code>time.Ticker</code> for simple pacing.</p>
+<h3 id="goroutine-leaks-very-common-interview-topic">Goroutine leaks (very common interview topic)</h3>
+<p>A goroutine is blocked forever on a channel nobody will read or write.
+- Cause: returning early from the consumer while the producer is still sending on an unbuffered channel.
+- Fix: every goroutine must have an exit path, via <code>ctx.Done()</code>, closing the input, or a buffered result channel of the right size.
+- Detect with <code>runtime.NumGoroutine()</code> in tests, <code>pprof</code> goroutine profiles, or <code>go.uber.org/goleak</code>.</p>
+<h3 id="common-go-concurrency-bugs">Common Go concurrency bugs</h3>
+<ul>
+<li>Loop variable capture (fixed in Go 1.22: each iteration has its own variable. Before that, pass it as a parameter).</li>
+<li>Concurrent map writes (a runtime fatal error): use a mutex.</li>
+<li><code>wg.Add</code> inside the goroutine (races with <code>Wait</code>).</li>
+<li>Copying a struct that contains a mutex.</li>
+<li>Forgetting <code>cancel()</code> (leaks timers/contexts).</li>
+<li>Holding a mutex while sending on a channel (deadlock risk).</li>
+</ul>
+<hr>
+<h2 id="6-classic-concurrency-problems-with-code">6. Classic concurrency problems with code</h2>
+<h3 id="61-bounded-blocking-queue-the-most-asked">6.1 Bounded blocking queue (the most asked)</h3>
+<p><strong>Python (Condition variables):</strong></p>
+<pre><code class="language-python">import threading
+from collections import deque
+
+class BoundedBlockingQueue:
+    def __init__(self, capacity: int):
+        self.cap = capacity
+        self.q = deque()
+        self.lock = threading.Lock()
+        self.not_full = threading.Condition(self.lock)
+        self.not_empty = threading.Condition(self.lock)
+
+    def put(self, item, timeout=None):
+        with self.not_full:
+            while len(self.q) &gt;= self.cap:
+                if not self.not_full.wait(timeout):
+                    raise TimeoutError
+            self.q.append(item)
+            self.not_empty.notify()
+
+    def take(self, timeout=None):
+        with self.not_empty:
+            while not self.q:
+                if not self.not_empty.wait(timeout):
+                    raise TimeoutError
+            item = self.q.popleft()
+            self.not_full.notify()
+            return item
+
+    def size(self):
+        with self.lock:
+            return len(self.q)
+</code></pre>
+<p>Why two conditions on one lock: producers wait on <code>not_full</code> and consumers on <code>not_empty</code>, so <code>notify()</code> wakes the right kind of thread.</p>
+<p><strong>Go:</strong> a buffered channel <em>is</em> a bounded blocking queue. If asked to build it with a mutex:</p>
+<pre><code class="language-go">type BQueue[T any] struct {
+    mu       sync.Mutex
+    notEmpty *sync.Cond
+    notFull  *sync.Cond
+    items    []T
+    cap      int
+}
+
+func NewBQueue[T any](cap int) *BQueue[T] {
+    q := &amp;BQueue[T]{cap: cap}
+    q.notEmpty = sync.NewCond(&amp;q.mu)
+    q.notFull = sync.NewCond(&amp;q.mu)
+    return q
+}
+
+func (q *BQueue[T]) Put(v T) {
+    q.mu.Lock()
+    defer q.mu.Unlock()
+    for len(q.items) == q.cap {
+        q.notFull.Wait()
+    }
+    q.items = append(q.items, v)
+    q.notEmpty.Signal()
+}
+
+func (q *BQueue[T]) Take() T {
+    q.mu.Lock()
+    defer q.mu.Unlock()
+    for len(q.items) == 0 {
+        q.notEmpty.Wait()
+    }
+    v := q.items[0]
+    q.items = q.items[1:]
+    q.notFull.Signal()
+    return v
+}
+</code></pre>
+<h3 id="62-print-in-order-first-second-third-across-threads">6.2 Print in order (first, second, third across threads)</h3>
+<pre><code class="language-python">class Foo:
+    def __init__(self):
+        self.e1, self.e2 = threading.Event(), threading.Event()
+    def first(self, f):
+        f(); self.e1.set()
+    def second(self, f):
+        self.e1.wait(); f(); self.e2.set()
+    def third(self, f):
+        self.e2.wait(); f()
+</code></pre>
+<p>Go: two unbuffered channels, or a <code>sync.WaitGroup</code> per stage.</p>
+<h3 id="63-print-foobar-alternately-n-times">6.3 Print FooBar alternately (n times)</h3>
+<pre><code class="language-python">class FooBar:
+    def __init__(self, n):
+        self.n = n
+        self.foo_sem, self.bar_sem = threading.Semaphore(1), threading.Semaphore(0)
+    def foo(self, p):
+        for _ in range(self.n):
+            self.foo_sem.acquire(); p(); self.bar_sem.release()
+    def bar(self, p):
+        for _ in range(self.n):
+            self.bar_sem.acquire(); p(); self.foo_sem.release()
+</code></pre>
+<p>Go ping-pong:</p>
+<pre><code class="language-go">func fooBar(n int) {
+    foo, bar := make(chan struct{}), make(chan struct{})
+    done := make(chan struct{})
+    go func() {
+        for i := 0; i &lt; n; i++ {
+            &lt;-foo
+            fmt.Print(&quot;foo&quot;)
+            bar &lt;- struct{}{}
+        }
+    }()
+    go func() {
+        for i := 0; i &lt; n; i++ {
+            &lt;-bar
+            fmt.Print(&quot;bar&quot;)
+            if i &lt; n-1 {
+                foo &lt;- struct{}{}
+            }
+        }
+        close(done)
+    }()
+    foo &lt;- struct{}{}
+    &lt;-done
+}
+</code></pre>
+<h3 id="64-zero-even-odd-fizzbuzz-multithreaded-building-h2o">6.4 Zero Even Odd, FizzBuzz Multithreaded, Building H2O</h3>
+<p>The same technique: semaphores gating whose turn it is.
+- <strong>H2O:</strong> <code>h_sem = Semaphore(2)</code>, <code>o_sem = Semaphore(1)</code>, and a <code>Barrier(3)</code> so each molecule forms together, then release the permits.</p>
+<pre><code class="language-python">class H2O:
+    def __init__(self):
+        self.h, self.o = threading.Semaphore(2), threading.Semaphore(1)
+        self.barrier = threading.Barrier(3)
+    def hydrogen(self, release):
+        with self.h:
+            self.barrier.wait()
+            release()
+    def oxygen(self, release):
+        with self.o:
+            self.barrier.wait()
+            release()
+</code></pre>
+<h3 id="65-dining-philosophers">6.5 Dining philosophers</h3>
+<p>Five philosophers, five forks. Everyone picking up the left fork first leads to deadlock (circular wait). Fixes:
+1. <strong>Resource ordering:</strong> always pick up the lower-numbered fork first.
+2. <strong>Waiter/arbitrator:</strong> a semaphore allowing at most 4 to try.
+3. Try-lock and back off (risks livelock without randomness).</p>
+<pre><code class="language-python">def philosopher(i, forks, meals):
+    left, right = i, (i + 1) % len(forks)
+    first, second = min(left, right), max(left, right)
+    for _ in range(meals):
+        with forks[first], forks[second]:
+            eat(i)
+</code></pre>
+<h3 id="66-implement-a-read-write-lock-writer-preference">6.6 Implement a read-write lock (writer preference)</h3>
+<pre><code class="language-python">class RWLock:
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.readers_ok = threading.Condition(self.lock)
+        self.writers_ok = threading.Condition(self.lock)
+        self.readers = 0
+        self.writer = False
+        self.waiting_writers = 0
+
+    def acquire_read(self):
+        with self.lock:
+            while self.writer or self.waiting_writers:
+                self.readers_ok.wait()
+            self.readers += 1
+
+    def release_read(self):
+        with self.lock:
+            self.readers -= 1
+            if self.readers == 0:
+                self.writers_ok.notify()
+
+    def acquire_write(self):
+        with self.lock:
+            self.waiting_writers += 1
+            while self.writer or self.readers:
+                self.writers_ok.wait()
+            self.waiting_writers -= 1
+            self.writer = True
+
+    def release_write(self):
+        with self.lock:
+            self.writer = False
+            if self.waiting_writers:
+                self.writers_ok.notify()
+            else:
+                self.readers_ok.notify_all()
+</code></pre>
+<h3 id="67-thread-safe-singleton-lazy-init">6.7 Thread-safe singleton / lazy init</h3>
+<p>Python: a module-level instance, or double-checked locking:</p>
+<pre><code class="language-python">class Config:
+    _instance, _lock = None, threading.Lock()
+    @classmethod
+    def get(cls):
+        if cls._instance is None:
+            with cls._lock:
+                if cls._instance is None:
+                    cls._instance = cls()
+        return cls._instance
+</code></pre>
+<p>Go: <code>sync.Once</code> (see <a href="05_lld_foundations.html">LLD foundations</a>).</p>
+<h3 id="68-concurrent-web-crawler-leetcode-1242-a-go-favorite">6.8 Concurrent web crawler (LeetCode 1242, a Go favorite)</h3>
+<p>Requirements: start URL, crawl the same hostname only, visit each once, in parallel.</p>
+<pre><code class="language-go">func Crawl(ctx context.Context, start string, fetch func(context.Context, string) []string, workers int) []string {
+    host := hostname(start)
+    var (
+        mu   sync.Mutex
+        seen = map[string]bool{start: true}
+        wg   sync.WaitGroup
+        sem  = make(chan struct{}, workers)   // bound parallel fetches
+    )
+    var visit func(u string)
+    visit = func(u string) {
+        defer wg.Done()
+        sem &lt;- struct{}{}
+        links := fetch(ctx, u)
+        &lt;-sem
+        for _, l := range links {
+            if hostname(l) != host {
+                continue
+            }
+            mu.Lock()
+            if !seen[l] {
+                seen[l] = true
+                wg.Add(1)
+                go visit(l)
+            }
+            mu.Unlock()
+        }
+    }
+    wg.Add(1)
+    go visit(start)
+    wg.Wait()
+
+    out := make([]string, 0, len(seen))
+    for u := range seen {
+        out = append(out, u)
+    }
+    return out
+}
+</code></pre>
+<p>Points: check-and-mark <code>seen</code> under one lock (avoid check-then-act races), <code>wg.Add</code> before <code>go</code>, and a semaphore bounds parallelism. The semaphore is released before spawning children, so there's no deadlock.</p>
+<h3 id="69-thread-safe-counter-hit-counter-at-high-qps">6.9 Thread-safe counter / hit counter at high QPS</h3>
+<ul>
+<li>A mutex works. An atomic counter is faster.</li>
+<li>At very high contention: <strong>striped counters</strong> (N slots, each thread picks one, and the sum is taken on read), like Java's <code>LongAdder</code>.</li>
+<li>Hit counter over 5 minutes: 300 buckets of <code>(second, count)</code> with atomic updates.</li>
+</ul>
+<h3 id="610-connection-pool">6.10 Connection pool</h3>
+<p>A bounded set of connections. <code>acquire(timeout)</code> takes an idle one or creates one if under max, otherwise waits (semaphore + queue). <code>release</code> returns it (check health first). Close idle ones after a TTL. Always use <code>with pool.connection() as c:</code> so leaks are impossible. (The leak story: resources must have a lifetime owner.)</p>
+<h3 id="611-singleflight-stampede-protection">6.11 Singleflight (stampede protection)</h3>
+<pre><code class="language-python">class SingleFlight:
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.calls = {}                    # key -&gt; (event, result holder)
+
+    def do(self, key, fn):
+        with self.lock:
+            if key in self.calls:
+                ev, holder = self.calls[key]
+                leader = False
+            else:
+                ev, holder = threading.Event(), {}
+                self.calls[key] = (ev, holder)
+                leader = True
+        if leader:
+            try:
+                holder[&quot;val&quot;] = fn()
+            except Exception as e:
+                holder[&quot;err&quot;] = e
+            finally:
+                with self.lock:
+                    del self.calls[key]
+                ev.set()
+        else:
+            ev.wait()
+        if &quot;err&quot; in holder:
+            raise holder[&quot;err&quot;]
+        return holder[&quot;val&quot;]
+</code></pre>
+<h3 id="612-countdownlatch-barrier-cyclic-barrier">6.12 CountDownLatch / barrier / cyclic barrier</h3>
+<p>Python: <code>threading.Barrier(n)</code>. A latch is a Condition + counter, or in Go a <code>WaitGroup</code>.</p>
+<hr>
+<h2 id="7-concurrency-across-machines-connect-to-system-design">7. Concurrency across machines (connect to system design)</h2>
+<table>
+<thead>
+<tr>
+<th>Local concept</th>
+<th>Distributed equivalent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mutex</td>
+<td>Distributed lock (etcd lease + <strong>fencing token</strong>)</td>
+</tr>
+<tr>
+<td>CAS</td>
+<td>Conditional write (<code>UPDATE ... WHERE version = ?</code>, conditional PUT with ETag)</td>
+</tr>
+<tr>
+<td>Atomic counter</td>
+<td>Redis <code>INCR</code>, a sharded counter</td>
+</tr>
+<tr>
+<td>Bounded queue</td>
+<td>Queue with max depth + backpressure / 429</td>
+</tr>
+<tr>
+<td>Idempotent retry</td>
+<td>Idempotency keys (Masters: <code>client + fileHash + batchIndex</code>)</td>
+</tr>
+<tr>
+<td>Deadlock avoidance</td>
+<td>Lock ordering; timeouts; avoid distributed locks by partitioning ownership</td>
+</tr>
+<tr>
+<td>Double-checked locking</td>
+<td>Singleflight / request coalescing at the cache</td>
+</tr>
+<tr>
+<td>Worker pool</td>
+<td>Consumer group; autoscaled workers on queue depth</td>
+</tr>
+</tbody>
+</table>
+<h3 id="from-my-work">From my work</h3>
+<ul>
+<li><strong>Copier:</strong> caps per process (threads, memory), a flock per table so two terminals can't copy the same table, and <code>-workers N</code> seasons in parallel with separate connections per worker.</li>
+<li><strong>Keep/Drop:</strong> bounded parallel LLM batches, hard per-batch timeouts, and a circuit breaker shared across workers.</li>
+<li><strong>Uber FRM:</strong> optimistic row locking between concurrent reviewers.</li>
+<li><strong>Masters:</strong> bounded concurrency against the IRP with backoff and jitter; Celery workers autoscaled on queue depth.</li>
+<li><strong>ClickHouse builds:</strong> "never raise season parallelism and week parallelism together on the same box." That's a concurrency budget.</li>
+</ul>
+<hr>
+<h2 id="8-rapid-fire-qa">8. Rapid-fire Q&amp;A</h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Thread vs process?</td>
+<td>Threads share memory (fast communication, need synchronization). Processes are isolated (safer, IPC cost).</td>
+</tr>
+<tr>
+<td>Why not threads for CPU-bound Python?</td>
+<td>The GIL; use processes.</td>
+</tr>
+<tr>
+<td>Is <code>dict[k] = v</code> thread-safe in Python?</td>
+<td>A single assignment is atomic under the GIL. Check-then-set is not. Use a lock for invariants.</td>
+</tr>
+<tr>
+<td>Goroutine vs thread?</td>
+<td>User-space, 2 KB growable stacks, multiplexed on OS threads by the runtime (GMP), cheap to create and switch.</td>
+</tr>
+<tr>
+<td>Buffered vs unbuffered channel?</td>
+<td>Unbuffered = synchronous handoff; buffered = queue up to n.</td>
+</tr>
+<tr>
+<td>How do you stop a goroutine?</td>
+<td>Cancel its context, or close its input channel. You can't kill it from outside.</td>
+</tr>
+<tr>
+<td>How do you find races?</td>
+<td><code>go test -race</code>; in Python, stress tests + code review. Keep shared state minimal.</td>
+</tr>
+<tr>
+<td>Mutex vs channel in Go?</td>
+<td>Mutex for protecting state (a map, a counter). Channels for passing ownership or signaling, and for pipelines.</td>
+</tr>
+<tr>
+<td>What is a memory barrier?</td>
+<td>It prevents reordering across it; synchronization primitives include them.</td>
+</tr>
+<tr>
+<td>Optimistic vs pessimistic locking?</td>
+<td>Optimistic: no lock, check the version at commit, retry on conflict (low contention). Pessimistic: lock first (high contention).</td>
+</tr>
+<tr>
+<td>How do you size a thread pool?</td>
+<td>CPU-bound: ≈ number of cores. IO-bound: cores × (1 + wait time / compute time). Then measure.</td>
+</tr>
+<tr>
+<td>What's backpressure?</td>
+<td>Slowing producers when consumers can't keep up (bounded queues, blocking puts, 429s) instead of buffering without limit.</td>
+</tr>
+<tr>
+<td>async vs threads in Python for 10k connections?</td>
+<td>asyncio: cheaper per connection, no thread stacks.</td>
+</tr>
+<tr>
+<td>What causes asyncio latency spikes?</td>
+<td>Blocking calls on the loop, CPU work, or huge JSON parsing. Offload with <code>to_thread</code> or processes.</td>
+</tr>
+</tbody>
+</table></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

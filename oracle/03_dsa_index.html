@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_dsa_index — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/03_dsa_index.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#03-dsa-hub-patterns-how-to-recognize-them-what-to-practice">03. DSA hub: patterns, how to recognize them, what to practice</a>
+<a class="lvl2" href="#topic-files">Topic files</a>
+<a class="lvl2" href="#the-45-minute-coding-round-step-by-step">The 45 minute coding round, step by step</a>
+<a class="lvl2" href="#pattern-recognition-table">Pattern recognition table</a>
+<a class="lvl2" href="#complexity-cheat-sheet">Complexity cheat sheet</a>
+<a class="lvl2" href="#python-tools-you-should-use-without-thinking">Python tools you should use without thinking</a>
+<a class="lvl2" href="#top-100-list-do-in-this-order-grouped">Top 100 list (do in this order, grouped)</a></nav>
+<main><h1 id="03-dsa-hub-patterns-how-to-recognize-them-what-to-practice">03. DSA hub: patterns, how to recognize them, what to practice</h1>
+<p>Language for solutions: <strong>Python</strong> (fastest to write in interviews). Go is fine too. Tell the interviewer which you're using. OCI coding rounds are usually LeetCode medium, sometimes a hard, often with a follow-up ("what if the input doesn't fit in memory?", "make it thread safe").</p>
+<h2 id="topic-files">Topic files</h2>
+<ol>
+<li><a href="03_dsa_1_arrays_hashing_search.html">Arrays, strings, hashing, two pointers, sliding window, prefix sums, binary search</a></li>
+<li><a href="03_dsa_2_linkedlist_stack_queue_heap.html">Linked list, stack, monotonic stack, queue, deque, heap</a></li>
+<li><a href="03_dsa_3_trees_bst_trie.html">Trees, BST, trie</a></li>
+<li><a href="03_dsa_4_graphs_dsu.html">Graphs, BFS/DFS, topological sort, shortest paths, MST, DSU</a></li>
+<li><a href="03_dsa_5_dynamic_programming.html">Dynamic programming</a></li>
+<li><a href="03_dsa_6_backtracking_greedy_intervals_matrix_bits.html">Backtracking, greedy, intervals, matrix, bit manipulation, math</a></li>
+</ol>
+<hr>
+<h2 id="the-45-minute-coding-round-step-by-step">The 45 minute coding round, step by step</h2>
+<ol>
+<li><strong>Clarify (3 min).</strong> Input size? Negative numbers? Duplicates? Sorted? Empty input? Return what, if there's no answer? Can I modify the input?</li>
+<li><strong>Examples (2 min).</strong> Walk one normal and one edge case by hand.</li>
+<li><strong>Brute force out loud (2 min).</strong> State its complexity. That shows you can always get <em>an</em> answer.</li>
+<li><strong>Optimize (5 min).</strong> Name the pattern. "This is a sliding window because we want the longest contiguous subarray with a property that is monotonic as the window grows."</li>
+<li><strong>Code (15 min).</strong> Clean names, helper functions, no clever one-liners.</li>
+<li><strong>Test (5 min).</strong> Trace your example through the code. Then edge cases: empty, one element, all same, max size.</li>
+<li><strong>Complexity (1 min).</strong> Time and space, with the reason.</li>
+<li><strong>Follow-ups.</strong> Scale, streaming, concurrency, memory.</li>
+</ol>
+<hr>
+<h2 id="pattern-recognition-table">Pattern recognition table</h2>
+<table>
+<thead>
+<tr>
+<th>If the problem says...</th>
+<th>Think</th>
+<th>File</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"subarray / substring", "contiguous", "longest/shortest with condition"</td>
+<td>Sliding window</td>
+<td>1</td>
+</tr>
+<tr>
+<td>"sum of subarray equals k", "range sum", "count subarrays"</td>
+<td>Prefix sum + hashmap</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Sorted array, "pair with sum", "remove duplicates in place"</td>
+<td>Two pointers</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Sorted, or "minimum X such that feasible(X)"</td>
+<td>Binary search (on index or on answer)</td>
+<td>1</td>
+</tr>
+<tr>
+<td>"Anagram", "frequency", "seen before", "group by"</td>
+<td>Hashmap / counter</td>
+<td>1</td>
+</tr>
+<tr>
+<td>"next greater/smaller", "span", "histogram"</td>
+<td>Monotonic stack</td>
+<td>2</td>
+</tr>
+<tr>
+<td>"Matching brackets", "undo", "evaluate expression"</td>
+<td>Stack</td>
+<td>2</td>
+</tr>
+<tr>
+<td>"k-th largest", "top k", "merge k sorted", "median of stream"</td>
+<td>Heap</td>
+<td>2</td>
+</tr>
+<tr>
+<td>"Sliding window max/min"</td>
+<td>Monotonic deque</td>
+<td>2</td>
+</tr>
+<tr>
+<td>"Cycle in list", "middle", "k-th from end"</td>
+<td>Fast/slow pointers</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Tree traversal, "path", "depth", "LCA"</td>
+<td>DFS recursion (return info up)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>"Level by level", "right side view"</td>
+<td>BFS on tree</td>
+<td>3</td>
+</tr>
+<tr>
+<td>"Prefix", "autocomplete", "word search many words"</td>
+<td>Trie</td>
+<td>3</td>
+</tr>
+<tr>
+<td>"Shortest path, unweighted", "min steps"</td>
+<td>BFS</td>
+<td>4</td>
+</tr>
+<tr>
+<td>"Weighted shortest path, non-negative"</td>
+<td>Dijkstra</td>
+<td>4</td>
+</tr>
+<tr>
+<td>"Dependencies", "ordering", "course schedule"</td>
+<td>Topological sort</td>
+<td>4</td>
+</tr>
+<tr>
+<td>"Connected components", "union", "redundant edge", "accounts merge"</td>
+<td>DSU / union-find</td>
+<td>4</td>
+</tr>
+<tr>
+<td>"Number of ways", "min/max cost", "can you reach", overlapping subproblems</td>
+<td>DP</td>
+<td>5</td>
+</tr>
+<tr>
+<td>"All combinations/permutations/subsets", "place N queens"</td>
+<td>Backtracking</td>
+<td>6</td>
+</tr>
+<tr>
+<td>"Intervals", "meeting rooms", "merge"</td>
+<td>Sort by start + sweep / heap</td>
+<td>6</td>
+</tr>
+<tr>
+<td>"Locally best choice works", "schedule to maximize"</td>
+<td>Greedy (prove with exchange argument)</td>
+<td>6</td>
+</tr>
+<tr>
+<td>"Grid", "islands", "rotate"</td>
+<td>Matrix traversal / BFS/DFS on grid</td>
+<td>6, 4</td>
+</tr>
+<tr>
+<td>"Single number", "XOR", "power of two", "subsets as masks"</td>
+<td>Bit manipulation</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="complexity-cheat-sheet">Complexity cheat sheet</h2>
+<table>
+<thead>
+<tr>
+<th>n</th>
+<th>Allowed complexity (~1 second)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>≤ 10</td>
+<td>O(n!)</td>
+</tr>
+<tr>
+<td>≤ 20</td>
+<td>O(2^n)</td>
+</tr>
+<tr>
+<td>≤ 500</td>
+<td>O(n^3)</td>
+</tr>
+<tr>
+<td>≤ 5,000</td>
+<td>O(n^2)</td>
+</tr>
+<tr>
+<td>≤ 10^6</td>
+<td>O(n log n)</td>
+</tr>
+<tr>
+<td>≤ 10^8</td>
+<td>O(n)</td>
+</tr>
+<tr>
+<td>larger</td>
+<td>O(log n) or O(1)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Structure</th>
+<th>Access</th>
+<th>Search</th>
+<th>Insert</th>
+<th>Delete</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Array / list</td>
+<td>O(1)</td>
+<td>O(n)</td>
+<td>O(n) (O(1) amortized append)</td>
+<td>O(n)</td>
+</tr>
+<tr>
+<td>Hashmap / set</td>
+<td>n/a</td>
+<td>O(1) avg</td>
+<td>O(1) avg</td>
+<td>O(1) avg</td>
+</tr>
+<tr>
+<td>Heap</td>
+<td>O(1) top</td>
+<td>O(n)</td>
+<td>O(log n)</td>
+<td>O(log n) pop</td>
+</tr>
+<tr>
+<td>Balanced BST</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>Linked list</td>
+<td>O(n)</td>
+<td>O(n)</td>
+<td>O(1) at a node</td>
+<td>O(1) at a node</td>
+</tr>
+<tr>
+<td>Trie</td>
+<td>n/a</td>
+<td>O(L)</td>
+<td>O(L)</td>
+<td>O(L)</td>
+</tr>
+<tr>
+<td>DSU</td>
+<td>n/a</td>
+<td>~O(α(n))</td>
+<td>~O(α(n)) union</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<p>Sorting: O(n log n) (Python's Timsort is stable). Heap building: O(n). BFS/DFS: O(V + E). Dijkstra: O((V + E) log V).</p>
+<hr>
+<h2 id="python-tools-you-should-use-without-thinking">Python tools you should use without thinking</h2>
+<pre><code class="language-python">from collections import Counter, defaultdict, deque, OrderedDict
+import heapq          # min-heap; push -x for max-heap
+import bisect         # bisect_left / bisect_right on sorted lists
+from functools import lru_cache, cache
+from itertools import accumulate, combinations, permutations, product
+import math           # math.inf, math.gcd, math.isqrt
+</code></pre>
+<ul>
+<li><code>heapq.heappush(h, (priority, tiebreak, item))</code>: add a tiebreak counter if items aren't comparable.</li>
+<li><code>deque.popleft()</code> is O(1); <code>list.pop(0)</code> is O(n).</li>
+<li>Recursion limit: use <code>sys.setrecursionlimit(10**6)</code> or convert to an iterative loop for deep DFS.</li>
+<li><code>@cache</code> on a nested function is the fastest way to write top-down DP.</li>
+</ul>
+<hr>
+<h2 id="top-100-list-do-in-this-order-grouped">Top 100 list (do in this order, grouped)</h2>
+<p><strong>Arrays and hashing:</strong> Two Sum, Group Anagrams, Top K Frequent, Product of Array Except Self, Longest Consecutive Sequence, Valid Sudoku, Encode/Decode Strings, Subarray Sum Equals K.</p>
+<p><strong>Two pointers:</strong> Valid Palindrome, 3Sum, Container With Most Water, Trapping Rain Water, Sort Colors.</p>
+<p><strong>Sliding window:</strong> Best Time to Buy/Sell Stock, Longest Substring Without Repeating, Longest Repeating Character Replacement, Permutation in String, Minimum Window Substring, Sliding Window Maximum.</p>
+<p><strong>Binary search:</strong> Binary Search, Search in Rotated Sorted Array, Find Min in Rotated, Koko Eating Bananas, Time Based Key-Value Store, Median of Two Sorted Arrays, Capacity to Ship Packages.</p>
+<p><strong>Stack:</strong> Valid Parentheses, Min Stack, Evaluate RPN, Daily Temperatures, Car Fleet, Largest Rectangle in Histogram, Decode String, Asteroid Collision.</p>
+<p><strong>Linked list:</strong> Reverse List, Merge Two Sorted, Linked List Cycle, Reorder List, Remove Nth From End, Copy List with Random Pointer, Add Two Numbers, LRU Cache, Merge K Sorted, Reverse Nodes in K-Group.</p>
+<p><strong>Trees:</strong> Invert, Max Depth, Diameter, Balanced, Same Tree, Subtree, LCA of BST, Level Order, Right Side View, Good Nodes, Validate BST, Kth Smallest in BST, Build from Preorder+Inorder, Max Path Sum, Serialize/Deserialize.</p>
+<p><strong>Trie:</strong> Implement Trie, Add and Search Words, Word Search II.</p>
+<p><strong>Heap:</strong> Kth Largest in Stream, Last Stone Weight, K Closest Points, Task Scheduler, Design Twitter, Find Median from Data Stream.</p>
+<p><strong>Graphs:</strong> Number of Islands, Clone Graph, Max Area of Island, Pacific Atlantic, Surrounded Regions, Rotting Oranges, Course Schedule I/II, Redundant Connection, Number of Connected Components, Graph Valid Tree, Word Ladder, Network Delay Time, Cheapest Flights Within K Stops, Min Cost to Connect Points, Alien Dictionary, Accounts Merge.</p>
+<p><strong>DP:</strong> Climbing Stairs, House Robber I/II, Longest Palindromic Substring, Palindromic Substrings, Decode Ways, Coin Change, Max Product Subarray, Word Break, LIS, Partition Equal Subset Sum, Unique Paths, LCS, Best Time with Cooldown, Coin Change II, Target Sum, Interleaving String, Edit Distance, Burst Balloons, Regular Expression Matching.</p>
+<p><strong>Backtracking:</strong> Subsets, Combination Sum, Permutations, Subsets II, Word Search, Palindrome Partitioning, Letter Combinations, N-Queens.</p>
+<p><strong>Intervals and greedy:</strong> Merge Intervals, Insert Interval, Non-overlapping Intervals, Meeting Rooms II, Jump Game I/II, Gas Station, Hand of Straights, Partition Labels.</p>
+<p><strong>Bits:</strong> Single Number, Number of 1 Bits, Counting Bits, Reverse Bits, Missing Number, Sum of Two Integers.</p>
+<p><strong>OCI-flavored (seen in cloud interviews):</strong> LRU/LFU Cache, Design Hit Counter, Rate Limiter, Time Based Key-Value Store, Merge K Sorted (log merge), Top K Frequent (logs), Meeting Rooms II (resource allocation), Course Schedule (dependency resolution), Word Ladder, Network Delay Time, Snapshot Array, File System design, Logger Rate Limiter.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

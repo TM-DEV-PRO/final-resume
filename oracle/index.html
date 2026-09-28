@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>index — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/index.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#oracle-oci-senior-software-engineer-interview-hub">Oracle OCI Senior Software Engineer: interview hub</a>
+<a class="lvl2" href="#what-the-loop-looks-like">What the loop looks like</a>
+<a class="lvl2" href="#files">Files</a>
+<a class="lvl2" href="#14-day-plan-compress-to-7-by-halving-dsa-sets">14 day plan (compress to 7 by halving DSA sets)</a>
+<a class="lvl2" href="#the-60-second-intro-oracle-version">The 60 second intro (Oracle version)</a>
+<a class="lvl2" href="#jd-to-topic-map-one-screen">JD to topic map (one screen)</a>
+<a class="lvl2" href="#questions-to-ask-them-pick-3">Questions to ask them (pick 3)</a>
+<a class="lvl2" href="#day-before-checklist">Day-before checklist</a></nav>
+<main><h1 id="oracle-oci-senior-software-engineer-interview-hub">Oracle OCI Senior Software Engineer: interview hub</h1>
+<p>Resume used everywhere here: <strong>PyGo track</strong> (<code>final_pygo_ai</code>, <code>Tarun_Mittal_SSE_5yr.pdf</code>). Python + Go. Uber roles are <strong>via EPAM</strong>.</p>
+<div class="callout warn">
+<p><b>Confidentiality (Oracle's own rule).</b> "We only know what you tell us, so don't tell us anything that is confidential." No client names beyond what is on the PDF, no cluster hosts, passwords, internal repo paths, or customer data. Numbers on the PDF are fine. Say "a retail client" if you are unsure.</p>
+</div>
+<hr>
+<h2 id="what-the-loop-looks-like">What the loop looks like</h2>
+<p>OCI loops are usually 4 to 5 rounds, 45 to 60 minutes each. Each interviewer owns a <strong>focus area</strong> and also scores <strong>core values</strong> (the PDF says every loop is "rooted in behavioral-based questions"). Expect behavioral questions in <em>every</em> round, not only the hiring manager round.</p>
+<table>
+<thead>
+<tr>
+<th>Round</th>
+<th>Typical content</th>
+<th>Study file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coding 1 / 2</td>
+<td>1 to 2 LeetCode medium (sometimes hard). Trees, graphs, heaps, DP, intervals, design-a-class. Talk out loud.</td>
+<td><a href="03_dsa_index.html">DSA hub</a></td>
+</tr>
+<tr>
+<td>System design</td>
+<td>Distributed service at OCI scale: object store, metadata service, rate limiter, job scheduler, metrics pipeline, control plane</td>
+<td><a href="04_system_design_fundamentals.html">SD fundamentals</a>, <a href="04_system_design_questions.html">SD questions</a></td>
+</tr>
+<tr>
+<td>LLD / OOD</td>
+<td>Class design with extensibility, sometimes with concurrency (LRU, rate limiter, parking lot, logger, KV store with TTL)</td>
+<td><a href="05_lld_foundations.html">LLD foundations</a>, <a href="05_lld_problems.html">LLD problems</a></td>
+</tr>
+<tr>
+<td>Concurrency (often mixed into coding or LLD)</td>
+<td>Thread-safe cache, bounded blocking queue, producer/consumer, worker pool, deadlock</td>
+<td><a href="06_concurrency.html">Concurrency</a></td>
+</tr>
+<tr>
+<td>Hiring manager / bar raiser</td>
+<td>Core values, projects deep dive, ops/on-call, incident, RCA, conflict</td>
+<td><a href="01_core_values_star.html">Core values STAR</a>, <a href="07_projects_deep_dive.html">Projects</a></td>
+</tr>
+<tr>
+<td>Any round</td>
+<td>Reliability, operability, security, change management (the JD is heavy on this)</td>
+<td><a href="02_jd_technical_map.html">JD technical map</a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="files">Files</h2>
+<ol>
+<li><a href="01_core_values_star.html">01 Core values: STAR answers for all 11 OCI values</a></li>
+<li><a href="02_jd_technical_map.html">02 JD technical map: every JD responsibility, concept answer, and my evidence</a></li>
+<li><a href="03_dsa_index.html">03 DSA hub: pattern cheat sheet, study plan, top-question list</a><ul>
+<li><a href="03_dsa_1_arrays_hashing_search.html">03.1 Arrays, strings, hashing, two pointers, sliding window, prefix sums, binary search</a></li>
+<li><a href="03_dsa_2_linkedlist_stack_queue_heap.html">03.2 Linked list, stack, monotonic stack, queue, deque, heap</a></li>
+<li><a href="03_dsa_3_trees_bst_trie.html">03.3 Trees, BST, trie</a></li>
+<li><a href="03_dsa_4_graphs_dsu.html">03.4 Graphs, BFS/DFS, topological sort, shortest paths, MST, DSU</a></li>
+<li><a href="03_dsa_5_dynamic_programming.html">03.5 Dynamic programming, all families</a></li>
+<li><a href="03_dsa_6_backtracking_greedy_intervals_matrix_bits.html">03.6 Backtracking, greedy, intervals, matrix, bit manipulation, math</a></li>
+</ul>
+</li>
+<li><a href="04_system_design_fundamentals.html">04 System design fundamentals (basics to distributed systems)</a></li>
+<li><a href="04_system_design_questions.html">04 System design: interview framework and top questions with answers</a></li>
+<li><a href="05_lld_foundations.html">05 LLD foundations: OOP, SOLID, patterns, zero to hero</a></li>
+<li><a href="05_lld_problems.html">05 LLD problems with full designs and code</a></li>
+<li><a href="06_concurrency.html">06 Multithreading and concurrency in depth (Python + Go)</a></li>
+<li><a href="07_projects_deep_dive.html">07 My projects deep dive, OCI framing</a></li>
+</ol>
+<hr>
+<h2 id="14-day-plan-compress-to-7-by-halving-dsa-sets">14 day plan (compress to 7 by halving DSA sets)</h2>
+<table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Morning (2h)</th>
+<th>Evening (2h)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Read 01 fully, write your own 2 line hook per value</td>
+<td>DSA 03.1 arrays/hashing/window</td>
+</tr>
+<tr>
+<td>2</td>
+<td>07 projects: say each pitch out loud, 2 min each</td>
+<td>DSA 03.1 binary search + prefix</td>
+</tr>
+<tr>
+<td>3</td>
+<td>04 fundamentals sections 1 to 6</td>
+<td>DSA 03.2 stack/heap</td>
+</tr>
+<tr>
+<td>4</td>
+<td>04 fundamentals sections 7 to 12</td>
+<td>DSA 03.3 trees/trie</td>
+</tr>
+<tr>
+<td>5</td>
+<td>04 questions: rate limiter, KV store, object storage</td>
+<td>DSA 03.4 graphs</td>
+</tr>
+<tr>
+<td>6</td>
+<td>02 JD map (reliability, ops, security)</td>
+<td>DSA 03.4 DSU + topo</td>
+</tr>
+<tr>
+<td>7</td>
+<td>05 LLD foundations</td>
+<td>DSA 03.5 DP 1D/2D</td>
+</tr>
+<tr>
+<td>8</td>
+<td>05 LLD problems: LRU, parking lot, rate limiter</td>
+<td>DSA 03.5 DP knapsack/interval</td>
+</tr>
+<tr>
+<td>9</td>
+<td>06 concurrency: primitives + Go</td>
+<td>DSA 03.6 backtracking/intervals</td>
+</tr>
+<tr>
+<td>10</td>
+<td>06 classic problems, code bounded queue from memory</td>
+<td>Mock coding 2 problems timed</td>
+</tr>
+<tr>
+<td>11</td>
+<td>04 questions: scheduler, metrics, notification</td>
+<td>Mock system design out loud</td>
+</tr>
+<tr>
+<td>12</td>
+<td>01 again: tell 11 stories to a timer, 2 min each</td>
+<td>Mock LLD 45 min</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Weak areas</td>
+<td>Mixed mock</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Light review, questions to ask, sleep</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="the-60-second-intro-oracle-version">The 60 second intro (Oracle version)</h2>
+<blockquote>
+<p>I'm a senior backend engineer with about five years in Python and Go, focused on high-throughput services and data platforms. Most recently at Impact Analytics I built the Go/Gin platform for AssortSmart that handles 10k peak RPS as a self-protecting edge with nested timeouts and Datadog tracing, moved planner analytics onto ClickHouse rollups (189 seconds to 12 seconds on a 250M-row pivot), and built a batch AI decision engine with timeouts, circuit breakers, and durable checkpoints so 88k-item runs survive provider failures. Before that I was at Uber via EPAM, where I owned a SOX-grade FastAPI and MySQL backend for Finance risk scoping that cut reconciliation from 14 days to 3, and at Masters India, where I migrated a PHP monolith to FastAPI with canaries, idempotent Kafka pipelines, and a dead-letter queue, taking p95 from 1.2s to 300ms. What draws me to OCI is that the job is literally what I've been doing at smaller scale: resiliency, operability, and correctness in distributed systems, where the basics matter.</p>
+</blockquote>
+<hr>
+<h2 id="jd-to-topic-map-one-screen">JD to topic map (one screen)</h2>
+<table>
+<thead>
+<tr>
+<th>JD phrase</th>
+<th>Where it's covered</th>
+<th>My strongest real evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Horizontal and vertical scaling, distributed state</td>
+<td>04 fundamentals §2, §5; 02 §1</td>
+<td>Go/Gin 10k peak RPS stateless edge; Redis-fronted auth waterfall; Kafka + PG sharded by tax quarter</td>
+</tr>
+<tr>
+<td>Large-scale data processing, data plane</td>
+<td>02 §1; 07 AssortSmart core</td>
+<td>ClickHouse rollups, 15.5x; Go pump ~344k rows/s; 170 GB OOM sliced by week</td>
+</tr>
+<tr>
+<td>Performance and load testing</td>
+<td>02 §2</td>
+<td>250M row-identical harness PG vs CH; Masters 700 to 4,000 rpm; gold-200 bench</td>
+</tr>
+<tr>
+<td>Redundancy, replication, automatic failover</td>
+<td>04 fundamentals §6; 02 §3</td>
+<td>ReplacingMergeTree idempotent writes; PG/CH replicas; honest bridge on failover</td>
+</tr>
+<tr>
+<td>Recovery-oriented computing</td>
+<td>02 §3</td>
+<td>Checkpoints skip det recompute; partition ledger + DROP PARTITION recopy; DLQ replay</td>
+</tr>
+<tr>
+<td>Retries, circuit breakers, timeouts</td>
+<td>04 fundamentals §8; 02 §3</td>
+<td>Registry breakers and hard timeouts; nested context timeouts in Go; bounded retries with jitter against IRP</td>
+</tr>
+<tr>
+<td>Tests, alarms, dashboards, telemetry</td>
+<td>02 §4</td>
+<td>Datadog tracing; ELK + New Relic triage down 70%; per-run JSON telemetry (tokens, USD, fallbacks)</td>
+</tr>
+<tr>
+<td>Runbooks, incident response, RCA</td>
+<td>02 §5</td>
+<td>64.1M half-loaded partition; Masters near-miss review; timeout canary rollback</td>
+</tr>
+<tr>
+<td>Fault injection, brown-out</td>
+<td>02 §6</td>
+<td>Timeout fallback to det baseline (graceful degradation); how I'd inject faults</td>
+</tr>
+<tr>
+<td>Replication and synchronization</td>
+<td>04 fundamentals §6; 02 §7</td>
+<td>Store totals re-weighted to match SKU sums; row-identical parity checks</td>
+</tr>
+<tr>
+<td>No maintenance windows</td>
+<td>02 §8</td>
+<td>Strangler + canary at Masters; stacked Bazel PRs; config-driven KPIs without deploys</td>
+</tr>
+<tr>
+<td>Automation and troubleshooting tooling, IaC</td>
+<td>02 §9</td>
+<td>Go copier with flock + ledger; generated weekly settings; honest bridge on Terraform</td>
+</tr>
+<tr>
+<td>Encryption, access control, multi-tenant</td>
+<td>02 §10</td>
+<td>JWT/OIDC waterfall, constant-time API keys, Postgres roles, frozen handshake scope, SQL allowlists</td>
+</tr>
+<tr>
+<td>Compliance and documentation</td>
+<td>02 §11</td>
+<td>SOX gates at Uber FRM (FSM 50% delta-variance); GST compliance at Masters</td>
+</tr>
+<tr>
+<td>Change management: patch, update, roll back</td>
+<td>02 §12</td>
+<td>Canary ramps, config rollback, 98% deploy success, frozen config_hash per output row</td>
+</tr>
+<tr>
+<td>Planning, collaboration, problem solving, learning, improvement</td>
+<td>01 bottom section</td>
+<td>Led 3 at FRM; mentored 2 at Masters; ClickHouse RFC</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="questions-to-ask-them-pick-3">Questions to ask them (pick 3)</h2>
+<ol>
+<li>How is the team split between control plane and data plane work, and which does this role touch?</li>
+<li>What does on-call look like: rotation size, ticket volume, what counts as a Sev 2?</li>
+<li>How do you do deployments here: one-box, then fault domain by fault domain, then region by region? What is the bake time?</li>
+<li>What's the most recent COE / RCA that changed how the team builds things?</li>
+<li>What would make someone in this role clearly successful at six months?</li>
+<li>How much of the team's roadmap is new features versus operational excellence work?</li>
+</ol>
+<hr>
+<h2 id="day-before-checklist">Day-before checklist</h2>
+<ul>
+<li>Laptop charged, camera, good light (the PDF asks for this).</li>
+<li>Know your 11 value stories by name (one line each, see top of 01).</li>
+<li>Rehearse the 3 numbers people fuse: <strong>15.5x is query time</strong>, <strong>170 GB OOM is load time</strong>, <strong>344k is rows/s, not RPS</strong>.</li>
+<li>Rehearse the honesty lines: 80% is a CI gate, 73% is gold-200, Uber is via EPAM, no K8s cluster ops, no Kafka on AssortSmart.</li>
+<li>If a question is unclear, ask (the PDF explicitly asks you to).</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>05_lld_foundations — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/05_lld_foundations.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#05-low-level-design-foundations-zero-to-hero">05. Low-level design foundations: zero to hero</a>
+<a class="lvl2" href="#level-0-what-an-lld-round-is">Level 0. What an LLD round is</a>
+<a class="lvl2" href="#level-1-oop-fundamentals">Level 1. OOP fundamentals</a>
+<a class="lvl2" href="#level-2-solid-with-a-violation-and-a-fix-for-each">Level 2. SOLID (with a violation and a fix for each)</a>
+<a class="lvl2" href="#level-3-relationships-and-uml-just-enough">Level 3. Relationships and UML (just enough)</a>
+<a class="lvl2" href="#level-4-design-patterns-the-ones-that-actually-come-up">Level 4. Design patterns (the ones that actually come up)</a>
+<a class="lvl2" href="#level-5-designing-for-change-and-failure">Level 5. Designing for change and failure</a>
+<a class="lvl2" href="#level-6-testing-an-lld">Level 6. Testing an LLD</a>
+<a class="lvl2" href="#level-7-clean-architecture-in-services-senior-level-talk">Level 7. Clean architecture in services (senior-level talk)</a></nav>
+<main><h1 id="05-low-level-design-foundations-zero-to-hero">05. Low-level design foundations: zero to hero</h1>
+<p>Problems with full designs: <a href="05_lld_problems.html">05 LLD problems</a>. Concurrency primitives: <a href="06_concurrency.html">06 concurrency</a>.</p>
+<hr>
+<h2 id="level-0-what-an-lld-round-is">Level 0. What an LLD round is</h2>
+<p>You get a vague prompt ("design a parking lot", "design an LRU cache", "design a rate limiter library") and 45 minutes. They grade:
+1. <strong>Requirements:</strong> you clarify and scope.
+2. <strong>Modeling:</strong> the right classes and responsibilities, and clean relationships.
+3. <strong>Extensibility:</strong> adding a new vehicle type, pricing rule, or eviction policy doesn't need edits everywhere (open/closed).
+4. <strong>Code quality:</strong> working, readable code for the core parts.
+5. <strong>Concurrency</strong> (common at OCI): what if two threads call this at once?
+6. <strong>Testing:</strong> how would you test it?</p>
+<h3 id="step-by-step-approach">Step-by-step approach</h3>
+<ol>
+<li><strong>Clarify (5 min):</strong> actors, core use cases, what's out of scope. Write 4–6 requirements down.</li>
+<li><strong>Identify entities (5 min):</strong> nouns become classes, verbs become methods. Find what <strong>varies</strong> (it becomes an interface/strategy).</li>
+<li><strong>Relationships (5 min):</strong> has-a (composition), is-a (inheritance, used sparingly), uses (dependency).</li>
+<li><strong>Class diagram / interfaces (5 min):</strong> method signatures before bodies.</li>
+<li><strong>Code the core (20 min):</strong> the main flow end to end, then the most interesting class in detail.</li>
+<li><strong>Concurrency and edge cases (5 min).</strong></li>
+<li><strong>Extensions (rest):</strong> "to add X, I'd add a new Strategy class; nothing else changes."</li>
+</ol>
+<hr>
+<h2 id="level-1-oop-fundamentals">Level 1. OOP fundamentals</h2>
+<table>
+<thead>
+<tr>
+<th>Pillar</th>
+<th>Meaning</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Encapsulation</strong></td>
+<td>Hide state behind methods; enforce invariants</td>
+<td><code>Account.withdraw()</code> checks the balance; the balance isn't public</td>
+</tr>
+<tr>
+<td><strong>Abstraction</strong></td>
+<td>Expose what, hide how</td>
+<td><code>Storage.put(key, value)</code> without saying whether it's disk or S3</td>
+</tr>
+<tr>
+<td><strong>Inheritance</strong></td>
+<td>Reuse via is-a</td>
+<td><code>Car(Vehicle)</code>. Use it sparingly</td>
+</tr>
+<tr>
+<td><strong>Polymorphism</strong></td>
+<td>Same call, different behavior</td>
+<td><code>pricing.calculate(ticket)</code> for hourly vs flat</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Composition over inheritance:</strong> "has-a" beats "is-a" for flexibility. A <code>Car</code> <em>has</em> an <code>Engine</code>; you swap engines without new subclasses. Inheritance hierarchies get rigid (the "fragile base class" problem).</p>
+<p><strong>Go has no inheritance.</strong> It uses <strong>interfaces</strong> (implicit: a type implements an interface by having the methods) and <strong>struct embedding</strong> (composition). That forces good design. Say so if you code LLD in Go.</p>
+<pre><code class="language-go">type Notifier interface {
+    Notify(ctx context.Context, userID string, msg string) error
+}
+
+type EmailNotifier struct{ client *smtp.Client }
+func (e *EmailNotifier) Notify(ctx context.Context, userID, msg string) error { /* ... */ return nil }
+
+type SMSNotifier struct{ gateway string }
+func (s *SMSNotifier) Notify(ctx context.Context, userID, msg string) error { /* ... */ return nil }
+</code></pre>
+<p>In Python, use <code>abc.ABC</code> + <code>@abstractmethod</code>, or <code>typing.Protocol</code> for structural typing (like Go).</p>
+<pre><code class="language-python">from abc import ABC, abstractmethod
+
+class Notifier(ABC):
+    @abstractmethod
+    def notify(self, user_id: str, msg: str) -&gt; None: ...
+
+class EmailNotifier(Notifier):
+    def notify(self, user_id, msg):
+        ...
+</code></pre>
+<hr>
+<h2 id="level-2-solid-with-a-violation-and-a-fix-for-each">Level 2. SOLID (with a violation and a fix for each)</h2>
+<h3 id="s-single-responsibility">S: Single Responsibility</h3>
+<p>A class has one reason to change.
+- ✗ <code>Invoice</code> computes totals, saves to the DB, and sends email.
+- ✓ <code>Invoice</code> (data + totals), <code>InvoiceRepository</code> (persistence), <code>InvoiceNotifier</code> (email).
+- My example: at Masters I set <strong>router / service / repository</strong> layering for every new FastAPI service. Routers handle HTTP, services hold business rules, and repositories handle SQL.</p>
+<h3 id="o-openclosed">O: Open/Closed</h3>
+<p>Open for extension, closed for modification.
+- ✗ <code>if vehicle_type == "car": ... elif "truck": ...</code> spread across the code.
+- ✓ A <code>PricingStrategy</code> interface; add <code>EVPricing</code> without touching the existing code.
+- My example: the <strong>KPI configurator</strong>. New KPIs are data (formulas), not code changes.</p>
+<h3 id="l-liskov-substitution">L: Liskov Substitution</h3>
+<p>Subtypes must be usable wherever the base is expected, without surprises.
+- ✗ <code>Square(Rectangle)</code> where <code>set_width</code> also changes the height, which breaks callers.
+- ✗ A <code>ReadOnlyRepository</code> subclass that throws on <code>save()</code>.
+- ✓ Separate interfaces: <code>Reader</code> and <code>Writer</code>.</p>
+<h3 id="i-interface-segregation">I: Interface Segregation</h3>
+<p>Many small interfaces beat one fat one.
+- ✗ <code>Worker</code> with <code>work()</code>, <code>eat()</code>, <code>sleep()</code> forced on robots.
+- ✓ Go's <code>io.Reader</code>, <code>io.Writer</code>, <code>io.Closer</code>, composed as <code>io.ReadWriteCloser</code>.</p>
+<h3 id="d-dependency-inversion">D: Dependency Inversion</h3>
+<p>Depend on abstractions; inject concrete implementations.
+- ✗ <code>OrderService</code> creates <code>MySQLRepository()</code> inside.
+- ✓ <code>OrderService(repo: OrderRepository)</code>: pass in MySQL in production and a fake in tests.
+- My example: <strong>Google Wire</strong> compile-time DI on the Go platform. Constructors declare dependencies; Wire generates the wiring, so a missing dependency fails the <strong>build</strong>, not a request.</p>
+<pre><code class="language-go">// Dependency inversion with constructor injection (what Wire wires)
+type OrderRepo interface {
+    Save(ctx context.Context, o Order) error
+}
+
+type OrderService struct {
+    repo  OrderRepo
+    clock func() time.Time
+}
+
+func NewOrderService(repo OrderRepo) *OrderService {
+    return &amp;OrderService{repo: repo, clock: time.Now}
+}
+</code></pre>
+<h3 id="other-principles-to-name-drop-correctly">Other principles to name-drop correctly</h3>
+<ul>
+<li><strong>DRY:</strong> one source of truth for each piece of knowledge (not "never repeat two lines").</li>
+<li><strong>KISS / YAGNI:</strong> don't build extension points nobody asked for. In an interview, <em>mention</em> the extension point and build it only if it's cheap.</li>
+<li><strong>Law of Demeter:</strong> talk to friends, not strangers (<code>a.b().c().d()</code> is a smell).</li>
+<li><strong>Tell, don't ask:</strong> <code>account.withdraw(x)</code> instead of <code>if account.balance &gt; x: account.balance -= x</code>.</li>
+<li><strong>Fail fast:</strong> validate at the boundary (Pydantic at the FastAPI edge, in my case).</li>
+<li><strong>Immutability:</strong> immutable value objects are thread-safe by default.</li>
+</ul>
+<hr>
+<h2 id="level-3-relationships-and-uml-just-enough">Level 3. Relationships and UML (just enough)</h2>
+<table>
+<thead>
+<tr>
+<th>Relationship</th>
+<th>Meaning</th>
+<th>UML</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Association</td>
+<td>Uses / knows</td>
+<td>line</td>
+<td>holds a reference</td>
+</tr>
+<tr>
+<td>Aggregation</td>
+<td>Has-a, parts can live alone</td>
+<td>hollow diamond</td>
+<td><code>Team</code> has <code>Player</code>s</td>
+</tr>
+<tr>
+<td>Composition</td>
+<td>Has-a, parts die with the whole</td>
+<td>filled diamond</td>
+<td><code>Order</code> has <code>OrderLine</code>s</td>
+</tr>
+<tr>
+<td>Inheritance</td>
+<td>Is-a</td>
+<td>hollow triangle</td>
+<td><code>class Car(Vehicle)</code></td>
+</tr>
+<tr>
+<td>Realization</td>
+<td>Implements</td>
+<td>dashed triangle</td>
+<td>implements an interface</td>
+</tr>
+<tr>
+<td>Dependency</td>
+<td>Uses temporarily</td>
+<td>dashed arrow</td>
+<td>parameter</td>
+</tr>
+</tbody>
+</table>
+<p>In interviews, a quick text diagram is enough:</p>
+<pre><code>ParkingLot 1──* Floor 1──* Spot
+Spot &lt;|── CompactSpot, LargeSpot, EVSpot
+Ticket ──&gt; Spot, Vehicle
+PricingStrategy &lt;|── HourlyPricing, FlatPricing
+</code></pre>
+<hr>
+<h2 id="level-4-design-patterns-the-ones-that-actually-come-up">Level 4. Design patterns (the ones that actually come up)</h2>
+<h3 id="creational">Creational</h3>
+<p><strong>Singleton:</strong> one instance (config, connection pool). In Python a module-level instance is enough. It's thread-safe via import locking. Singletons hide dependencies and hurt tests, so prefer injecting.</p>
+<pre><code class="language-go">var (
+    once     sync.Once
+    instance *Config
+)
+
+func GetConfig() *Config {
+    once.Do(func() { instance = loadConfig() })
+    return instance
+}
+</code></pre>
+<p><strong>Factory method / simple factory:</strong> create objects without the caller knowing the concrete class.</p>
+<pre><code class="language-python">class VehicleFactory:
+    _registry = {&quot;car&quot;: Car, &quot;bike&quot;: Bike, &quot;truck&quot;: Truck}
+
+    @classmethod
+    def create(cls, kind: str, plate: str):
+        try:
+            return cls._registry[kind](plate)
+        except KeyError:
+            raise ValueError(f&quot;unknown vehicle {kind}&quot;)
+</code></pre>
+<p><strong>Abstract factory:</strong> families of related objects (<code>AWSFactory</code> makes <code>AWSStorage</code> + <code>AWSQueue</code>; <code>OCIFactory</code> makes <code>OCIStorage</code> + <code>OCIQueue</code>).</p>
+<p><strong>Builder:</strong> step-by-step construction for objects with many optional parameters. In Go, the <strong>functional options</strong> pattern:</p>
+<pre><code class="language-go">type Server struct {
+    addr    string
+    timeout time.Duration
+    maxConn int
+}
+
+type Option func(*Server)
+
+func WithTimeout(d time.Duration) Option { return func(s *Server) { s.timeout = d } }
+func WithMaxConn(n int) Option          { return func(s *Server) { s.maxConn = n } }
+
+func NewServer(addr string, opts ...Option) *Server {
+    s := &amp;Server{addr: addr, timeout: 10 * time.Second, maxConn: 1000}
+    for _, o := range opts {
+        o(s)
+    }
+    return s
+}
+</code></pre>
+<p><strong>Prototype:</strong> clone an existing configured object.</p>
+<p><strong>Object pool:</strong> reuse expensive objects (DB connections, <code>sync.Pool</code> for buffers in Go).</p>
+<h3 id="structural">Structural</h3>
+<p><strong>Adapter:</strong> make an incompatible interface fit. Example: wrap a third-party SMS SDK behind your <code>Notifier</code> interface.</p>
+<p><strong>Decorator:</strong> add behavior by wrapping, keeping the interface. HTTP middleware is decorators: logging, auth, timeouts, metrics.</p>
+<pre><code class="language-go">type Handler func(ctx context.Context, req Request) (Response, error)
+
+func WithTimeout(d time.Duration, next Handler) Handler {
+    return func(ctx context.Context, req Request) (Response, error) {
+        ctx, cancel := context.WithTimeout(ctx, d)
+        defer cancel()
+        return next(ctx, req)
+    }
+}
+
+func WithLogging(log *slog.Logger, next Handler) Handler {
+    return func(ctx context.Context, req Request) (Response, error) {
+        start := time.Now()
+        resp, err := next(ctx, req)
+        log.Info(&quot;request&quot;, &quot;dur&quot;, time.Since(start), &quot;err&quot;, err)
+        return resp, err
+    }
+}
+</code></pre>
+<p>Python decorator for retries:</p>
+<pre><code class="language-python">import functools, random, time
+
+def retry(attempts=3, base=0.1, cap=2.0, retry_on=(TimeoutError,)):
+    def deco(fn):
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            for i in range(attempts):
+                try:
+                    return fn(*args, **kwargs)
+                except retry_on:
+                    if i == attempts - 1:
+                        raise
+                    time.sleep(random.uniform(0, min(cap, base * 2 ** i)))
+        return wrapper
+    return deco
+</code></pre>
+<p><strong>Proxy:</strong> same interface, controls access (caching proxy, auth proxy, lazy loading, remote proxy / RPC stub).</p>
+<p><strong>Facade:</strong> a simple interface over a complex subsystem (<code>CheckoutService.place_order()</code> hides inventory, payment, and shipping).</p>
+<p><strong>Composite:</strong> treat a group like a single item (a file system: <code>Directory</code> and <code>File</code> both implement <code>size()</code>).</p>
+<p><strong>Flyweight:</strong> share immutable state to save memory (glyphs, interned strings).</p>
+<p><strong>Bridge:</strong> separate an abstraction from its implementation so both vary (<code>Notification</code> × <code>Channel</code>).</p>
+<h3 id="behavioral">Behavioral</h3>
+<p><strong>Strategy:</strong> swap algorithms at runtime. The most useful pattern in LLD interviews: pricing, eviction, rate limiting algorithms, load-balancing algorithms, payment methods.</p>
+<pre><code class="language-python">class EvictionPolicy(ABC):
+    @abstractmethod
+    def record_access(self, key): ...
+    @abstractmethod
+    def evict(self): ...
+</code></pre>
+<p><strong>Observer / pub-sub:</strong> subjects notify subscribers of events (order placed → email, analytics, inventory).</p>
+<p><strong>Command:</strong> encapsulate a request as an object (undo/redo, job queues, transaction logs).</p>
+<p><strong>State:</strong> behavior changes with internal state (vending machine, order lifecycle, TCP connection, circuit breaker closed/open/half-open). Replaces big <code>if state == ...</code> blocks.</p>
+<p><strong>Chain of responsibility:</strong> a request passes along handlers until one handles it (middleware, approval chains, log levels).</p>
+<p><strong>Template method:</strong> the base class defines the algorithm skeleton; subclasses fill in steps (<code>DataImporter.run()</code> = read → validate → transform → write).</p>
+<p><strong>Iterator:</strong> traverse without exposing the internals (Python generators).</p>
+<p><strong>Mediator:</strong> central coordination instead of many-to-many links (air traffic control, a chat room).</p>
+<p><strong>Memento:</strong> snapshot and restore state (undo, checkpoints).</p>
+<p><strong>Visitor:</strong> add operations to a class hierarchy without changing it (AST processing; my KPI formula parser could use a visitor to compile the AST to SQL).</p>
+<h3 id="where-ive-used-patterns-use-these-in-answers">Where I've used patterns (use these in answers)</h3>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Where</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Strategy</td>
+<td>LLM model selection behind one interface; det vs LLM scoring</td>
+</tr>
+<tr>
+<td>Decorator / middleware</td>
+<td>Go Gin middleware for auth, timeouts, tracing</td>
+</tr>
+<tr>
+<td>State machine</td>
+<td>FRM review status (Draft → Review → ReOpen → Closed) with FSM gates; circuit breaker</td>
+</tr>
+<tr>
+<td>Repository</td>
+<td>FastAPI services (Masters, Uber FRM)</td>
+</tr>
+<tr>
+<td>Factory + DI</td>
+<td>Wire providers on the Go platform</td>
+</tr>
+<tr>
+<td>Command + Memento</td>
+<td>Checkpoints and resume in the orchestration registry</td>
+</tr>
+<tr>
+<td>Interpreter / Visitor</td>
+<td>KPI formula tokenizer + parser compiling to SQL</td>
+</tr>
+<tr>
+<td>Observer</td>
+<td>Webhooks and status updates at Masters</td>
+</tr>
+<tr>
+<td>Chain of responsibility</td>
+<td>Auth waterfall: Redis cache → Firebase → JWT/OIDC</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="level-5-designing-for-change-and-failure">Level 5. Designing for change and failure</h2>
+<ul>
+<li><strong>Identify what varies</strong> and put it behind an interface.</li>
+<li><strong>Value objects</strong> (Money, Email, TimeRange) with validation in the constructor.</li>
+<li><strong>Error handling:</strong> domain errors vs infrastructure errors; don't swallow; wrap with context (<code>fmt.Errorf("save order %s: %w", id, err)</code> in Go).</li>
+<li><strong>Idempotency</strong> in methods that can be retried (pass a request ID).</li>
+<li><strong>Clock and randomness injection</strong> for testability (<code>clock func() time.Time</code>).</li>
+<li><strong>Thread safety:</strong> say which classes are shared and how they're protected (a lock per object, a lock per key, immutable data, or confinement to one goroutine).</li>
+</ul>
+<hr>
+<h2 id="level-6-testing-an-lld">Level 6. Testing an LLD</h2>
+<ul>
+<li>Unit tests per class with fakes for dependencies (that's why DI matters).</li>
+<li>Table-driven tests in Go.</li>
+<li>Concurrency tests: many goroutines/threads hammering an object, then assert invariants. Run Go with <code>-race</code>.</li>
+<li>Property tests: "the cache never exceeds capacity," "total tokens never exceed the bucket size."</li>
+<li><strong>Test where the code lives</strong> (my lesson from the Uber coverage story: mocks can hide the layer you think you're testing).</li>
+</ul>
+<hr>
+<h2 id="level-7-clean-architecture-in-services-senior-level-talk">Level 7. Clean architecture in services (senior-level talk)</h2>
+<pre><code>handlers (HTTP/gRPC/WebSocket) → services (use cases, business rules) → repositories (DB) / clients (external APIs)
+                                   ↑ depend on interfaces, not concrete stores
+domain models (pure, no framework imports)
+</code></pre>
+<ul>
+<li>Business rules don't import the web framework or the ORM.</li>
+<li>Adapters at the edges (hexagonal / ports and adapters).</li>
+<li>This is how I structured the FastAPI services at Masters and the Uber FRM scoping service, and the Go platform uses the same shape with Wire providers.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

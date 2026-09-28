@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_dsa_1_arrays_hashing_search — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/03_dsa_1_arrays_hashing_search.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#031-arrays-strings-hashing-two-pointers-sliding-window-prefix-sums-binary-search">03.1 Arrays, strings, hashing, two pointers, sliding window, prefix sums, binary search</a>
+<a class="lvl2" href="#a-hashing">A. Hashing</a>
+<a class="lvl2" href="#b-prefix-sums">B. Prefix sums</a>
+<a class="lvl2" href="#c-two-pointers">C. Two pointers</a>
+<a class="lvl2" href="#d-sliding-window">D. Sliding window</a>
+<a class="lvl2" href="#e-binary-search">E. Binary search</a>
+<a class="lvl2" href="#f-string-essentials">F. String essentials</a>
+<a class="lvl2" href="#g-kadane-max-subarray-and-friends">G. Kadane (max subarray) and friends</a>
+<a class="lvl2" href="#common-mistakes">Common mistakes</a></nav>
+<main><h1 id="031-arrays-strings-hashing-two-pointers-sliding-window-prefix-sums-binary-search">03.1 Arrays, strings, hashing, two pointers, sliding window, prefix sums, binary search</h1>
+<p>Each section has the <strong>intuition</strong>, a <strong>template</strong>, and <strong>top problems</strong> with steps, code, and complexity.</p>
+<hr>
+<h2 id="a-hashing">A. Hashing</h2>
+<p><strong>Intuition:</strong> trade memory for time. "Have I seen X?" or "how many times?" goes from O(n) search to O(1).</p>
+<h3 id="a1-two-sum">A1. Two Sum</h3>
+<p><strong>Steps:</strong> walk once. For each <code>x</code>, check whether <code>target - x</code> is already in the map. If not, store <code>x → index</code>.</p>
+<pre><code class="language-python">def two_sum(nums, target):
+    seen = {}
+    for i, x in enumerate(nums):
+        if target - x in seen:
+            return [seen[target - x], i]
+        seen[x] = i
+    return []
+</code></pre>
+<p>Time O(n), space O(n). Follow-up, sorted input: two pointers with O(1) space.</p>
+<h3 id="a2-group-anagrams">A2. Group Anagrams</h3>
+<p><strong>Steps:</strong> the key is the sorted string (O(k log k)) or a 26-count tuple (O(k)).</p>
+<pre><code class="language-python">def group_anagrams(strs):
+    groups = defaultdict(list)
+    for s in strs:
+        count = [0] * 26
+        for c in s:
+            count[ord(c) - 97] += 1
+        groups[tuple(count)].append(s)
+    return list(groups.values())
+</code></pre>
+<p>Time O(n·k), space O(n·k).</p>
+<h3 id="a3-top-k-frequent-elements">A3. Top K Frequent Elements</h3>
+<p><strong>Steps:</strong> count, then <strong>bucket sort</strong> by frequency (frequency ≤ n), then walk buckets from high to low. The heap alternative is O(n log k).</p>
+<pre><code class="language-python">def top_k_frequent(nums, k):
+    count = Counter(nums)
+    buckets = [[] for _ in range(len(nums) + 1)]
+    for x, f in count.items():
+        buckets[f].append(x)
+    out = []
+    for f in range(len(buckets) - 1, 0, -1):
+        for x in buckets[f]:
+            out.append(x)
+            if len(out) == k:
+                return out
+    return out
+</code></pre>
+<p>Time O(n). Follow-up at scale (logs across machines): count per machine, merge counts, then a heap; or approximate with Count-Min Sketch + heap.</p>
+<h3 id="a4-longest-consecutive-sequence">A4. Longest Consecutive Sequence</h3>
+<p><strong>Steps:</strong> put everything in a set. Only start counting from <code>x</code> if <code>x - 1</code> is not in the set (start of a run). Each number is visited at most twice.</p>
+<pre><code class="language-python">def longest_consecutive(nums):
+    s = set(nums)
+    best = 0
+    for x in s:
+        if x - 1 not in s:
+            y = x
+            while y + 1 in s:
+                y += 1
+            best = max(best, y - x + 1)
+    return best
+</code></pre>
+<p>Time O(n), space O(n).</p>
+<h3 id="a5-product-of-array-except-self-no-division">A5. Product of Array Except Self (no division)</h3>
+<p><strong>Steps:</strong> <code>out[i]</code> = product of prefix before i × product of suffix after i. Two passes, reusing the output array.</p>
+<pre><code class="language-python">def product_except_self(nums):
+    n = len(nums)
+    out = [1] * n
+    pre = 1
+    for i in range(n):
+        out[i] = pre
+        pre *= nums[i]
+    suf = 1
+    for i in range(n - 1, -1, -1):
+        out[i] *= suf
+        suf *= nums[i]
+    return out
+</code></pre>
+<p>Time O(n), space O(1) extra.</p>
+<hr>
+<h2 id="b-prefix-sums">B. Prefix sums</h2>
+<p><strong>Intuition:</strong> <code>sum(i..j) = P[j+1] - P[i]</code>. If you need "count of subarrays with sum k," then <code>P[j] - P[i] = k</code> means you look up <code>P[j] - k</code> in a map of prefix counts.</p>
+<h3 id="b1-subarray-sum-equals-k-works-with-negatives-so-no-sliding-window">B1. Subarray Sum Equals K (works with negatives, so no sliding window)</h3>
+<pre><code class="language-python">def subarray_sum(nums, k):
+    count = defaultdict(int)
+    count[0] = 1           # empty prefix
+    total = ans = 0
+    for x in nums:
+        total += x
+        ans += count[total - k]
+        count[total] += 1
+    return ans
+</code></pre>
+<p>Time O(n), space O(n). Variants: "divisible by k" uses <code>total % k</code> as the key. "Longest subarray with sum k" stores the <em>first</em> index of each prefix.</p>
+<h3 id="b2-range-sum-query-2d-immutable">B2. Range Sum Query 2D (immutable)</h3>
+<p><code>P[r+1][c+1] = grid[r][c] + P[r][c+1] + P[r+1][c] - P[r][c]</code>. Query <code>(r1,c1,r2,c2) = P[r2+1][c2+1] - P[r1][c2+1] - P[r2+1][c1] + P[r1][c1]</code>. Build O(mn), query O(1).</p>
+<h3 id="b3-contiguous-array-equal-0s-and-1s">B3. Contiguous Array (equal 0s and 1s)</h3>
+<p>Map 0 to -1. Find the longest subarray with sum 0, storing the first index of each prefix sum.</p>
+<pre><code class="language-python">def find_max_length(nums):
+    first = {0: -1}
+    total = best = 0
+    for i, x in enumerate(nums):
+        total += 1 if x else -1
+        if total in first:
+            best = max(best, i - first[total])
+        else:
+            first[total] = i
+    return best
+</code></pre>
+<hr>
+<h2 id="c-two-pointers">C. Two pointers</h2>
+<p><strong>Intuition:</strong> on sorted data (or for in-place compaction), two indices moving toward each other or in the same direction replace a nested loop.</p>
+<h3 id="c1-3sum">C1. 3Sum</h3>
+<p><strong>Steps:</strong> sort. Fix <code>i</code>, then two pointers <code>l, r</code> on the rest. Skip duplicates for <code>i</code> and after each found triple.</p>
+<pre><code class="language-python">def three_sum(nums):
+    nums.sort()
+    res = []
+    for i in range(len(nums) - 2):
+        if i and nums[i] == nums[i - 1]:
+            continue
+        if nums[i] &gt; 0:
+            break
+        l, r = i + 1, len(nums) - 1
+        while l &lt; r:
+            s = nums[i] + nums[l] + nums[r]
+            if s &lt; 0:
+                l += 1
+            elif s &gt; 0:
+                r -= 1
+            else:
+                res.append([nums[i], nums[l], nums[r]])
+                l += 1
+                while l &lt; r and nums[l] == nums[l - 1]:
+                    l += 1
+                r -= 1
+    return res
+</code></pre>
+<p>Time O(n²), space O(1) besides the output.</p>
+<h3 id="c2-container-with-most-water">C2. Container With Most Water</h3>
+<p><strong>Intuition:</strong> area is bounded by the shorter line. Moving the taller one can never help, so move the shorter one.</p>
+<pre><code class="language-python">def max_area(h):
+    l, r, best = 0, len(h) - 1, 0
+    while l &lt; r:
+        best = max(best, (r - l) * min(h[l], h[r]))
+        if h[l] &lt; h[r]:
+            l += 1
+        else:
+            r -= 1
+    return best
+</code></pre>
+<p>O(n).</p>
+<h3 id="c3-trapping-rain-water">C3. Trapping Rain Water</h3>
+<p><strong>Intuition:</strong> water at i = <code>min(maxLeft, maxRight) - h[i]</code>. With two pointers, the side with the smaller max is decided, so process it.</p>
+<pre><code class="language-python">def trap(h):
+    l, r = 0, len(h) - 1
+    lmax = rmax = water = 0
+    while l &lt; r:
+        if h[l] &lt; h[r]:
+            lmax = max(lmax, h[l])
+            water += lmax - h[l]
+            l += 1
+        else:
+            rmax = max(rmax, h[r])
+            water += rmax - h[r]
+            r -= 1
+    return water
+</code></pre>
+<p>O(n) time, O(1) space.</p>
+<h3 id="c4-sort-colors-dutch-national-flag">C4. Sort Colors (Dutch national flag)</h3>
+<p>Three pointers: <code>lo</code> (next 0 slot), <code>mid</code> (scan), <code>hi</code> (next 2 slot). Don't advance <code>mid</code> after swapping with <code>hi</code>.</p>
+<pre><code class="language-python">def sort_colors(a):
+    lo = mid = 0
+    hi = len(a) - 1
+    while mid &lt;= hi:
+        if a[mid] == 0:
+            a[lo], a[mid] = a[mid], a[lo]; lo += 1; mid += 1
+        elif a[mid] == 1:
+            mid += 1
+        else:
+            a[mid], a[hi] = a[hi], a[mid]; hi -= 1
+</code></pre>
+<h3 id="c5-remove-duplicates-in-place-same-direction-pointers">C5. Remove duplicates in place (same-direction pointers)</h3>
+<p><code>write</code> is where the next unique element goes. <code>read</code> scans.</p>
+<hr>
+<h2 id="d-sliding-window">D. Sliding window</h2>
+<p><strong>Intuition:</strong> for contiguous ranges where the condition is <strong>monotonic</strong> (if a window is invalid, growing it stays invalid), expand the right side and shrink the left side while invalid. Each element enters and leaves once, so O(n).</p>
+<p><strong>Template (variable window, longest valid):</strong></p>
+<pre><code class="language-python">def longest_valid(s):
+    state = defaultdict(int)
+    l = best = 0
+    for r, c in enumerate(s):
+        state[c] += 1                 # add s[r]
+        while not valid(state):       # shrink until valid
+            state[s[l]] -= 1
+            l += 1
+        best = max(best, r - l + 1)
+    return best
+</code></pre>
+<h3 id="d1-longest-substring-without-repeating-characters">D1. Longest Substring Without Repeating Characters</h3>
+<pre><code class="language-python">def length_of_longest_substring(s):
+    last = {}
+    l = best = 0
+    for r, c in enumerate(s):
+        if c in last and last[c] &gt;= l:
+            l = last[c] + 1           # jump left past the duplicate
+        last[c] = r
+        best = max(best, r - l + 1)
+    return best
+</code></pre>
+<p>O(n) time, O(alphabet) space.</p>
+<h3 id="d2-longest-repeating-character-replacement-at-most-k-changes">D2. Longest Repeating Character Replacement (at most k changes)</h3>
+<p><strong>Intuition:</strong> window is valid if <code>len - maxFreq ≤ k</code>. <code>maxFreq</code> never has to decrease (a stale max only keeps the window from growing, never gives a wrong larger answer).</p>
+<pre><code class="language-python">def character_replacement(s, k):
+    count = defaultdict(int)
+    l = maxf = best = 0
+    for r, c in enumerate(s):
+        count[c] += 1
+        maxf = max(maxf, count[c])
+        while (r - l + 1) - maxf &gt; k:
+            count[s[l]] -= 1
+            l += 1
+        best = max(best, r - l + 1)
+    return best
+</code></pre>
+<h3 id="d3-minimum-window-substring">D3. Minimum Window Substring</h3>
+<p><strong>Steps:</strong> <code>need</code> counts of t. Track <code>have</code> = number of chars whose need is met. Expand right; when all are met, shrink left while still valid, recording the minimum.</p>
+<pre><code class="language-python">def min_window(s, t):
+    if not t:
+        return &quot;&quot;
+    need = Counter(t)
+    window = defaultdict(int)
+    have, required = 0, len(need)
+    best = (float(&quot;inf&quot;), 0, 0)
+    l = 0
+    for r, c in enumerate(s):
+        window[c] += 1
+        if c in need and window[c] == need[c]:
+            have += 1
+        while have == required:
+            if r - l + 1 &lt; best[0]:
+                best = (r - l + 1, l, r)
+            window[s[l]] -= 1
+            if s[l] in need and window[s[l]] &lt; need[s[l]]:
+                have -= 1
+            l += 1
+    return &quot;&quot; if best[0] == float(&quot;inf&quot;) else s[best[1]:best[2] + 1]
+</code></pre>
+<p>O(|s| + |t|).</p>
+<h3 id="d4-permutation-in-string-fixed-window">D4. Permutation in String (fixed window)</h3>
+<p>Fixed window of <code>len(p)</code>. Compare 26-count arrays, or track the number of matching counts for O(n).</p>
+<h3 id="d5-max-consecutive-ones-iii-fruit-into-baskets-subarrays-with-k-distinct">D5. Max Consecutive Ones III, Fruit Into Baskets, Subarrays with K distinct</h3>
+<p>"Exactly K" = <code>atMost(K) - atMost(K - 1)</code>. That's a key trick.</p>
+<pre><code class="language-python">def subarrays_with_k_distinct(nums, k):
+    def at_most(k):
+        count = defaultdict(int)
+        l = res = 0
+        for r, x in enumerate(nums):
+            if count[x] == 0:
+                k -= 1
+            count[x] += 1
+            while k &lt; 0:
+                count[nums[l]] -= 1
+                if count[nums[l]] == 0:
+                    k += 1
+                l += 1
+            res += r - l + 1       # all subarrays ending at r
+        return res
+    return at_most(k) - at_most(k - 1)
+</code></pre>
+<p><strong>When sliding window fails:</strong> negative numbers with a sum target. Use prefix sums + hashmap (B1).</p>
+<hr>
+<h2 id="e-binary-search">E. Binary search</h2>
+<p><strong>Intuition:</strong> whenever there's a <strong>monotonic predicate</strong> over a range (false false false true true), binary search finds the boundary in O(log n). That works on an index, on an answer value ("minimum capacity such that feasible"), or on a rotated array.</p>
+<p><strong>Template (first index where <code>ok(i)</code> is true):</strong></p>
+<pre><code class="language-python">def first_true(lo, hi, ok):     # search in [lo, hi); returns hi if none
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if ok(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+</code></pre>
+<p>Always ask: is my range inclusive or exclusive? Does <code>mid</code> move toward both ends so the loop ends?</p>
+<h3 id="e1-search-in-rotated-sorted-array">E1. Search in Rotated Sorted Array</h3>
+<p><strong>Steps:</strong> one half is always sorted. Check whether the target lies inside the sorted half; if yes go there, else go to the other.</p>
+<pre><code class="language-python">def search_rotated(nums, target):
+    lo, hi = 0, len(nums) - 1
+    while lo &lt;= hi:
+        mid = (lo + hi) // 2
+        if nums[mid] == target:
+            return mid
+        if nums[lo] &lt;= nums[mid]:               # left half sorted
+            if nums[lo] &lt;= target &lt; nums[mid]:
+                hi = mid - 1
+            else:
+                lo = mid + 1
+        else:                                   # right half sorted
+            if nums[mid] &lt; target &lt;= nums[hi]:
+                lo = mid + 1
+            else:
+                hi = mid - 1
+    return -1
+</code></pre>
+<p>O(log n).</p>
+<h3 id="e2-find-minimum-in-rotated-sorted-array">E2. Find Minimum in Rotated Sorted Array</h3>
+<pre><code class="language-python">def find_min(nums):
+    lo, hi = 0, len(nums) - 1
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if nums[mid] &gt; nums[hi]:
+            lo = mid + 1
+        else:
+            hi = mid
+    return nums[lo]
+</code></pre>
+<h3 id="e3-binary-search-on-the-answer-koko-eating-bananas-capacity-to-ship-packages">E3. Binary search on the answer: Koko Eating Bananas / Capacity to Ship Packages</h3>
+<p><strong>Steps:</strong> the answer space is <code>[1, max]</code> (or <code>[max(w), sum(w)]</code> for shipping). <code>feasible(x)</code> is monotonic, so find the smallest feasible x.</p>
+<pre><code class="language-python">def ship_within_days(weights, days):
+    def feasible(cap):
+        need, cur = 1, 0
+        for w in weights:
+            if cur + w &gt; cap:
+                need += 1
+                cur = 0
+            cur += w
+        return need &lt;= days
+    lo, hi = max(weights), sum(weights)
+    while lo &lt; hi:
+        mid = (lo + hi) // 2
+        if feasible(mid):
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
+</code></pre>
+<p>O(n log(sum)). Same shape: Split Array Largest Sum, Minimum Days to Make Bouquets, Magnetic Force Between Balls (maximize the minimum).</p>
+<h3 id="e4-time-based-key-value-store-oci-favorite">E4. Time Based Key-Value Store (OCI favorite)</h3>
+<p><code>set(key, value, ts)</code> with increasing timestamps; <code>get(key, ts)</code> returns the value with the largest <code>ts' ≤ ts</code>.</p>
+<pre><code class="language-python">class TimeMap:
+    def __init__(self):
+        self.store = defaultdict(list)   # key -&gt; [(ts, value)] sorted by ts
+
+    def set(self, key, value, ts):
+        self.store[key].append((ts, value))
+
+    def get(self, key, ts):
+        arr = self.store.get(key, [])
+        i = bisect.bisect_right(arr, (ts, chr(127))) - 1
+        return arr[i][1] if i &gt;= 0 else &quot;&quot;
+</code></pre>
+<p>set O(1), get O(log n). Follow-ups: thread safety (lock per key or RW lock); unsorted timestamps (insort, or a sorted container); persistence (append-only log).</p>
+<h3 id="e5-median-of-two-sorted-arrays-hard-olog-minm-n">E5. Median of Two Sorted Arrays (hard, O(log min(m, n)))</h3>
+<p><strong>Intuition:</strong> partition both arrays so the left halves together hold <code>(m+n+1)//2</code> elements and every left element ≤ every right element. Binary search the cut in the smaller array.</p>
+<pre><code class="language-python">def find_median_sorted_arrays(a, b):
+    if len(a) &gt; len(b):
+        a, b = b, a
+    m, n = len(a), len(b)
+    half = (m + n + 1) // 2
+    lo, hi = 0, m
+    while lo &lt;= hi:
+        i = (lo + hi) // 2
+        j = half - i
+        a_left = a[i - 1] if i &gt; 0 else float(&quot;-inf&quot;)
+        a_right = a[i] if i &lt; m else float(&quot;inf&quot;)
+        b_left = b[j - 1] if j &gt; 0 else float(&quot;-inf&quot;)
+        b_right = b[j] if j &lt; n else float(&quot;inf&quot;)
+        if a_left &lt;= b_right and b_left &lt;= a_right:
+            if (m + n) % 2:
+                return max(a_left, b_left)
+            return (max(a_left, b_left) + min(a_right, b_right)) / 2
+        if a_left &gt; b_right:
+            hi = i - 1
+        else:
+            lo = i + 1
+</code></pre>
+<hr>
+<h2 id="f-string-essentials">F. String essentials</h2>
+<ul>
+<li><strong>Palindromes:</strong> expand around center (2n - 1 centers), O(n²). Manacher's is O(n) but rarely required.</li>
+<li><strong>KMP / prefix function:</strong> pattern search in O(n + m). Know the idea: longest proper prefix that is also a suffix.</li>
+<li><strong>Rabin-Karp rolling hash:</strong> substring matching, duplicate substrings. Watch for collisions (double hash or verify).</li>
+<li><strong>Encode/Decode strings:</strong> length-prefix each string <code>len#str</code>. Never use a delimiter that can appear in the data.</li>
+</ul>
+<pre><code class="language-python">def encode(strs):
+    return &quot;&quot;.join(f&quot;{len(s)}#{s}&quot; for s in strs)
+
+def decode(s):
+    out, i = [], 0
+    while i &lt; len(s):
+        j = s.index(&quot;#&quot;, i)
+        n = int(s[i:j])
+        out.append(s[j + 1:j + 1 + n])
+        i = j + 1 + n
+    return out
+</code></pre>
+<hr>
+<h2 id="g-kadane-max-subarray-and-friends">G. Kadane (max subarray) and friends</h2>
+<pre><code class="language-python">def max_subarray(nums):
+    best = cur = nums[0]
+    for x in nums[1:]:
+        cur = max(x, cur + x)      # extend or restart
+        best = max(best, cur)
+    return best
+</code></pre>
+<p>Max product subarray: track both <code>max</code> and <code>min</code> (a negative flips them). Circular: <code>max(kadane, total - min_subarray)</code> unless all are negative.</p>
+<hr>
+<h2 id="common-mistakes">Common mistakes</h2>
+<ul>
+<li>Sliding window with negative numbers (wrong pattern).</li>
+<li>Binary search infinite loops: <code>lo = mid</code> with <code>mid = (lo + hi) // 2</code> when <code>hi = lo + 1</code>.</li>
+<li>Mutating a dict while iterating it.</li>
+<li>Forgetting <code>count[0] = 1</code> in prefix-sum counting.</li>
+<li>Using <code>list.pop(0)</code> in a loop (O(n²)).</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>
