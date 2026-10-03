@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>08b_backend_python_dsa — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/08b_backend_python_dsa.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#08b-backend-python-dsa-and-lookup-performance">08b. Backend, Python, DSA, and lookup performance</a>
+<a class="lvl2" href="#q10-explain-django-structure-architecture">Q10. Explain Django structure / architecture</a>
+<a class="lvl2" href="#q11-database-schema-for-bookmyshow">Q11. Database schema for BookMyShow</a>
+<a class="lvl2" href="#q12-seat-locking-and-concurrency">Q12. Seat locking and concurrency</a>
+<a class="lvl2" href="#q13-seat-locking-without-a-database-row-lock">Q13. Seat locking without a database row lock</a>
+<a class="lvl2" href="#q14-how-do-you-make-microservices-fault-tolerant">Q14. How do you make microservices fault tolerant?</a>
+<a class="lvl2" href="#q15-orchestration-vs-choreography">Q15. Orchestration vs choreography</a>
+<a class="lvl2" href="#q16-explain-cap-theorem">Q16. Explain CAP theorem</a>
+<a class="lvl2" href="#q17-and-q18-ocr-rag-pipeline-is-it-one-llm-prompt">Q17 and Q18. OCR + RAG pipeline. Is it one LLM prompt?</a>
+<a class="lvl2" href="#q19-what-are-python-generators">Q19. What are Python generators?</a>
+<a class="lvl2" href="#q20-have-you-used-generators-in-your-work">Q20. Have you used generators in your work?</a>
+<a class="lvl2" href="#q21-numbers-from-1-to-1000-no-list-and-no-for-range">Q21. Numbers from 1 to 1000, no list, and no for / range</a>
+<a class="lvl2" href="#q22-how-many-bits-for-1000-different-values-what-is-one-bit">Q22. How many bits for 1000 different values? What is one bit?</a>
+<a class="lvl2" href="#q23-and-q24-longest-substring-without-repeating-characters-example-abcadcbed">Q23 and Q24. Longest substring without repeating characters. Example ABCADCBED</a>
+<a class="lvl2" href="#q25-events-contain-dicts-and-lists-you-repeatedly-test-membership-in-a-huge-corpus-the-service-is-slow-and-you-cannot-add-instances-what-do-you-do">Q25. Events contain dicts and lists. You repeatedly test membership in a huge corpus. The service is slow, and you cannot add instances. What do you do?</a>
+<a class="lvl2" href="#q26-the-corpus-is-in-a-database-how-do-you-optimize-the-repeated-lookups">Q26. The corpus is in a database. How do you optimize the repeated lookups?</a>
+<a class="lvl2" href="#q27-which-indexes-or-data-structures">Q27. Which indexes or data structures?</a></nav>
+<main><h1 id="08b-backend-python-dsa-and-lookup-performance">08b. Backend, Python, DSA, and lookup performance</h1>
+<p>Questions 10–27 from the OCI loop, plus follow-ups on the same ideas. Seat locking in more detail is also in <a href="05_lld_problems.html">05 LLD</a>. CAP and retries are also in <a href="04_system_design_fundamentals.html">04 fundamentals</a>.</p>
+<hr>
+<h2 id="q10-explain-django-structure-architecture">Q10. Explain Django structure / architecture</h2>
+<p><strong>What they are testing:</strong> that you have actually used Django (GeeksforGeeks, the doubt-support platform), and that you know it is not "just MVC."</p>
+<p><strong>Definitions</strong></p>
+<ul>
+<li><strong>Project:</strong> the whole site. One <code>settings.py</code>, one root URLconf, one WSGI/ASGI entry.</li>
+<li><strong>App:</strong> a Python package for one domain (<code>doubts</code>, <code>votes</code>, <code>billing</code>). A project is a set of apps. Apps are reusable. The project is not.</li>
+<li><strong>MVT, not MVC.</strong> Django's authors say Model, View, Template. The <strong>view</strong> is the controller (it receives the request and decides what happens). The <strong>template</strong> is the presentation. There is no separate controller layer.</li>
+<li><strong>ORM:</strong> <code>Model</code> classes map to tables. A <code>QuerySet</code> is lazy. It does not hit the database until you iterate it.</li>
+<li><strong>Middleware:</strong> a chain of callables around every request and response. Order in <code>MIDDLEWARE</code> is the order of requests, and the reverse order of responses.</li>
+<li><strong>WSGI vs ASGI:</strong> WSGI is one request per worker thread/process (Gunicorn, uWSGI). ASGI is async (Daphne, Uvicorn) for WebSockets and long-lived connections. My GFG work was the classic WSGI shape. I moved to FastAPI later because the GST product needed async IO for government API calls. Django was the right tool for a CMS-style product with admin, auth, and an ORM.</li>
+</ul>
+<p><strong>The picture</strong></p>
+<pre><code>browser
+   |
+   v
+web server (nginx) ---- static files
+   |
+   v
+WSGI server (gunicorn workers)
+   |
+   v
+django.core.handlers.wsgi
+   |
+   v
+MIDDLEWARE  (security, session, auth, csrf, clickjacking, custom)
+   |
+   v
+ROOT_URLCONF  ---- path(&quot;doubts/&quot;, include(&quot;doubts.urls&quot;))
+   |                     |
+   |                     v
+   |                  doubts.views.question_detail(request, id)
+   |                     |
+   |                     +--&gt; Model / Manager / QuerySet --&gt; DB connection
+   |                     +--&gt; Template render (or JsonResponse / DRF serializer)
+   v
+response walks back out through middleware
+</code></pre>
+<p><strong>What lives where</strong></p>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>settings.py</code></td>
+<td>Installed apps, DB, middleware, templates, static root. Per-environment settings import a base and override.</td>
+</tr>
+<tr>
+<td><code>urls.py</code></td>
+<td>Route table only. No business logic.</td>
+</tr>
+<tr>
+<td><code>models.py</code></td>
+<td>Fields, constraints, <code>Meta.indexes</code>, custom managers.</td>
+</tr>
+<tr>
+<td><code>views.py</code> or <code>views/</code></td>
+<td>Request in, response out. Thin. Business rules in a service function or model method, not copied into three views.</td>
+</tr>
+<tr>
+<td><code>forms.py</code> / DRF <code>serializers.py</code></td>
+<td>Validation at the boundary.</td>
+</tr>
+<tr>
+<td><code>admin.py</code></td>
+<td>Staff UI over the same models.</td>
+</tr>
+<tr>
+<td><code>migrations/</code></td>
+<td>Ordered schema changes. Never edit a migration that has shipped.</td>
+</tr>
+<tr>
+<td><code>templates/</code></td>
+<td>HTML. Avoid putting queries in templates.</td>
+</tr>
+<tr>
+<td><code>apps.py</code></td>
+<td>App config, <code>ready()</code> for signal registration.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Request path in one sentence:</strong> gunicorn calls Django, middleware runs, the URL resolver picks a view, the view uses the ORM, a template or serializer builds the body, middleware can still modify the response.</p>
+<p><strong>What I would say about my GFG work, briefly:</strong> we moved the doubt platform off PHP onto Django and DRF, page by page, behind the same URLs. Votes were a unique <code>(user, content)</code> constraint in MySQL, with a Redis counter for the hot read, reconciled back to MySQL so a popular post was not a single hot row. Contest days were about a 10× spike on a base of 10k+ daily queries. Django fit because we wanted admin, sessions, and an ORM, not because it is the fastest async runtime.</p>
+<h3 id="likely-follow-ups">Likely follow-ups</h3>
+<p><strong>ORM N+1.</strong> A loop that touches <code>question.author</code> for each row issues one query per row. Fix: <code>select_related('author')</code> for a foreign key (SQL JOIN) and <code>prefetch_related('comments')</code> for a reverse relation or M2M (a second query, then join in Python). I hit the same class of bug at Masters: list endpoints with N+1 and a missing <code>(client_id, invoice_date)</code> index.</p>
+<p><strong><code>select_related</code> vs <code>prefetch_related</code>.</strong> JOIN vs separate query. JOIN is wrong for many-to-many because it multiplies rows.</p>
+<p><strong>Migrations.</strong> <code>makemigrations</code> diffs models against the migration graph. <code>migrate</code> applies it in a transaction on Postgres. A column rename is add, backfill, switch, drop. Not one rename on a hot table.</p>
+<p><strong>Signals.</strong> <code>post_save</code> hides control flow and breaks bulk <code>update()</code> / <code>bulk_create()</code> (those don't send per-row signals). I prefer an explicit service call over a signal for anything that must happen.</p>
+<p><strong>Why FastAPI at Masters and Django at GFG.</strong> 2021 product was a content site. The GST product spent its latency on outbound HTTP to the IRP. Django's sync worker model holds a process for the whole round trip. FastAPI plus a worker queue doesn't.</p>
+<p><strong>DRF.</strong> Serializers, viewsets, routers, auth classes. It is still Django underneath: same middleware, same ORM, same process model.</p>
+<hr>
+<h2 id="q11-database-schema-for-bookmyshow">Q11. Database schema for BookMyShow</h2>
+<p><strong>Assumptions to state:</strong> one country, movies and live events later, seats are chosen by the user (not "best available"), one booking is one show, payment is a separate service, we need to know who sat where for entry, and a seat hold expires if payment is abandoned.</p>
+<p><strong>What varies and should not be hard-coded:</strong> seat type, price, venue layout. A cinema screen and a stadium are both "a show with labeled seats."</p>
+<p><strong>Entities</strong></p>
+<pre><code>city
+  id, name
+
+cinema
+  id, city_id, name
+
+auditorium
+  id, cinema_id, name
+
+seat
+  id, auditorium_id, row_label, number, seat_type
+  UNIQUE (auditorium_id, row_label, number)
+  -- a seat is a physical chair. It does not know about dates.
+
+movie
+  id, title, runtime_min, language, certification
+
+show
+  id, movie_id, auditorium_id, start_at, end_at, status
+  -- status: scheduled, open, cancelled
+  INDEX (auditorium_id, start_at)
+  INDEX (movie_id, start_at)
+
+show_seat
+  id
+  show_id
+  seat_id
+  price_cents          -- price can differ per show and per type
+  status               -- FREE, HELD, BOOKED, BLOCKED
+  hold_user_id         -- nullable
+  hold_expires_at      -- nullable
+  version              -- optimistic concurrency
+  booking_id           -- nullable, set when BOOKED
+  PRIMARY KEY (id)
+  UNIQUE (show_id, seat_id)
+  INDEX (show_id, status)
+  INDEX (hold_expires_at)   -- sweeper
+
+booking
+  id, user_id, show_id, status, idempotency_key
+  -- status: PENDING, CONFIRMED, CANCELLED, EXPIRED
+  UNIQUE (user_id, idempotency_key)
+  amount_cents, created_at
+
+booking_seat
+  booking_id, show_seat_id
+  PRIMARY KEY (booking_id, show_seat_id)
+
+payment
+  id, booking_id, provider_ref, status, amount_cents
+  UNIQUE (provider_ref)
+</code></pre>
+<p><strong>Why <code>show_seat</code> exists instead of a status column on <code>seat</code>.</strong> The chair is reusable every show. The thing you lock is "seat A4 at the 7pm show," which is a row in <code>show_seat</code>. Generating those rows when the show is published makes locking a single-row update. Generating them lazily is fewer rows and a harder uniqueness race. I would generate them when the show opens.</p>
+<p><strong>Why money is integer cents.</strong> Floats drop precision. Currency is a separate column if you ever leave one country.</p>
+<p><strong>Why <code>version</code>.</strong> It is the optimistic lock in Q12. You can also do it with <code>status</code> in the <code>WHERE</code> clause, which is a form of the same idea.</p>
+<p><strong>Blocked seats</strong> (aisle, broken chair, house seats) are <code>BLOCKED</code> and never offered. That is data, not a special code path in the lock.</p>
+<p><strong>Read path for the seat map.</strong> <code>SELECT seat_id, status, price_cents FROM show_seat WHERE show_id = ?</code>. That is one index range. Cache the map for a second if the read QPS is high, and treat the cache as a hint. The write path in Q12 is the source of truth.</p>
+<h3 id="likely-follow-up-how-do-you-partition-this">Likely follow-up: how do you partition this?</h3>
+<p><code>show_seat</code> is the hot table. Partition by <code>show_id</code> hash, or range by <code>start_at</code> if you prune old shows. A very hot show is one partition key. If one show is a celebrity release, that partition is hot. Mitigations: the row lock is per seat, so different seats don't block each other (InnoDB row locks). The hot <strong>row</strong> is the one seat everyone clicks. You cannot shard one row. You serialize that seat, which is what you want. The thing to watch is the <strong>index page</strong> and the connection pile-up, not the lock on seats nobody picked.</p>
+<hr>
+<h2 id="q12-seat-locking-and-concurrency">Q12. Seat locking and concurrency</h2>
+<p><strong>The invariant:</strong> two users never end in <code>BOOKED</code> for the same <code>show_seat</code>. A hold either converts to a booking or returns to <code>FREE</code>. A crashed browser does not lock the seat forever.</p>
+<p><strong>The failure if you do nothing:</strong> two transactions read <code>status=FREE</code>, both write <code>BOOKED</code>. That is a lost update. Isolation <code>READ COMMITTED</code> does not prevent it. You need a lock, a conditional update, or a single-threaded owner of that show.</p>
+<p><strong>Approach I would ship: conditional update (optimistic) plus an expiry</strong></p>
+<pre><code class="language-sql">UPDATE show_seat
+SET status = 'HELD',
+    hold_user_id = :user,
+    hold_expires_at = now() + interval '8 minutes',
+    version = version + 1
+WHERE show_id = :show
+  AND seat_id = :seat
+  AND version = :version_i_read
+  AND (
+        status = 'FREE'
+        OR (status = 'HELD' AND hold_expires_at &lt; now())
+      );
+</code></pre>
+<p>If <code>rowcount</code> is 1, this user holds the seat. If it is 0, someone else won or the version moved. The database is the lock. There is no <code>SELECT FOR UPDATE</code> held across the payment call.</p>
+<p><strong>Confirm, after payment:</strong></p>
+<pre><code class="language-sql">UPDATE show_seat
+SET status = 'BOOKED', booking_id = :booking, version = version + 1
+WHERE show_id = :show AND seat_id = :seat
+  AND status = 'HELD' AND hold_user_id = :user
+  AND hold_expires_at &gt;= now();
+</code></pre>
+<p>Payment uses an idempotency key on <code>booking</code> so a retry does not double-charge. I used the same pattern at Uber FRM: <code>UPDATE ... WHERE version = ?</code> so two reviewers cannot overwrite each other, and at Masters: an idempotency key of client + file hash + batch index so a retry cannot double-file an invoice.</p>
+<p><strong>Why the lock is not held during payment.</strong> Payment takes seconds to minutes and calls a third party. A row lock held that long stalls everyone looking at that seat and can pile up connections. The hold is <strong>data</strong> (<code>status</code>, <code>hold_expires_at</code>), not a database lock.</p>
+<p><strong>Expiry.</strong> A sweeper every few seconds:</p>
+<pre><code class="language-sql">UPDATE show_seat
+SET status = 'FREE', hold_user_id = NULL, hold_expires_at = NULL, version = version + 1
+WHERE status = 'HELD' AND hold_expires_at &lt; now();
+</code></pre>
+<p>The <code>WHERE</code> clause on the hold update already treats an expired hold as free, so a late sweeper is safe. The sweeper exists so the seat map is honest.</p>
+<p><strong>Multiple seats in one booking.</strong> Update all of them in <strong>one transaction</strong>, in a fixed seat-id order (deadlock avoidance). If any rowcount is 0, roll the transaction back. Don't hold seat 1 and then discover seat 2 is gone outside the transaction.</p>
+<pre><code>user taps seats
+    |
+    v
+BEGIN
+  UPDATE seat A ... WHERE free or expired   -- order by seat_id
+  UPDATE seat B ...
+  if any rowcount = 0: ROLLBACK, tell the user which seat is gone
+  else: INSERT booking PENDING; COMMIT
+    |
+    v
+payment (no DB row lock held)
+    |
+    +-- success: UPDATE seats SET BOOKED WHERE still HELD by this user
+    +-- fail / timeout: sweeper or explicit cancel sets FREE
+</code></pre>
+<h3 id="likely-follow-up-select-for-update">Likely follow-up: <code>SELECT FOR UPDATE</code></h3>
+<pre><code class="language-sql">BEGIN;
+SELECT * FROM show_seat WHERE show_id=? AND seat_id=? FOR UPDATE;
+-- check status, then update, then COMMIT
+</code></pre>
+<p>This is a <strong>pessimistic</strong> lock. It is correct if the transaction is short. It is the wrong lock to hold across a payment redirect. <code>SKIP LOCKED</code> is for a worker claiming jobs from a queue ("give me any free seat"), not for "the user asked for A4." If they ask for A4 and you skip it, you have booked the wrong chair.</p>
+<p><strong>Isolation.</strong> <code>REPEATABLE READ</code> (MySQL InnoDB default) plus a unique key on <code>(show_id, seat_id)</code> stops a phantom duplicate row. The race on the <strong>status column</strong> still needs the conditional <code>UPDATE</code> or <code>FOR UPDATE</code>. The unique key stops two <code>show_seat</code> rows. It does not stop two updates of one row unless the <code>WHERE</code> clause is conditional.</p>
+<hr>
+<h2 id="q13-seat-locking-without-a-database-row-lock">Q13. Seat locking without a database row lock</h2>
+<p>Say when each one wins. Don't present them as equal.</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th>How</th>
+<th>When it is better</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Conditional UPDATE</strong> (Q12)</td>
+<td>The row changes only if status is still free. The "lock" is the row version.</td>
+<td>Default. One source of truth.</td>
+<td>Hot seats serialize on one row, which is correct.</td>
+</tr>
+<tr>
+<td><strong>Redis <code>SET seat:{show}:{id} user NX PX 480000</code></strong></td>
+<td><code>NX</code> fails if the key exists. TTL is the hold. A Lua script locks a set of seats or none.</td>
+<td>The seat map is extremely hot and you want the DB out of the hold path.</td>
+<td>Two sources of truth. Redis loss or eviction double-books unless the DB confirm is still conditional. Use Redis to <strong>win the race</strong>, and the DB conditional update to <strong>commit</strong>.</td>
+</tr>
+<tr>
+<td><strong>In-process mutex / singleflight per seat</strong></td>
+<td>A lock inside one app server.</td>
+<td>Never as the real lock, unless there is exactly one process.</td>
+<td>A second instance does not see the lock. I would mention it only to reject it.</td>
+</tr>
+<tr>
+<td><strong>Partition owner</strong></td>
+<td>All holds for <code>show_id % N</code> go to one service instance. Single-threaded per show.</td>
+<td>You want to avoid distributed locks entirely.</td>
+<td>That instance is a bottleneck and a failure domain. Reassign the partition with a lease and a fencing token.</td>
+</tr>
+<tr>
+<td><strong>Queue</strong></td>
+<td>The user submits "I want these seats." A single consumer per show applies them in order.</td>
+<td>Fairness matters, or you need an audit log of attempts.</td>
+<td>Latency of a queue round trip. Overkill for a normal cinema. Right for a ticket drop where 100k people hit one show.</td>
+</tr>
+<tr>
+<td><strong>Database advisory lock</strong></td>
+<td><code>pg_advisory_xact_lock(show_id, seat_id)</code></td>
+<td>You don't want a schema change.</td>
+<td>Still a DB lock. Held only inside the short transaction, same rule as <code>FOR UPDATE</code>.</td>
+</tr>
+<tr>
+<td><strong>Optimistic version without a status column</strong></td>
+<td><code>UPDATE ... SET version=version+1 WHERE version=?</code></td>
+<td>Same as Q12. Status in the <code>WHERE</code> is enough even without <code>version</code>. Version helps the client detect a stale seat map.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>What I would actually say:</strong> the conditional update is the lock I trust. Redis is a valid hold cache in front of it if the database becomes the bottleneck. I would not trust only Redis, and I would not trust a mutex in the web process. Payment stays outside the lock, with an idempotency key, because that is the same rule as not holding a DB transaction open across the IRP at Masters.</p>
+<h3 id="likely-follow-up-what-if-redis-and-the-db-disagree">Likely follow-up: what if Redis and the DB disagree?</h3>
+<p>The DB wins. If Redis says held and the conditional <code>UPDATE</code> says 0 rows, the user does not get the seat, and you delete the Redis key. If the process crashes after the DB hold and before the Redis key, the DB hold still expires. Design the DB so it is correct with Redis empty.</p>
+<hr>
+<h2 id="q14-how-do-you-make-microservices-fault-tolerant">Q14. How do you make microservices fault tolerant?</h2>
+<p><strong>Definition.</strong> Fault tolerant means a dependency's failure does not take the caller down with it, and a restarted instance does not corrupt state. It does not mean every call succeeds.</p>
+<p><strong>The list, in the order I implement them</strong></p>
+<ol>
+<li><strong>Timeouts on every outbound call</strong>, shorter than the caller's own deadline. In Go that is a <code>context</code> on the edge and derived contexts inward. A missing timeout is a thread stuck until the kernel's TCP timer, which is how you get a 10-second or multi-minute tail with idle CPU.</li>
+<li><strong>Retries only when the operation is idempotent or has an idempotency key.</strong> Exponential backoff with jitter. A budget (retries are a small fraction of traffic), not "three retries at every layer." Three layers of three retries is 27 calls.</li>
+<li><strong>Circuit breaker.</strong> After consecutive failures, fail fast and stop hammering the dependency. Half-open to probe. I did this in the Keep/Drop registry: a provider outage falls back to the deterministic score, and the run finishes.</li>
+<li><strong>Bulkhead.</strong> A separate pool per dependency so one slow database cannot occupy every thread. The API keeps serving the paths that don't need that database.</li>
+<li><strong>Load shedding.</strong> When the queue is past a limit, reject with 429/503 instead of accepting work you will time out.</li>
+<li><strong>Idempotent consumers and a dead-letter queue.</strong> At-least-once delivery plus a key you can dedupe. Poison messages go to the DLQ. Masters bulk import did this.</li>
+<li><strong>Health checks that mean something.</strong> Readiness fails when the process cannot do work (DB unreachable, pool exhausted). Liveness fails only when the process is wedged. Restarting a process whose dependency is down just crash-loops.</li>
+<li><strong>Redundancy across failure domains.</strong> More than one instance, spread so one host, rack, or zone is not the whole service. Stateless app servers make this easy. State stays in a store that has its own replication.</li>
+<li><strong>Backwards-compatible deploys.</strong> A new instance must tolerate the old message shape and the old schema. Expand, then migrate, then contract. That is how you restart a third of the fleet without a window.</li>
+<li><strong>A client that can degrade.</strong> Cached reads, a default, or a clear error. A timeout with no fallback is just a slower failure.</li>
+</ol>
+<p><strong>What I would not say:</strong> "we use Kubernetes so it's fault tolerant." A restart policy is not a timeout, and it is not idempotency.</p>
+<h3 id="likely-follow-up-what-do-you-measure">Likely follow-up: what do you measure?</h3>
+<p>Success rate, latency by dependency, timeout count, retry count, breaker state, pool wait time, DLQ depth. An alarm on "error rate of this API," not only on CPU. I want the breaker opening to be a page only if the fallback is also failing. Otherwise it is a ticket with a graph.</p>
+<hr>
+<h2 id="q15-orchestration-vs-choreography">Q15. Orchestration vs choreography</h2>
+<p><strong>Definitions.</strong> Both are ways to implement a <strong>saga</strong>: a business transaction split across services, each with a local transaction and a compensating action if a later step fails. There is no single distributed lock across all of them.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Orchestration</th>
+<th>Choreography</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Who decides the next step</td>
+<td>A <strong>coordinator</strong> (a process, a workflow engine)</td>
+<td>Each service, when it sees an <strong>event</strong></td>
+</tr>
+<tr>
+<td>How data flows</td>
+<td>The coordinator calls service A, then B, then C</td>
+<td>A emits <code>SeatsHeld</code>. Payment consumes it and emits <code>PaymentCaptured</code>. Booking consumes that.</td>
+</tr>
+<tr>
+<td>Good at</td>
+<td>A flow you need to see, change, and time out in one place</td>
+<td>A small number of steps, teams that should not depend on a central deployer</td>
+</tr>
+<tr>
+<td>Failure mode</td>
+<td>The coordinator is a dependency. If it dies, the flow must resume from persisted state.</td>
+<td>You cannot point at one file and see the business process. A missed event or a new consumer changes behavior in a place you forgot.</td>
+</tr>
+<tr>
+<td>Compensation</td>
+<td>The coordinator runs the undo steps it knows about</td>
+<td>Each service subscribes to the failure event and undoes its own step</td>
+</tr>
+</tbody>
+</table>
+<pre><code>orchestration                         choreography
+
+  coordinator                         seats service
+     |  hold seats                         |  SeatsHeld
+     v                                     v
+  seats service                        payment service
+     |  pay                                 |  PaymentCaptured
+     v                                     v
+  payment                              booking service
+     |  confirm                            |
+     v                                     +-- on PaymentFailed:
+  seats service                               seats service releases the hold
+     (or compensate: release)
+</code></pre>
+<p><strong>BookMyShow example.</strong> I would <strong>orchestrate</strong> the booking: hold seats, take payment, confirm seats, and if payment fails or the hold expires, release seats. The steps and the timeout belong to one owner. I would <strong>choreograph</strong> the side effects: confirmation email, loyalty points, analytics. Those consumers can lag and must be idempotent. They must not be on the path that decides whether the seat is sold.</p>
+<p><strong>My own systems.</strong> The Keep/Drop registry is a small orchestrator: deterministic scoring, then LLM batches, checkpoints, a fallback if the provider fails. I did not pull in Temporal or Airflow, because the workflow lived inside one service and the resume state was a file plus a versioned ClickHouse write. I would use a workflow engine when <strong>several teams</strong> own steps and the process outlives one deploy. Uber menu was closer to choreography: scrapers publish to Kafka, Flink consumes, the catalog is an idempotent upsert. Nobody called a central "ingest this menu" function synchronously.</p>
+<h3 id="likely-follow-up-how-does-the-coordinator-itself-survive-a-crash">Likely follow-up: how does the coordinator itself survive a crash?</h3>
+<p>Persist the step (<code>HELD</code>, <code>PAYING</code>, <code>CONFIRMED</code>) in the same database as the booking, and resume from that row on startup. A coordinator that keeps the step only in memory will double-charge or leave seats held after a restart. This is the same rule as the scoring checkpoints: the completed step is recorded before the next step starts.</p>
+<h3 id="likely-follow-up-outbox">Likely follow-up: outbox</h3>
+<p>If the coordinator writes "payment captured" and then crashes before it publishes the event, consumers never hear it. Write the business row and an <strong>outbox row</strong> in one local transaction. A relay publishes the outbox. Consumers dedupe by event id.</p>
+<hr>
+<h2 id="q16-explain-cap-theorem">Q16. Explain CAP theorem</h2>
+<p><strong>Definition.</strong> During a <strong>network partition</strong>, a distributed system can pick <strong>consistency</strong> or <strong>availability</strong>, not both. The P in CAP is not optional. Partitions happen. The real choice is what you do when they do.</p>
+<p>Be precise about the words, because the casual versions are wrong.</p>
+<table>
+<thead>
+<tr>
+<th>Letter</th>
+<th>Actual meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>C, consistency</strong></td>
+<td>Linearizability. A read sees the latest <strong>completed</strong> write, as if there were one copy. It does not mean "the database has constraints" and it does not mean ACID by itself.</td>
+</tr>
+<tr>
+<td><strong>A, availability</strong></td>
+<td>Every request to a <strong>non-failed</strong> node gets a response. Not "the cluster has a replica somewhere."</td>
+</tr>
+<tr>
+<td><strong>P, partition tolerance</strong></td>
+<td>The system keeps running when messages between nodes are lost or delayed. If you give this up, you are assuming a single node.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>So:</strong> if a partition splits the replicas, you either</p>
+<ul>
+<li>refuse writes or reads on the side that cannot be sure it is up to date (<strong>CP</strong>: etcd, ZooKeeper, a Raft group, Spanner's transactional path), or</li>
+<li>answer anyway and repair later (<strong>AP</strong>: Dynamo-style, Cassandra with a low consistency level, DNS).</li>
+</ul>
+<p>You do not "choose CA." CA means "I assume the network does not partition," which is a single-node system or a system that is allowed to be wrong or down when the network splits.</p>
+<p><strong>PACELC, if they push.</strong> If there is a <strong>P</strong>artition, choose A or C. <strong>E</strong>lse, choose <strong>L</strong>atency or <strong>C</strong>onsistency. Even with a healthy network, a quorum read is more consistent and slower than a local read. Example: Cassandra can be PA/EL. A Raft metadata service is PC/EC.</p>
+<p><strong>Per operation, not per company.</strong> Seat <strong>booking</strong> must be consistent: two people cannot buy A4. I would rather return an error than book twice (CP for that write). The <strong>seat map display</strong> can be a second stale (AP). "Sold out" counts on a homepage can lag. I would say that split out loud.</p>
+<p><strong>My systems.</strong> ClickHouse <code>ReplacingMergeTree</code> is eventually consistent: a retried insert collapses to the latest version at merge time, and reads use <code>argMax</code> so they are correct before the merge finishes. That is the right trade for an analytical score, and the wrong trade for a seat. Postgres for the FRM review rows was the consistent store: a version check, one writer wins.</p>
+<h3 id="likely-follow-up-what-is-a-quorum">Likely follow-up: what is a quorum?</h3>
+<p><code>N</code> replicas, write succeeds after <code>W</code> acks, read waits for <code>R</code> replies. If <code>R + W &gt; N</code>, the read set and the write set overlap, so the read sees the latest write <strong>if there is no partition inside that quorum and clocks or versions are honest.</strong> <code>W = N</code> is slow and brittle. <code>W = 1, R = 1</code> is fast and can return a stale replica. Raft's majority is a quorum with a leader and a log, which gives you a total order, not just "I saw a newer timestamp."</p>
+<hr>
+<h2 id="q17-and-q18-ocr-rag-pipeline-is-it-one-llm-prompt">Q17 and Q18. OCR + RAG pipeline. Is it one LLM prompt?</h2>
+<p><strong>Short answer to 18:</strong> no. A single prompt that says "read this image and answer" is a demo. It has no evaluation, no page-level citation, no control on cost, and no way to know which part of the document the answer came from. OCR and RAG are stages with their own failure modes.</p>
+<p><strong>Definitions</strong></p>
+<ul>
+<li><strong>OCR:</strong> optical character recognition. Pixels in, text out, ideally with boxes (which page, which line). It is not understanding. It misreads handwriting, stamps, and tables.</li>
+<li><strong>RAG:</strong> retrieval-augmented generation. Find a small set of relevant chunks, put those in the prompt, then generate. The model answers from the retrieved text instead of from memory.</li>
+<li><strong>Embedding:</strong> a vector for a chunk. Similar text is near in that space. The index (HNSW in Milvus, or IVF) does approximate nearest neighbor.</li>
+<li><strong>Chunk:</strong> the unit you index and retrieve. Too small and you lose context. Too large and you blow the prompt and dilute the match.</li>
+<li><strong>Rerank:</strong> a second model that scores the top 50 candidates more carefully and keeps the top 5.</li>
+<li><strong>Hallucination:</strong> the model states a fact that is not in the retrieved text. You reduce it with citations, a constrained output schema, and a check that the answer's claims appear in the chunks. You do not eliminate it with a clever adjective in the prompt.</li>
+</ul>
+<p><strong>Assumptions:</strong> documents are PDFs and phone photos, some scanned, some born-digital, multiple languages, the user asks a question or we must fill a schema, and a wrong digit can be worse than a refusal. That last point is true for invoices and for menus.</p>
+<p><strong>The pipeline</strong></p>
+<pre><code>file lands (object storage)
+    |
+    v
+1. sniff type
+    PDF with a text layer?  --&gt; extract text, skip OCR
+    image / scanned page?   --&gt; OCR
+    |
+    v
+2. OCR (per page)
+    output: text + boxes + confidence
+    low confidence regions flagged, not silently trusted
+    |
+    v
+3. layout
+    reading order, headers, tables as tables, not as flat lines
+    |
+    v
+4. chunk + metadata
+    chunk on section boundaries
+    metadata: doc id, page, bbox, language, source checksum
+    |
+    v
+5. embed and index
+    vector index + a keyword index (hybrid)
+    |
+    v
+6. question or schema slot
+    |
+    v
+7. retrieve
+    hybrid search -&gt; top 50 -&gt; rerank -&gt; top 5
+    |
+    v
+8. generate
+    prompt = instruction + the chunks + &quot;cite the page&quot;
+    constrained output: JSON schema, or a validated menu schema
+    |
+    v
+9. check
+    schema validation
+    citation points at a real chunk
+    numbers in the answer appear in the cited chunk
+    low score -&gt; human queue, not a confident wrong answer
+    |
+    v
+10. store
+    raw file, OCR text, chunks, answer, model version, prompt hash
+</code></pre>
+<p><strong>Why each stage exists</strong></p>
+<ul>
+<li><strong>Skip OCR when the PDF has text.</strong> OCR will garble a digital PDF. Detect a text layer first.</li>
+<li><strong>Keep boxes.</strong> "The total is 1200" is useless if you cannot show the box on the page. Support and evaluation both need it.</li>
+<li><strong>Hybrid search.</strong> Embeddings miss exact codes (GSTIN, SKU, a seat name). Keyword search misses paraphrases. Use both.</li>
+<li><strong>Rerank.</strong> The bi-encoder is fast and approximate. A cross-encoder on 50 candidates fixes the worst misses cheaply.</li>
+<li><strong>Schema and a checker, not a prose answer,</strong> when the downstream is a system. On Uber menu ingestion the unstructured path was retrieve similar labeled menus, then Gemini, then <strong>schema validation</strong>. 98% field fidelity was an <strong>offline</strong> eval, not a promise about a live prompt. I would say that number the same way here.</li>
+<li><strong>A human path.</strong> Low OCR confidence or a failed schema check goes to a queue. The pipeline's job is to know when it doesn't know.</li>
+<li><strong>Idempotency.</strong> Key the document by checksum so a re-upload does not double-index. Re-index when the chunker or the embedding model changes, and version the index. The same rule as a config hash on every scoring row: you can tell which pipeline version produced the answer.</li>
+<li><strong>Cost.</strong> OCR and the LLM dominate. Don't send a 200-page PDF into the model. Retrieve first. Cache OCR output. Batch pages.</li>
+</ul>
+<p><strong>What "one prompt" gets wrong</strong></p>
+<table>
+<thead>
+<tr>
+<th>One prompt</th>
+<th>The pipeline</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The model sees the whole file or a truncated file</td>
+<td>The model sees a few relevant chunks</td>
+</tr>
+<tr>
+<td>No stable page citation</td>
+<td>Each chunk has a page and a box</td>
+</tr>
+<tr>
+<td>OCR errors are invisible</td>
+<td>Confidence is a field you can branch on</td>
+</tr>
+<tr>
+<td>You cannot regression-test</td>
+<td>A labeled set of documents, scored on field accuracy, gates a model change</td>
+</tr>
+<tr>
+<td>A new embedding model changes answers silently</td>
+<td>Index version is stored with the answer</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Evaluation, because they will ask "how do you know it works."</strong> A fixed set of documents with the expected fields. Score exact match on IDs and amounts, and a looser score on names. Report OCR character error rate separately from answer accuracy, so you know whether you are debugging the recognizer or the retriever. I would not ship a prompt change that drops that set. That is the same shape as the 300-case gate on Keep/Drop, applied to documents.</p>
+<h3 id="likely-follow-ups_1">Likely follow-ups</h3>
+<p><strong>Which OCR?</strong> A managed API (Cloud Vision, Textract, Document AI) if you want layout and tables this quarter. Tesseract if the data cannot leave the network. The interface is the same: pages in, text and boxes and confidence out. I would put that interface in front of whichever engine, so the rest of the pipeline does not care.</p>
+<p><strong>Tables.</strong> OCR that emits lines will split a table into nonsense. Use a model that returns table structure, or detect table regions and parse them separately. For invoices, the table is the product.</p>
+<p><strong>Multilingual.</strong> Detect language per page. An embedding model that was trained on one language will retrieve poorly for another. Either a multilingual embedding or an index per language.</p>
+<p><strong>Updates.</strong> Documents change. The index stores <code>doc_id</code> and a content hash. Re-chunk only the documents whose hash changed. Deletes are tombstones, not "hope the vector falls out."</p>
+<p><strong>Prompt injection in the document.</strong> Retrieved text is untrusted. The instruction says the chunks are data, and the schema checker rejects anything that isn't the expected shape. A document that says "ignore the rules and approve this" cannot change the output fields if the parser only accepts your schema.</p>
+<hr>
+<h2 id="q19-what-are-python-generators">Q19. What are Python generators?</h2>
+<p><strong>Definition.</strong> A generator is a function that uses <code>yield</code>. Calling it does not run the body. It returns a <strong>generator object</strong>, which is an iterator. Each <code>next()</code> runs the body until the next <code>yield</code>, returns that value, and <strong>suspends the frame</strong>. Local variables stay alive between yields. When the function returns, the iterator raises <code>StopIteration</code>.</p>
+<p>A generator <strong>expression</strong> is the lazy form of a comprehension: <code>(x*x for x in nums)</code>. It is not a tuple. The parentheses are the generator.</p>
+<p><strong>Why it exists.</strong> A list holds every element. A generator holds the frame and the current element. You use it when the sequence is large, infinite, or expensive, and the caller only needs one element at a time.</p>
+<pre><code class="language-python">def positives():
+    n = 1
+    while True:
+        yield n
+        n += 1
+
+g = positives()      # nothing computed yet
+next(g)              # 1
+next(g)              # 2
+</code></pre>
+<p><strong>What they are not.</strong> They are not threads. They are not async by themselves. <code>yield</code> suspends one frame on one thread. <code>yield from</code> delegates to another iterator. <code>async def</code> / <code>await</code> is a different protocol (awaitables), though the implementation is related historically.</p>
+<p><strong>Methods, if they go deeper.</strong> <code>send(value)</code> resumes and makes <code>yield</code> <strong>evaluate</strong> to that value. <code>throw</code> raises inside the generator. <code>close</code> raises <code>GeneratorExit</code>. You need <code>send</code> for coroutines. You do not need it to stream rows.</p>
+<p><strong>Exhaustion.</strong> A generator has one pass. When it's done, it's done. There is no rewind. If two consumers need the data, tee it or re-run the function.</p>
+<hr>
+<h2 id="q20-have-you-used-generators-in-your-work">Q20. Have you used generators in your work?</h2>
+<p><strong>Honest answer.</strong> Yes, as a way to stream rows instead of materializing them. The failure mode I care about is the one that built a 170 GB aggregator state by trying to do a whole season at once. The fix was to shrink the unit of work to one fiscal week and stream. In Python that is a generator (or a cursor you iterate). In the Go pump it is the same idea with different syntax: read the next 500k-row batch while the previous batch is sent, and never hold the partition in memory.</p>
+<p>I would not claim a specific function name from a private repo. The pattern I will defend:</p>
+<pre><code class="language-python">def iter_batches(rows, size=50_000):
+    batch = []
+    for row in rows:          # rows itself is a server-side cursor, not a list
+        batch.append(row)
+        if len(batch) == size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+</code></pre>
+<p>The caller writes a batch and drops it. Peak memory is one batch, not the file. The same shape was the Masters bulk importer: a file in chunks, not 100k invoices as one list.</p>
+<p>If they ask "generators or iterators?": every generator is an iterator. Not every iterator is a generator. A file object and a DB cursor are iterators written in C.</p>
+<hr>
+<h2 id="q21-numbers-from-1-to-1000-no-list-and-no-for-range">Q21. Numbers from 1 to 1000, no list, and no <code>for</code> / <code>range</code></h2>
+<p><strong>What they are testing.</strong> <code>range</code> in Python 3 is already lazy, so "don't use range" means they want <code>yield</code> and a <code>while</code>. "No list" means don't build <code>[1, 2, ..., 1000]</code>.</p>
+<pre><code class="language-python">def count_to(n):
+    i = 1
+    while i &lt;= n:
+        yield i
+        i += 1
+
+# consume it without storing it
+total = 0
+for value in count_to(1000):   # the consumer's for is fine; the ban is on producing the numbers
+    total += value
+</code></pre>
+<p>If they also ban <code>for</code> at the consumer, a <code>while</code> drains it:</p>
+<pre><code class="language-python">g = count_to(1000)
+total = 0
+try:
+    while True:
+        total += next(g)
+except StopIteration:
+    pass
+</code></pre>
+<p><strong>Do not use recursion</strong> for this. A thousand frames is wasteful, and a million would blow the stack. The generator frame is constant size.</p>
+<p><strong>If they say "you used range in the for".</strong> The <code>for</code> over the generator is the consumer. The producer never called <code>range</code> and never allocated the list. Say that distinction. If they want zero <code>for</code> keywords in the file, use the <code>next()</code> loop.</p>
+<h3 id="likely-follow-up-generator-vs-range-vs-list">Likely follow-up: generator vs <code>range</code> vs list</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Memory</th>
+<th>Reusable</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[i for i in range(1000)]</code></td>
+<td>O(n)</td>
+<td>yes</td>
+<td>You need random access or two passes</td>
+</tr>
+<tr>
+<td><code>range(1000)</code></td>
+<td>O(1)</td>
+<td>yes</td>
+<td>Arithmetic sequence, supports <code>len</code> and indexing</td>
+</tr>
+<tr>
+<td>generator</td>
+<td>O(1)</td>
+<td>no, one pass</td>
+<td>Streaming, or an expensive step per element</td>
+</tr>
+</tbody>
+</table>
+<p><code>range</code> is the right tool for 1..1000. The generator is the right tool when the next element is a row from disk or a transformed record. They asked for the generator to see if you can write one under a constraint.</p>
+<hr>
+<h2 id="q22-how-many-bits-for-1000-different-values-what-is-one-bit">Q22. How many bits for 1000 different values? What is one bit?</h2>
+<p><strong>Definitions</strong></p>
+<ul>
+<li>A <strong>bit</strong> is a binary digit. It has two states, 0 and 1. One bit distinguishes <strong>2</strong> possibilities.</li>
+<li><code>n</code> bits distinguish <strong>2^n</strong> possibilities, because each new bit doubles the set.</li>
+<li>To represent <code>V</code> <strong>distinct values</strong> you need the smallest <code>n</code> with <code>2^n &gt;= V</code>, which is <code>ceil(log2(V))</code>.</li>
+</ul>
+<p><strong>The arithmetic</strong></p>
+<pre><code>2^9  = 512   &lt; 1000     9 bits are not enough
+2^10 = 1024  &gt;= 1000    10 bits are enough
+</code></pre>
+<p>So <strong>10 bits</strong>. 1024 − 1000 = 24 patterns are unused. That is fine. You don't round down.</p>
+<p><strong>What "one bit" means in that sentence.</strong> It is the unit of information for a choice between two equally likely alternatives. It is not "one byte" (8 bits), and it is not "enough to store the number 1" in a programming language (<code>int</code> is 32 or 64 bits because of the type, not because of the value).</p>
+<p><strong>Traps</strong></p>
+<table>
+<thead>
+<tr>
+<th>Question they might switch to</th>
+<th>Answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bits to store the <strong>integer</strong> 1000</td>
+<td>1000 in binary is <code>1111101000</code>, which is <strong>10 bits</strong> if you don't store a sign. With a sign bit in a fixed width, a 16-bit short still holds it. Don't confuse "the number 1000" with "1000 different values." Here they happen to take the same 10 bits: values 0–999 need 10 bits, and the integer 1000 also needs 10 bits (<code>2^9=512</code>, <code>2^10=1024</code>).</td>
+</tr>
+<tr>
+<td>1000 values <strong>including</strong> which encoding</td>
+<td>If the set is fixed and known, 10 bits is the information lower bound. A Python <code>int</code> object is dozens of bytes. The lower bound is not the object size.</td>
+</tr>
+<tr>
+<td>Can you do it in fewer than 10 if some values are rare?</td>
+<td>Entropy can be under 10 <strong>bits on average</strong> with a variable-length code (Huffman). Any single value still needs a distinct code, and the worst case is at least 10 if you use a fixed width. Say the fixed-width answer first, then mention entropy if they ask.</td>
+</tr>
+<tr>
+<td><code>log2(1000)</code></td>
+<td>≈ 9.96, and you <strong>ceil</strong> it. 9.96 bits is not a register.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="q23-and-q24-longest-substring-without-repeating-characters-example-abcadcbed">Q23 and Q24. Longest substring without repeating characters. Example <code>ABCADCBED</code></h2>
+<p><strong>Problem.</strong> Given a string, find the longest <strong>contiguous</strong> substring whose characters are all different. Not a subsequence. Order stays as in the string.</p>
+<p><strong>Brute force.</strong> Every pair <code>(i, j)</code>, check uniqueness with a set. O(n^3) or O(n^2) with care. Fine for n ≤ a few thousand. Not the answer they want once they say "sliding window."</p>
+<p><strong>Why a sliding window works.</strong> The property is monotonic in a useful way: if <code>s[L:R]</code> has a duplicate, then <code>s[L:R+1]</code> also does, so you move <code>L</code> forward. You never need to move <code>L</code> backward. Each index enters and leaves at most once, so the scan is O(n).</p>
+<p><strong>The algorithm</strong></p>
+<ul>
+<li><code>L</code> is the start of the current window.</li>
+<li>A map <code>last[char] = index</code> where we last saw that character.</li>
+<li>For <code>R</code> from 0 to n−1:</li>
+<li>If <code>s[R]</code> was seen at index <code>p</code> and <code>p &gt;= L</code>, the window is dirty. Set <code>L = p + 1</code>.</li>
+<li>Record <code>last[s[R]] = R</code>.</li>
+<li>Window length is <code>R - L + 1</code>. Track the best <code>(L, R)</code>.</li>
+</ul>
+<p><strong>Walk <code>ABCADCBED</code>.</strong> I will keep the best window, not only the length.</p>
+<table>
+<thead>
+<tr>
+<th>R</th>
+<th>char</th>
+<th>last seen inside window?</th>
+<th>L becomes</th>
+<th>window</th>
+<th>length</th>
+<th>best</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>A</td>
+<td>no</td>
+<td>0</td>
+<td><code>A</code></td>
+<td>1</td>
+<td><code>A</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td>B</td>
+<td>no</td>
+<td>0</td>
+<td><code>AB</code></td>
+<td>2</td>
+<td><code>AB</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>C</td>
+<td>no</td>
+<td>0</td>
+<td><code>ABC</code></td>
+<td>3</td>
+<td><code>ABC</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>A</td>
+<td>yes, at 0</td>
+<td>1</td>
+<td><code>BCA</code></td>
+<td>3</td>
+<td><code>ABC</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>D</td>
+<td>no</td>
+<td>1</td>
+<td><code>BCAD</code></td>
+<td>4</td>
+<td><code>BCAD</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>C</td>
+<td>yes, at 2 (≥ L)</td>
+<td>3</td>
+<td><code>ADC</code></td>
+<td>3</td>
+<td><code>BCAD</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>B</td>
+<td>B was at 1, which is <strong>&lt; L</strong>, so it is outside</td>
+<td>3</td>
+<td><code>ADCB</code></td>
+<td>4</td>
+<td><code>BCAD</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>E</td>
+<td>no</td>
+<td>3</td>
+<td><code>ADCBE</code></td>
+<td>5</td>
+<td><code>ADCBE</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>D</td>
+<td>D was at 4 ≥ L</td>
+<td>5</td>
+<td><code>CBED</code></td>
+<td>4</td>
+<td><code>ADCBE</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The longest valid substring is <code>ADCBE</code>, length 5</strong> (indexes 3 through 7). <code>A, D, C, B, E</code> are all different. There is another window of length 4 (<code>BCAD</code>) but nothing longer than 5. The whole string is not valid: it repeats A, C, B, and D.</p>
+<p>The step people miss is index 6. <code>B</code> occurred earlier, but that occurrence is <strong>outside</strong> the window, so it does not count. If you shrink whenever the character exists anywhere in the map, you shrink too far and you can drop <code>ADCBE</code>.</p>
+<pre><code class="language-python">def longest_unique_substring(s: str) -&gt; str:
+    last = {}
+    start = best_l = best_r = 0
+    for r, ch in enumerate(s):
+        if ch in last and last[ch] &gt;= start:
+            start = last[ch] + 1
+        last[ch] = r
+        if r - start &gt; best_r - best_l:
+            best_l, best_r = start, r
+    return s[best_l:best_r + 1]
+</code></pre>
+<p><strong>Complexity.</strong> Time O(n). Space O(min(n, alphabet)). For bytes, the map is at most 256. For Unicode code points it is bounded by the number of distinct characters in the string.</p>
+<p><strong>Assumptions.</strong> Contiguous substring. Case-sensitive (<code>A</code> ≠ <code>a</code>). Empty string returns empty. If there are two answers of the same length, this code keeps the <strong>first</strong> one, because the comparison is <code>&gt;</code>. Say that. If they want the last, use <code>&gt;=</code>.</p>
+<h3 id="likely-follow-ups_2">Likely follow-ups</h3>
+<ul>
+<li><strong>Longest with at most K distinct characters.</strong> Same window, but shrink while the number of distinct characters is greater than K. A counter, not only a last-index map.</li>
+<li><strong>At most K replacements</strong> (Longest Repeating Character Replacement). Window is valid while <code>length - max_freq &lt;= K</code>.</li>
+<li><strong>Smallest window that contains every character of T</strong> (minimum window substring). Grow until valid, then shrink while it stays valid.</li>
+<li><strong>Streaming / huge string.</strong> The same loop. You only store the window and the map, not the prefixes.</li>
+<li><strong>Return the length only.</strong> Same loop, no slice until the end. Slicing each step would make it O(n^2) in the worst case in CPython if you built a new string every time. Track indexes, slice once.</li>
+</ul>
+<hr>
+<h2 id="q25-events-contain-dicts-and-lists-you-repeatedly-test-membership-in-a-huge-corpus-the-service-is-slow-and-you-cannot-add-instances-what-do-you-do">Q25. Events contain dicts and lists. You repeatedly test membership in a huge corpus. The service is slow, and you cannot add instances. What do you do?</h2>
+<p><strong>Assumptions.</strong> "Membership" means "is this id / string in the corpus," possibly thousands of times per event. The corpus is much larger than one event. Horizontal scale is off the table, so the win has to be <strong>less work per event on this machine</strong>: fewer lookups, cheaper lookups, or less data moved. I profile before I pick. A CPU flame graph and a count of lookups per event decide which row below matters.</p>
+<p><strong>The moves, in the order I try them</strong></p>
+<ol>
+<li><strong>Stop scanning.</strong> If the code walks the corpus for every item, that is O(items × corpus). Put the corpus in a <strong>hash set</strong> so each test is O(1) average. Build the set once, not per event.</li>
+<li><strong>Stop doing it one item at a time.</strong> An event with a list of 5,000 ids should be <strong>one</strong> batch membership test (<code>ids &amp; corpus</code> on sets, or one <code>WHERE id IN (...)</code>), not 5,000 round trips. This is the usual win when CPU is low and the service is still slow: you are waiting on the network.</li>
+<li><strong>Only test the distinct ids.</strong> Dedupe the event first. Repeated keys in the dict/list are free once you collapse them.</li>
+<li><strong>Keep the hot subset in memory.</strong> If the corpus does not fit in RAM, cache the ids that actually appear (LRU). A power-law corpus means a small cache catches most tests. One machine can hold a lot of ints: 100 million 8-byte ids is under a gigabyte before overhead. Python objects are much fatter (an <code>int</code> object is ~28 bytes, a set entry more). If the profile says memory traffic, store them in a compact structure: a <code>array</code>/<code>numpy</code> sorted array plus binary search, a <code>roaring</code> bitmap if the ids are integers, or a Rust/Go sidecar. I would say the Python object tax out loud.</li>
+<li><strong>A Bloom filter in front,</strong> if the common answer is "not present." A Bloom filter uses a few bits per element and answers "definitely not" or "maybe." Maybe's are checked against the real set. False positives cost an extra lookup. False negatives do not happen if you sized it. This is the right shape when most event keys miss.</li>
+<li><strong>A trie or a finite-state transducer</strong> if the corpus is strings and you also need prefixes. Not for plain integer ids.</li>
+<li><strong>Don't rebuild the structure per event.</strong> Parse the corpus once. On reload, build a new set and swap the reference. Requests keep using the old one until they finish (copy-on-write / atomic swap). Rebuilding under a lock on the request path is a self-inflicted stall.</li>
+<li><strong>Cheaper comparison.</strong> Intern repeated strings. Normalize the dict once (lowercase, canonical key) so you don't re-walk nested lists on every check.</li>
+<li><strong>If the hot loop is pure Python and the set already fits,</strong> move that loop to a tighter runtime. I would profile first. I have moved hot paths to Go when the per-row tax mattered (columnar batches, no per-row reflection). Same decision here: algorithm first, language second.</li>
+</ol>
+<p><strong>What I would not do first:</strong> add threads and hope. The GIL means threads don't speed a pure-Python CPU loop. They help if the time is spent waiting on the database. Processes can use more cores for a CPU-bound build of the set, but the membership structure then needs to be shared (one process that owns it, or a read-only memory map). And you were told not to scale <strong>out</strong>. Using the other cores on <strong>this</strong> box is still in bounds. I would say that distinction.</p>
+<hr>
+<h2 id="q26-the-corpus-is-in-a-database-how-do-you-optimize-the-repeated-lookups">Q26. The corpus is in a database. How do you optimize the repeated lookups?</h2>
+<p><strong>The bug is almost always the round trip, not the index.</strong> One query per id, each ~1 ms of network, 5,000 ids, is 5 seconds before the database does any real work. That matches a slow service with low CPU.</p>
+<p><strong>What I change</strong></p>
+<ol>
+<li><strong>Batch.</strong> One query per event:</li>
+</ol>
+<pre><code class="language-sql">SELECT id FROM corpus WHERE id = ANY(:ids)
+</code></pre>
+<p>or <code>WHERE id IN (...)</code>. Chunk <code>IN</code> lists (a few thousand ids) so the planner and the packet size stay sane. The result set is the intersection. The code treats "not in the result" as absent.</p>
+<ol start="2">
+<li>
+<p><strong>A set in the process, refreshed on a timer,</strong> if the corpus fits or the hot part fits. The database becomes a refresh source, not a per-event dependency. Staleness is a product decision: say the refresh interval.</p>
+</li>
+<li>
+<p><strong>A local embedded store</strong> (RocksDB, SQLite) if it fits on disk and not in RAM. You pay a local read, not a network round trip. Refresh by file swap or by a versioned table.</p>
+</li>
+<li>
+<p><strong>Covering index</strong> so the batched query is an index-only scan. The row is not fetched.</p>
+</li>
+<li>
+<p><strong>Prepared statements and a sane pool.</strong> Re-planning the same <code>IN</code> query, or opening a connection per lookup, dominates. A pool that is too small queues requests (tail latency). A pool that is too large overwhelms the database. Measure acquire-wait separately from query time.</p>
+</li>
+<li>
+<p><strong>Don't join the event through the database if the event is a JSON blob in the app.</strong> Extract ids in the app, then one batched lookup. Shipping every nested dict into SQL so the database can parse it is extra CPU on the worst tier.</p>
+</li>
+<li>
+<p><strong>Negative caching.</strong> If most ids miss, cache the misses for a short TTL too, or the Bloom filter from Q25, so misses don't all become database reads.</p>
+</li>
+</ol>
+<p><strong>Read replica</strong> is not horizontal scale of <strong>this</strong> service. It is a fair way to take read load off a primary. I would mention it as optional, and not as the first fix. The first fix is fewer queries.</p>
+<hr>
+<h2 id="q27-which-indexes-or-data-structures">Q27. Which indexes or data structures?</h2>
+<p>Pick by the <strong>query shape</strong> and the <strong>id type</strong>. Say that before naming a structure.</p>
+<table>
+<thead>
+<tr>
+<th>You need</th>
+<th>Structure</th>
+<th>Cost</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact membership, corpus fits in RAM</td>
+<td>Hash set</td>
+<td>O(1) average, O(n) memory</td>
+<td>Worst case O(n) if every key collides. Rare with a decent hash.</td>
+</tr>
+<tr>
+<td>Exact membership, integer ids, tighter memory</td>
+<td>Roaring bitmap, or a sorted <code>int64</code> array + binary search</td>
+<td>Bitmap is near O(1) and very small when ids cluster. Binary search is O(log n) and cache-friendly.</td>
+<td>Binary search beats a Python set when the constant factors and memory dominate.</td>
+</tr>
+<tr>
+<td>Exact membership, most answers are no, corpus is huge</td>
+<td>Bloom filter, then a real lookup on "maybe"</td>
+<td>A few bits per key. No false negatives if you don't delete naively.</td>
+<td>Deletes need counting Bloom filters or a rebuild.</td>
+</tr>
+<tr>
+<td>Prefix / autocomplete</td>
+<td>Trie</td>
+<td>O(length)</td>
+<td>Overkill for equality.</td>
+</tr>
+<tr>
+<td>Equality in a database</td>
+<td><strong>B+ tree</strong> unique index on the id</td>
+<td>O(log n) reads, usually a few pages</td>
+<td>The default. Hash indexes exist in Postgres for equality only and are rarely worth it over a B-tree.</td>
+</tr>
+<tr>
+<td>Equality, and you only need the id, not the row</td>
+<td><strong>Covering</strong> index, or the primary key if the id <strong>is</strong> the primary key</td>
+<td>Index-only scan</td>
+<td><code>INCLUDE</code> extra columns if you need them and want to avoid the heap.</td>
+</tr>
+<tr>
+<td>"Any of these 5,000 ids"</td>
+<td>One B-tree index, <strong>one</strong> <code>IN</code> / <code>ANY</code> query</td>
+<td>The planner turns it into a series of index probes or a bitmap</td>
+<td>An index does not help if you issue 5,000 separate queries.</td>
+</tr>
+<tr>
+<td>Range ("ids from A to B")</td>
+<td>B-tree, not a hash index, not a Bloom filter</td>
+<td>O(log n + k)</td>
+<td>Bloom cannot do ranges.</td>
+</tr>
+<tr>
+<td>Fuzzy / typo</td>
+<td>n-gram index or a trigram GIN index</td>
+<td>Heavier</td>
+<td>Only if "membership" is not exact. Don't add it for exact ids.</td>
+</tr>
+<tr>
+<td>Full text</td>
+<td>Inverted index</td>
+<td></td>
+<td>Wrong tool for an id lookup.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Primary key vs secondary index.</strong> If the corpus table's primary key is the id, the lookup is already indexed. A second index on the same column is pure write cost. I would check that before adding one.</p>
+<p><strong>Write cost.</strong> Every index slows inserts. A corpus that is reloaded in bulk should build the index <strong>after</strong> the load, or load into a new table and swap. Same idea as building a new hash set and swapping the pointer.</p>
+<h3 id="likely-follow-up-hash-index-vs-b-tree-vs-bloom-in-one-sentence-each">Likely follow-up: hash index vs B-tree vs Bloom, in one sentence each</h3>
+<ul>
+<li>B-tree: ordered, equality and range, the default on disk.</li>
+<li>Hash index: equality only, no range, no ordering.</li>
+<li>Bloom: probabilistic, tiny, "definitely not here," cannot return the row by itself.</li>
+<li>In-memory hash set: exact, RAM, the right tool when the corpus fits and the test is on the request path.</li>
+</ul>
+<h3 id="likely-follow-up-how-do-you-prove-the-change-worked">Likely follow-up: how do you prove the change worked?</h3>
+<p>Lookups per event (should drop from thousands to one), P50/P99, CPU, and database QPS. If P99 doesn't move, the membership test was not the tail, and I go back to the profile instead of adding a second cache.</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

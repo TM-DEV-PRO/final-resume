@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>08a_linux_tcp_troubleshooting — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/08a_linux_tcp_troubleshooting.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#08a-linux-tcp-and-production-troubleshooting">08a. Linux, TCP, and production troubleshooting</a>
+<a class="lvl2" href="#definitions-you-need-before-question-1">Definitions you need before question 1</a>
+<a class="lvl2" href="#q1-a-process-cannot-bind-to-a-port-what-would-you-check">Q1. A process cannot bind to a port. What would you check?</a>
+<a class="lvl2" href="#q2-what-permissions-can-prevent-a-bind-how-do-you-check-them">Q2. What permissions can prevent a bind? How do you check them?</a>
+<a class="lvl2" href="#q3-time_wait-vs-close_wait-vs-fin_wait">Q3. TIME_WAIT vs CLOSE_WAIT vs FIN_WAIT</a>
+<a class="lvl2" href="#q4-what-tcp-flags-indicate-time_wait-close_wait-and-fin_wait">Q4. What TCP flags indicate TIME_WAIT, CLOSE_WAIT, and FIN_WAIT?</a>
+<a class="lvl2" href="#q5-when-does-a-connection-enter-close_wait-what-does-the-peer-send">Q5. When does a connection enter CLOSE_WAIT? What does the peer send?</a>
+<a class="lvl2" href="#q6-when-does-a-connection-enter-fin_wait-what-does-your-server-send">Q6. When does a connection enter FIN_WAIT? What does your server send?</a>
+<a class="lvl2" href="#q7-tcp-connection-closing-flow-with-fin-and-ack">Q7. TCP connection-closing flow with FIN and ACK</a>
+<a class="lvl2" href="#q8-syn-backlog-vs-accept-queue">Q8. SYN backlog vs accept queue</a>
+<a class="lvl2" href="#q9-what-happens-to-a-connection-in-each-queue">Q9. What happens to a connection in each queue?</a>
+<a class="lvl2" href="#q28-p99-is-about-10-seconds-connections-fail-sometimes-cpu-is-20-load-average-is-30-no-recent-deploy-how-do-you-troubleshoot">Q28. P99 is about 10 seconds, connections fail sometimes, CPU is ~20%, load average is ~30, no recent deploy. How do you troubleshoot?</a>
+<a class="lvl2" href="#q29-if-cpu-isnt-high-what-else-causes-connection-failures">Q29. If CPU isn't high, what else causes connection failures?</a>
+<a class="lvl2" href="#q30-how-do-you-check-memory-sockets-fds-pools-dns-network-and-downstreams">Q30. How do you check memory, sockets, fds, pools, DNS, network, and downstreams?</a>
+<a class="lvl2" href="#q31-what-do-time_wait-close_wait-and-fin_wait-tell-you-while-troubleshooting">Q31. What do TIME_WAIT, CLOSE_WAIT, and FIN_WAIT tell you while troubleshooting?</a>
+<a class="lvl2" href="#q32-how-do-you-inspect-these-states-with-ss-and-lsof">Q32. How do you inspect these states with ss and lsof?</a></nav>
+<main><h1 id="08a-linux-tcp-and-production-troubleshooting">08a. Linux, TCP, and production troubleshooting</h1>
+<p>Questions 1–9 and 28–32 from the OCI loop, plus the follow-ups that sit on the same path: handshake, state machine, listen backlog, socket exhaustion, and the commands.</p>
+<div class="callout note">
+<p><b>How to answer this drill.</b> Name the errno or the state first, then the side that sent the segment, then the command that proves it. TIME_WAIT, CLOSE_WAIT, and FIN_WAIT are <b>states</b>, not TCP flags. The flags that move the state machine are SYN, ACK, FIN, and RST.</p>
+</div>
+<hr>
+<h2 id="definitions-you-need-before-question-1">Definitions you need before question 1</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Socket</strong></td>
+<td>The kernel object for one endpoint of a communication channel. A TCP socket is identified by the 4-tuple <code>(local IP, local port, remote IP, remote port)</code>. A listening socket is <code>(local IP, local port, *, *)</code>.</td>
+</tr>
+<tr>
+<td><strong>Bind</strong></td>
+<td>Assign a local address and port to a socket (<code>bind()</code>). This happens <strong>before</strong> <code>listen()</code>. It does not send any packets.</td>
+</tr>
+<tr>
+<td><strong>Listen</strong></td>
+<td>Mark the socket passive and create the accept queue (<code>listen(fd, backlog)</code>).</td>
+</tr>
+<tr>
+<td><strong>Port</strong></td>
+<td>A 16-bit number, 0–65535. Ports <strong>0–1023</strong> are privileged (well-known).</td>
+</tr>
+<tr>
+<td><strong>errno</strong></td>
+<td>The integer the kernel returns on failure. The message (<code>Address already in use</code>) is just <code>strerror</code>. Always ask which errno.</td>
+</tr>
+<tr>
+<td><strong>File descriptor (fd)</strong></td>
+<td>An integer index into the process's open-file table. Sockets, files, and pipes all consume fds.</td>
+</tr>
+<tr>
+<td><strong>netns</strong></td>
+<td>Network namespace. Containers have their own interfaces, routes, and port space. "Port free on the host" does not mean "port free in the pod."</td>
+</tr>
+<tr>
+<td><strong>MSS / MTU</strong></td>
+<td>Maximum segment size / maximum transmission unit. Not the cause of a bind failure. Relevant later for latency and black holes.</td>
+</tr>
+<tr>
+<td><strong>MSL</strong></td>
+<td>Maximum segment lifetime. The longest a segment is assumed to live in the network. TCP uses <strong>2×MSL</strong> (commonly 60s, so TIME_WAIT is often 60s; Linux <code>tcp_fin_timeout</code> is a different timer).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Assumptions to say out loud:</strong> IPv4 or IPv6, TCP not UDP, the process is the one calling <code>bind</code> (not a sidecar), and you can get the errno and the command line.</p>
+<hr>
+<h2 id="q1-a-process-cannot-bind-to-a-port-what-would-you-check">Q1. A process cannot bind to a port. What would you check?</h2>
+<p><strong>What they are testing:</strong> a checklist ordered by likelihood, tied to errno, not a random list of tools.</p>
+<p><strong>The answer</strong></p>
+<p>I ask for the errno first. <code>bind()</code> fails locally. No peer is involved. The usual causes, in the order I check them:</p>
+<ol>
+<li><strong><code>EADDRINUSE</code> — something is already bound.</strong> Another process, a previous instance that didn't die, or systemd socket activation. Check listeners, not all sockets:</li>
+</ol>
+<pre><code class="language-bash">ss -lptn 'sport = :8080'
+# or, if ss is missing:
+lsof -nP -iTCP:8080 -sTCP:LISTEN
+</code></pre>
+<p>A socket in <code>TIME_WAIT</code> is <strong>not</strong> a listener. It rarely blocks <code>bind</code> of a <strong>new server</strong> that uses <code>SO_REUSEADDR</code> (the default in most servers). It blocks <code>bind</code> when you also try to reuse the full 4-tuple, which is a client problem more than a server problem. See Q3.</p>
+<ol start="2">
+<li>
+<p><strong><code>EACCES</code> — privilege.</strong> Port &lt; 1024 and the process is not root and does not have <code>CAP_NET_BIND_SERVICE</code>. See Q2.</p>
+</li>
+<li>
+<p><strong><code>EADDRNOTAVAIL</code> — that IP is not local.</strong> The config says <code>bind 10.0.0.5</code> but the interface has a different address, or the address moved after a failover. Check <code>ip -4 addr</code>.</p>
+</li>
+<li>
+<p><strong>IPv4/IPv6 clash.</strong> Binding <code>::</code> with <code>IPV6_V6ONLY=0</code> also claims the IPv4 port. A second process binding <code>0.0.0.0:8080</code> gets <code>EADDRINUSE</code>. Check both families:</p>
+</li>
+</ol>
+<pre><code class="language-bash">ss -lptn | awk '$4 ~ /:8080$/'
+sysctl net.ipv6.bindv6only
+</code></pre>
+<ol start="5">
+<li>
+<p><strong>Wrong network namespace.</strong> The port is free in the host netns and taken inside the container, or the process is in a netns that has no interface. <code>ip netns</code>, <code>nsenter -t PID -n ss -lptn</code>, or <code>ls -l /proc/PID/ns/net</code>.</p>
+</li>
+<li>
+<p><strong>Mandatory access control.</strong> SELinux or AppArmor can deny <code>bind</code> even when the port is free. errno is often <code>EACCES</code>. <code>ausearch -m avc -ts recent</code> or <code>dmesg</code>, and <code>aa-status</code>.</p>
+</li>
+<li>
+<p><strong>UNIX socket, not TCP.</strong> If the "port" is a filesystem path (<code>/var/run/app.sock</code>), failure is directory permissions, a leftover inode, or the path length. <code>ls -l</code> on the socket and its directory. This is not a TCP problem.</p>
+</li>
+<li>
+<p><strong>Config, not the kernel.</strong> The process is binding a different port than the one you are probing (env var vs flag). Read <code>/proc/PID/cmdline</code> and the logs for the address it actually passed to <code>bind</code>.</p>
+</li>
+</ol>
+<p><strong>What I do not check first:</strong> firewall rules. <code>iptables</code> / security lists drop <strong>packets</strong>. They do not make <code>bind()</code> fail. A firewall explains "clients cannot connect," not "bind failed."</p>
+<pre><code>bind() failure
+   |
+   +-- EADDRINUSE ---- ss -lptn sport=:PORT  (LISTEN, both v4 and v6)
+   +-- EACCES -------- port &lt; 1024? caps? SELinux?
+   +-- EADDRNOTAVAIL - ip addr, is that IP on this host / netns?
+   +-- other --------- netns, leftover unix socket, wrong binary/config
+</code></pre>
+<hr>
+<h2 id="q2-what-permissions-can-prevent-a-bind-how-do-you-check-them">Q2. What permissions can prevent a bind? How do you check them?</h2>
+<p><strong>Definitions</strong></p>
+<ul>
+<li><strong>Privileged port:</strong> 0–1023. Historically only root could bind them, so a remote client can trust that "this is really SSH" and not a user process.</li>
+<li><strong>Capability:</strong> a slice of root. <code>CAP_NET_BIND_SERVICE</code> allows bind on privileged ports without full root. Capabilities live on the thread (<code>CapEff</code> = effective) and can be on the file (<code>setcap</code>).</li>
+<li><strong><code>net.ipv4.ip_unprivileged_port_start</code>:</strong> Linux sysctl. Ports <strong>at or above</strong> this value are unprivileged. Default is 1024. If an admin set it to 0, every port is unprivileged. If they set it to 8080, then 8080 itself is still privileged.</li>
+<li><strong>SELinux / AppArmor:</strong> policy can deny the <code>name_bind</code> permission even for port 8080.</li>
+<li><strong>Filesystem DAC</strong> applies to UNIX-domain sockets, not to TCP port numbers.</li>
+</ul>
+<p><strong>The answer</strong></p>
+<p>Three permission layers:</p>
+<ol>
+<li><strong>UID / capability for ports below <code>ip_unprivileged_port_start</code>.</strong></li>
+</ol>
+<pre><code class="language-bash">sysctl net.ipv4.ip_unprivileged_port_start
+id                      # uid, groups
+grep CapEff /proc/PID/status
+capsh --decode=$(awk '/CapEff/ {print $2}' /proc/PID/status)
+getcap $(readlink -f /proc/PID/exe)    # file capability on the binary
+</code></pre>
+<p><code>cap_net_bind_service</code> in <code>CapEff</code> is what matters at runtime. A file capability does nothing if the process dropped it, or if a container runtime cleared the bounding set. In OCI / Docker, the default capability set often <strong>includes</strong> <code>NET_BIND_SERVICE</code>, but a hardened container drops it. Then port 443 fails with <code>EACCES</code> even though the image "works on my laptop as root."</p>
+<ol start="2">
+<li><strong>MAC.</strong></li>
+</ol>
+<pre><code class="language-bash">ps -eZ | grep PID          # SELinux context
+ausearch -m avc -ts recent | grep -i bind
+aa-status                  # AppArmor
+</code></pre>
+<ol start="3">
+<li><strong>UNIX socket path mode.</strong> <code>stat</code> the directory. The process needs write+execute on the directory to <code>bind()</code> a pathname socket.</li>
+</ol>
+<p><strong>Related: how a service should bind 443 without running as root.</strong> Bind the privileged port as root (or via systemd socket activation, or <code>setcap cap_net_bind_service=+ep</code>), then <code>setuid</code> to an unprivileged user. systemd <code>User=</code> plus <code>AmbientCapabilities=CAP_NET_BIND_SERVICE</code> is the modern form. Do not leave the whole process as root just to bind a port.</p>
+<h3 id="likely-follow-up-so_reuseaddr-vs-so_reuseport">Likely follow-up: <code>SO_REUSEADDR</code> vs <code>SO_REUSEPORT</code></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>What it allows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><code>SO_REUSEADDR</code></strong></td>
+<td>Bind a port that still has <code>TIME_WAIT</code> sockets from an old 4-tuple. Also lets a new listener start after a crash. It does <strong>not</strong> let two listeners share the port.</td>
+</tr>
+<tr>
+<td><strong><code>SO_REUSEPORT</code></strong></td>
+<td>Multiple sockets (usually multiple processes) bind the <strong>same</strong> IP and port. The kernel distributes new connections. Each socket needs the option set. Used for multi-process servers so they don't share one accept queue.</td>
+</tr>
+</tbody>
+</table>
+<p><code>SO_REUSEADDR</code> does not fix <code>EACCES</code>. It fixes a narrow <code>EADDRINUSE</code>.</p>
+<h3 id="likely-follow-up-eaddrinuse-on-a-client-not-a-server">Likely follow-up: <code>EADDRINUSE</code> on a client, not a server</h3>
+<p>Outbound connections use an <strong>ephemeral port</strong>. The client 4-tuple must be unique. If every ephemeral port to one destination is stuck in <code>TIME_WAIT</code>, <code>connect()</code> returns <code>EADDRINUSE</code>. Check:</p>
+<pre><code class="language-bash">sysctl net.ipv4.ip_local_port_range
+ss -tan state time-wait | awk '{print $4}' | wc -l
+</code></pre>
+<p>Range default is often <code>32768–60999</code> (~28k ports) <strong>per destination IP</strong>. A client opening and closing connections faster than 2×MSL exhausts it. Fixes: connection pooling (reuse TCP), <code>tcp_tw_reuse</code> (safe only for <strong>outbound</strong>, and only when timestamps are on), more source IPs, or HTTP keep-alive. Do not "fix" this by killing <code>TIME_WAIT</code>. That state is protecting you from old segments.</p>
+<hr>
+<h2 id="q3-time_wait-vs-close_wait-vs-fin_wait">Q3. TIME_WAIT vs CLOSE_WAIT vs FIN_WAIT</h2>
+<p><strong>Definitions</strong></p>
+<p>TCP close is a <strong>four-way</strong> handshake because each direction has its own stream. Either side can close its direction independently (half-close).</p>
+<ul>
+<li><strong>Active closer:</strong> the side whose application calls <code>close()</code> / <code>shutdown(SHUT_WR)</code> <strong>first</strong>. It sends the first FIN.</li>
+<li><strong>Passive closer:</strong> the side that receives that FIN first.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Who is in it</th>
+<th>What is true</th>
+<th>Healthy?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FIN_WAIT_1</strong></td>
+<td>Active closer</td>
+<td>We have <strong>sent FIN</strong>. Waiting for ACK of that FIN.</td>
+<td>Brief. A pile of them means our FINs are not being ACKed (loss, or peer is gone).</td>
+</tr>
+<tr>
+<td><strong>FIN_WAIT_2</strong></td>
+<td>Active closer</td>
+<td>Our FIN is <strong>ACKed</strong>. Waiting for the peer's FIN.</td>
+<td>Brief, unless the peer half-closes and keeps its write side open. Linux will time this out (<code>tcp_fin_timeout</code>, default 60s) if the socket was fully closed.</td>
+</tr>
+<tr>
+<td><strong>CLOSE_WAIT</strong></td>
+<td>Passive closer</td>
+<td>We have <strong>received</strong> the peer's FIN and ACKed it. <strong>Our application has not called <code>close()</code> yet.</strong> The read side is done (EOF). The write side is still open.</td>
+<td>A <strong>growing</strong> CLOSE_WAIT count is an application bug: we leak sockets. The kernel will not leave this state until the app closes.</td>
+</tr>
+<tr>
+<td><strong>TIME_WAIT</strong></td>
+<td>Active closer, after the full handshake</td>
+<td>We have seen the peer's FIN and sent the <strong>final ACK</strong>. We wait 2×MSL so (1) we can retransmit that ACK if it was lost, and (2) stray segments from this 4-tuple cannot be accepted by a new connection.</td>
+<td>Normal on the side that closes first. A large count on a <strong>client</strong> can exhaust ephemeral ports. A large count on a <strong>server</strong> usually means the server is the active closer (it closes first) and churn is high. That is often fine.</td>
+</tr>
+<tr>
+<td><strong>LAST_ACK</strong></td>
+<td>Passive closer</td>
+<td>App has closed, we sent our FIN, waiting for the final ACK.</td>
+<td>Brief.</td>
+</tr>
+<tr>
+<td><strong>CLOSING</strong></td>
+<td>Both sides sent FIN at the same time</td>
+<td>We sent FIN, and we received the peer's FIN before ACK of ours.</td>
+<td>Rare. Simultaneous close.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The one-line version they want</strong></p>
+<ul>
+<li><strong>CLOSE_WAIT:</strong> the <strong>other side</strong> closed, and <strong>we have not</strong>. Bug if it sticks.</li>
+<li><strong>FIN_WAIT:</strong> <strong>we</strong> closed, and we are waiting for them to finish the handshake.</li>
+<li><strong>TIME_WAIT:</strong> <strong>we</strong> closed first, the handshake is done, and we are holding the 4-tuple for 2×MSL on purpose.</li>
+</ul>
+<pre><code>Who called close() first?
+        |
+        +-- we did ---- FIN_WAIT_1 --&gt; FIN_WAIT_2 --&gt; TIME_WAIT --&gt; CLOSED
+        |
+        +-- they did -- CLOSE_WAIT --&gt; (app close) --&gt; LAST_ACK --&gt; CLOSED
+</code></pre>
+<hr>
+<h2 id="q4-what-tcp-flags-indicate-time_wait-close_wait-and-fin_wait">Q4. What TCP flags indicate TIME_WAIT, CLOSE_WAIT, and FIN_WAIT?</h2>
+<p><strong>What they are testing:</strong> whether you confuse states with flags. This was the "technically" follow-up.</p>
+<p><strong>The answer</strong></p>
+<p>No flag means "this socket is in TIME_WAIT." Flags are bits on a <strong>segment</strong>. States are memory in the <strong>kernel</strong> for a TCB (transmission control block). <code>ss</code> prints the state. <code>tcpdump</code> prints flags.</p>
+<p>The flags that <strong>cause</strong> the transitions:</p>
+<table>
+<thead>
+<tr>
+<th>State you enter</th>
+<th>Segment that causes it</th>
+<th>Flags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FIN_WAIT_1</strong></td>
+<td><strong>Local</strong> stack sends FIN after the app closes. Not something we receive.</td>
+<td>outbound <code>FIN</code> + <code>ACK</code> (FIN piggybacks on an ACK of data already seen)</td>
+</tr>
+<tr>
+<td><strong>CLOSE_WAIT</strong></td>
+<td>We <strong>receive</strong> the peer's FIN</td>
+<td>inbound <code>FIN</code> (almost always <code>FIN+ACK</code>). We then <strong>send</strong> <code>ACK</code>.</td>
+</tr>
+<tr>
+<td><strong>FIN_WAIT_2</strong></td>
+<td>We <strong>receive</strong> ACK of our FIN</td>
+<td>inbound <code>ACK</code></td>
+</tr>
+<tr>
+<td><strong>TIME_WAIT</strong></td>
+<td>We <strong>receive</strong> the peer's FIN while in FIN_WAIT_2, and we send the final ACK</td>
+<td>inbound <code>FIN+ACK</code>, outbound <code>ACK</code></td>
+</tr>
+<tr>
+<td>any → <strong>CLOSED</strong> immediately</td>
+<td><strong>RST</strong></td>
+<td><code>RST</code> aborts. No TIME_WAIT.</td>
+</tr>
+</tbody>
+</table>
+<p>Header bits (the ones to name):</p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Bit meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SYN</strong></td>
+<td>Synchronize sequence numbers. Handshake only.</td>
+</tr>
+<tr>
+<td><strong>ACK</strong></td>
+<td>Acknowledgment field is valid. Set on almost every segment after the first SYN.</td>
+</tr>
+<tr>
+<td><strong>FIN</strong></td>
+<td>Sender is done sending. One direction is closed. Consumes one sequence number.</td>
+</tr>
+<tr>
+<td><strong>RST</strong></td>
+<td>Abort. No graceful close.</td>
+</tr>
+<tr>
+<td><strong>PSH</strong></td>
+<td>Push buffered data up to the app. Not part of close.</td>
+</tr>
+<tr>
+<td><strong>URG</strong></td>
+<td>Urgent pointer. Ignore in this interview unless asked.</td>
+</tr>
+</tbody>
+</table>
+<p>So the precise sentence is: <strong>FIN and ACK move you through close. RST skips it. The state name is not a flag.</strong></p>
+<hr>
+<h2 id="q5-when-does-a-connection-enter-close_wait-what-does-the-peer-send">Q5. When does a connection enter CLOSE_WAIT? What does the peer send?</h2>
+<p><strong>Answer</strong></p>
+<p>The connection enters <strong>CLOSE_WAIT</strong> on <strong>our</strong> host when the <strong>peer sends a FIN</strong> (the peer's application closed its write side) and our kernel has ACKed it.</p>
+<pre><code>peer app                peer TCP                 our TCP                 our app
+   | close()               |                        |                       |
+   |----------------------&gt;| FIN,ACK  seq=X         |                       |
+   |                       |-----------------------&gt;|                       |
+   |                       |                        | ACK seq=X+1           |
+   |                       |&lt;-----------------------|                       |
+   |                       |                        | state = CLOSE_WAIT    |
+   |                       |                        | read() returns 0 (EOF)|
+   |                       |                        |----------------------&gt;|
+   |                       |                        |                       |
+   |                       |                        |  ... until we close() |
+   |                       |                        |  we stay in CLOSE_WAIT|
+</code></pre>
+<p><strong>Assumptions:</strong> the socket was <code>ESTABLISHED</code>. A FIN from a host we have no TCB for gets a RST, not CLOSE_WAIT.</p>
+<p><strong>What the peer sent:</strong> a segment with <strong>FIN set</strong>. The ACK bit is usually also set, because the peer is still acknowledging our data. The FIN occupies one sequence number, so the ACK we return is <code>their_seq + 1</code>.</p>
+<p><strong>Why it stays there:</strong> CLOSE_WAIT means "I know they are done sending. I have not said I am done." The kernel is waiting for <strong>our process</strong> to <code>close()</code> or <code>shutdown(SHUT_WR)</code>, which sends our FIN and moves the socket to <code>LAST_ACK</code>. If the process leaks the fd (forgot <code>close</code>, a request handler returned without releasing the connection, a reference cycle in a connection pool), CLOSE_WAIT grows until the process hits its fd limit. That matches a production symptom in Q28–Q32.</p>
+<p><strong>How you see it</strong></p>
+<pre><code class="language-bash">ss -tanp state close-wait
+# Recv-Q on a CLOSE_WAIT socket is unread data. The bug is still the missing close().
+</code></pre>
+<hr>
+<h2 id="q6-when-does-a-connection-enter-fin_wait-what-does-your-server-send">Q6. When does a connection enter FIN_WAIT? What does your server send?</h2>
+<p><strong>Answer</strong></p>
+<p>There are two states. Don't collapse them.</p>
+<p><strong>FIN_WAIT_1.</strong> Our application calls <code>close()</code> or <code>shutdown(SHUT_WR)</code> while we are <code>ESTABLISHED</code> (or <code>CLOSE_WAIT</code>, but that goes to <code>LAST_ACK</code>, not FIN_WAIT). The <strong>server sends FIN</strong> (typically <code>FIN+ACK</code>). We are now the active closer.</p>
+<p><strong>FIN_WAIT_2.</strong> The peer ACKs that FIN. We have sent our last byte. We are waiting for the peer to send <strong>its</strong> FIN.</p>
+<pre><code>our app                 our TCP                  peer TCP
+  | close()               |                        |
+  |----------------------&gt;| FIN,ACK                |
+  |                       |-----------------------&gt;|
+  |                       | state = FIN_WAIT_1     |
+  |                       |        ACK             |
+  |                       |&lt;-----------------------|
+  |                       | state = FIN_WAIT_2     |
+  |                       |        FIN,ACK         |
+  |                       |&lt;-----------------------|
+  |                       | ACK                    |
+  |                       |-----------------------&gt;|
+  |                       | state = TIME_WAIT      |
+</code></pre>
+<p><strong>What the server sends to enter FIN_WAIT_1:</strong> a segment with the <strong>FIN</strong> flag. It does not enter FIN_WAIT because it received something. It enters FIN_WAIT because <strong>it</strong> sent FIN.</p>
+<p>If they say "FIN_WAIT" without a number, answer both, and say FIN_WAIT_1 is "FIN is on the wire," FIN_WAIT_2 is "FIN is acknowledged, their FIN has not arrived."</p>
+<hr>
+<h2 id="q7-tcp-connection-closing-flow-with-fin-and-ack">Q7. TCP connection-closing flow with FIN and ACK</h2>
+<p><strong>Assumptions:</strong> normal active close by the client, no data left unsent, no loss, no simultaneous close. Sequence numbers are simplified.</p>
+<pre><code> client (active)                         server (passive)
+ ESTABLISHED                             ESTABLISHED
+
+      FIN, ACK   seq=100
+      ----------------------------------&gt;
+ FIN_WAIT_1
+                                         ACK        ack=101
+      &lt;----------------------------------
+ FIN_WAIT_2                              CLOSE_WAIT
+                                         (server app must close)
+                                         FIN, ACK   seq=500
+      &lt;----------------------------------
+                                         LAST_ACK
+      ACK        ack=501
+      ----------------------------------&gt;
+ TIME_WAIT (2 x MSL)                     CLOSED
+ CLOSED
+</code></pre>
+<p><strong>Why four segments, not two.</strong> Each direction closes independently. The ACK of the first FIN only means "I received your FIN." It does not mean "I am done sending." The server can still send data after it ACKs the client's FIN (half-close). Only the server's own FIN ends its direction.</p>
+<p><strong>Loss, because they will ask:</strong></p>
+<ul>
+<li>If the <strong>final ACK</strong> is lost, the server retransmits its FIN (it is in <code>LAST_ACK</code>). The client is still in <code>TIME_WAIT</code> and resends the ACK. That is the reason TIME_WAIT exists.</li>
+<li>If the client's <strong>first FIN</strong> is lost, the client retransmits it and stays in <code>FIN_WAIT_1</code>.</li>
+<li><strong>RST</strong> anywhere aborts both sides. No TIME_WAIT. You see this when a process dies hard, or when a packet arrives for a port with no socket, or when <code>tcp_abort_on_overflow</code> is set.</li>
+</ul>
+<p><strong>Simultaneous close</strong> (both call <code>close()</code> before either sees a FIN):</p>
+<pre><code> both ESTABLISHED
+ both send FIN
+ both enter FIN_WAIT_1
+ both receive FIN before ACK -&gt; CLOSING
+ both receive ACK -&gt; TIME_WAIT
+</code></pre>
+<h3 id="likely-follow-up-full-state-machine-including-the-handshake">Likely follow-up: full state machine including the handshake</h3>
+<pre><code> CLOSED
+   |  connect()                         |  bind()+listen()
+   |  send SYN                          |  passive open
+   v                                    v
+ SYN_SENT                             LISTEN
+   |  recv SYN+ACK                     |  recv SYN, send SYN+ACK
+   |  send ACK                         v
+   |                              SYN_RCVD
+   v                                    |  recv ACK
+ ESTABLISHED &lt;--------------------------+
+   |
+   |  close() sends FIN          recv FIN, send ACK
+   v                                    v
+ FIN_WAIT_1                        CLOSE_WAIT
+   |  recv ACK of FIN                  |  app close() sends FIN
+   v                                    v
+ FIN_WAIT_2                         LAST_ACK
+   |  recv FIN, send ACK               |  recv ACK
+   v                                    v
+ TIME_WAIT                           CLOSED
+   |  2MSL
+   v
+ CLOSED
+</code></pre>
+<p><strong>Handshake flags</strong></p>
+<ol>
+<li>Client → server: <code>SYN</code>, seq=J</li>
+<li>Server → client: <code>SYN+ACK</code>, seq=K, ack=J+1</li>
+<li>Client → server: <code>ACK</code>, ack=K+1</li>
+</ol>
+<p>After step 3 the connection is <strong>established</strong>. It sits in the <strong>accept queue</strong> until the server calls <code>accept()</code>. The handshake does not require <code>accept()</code> to complete. That is Q8.</p>
+<h3 id="likely-follow-up-tcpdump-one-liners">Likely follow-up: <code>tcpdump</code> one-liners</h3>
+<pre><code class="language-bash">tcpdump -ni any -tttt &quot;tcp port 8080 and (tcp[tcpflags] &amp; (tcp-fin|tcp-syn|tcp-rst) != 0)&quot;
+</code></pre>
+<p>You should be able to point at a line and say "that FIN moved the client to FIN_WAIT_1 and the server toward CLOSE_WAIT."</p>
+<hr>
+<h2 id="q8-syn-backlog-vs-accept-queue">Q8. SYN backlog vs accept queue</h2>
+<p><strong>Definitions</strong></p>
+<p>Linux has <strong>two</strong> queues for a listening socket. People say "the backlog" and mean one of them. Split them.</p>
+<table>
+<thead>
+<tr>
+<th>Queue</th>
+<th>Also called</th>
+<th>Who is in it</th>
+<th>Kernel structure</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SYN backlog</strong></td>
+<td>request socket queue, incomplete connection queue</td>
+<td>Handshake <strong>not</strong> finished. SYN received, SYN-ACK sent, final ACK not seen.</td>
+<td><code>request_sock</code></td>
+<td><code>tcp_max_syn_backlog</code> (default often 128, 1024, or 4096). Also capped with the listen backlog in modern kernels.</td>
+</tr>
+<tr>
+<td><strong>Accept queue</strong></td>
+<td>completed connection queue</td>
+<td>Handshake <strong>finished</strong>. Waiting for the application to <code>accept()</code>.</td>
+<td>full socket, may already hold data</td>
+<td><code>min(somaxconn, backlog argument to listen())</code>. <code>somaxconn</code> default was 128 for years; many distros now set 4096. The app's <code>listen(fd, N)</code> cannot exceed <code>somaxconn</code>.</td>
+</tr>
+</tbody>
+</table>
+<pre><code> client                kernel listener                      application
+   | SYN                 |                                    |
+   |--------------------&gt;|  [ SYN backlog ]                   |
+   |&lt;--------------------|  SYN-ACK                           |
+   | ACK                 |                                    |
+   |--------------------&gt;|  handshake done                    |
+   |                     |  move to [ accept queue ]          |
+   |                     |                                    | accept()
+   |                     |-----------------------------------&gt;| new fd
+   | data ...            |                                    |
+</code></pre>
+<p><strong><code>ss</code> on a LISTEN socket is backwards from what people guess.</strong> For a socket in state <code>LISTEN</code>:</p>
+<ul>
+<li><strong>Recv-Q</strong> = current <strong>accept queue</strong> depth (completed, not yet accepted).</li>
+<li><strong>Send-Q</strong> = the <strong>max</strong> accept queue (the backlog).</li>
+</ul>
+<pre><code class="language-bash">ss -lnt
+# State  Recv-Q  Send-Q  Local Address:Port
+# LISTEN  0       4096    0.0.0.0:8080
+# Recv-Q climbing toward Send-Q  =&gt; app is not accepting fast enough
+
+sysctl net.core.somaxconn
+sysctl net.ipv4.tcp_max_syn_backlog
+sysctl net.ipv4.tcp_abort_on_overflow
+sysctl net.ipv4.tcp_syncookies
+</code></pre>
+<p>The application's listen backlog is in <code>/proc/PID/net/tcp</code> or, easier, in the server's config (<code>backlog</code> in Go's <code>net.Listen</code>, nginx <code>backlog=</code>, Python <code>socket.listen</code>). Go's default listen backlog is <code>somaxconn</code>.</p>
+<hr>
+<h2 id="q9-what-happens-to-a-connection-in-each-queue">Q9. What happens to a connection in each queue?</h2>
+<p><strong>SYN backlog</strong></p>
+<ul>
+<li>Kernel has <strong>no file descriptor</strong> for the application. The app cannot read this connection.</li>
+<li>Kernel retransmits SYN-ACK (<code>tcp_synack_retries</code>, often 5, over tens of seconds) until the client's ACK arrives or retries run out.</li>
+<li>If the queue is full:</li>
+<li>With <strong>SYN cookies</strong> enabled (default on many distros when the queue overflows): the kernel does not store the request. It encodes the state in the SYN-ACK sequence number. The connection is completed only if a valid ACK comes back. This survives a SYN flood without storing a TCB per spoofed SYN. Cost: some TCP options can be dropped on the cookie path.</li>
+<li>Without cookies: the SYN is <strong>dropped</strong>. The client retransmits. You do not RST, because a RST tells the attacker the port is open and is also wrong for a spoofed source.</li>
+</ul>
+<p><strong>Accept queue</strong></p>
+<ul>
+<li>The connection <strong>is established</strong>. The client can already send data. That data sits in the socket buffer.</li>
+<li>The application has <strong>no fd</strong> until <code>accept()</code>.</li>
+<li>If the queue is full when the final ACK arrives:</li>
+<li>Default (<code>tcp_abort_on_overflow=0</code>): the kernel <strong>drops the ACK</strong>. The client thinks the handshake stalled and retransmits the ACK. From the client's view this is a timeout, not a clean refusal. This is a classic "intermittent connection failure" with CPU idle.</li>
+<li><code>tcp_abort_on_overflow=1</code>: the kernel sends <strong>RST</strong>. The client fails fast. Easier to see, harsher.</li>
+<li>You fix an overflowing accept queue by accepting faster (more workers, less work before <code>accept</code>, a dedicated accept loop), or by raising the backlog <strong>and</strong> <code>somaxconn</code>, or by shedding load in front (LB). Raising the backlog without making <code>accept()</code> faster only delays the failure.</li>
+</ul>
+<p><strong>Client-side view</strong></p>
+<table>
+<thead>
+<tr>
+<th>Where it died</th>
+<th>What the client sees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SYN dropped</td>
+<td>SYN retransmits, then <code>ETIMEDOUT</code> (often ~3–127 seconds depending on <code>tcp_syn_retries</code>)</td>
+</tr>
+<tr>
+<td>Stuck in accept queue, ACK dropped</td>
+<td>Handshake looks done on the client (<code>ESTABLISHED</code>), then writes stall or the server RSTs later. Intermittent.</td>
+</tr>
+<tr>
+<td>Server RST</td>
+<td><code>ECONNREFUSED</code> if RST is to a SYN, or <code>ECONNRESET</code> if the connection existed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="likely-follow-up-syn-flood">Likely follow-up: SYN flood</h3>
+<p>A SYN flood fills the SYN backlog with half-open sockets from spoofed sources, so real handshakes cannot start. Mitigations: SYN cookies, <code>tcp_max_syn_backlog</code>, a firewall that rate-limits new SYNs, and an upstream scrubber. SYN cookies are the kernel's built-in answer. They do not protect the accept queue. That queue fills only after a <strong>completed</strong> handshake, so a flood of completed connections is an application or capacity problem (or a completed-connection attack), not a SYN flood.</p>
+<h3 id="likely-follow-up-conntrack-and-socket-exhaustion">Likely follow-up: conntrack and socket exhaustion</h3>
+<p>NAT and most firewalls store a <strong>conntrack</strong> entry per flow. When <code>nf_conntrack_count</code> hits <code>nf_conntrack_max</code>, the kernel logs <code>nf_conntrack: table full, dropping packet</code> and new connections fail <strong>even though the app looks idle</strong>.</p>
+<pre><code class="language-bash">sysctl net.netfilter.nf_conntrack_count
+sysctl net.netfilter.nf_conntrack_max
+dmesg -T | grep -i conntrack
+</code></pre>
+<p>Other ceilings that look like "cannot connect":</p>
+<table>
+<thead>
+<tr>
+<th>Ceiling</th>
+<th>Symptom</th>
+<th>Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Per-process fds</td>
+<td><code>EMFILE</code> (too many open files)</td>
+<td><code>ls /proc/PID/fd \| wc -l</code>, <code>ulimit -n</code>, <code>/proc/PID/limits</code></td>
+</tr>
+<tr>
+<td>System-wide fds</td>
+<td><code>ENFILE</code></td>
+<td><code>cat /proc/sys/fs/file-nr</code></td>
+</tr>
+<tr>
+<td>Ephemeral ports</td>
+<td>client <code>EADDRINUSE</code></td>
+<td><code>ss</code> TIME_WAIT count, <code>ip_local_port_range</code></td>
+</tr>
+<tr>
+<td>PID / thread limit</td>
+<td>cannot spawn workers</td>
+<td><code>/proc/sys/kernel/threads-max</code>, <code>ulimit -u</code></td>
+</tr>
+<tr>
+<td>Conntrack</td>
+<td>drops in dmesg</td>
+<td>counters above</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="q28-p99-is-about-10-seconds-connections-fail-sometimes-cpu-is-20-load-average-is-30-no-recent-deploy-how-do-you-troubleshoot">Q28. P99 is about 10 seconds, connections fail sometimes, CPU is ~20%, load average is ~30, no recent deploy. How do you troubleshoot?</h2>
+<p><strong>Definitions</strong></p>
+<ul>
+<li><strong>P99:</strong> 99% of requests are faster than this. A 10s P99 with a healthy P50 means a <strong>tail</strong>, not a uniformly slow service. Tail causes: queueing, timeouts, retries, lock convoys, GC, a slow dependency on a fraction of calls.</li>
+<li><strong>Load average:</strong> the average number of tasks in <strong>R</strong> (runnable) or <strong>D</strong> (uninterruptible sleep) over 1, 5, and 15 minutes. It is <strong>not</strong> a CPU percentage. Tasks in <strong>S</strong> (interruptible sleep: waiting on a socket, a lock with <code>futex</code>, <code>poll</code>) do <strong>not</strong> count.</li>
+<li><strong>CPU 20%:</strong> user + system is low. The machine is not compute-bound. If the tool you looked at hides <strong>iowait</strong>, ask for it. iowait is time the CPUs were idle because runnable work was stuck on disk.</li>
+</ul>
+<p><strong>Assumptions:</strong> one host or one instance of the API, Linux, the 10s figure is server latency not just client timeout, "no deploy" includes config and flag changes (confirm that), load 30 is the 1-minute load.</p>
+<p><strong>The reasoning they want</strong></p>
+<p>CPU is not the bottleneck. Load 30 with CPU 20% means on the order of <strong>30 tasks are runnable or stuck in D</strong>, and they are not burning CPU. Two real pictures:</p>
+<ol>
+<li><strong>Many threads in D.</strong> Disk, NFS, or a stuck device. <code>iowait</code> is high. The API blocks on a local disk (logs, a full disk, a volume) and the tail is I/O.</li>
+<li><strong>A multi-core box where 30 runnable threads still don't fill the CPUs.</strong> If the host has 64 cores, load 30 is only half the cores, and 20% CPU matches "not saturated." Then load is a clue, not the cause. The 10s tail is somewhere else: a <strong>timeout</strong> of about 10 seconds.</li>
+</ol>
+<p><strong>10 seconds is a suspiciously round timeout.</strong> I look for a client timeout, a DNS timeout, a connect timeout, a pool-acquire timeout, or TCP retransmit backing off into that range. Intermittent connection <strong>failures</strong> plus a 10s tail, with no deploy, is usually a <strong>resource ceiling or a dependency</strong>, not a code bug that shipped today.</p>
+<p><strong>Order of checks</strong></p>
+<ol>
+<li><strong>Confirm the symptom is still true and where it is.</strong> One instance or all of them? One zone? Error code (<code>timeout</code>, <code>connection reset</code>, <code>refused</code>)? P50 vs P99. If P50 is 20ms and P99 is 10s, requests are waiting, not slow to execute.</li>
+<li><strong>Did anything else change?</strong> Traffic mix, a certificate expiry, a DNS TTL, an upstream deploy, a full disk, a cron. "No deploy of this service" is not "nothing changed."</li>
+<li><strong>Split CPU vs I/O vs sockets</strong> with the commands in Q30, on the host, for 30 seconds, while it is bad.</li>
+<li><strong>Look at downstream latency with the same timestamps.</strong> If the database or the next hop has the same 10s tail, this service is the victim.</li>
+<li><strong>Only then</strong> take a thread dump, <code>strace</code>, or a Go <code>pprof</code> / Python <code>py-spy</code>. Don't start in the profiler when the kernel counters are cheaper.</li>
+</ol>
+<pre><code>P99 = 10s, CPU = 20%, load = 30, no deploy
+        |
+        +-- iowait high, tasks in D -------- disk / NFS / full volume
+        |
+        +-- iowait low, load is just &quot;30 on a big box&quot;
+        |       |
+        |       +-- accept queue full ----- app not accept()ing, or worker pool stuck
+        |       +-- CLOSE_WAIT growing ---- fd leak
+        |       +-- conntrack full --------- packet drops
+        |       +-- DNS slow --------------- 5s or 10s resolver timeouts
+        |       +-- pool acquire = 10s ----- DB / HTTP pool exhausted
+        |       +-- downstream P99 = 10s --- dependency, not us
+        |
+        +-- retransmits climbing ----------- loss, MTU, bad route
+</code></pre>
+<p><strong>My own analogue, said briefly if they ask "have you seen this":</strong> at Masters, a canary with a 10s timeout failed calls that the old process allowed 60s for. CPU was not the issue. The dependency (the government portal) was slower than the new timeout. Rollback was a gateway config change, then we moved the slow call off the request path. I don't claim this exact load-average incident.</p>
+<hr>
+<h2 id="q29-if-cpu-isnt-high-what-else-causes-connection-failures">Q29. If CPU isn't high, what else causes connection failures?</h2>
+<p>Say these as mechanisms, not product names.</p>
+<table>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>Why connections fail while CPU is low</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Accept queue overflow</strong></td>
+<td>Handshake finished, app didn't <code>accept()</code>. Kernel drops the ACK or RSTs. Workers can be blocked on a dependency, so CPU is idle.</td>
+</tr>
+<tr>
+<td><strong>FD exhaustion</strong></td>
+<td><code>accept()</code> or <code>connect()</code> returns <code>EMFILE</code> / <code>ENFILE</code>. Often caused by a CLOSE_WAIT leak.</td>
+</tr>
+<tr>
+<td><strong>Conntrack full</strong></td>
+<td>Packets dropped in netfilter before the app.</td>
+</tr>
+<tr>
+<td><strong>Ephemeral port exhaustion</strong></td>
+<td>The process is a <strong>client</strong> of something and TIME_WAIT fills the source-port range.</td>
+</tr>
+<tr>
+<td><strong>DNS</strong></td>
+<td>Getaddrinfo blocks the connect path. A dead resolver waits out a ~5s timeout, sometimes twice (A and AAAA) and lands near 10s.</td>
+</tr>
+<tr>
+<td><strong>Downstream connect timeout</strong></td>
+<td>TCP SYN never answered. Client retries. Your thread sits in connect.</td>
+</tr>
+<tr>
+<td><strong>Pool exhaustion</strong></td>
+<td>Every worker is waiting to borrow a DB connection. The wait is capped at the pool timeout (often 10s or 30s). CPU idle. New inbound connections pile up in the accept queue.</td>
+</tr>
+<tr>
+<td><strong>Packet loss / blackhole</strong></td>
+<td>Retransmit timers grow exponentially (1s, 2s, 4s, 8s). P99 lands on a retransmit boundary. CPU idle because the thread is asleep in the retransmit wait.</td>
+</tr>
+<tr>
+<td><strong>Uninterruptible I/O</strong></td>
+<td>Load high, CPU low, threads in D. Disk full, NFS hang, EBS/volume stall.</td>
+</tr>
+<tr>
+<td><strong>Memory pressure</strong></td>
+<td>Not "CPU." Direct reclaim, swap, or the OOM killer. A killed upstream looks like connection reset.</td>
+</tr>
+<tr>
+<td><strong>TLS handshake stall</strong></td>
+<td>CPU can be low if we are waiting on the peer or on a slow OCSP/CRL fetch. Less common.</td>
+</tr>
+<tr>
+<td><strong>Firewall / security list / full conntrack</strong></td>
+<td>SYNs leave and never return. App looks healthy.</td>
+</tr>
+<tr>
+<td><strong>Half-open idle drop</strong></td>
+<td>A middlebox drops state. The next write gets a RST. Intermittent, and it correlates with idle time, not with CPU.</td>
+</tr>
+<tr>
+<td><strong>Thread pool capped</strong></td>
+<td>Work queue wait ≈ the 10s timeout. Same shape as a connection pool.</td>
+</tr>
+</tbody>
+</table>
+<p>The pattern: <strong>a thread is blocked on something that is not the CPU</strong>, and a queue in front of those threads hits a timeout.</p>
+<hr>
+<h2 id="q30-how-do-you-check-memory-sockets-fds-pools-dns-network-and-downstreams">Q30. How do you check memory, sockets, fds, pools, DNS, network, and downstreams?</h2>
+<p>Run these <strong>while the errors are happening</strong>. A green box an hour later proves nothing.</p>
+<p><strong>Memory</strong></p>
+<pre><code class="language-bash">free -h
+cat /proc/meminfo | egrep 'MemAvailable|Dirty|Writeback|AnonPages|Swap'
+vmstat 1 10          # si/so = swap in/out; wa = iowait; r = runnable; b = D state
+dmesg -T | egrep -i 'oom|killed process'
+ps -eo pid,ppid,stat,wchan:24,pcpu,pmem,rss,comm --sort=-rss | head
+</code></pre>
+<ul>
+<li><code>b</code> in vmstat is the count of <strong>D-state</strong> tasks. If <code>b</code> is large and <code>wa</code> is high, this is I/O, and it explains load ≫ CPU.</li>
+<li><code>si/so</code> non-zero means swap. Latency will be terrible and CPU still "low."</li>
+<li>OOM lines mean someone was killed. Connection resets at that timestamp are the effect.</li>
+</ul>
+<p><strong>Sockets and the three states</strong></p>
+<pre><code class="language-bash">ss -s                          # totals: TCP estab, timewait, orphan, closed
+ss -tan state established | wc -l
+ss -tan state time-wait   | wc -l
+ss -tan state close-wait  | wc -l
+ss -tan state fin-wait-1  | wc -l
+ss -tan state fin-wait-2  | wc -l
+ss -lnt                        # LISTEN Recv-Q vs Send-Q
+ss -tanp | awk '$1==&quot;CLOSE-WAIT&quot;{print $6}' | sort | uniq -c | sort -nr | head
+</code></pre>
+<p><strong>File descriptors</strong></p>
+<pre><code class="language-bash">cat /proc/sys/fs/file-nr          # allocated, unused, max
+ls /proc/PID/fd | wc -l
+awk '/Max open files/ {print}' /proc/PID/limits
+lsof -nP -p PID | awk '{print $5}' | sort | uniq -c | sort -nr | head
+# many sock = socket leak; many REG = file leak; many FIFO = pipe leak
+</code></pre>
+<p><strong>Connection pools (application)</strong></p>
+<p>The kernel cannot name your pool. Look at the app's metrics: <code>pool_in_use</code>, <code>pool_wait_seconds</code>, <code>acquire_timeout</code>. If there is no metric, the symptom in the kernel is: a small number of <strong>ESTABLISHED</strong> sockets to the DB port, and a large accept-queue <strong>Recv-Q</strong> on the API port, and threads blocked in a futex or in <code>read</code> on those few DB sockets.</p>
+<pre><code class="language-bash">ss -tanp dst :5432     # or :3306, :9000 for ClickHouse
+# thread dump: py-spy dump --pid PID    or    kill -QUIT for Go (dumps stacks)
+</code></pre>
+<p>A healthy pool has idle connections. A stuck pool has all of them ESTABLISHED and the app threads blocked in the driver, or the app threads blocked <strong>before</strong> they get a connection (waiters).</p>
+<p><strong>DNS</strong></p>
+<pre><code class="language-bash">time getent hosts api.internal.example
+resolvectl query api.internal.example     # systemd-resolved
+dig +stats api.internal.example
+cat /etc/resolv.conf                       # how many nameservers, timeout, attempts
+</code></pre>
+<p><code>resolv.conf</code> defaults (<code>timeout:5</code>, <code>attempts:2</code>) produce multi-second stalls. A and AAAA lookups can serialize. If <code>getent</code> is fast now, check whether it was slow <strong>during</strong> the incident (resolver metrics, or <code>tcpdump port 53</code>).</p>
+<p><strong>Network path</strong></p>
+<pre><code class="language-bash">ip route get &lt;downstream-ip&gt;
+ping -c 20 &lt;downstream-ip&gt;                 # loss, not just RTT
+traceroute -n &lt;downstream-ip&gt;
+ss -ti dst :443                            # retrans, rtt, cwnd on live sockets
+nstat -az | egrep 'TcpRetransSegs|TcpExtTCPTimeouts|ListenOverflows|ListenDrops|TCPSynRetrans|Syncookies'
+ip -s link                                 # RX/TX drops, errors
+</code></pre>
+<ul>
+<li><strong><code>ListenOverflows</code> / <code>ListenDrops</code></strong> incrementing: the accept queue overflowed. This is the direct counter for Q8.</li>
+<li><strong><code>TcpRetransSegs</code></strong> climbing: loss or a black hole.</li>
+<li>Interface <code>RX dropped</code> often means the NIC ring is full (softirq can't keep up) even when user CPU looks modest. Check <code>softirq</code> time in <code>mpstat -P ALL 1</code>.</li>
+</ul>
+<p><strong>Downstreams</strong></p>
+<p>Time a single call the way the app does it, from this host:</p>
+<pre><code class="language-bash">curl -s -o /dev/null -w 'dns:%{time_namelookup} connect:%{time_connect} tls:%{time_appconnect} ttfb:%{time_starttransfer} total:%{time_total}\n' \
+  https://downstream/health
+</code></pre>
+<p>If <code>time_namelookup</code> is several seconds, it is DNS. If <code>time_connect</code> is, it is the handshake (SYN backlog, firewall, routing). If <code>ttfb</code> is 10s, the dependency accepted the connection and then didn't answer. That is their tail, not yours.</p>
+<p><strong>Conntrack</strong>, if the host NATs or is a kube node:</p>
+<pre><code class="language-bash">sysctl net.netfilter.nf_conntrack_count net.netfilter.nf_conntrack_max
+dmesg -T | grep conntrack | tail
+</code></pre>
+<hr>
+<h2 id="q31-what-do-time_wait-close_wait-and-fin_wait-tell-you-while-troubleshooting">Q31. What do TIME_WAIT, CLOSE_WAIT, and FIN_WAIT tell you while troubleshooting?</h2>
+<p>Use the states as a diagnosis, not as a thing to "clear."</p>
+<table>
+<thead>
+<tr>
+<th>If you see</th>
+<th>It means</th>
+<th>It does <strong>not</strong> mean</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CLOSE_WAIT growing</strong> on the API process</td>
+<td>The peer closed. This process is not calling <code>close()</code>. Fd leak. Eventually <code>EMFILE</code>, then new connections fail.</td>
+<td>It does not mean the kernel is slow. Restart hides it until the leak refills.</td>
+</tr>
+<tr>
+<td><strong>TIME_WAIT in the tens of thousands</strong> on a server that closes first</td>
+<td>Short connections, server is the active closer. Often normal.</td>
+<td>It is not a reason to set <code>tcp_tw_recycle</code> (removed from Linux; it broke NATed clients).</td>
+</tr>
+<tr>
+<td><strong>TIME_WAIT on a client / worker</strong> that opens many outbound connections</td>
+<td>Ephemeral-port pressure. Connects start failing with <code>EADDRINUSE</code>.</td>
+<td>Pooling fixes the cause. Flushing TIME_WAIT does not.</td>
+</tr>
+<tr>
+<td><strong>FIN_WAIT_1 growing</strong></td>
+<td>We sent FIN and did not get ACK. The peer or the path is dropping segments, or the peer is gone and not RSTing.</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>FIN_WAIT_2 growing</strong></td>
+<td>Peer ACKed our FIN and is not sending its FIN. Peer is half-closed on purpose, or it leaked <strong>its</strong> close. Our <code>tcp_fin_timeout</code> will reap these if we fully closed.</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>LISTEN Recv-Q near Send-Q</strong>, plus <code>ListenOverflows</code></td>
+<td>Accept queue is the outage. Workers are stuck. CPU can still be 20%.</td>
+<td>Raising <code>somaxconn</code> without freeing the workers only moves the cliff.</td>
+</tr>
+<tr>
+<td><strong>Few CLOSE_WAIT, few TIME_WAIT, overflows not increasing, retransmits increasing</strong></td>
+<td>The network path or the peer is lossy. States look boring. <code>ss -ti</code> shows retrans.</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Tie-back to the 10s incident: I would look at CLOSE_WAIT and <code>ListenOverflows</code> <strong>before</strong> I look at TIME_WAIT. TIME_WAIT is usually a capacity footnote. CLOSE_WAIT and a full accept queue are outages.</p>
+<hr>
+<h2 id="q32-how-do-you-inspect-these-states-with-ss-and-lsof">Q32. How do you inspect these states with <code>ss</code> and <code>lsof</code>?</h2>
+<p><strong><code>ss</code> reads kernel socket tables.</strong> It is the right tool. <code>netstat</code> is the older interface (<code>/proc/net/tcp</code>) and is often not installed.</p>
+<pre><code class="language-bash">ss -tanp
+# -t tcp   -a all states (not only established)   -n numeric   -p process
+</code></pre>
+<p>Filter by state (state names are lowercase in the filter, with a hyphen):</p>
+<pre><code class="language-bash">ss -tanp state time-wait
+ss -tanp state close-wait
+ss -tanp state fin-wait-1
+ss -tanp state fin-wait-2
+ss -tanp state last-ack
+ss -tanp state syn-recv
+ss -tanp state established dport = :5432
+ss -lnt                             # listeners only
+ss -s                               # summary counts
+</code></pre>
+<p><strong>How to read a line</strong></p>
+<pre><code>ESTAB  0  0  10.0.0.8:8080  10.1.2.3:51422  users:((&quot;api&quot;,pid=2211,fd=44))
+</code></pre>
+<ul>
+<li>Local is <code>10.0.0.8:8080</code>, peer is <code>10.1.2.3:51422</code>. This is a server connection.</li>
+<li>For <strong>non-listen</strong> sockets, Recv-Q is unread bytes and Send-Q is unsent bytes. A large Send-Q means the peer or the path is not accepting data (the receiver window is closed, or the path is lossy).</li>
+<li>For <strong>LISTEN</strong>, Recv-Q and Send-Q mean queue depth and backlog (Q8). Don't mix these up in the interview. Say which socket state you are reading.</li>
+</ul>
+<p><strong><code>lsof</code> maps a socket to a process and an fd.</strong> Slower, because it walks every fd.</p>
+<pre><code class="language-bash">lsof -nP -iTCP -sTCP:CLOSE_WAIT
+lsof -nP -iTCP:8080
+lsof -nP -p 2211 | awk '$5==&quot;IPv4&quot; || $5==&quot;IPv6&quot;'
+</code></pre>
+<p><code>-n</code> skips DNS (important: you are debugging DNS, so do not let the tool call DNS). <code>-P</code> skips port-name lookup (<code>:https</code> vs <code>:443</code>).</p>
+<p><strong>When <code>lsof</code> is the better answer:</strong> you need the <strong>fd number</strong> to correlate with a thread dump ("thread 12 is blocked in read on fd 44"), or you need UNIX sockets and files in the same picture. <strong>When <code>ss</code> is the better answer:</strong> counts, states, queues, timers (<code>ss -to</code> shows retransmit timers).</p>
+<h3 id="likely-follow-up-commands-beyond-ss-lsof">Likely follow-up: commands beyond <code>ss</code> / <code>lsof</code></h3>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Which syscall is this stuck thread in?</td>
+<td><code>cat /proc/PID/stack</code>, or <code>ls /proc/PID/task/*/stack</code>, or <code>py-spy</code> / Go <code>SIGQUIT</code></td>
+</tr>
+<tr>
+<td>Is iowait the load?</td>
+<td><code>vmstat 1</code>, <code>mpstat -P ALL 1</code></td>
+</tr>
+<tr>
+<td>Which disk?</td>
+<td><code>iostat -xz 1</code></td>
+</tr>
+<tr>
+<td>Retransmits since boot?</td>
+<td><code>nstat -az \| grep Retrans</code></td>
+</tr>
+<tr>
+<td>Did the accept queue overflow?</td>
+<td><code>nstat -az \| grep Listen</code></td>
+</tr>
+<tr>
+<td>Live capture of FINs</td>
+<td><code>tcpdump -ni any -c 50 'tcp port 8080 and tcp[tcpflags] &amp; tcp-fin != 0'</code></td>
+</tr>
+<tr>
+<td>Per-connection RTT</td>
+<td><code>ss -ti</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="likely-follow-up-what-you-would-not-do">Likely follow-up: what you would not do</h3>
+<ul>
+<li>Do not <code>kill -9</code> to "clear CLOSE_WAIT" and call it fixed. The leak comes back. Find the missing <code>close</code> / context manager / <code>defer conn.Close()</code>.</li>
+<li>Do not disable SYN cookies or shrink TIME_WAIT globally as a first move.</li>
+<li>Do not raise every sysctl in one change. One change, one counter, so you know what moved <code>ListenOverflows</code>.</li>
+</ul></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

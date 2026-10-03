@@ -18,7 +18,8 @@ OCI loops are usually 4 to 5 rounds, 45 to 60 minutes each. Each interviewer own
 | System design | Distributed service at OCI scale: object store, metadata service, rate limiter, job scheduler, metrics pipeline, control plane | [SD fundamentals](04_system_design_fundamentals.md), [SD questions](04_system_design_questions.md) |
 | LLD / OOD | Class design with extensibility, sometimes with concurrency (LRU, rate limiter, parking lot, logger, KV store with TTL) | [LLD foundations](05_lld_foundations.md), [LLD problems](05_lld_problems.md) |
 | Concurrency (often mixed into coding or LLD) | Thread-safe cache, bounded blocking queue, producer/consumer, worker pool, deadlock | [Concurrency](06_concurrency.md) |
-| Hiring manager / bar raiser | Core values, projects deep dive, ops/on-call, incident, RCA, conflict | [Core values STAR](01_core_values_star.md), [Projects](07_projects_deep_dive.md) |
+| Hiring manager / bar raiser | Core values, projects deep dive, ops/on-call, incident, RCA, conflict | [Core values STAR](01_core_values_star.md), [Projects](07_projects_deep_dive.md), [Asked: HM + Terraform](08c_behavioral_terraform.md) |
+| This loop (asked) | TCP states, Django, BookMyShow, CAP, OCR+RAG, generators, sliding window, prod latency, Terraform state | [Asked-question index](08_asked_questions_index.md) |
 | Any round | Reliability, operability, security, change management (the JD is heavy on this) | [JD technical map](02_jd_technical_map.md) |
 
 ---
@@ -40,6 +41,10 @@ OCI loops are usually 4 to 5 rounds, 45 to 60 minutes each. Each interviewer own
 7. [05 LLD problems with full designs and code](05_lld_problems.md)
 8. [06 Multithreading and concurrency in depth (Python + Go)](06_concurrency.md)
 9. [07 My projects deep dive, OCI framing](07_projects_deep_dive.md)
+10. [08 Questions actually asked in the OCI loop](08_asked_questions_index.md)
+    - [08a Linux, TCP states, queues, production troubleshooting](08a_linux_tcp_troubleshooting.md)
+    - [08b Django, BookMyShow, fault tolerance, CAP, OCR+RAG, Python, DSA, lookup performance](08b_backend_python_dsa.md)
+    - [08c Hiring manager answers and Terraform count → for_each](08c_behavioral_terraform.md)
 
 ---
 

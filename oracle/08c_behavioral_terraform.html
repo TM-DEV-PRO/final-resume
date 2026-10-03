@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>08c_behavioral_terraform — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/08c_behavioral_terraform.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#08c-hiring-manager-answers-and-terraform-count-for_each">08c. Hiring manager answers, and Terraform count → for_each</a>
+<a class="lvl2" href="#hm1-introduction">HM1. Introduction</a>
+<a class="lvl2" href="#hm2-why-are-you-looking-outside-so-soon-after-joining">HM2. Why are you looking outside so soon after joining?</a>
+<a class="lvl2" href="#hm3-was-the-work-end-to-end-yours-what-was-the-ownership-model-who-else-was-involved-how-much-autonomy">HM3. Was the work end-to-end yours? What was the ownership model? Who else was involved? How much autonomy?</a>
+<a class="lvl2" href="#hm4-end-to-end-ownership-from-requirement-to-production">HM4. End-to-end ownership, from requirement to production</a>
+<a class="lvl2" href="#tf5-terraform-count-versus-for_each">TF5. Terraform count versus for_each</a>
+<a class="lvl2" href="#tf6-migrate-count-to-for_each-without-destroying-the-instances">TF6. Migrate count to for_each without destroying the instances</a>
+<a class="lvl2" href="#how-the-two-halves-of-this-round-connect">How the two halves of this round connect</a></nav>
+<main><h1 id="08c-hiring-manager-answers-and-terraform-count-for_each">08c. Hiring manager answers, and Terraform <code>count</code> → <code>for_each</code></h1>
+<p>The hiring-manager round was testing ownership and judgment. The Terraform questions were testing whether you can change <strong>addresses in state</strong> without recreating machines. Syntax was the prop. The signal was safe production change.</p>
+<p>Resume facts used here: Impact Analytics from <strong>May 2026</strong> (this interview is a few months in). Uber is <strong>via EPAM</strong>, July 2024–May 2026. You owned specific systems. You did not own every adjacent pipeline. Reviewers existed.</p>
+<div class="callout warn">
+<p><b>Notice period.</b> Do not invent a number of days in the interview if you have not read the clause. The script below says you will confirm it. 26 May, from an October interview, is the <b>next</b> 26 May, which is enough calendar time for a normal notice once you have checked the letter.</p>
+</div>
+<hr>
+<h2 id="hm1-introduction">HM1. Introduction</h2>
+<p><strong>What they want:</strong> 60–90 seconds, current role first, one proof, why this loop. Not a biography from college.</p>
+<p><strong>Say this</strong></p>
+<blockquote>
+<p>I'm a backend engineer, about five years in, mostly Python and Go. I joined Impact Analytics in May 2026. I work on AssortSmart, a retail planning product. The two things I own there are the Go platform that serves planner APIs, and a batch scoring system that decides keep-or-drop for articles.</p>
+<p>On the platform side I moved the heavy planner pivots onto ClickHouse rollups. The same query on 250 million rows went from 189 seconds to 12. On the scoring side the runs are built to finish even when the model provider fails: timeouts, a circuit breaker, and checkpoints, so we don't recompute work that's already done.</p>
+<p>Before that I was at Uber via EPAM, for almost two years. I owned the Finance risk-scoping backend. Reconciliation for the quarterly audit went from 14 days to 3, on a $340 million materiality threshold. That was FastAPI and MySQL, with a small team of three on the ORM migration.</p>
+<p>Earlier I led a PHP-to-FastAPI migration at a GST invoicing company, and I started at GeeksforGeeks on a Django product.</p>
+<p>I'm here because this role is that same work at cloud scale: services that stay up, fail in a controlled way, and can be changed without a maintenance window. That's the part I want to go deeper on.</p>
+</blockquote>
+<p><strong>If they cut you off at 30 seconds,</strong> stop after the ClickHouse sentence and the Uber sentence. Do not keep listing companies.</p>
+<p><strong>Assumptions:</strong> they have the resume. Don't re-read it. Don't open with "I'm passionate."</p>
+<hr>
+<h2 id="hm2-why-are-you-looking-outside-so-soon-after-joining">HM2. Why are you looking outside so soon after joining?</h2>
+<p><strong>What they are testing:</strong> flight risk. They want to know if you will leave OCI in five months as well, and whether you are running from a problem you caused.</p>
+<p><strong>The situation, said plainly.</strong> You joined Impact Analytics in May 2026. Looking now is early. Acknowledge that in the first sentence. People who dodge the word "soon" sound like they are hiding a bad review.</p>
+<p><strong>Say this</strong></p>
+<blockquote>
+<p>It's early, and I don't pretend otherwise. I joined Impact Analytics in May, and the work is real. The ClickHouse path and the scoring runs are in production. I'm not leaving because the role collapsed or because of a manager.</p>
+<p>What changed is the kind of system I want to be responsible for next. This team runs a cloud data plane: failover, deployments without a window, incidents, the boring correctness. That is the work I already reach for inside a product company, and it is the actual job here, not a side task.</p>
+<p>I didn't start the search in week two. I looked when this role was concrete. If I join, I'm not shopping again in six months. I want a longer run on one platform, which is the opposite of collecting logos.</p>
+<p>I will also not disappear on the current team. I'll finish the handover against whatever notice my contract actually specifies. I don't want to quote a day count in this room and then discover the letter says something else.</p>
+</blockquote>
+<p><strong>Do not say:</strong> the company is chaotic, the stack is boring, you were promised a title, you are underpaid, or "I'm always exploring." Do not invent a grievance.</p>
+<p><strong>If they ask "does your manager know?":</strong> "Not yet. I don't start a resignation conversation before I have a decision. I won't accept an offer and then stall the current team."</p>
+<h3 id="can-you-join-by-26-may">Can you join by 26 May?</h3>
+<p><strong>Say this</strong></p>
+<blockquote>
+<p>Yes, I can plan around 26 May. Before I sign a start date I need to read the notice clause and tell you the exact last day in writing. If the notice is the usual 30, 60, or 90 days, 26 May is comfortable, and I would rather join earlier than make you wait until May. If something in the letter is longer, I will tell you this week, not on the day you send the offer.</p>
+</blockquote>
+<p><strong>Why this shape.</strong> "Yes" without a fake precision. A date you have not checked is how people miss a start date. Offering to come <strong>earlier</strong> if notice allows is the opposite of dragging it out.</p>
+<p><strong>Do not</strong> resign, give notice, or tell the current manager until there is a written offer you intend to accept.</p>
+<h3 id="likely-follow-up-why-oci-not-another-product-company">Likely follow-up: why OCI, not another product company?</h3>
+<blockquote>
+<p>The job description is operability: timeouts, failover, runbooks, change management. I have been doing the application version of that. I want the platform version, where a bad default hits every tenant. Product companies will still need features first. This team is measured on the system staying up.</p>
+</blockquote>
+<h3 id="likely-follow-up-why-should-we-believe-you-wont-do-this-again">Likely follow-up: why should we believe you won't do this again?</h3>
+<blockquote>
+<p>You shouldn't believe a slogan. Look at the tenure before this: almost two years at Uber via EPAM, a year and a half at Masters, a year at GeeksforGeeks. The short one is the current role, and I'm being explicit about why this move is different. I'm also not going to pretend five months is a long stay.</p>
+</blockquote>
+<hr>
+<h2 id="hm3-was-the-work-end-to-end-yours-what-was-the-ownership-model-who-else-was-involved-how-much-autonomy">HM3. Was the work end-to-end yours? What was the ownership model? Who else was involved? How much autonomy?</h2>
+<p><strong>What they are testing:</strong> "I" versus "we," and whether you inflate a team effort into a solo build. Senior people describe the boundary. Juniors say "I owned everything."</p>
+<p><strong>The model, in one diagram</strong></p>
+<pre><code>you own                         shared                         not yours
+---------                       ------                         ---------
+design of the component         API review, PR review          HFM extract into MySQL
+implementation                  on-call of the wider product   (Uber data pipeline)
+the rollout of that component   prioritization with the PM     cluster-to-cluster
+the numbers you can measure     security / SOX rules           allowlists at the cloud
+                                                           provider (you worked
+                                                           around them; you did
+                                                           not own network policy)
+</code></pre>
+<p><strong>Say this</strong></p>
+<blockquote>
+<p>End to end for the component, not end to end for the company. I want to be precise about that.</p>
+<p>At Impact Analytics I own the design and the code for the planner read path on ClickHouse, the Go copy tool between clusters, and the scoring orchestration: timeouts, checkpoints, what happens when the model provider fails. I also shipped Ask Iris, the planner copilot, including the rule that tenant scope is fixed when the socket opens. I write the design, I implement it, I watch it in production. Other engineers review the PRs. I don't merge my own judgment with nobody looking.</p>
+<p>Autonomy is high on the technical choice and bounded by review and by production safety. Nobody handed me a class diagram for the rollups. I did have to justify ClickHouse against people who had measured the old system and didn't want a new database. I wrote the comparison on the same 250 million rows, and the team committed after the numbers, not before.</p>
+<p>At Uber, via EPAM, I owned the risk-scoping backend. The product already had a design doc and a finance stakeholder. I didn't invent the audit process. I replaced the spreadsheet path with a service: schema, APIs, the migration off raw SQL, and the SOX checks. I led three engineers on the SQLAlchemy migration. They owned pieces. I owned the approach, the review bar, and the rollout. The feed that loads general-ledger balances from the finance system was a data-pipeline team. I consumed that data. I didn't operate their extract.</p>
+<p>So the ownership model is: one owner for the service, reviewers on every change, and explicit edges where another team starts. I had room to choose the design. I did not have room to skip review, and I don't want that room.</p>
+</blockquote>
+<p><strong>Edges to mention if they push</strong></p>
+<table>
+<thead>
+<tr>
+<th>Claim</th>
+<th>Honest boundary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ClickHouse 15.5×</td>
+<td>Query time on a fixed harness. The 170 GB memory failure was a separate, load-time problem.</td>
+</tr>
+<tr>
+<td>Go copy at ~344k rows/s</td>
+<td>Rows per second, measured while a multi-billion-row copy was in flight. Not "the migration finished at that rate."</td>
+</tr>
+<tr>
+<td>80% accuracy</td>
+<td>A CI gate on a 300-case set. Not live accuracy for every tenant.</td>
+</tr>
+<tr>
+<td>Uber 14 days to 3</td>
+<td>The outcome on the reconciliation workflow I owned. Not "I did the auditors' job."</td>
+</tr>
+<tr>
+<td>Led 3 / mentored 2</td>
+<td>FRM migration was three engineers. Masters was two people I mentored through a service extraction. Don't merge those numbers.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="likely-follow-up-tell-me-about-a-decision-you-were-not-allowed-to-make-alone">Likely follow-up: tell me about a decision you were not allowed to make alone</h3>
+<blockquote>
+<p>Putting ClickHouse in as the system of record for planner reads. I could prototype alone. I could not commit the org alone. I separated the measured facts from the conclusion, showed that the objection was about in-place updates rather than about analytical reads, and we staged it. That is the autonomy I actually want: strong proposal, a recorded decision, then I go execute.</p>
+</blockquote>
+<h3 id="likely-follow-up-conflict-with-a-reviewer">Likely follow-up: conflict with a reviewer</h3>
+<p>Use the Uber repository-versus-model story, short. The team rule said all SQL lives in <code>repository/</code>. You put query methods on the ORM model so a column rename fails the type checker, after a bug where income-statement rows were read with balance-sheet column lists. You wrote the exception down, and you kept repository functions for queries that don't belong to one model. You disagreed, you didn't ignore the rule, and the exception is auditable.</p>
+<hr>
+<h2 id="hm4-end-to-end-ownership-from-requirement-to-production">HM4. End-to-end ownership, from requirement to production</h2>
+<p><strong>Pick one story and walk the pipeline they named.</strong> Don't switch projects in the middle. The ClickHouse pivot is the cleanest requirement-to-production arc. The Masters migration is the cleanest "no maintenance window" arc. Use ClickHouse unless they already spent the round on it.</p>
+<p><strong>Requirement.</strong> Planners run wide pivots. On Postgres those were hitting about 189 seconds at 250 million rows. The requirement was not "adopt ClickHouse." The requirement was a pivot a planner will wait for, without wrong numbers.</p>
+<p><strong>Design.</strong> Read path and write path are different. Postgres stays for roles and transactional rows. Analytical reads go to pre-aggregated ClickHouse tables, partitioned by season, so a query prunes instead of scanning the fact table. Writes are versioned inserts, not updates, because the objection to ClickHouse was its update behavior. I wrote that down before building the second table.</p>
+<p><strong>Implementation.</strong> Six rollup tables, season grain and weekly grain, for product, store, and attribute. A formula compiler so a new KPI is configuration, not a deploy: the expression is parsed, identifiers are allowlisted, and division is wrapped so a zero denominator is zero rather than an exception. The weekly build could not be one <code>INSERT</code> for a whole season. Aggregator state was around 170 GB and the query was killed. I changed the unit of work to one fiscal week, with a memory cap and disk spill. That is an implementation decision forced by a limit, not a new product feature.</p>
+<p><strong>Testing.</strong> A row-identical harness: same rows, same query, Postgres and ClickHouse, answers compared. The 189s to 12s number comes from that, not from a screenshot of one lucky query. Separately, store totals are re-weighted so they match the sum of SKUs, and I check those sums against each other.</p>
+<p><strong>Deployment.</strong> The new tables are filled per season. Readers move when a season is complete, not halfway through a load. A failed load must not look complete. I had a bug here: a half-written partition of about 64 million rows still "had rows," so a skip-if-present check would have served it. The fix is a ledger of finished seasons, and success is the server saying the query finished, not the client saying the HTTP call returned. Rollback of a bad season is drop that partition and rebuild it. I will not call that an atomic swap. A crash in the middle leaves a hole until the rebuild. The safer design is build into a side table and replace the partition. I have that written. I don't claim it is what ran.</p>
+<p><strong>Production.</strong> The read path is the one planners hit. I watch latency and whether the parity checks hold. The copy between clusters is a separate operational path, forced by network allowlists, with a checkpoint per season so a killed process resumes.</p>
+<p><strong>One sentence on the other people.</strong> Reviewers on the design and the PRs. My name is on the decision, the code, and the numbers above.</p>
+<h3 id="a-second-walkthrough-if-they-want-a-service-rollout-masters">A second walkthrough, if they want a service rollout (Masters)</h3>
+<p>Requirement: filing-week latency, p95 around 1.2s, a PHP monolith. Design: strangler, one endpoint group at a time, not a rewrite. Implementation: FastAPI behind the same gateway, async calls for the government portal, idempotency keys on bulk import. Testing: contract checks so the new response matched the old fields, plus a canary percentage. Deployment: config to shift traffic, config to shift it back. I froze cutovers on filing weeks. Production: p95 to about 300ms, and a canary where my 10-second timeout was wrong because the portal sometimes needs longer. I reverted with config, then moved that call off the request thread. That is the loop from requirement to "production disagreed with me" to a fix.</p>
+<h3 id="likely-follow-up-how-do-you-test-something-you-cannot-stage-at-full-size">Likely follow-up: how do you test something you cannot stage at full size?</h3>
+<blockquote>
+<p>Compare on a slice that is identical, not on a toy. The 250 million row harness was the real shape. For the memory failure I measured one week of the heaviest tenant before I raised any limit. I would rather have one true number than a full-size run I cannot explain.</p>
+</blockquote>
+<h3 id="likely-follow-up-what-did-you-personally-code-versus-design">Likely follow-up: what did you personally code versus design?</h3>
+<blockquote>
+<p>On these, both. I don't use "owned" for a document I handed to someone else. The rollup build, the formula parser, the copy tool, and the scoring checkpoints are code I wrote. The three-engineer ORM migration at Uber was a design and a review bar, and I was in that code too. I say which is which if you ask about a line.</p>
+</blockquote>
+<hr>
+<h2 id="tf5-terraform-count-versus-for_each">TF5. Terraform <code>count</code> versus <code>for_each</code></h2>
+<p><strong>What they are testing.</strong> Resource <strong>addresses</strong>, and what happens to those addresses when the input changes. Not the syntax of a VM.</p>
+<p><strong>Definitions</strong></p>
+<ul>
+<li><strong>Resource address:</strong> the id Terraform uses in state. It is not the cloud OCID. State maps an address to an OCID (or an AWS id, or whatever the provider returns).</li>
+<li><strong><code>count</code>:</strong> create <code>count</code> copies. Addresses are <strong>integers</strong>: <code>oci_core_instance.app[0]</code>, <code>[1]</code>, <code>[2]</code>.</li>
+<li><strong><code>for_each</code>:</strong> create one instance per entry in a map or a set of strings. Addresses are <strong>keys</strong>: <code>oci_core_instance.app["app-1"]</code>.</li>
+<li><strong>State:</strong> the JSON snapshot of address → remote object id, plus attributes. <code>terraform apply</code> reconciles the config to that snapshot, then to the cloud.</li>
+<li><strong>Plan:</strong> a dry run. It tells you which addresses will be created, destroyed, or updated in place. If you don't read the plan, you don't know whether you are about to replace a VM.</li>
+</ul>
+<p><strong><code>count</code> with three instances</strong></p>
+<pre><code class="language-hcl">variable &quot;app_count&quot; {
+  type    = number
+  default = 3
+}
+
+resource &quot;oci_core_instance&quot; &quot;app&quot; {
+  count               = var.app_count
+  availability_domain = var.ad
+  display_name        = &quot;app-${count.index + 1}&quot;   # app-1, app-2, app-3
+  shape               = var.shape
+  # image, subnet, metadata omitted
+}
+</code></pre>
+<p>Addresses in state:</p>
+<pre><code>oci_core_instance.app[0]   -&gt;  ocid1.instance...aaa     display name app-1
+oci_core_instance.app[1]   -&gt;  ocid1.instance...bbb     display name app-2
+oci_core_instance.app[2]   -&gt;  ocid1.instance...ccc     display name app-3
+</code></pre>
+<p><strong>The trap with <code>count</code>.</strong> It is positional. Insert an element at the front, or delete <code>[0]</code>, and every later index shifts. Terraform does not know that <code>[1]</code> "is the same VM" after the shift. The plan shows <strong>destroy and create</strong> for instances you meant to keep. That is the production incident this question is about.</p>
+<p><strong><code>for_each</code> with the same three instances</strong></p>
+<pre><code class="language-hcl">variable &quot;apps&quot; {
+  type    = set(string)
+  default = [&quot;app-1&quot;, &quot;app-2&quot;, &quot;app-3&quot;]
+}
+
+resource &quot;oci_core_instance&quot; &quot;app&quot; {
+  for_each            = var.apps
+  availability_domain = var.ad
+  display_name        = each.key
+  shape               = var.shape
+}
+</code></pre>
+<p>Addresses:</p>
+<pre><code>oci_core_instance.app[&quot;app-1&quot;]  -&gt;  ocid...
+oci_core_instance.app[&quot;app-2&quot;]  -&gt;  ocid...
+oci_core_instance.app[&quot;app-3&quot;]  -&gt;  ocid...
+</code></pre>
+<p>Remove <code>"app-2"</code> from the set and only <code>app["app-2"]</code> is destroyed. <code>app-1</code> and <code>app-3</code> stay. Keys are identity. Indexes are not.</p>
+<p><strong>When <code>count</code> is still the right tool.</strong> The replicas are identical and you only scale the number, and you accept that you will not delete from the middle. Even then, <code>for_each</code> over a set of names is safer the moment anyone will ever remove one specific instance.</p>
+<p><strong>Sets versus maps.</strong> <code>for_each</code> on a <strong>set of strings</strong> uses the string as the key. <code>for_each</code> on a <strong>map</strong> uses the map key. <code>for_each</code> cannot be a list of objects directly; you convert with <code>for_each = { for name in var.apps : name =&gt; name }</code> or <code>toset()</code>. Don't use a list index as the key or you have reinvented <code>count</code>.</p>
+<p><strong>Referring to them</strong></p>
+<pre><code class="language-hcl"># count
+oci_core_instance.app[0].id
+
+# for_each
+oci_core_instance.app[&quot;app-1&quot;].id
+
+# all of them
+[for i in oci_core_instance.app : i.id]
+</code></pre>
+<p><strong>Both in one resource is illegal.</strong> <code>count</code> and <code>for_each</code> on the same resource block conflict. The migration is a change from one meta-argument to the other, which <strong>changes every address</strong>. Terraform's default reading of an address change is "this object went away, that object is new."</p>
+<hr>
+<h2 id="tf6-migrate-count-to-for_each-without-destroying-the-instances">TF6. Migrate <code>count</code> to <code>for_each</code> without destroying the instances</h2>
+<p><strong>The goal.</strong> Same three VMs, same disks, same OCIDs. Only the state address changes. The cloud must not see a delete.</p>
+<p><strong>What has to be true</strong></p>
+<ol>
+<li>The new key is stable and matches the instance you intend (<code>"app-1"</code> ↔ today's <code>[0]</code>).</li>
+<li>State is rewritten so the OCID currently stored at <code>[0]</code> is stored at <code>["app-1"]</code>.</li>
+<li><code>terraform plan</code> shows <strong>no destroy, no create</strong>, or only in-place attribute updates you expected (for example a tag).</li>
+<li>You apply only after that plan. You do not "apply and see."</li>
+</ol>
+<p><strong>How Terraform wants you to do it today: <code>moved</code> blocks</strong> (Terraform 1.1+)</p>
+<p><code>moved</code> is config, reviewed in git, applied by the next plan. It is better than a one-off CLI command because the next person can see why the address changed.</p>
+<pre><code class="language-hcl">resource &quot;oci_core_instance&quot; &quot;app&quot; {
+  for_each            = toset([&quot;app-1&quot;, &quot;app-2&quot;, &quot;app-3&quot;])
+  availability_domain = var.ad
+  display_name        = each.key
+  shape               = var.shape
+}
+
+moved {
+  from = oci_core_instance.app[0]
+  to   = oci_core_instance.app[&quot;app-1&quot;]
+}
+
+moved {
+  from = oci_core_instance.app[1]
+  to   = oci_core_instance.app[&quot;app-2&quot;]
+}
+
+moved {
+  from = oci_core_instance.app[2]
+  to   = oci_core_instance.app[&quot;app-3&quot;]
+}
+</code></pre>
+<pre><code>state before                         state after
+oci_core_instance.app[0]  ocid aaa    oci_core_instance.app[&quot;app-1&quot;]  ocid aaa
+oci_core_instance.app[1]  ocid bbb    oci_core_instance.app[&quot;app-2&quot;]  ocid bbb
+oci_core_instance.app[2]  ocid ccc    oci_core_instance.app[&quot;app-3&quot;]  ocid ccc
+
+cloud: nothing. The OCID does not change.
+</code></pre>
+<p><strong>The sequence</strong></p>
+<pre><code class="language-bash"># 1. see the current addresses
+terraform state list | grep oci_core_instance.app
+
+# 2. edit config: count -&gt; for_each, add moved blocks
+# 3. plan. Read every line.
+terraform plan -out=tfplan
+
+#    You want:
+#      # oci_core_instance.app[0] has moved to oci_core_instance.app[&quot;app-1&quot;]
+#      (and the same for 1 and 2)
+#    You do not want:
+#      -/+ destroy and then create
+#      forces replacement
+
+# 4. only if the plan is moves and in-place updates
+terraform apply tfplan
+</code></pre>
+<p><code>terraform plan -out=tfplan</code> then <code>apply tfplan</code> applies <strong>that</strong> plan, not a new one computed later. That matters if someone else is changing the same state.</p>
+<p><strong>Older equivalent, still valid:</strong> <code>terraform state mv</code> edits state immediately, before plan. It is easier to get wrong, and it is not reviewed as a diff. Prefer <code>moved</code>.</p>
+<pre><code class="language-bash">terraform state mv 'oci_core_instance.app[0]' 'oci_core_instance.app[&quot;app-1&quot;]'
+terraform state mv 'oci_core_instance.app[1]' 'oci_core_instance.app[&quot;app-2&quot;]'
+terraform state mv 'oci_core_instance.app[2]' 'oci_core_instance.app[&quot;app-3&quot;]'
+terraform plan    # should be empty, or only drift you already understood
+</code></pre>
+<p>Quotes matter. The shell will eat <code>["app-1"]</code> if you don't quote the whole address.</p>
+<p><strong>After a clean apply,</strong> delete the <code>moved</code> blocks in a follow-up PR. Leaving them forever is harmless and noisy. Removing them in the <strong>same</strong> apply as the move is wrong: the move has to be in the configuration for the plan that performs it.</p>
+<p><strong>If the plan shows destroy/create anyway,</strong> stop. Typical causes:</p>
+<table>
+<thead>
+<tr>
+<th>Plan says replace</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>You changed a <strong>ForceNew</strong> attribute in the same edit (image id, availability domain, some shape changes)</td>
+<td>The address move is fine, and a field you touched cannot be updated in place. Split the PRs. Move first. Change the image later, on purpose.</td>
+</tr>
+<tr>
+<td>The <code>moved</code> key points at the wrong index</td>
+<td><code>app-1</code> would now track the OCID that used to be <code>[2]</code>. Plan may show a display-name change in place, or a replace if name is ForceNew. Fix the mapping. Look at <code>terraform state show 'oci_core_instance.app[0]'</code> and match on OCID, not on memory.</td>
+</tr>
+<tr>
+<td><code>for_each</code> key is different from <code>to</code></td>
+<td>Address in <code>moved.to</code> must equal the address <code>for_each</code> will produce.</td>
+</tr>
+<tr>
+<td>You removed <code>count</code> and forgot a <code>moved</code> for one index</td>
+<td>That index is a destroy. The new key is a create.</td>
+</tr>
+<tr>
+<td>Provider version treats a field as ForceNew that you thought was mutable</td>
+<td>Read the plan's "forces replacement" line. It names the field.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>State locking.</strong> Remote state (OCI Object Storage backend, or Terraform Cloud, or S3) with a lock. Two applies at once corrupt state. A <code>moved</code> migration is exactly when you don't want a second pipeline running.</p>
+<p><strong>Prove it before production.</strong> Same pattern I use for a schema change: the plan is the canary. If I cannot explain every destroy line, I do not apply. On Masters, traffic shifts were a config change I could undo. Here, the undo for a mistaken destroy is a restore from backup, which is not an undo.</p>
+<h3 id="likely-follow-up-terraform-import-versus-moved">Likely follow-up: <code>terraform import</code> versus <code>moved</code></h3>
+<p><code>import</code> adopts an object that Terraform does <strong>not</strong> yet have in state. You use it for a VM someone created in the console. <code>moved</code> renames an object Terraform <strong>already</strong> manages. Using <code>import</code> for this migration would create a second state object or collide. Don't.</p>
+<pre><code class="language-bash">terraform import 'oci_core_instance.app[&quot;app-4&quot;]' ocid1.instance.oc1...
+</code></pre>
+<p>Then <code>plan</code>. Imported attributes often don't match the config, so the first plan wants to change tags or metadata. Read it.</p>
+<h3 id="likely-follow-up-create_before_destroy-and-prevent_destroy">Likely follow-up: <code>create_before_destroy</code> and <code>prevent_destroy</code></h3>
+<pre><code class="language-hcl">lifecycle {
+  prevent_destroy       = true
+  create_before_destroy = true
+}
+</code></pre>
+<ul>
+<li><code>prevent_destroy</code>: apply fails if the plan would destroy this resource. A seatbelt during a refactor. It does not help you if you remove the resource block entirely in some Terraform versions without care; it <strong>does</strong> fail an accidental destroy caused by an address change. I would turn it on for the database and for anything with data, before the <code>count</code> migration, so a bad plan errors instead of deleting.</li>
+<li><code>create_before_destroy</code>: for replacements you <strong>intend</strong> (a new instance, then delete the old). It needs a name or an id that can exist twice, or the create collides. It is not how you avoid a replacement. <code>moved</code> is.</li>
+</ul>
+<h3 id="likely-follow-up-modules-and-indexes">Likely follow-up: modules and indexes</h3>
+<p>If the instances live in a module, the address includes the module:</p>
+<pre><code>module.compute.oci_core_instance.app[0]
+  -&gt; module.compute.oci_core_instance.app[&quot;app-1&quot;]
+</code></pre>
+<p><code>moved</code> can also rename a whole module (<code>from = module.old</code> / <code>to = module.new</code>). Same rule: plan must be moves, not creates.</p>
+<h3 id="likely-follow-up-what-does-a-bad-plan-look-like-versus-a-good-one">Likely follow-up: what does a bad plan look like versus a good one?</h3>
+<p>Good:</p>
+<pre><code># oci_core_instance.app[0] has moved to oci_core_instance.app[&quot;app-1&quot;]
+  ~ display_name = &quot;app-0&quot; -&gt; &quot;app-1&quot;     # only if you also renamed, and only if in-place
+Plan: 0 to add, 0 to change, 0 to destroy.
+</code></pre>
+<p>A pure move with identical attributes is 0 add, 0 change, 0 destroy, plus the "has moved" note.</p>
+<p>Bad:</p>
+<pre><code># oci_core_instance.app[0] will be destroyed
+# oci_core_instance.app[&quot;app-1&quot;] will be created
+Plan: 1 to add, 0 to change, 1 to destroy.
+</code></pre>
+<p>That plan replaces the VM. You do not apply it. You add the missing <code>moved</code> block.</p>
+<h3 id="likely-follow-up-drift-refresh-and-replace">Likely follow-up: drift, refresh, and <code>-replace</code></h3>
+<ul>
+<li><strong>Drift:</strong> someone resized the VM in the console. The next plan wants to change it back or adopt the new size, depending on config. Run plan and read it. Don't apply a migration plan that also "fixes" a pile of drift you haven't looked at. Split them.</li>
+<li><strong><code>terraform apply -replace='oci_core_instance.app["app-1"]'</code></strong> forces replacement of that one address. It is the opposite of this migration. Know the flag so you don't pass it by habit.</li>
+<li><strong>Targeted apply</strong> (<code>-target</code>) can apply a move while leaving a broken graph half-done. Avoid it for a state migration. The whole plan should already be small.</li>
+</ul>
+<h3 id="likely-follow-up-workspaces-and-backends">Likely follow-up: workspaces and backends</h3>
+<p>A workspace is a separate state for the same config (dev vs prod). A <code>moved</code> block applies to whichever state you have selected. Migrating prod while your shell is pointed at dev does nothing to prod and can destroy dev. <code>terraform workspace show</code> before plan. Say that out loud. It is the same class of mistake as running a script on the wrong cluster.</p>
+<hr>
+<h2 id="how-the-two-halves-of-this-round-connect">How the two halves of this round connect</h2>
+<p>They asked about ownership, then about Terraform state. The link you can close with:</p>
+<blockquote>
+<p>I treat a state migration the way I treat a schema change. The identity of the object stays. The name in the tool changes. I want the dry run to say "moved" and nothing else, and I want a seatbelt like <code>prevent_destroy</code> on anything that holds data. Applying a plan I haven't read is how you get a maintenance window you didn't schedule.</p>
+</blockquote></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>
