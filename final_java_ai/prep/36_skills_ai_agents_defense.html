@@ -40,90 +40,476 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/36_skills_ai_agents_defense.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#final-resume-generative-ai-skills-defense">Final resume — Generative AI skills defense</a>
-<a class="lvl2" href="#one-liners">One-liners</a>
-<a class="lvl2" href="#do-not-say">Do not say</a></nav>
-<main><h1 id="final-resume-generative-ai-skills-defense">Final resume — Generative AI skills defense</h1>
-<p><strong>PDF categories (Sep 2026):</strong> Languages · Backend &amp; APIs · <strong>Generative AI</strong> · Data &amp; Streaming · Databases &amp; Storage · Cloud &amp; DevOps · Architecture &amp; Core.</p>
-<p>Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>. MCP is <strong>not</strong> on this PDF.</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#final-resume-generative-ai-skills-defense">Final resume: Generative AI skills defense</a>
+<a class="lvl2" href="#levels-explained-once">Levels, explained once</a>
+<a class="lvl2" href="#summary-table">Summary table</a>
+<a class="lvl2" href="#llm-agents-openai-gemini-claude">LLM Agents (OpenAI / Gemini / Claude)</a>
+<a class="lvl2" href="#langgraph">LangGraph</a>
+<a class="lvl2" href="#langchain">LangChain</a>
+<a class="lvl2" href="#rag-retrieval-augmented-generation">RAG (Retrieval-Augmented Generation)</a>
+<a class="lvl2" href="#milvus">Milvus</a>
+<a class="lvl2" href="#pgvector">pgvector</a>
+<a class="lvl2" href="#tool-calling">Tool Calling</a>
+<a class="lvl2" href="#mcp-model-context-protocol">MCP (Model Context Protocol)</a>
+<a class="lvl2" href="#prompt-engineering">Prompt Engineering</a>
+<a class="lvl2" href="#langsmith">LangSmith</a>
+<a class="lvl2" href="#offline-evaluation">Offline Evaluation</a>
+<a class="lvl2" href="#one-liners-to-memorise">One-liners to memorise</a>
+<a class="lvl2" href="#do-not-say">Do not say</a>
+<a class="lvl2" href="#other-skills-line-items-honesty-levels">Other skills-line items: honesty levels</a></nav>
+<main><h1 id="final-resume-generative-ai-skills-defense">Final resume: Generative AI skills defense</h1>
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li>It explains every item in the <b>Generative AI</b> line of the skills section on <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>, in plain English, and says exactly where I used it.</li>
+<li>Read it before any AI, LLM or agents interview, or when a recruiter asks "have you used X?".</li>
+<li>Memorise the summary table and the "Do not say" list. The level column tells you whether to say "I shipped this" or "I know how this works".</li>
+</ul>
+</div>
+<p><strong>The PDF skills line, Generative AI:</strong> LangGraph, LangChain, RAG, Milvus, pgvector, LLM Agents (OpenAI/Gemini/Claude), Tool Calling, MCP, Prompt Engineering, LangSmith, Offline Evaluation.</p>
+<p>The other skills categories are Languages, Backend and APIs, Data and Streaming, Databases and Storage, Cloud and DevOps, and Architecture and Core Concepts. A short honesty table for those is at the end. For a plain-English entry on every technology, see the <a href="../handbook/09_tech_glossary.html">tech glossary</a>. Canonical claims: <a href="../../docs/ASSORTSMART_TAB_RESUME.html">ASSORTSMART_TAB_RESUME</a>.</p>
+<div class="callout note">
+<p><b>Update from older prep.</b> Older versions of this page said "MCP is not on this PDF". It is now. The current skills line lists both <b>Tool Calling</b> and <b>MCP</b>. They are skills-level claims. Neither is an Impact Analytics PDF bullet. The deepest tool-design story (the Cluster Recommendation Copilot's 14 audited tools) is verbal depth only.</p>
+</div>
+<h2 id="levels-explained-once">Levels, explained once</h2>
 <table>
 <thead>
 <tr>
-<th>Skill on PDF</th>
-<th>What it means here</th>
-<th>Where to defend</th>
-<th>Tag</th>
+<th>Level</th>
+<th>What it means</th>
+<th>How to phrase it</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>LLM agents</strong></td>
-<td>Multi-step graphs, not chatbots</td>
-<td>AssortSmart Keep/Drop + Ask Iris (Supervisor+Evaluator)</td>
-<td>PDF</td>
+<td><strong>PDF BULLET</strong></td>
+<td>The skill appears inside an experience bullet on the PDF. I shipped it.</td>
+<td>"I built..."</td>
 </tr>
 <tr>
-<td><strong>OpenAI / Gemini / Claude</strong></td>
-<td>Provider APIs</td>
-<td>IA lenses; Menu Gemini 2.5 Pro</td>
-<td>PDF / HISTORICAL</td>
+<td><strong>SHIPPED, NOT A BULLET</strong></td>
+<td>It is in shipped code I worked on, but no PDF bullet names it.</td>
+<td>"In that system, the way it works is..."</td>
 </tr>
 <tr>
-<td><strong>LangGraph</strong></td>
-<td>Stateful orchestration</td>
-<td>7 lenses + Ask Iris Supervisor/Evaluator</td>
-<td>PDF</td>
+<td><strong>DESIGN</strong></td>
+<td>It is in a design I wrote for a project that is not shipped.</td>
+<td>"In the design I'm building..."</td>
 </tr>
 <tr>
-<td><strong>LangChain</strong></td>
-<td>RAG glue</td>
-<td>Menu RAG</td>
-<td>HISTORICAL</td>
-</tr>
-<tr>
-<td><strong>tool calling / structured invokes</strong></td>
-<td>Typed LLM calls; never raw SQL writes</td>
-<td>Air-gapped Keep/Drop; Ask Iris frozen scopes</td>
-<td>PDF</td>
-</tr>
-<tr>
-<td><strong>prompt engineering</strong></td>
-<td>Structured outputs, schema-shaped extraction</td>
-<td>IA lenses; Menu extraction</td>
-<td>PDF / HISTORICAL</td>
-</tr>
-<tr>
-<td><strong>RAG / embeddings / Milvus</strong></td>
-<td>Retrieve → generate → schema gate</td>
-<td><strong>Menu</strong> (98% offline)</td>
-<td>HISTORICAL offline</td>
-</tr>
-<tr>
-<td><strong>offline evaluation</strong></td>
-<td>Harness, not live SLA</td>
-<td>IA <strong>300-case / 80% CI promotion gate</strong> vs <strong>74%</strong> baseline; Menu 98%</td>
-<td>PDF gate / HISTORICAL</td>
-</tr>
-<tr>
-<td><strong>LangSmith</strong></td>
-<td>Token/step/fallback telemetry</td>
-<td>IA orchestration registry</td>
-<td>PDF</td>
+<td><strong>LITERACY</strong></td>
+<td>Skills-level. I understand it and can reason about it, but I do not claim production ownership.</td>
+<td>"I know how it works and when I would pick it."</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot, MCP, 14 tools.</p>
-<h2 id="one-liners">One-liners</h2>
-<p><strong>Agents:</strong> Keep/Drop blends deterministic KPI math with 7 structured LLM lenses; Ask Iris is a shipped Supervisor+Evaluator copilot with frozen scopes.
-<strong>Offline eval:</strong> ≥80% is a CI promotion gate, not all-tenants-live. Menu 98% is offline.
-<strong>LangSmith:</strong> Per-run JSON + LangSmith for tokens/duration/fallbacks; Datadog for the Go edge.</p>
+<h2 id="summary-table">Summary table</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>In plain English</th>
+<th>Where I used it</th>
+<th>Level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LangGraph</strong></td>
+<td>A library for building LLM workflows as a graph of steps, with loops and hard limits.</td>
+<td>Ask Iris supervisor and 3-attempt evaluator (Impact Analytics). Also a small bounded tool loop in the Keep/Drop peer step.</td>
+<td>PDF BULLET (Ask Iris)</td>
+</tr>
+<tr>
+<td><strong>LangChain</strong></td>
+<td>A toolkit of building blocks for LLM apps: loaders, retrievers, prompt templates.</td>
+<td>Uber Menu RAG pipeline. LangChain Academy certificate.</td>
+<td>PDF BULLET (Menu)</td>
+</tr>
+<tr>
+<td><strong>RAG</strong></td>
+<td>Look up relevant examples first, then ask the LLM with those examples in the prompt.</td>
+<td>Uber Menu extraction, 98% field fidelity in offline evaluation.</td>
+<td>PDF BULLET (Menu)</td>
+</tr>
+<tr>
+<td><strong>Milvus</strong></td>
+<td>A database that finds "similar" items by comparing embeddings.</td>
+<td>Uber Menu only.</td>
+<td>PDF BULLET (Menu)</td>
+</tr>
+<tr>
+<td><strong>pgvector</strong></td>
+<td>A Postgres extension that adds vector similarity search.</td>
+<td>Not used in production.</td>
+<td>LITERACY</td>
+</tr>
+<tr>
+<td><strong>LLM Agents (OpenAI/Gemini/Claude)</strong></td>
+<td>An LLM that runs multi-step work: decide, act, check. The brackets list provider APIs.</td>
+<td>Keep/Drop lenses and Ask Iris (OpenAI models at Impact Analytics, names off PDF). Gemini 2.5 Pro at Uber Menu. Claude is provider familiarity.</td>
+<td>PDF BULLET (IA, Menu)</td>
+</tr>
+<tr>
+<td><strong>Tool Calling</strong></td>
+<td>The LLM asks to run a named function with typed arguments. Our code runs it and returns the result.</td>
+<td>Ask Iris tools inherit the frozen user scope. Keep/Drop peer step has a 2-call batch tool budget. Copilot design has 14 audited read-only tools.</td>
+<td>SHIPPED, NOT A BULLET. Copilot is DESIGN</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Model Context Protocol, an open standard for exposing tools to any LLM client the same way.</td>
+<td>Skills-level. The Copilot design hosts its read-only tools over MCP.</td>
+<td>LITERACY, plus DESIGN</td>
+</tr>
+<tr>
+<td><strong>Prompt Engineering</strong></td>
+<td>Designing prompts and output schemas so the model returns exactly the structure you need.</td>
+<td>Lens, decider and explanation prompts at Impact Analytics. Schema-shaped extraction at Uber Menu.</td>
+<td>PDF BULLET (structured LLM invokes)</td>
+</tr>
+<tr>
+<td><strong>LangSmith</strong></td>
+<td>A tracing tool that records every LLM step, prompt, tool call and token count.</td>
+<td>Ask Iris only.</td>
+<td>PDF BULLET (Ask Iris)</td>
+</tr>
+<tr>
+<td><strong>Offline Evaluation</strong></td>
+<td>Test the model on a labelled set before it ships, like unit tests for AI behaviour.</td>
+<td>300-case set with an 80% CI gate, the gold-200 benchmark, Menu 98% fidelity.</td>
+<td>PDF BULLET (IA A5, Menu)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="llm-agents-openai-gemini-claude">LLM Agents (OpenAI / Gemini / Claude)</h2>
+<p><strong>What it is.</strong> An "agent" is an LLM used in a loop: it reads the situation, decides what to do, maybe calls a tool, checks the result, and continues until done. Think of a junior analyst with a checklist and a phone, who can call specific people but has to report back after each call. The brackets on the PDF are the provider APIs I am comfortable with.</p>
+<p><strong>How it works (what matters in interviews).</strong>
+1. Each step is one model call with a prompt, some context and, often, a required output schema.
+2. Control flow is either fixed in code ("always do A then B") or chosen by the model ("decide which tool next"). Fixed is safer and cheaper. Model-chosen is more flexible.
+3. Every loop needs a hard stop: a maximum number of attempts or a recursion limit.
+4. Cost and latency grow with the number of calls, so batch work should minimise model-chosen hops.</p>
+<p><strong>Where I used it.</strong>
+- <strong>Keep/Drop, Missed Opportunities, Top Style (Impact Analytics).</strong> The batch order is fixed in code: peer, then decider, then lenses, then blend, then explain. There is no LLM orchestrator. Each step is a structured LLM call over a batch of articles. The final score blends rules and the LLM: s_final = 0.4 × s_det + 0.6 × s_agent, keep if s_final ≥ 0.55.
+- <strong>Ask Iris (Impact Analytics).</strong> A LangGraph supervisor routes the planner's question to workers, and an evaluator checks the answer, up to 3 attempts.
+- <strong>Uber Menu.</strong> Gemini 2.5 Pro extracts menus into the catalog schema.
+- <strong>Providers.</strong> OpenAI models at Impact Analytics (the benchmark compared two of them, names not on the PDF). Gemini at Uber. Claude is provider familiarity: I know its API style, but no PDF bullet names it.</p>
+<p><strong>Why there.</strong> Keep/Drop needs qualitative judgement (is this trend real, is this item a niche hit?) that pure KPI math misses. But math must stay exact, so rules compute KPIs and the LLM only judges.</p>
+<p><strong>Interview question.</strong> <em>"Why not let one agent decide everything?"</em>
+"Because a batch of 88 thousand items cannot afford model-chosen control flow. Every extra hop is cost, latency and another chance to fail. So the order is fixed in code, the rules do the arithmetic, and the model only scores structured lenses. In the chat product, Ask Iris, the model does route, but under a supervisor with a three-attempt cap."</p>
+<p><strong>Do not say.</strong> "Autonomous agents that write to production." "Seven agents debating." Claude as a production provider on a bullet.</p>
+<hr>
+<h2 id="langgraph">LangGraph</h2>
+<p><strong>What it is.</strong> LangGraph is a Python library for building LLM workflows as a graph. Nodes are steps (call the model, run a tool, check a result). Edges decide what runs next. A shared state object travels through the graph. It is like a flowchart that actually runs, with loop counters built in.</p>
+<p><strong>How it works.</strong>
+1. You define a state (for example: question, scope, draft answer, attempt count).
+2. You add nodes and conditional edges ("if the evaluator says fail and attempts &lt; 3, go back to the supervisor").
+3. A recursion limit stops runaway graphs.
+4. A <code>ToolNode</code> runs whatever tool the model asked for and feeds the result back.</p>
+<p>A tiny example of the Ask Iris shape:</p>
+<pre><code class="language-python">MAX_ATTEMPTS = 3
+
+def route_after_eval(state):
+    if state[&quot;verdict&quot;] == &quot;pass&quot;:
+        return &quot;respond&quot;
+    if state[&quot;attempts&quot;] &gt;= MAX_ATTEMPTS:
+        return &quot;graceful_fallback&quot;
+    return &quot;supervisor&quot;
+
+graph.add_node(&quot;supervisor&quot;, supervisor)
+graph.add_node(&quot;evaluator&quot;, evaluator)
+graph.add_conditional_edges(&quot;evaluator&quot;, route_after_eval)
+</code></pre>
+<div class="mermaid">flowchart LR
+  Q["Planner question over WebSocket"] --&gt; SUP["Supervisor"]
+  SUP --&gt; WK["Worker step with tools"]
+  WK --&gt; EV["Evaluator"]
+  EV --&gt;|"pass"| OUT["Answer"]
+  EV --&gt;|"fail, attempts under 3"| SUP
+  EV --&gt;|"third failure"| FB["Graceful fallback answer"]
+</div>
+<p>What to notice: there is no path that loops forever. The third failure exits.</p>
+<p><strong>Where I used it.</strong> Ask Iris (PDF bullet A4). In Keep/Drop, a small bounded LangGraph tool loop runs the peer step's tool calls. The Keep/Drop batch itself is plain Python in a fixed order.</p>
+<p><strong>Why LangGraph and not a plain chain.</strong> Ask Iris needs a loop (evaluate, retry) with a hard cap and shared state. A linear chain cannot express "go back up to twice". Hand-written loops work too, but LangGraph gives the cap, the state and LangSmith tracing for free.</p>
+<p><strong>Alternatives.</strong> Plain Python control flow (best when the order is fixed, which is why Keep/Drop uses it). Temporal or Airflow for long-running durable workflows (heavier infrastructure).</p>
+<p><strong>Interview question.</strong> <em>"How do you stop infinite agent loops?"</em>
+"Two caps. The evaluator gets at most three attempts, and the supervisor graph has a recursion limit. On the third failure we return a graceful answer instead of another tool hop."</p>
+<p><strong>Do not say.</strong> LangGraph runs the Keep/Drop batch order. It does not.</p>
+<hr>
+<h2 id="langchain">LangChain</h2>
+<p><strong>What it is.</strong> LangChain is a toolkit of building blocks for LLM apps: document loaders, text splitters, embedding wrappers, retrievers, prompt templates. Think of it as a box of Lego pieces for wiring a RAG pipeline quickly.</p>
+<p><strong>How it works.</strong> You load documents, split them into chunks, embed the chunks, store them in a vector database, and at query time retrieve the closest chunks and put them into a prompt template.</p>
+<p><strong>Where I used it.</strong> Uber Menu: LangChain glued the RAG pipeline that fed Gemini 2.5 Pro with similar labelled menus from Milvus (PDF bullet M1). I also hold the LangChain Academy certificate.</p>
+<p><strong>Why there.</strong> It provides ready-made loaders, retrievers and prompt templates, which keeps the custom work focused on the schema and evaluation.</p>
+<p><strong>Alternatives.</strong> LlamaIndex (strong for document indexing), or plain SDK calls (fewer abstractions, more code).</p>
+<p><strong>Interview question.</strong> <em>"LangChain or LangGraph?"</em>
+"LangChain gives you the pieces: retrievers, templates, loaders. LangGraph gives you control flow with state and loops. At Uber I used LangChain for a retrieval pipeline. At Impact Analytics I used LangGraph where I needed a supervisor and a capped evaluator loop."</p>
+<hr>
+<h2 id="rag-retrieval-augmented-generation">RAG (Retrieval-Augmented Generation)</h2>
+<p><strong>What it is.</strong> Before asking the LLM a question, you look up relevant reference material and put it in the prompt. It is an open-book exam instead of a closed-book one.</p>
+<p><strong>How it works.</strong>
+1. <strong>Index:</strong> split reference documents into chunks and turn each chunk into an embedding (a list of numbers that captures meaning).
+2. <strong>Retrieve:</strong> embed the new input and find the nearest chunks.
+3. <strong>Generate:</strong> send the input plus retrieved examples to the LLM with clear instructions and an output schema.
+4. <strong>Validate:</strong> check the output against the schema before using it.</p>
+<p>An illustrative walk-through:</p>
+<pre><code class="language-text">New multilingual menu PDF
+  -&gt; embed the text
+  -&gt; Milvus: find the most similar menus we already labelled
+  -&gt; prompt Gemini 2.5 Pro: &quot;Here are labelled examples. Extract this menu into the catalog schema.&quot;
+  -&gt; validate against strict catalog schema
+  -&gt; catalog upsert
+</code></pre>
+<p><strong>Where I used it.</strong> Uber Menu, PDF bullet M1. It reached 98% field fidelity in offline evaluation.</p>
+<p><strong>Why there.</strong> Menus are messy and multilingual. Showing the model similar, correctly labelled menus helps it map odd layouts to our schema.</p>
+<p><strong>Alternatives.</strong> Fine-tuning a model on labelled menus (more cost and upkeep, and not a PDF claim). Rule-based parsers per template (break on every new layout).</p>
+<p><strong>Interview question.</strong> <em>"How did you evaluate the RAG pipeline?"</em>
+"Offline, against labelled menus. We measured field fidelity: did each field, like name, price or modifier, come out right. It was 98% on that set. I always say offline evaluation, because that is what it is."</p>
+<p><strong>Do not say.</strong> RAG at Impact Analytics. Keep/Drop is not document RAG. It is structured JSON scoring.</p>
+<hr>
+<h2 id="milvus">Milvus</h2>
+<p><strong>What it is.</strong> Milvus is a vector database. It stores embeddings and quickly finds the nearest ones to a query embedding. Like a librarian who finds books "about the same thing" even when the titles differ.</p>
+<p><strong>How it works.</strong> It builds an approximate nearest-neighbour index (for example HNSW, a graph of neighbours, or IVF, clustered buckets), so a search does not compare against every vector.</p>
+<p><strong>Where I used it.</strong> Uber Menu only, as the store for labelled menu embeddings in the RAG pipeline.</p>
+<p><strong>Why there.</strong> It held the embeddings of labelled menus, so the retriever could find similar examples quickly for each new menu.</p>
+<p><strong>Alternatives.</strong> pgvector (simpler if you already run Postgres and the set is modest), managed vector services.</p>
+<p><strong>Do not say.</strong> Milvus at Impact Analytics, or Milvus as a privacy or isolation store.</p>
+<hr>
+<h2 id="pgvector">pgvector</h2>
+<p><strong>What it is.</strong> A Postgres extension that adds a vector column type and similarity search. It lets you keep embeddings next to normal rows in the same database.</p>
+<p><strong>Where I used it.</strong> Not in production. It is on the skills line as literacy.</p>
+<p><strong>When I would pick it.</strong> When the vector set is small to moderate, the team already runs Postgres, and you want joins between vectors and normal tables. I would pick Milvus or a managed service at large scale or high query rates.</p>
+<p><strong>Interview question.</strong> <em>"pgvector or Milvus?"</em>
+"pgvector if the data is modest and already in Postgres, because you avoid another system. Milvus when the vector set is large or search load is high. At Uber Menu we used Milvus. I have not run pgvector in production."</p>
+<hr>
+<h2 id="tool-calling">Tool Calling</h2>
+<p><strong>What it is.</strong> Tool calling (also called function calling) lets an LLM ask your code to run a named function with typed arguments. The model never runs anything itself. It says "please call <code>get_scope_benchmarks</code> with these arguments", your code checks and runs it, and the result goes back to the model. Think of a pilot asking the tower for permission. The tower decides.</p>
+<p><strong>How it works.</strong>
+1. You describe each tool to the model: name, purpose, and a JSON schema for the arguments.
+2. The model replies with a tool call instead of text.
+3. Your code validates the arguments, runs the function, and returns the result.
+4. You cap how many tool calls are allowed per request.</p>
+<p>A generic example of a tool contract (teaching example, not copied from the repo):</p>
+<pre><code class="language-python">tools = [{
+    &quot;name&quot;: &quot;get_article_kpis&quot;,
+    &quot;description&quot;: &quot;Return KPIs for one article within the planner's current scope.&quot;,
+    &quot;parameters&quot;: {
+        &quot;type&quot;: &quot;object&quot;,
+        &quot;properties&quot;: {&quot;article_id&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;season_code&quot;: {&quot;type&quot;: &quot;string&quot;}},
+        &quot;required&quot;: [&quot;article_id&quot;, &quot;season_code&quot;],
+    },
+}]
+# The tool reads plan_scope from the frozen session, never from model arguments.
+</code></pre>
+<div class="mermaid">sequenceDiagram
+  participant U as Planner
+  participant A as Ask Iris
+  participant M as LLM
+  participant T as Tool code
+  U-&gt;&gt;A: Why did we drop this shirt
+  A-&gt;&gt;M: question plus tool list
+  M--&gt;&gt;A: call a KPI lookup tool
+  A-&gt;&gt;T: run with frozen plan_scope
+  T--&gt;&gt;A: KPI rows
+  A-&gt;&gt;M: tool result
+  M--&gt;&gt;A: answer
+  A--&gt;&gt;U: answer
+</div>
+<p>What to notice: the user's data scope is set by the server at handshake, not by the model's arguments. A prompt cannot widen it. (Illustrative flow. The tool name is generic.)</p>
+<p><strong>Where I used it.</strong>
+- <strong>Ask Iris.</strong> Tool calls inherit the hierarchy scope (<code>plan_scope</code>) frozen at the JWT WebSocket handshake. A later message cannot pivot into another tenant's data.
+- <strong>Keep/Drop peer step.</strong> The pipeline doc shows a peer-benchmark step with a budget of 2 tool calls per batch, using allowlisted batch tools (<code>get_sibling_colours_batch</code>, <code>get_scope_benchmarks_batch</code>) that each return data for the whole batch in one query. These are fixed functions we wrote. The model never writes SQL.
+- <strong>Cluster Recommendation Copilot (verbal only, DESIGN).</strong> 14 audited tools that only read planning data, with 3 gates before any write-back through the existing product write path. Clustering failure baseline measured at 8.5% (37 of 437), targeting under 2%. It is being built, not shipped.</p>
+<p><strong>Why it matters.</strong> Tool calling is how you give a model data without giving it a database shell. You control what each tool can read, how many calls it gets, and whose data it sees.</p>
+<p><strong>Alternatives.</strong> Pre-packing context as JSON with no tools at all. That is what the Keep/Drop lenses do, because it is cheaper and safer at 88k items per pass.</p>
+<p><strong>Interview question.</strong> <em>"How do you keep tool calls safe in a multi-tenant product?"</em>
+"The model only picks a tool and fills typed arguments. The server owns identity and scope. In Ask Iris, the hierarchy scope is frozen when the socket opens and every tool reads it from the session, not from the model. Tools are allowlisted functions, not free-form SQL, and calls are capped."</p>
+<p><strong>Follow-up they may ask:</strong> <em>"Is tool calling on your resume as a bullet?"</em> "It is on my skills line. The bullets describe the systems. If you want, I can walk through how the Ask Iris tools are scoped."</p>
+<p><strong>Do not say.</strong> "The LLM queries ClickHouse." "The agent writes SQL." Do not present the Copilot's 14 tools as shipped.</p>
+<hr>
+<h2 id="mcp-model-context-protocol">MCP (Model Context Protocol)</h2>
+<p><strong>What it is.</strong> MCP is an open protocol for exposing tools and data to LLM applications in a standard way. An MCP server publishes a list of tools with schemas. Any MCP-capable client (an IDE assistant, a chat app, an agent) can discover and call them over a JSON-RPC style connection. Think of it as USB for AI tools: build the tool once, plug it into any compatible client.</p>
+<p><strong>How it works.</strong>
+1. A <strong>server</strong> declares tools (name, description, input schema) and optionally resources and prompts.
+2. A <strong>client</strong> connects, lists the tools, and passes them to its model.
+3. When the model asks for a tool, the client sends the call to the server and returns the result.
+4. Auth, scoping and audit still belong to the server. MCP standardises the plumbing, not the permissions.</p>
+<p><strong>Where I used it.</strong> Skills-level. The Cluster Recommendation Copilot design hosts its audited read-only tools over MCP (verbal only, DESIGN). It is not an Impact Analytics PDF bullet.</p>
+<p><strong>Why it is a fit there.</strong> If several clients (a copilot UI, internal tools) need the same planning tools, MCP lets them share one audited tool server instead of each re-implementing tools.</p>
+<p><strong>Alternatives.</strong> Plain in-process tool calling (simplest when one app owns the tools, which is how Ask Iris works). A normal REST API that a tool wrapper calls.</p>
+<p><strong>Interview question.</strong> <em>"What's the difference between tool calling and MCP?"</em>
+"Tool calling is the model asking to run a function. MCP is a protocol for how tools are published and called across processes, so any compatible client can use the same tool server. You still need tool calling underneath. MCP just standardises discovery and transport. Permissions and audit stay in the server."</p>
+<p><strong>Do not say.</strong> "I shipped an MCP server in production at Impact Analytics." Say it is skills-level and part of the Copilot design.</p>
+<hr>
+<h2 id="prompt-engineering">Prompt Engineering</h2>
+<p><strong>What it is.</strong> Designing the instructions, examples, context and output format you give an LLM so it reliably returns what you need. It is writing a very precise brief for a contractor who will do exactly what the brief says.</p>
+<p><strong>How it works (the ideas that matter).</strong>
+1. <strong>Structured outputs.</strong> Ask for JSON that matches a schema, and validate it. Reject or retry anything that does not parse.
+2. <strong>Minimal context.</strong> Give each prompt only the fields it needs. Less noise, fewer tokens.
+3. <strong>Separate prompts per task.</strong> One prompt per lens, one for the decider, one for explanations, each versioned.
+4. <strong>Cite the data.</strong> Require the model to reference the numbers it was given, so explanations are grounded.</p>
+<p><strong>Where I used it.</strong>
+- <strong>Impact Analytics Keep/Drop.</strong> Separate prompts for base, each lens, the decider, explanations, Top-N taglines and the peer step, managed through a prompt registry. Each lens gets a compact feature set with only the fields it needs (for example only the last 12 weeks for trend lenses). Lenses must cite the computed sales momentum fields. Prompts are part of the frozen config hash, so every output row records which prompt version produced it.
+- <strong>Uber Menu.</strong> Schema-shaped extraction prompts with retrieved labelled examples.</p>
+<p><strong>Illustrative shape of a structured lens output</strong> (the pipeline stores per-lens score, outcome and confidence. The other values here are made up for teaching.)</p>
+<pre><code class="language-json">{
+  &quot;article_id&quot;: &quot;A-10293&quot;,
+  &quot;lens&quot;: &quot;trend_velocity&quot;,
+  &quot;score&quot;: 0.72,
+  &quot;outcome&quot;: &quot;keep&quot;,
+  &quot;confidence&quot;: 0.8,
+  &quot;evidence&quot;: [&quot;sales_momentum.last_4w_vs_prior_4w = +18%&quot;]
+}
+</code></pre>
+<p><strong>Interview question.</strong> <em>"Prompt engineering or fine-tuning?"</em>
+"Prompt engineering first, with strict schemas and offline evaluation. It is cheaper to change and every version is tracked in the config hash. I would only consider fine-tuning if a well-evaluated prompt plateaued below the bar. Fine-tuning is not something I claim on this resume."</p>
+<p><strong>Do not say.</strong> Fine-tuning or SFT as a resume claim.</p>
+<hr>
+<h2 id="langsmith">LangSmith</h2>
+<p><strong>What it is.</strong> LangSmith is a tracing and debugging tool for LLM apps. Every run becomes a tree: which node ran, which prompt, which tool call, how many tokens, how long, and what failed. Like a flight recorder for your agent.</p>
+<p><strong>Where I used it.</strong> Ask Iris only (PDF bullet A4).</p>
+<p><strong>Why there.</strong> When a chat answer is wrong, you need to see which step went wrong: supervisor routing, a tool result, or the evaluator. Datadog shows which service was slow. LangSmith shows which prompt step failed.</p>
+<p><strong>What Keep/Drop uses instead.</strong> Custom JSON telemetry in the orchestration registry: tokens, USD cost, step duration and batch fallbacks per run, plus the frozen config hash on every output row.</p>
+<p><strong>Interview question.</strong> <em>"Why both Datadog and LangSmith?"</em>
+"They answer different questions. Datadog traces the Go platform: which service, which request, how long. LangSmith traces the LLM graph in Ask Iris: which step, which prompt, which tool. One tool for both would do neither well."</p>
+<p><strong>Do not say.</strong> LangSmith on the Keep/Drop batch or on the orchestration registry.</p>
+<hr>
+<h2 id="offline-evaluation">Offline Evaluation</h2>
+<p><strong>What it is.</strong> Testing model behaviour against a labelled set before release, instead of discovering problems in production. It is unit tests for AI: a fixed set of inputs, expected answers, and a pass mark.</p>
+<p><strong>How it works.</strong>
+1. Build a labelled set (gold set). For Keep/Drop, labels are a proxy for real outcomes, because true answers are only known after the season.
+2. Run the candidate model or prompt on the set.
+3. Compare against a baseline that costs nothing, such as the rule-only score.
+4. Block promotion in CI if it misses the bar.</p>
+<p>The real gate config looks like this:</p>
+<pre><code class="language-json">{ &quot;gold_min_accuracy&quot;: 0.8 }
+</code></pre>
+<p><strong>Where I used it.</strong>
+- <strong>Impact Analytics, PDF bullet A5.</strong> A 300-case proxy set with an 80% accuracy CI gate. A separate gold-200 benchmark picked a model 73% cheaper at 100% coverage, and showed the rule-only baseline at 74%. The blended LLM scored about 63% there, below 74%, so we froze the blend weights instead of retuning them on a small set. In v2 of the pipeline, offline evals replaced the critic and evaluator agents that used to run inside Keep/Drop.
+- <strong>Uber Menu.</strong> 98% field fidelity in offline evaluation.</p>
+<p><strong>Why it matters.</strong> It lets you say no to a model with evidence. "The new model looks smarter" is not a reason to ship if it loses to a free rule.</p>
+<p><strong>Interview question.</strong> <em>"What did you do when the LLM did worse than the rules?"</em>
+"We did not ship a smarter-looking model that lost to a free baseline. On the 200-case benchmark the rules scored 74% and the blend scored lower, so we froze the blend weights. Promotion still needs 80% on the 300-case gate."</p>
+<p><strong>Do not say.</strong> "80% accuracy in production for all tenants." "The 300 cases showed the 73% saving." Human review queues for low-confidence scores (there are none in this repo).</p>
+<hr>
+<h2 id="one-liners-to-memorise">One-liners to memorise</h2>
+<ul>
+<li><strong>Agents:</strong> "Keep/Drop blends rule-based KPI math with structured LLM lenses in a fixed order. Ask Iris is a shipped LangGraph copilot with a supervisor, a three-attempt evaluator and a frozen data scope."</li>
+<li><strong>Tool calling:</strong> "The model picks a tool and fills typed arguments. The server owns scope. No SQL from the model."</li>
+<li><strong>MCP:</strong> "A standard way to publish tools to any LLM client. Skills-level for me, and part of the Copilot design."</li>
+<li><strong>Offline evaluation:</strong> "80% is a CI promotion gate on 300 cases, not live accuracy. The 73% cost cut and 74% baseline are from a separate 200-case benchmark. Menu 98% is offline."</li>
+<li><strong>Observability:</strong> "LangSmith for Ask Iris, custom JSON telemetry for the batch registry, Datadog for the Go edge."</li>
+</ul>
 <h2 id="do-not-say">Do not say</h2>
 <ul>
-<li>MCP as a PDF skill</li>
-<li>Fine-tuning / SFT on the PDF</li>
-<li>Copilot/Hindsight as resume bullets</li>
-<li>pgvector as production (literacy only)</li>
-</ul></main>
+<li>That MCP or Tool Calling is an Impact Analytics experience bullet. They are on the skills line.</li>
+<li>That you shipped an MCP server in production.</li>
+<li>Fine-tuning or SFT as a resume claim.</li>
+<li>The Cluster Recommendation Copilot or Hindsight as resume bullets, or the Copilot as shipped.</li>
+<li>pgvector as production. It is literacy.</li>
+<li>Milvus, RAG, Kafka or Flink at Impact Analytics.</li>
+<li>LangSmith on the Keep/Drop batch.</li>
+<li>Human-in-the-loop review queues on Keep/Drop.</li>
+</ul>
+<hr>
+<h2 id="other-skills-line-items-honesty-levels">Other skills-line items: honesty levels</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Level</th>
+<th>One-line explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C, C++</td>
+<td>LITERACY</td>
+<td>Skills-level. No production C or C++ claim.</td>
+</tr>
+<tr>
+<td>gRPC</td>
+<td>LITERACY</td>
+<td>A binary RPC framework over HTTP/2 with typed contracts. I know when to pick it over REST. No production ownership claim.</td>
+</tr>
+<tr>
+<td>DynamoDB</td>
+<td>LITERACY</td>
+<td>AWS key-value and document database. Skills-level.</td>
+</tr>
+<tr>
+<td>Kubernetes</td>
+<td>LITERACY</td>
+<td>Container orchestration. Skills-level. No claim of operating clusters.</td>
+</tr>
+<tr>
+<td>Kafka, Flink</td>
+<td>PDF BULLET</td>
+<td>Uber Menu (Kafka and Flink) and Masters India (Kafka). Never Impact Analytics.</td>
+</tr>
+<tr>
+<td>ClickHouse, BigQuery</td>
+<td>PDF BULLET</td>
+<td>Impact Analytics.</td>
+</tr>
+<tr>
+<td>Java, Spring Boot</td>
+<td>PDF BULLET</td>
+<td>Java is a compiled, statically typed language on the JVM. Spring Boot is the Java framework for building web services with sensible defaults. Uber FRM (36 Spring Boot endpoints) and Masters India (PHP monolith to Spring Boot microservices).</td>
+</tr>
+<tr>
+<td>Spring MVC</td>
+<td>Skills line</td>
+<td>The web layer inside Spring Boot: <code>@RestController</code>, <code>@GetMapping</code>, <code>@PatchMapping</code>, request binding. It is the layer the FRM and Masters endpoints are written in.</td>
+</tr>
+<tr>
+<td>Spring Data JPA, Hibernate</td>
+<td>PDF BULLET</td>
+<td>JPA is the Java standard for mapping classes to tables. Hibernate is the implementation, and Spring Data JPA adds repository interfaces on top. Uber FRM (the Spring Data JPA / Hibernate migration with 3 engineers) and Hibernate on the Masters India tech line.</td>
+</tr>
+<tr>
+<td>Spring Security</td>
+<td>Skills line</td>
+<td>Spring's authentication and authorization layer (filters, JWT validation, method-level access rules). It fits at the edge of services like FRM and Masters. Skills-level, with no separate outcome claimed.</td>
+</tr>
+<tr>
+<td>Spring Batch</td>
+<td>Skills line</td>
+<td>Spring's framework for chunked, restartable bulk jobs (read, process, write in chunks with job state). It fits bulk imports like the Masters e-invoicing uploads. Skills-level, with no separate outcome claimed.</td>
+</tr>
+<tr>
+<td>JUnit</td>
+<td>TECH LINE (FRM)</td>
+<td>JUnit 5 is the Java test framework, usually paired with Mockito for test doubles and MockMvc for controller tests. The FRM tests behind the 100% module statement coverage run on it.</td>
+</tr>
+<tr>
+<td>Maven</td>
+<td>Skills line</td>
+<td>The standard Java build and dependency tool. FRM itself builds with Bazel, which is Uber's build system.</td>
+</tr>
+<tr>
+<td>Amazon S3</td>
+<td>Skills line</td>
+<td>AWS object storage for files and blobs. Skills-level.</td>
+</tr>
+<tr>
+<td>FastAPI</td>
+<td>TECH LINE (IA)</td>
+<td>Python web framework. It runs the Ask Iris WebSocket service in the Impact Analytics agent plane.</td>
+</tr>
+<tr>
+<td>Pydantic</td>
+<td>Skills line</td>
+<td>FastAPI's typed validation library. Skills-level, with no separate outcome claimed.</td>
+</tr>
+<tr>
+<td>Celery, asyncio</td>
+<td>Skills line</td>
+<td>Celery is a Python background task queue. asyncio is Python's async IO library, which FastAPI runs on. Both are skills-level here, with no separate outcome claimed.</td>
+</tr>
+</tbody>
+</table></main>
 </div>
 
 <script type="module">

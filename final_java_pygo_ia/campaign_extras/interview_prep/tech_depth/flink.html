@@ -40,37 +40,164 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/tech_depth/flink.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#flink-menu-hot-path-spark-backfill-verbal">Flink (Menu hot path) + Spark (backfill — verbal)</a>
-<a class="lvl2" href="#what">What</a>
-<a class="lvl2" href="#where-only-menu">Where (only Menu)</a>
-<a class="lvl2" href="#why-we-needed-it-at-menu-scale">Why we needed it at Menu scale</a>
-<a class="lvl2" href="#why-flink-here-not-spark-on-the-hot-path">Why Flink here (not Spark on the hot path)</a>
-<a class="lvl2" href="#how-it-fits-the-menu-pipeline">How it fits the Menu pipeline</a>
-<a class="lvl2" href="#fundamentals-to-recite">Fundamentals to recite</a>
-<a class="lvl2" href="#failure-modes">Failure modes</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a>
-<a class="lvl2" href="#resume-placement">Resume placement</a></nav>
-<main><h1 id="flink-menu-hot-path-spark-backfill-verbal">Flink (Menu hot path) + Spark (backfill — verbal)</h1>
-<h2 id="what">What</h2>
-<p><strong>Apache Flink</strong> — stateful stream processor over Kafka. Used on <strong>Uber Menu</strong> after the ingest bus for validate / keyed dedupe / route structured vs unstructured.</p>
-<p><strong>Apache Spark</strong> — batch / micro-batch. Prefer for <strong>backfills and reprocessing</strong>, not the hot catalog freshness path (verbal unless JD demands Spark on PDF).</p>
-<h2 id="where-only-menu">Where (only Menu)</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#apache-flink-uber-menu-hot-path-with-spark-as-a-verbal-backfill-option">Apache Flink (Uber Menu hot path), with Spark as a verbal backfill option</a>
+<a class="lvl2" href="#1-what-flink-is-in-plain-english">1. What Flink is, in plain English</a>
+<a class="lvl2" href="#2-how-flink-works-the-ideas-interviewers-probe">2. How Flink works: the ideas interviewers probe</a>
+<a class="lvl2" href="#3-where-flink-sat-in-uber-menu">3. Where Flink sat in Uber Menu</a>
+<a class="lvl2" href="#4-design-decisions">4. Design decisions</a>
+<a class="lvl2" href="#5-failure-modes-and-recovery">5. Failure modes and recovery</a>
+<a class="lvl2" href="#6-the-numbers-tied-to-flink">6. The numbers tied to Flink</a>
+<a class="lvl2" href="#7-interview-questions-with-speakable-answers">7. Interview questions with speakable answers</a>
+<a class="lvl2" href="#resume-placement">Resume placement</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="apache-flink-uber-menu-hot-path-with-spark-as-a-verbal-backfill-option">Apache Flink (Uber Menu hot path), with Spark as a verbal backfill option</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li><strong>In:</strong> Kafka topics of scrape events (keyed by vendor/menu).</li>
-<li><strong>Out:</strong> structured → catalog upsert; unstructured → RAG/Gemini path.</li>
-<li><strong>Not used at:</strong> Masters (Kafka workers), IA (CH + agent), FRM.</li>
+<li><strong>What it covers:</strong> what Apache Flink is, the ideas interviewers probe (keyed state, event time, watermarks, checkpoints, backpressure, exactly-once), and how the Flink job sat in the Uber Menu ingestion pipeline. It also covers Spark, but only as a verbal "how I would backfill" answer.</li>
+<li><strong>When to read it:</strong> before the Uber Menu deep dive, any streaming design round, or a "why Flink and not Spark" question.</li>
+<li><strong>What to memorise:</strong> Flink did keyed deduplication (by vendor and content hash), schema validation and normalization, and routing between the structured path and the RAG path. Exactly-once catalog upserts in practice means at-least-once delivery plus idempotent upserts. Flink is Menu only.</li>
 </ul>
-<h2 id="why-we-needed-it-at-menu-scale">Why we needed it at Menu scale</h2>
-<p>30K+ menus/month is not “Flink because huge TPS.” Drivers:</p>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. ESTIMATED means arithmetic I can show. HISTORICAL means it comes from my past work records. TARGET means a design goal.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
+<ul>
+<li><strong>Flink is Uber Menu only.</strong> Never Masters India (that was Kafka plus Spring Kafka consumers). Never Impact Analytics (that was ClickHouse plus a Python batch pipeline).</li>
+<li><strong>Spark is not on the resume.</strong> Treat it as "how I would do backfills", a verbal option. Do not claim Spark ownership.</li>
+<li><strong>Do not claim a measured Flink peak throughput.</strong> The about 200 to 500 events per second figure is an ESTIMATE used in prep only.</li>
+<li><strong>Exactly-once</strong> on the resume means the catalog ends up with each change once. Mechanically that is at-least-once delivery plus idempotent upserts. No zero-message-loss claims and no two-phase commit across Gemini or third-party sites.</li>
+<li>The menu pipeline wrote to a catalog, <strong>not ClickHouse</strong>.</li>
+</ul>
+</div>
+<hr>
+<h2 id="1-what-flink-is-in-plain-english">1. What Flink is, in plain English</h2>
+<p>Apache Flink is a <strong>stream processor</strong>: a framework for running long-lived programs that read an endless stream of events, keep some memory about what they have seen, and emit results continuously. Think of a sorting clerk at a post office who never goes home. Letters (events) arrive all day. The clerk remembers which letters each address already got, throws away exact duplicates, fixes badly written addresses, and drops each letter into the right outgoing bin. The clerk also takes a photo of the desk every few minutes, so if they faint, a replacement can pick up exactly from the last photo.</p>
+<p>The "memory" is what makes Flink different from a simple Kafka consumer. Flink manages <strong>state</strong> for you, keeps it fault tolerant, and lets you reason about <strong>when events happened</strong> rather than when they arrived.</p>
+<p>Who uses it: companies with real-time pipelines for fraud detection, metrics, enrichment, deduplication and stream joins.</p>
+<hr>
+<h2 id="2-how-flink-works-the-ideas-interviewers-probe">2. How Flink works: the ideas interviewers probe</h2>
+<h3 id="21-jobs-operators-and-parallelism">2.1 Jobs, operators and parallelism</h3>
+<p>A Flink <strong>job</strong> is a graph of operators, for example source, then map, then keyed process, then sink. Each operator runs as several parallel copies called <strong>subtasks</strong>. When reading from Kafka, a source subtask reads one or more partitions, so useful source parallelism is roughly the Kafka partition count.</p>
+<h3 id="22-keyby-and-keyed-state">2.2 keyBy and keyed state</h3>
+<p><code>keyBy(vendor_id)</code> routes every event with the same key to the same subtask. That subtask can keep <strong>keyed state</strong>: a small value per key, such as "the last content hash I saw for this vendor's menu". Flink stores it, scales it across machines, and restores it after a crash. For large state, a disk-backed <strong>state backend</strong> such as RocksDB is used (older prep names RocksDB for this job).</p>
+<pre><code class="language-python"># Teaching sketch in PyFlink style. Not production code.
+class DedupeMenu(KeyedProcessFunction):
+    def open(self, ctx):
+        self.last_hash = ctx.get_state(ValueStateDescriptor(&quot;last_hash&quot;, Types.STRING()))
+
+    def process_element(self, event, ctx):
+        h = event[&quot;content_hash&quot;]
+        if self.last_hash.value() == h:
+            return                      # exact duplicate page or retry: drop it
+        self.last_hash.update(h)
+        yield normalize(event)          # schema normalization, then route downstream
+
+stream.key_by(lambda e: e[&quot;vendor_id&quot;]).process(DedupeMenu())
+</code></pre>
+<p><em>What to notice: dedupe is a per-vendor memory of "what did I last see", which is exactly what keyed state is for.</em></p>
+<p>A worked example. Vendor 42's menu page is scraped three times because of anti-bot retries:</p>
+<table>
+<thead>
+<tr>
+<th>Arrival</th>
+<th>vendor_id</th>
+<th>content_hash</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>42</td>
+<td>a1f9</td>
+<td>New hash: normalize and send to catalog upsert</td>
+</tr>
+<tr>
+<td>2</td>
+<td>42</td>
+<td>a1f9</td>
+<td>Same hash: drop</td>
+</tr>
+<tr>
+<td>3</td>
+<td>42</td>
+<td>c77e</td>
+<td>Menu actually changed: normalize and upsert the new version</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-event-time-and-watermarks">2.3 Event time and watermarks</h3>
+<ul>
+<li><strong>Processing time</strong> is when Flink sees the event.</li>
+<li><strong>Event time</strong> is when the event really happened, here the scrape timestamp carried in the event.</li>
+</ul>
+<p>Scrapes arrive out of order because of retries and slow pages. If you decide "latest menu wins" by arrival order, a late, older page can overwrite a newer one. Flink lets you work in event time.</p>
+<p>A <strong>watermark</strong> is Flink's running statement that "I believe I have now seen everything up to time T". With <strong>bounded out-of-orderness</strong> of, say, a few minutes (illustrative), Flink waits that long before closing windows or treating a key as settled. Events that arrive later than the watermark are <strong>late events</strong> and can be dropped, sent to a side output, or used to update state, depending on the design.</p>
+<p>Analogy: a teacher collecting homework says "anything dated before Monday counts if it reaches me by Wednesday". Wednesday is the watermark.</p>
+<p>Older prep describes the Menu rule as event-time last-write-wins: the version with the newest scrape timestamp wins, not the one that arrived last.</p>
+<h3 id="24-checkpoints-and-recovery">2.4 Checkpoints and recovery</h3>
+<p>Flink periodically takes a <strong>checkpoint</strong>, a consistent snapshot of all operator state plus the Kafka offsets that produced it. It does this by sending <strong>checkpoint barriers</strong> through the stream, like a marker dropped into a conveyor belt. When every operator has seen the marker, the snapshot is complete. If a machine dies, Flink restarts the job from the last checkpoint: state goes back to the snapshot, and Kafka is re-read from the matching offsets.</p>
+<p>The consequence: after a crash, some events after the checkpoint are processed again. That is fine if the sink is idempotent, and it is why the catalog upsert had to be idempotent.</p>
+<h3 id="25-exactly-once-honestly">2.5 Exactly-once, honestly</h3>
+<ul>
+<li><strong>Inside Flink</strong>, checkpoints give exactly-once <em>state</em>: each event affects Flink's state once.</li>
+<li><strong>Into Kafka</strong>, a transactional sink can give exactly-once <em>output</em>.</li>
+<li><strong>Into an external catalog</strong>, you need the catalog write to be idempotent or transactional. We used idempotent upserts keyed by vendor, menu and version or content hash.</li>
+</ul>
+<p>So the resume's "exactly-once catalog upserts" means the catalog shows each change once. Mechanically it is at-least-once plus idempotent upserts.</p>
+<h3 id="26-backpressure">2.6 Backpressure</h3>
+<p>If the sink (catalog or the RAG path) slows down, Flink's network buffers fill up and its credit-based flow control slows the upstream operators, which in turn read Kafka more slowly. The visible symptom is <strong>rising Kafka consumer lag</strong>, which is the right alert. The system slows down instead of running out of memory.</p>
+<hr>
+<h2 id="3-where-flink-sat-in-uber-menu">3. Where Flink sat in Uber Menu</h2>
+<blockquote>
+<p>Scaled menu extraction success to <strong>95%+</strong> by hardening a Selenium fleet with dynamic proxy pools and adaptive retries. Designed a large-scale data ingestion and processing pipeline using <strong>Kafka</strong> and <strong>Apache Flink</strong>, with stateful keyed deduplication and schema normalization to guarantee exactly-once catalog upserts.</p>
+</blockquote>
+<div class="mermaid">flowchart LR
+    SEL["Selenium scrapers"] --&gt; K["Kafka keyed by vendor_id"]
+    K --&gt; V["Flink: schema validate"]
+    V --&gt; D["Flink: keyed dedupe by content hash, event-time latest wins"]
+    D --&gt; N["Flink: normalize to catalog schema"]
+    N --&gt; R{"Structured enough?"}
+    R --&gt;|"yes"| CAT["Idempotent catalog upsert"]
+    R --&gt;|"no, PDF or image or low confidence"| RAG["LangChain RAG plus Gemini 2.5 Pro over Milvus"]
+    RAG --&gt; CAT
+</div>
+<p><em>What to notice: one Flink job does validate, dedupe, normalize and route, before anything touches the catalog or the expensive LLM path.</em></p>
+<p>Step by step for one menu:</p>
 <ol>
-<li><strong>Burst + retries</strong> from Selenium/anti-bot — need continuous processing, not nightly batch.</li>
-<li><strong>Keyed dedupe</strong> — same vendor can emit late/duplicate pages; Flink keyed state drops duplicates.</li>
-<li><strong>Event-time</strong> — scrape timestamps out of order; watermarks bound lateness.</li>
-<li><strong>SLA</strong> — 24h→2h onboarding needs minutes-level freshness vs Spark micro-batches.</li>
-<li><strong>Fan-out routing</strong> — one job validates then routes structured vs unstructured.</li>
+<li>A scraper fetches vendor 42's menu page and publishes an event with <code>vendor_id</code>, scrape timestamp, raw payload reference and content hash.</li>
+<li>Kafka stores it in vendor 42's partition.</li>
+<li>Flink validates the event shape and drops malformed events to a side path.</li>
+<li>Keyed dedupe: if the content hash equals the last one seen for vendor 42, drop it. If it is newer in event time, keep it.</li>
+<li>Normalization maps fields to the catalog schema (names, prices, currency, modifiers).</li>
+<li>Routing: clean structured menus go straight to the catalog upsert. Unstructured inputs (multilingual PDFs, images) go to the RAG extraction path, then back through schema validation to the catalog.</li>
+<li>The catalog upsert is keyed, so a re-delivery after a checkpoint restore changes nothing.</li>
 </ol>
-<p>Full scale attack answers: <a href="kafka_flink_scale_defense.html">kafka_flink_scale_defense.md</a>.</p>
-<h2 id="why-flink-here-not-spark-on-the-hot-path">Why Flink here (not Spark on the hot path)</h2>
+<h3 id="why-we-needed-flink-at-menu-scale">Why we needed Flink at Menu scale</h3>
+<p>30K+ menus a month is about 1,000 a day. That is not a "huge TPS" problem, and I say so. The drivers were the <strong>shape</strong> of the data:</p>
+<ol>
+<li><strong>Bursts and retries</strong> from the Selenium fleet and anti-bot backoff. You need continuous processing, not a nightly batch.</li>
+<li><strong>Keyed dedupe.</strong> The same vendor emits duplicate and late pages. Keyed state drops duplicates cheaply.</li>
+<li><strong>Event time.</strong> Scrape timestamps arrive out of order. Watermarks bound how long to wait.</li>
+<li><strong>Freshness.</strong> Onboarding went from 24 hours to 2 hours. Waiting for batch windows would eat into that.</li>
+<li><strong>Fan-out routing.</strong> One job validates and then splits structured and unstructured paths.</li>
+</ol>
+<hr>
+<h2 id="4-design-decisions">4. Design decisions</h2>
+<h3 id="flink-on-the-hot-path">Flink on the hot path</h3>
+<ul>
+<li><strong>What:</strong> a stateful Flink job between Kafka and the catalog.</li>
+<li><strong>Why:</strong> keyed dedupe, event-time ordering and routing in one place, with checkpointed state.</li>
+<li><strong>Alternatives considered:</strong></li>
+<li><em>Plain Kafka consumers in Python.</em> Fine for stateless transforms. You end up re-implementing keyed state, checkpoints and late-event handling yourself.</li>
+<li><em>Kafka Streams.</em> A real option for lighter transforms, and I admit it could have worked at this event rate. Flink was preferred for richer event-time support, larger keyed state and a clearer operational model for a dedicated processing cluster.</li>
+<li><em>Spark Structured Streaming.</em> Micro-batches add seconds of delay and keyed state is more awkward. Better for batch-shaped work.</li>
+<li><em>Dedupe in the catalog database only.</em> Possible with unique keys, but every duplicate still costs a write and possibly an LLM call. Dropping duplicates before the RAG path saves money.</li>
+<li><strong>Trade-off:</strong> Flink is another cluster to run, and state can grow large if key cardinality explodes.</li>
+<li><strong>What I'd do differently:</strong> add state TTL (time-to-live) from the start so dedupe state for vendors that went quiet expires automatically, and version the parse modules so a bad parser can be rolled back without touching the job graph.</li>
+</ul>
+<h3 id="flink-versus-spark">Flink versus Spark</h3>
 <table>
 <thead>
 <tr>
@@ -81,55 +208,140 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>Keyed state per vendor/menu</td>
+<td>Keyed state per vendor or menu</td>
 <td>Native</td>
-<td>Awkward</td>
+<td>More awkward</td>
 </tr>
 <tr>
-<td>Event-time + late pages</td>
+<td>Event time and late pages</td>
 <td>Watermarks</td>
-<td>Micro-batch delay</td>
+<td>Possible, with micro-batch delay</td>
 </tr>
 <tr>
-<td>Catalog freshness (minutes)</td>
-<td>Better</td>
+<td>Catalog freshness in minutes</td>
+<td>Better fit</td>
 <td>Heavier</td>
 </tr>
 <tr>
-<td>Huge historical reprocess</td>
+<td>Huge historical reprocess (for example 90 days)</td>
 <td>Possible</td>
 <td><strong>Better fit</strong></td>
 </tr>
 </tbody>
 </table>
-<h2 id="how-it-fits-the-menu-pipeline">How it fits the Menu pipeline</h2>
-<pre><code class="language-text">Selenium scrape → Kafka (replayable bus)
-  → Flink: validate, dedupe (keyed state), route
-       → structured → catalog upsert
-       → unstructured → RAG/Gemini extract → schema validate → catalog
-  → Spark (verbal): backfill / repair gaps after bad deploy
-</code></pre>
-<h2 id="fundamentals-to-recite">Fundamentals to recite</h2>
-<ul>
-<li><strong>Parallelism</strong> ≈ Kafka partition count (rough alignment).</li>
-<li><strong>Keyed state</strong> — vendor/menu id for dedupe.</li>
-<li><strong>Watermarks</strong> — bounded out-of-orderness for late scrapes.</li>
-<li><strong>Exactly-once</strong> — Flink + Kafka transactions help; <strong>catalog upserts still idempotent</strong>.</li>
-<li><strong>Failure</strong> — bad Flink build → rewind Kafka before bad watermark; Spark backfill for holes.</li>
-</ul>
-<h2 id="failure-modes">Failure modes</h2>
-<ul>
-<li>State blowup if key cardinality explodes.</li>
-<li>Idle watermarks stalling windows.</li>
-<li>Brittle HTML in Flink UDFs — version parse modules.</li>
-</ul>
-<h2 id="likely-questions">Likely questions</h2>
-<p>Why Flink not Spark? How do you handle late events? How do you rewind after a bad parser? What is in your dedupe key? Is 30K/month enough to justify Flink? (Answer: burst/replay/state, not vanity TPS.)</p>
+<h3 id="spark-as-a-verbal-backfill-answer-not-on-the-resume">Spark as a verbal backfill answer (not on the resume)</h3>
+<p>If asked "how would you reprocess 90 days after a schema change?", the answer is a batch job, and Spark is a natural tool: read raw payloads from object storage, transform with DataFrames, write idempotent upserts. Older prep estimated about 1 to 2 million item rows for a typical multi-day reprocess window. Treat that as ESTIMATED and verbal only. Watch for skew: very large vendors can be salted or isolated. Do not claim Spark kernel or Delta Lake work.</p>
+<hr>
+<h2 id="5-failure-modes-and-recovery">5. Failure modes and recovery</h2>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>What happens</th>
+<th>Recovery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TaskManager (worker) dies</td>
+<td>Job restarts from the last checkpoint</td>
+<td>State and Kafka offsets roll back together. Idempotent catalog upserts absorb re-processed events. Lag alert fires until caught up</td>
+</tr>
+<tr>
+<td>Bad parser or normalizer deploy</td>
+<td>Wrong data goes to the catalog</td>
+<td>Stop the job, fix, rewind Kafka offsets to before the bad deploy (restore from a savepoint or checkpoint from before it), reprocess. Batch backfill for larger gaps</td>
+</tr>
+<tr>
+<td>State blowup</td>
+<td>Key cardinality explodes, checkpoints get slow</td>
+<td>State TTL, tighter keys, RocksDB backend</td>
+</tr>
+<tr>
+<td>Idle partitions stall watermarks</td>
+<td>A quiet Kafka partition holds back event time for everyone</td>
+<td>Idleness detection on the source so idle partitions do not block the watermark</td>
+</tr>
+<tr>
+<td>Brittle HTML or PDF parsing inside the job</td>
+<td>Exceptions on certain vendors</td>
+<td>Route failures to a side output, version parse modules, keep the job alive</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-the-numbers-tied-to-flink">6. The numbers tied to Flink</h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>How derived</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>30K+ menus a month</td>
+<td>Volume through the pipeline</td>
+<td>Work records. About 1,000 a day</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>From 24 hours to 2 hours</td>
+<td>Onboarding time</td>
+<td>Work records. 24 / 2 = 12 times faster, about a 92% cut</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>95%+ extraction success</td>
+<td>Usable scrapes</td>
+<td>From an estimated 60 to 65%</td>
+<td>HISTORICAL, baseline ESTIMATED</td>
+</tr>
+<tr>
+<td>About 200 to 500 events per second peak</td>
+<td>Kafka and Flink event rate during fleet runs</td>
+<td>About 1,000 menus a day, each emitting many item, retry and health events, concentrated into short fleet windows</td>
+<td>ESTIMATED, prep only</td>
+</tr>
+</tbody>
+</table>
+<p>Say it out loud: "Volume was about 30 thousand menus a month. The pipeline is justified by burstiness, duplicates and replay, not raw throughput."</p>
+<p>Do NOT say: "We ran Flink at millions of events per second", or anything that ties Flink to ClickHouse.</p>
+<hr>
+<h2 id="7-interview-questions-with-speakable-answers">7. Interview questions with speakable answers</h2>
+<p><strong>Q1. Why Flink and not just Kafka consumers?</strong>
+Plain consumers are fine for stateless work. We needed per-vendor keyed state for dedupe, event-time ordering because scrapes arrive late and out of order, and one job that validates, dedupes, normalizes and routes before anything hits the catalog or the LLM. Flink gives that state with checkpoints, so I am not hand-building fault-tolerant state in a consumer. For example, a retried scrape with the same content hash is dropped in Flink and never costs a Gemini call.</p>
+<p><strong>Q2. Why Flink and not Spark?</strong>
+For the hot path, freshness and keyed state matter, and Flink is built for true streaming with native keyed state and watermarks. Spark Structured Streaming works in micro-batches, which adds delay and makes per-key state clumsier. Spark is the better tool for big historical reprocessing, so that is where I would use it, but it is not on my resume and I describe it as an option.</p>
+<p><strong>Q3. How do you handle late events?</strong>
+We use event time from the scrape timestamp, with a watermark that allows bounded out-of-orderness. Within that bound, a late but newer-in-event-time page still wins. Anything later than the watermark goes to a side output instead of silently overwriting newer data. The rule is that the newest scrape timestamp wins, not the last arrival.</p>
+<p><strong>Q4. What is in your dedupe key?</strong>
+The key is the vendor id, which is also the Kafka partition key, so ordering and state line up. The state is the last content hash or menu version seen for that vendor. A duplicate hash is dropped. A changed hash is a real update and flows on. The catalog upsert is keyed the same way, so even if Flink replays after a restore, the catalog sees no duplicate.</p>
+<p><strong>Q5. A checkpoint fails mid-fleet. What happens?</strong>
+The job restarts from the last successful checkpoint. State goes back to that snapshot and Kafka offsets rewind to the positions recorded with it. Events after that point are processed again, and the idempotent upserts absorb them. Consumer lag rises and alerts until the job catches up. If a whole window was corrupted by bad code, we rewind further or run a batch backfill.</p>
+<p><strong>Q6. Is 30K menus a month enough to justify Flink?</strong>
+Not if you only look at the average. About 1,000 menus a day is modest. The justification is the shape: bursty scraper waves, retries that create duplicates, out-of-order pages, a need to replay after bad deploys, and a split into structured and RAG paths. At this event rate Kafka Streams or a careful consumer could also work, and I would say that openly. Flink gave us managed keyed state and checkpoints for those properties.</p>
+<p><strong>Q7. How did you get exactly-once catalog upserts?</strong>
+Flink checkpoints give exactly-once state inside the job, but the catalog is an external system. So the catalog write is an idempotent upsert keyed by vendor, menu and version. Delivery is at-least-once, and replays are no-ops. I do not claim zero message loss or two-phase commit across Gemini or third-party sites.</p>
+<p><strong>Q8. How do you roll back a bad parser?</strong>
+Stop the job, fix or revert the parser, and restart from a checkpoint or savepoint taken before the bad deploy, which rewinds Kafka offsets with it. Then reprocess. Because upserts are idempotent and latest event time wins, the corrected output overwrites the bad output. For gaps bigger than Kafka retention, a batch backfill from the stored raw payloads is the tool.</p>
+<hr>
 <h2 id="resume-placement">Resume placement</h2>
 <ul>
-<li><strong>Skills:</strong> Flink under Data and Streaming.</li>
-<li><strong>Menu Tech + bullet:</strong> Kafka + Flink.</li>
-<li><strong>Masters:</strong> Kafka only.</li>
+<li><strong>Skills line:</strong> Apache Flink under Data and Streaming.</li>
+<li><strong>Menu bullet and Menu tech line:</strong> Kafka plus Flink.</li>
+<li><strong>Masters:</strong> Kafka only. <strong>IA:</strong> neither.</li>
+</ul>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="kafka_streaming.html">kafka_streaming.md</a> for Kafka fundamentals</li>
+<li><a href="kafka_flink_scale_defense.html">kafka_flink_scale_defense.md</a> for scale pushback</li>
+<li><a href="selenium_scraping.html">selenium_scraping.md</a> for the producer side</li>
+<li><a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a> for the RAG path</li>
+<li><a href="../architecture/03_uber_menu.html">../architecture/03_uber_menu.md</a></li>
+<li><a href="../../../handbook/09_tech_glossary.html">../../../handbook/09_tech_glossary.md</a></li>
 </ul></main>
 </div>
 

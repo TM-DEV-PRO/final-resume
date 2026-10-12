@@ -41,28 +41,108 @@ strong{color:#fff}
 <div class="topbar"><a href="../index.html">← All tracks</a><a href="../oracle/index.html">Oracle OCI hub</a><a href="../all_pages.html">All pages</a><span class="path">oracle/03_dsa_3_trees_bst_trie.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#033-trees-bst-trie">03.3 Trees, BST, trie</a>
+<a class="lvl2" href="#words-you-need">Words you need</a>
 <a class="lvl2" href="#a-how-to-think-about-tree-problems">A. How to think about tree problems</a>
 <a class="lvl2" href="#b-core-problems">B. Core problems</a>
 <a class="lvl2" href="#c-bst-operations">C. BST operations</a>
 <a class="lvl2" href="#d-trie-prefix-tree">D. Trie (prefix tree)</a>
 <a class="lvl2" href="#e-segment-tree-and-fenwick-tree-know-the-idea-rarely-coded">E. Segment tree and Fenwick tree (know the idea, rarely coded)</a></nav>
 <main><h1 id="033-trees-bst-trie">03.3 Trees, BST, trie</h1>
-<pre><code class="language-python">class TreeNode:
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> binary trees, binary search trees (BST), tries (prefix trees), and a short note on Fenwick and segment trees.</li>
+<li><b>When to read it:</b> after the linked-list file. Tree problems are the most common "medium" in OCI loops, and almost all reduce to two recursive shapes described in section A.</li>
+<li><b>What to memorise:</b> "return info up" versus "pass info down", BFS level loop with <code>len(queue)</code>, the BST range check, and the trie insert/search code.</li>
+<li><b>How each problem is laid out:</b> a one-line restatement, the key insight, a dry run on a small tree, code, complexity, and a 60-second spoken version.</li>
+</ul>
+</div>
+<p>Imports and the node class assumed by every snippet on this page:</p>
+<pre><code class="language-python">from collections import defaultdict, deque
+import bisect
+
+class TreeNode:
     def __init__(self, val=0, left=None, right=None):
         self.val, self.left, self.right = val, left, right
 </code></pre>
 <hr>
+<h2 id="words-you-need">Words you need</h2>
+<ul>
+<li><strong>Binary tree:</strong> each node has at most two children, called left and right. The top node is the <strong>root</strong>, and nodes with no children are <strong>leaves</strong>.</li>
+<li><strong>Height</strong> of a node: the number of nodes on the longest path from it down to a leaf. <strong>Depth</strong>: how far it is from the root. The letter <strong>h</strong> in complexities means the tree's height: about log n for a balanced tree, but up to n for a skewed tree that looks like a linked list.</li>
+<li><strong>Subtree:</strong> a node plus everything below it.</li>
+<li><strong>BST (binary search tree):</strong> a binary tree where every value in a node's left subtree is smaller than the node, and every value in its right subtree is larger. Searching it is like a guessing game: go left if smaller, right if bigger.</li>
+<li><strong>Traversal:</strong> visiting every node in a fixed order. <strong>Pre-order</strong> visits the node, then left, then right. <strong>In-order</strong> visits left, node, right, which gives <strong>sorted order for a BST</strong>. <strong>Post-order</strong> visits left, right, then node. <strong>Level-order</strong> (BFS) visits the tree row by row.</li>
+<li><strong>DFS (depth-first search):</strong> go as deep as possible before backtracking, usually with recursion. <strong>BFS (breadth-first search):</strong> visit all nodes at distance 1, then distance 2, using a queue.</li>
+</ul>
+<hr>
 <h2 id="a-how-to-think-about-tree-problems">A. How to think about tree problems</h2>
-<p>Almost every tree problem is one of two shapes:</p>
+<h3 id="the-idea">The idea</h3>
+<p>Almost every tree problem is one of two shapes. Pick the shape first and the code nearly writes itself.</p>
 <ol>
 <li><strong>Return info up (post-order):</strong> "what does my subtree tell my parent?" Height, whether it's balanced, max path through here, LCA found. Write <code>dfs(node) -&gt; info</code>, combine the left and right results, and update a global answer if needed.</li>
 <li><strong>Pass info down (pre-order):</strong> "what does my parent tell me?" Current path sum, allowed min/max range (BST validation), depth, max so far (good nodes).</li>
 </ol>
 <p>Level questions ("level order", "right view", "zigzag", "min depth") use <strong>BFS</strong> with a queue, processing <code>len(queue)</code> nodes per level.</p>
-<p>Traversals: pre-order (node, L, R), in-order (L, node, R; <strong>sorted for a BST</strong>), post-order (L, R, node), level-order (BFS).</p>
+<p><strong>Analogy:</strong> a company org chart. "Return info up" is the CEO asking for headcount: each manager asks their reports, adds them up and adds one for themselves, then reports upward. "Pass info down" is the CEO setting a budget cap: each manager passes the remaining budget to their reports.</p>
+<h3 id="when-to-recognise-each-shape">When to recognise each shape</h3>
+<ul>
+<li><strong>Return up:</strong> "height", "depth", "diameter", "balanced", "maximum path sum", "lowest common ancestor", "count nodes with property", anything where a node's answer depends on its children's answers.</li>
+<li><strong>Pass down:</strong> "root-to-leaf path", "path sum", "valid range", "good nodes (no bigger ancestor)", anything where a node needs to know about its ancestors.</li>
+<li><strong>BFS:</strong> "level", "row", "right side view", "minimum depth", "nearest".</li>
+</ul>
+<h3 id="hand-traced-example-return-info-up">Hand-traced example (return info up)</h3>
+<p>Height of this tree, where height of an empty node is 0:</p>
+<pre><code class="language-text">        1
+       / \
+      2   3
+     /
+    4
+
+height(4) = 1 + max(0, 0) = 1
+height(2) = 1 + max(height(4)=1, 0) = 2
+height(3) = 1 + max(0, 0) = 1
+height(1) = 1 + max(2, 1) = 3
+</code></pre>
+<p>Notice the order: children are finished before their parent, which is post-order.</p>
+<h3 id="templates">Templates</h3>
+<pre><code class="language-python">def return_up(node):
+    if not node:
+        return BASE                        # e.g. 0 for height, True for balanced
+    left = return_up(node.left)
+    right = return_up(node.right)
+    # optionally update a nonlocal &quot;best&quot; using left, right and node.val
+    return combine(node.val, left, right)
+
+def pass_down(node, state):
+    if not node:
+        return
+    state = update(state, node.val)        # e.g. path sum so far, allowed range
+    pass_down(node.left, state)
+    pass_down(node.right, state)
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, because each node is visited once. O(h) space for the recursion stack.</p>
+<h3 id="common-mistakes">Common mistakes</h3>
+<ul>
+<li>Forgetting the <code>None</code> base case, which crashes on <code>node.left.val</code>.</li>
+<li>Confusing "the value I return to my parent" with "the global best". In diameter and max path sum they are different, so you need a <code>nonlocal best</code>.</li>
+<li>Deep skewed trees (10⁵ nodes in a line) hitting Python's recursion limit. Use an explicit stack or raise the limit.</li>
+<li>Comparing only with direct children in BST validation (see B5).</li>
+</ul>
 <hr>
 <h2 id="b-core-problems">B. Core problems</h2>
 <h3 id="b1-max-depth-invert-same-tree-symmetric">B1. Max Depth, Invert, Same Tree, Symmetric</h3>
+<p><strong>Problems in one sentence each:</strong> find the tree's height; mirror the tree left to right; check two trees are identical; check a tree is a mirror of itself.</p>
+<p><strong>Key insight:</strong> all four are "return info up" in their simplest form. Each node does O(1) work with its children's results.</p>
+<p><strong>Dry run (invert)</strong> on:</p>
+<pre><code class="language-text">before        after
+    4             4
+   / \           / \
+  2   7         7   2
+ / \               / \
+1   3             3   1
+</code></pre>
+<p><code>invert(4)</code> sets <code>4.left = invert(7)</code> and <code>4.right = invert(2)</code>. <code>invert(2)</code> swaps 1 and 3. The tuple assignment computes both sides first, so nothing is lost.</p>
 <pre><code class="language-python">def max_depth(root):
     return 0 if not root else 1 + max(max_depth(root.left), max_depth(root.right))
 
@@ -76,8 +156,35 @@ def is_same(p, q):
         return p is q
     return p.val == q.val and is_same(p.left, q.left) and is_same(p.right, q.right)
 </code></pre>
+<p><strong>Symmetric</strong> is <code>is_same</code> against a mirror: compare <code>a.left</code> with <code>b.right</code> and <code>a.right</code> with <code>b.left</code>.</p>
+<pre><code class="language-python">def is_symmetric(root):
+    def mirror(a, b):
+        if not a or not b:
+            return a is b
+        return a.val == b.val and mirror(a.left, b.right) and mirror(a.right, b.left)
+    return mirror(root.left, root.right) if root else True
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(h) space for each.</p>
+<p><strong>Say it in 60 seconds (Same Tree):</strong> "Two trees are the same if both roots are empty, or both exist with equal values and their left subtrees match and their right subtrees match. The base case <code>p is q</code> handles both-empty as true and one-empty as false in one line. Each node is compared once, so O(n) time and O(h) stack. Symmetric is the same function, comparing left with right crosswise."</p>
+<hr>
 <h3 id="b2-diameter-of-binary-tree-return-up-update-global">B2. Diameter of Binary Tree (return up, update global)</h3>
-<p><strong>Intuition:</strong> the longest path through a node = left height + right height. Return height up.</p>
+<p><strong>Problem in one sentence:</strong> find the number of edges on the longest path between any two nodes.</p>
+<p><strong>Key insight:</strong> the longest path through a node = left height + right height. But a parent can only extend a path through <strong>one</strong> of a node's sides. So return height up to the parent, and update a global best with <code>left + right</code> at each node.</p>
+<p><strong>Dry run</strong> on:</p>
+<pre><code class="language-text">        1
+       / \
+      2   3
+     / \
+    4   5
+
+node  left h  right h  best = max(best, l + r)  return 1 + max(l, r)
+4     0       0        0                        1
+5     0       0        0                        1
+2     1       1        2                        2
+3     0       0        2                        1
+1     2       1        3                        3
+answer 3 (path 4-2-1-3, three edges)
+</code></pre>
 <pre><code class="language-python">def diameter(root):
     best = 0
     def height(n):
@@ -90,7 +197,28 @@ def is_same(p, q):
     height(root)
     return best
 </code></pre>
-<p>O(n). The same shape gives <strong>Balanced Binary Tree</strong> (return -1 for unbalanced) and <strong>Binary Tree Maximum Path Sum</strong>:</p>
+<p><strong>Complexity:</strong> O(n) time, O(h) space.</p>
+<p>The same shape gives <strong>Balanced Binary Tree</strong> (return -1 for unbalanced, so a parent can short-circuit) and <strong>Binary Tree Maximum Path Sum</strong> (B2b below).</p>
+<p><strong>Say it in 60 seconds:</strong> "The longest path has some highest node, and at that node it goes down the left side and the right side. So at every node, the best path through it is left height plus right height. I compute heights bottom-up, update a global best with left plus right, and return one plus the bigger side, because a parent can only continue through one branch. One pass, O(n) time, O(h) stack."</p>
+<hr>
+<h3 id="b2b-binary-tree-maximum-path-sum-hard">B2b. Binary Tree Maximum Path Sum (hard)</h3>
+<p><strong>Problem in one sentence:</strong> find the maximum sum of node values along any path, where values can be negative.</p>
+<p><strong>Key insight:</strong> same shape as diameter, with two twists. A negative branch is worse than no branch, so clamp each child's gain at 0. And the value you return up can use only one side, while the global best can use both.</p>
+<p><strong>Dry run</strong> on:</p>
+<pre><code class="language-text">     -10
+     /  \
+    9    20
+        /  \
+       15   7
+
+node  l gain  r gain  best = max(best, val + l + r)  return val + max(l, r)
+9     0       0       9                              9
+15    0       0       15                             15
+7     0       0       15                             7
+20    15      7       42                             35
+-10   9       35      max(42, 34) = 42               25
+answer 42 (path 15-20-7)
+</code></pre>
 <pre><code class="language-python">def max_path_sum(root):
     best = float(&quot;-inf&quot;)
     def gain(n):
@@ -104,7 +232,19 @@ def is_same(p, q):
     gain(root)
     return best
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(h) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "It's the diameter pattern with sums. Each node asks its children for the best downward path sum starting at them, and treats a negative result as zero, since skipping that branch is better. The best path that peaks at this node is its value plus both gains, so I update a global best. What I return to my parent is my value plus the better single gain, because a path can't fork. I start best at negative infinity so an all-negative tree returns its largest value."</p>
+<hr>
 <h3 id="b3-level-order-traversal-bfs">B3. Level Order Traversal (BFS)</h3>
+<p><strong>Problem in one sentence:</strong> return the node values level by level, as a list of lists.</p>
+<p><strong>Key insight:</strong> a queue visits nodes in order of distance from the root. To separate levels, snapshot <code>len(q)</code> at the start of each round. Exactly that many nodes belong to the current level, and everything they enqueue belongs to the next.</p>
+<p><strong>Dry run</strong> on <code>3(9, 20(15, 7))</code>:</p>
+<pre><code class="language-text">round  queue at start  len  popped      level      queue at end
+1      [3]             1    3           [3]        [9, 20]
+2      [9, 20]         2    9, 20       [9, 20]    [15, 7]
+3      [15, 7]         2    15, 7       [15, 7]    []
+answer [[3], [9, 20], [15, 7]]
+</code></pre>
 <pre><code class="language-python">def level_order(root):
     if not root:
         return []
@@ -119,9 +259,29 @@ def is_same(p, q):
         res.append(level)
     return res
 </code></pre>
-<p>Right Side View: the last element of each level. Zigzag: reverse alternate levels.</p>
+<p><strong>Variants:</strong> Right Side View is the last element of each level. Zigzag reverses alternate levels. Minimum Depth returns the round number of the first leaf found.</p>
+<p><strong>Complexity:</strong> O(n) time, O(width) space, which can be up to n/2 for the last level of a full tree.</p>
+<p><strong>Say it in 60 seconds:</strong> "Level questions mean BFS. I start a queue with the root. Each round, I read the queue length once, because that's exactly the number of nodes on the current level. I pop that many, record their values, and push their children, which form the next level. I use a deque so popleft is O(1). Right side view is just the last value of each level."</p>
+<hr>
 <h3 id="b4-lowest-common-ancestor-binary-tree">B4. Lowest Common Ancestor (binary tree)</h3>
-<p><strong>Intuition:</strong> if p and q are in different subtrees of a node, that node is the LCA. Return a found node up.</p>
+<p><strong>Problem in one sentence:</strong> given two nodes p and q, find their deepest shared ancestor (a node can be its own ancestor).</p>
+<p><strong>Key insight:</strong> if p and q are in different subtrees of a node, that node is the LCA. Return a found node up: each call returns p or q if it found one in its subtree, or the LCA if it found both, or None.</p>
+<p><strong>Dry run</strong> on the tree below with <code>p = 6</code>, <code>q = 4</code>:</p>
+<pre><code class="language-text">          3
+        /   \
+       5     1
+      / \   / \
+     6   2 0   8
+        / \
+       7   4
+
+lca(6) -&gt; 6 (it is p)
+lca(2) -&gt; left lca(7) = None, right lca(4) = 4 -&gt; returns 4
+lca(5) -&gt; left = 6, right = 4, both found -&gt; returns 5
+lca(1) -&gt; None (neither below)
+lca(3) -&gt; left = 5, right = None -&gt; returns 5
+answer 5
+</code></pre>
 <pre><code class="language-python">def lca(root, p, q):
     if not root or root is p or root is q:
         return root
@@ -130,8 +290,27 @@ def is_same(p, q):
         return root
     return l or r
 </code></pre>
-<p>O(n). <strong>BST version:</strong> walk down. If both are smaller go left, if both are larger go right, else the current node is the LCA. O(h).</p>
+<p><strong>Complexity:</strong> O(n) time, O(h) space.</p>
+<p><strong>BST version:</strong> walk down. If both are smaller go left, if both are larger go right, else the current node is the LCA (the two values split here). O(h).</p>
+<p><strong>Say it in 60 seconds:</strong> "I recurse and return whatever I find: p or q if the current node is one of them, otherwise the results from both sides. If both sides return something, p and q are on different sides, so this node is the lowest common ancestor. If only one side returns something, I pass it up, because either the LCA is down there or I'm carrying one of the targets. If a node is p and q is below it, returning p immediately is still correct. O(n) time. For a BST I'd just walk down by comparing values, O(h)."</p>
+<hr>
 <h3 id="b5-validate-bst-pass-range-down">B5. Validate BST (pass range down)</h3>
+<p><strong>Problem in one sentence:</strong> check whether a binary tree satisfies the BST rule everywhere, not just between parent and child.</p>
+<p><strong>Key insight:</strong> every node must lie in a range set by <strong>all</strong> its ancestors. Going left tightens the upper bound to the parent's value. Going right tightens the lower bound. Pass the range down.</p>
+<p><strong>Dry run</strong> on a tree that fools the "compare with children" approach:</p>
+<pre><code class="language-text">      5
+     / \
+    4   6
+       / \
+      3   7
+
+node  allowed range   ok?
+5     (-inf, inf)     yes
+4     (-inf, 5)       yes
+6     (5, inf)        yes
+3     (5, 6)          no, 3 &lt; 5 -&gt; False
+</code></pre>
+<p>Node 3 is a valid left child of 6, but it sits in 5's right subtree, so it must be greater than 5.</p>
 <pre><code class="language-python">def is_valid_bst(root, lo=float(&quot;-inf&quot;), hi=float(&quot;inf&quot;)):
     if not root:
         return True
@@ -139,8 +318,21 @@ def is_same(p, q):
         return False
     return is_valid_bst(root.left, lo, root.val) and is_valid_bst(root.right, root.val, hi)
 </code></pre>
-<p>Common bug: only comparing with direct children.</p>
+<p>Common bug: only comparing with direct children. An equally good alternative is an in-order traversal that checks each value is strictly greater than the previous.</p>
+<p><strong>Complexity:</strong> O(n) time, O(h) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Checking each node against its children isn't enough, because a node deep in the right subtree must still be bigger than the root. So I pass down an allowed open interval. The root allows anything. Going left, the upper bound becomes the parent's value. Going right, the lower bound becomes the parent's value. If any node falls outside its interval, it's invalid. O(n) time. Alternatively, an in-order walk must produce a strictly increasing sequence."</p>
+<hr>
 <h3 id="b6-kth-smallest-in-bst-in-order-iterative">B6. Kth Smallest in BST (in-order, iterative)</h3>
+<p><strong>Problem in one sentence:</strong> return the k-th smallest value in a BST.</p>
+<p><strong>Key insight:</strong> in-order traversal of a BST visits values in sorted order, so the k-th node visited is the answer. Doing it iteratively lets you stop early without visiting the whole tree.</p>
+<p><strong>Dry run</strong> on <code>3(1(-, 2), 4)</code> with <code>k = 3</code>:</p>
+<pre><code class="language-text">action                         stack     k
+push 3, push 1, left is None   [3, 1]
+pop 1 (visit), k=2, go right   [3]       2
+push 2, left is None           [3, 2]
+pop 2 (visit), k=1             [3]       1
+pop 3 (visit), k=0 -&gt; return 3
+</code></pre>
 <pre><code class="language-python">def kth_smallest(root, k):
     st, cur = [], root
     while st or cur:
@@ -153,9 +345,22 @@ def is_same(p, q):
             return cur.val
         cur = cur.right
 </code></pre>
-<p>O(h + k). Follow-up, frequent queries with inserts: augment each node with its subtree size, giving O(h) per query.</p>
+<p><strong>Complexity:</strong> O(h + k) time, because we walk down to the smallest and then visit k nodes. O(h) space.</p>
+<p><strong>Follow-up, frequent queries with inserts:</strong> augment each node with its subtree size, giving O(h) per query: if the left subtree has <code>L</code> nodes and <code>k ≤ L</code>, go left; if <code>k == L + 1</code>, it's this node; otherwise go right with <code>k - L - 1</code>.</p>
+<p><strong>Say it in 60 seconds:</strong> "In-order traversal of a BST yields sorted values, so I want the k-th in-order node. I do it iteratively with a stack: push all the way left, pop and count, then move to the right child. When the count hits k, I return. That stops early, so it's O(h + k) rather than O(n). If the tree changes and queries are frequent, I'd store subtree sizes so each query is O(h)."</p>
+<hr>
 <h3 id="b7-construct-tree-from-preorder-inorder">B7. Construct Tree from Preorder + Inorder</h3>
-<p><strong>Intuition:</strong> <code>preorder[0]</code> is the root. Its index in inorder splits left and right. Use a hashmap for O(1) index lookups.</p>
+<p><strong>Problem in one sentence:</strong> rebuild a binary tree from its pre-order and in-order traversals (values are unique).</p>
+<p><strong>Key insight:</strong> <code>preorder[0]</code> is the root. Its index in inorder splits left and right: everything before it in the in-order list is the left subtree, everything after is the right. Use a hashmap for O(1) index lookups, and consume the pre-order list in order with an iterator.</p>
+<p><strong>Dry run</strong> on <code>preorder = [3, 9, 20, 15, 7]</code>, <code>inorder = [9, 3, 15, 20, 7]</code>:</p>
+<pre><code class="language-text">call          next preorder value  inorder index  left range  right range
+build(0, 4)   3                    1              (0, 0)      (2, 4)
+build(0, 0)   9                    0              (0, -1)     (1, 0)    both empty
+build(2, 4)   20                   3              (2, 2)      (4, 4)
+build(2, 2)   15                   2              empty       empty
+build(4, 4)   7                    4              empty       empty
+tree: 3(9, 20(15, 7))
+</code></pre>
 <pre><code class="language-python">def build_tree(preorder, inorder):
     idx = {v: i for i, v in enumerate(inorder)}
     it = iter(preorder)
@@ -169,9 +374,18 @@ def is_same(p, q):
         return node
     return build(0, len(inorder) - 1)
 </code></pre>
-<p>O(n).</p>
+<p>The left subtree must be built <strong>before</strong> the right, because pre-order lists the whole left subtree before any right node.</p>
+<p><strong>Complexity:</strong> O(n) time thanks to the index map (without it, searching the in-order list makes it O(n²)). O(n) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Pre-order gives roots first, and in-order tells me what's left and right of each root. I map each value to its in-order index. Then I recurse on an in-order range: take the next pre-order value as the root, split the range at that root's in-order position, build the left part, then the right part. Building left before right matters because pre-order lists the whole left subtree first. O(n) time with the map."</p>
+<hr>
 <h3 id="b8-serialize-deserialize-binary-tree">B8. Serialize / Deserialize Binary Tree</h3>
-<p>Pre-order with a null marker.</p>
+<p><strong>Problem in one sentence:</strong> convert a tree to a string and back, exactly.</p>
+<p><strong>Key insight:</strong> pre-order with a null marker. Recording <code>#</code> for every missing child makes the shape unambiguous, so a single pre-order list is enough to rebuild the tree. The decoder reads tokens in the same order the encoder wrote them.</p>
+<p><strong>Dry run</strong> on <code>1(2, 3(4, 5))</code>:</p>
+<pre><code class="language-text">serialize: visit 1, 2, (2 has no children) #, #, 3, 4, #, #, 5, #, #
+string: &quot;1,2,#,#,3,4,#,#,5,#,#&quot;
+deserialize reads 1 -&gt; left reads 2 -&gt; left # , right # -&gt; right reads 3 -&gt; 4(#, #), 5(#, #)
+</code></pre>
 <pre><code class="language-python">class Codec:
     def serialize(self, root):
         out = []
@@ -193,8 +407,23 @@ def is_same(p, q):
             return n
         return build()
 </code></pre>
+<p>In <code>n.left, n.right = build(), build()</code>, Python evaluates the left <code>build()</code> first, which is required here.</p>
+<p><strong>Complexity:</strong> O(n) time and space for both directions.</p>
+<p><strong>Say it in 60 seconds:</strong> "I write a pre-order traversal and emit a marker for every null child, joined by commas. Because nulls are explicit, the sequence uniquely describes the shape. To rebuild, I read tokens with an iterator in the same order: a marker means None, otherwise I create the node and recursively build its left then right. Both directions are O(n). BFS with null markers works too and is what LeetCode's display format uses."</p>
+<hr>
 <h3 id="b9-path-sum-iii-count-paths-with-sum-k-any-downward-path">B9. Path Sum III (count paths with sum k, any downward path)</h3>
-<p>Prefix sums on the root-to-node path, using a hashmap (same idea as subarray sum = k). Add on entry, remove on exit (backtrack).</p>
+<p><strong>Problem in one sentence:</strong> count downward paths (not necessarily from root or to a leaf) whose values add up to a target.</p>
+<p><strong>Key insight:</strong> along any root-to-node path, this is exactly "count subarrays with sum k" from the <a href="03_dsa_1_arrays_hashing_search.html">arrays file</a> (section B1). Keep prefix sums of the current path in a hashmap. Add on entry, remove on exit (backtrack), so sibling branches don't see each other's sums.</p>
+<p><strong>Dry run</strong> on <code>1(2, 3)</code> with <code>target = 3</code>:</p>
+<pre><code class="language-text">count starts {0: 1}
+visit 1: cur = 1, count[1 - 3 = -2] = 0, res 0, count {0:1, 1:1}
+  visit 2: cur = 3, count[0] = 1, res 1 (path 1-2), count adds 3
+           leave 2: remove 3
+  visit 3: cur = 4, count[1] = 1, res 1 (path 3 alone)
+           leave 3: remove 4
+leave 1: remove 1
+answer 2
+</code></pre>
 <pre><code class="language-python">def path_sum(root, target):
     count = defaultdict(int); count[0] = 1
     def dfs(n, cur):
@@ -208,18 +437,112 @@ def is_same(p, q):
         return res
     return dfs(root, 0)
 </code></pre>
-<h3 id="b10-count-good-nodes-subtree-of-another-tree-binary-tree-cameras-greedy-post-order-vertical-order-bfs-with-column-index-flatten-to-linked-list-reverse-post-order">B10. Count Good Nodes, Subtree of Another Tree, Binary Tree Cameras (greedy post-order), Vertical Order (BFS with column index), Flatten to Linked List (reverse post-order).</h3>
+<p><strong>Complexity:</strong> O(n) time, O(h) space for the map and stack. The brute force (start a search at every node) is O(n²) on a skewed tree.</p>
+<p><strong>Say it in 60 seconds:</strong> "Any downward path is a contiguous piece of some root-to-node path, so it's subarray-sum-equals-k on a tree. As I go down, I keep a running prefix sum and a map of how many times each prefix sum has appeared on the current path. At each node, paths ending here with the target sum equal the count of <code>cur - target</code>. I add the current prefix before going into children and remove it on the way back out, so other branches don't see it. O(n) time."</p>
+<hr>
+<h3 id="b10-count-good-nodes-subtree-of-another-tree-binary-tree-cameras-greedy-post-order-vertical-order-bfs-with-column-index-flatten-to-linked-list-reverse-post-order">B10. Count Good Nodes, Subtree of Another Tree, Binary Tree Cameras (greedy post-order), Vertical Order (BFS with column index), Flatten to Linked List (reverse post-order)</h3>
+<p>One sentence of insight for each, so you can attempt them cold:</p>
+<ul>
+<li><strong>Count Good Nodes:</strong> a node is good if no ancestor is larger. Pass the max-so-far <strong>down</strong> and count nodes with <code>val &gt;= max_so_far</code>.</li>
+<li><strong>Subtree of Another Tree:</strong> at each node of the big tree, run <code>is_same</code> against the small tree. O(m·n). For O(m + n), serialize both with null markers and do a substring search.</li>
+<li><strong>Binary Tree Cameras:</strong> post-order returns one of three states (needs a camera, has a camera, covered). Place a camera at a parent only when a child needs one. Greedy works because placing cameras as high as possible covers more nodes.</li>
+<li><strong>Vertical Order:</strong> BFS carrying a column index (left child is column - 1, right child is column + 1), group values by column, then output columns from left to right.</li>
+<li><strong>Flatten to Linked List:</strong> visit in reverse pre-order (right, left, node) and keep a <code>prev</code> pointer. Set <code>node.right = prev</code> and <code>node.left = None</code>. Each node gets linked to the one that comes after it in pre-order.</li>
+</ul>
+<pre><code class="language-python">def good_nodes(root):
+    def dfs(n, mx):
+        if not n:
+            return 0
+        good = 1 if n.val &gt;= mx else 0
+        mx = max(mx, n.val)
+        return good + dfs(n.left, mx) + dfs(n.right, mx)
+    return dfs(root, float(&quot;-inf&quot;))
+</code></pre>
+<p><strong>Say it in 60 seconds (Good Nodes):</strong> "A node is good if it's at least as large as every ancestor. That's a pass-down problem: I carry the maximum value seen on the path from the root. At each node I count it if its value is at least that max, update the max, and recurse into both children. O(n) time, O(h) stack."</p>
 <hr>
 <h2 id="c-bst-operations">C. BST operations</h2>
+<h3 id="the-idea_1">The idea</h3>
+<p>A BST keeps the "left smaller, right larger" rule at every node, so search, insert and delete each follow one root-to-leaf path. That's O(h), which is O(log n) only if the tree stays balanced.</p>
+<p><strong>Analogy:</strong> a dictionary you open in the middle, then flip left or right depending on whether your word comes before or after the page you landed on.</p>
 <ul>
-<li><strong>Search / insert:</strong> O(h). h = log n when balanced, n when skewed.</li>
-<li><strong>Delete:</strong> if the node has 2 children, replace it with its in-order successor (min of the right subtree) and delete that.</li>
-<li><strong>Balanced trees:</strong> AVL (strict), red-black (used by Java TreeMap and C++ std::map), and B-trees / B+ trees (databases; high fan-out means few disk reads). Oracle DB and MySQL InnoDB indexes are B+ trees. Mention that in system design.</li>
+<li><strong>Search / insert:</strong> O(h). h = log n when balanced, n when skewed (insert 1, 2, 3, 4 in order and you get a linked list).</li>
+<li><strong>Delete:</strong> if the node has 0 or 1 child, replace it with that child. If the node has 2 children, replace its value with its in-order successor (min of the right subtree) and delete that successor, which has at most one child.</li>
+<li><strong>Balanced trees:</strong> AVL (strict balance, faster lookups), red-black (looser balance, cheaper inserts; used by Java TreeMap and C++ std::map), and B-trees / B+ trees (databases). A B+ tree node holds hundreds of keys, so the tree is very shallow and a lookup needs only a few disk reads. Oracle DB and MySQL InnoDB indexes are B+ trees. Mention that in system design.</li>
 <li>In Python there's no built-in TreeMap. Use <code>bisect</code> on a sorted list (O(n) insert) or <code>sortedcontainers.SortedList</code> if allowed.</li>
 </ul>
+<h3 id="hand-traced-example-delete-with-two-children">Hand-traced example (delete with two children)</h3>
+<pre><code class="language-text">delete 5 from:      5                 6
+                   / \               / \
+                  3   8     -&gt;      3   8
+                     / \               / \
+                    6   9          (6 gone) 9
+
+successor of 5 = leftmost node of the right subtree = 6
+copy 6 into the root, then delete 6 from the right subtree
+</code></pre>
+<h3 id="template">Template</h3>
+<pre><code class="language-python">def insert(root, val):
+    if not root:
+        return TreeNode(val)
+    if val &lt; root.val:
+        root.left = insert(root.left, val)
+    else:
+        root.right = insert(root.right, val)
+    return root
+
+def delete(root, key):
+    if not root:
+        return None
+    if key &lt; root.val:
+        root.left = delete(root.left, key)
+    elif key &gt; root.val:
+        root.right = delete(root.right, key)
+    else:
+        if not root.left:
+            return root.right
+        if not root.right:
+            return root.left
+        succ = root.right
+        while succ.left:
+            succ = succ.left
+        root.val = succ.val
+        root.right = delete(root.right, succ.val)
+    return root
+</code></pre>
+<p><strong>Complexity:</strong> O(h) time each, O(h) recursion space.</p>
+<h3 id="common-mistakes_1">Common mistakes</h3>
+<ul>
+<li>Assuming O(log n) without saying "if balanced".</li>
+<li>Forgetting to return the (possibly new) subtree root from <code>insert</code> and <code>delete</code>, so the parent never gets relinked.</li>
+<li>Ignoring duplicates. Decide up front whether they go left, right, or are rejected.</li>
+</ul>
+<p><strong>Say it in 60 seconds (delete):</strong> "I walk down comparing keys. When I find the node, there are three cases. No left child: replace it with its right child. No right child: replace it with its left child. Two children: copy the in-order successor's value, which is the leftmost node in the right subtree, and then delete that successor from the right subtree. It has no left child, so that second delete is an easy case. Every step returns the new subtree root so parents relink correctly. O(h)."</p>
 <hr>
 <h2 id="d-trie-prefix-tree">D. Trie (prefix tree)</h2>
-<p><strong>Intuition:</strong> share common prefixes. Insert and search are O(L), independent of how many words are stored. Use it for autocomplete, prefix counts, spell check, IP routing (longest prefix match), and searching many words in a grid.</p>
+<h3 id="the-idea_2">The idea</h3>
+<p>A <strong>trie</strong> stores words character by character, so words with a common prefix share the same path from the root. Each node has a map from character to child and a flag saying "a word ends here". Insert and search are O(L), where L is the word length, independent of how many words are stored.</p>
+<p><strong>Analogy:</strong> a phone's contact search. As you type "Ta", the list narrows to everyone starting with "Ta", then "Tar". Each letter you type moves one step down the trie.</p>
+<p>Use it for autocomplete, prefix counts, spell check, IP routing (longest prefix match: a router picks the most specific matching network prefix), and searching many words in a grid.</p>
+<h3 id="when-to-recognise-it">When to recognise it</h3>
+<ul>
+<li>"Prefix", "starts with", "autocomplete", "typeahead".</li>
+<li>"Search for many words at once" (in a grid, in a stream).</li>
+<li>"Wildcard search" with <code>.</code>.</li>
+<li>Bitwise problems that compare numbers from the top bit down (maximum XOR).</li>
+</ul>
+<h3 id="hand-traced-example">Hand-traced example</h3>
+<p>Insert "car" and "cat", then query.</p>
+<pre><code class="language-text">root
+ └ c
+   └ a
+     ├ r (end)
+     └ t (end)
+
+search(&quot;ca&quot;)      walk c, a -&gt; node exists but end is False -&gt; False
+starts_with(&quot;ca&quot;) walk c, a -&gt; node exists -&gt; True
+search(&quot;cat&quot;)     walk c, a, t -&gt; end is True -&gt; True
+</code></pre>
+<h3 id="template_1">Template</h3>
 <pre><code class="language-python">class TrieNode:
     __slots__ = (&quot;children&quot;, &quot;end&quot;)
     def __init__(self):
@@ -251,8 +574,24 @@ class Trie:
     def starts_with(self, prefix):
         return self._walk(prefix) is not None
 </code></pre>
+<p><code>__slots__</code> stops Python creating a per-object dict, which saves a lot of memory when there are millions of nodes.</p>
+<p><strong>Complexity:</strong> insert, search and starts_with are O(L). Space is O(total characters inserted) in the worst case, less when prefixes are shared.</p>
+<h3 id="common-mistakes_2">Common mistakes</h3>
+<ul>
+<li>Treating "path exists" as "word exists". You need the <code>end</code> flag ("ca" is a prefix, not a word).</li>
+<li>Using a fixed 26-slot array when the input may contain other characters.</li>
+<li>Forgetting that a trie can use more memory than a hash set when words share few prefixes.</li>
+</ul>
+<p><strong>Say it in 60 seconds (Implement Trie):</strong> "Each node holds a dict of children and a flag for 'a word ends here'. Insert walks the word, creating missing children, and sets the flag on the last node. Search walks the word and returns true only if the path exists and the flag is set. Starts-with only needs the path to exist. Everything is O(L) in the word length, regardless of how many words are stored."</p>
+<hr>
 <h3 id="d1-add-and-search-words-is-a-wildcard">D1. Add and Search Words (<code>.</code> is a wildcard)</h3>
-<p>DFS over children when you hit <code>.</code>. Worst case O(26^L), typical O(L).</p>
+<p><strong>Problem in one sentence:</strong> support adding words and searching where <code>.</code> matches any single letter.</p>
+<p><strong>Key insight:</strong> for normal letters, follow one child. When you hit <code>.</code>, try every child (DFS) and succeed if any branch succeeds. Worst case O(26^L), typical O(L).</p>
+<p><strong>Dry run</strong> with words "bad", "dad", "mad", searching ".ad":</p>
+<pre><code class="language-text">root has children b, d, m
+'.' -&gt; try b: then 'a' -&gt; 'd' -&gt; end True -&gt; found, return True
+(d and m are never needed thanks to short-circuit any())
+</code></pre>
 <pre><code class="language-python">def search_wild(node, word, i=0):
     if i == len(word):
         return node.end
@@ -262,8 +601,21 @@ class Trie:
     nxt = node.children.get(c)
     return bool(nxt) and search_wild(nxt, word, i + 1)
 </code></pre>
+<p><strong>Complexity:</strong> O(L) without wildcards. With wildcards, worst case O(26^L), but real dictionaries are sparse, so it's much less.</p>
+<p><strong>Say it in 60 seconds:</strong> "I store words in a trie. Searching is a recursive walk with an index into the pattern. A normal letter follows its single child. A dot tries every child and returns true if any branch matches the rest. At the end of the pattern I check the end-of-word flag. Without dots it's O(L). With dots the worst case branches 26 ways per dot, but <code>any</code> short-circuits on the first match."</p>
+<hr>
 <h3 id="d2-word-search-ii-find-all-dictionary-words-in-a-grid-hard">D2. Word Search II (find all dictionary words in a grid, hard)</h3>
-<p><strong>Intuition:</strong> running Word Search per word is too slow. Build a trie of the words and DFS the grid once, walking the trie alongside. Prune: remove trie leaves once found.</p>
+<p><strong>Problem in one sentence:</strong> given a letter grid and a list of words, return every word that can be traced through adjacent cells without reusing a cell.</p>
+<p><strong>Key insight:</strong> running Word Search per word is too slow. Build a trie of the words and DFS the grid once, walking the trie alongside. If the current path isn't a prefix of any word, stop immediately. Prune: remove trie leaves once found, so later searches don't re-explore dead branches.</p>
+<p><strong>Dry run</strong> on the grid below with words <code>["oat", "ate", "eat"]</code>:</p>
+<pre><code class="language-text">o a
+e t
+
+start at o: o -&gt; a (right) -&gt; t (down): node.end = &quot;oat&quot;, record it
+start at a: a -&gt; t (down) -&gt; e (left): node.end = &quot;ate&quot;, record it
+start at e: e's neighbours are o and t, neither is 'a' after 'e', stop
+answer [&quot;oat&quot;, &quot;ate&quot;]
+</code></pre>
 <pre><code class="language-python">def find_words(board, words):
     root = TrieNode()
     for w in words:
@@ -294,18 +646,87 @@ class Trie:
                 dfs(r, c, root)
     return res
 </code></pre>
+<p>Marking the cell <code>#</code> while it's on the current path prevents reusing it, and restoring it afterwards is the backtracking step.</p>
+<p><strong>Complexity:</strong> O(R·C·4·3^(L-1)) in the worst case, where L is the longest word: the first step has 4 directions and later steps 3 (you can't go back). Pruning makes it much faster in practice. Trie space is O(total letters in words).</p>
+<p><strong>Say it in 60 seconds:</strong> "Searching each word separately repeats the same grid walks. Instead I put all words in a trie and run one DFS from each cell, moving down the trie as I move through the grid. If the next letter isn't a child in the trie, no word can continue, so I stop. When I reach a node that ends a word, I record it and clear the flag so it isn't found twice. I mark cells while they're on the path and restore them after. Once a trie node has no children and no word, I delete it, which prunes future searches."</p>
+<hr>
 <h3 id="d3-autocomplete-top-3-search-suggestions-system">D3. Autocomplete top 3 (Search Suggestions System)</h3>
-<p>Store the top-3 suggestions at each trie node during insert (sorted words), or sort the words and use binary search for the prefix range. At system-design scale: precompute top-k per prefix offline, serve from a cache, and update in batches.</p>
+<p><strong>Problem in one sentence:</strong> after each character typed, return up to three lexicographically smallest products starting with the typed prefix.</p>
+<p><strong>Key insight:</strong> store the top-3 suggestions at each trie node during insert (sorted words), or sort the words and use binary search for the prefix range. In a sorted list, all words with a given prefix sit next to each other, starting at <code>bisect_left(prefix)</code>.</p>
+<p><strong>Dry run</strong> on products <code>["mobile", "mouse", "moneypot", "monitor", "mousepad"]</code>, typing "mou":</p>
+<pre><code class="language-text">sorted: mobile, moneypot, monitor, mouse, mousepad
+&quot;m&quot;    bisect -&gt; 0 -&gt; mobile, moneypot, monitor
+&quot;mo&quot;   bisect -&gt; 0 -&gt; mobile, moneypot, monitor
+&quot;mou&quot;  bisect -&gt; 3 -&gt; mouse, mousepad
+</code></pre>
+<pre><code class="language-python">def suggested_products(products, search_word):
+    products.sort()
+    res, prefix = [], &quot;&quot;
+    for c in search_word:
+        prefix += c
+        i = bisect.bisect_left(products, prefix)
+        res.append([p for p in products[i:i + 3] if p.startswith(prefix)])
+    return res
+</code></pre>
+<p><strong>Complexity:</strong> O(n log n) to sort, then O(L log n) for L typed characters.</p>
+<p>At system-design scale: precompute top-k per prefix offline, serve from a cache, and update in batches. Popularity (not alphabetical order) usually decides the ranking there.</p>
+<p><strong>Say it in 60 seconds:</strong> "Sorting the products puts every word with a given prefix in one contiguous block. For each typed prefix I binary search where that block starts and take up to three words that still match. That's O(log n) per keystroke after sorting. The trie version stores the top three at every node during insert, which makes each keystroke O(1) after walking one step. In a real typeahead service I'd precompute top-k per prefix offline and serve it from a cache."</p>
+<hr>
 <h3 id="d4-maximum-xor-of-two-numbers-bitwise-trie">D4. Maximum XOR of Two Numbers (bitwise trie)</h3>
-<p>Insert numbers bit by bit from the MSB. For each number, greedily walk the opposite bit. O(n · 32).</p>
-<h3 id="d5-longest-word-in-dictionary-replace-words-palindrome-pairs-hard">D5. Longest word in dictionary, Replace Words, Palindrome Pairs (hard).</h3>
+<p><strong>Problem in one sentence:</strong> find the largest <code>a XOR b</code> among all pairs in an array.</p>
+<p><strong>Key insight:</strong> XOR is maximised by making the highest bits differ. Insert numbers bit by bit from the MSB (most significant bit) into a trie with two children per node, 0 and 1. For each number, greedily walk the opposite bit whenever it exists, because a 1 in a higher bit beats any combination of lower bits.</p>
+<p><strong>Dry run</strong> on <code>[3, 5]</code> using 3 bits (3 = 011, 5 = 101):</p>
+<pre><code class="language-text">query 3 (011) against the trie:
+bit 2: 3 has 0, want 1 -&gt; exists (from 5), cur = 100
+bit 1: 3 has 1, want 0 -&gt; exists (5 has 0), cur = 110
+bit 0: 3 has 1, want 0 -&gt; not on this path (5 has 1), take 1, cur = 110
+best = 6 (3 XOR 5 = 110)
+</code></pre>
+<pre><code class="language-python">def find_maximum_xor(nums):
+    root = {}
+    for x in nums:
+        node = root
+        for b in range(31, -1, -1):
+            bit = (x &gt;&gt; b) &amp; 1
+            node = node.setdefault(bit, {})
+    best = 0
+    for x in nums:
+        node, cur = root, 0
+        for b in range(31, -1, -1):
+            bit = (x &gt;&gt; b) &amp; 1
+            if 1 - bit in node:
+                cur |= 1 &lt;&lt; b
+                node = node[1 - bit]
+            else:
+                node = node[bit]
+        best = max(best, cur)
+    return best
+</code></pre>
+<p><strong>Complexity:</strong> O(n · 32) time and space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Brute force is O(n²) over pairs. XOR is largest when the highest possible bit differs, so I insert every number into a binary trie from bit 31 down. For each number, I walk the trie preferring the opposite bit at each level, because a 1 in a higher position outweighs everything below it. The bits where I got the opposite form the XOR value for the best partner. That's 32 steps per number, so O(32n)."</p>
+<hr>
+<h3 id="d5-longest-word-in-dictionary-replace-words-palindrome-pairs-hard">D5. Longest word in dictionary, Replace Words, Palindrome Pairs (hard)</h3>
+<ul>
+<li><strong>Longest Word in Dictionary:</strong> find the longest word that can be built one letter at a time from other words. Insert all words, then DFS or BFS only through nodes with <code>end = True</code>, tracking the longest (and lexicographically smallest) path.</li>
+<li><strong>Replace Words:</strong> replace each word in a sentence with its shortest root from a dictionary. Insert the roots, then for each word walk the trie and stop at the first node with <code>end = True</code>.</li>
+<li><strong>Palindrome Pairs (hard):</strong> find pairs i, j where <code>words[i] + words[j]</code> is a palindrome. Insert reversed words into a trie. For each word, walk it and check whether the remaining part of either the word or the trie branch is itself a palindrome.</li>
+</ul>
 <hr>
 <h2 id="e-segment-tree-and-fenwick-tree-know-the-idea-rarely-coded">E. Segment tree and Fenwick tree (know the idea, rarely coded)</h2>
+<h3 id="the-idea_3">The idea</h3>
+<p>Both answer <strong>range queries on an array that changes</strong>. Plain prefix sums give O(1) queries but O(n) updates, because changing one value shifts every later prefix. These trees split the array into overlapping blocks so both updates and queries touch only O(log n) blocks.</p>
+<p><strong>Analogy:</strong> a company's expense reports. Rather than re-adding every receipt each time you're asked "how much did we spend through March?", you keep monthly and quarterly subtotals. Changing one receipt updates just a few subtotals, and a question combines just a few subtotals.</p>
 <ul>
-<li><strong>Fenwick (BIT):</strong> prefix sums with point updates, O(log n) each. <code>i += i &amp; -i</code> to update, <code>i -= i &amp; -i</code> to query.</li>
-<li><strong>Segment tree:</strong> range queries (sum, min, max) with updates, O(log n). Lazy propagation for range updates.</li>
-<li>When to use: "range sum with updates," "count of smaller numbers after self" (BIT on ranks), "my calendar."</li>
+<li><strong>Fenwick (BIT, binary indexed tree):</strong> prefix sums with point updates, O(log n) each. <code>i += i &amp; -i</code> to update, <code>i -= i &amp; -i</code> to query. <code>i &amp; -i</code> isolates the lowest set bit of i, which is the size of the block that index i is responsible for.</li>
+<li><strong>Segment tree:</strong> range queries (sum, min, max) with updates, O(log n). Each node covers a range and stores the answer for it. Lazy propagation for range updates (defer pushing a change down until a query needs it).</li>
+<li><strong>When to use:</strong> "range sum with updates", "count of smaller numbers after self" (BIT on ranks), "my calendar" (booking intervals).</li>
 </ul>
+<h3 id="hand-traced-example_1">Hand-traced example</h3>
+<p>BIT over <code>[1, 2, 3, 4, 5]</code> (1-indexed). Index 4 (binary 100) covers positions 1 to 4, index 3 (011) covers only 3, index 2 (010) covers 1 and 2.</p>
+<pre><code class="language-text">query(3): i=3 add t[3] (=3), i = 3 - 1 = 2, add t[2] (=1+2=3), i = 0 -&gt; 6
+check: 1 + 2 + 3 = 6
+update(2, +10): i=2 t[2] += 10, i = 2 + 2 = 4, t[4] += 10, i = 8 &gt; n, stop
+</code></pre>
 <pre><code class="language-python">class BIT:
     def __init__(self, n):
         self.t = [0] * (n + 1)
@@ -319,7 +740,10 @@ class Trie:
             s += self.t[i]
             i -= i &amp; -i
         return s
-</code></pre></main>
+</code></pre>
+<p>A range sum <code>[l..r]</code> is <code>query(r) - query(l - 1)</code>.</p>
+<p><strong>Complexity:</strong> update and query O(log n). O(n) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "When an array changes and I still need fast range sums, prefix sums fail because one update shifts O(n) prefixes. A Fenwick tree stores partial sums where index i covers a block whose size is i's lowest set bit. A prefix query adds O(log n) blocks by repeatedly stripping the lowest bit, and an update touches O(log n) blocks by repeatedly adding it. Range sum is two prefix queries subtracted. For min or max, or for range updates, I'd use a segment tree with lazy propagation."</p></main>
 </div>
 
 <script type="module">

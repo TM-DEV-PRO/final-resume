@@ -10,6 +10,8 @@ Backs this track (PDF: `Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf`). Canonical claim
 
 ## Study order
 
+0. **New: [Study Handbook](../handbook/00_START_HERE.md).** Plain-English chapters for every project, number and technology. Start there, then come back here for depth.
+
 1. [`GROUND_TRUTH.md`](GROUND_TRUTH.md) · [`00_final_resume_map.md`](00_final_resume_map.md)
 2. [`43_ia_bullet_defense.md`](43_ia_bullet_defense.md) · [`41_pdf_bullet_tech_defense.md`](41_pdf_bullet_tech_defense.md) · [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) · [`42_clickhouse_rollup_migration.md`](42_clickhouse_rollup_migration.md) · [`31_resume_deep_explain_map.md`](31_resume_deep_explain_map.md)
 3. [`37_senior_screen_deep_qa.md`](37_senior_screen_deep_qa.md) · [`32_common_interview_qa.md`](32_common_interview_qa.md)

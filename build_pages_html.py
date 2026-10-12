@@ -60,13 +60,7 @@ mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' })
 
 def promote_mermaid(html: str) -> str:
     def repl(m):
-        body = (
-            m.group(1)
-            .replace("&lt;", "<")
-            .replace("&gt;", ">")
-            .replace("&amp;", "&")
-            .replace("&quot;", '"')
-        )
+        body = m.group(1).replace("&quot;", '"')
         return f'<div class="mermaid">{body}</div>'
 
     return re.sub(

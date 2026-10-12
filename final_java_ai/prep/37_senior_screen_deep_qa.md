@@ -1,80 +1,237 @@
-# Senior screen deep Q&A — millions / prod / perf / product / deploy
+# Senior screen deep Q&A: scale, production, performance, product, deploy
 
-**PDF:** `Tarun_Mittal_SSE_5yr_Java_AI.pdf`. Tags per `GROUND_TRUTH.md`.
-**Stack:** FRM/Masters = **Spring Boot / Spring Data JPA / Hibernate** / **Spring Boot**. AssortSmart platform = **Go Gin**. Agent = **Python, FastAPI, LangGraph**. MCP not on PDF.
+<div class="callout note">
+<b>How to use this page</b>
+<ul>
+<li>This page covers the senior technical screen: "Have you handled millions of requests?", "Tell me about a production issue", "How do you deploy safely?", plus general computer-science questions like "What is idempotency?"</li>
+<li>Read it before any senior backend, platform or hiring-manager technical round.</li>
+<li>Start with the 30-second cheat sheet. For each general concept, learn the plain definition and tiny example first, then the sentence that ties it to your work.</li>
+<li>Memorise the first sentence of every answer and the number attached to it.</li>
+</ul>
+</div>
+
+**PDF:** `Tarun_Mittal_SSE_5yr_Java_AI.pdf` (Java + Python track).
+
+**Stack on this track.** Uber FRM is Java, Spring Boot, Spring Data JPA, Hibernate and MySQL. Masters India is Spring Boot microservices with Hibernate. The AssortSmart platform APIs at Impact Analytics are Go/Gin. The AI agent plane is Python (FastAPI, LangGraph). MCP is skills-level, not an Impact Analytics bullet.
+
+**Tags used here.** MEASURED means there is a log, document or code behind the number. TARGET means a design goal, so say "targeting". ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. Full rules: [`GROUND_TRUTH.md`](GROUND_TRUTH.md).
 
 ---
 
 ## 0. Thirty-second cheat sheet
 
-| Question | Lead with | Number | Honesty |
+When a senior screener asks one of these, lead with the story in the second column and the number in the third. The last column reminds you how careful to be.
+
+| Question | Lead with | Number | How careful |
 |---|---|---|---|
-| Millions of requests / rows? | IA 10k RPS + 2.11B master **or** Masters IRP | 10k peak RPS; 2.11B; 348k article-seasons; 1M+/day | PDF / HISTORICAL |
-| Production issue? | **170GB weekly OOM** (IA, on PDF) **or** Menu anti-bot **or** IRP near-miss | 170GB; 95%+ | PDF / HISTORICAL |
-| Perf? | CH pivot **or** Masters p95 **or** Menu 24h→2h | 189s→12s; 1.2s→300ms | MEASURED / HISTORICAL |
-| Core product? | AssortSmart Agentic+Core / FRM / Eats / GST / GFG | — | |
-| Complex system? | AssortSmart JSON payloads + Ask Iris **or** Menu E2E **or** FRM SOADB | 2.11B; exactly-once | PDF / HISTORICAL |
-| Deploy? | 80% agent CI gate **or** Masters canary **or** Menu Kafka rewind | 80% gate; 98% deploy | PDF / HISTORICAL |
+| Millions of requests or rows? | Impact Analytics platform, or Masters India IRP pipeline | 10k peak RPS; 2.11B-row master; 348k article-seasons; 1M+ submissions/day | On the PDF. Masters is past work |
+| Production issue? | 170GB weekly-build OOM (Impact Analytics), or Menu anti-bot, or Masters timeout canary | 170GB; 95%+ | On the PDF. Menu and Masters are past work |
+| Performance? | ClickHouse pivots, or Masters p95, or Menu onboarding time | from 189s to 12s; from 1.2s to 300ms; from 24 hours to 2 hours | MEASURED / HISTORICAL |
+| Core product? | AssortSmart, FRM, Eats Menu, GST e-invoicing, GFG | See section 1 | |
+| Complex system? | AssortSmart JSON payloads + Ask Iris, or Menu end to end, or FRM schema | 2.11B; exactly-once upserts | On the PDF |
+| Deploy? | 80% AI CI gate, or Masters canary, or FRM stacked Bazel PRs | 80% gate; 98% deploy success | On the PDF |
 
 ---
 
 ## 1. Core products
 
-### Q1.1 Impact Analytics / AssortSmart
+**What this section is for.** Screeners open with "Walk me through what you work on." They want the product in plain English, your piece of it, and the scale. Answer in that order.
 
-**Answer:** Merchandise-planning SaaS. On this PDF I own **two** chapters. Agentic: Keep/Drop + Missed Opportunities + Top Style on **348k article-seasons**, **88k**/pass, **7** lenses; JSON payloads vs a **2.11B-row** ClickHouse master; **shipped Ask Iris** (JWT WebSocket, supervisor, **3-attempt** evaluator, handshake freeze); **300-case** / **80%** CI gate, **73%** cheaper at **100%** coverage vs **74%** det with frozen weights. Core: Go/Gin **10k peak RPS**, Wire, h2c, Datadog; ClickHouse **189s to 12s** on **250M**; KPI tokenizer with division-by-zero protection; Firebase/JWT/OIDC; Go pump ~**344k rows/s** up to **4.09B**. **Verbal only:** Cluster Copilot · Hindsight. **1.6M catalog / 100% Go tests / $100/pass / 55GB·16GB** are off PDF.
+### Q1.1 What is Impact Analytics / AssortSmart, and what do you own?
 
-**Honesty:** Gate ≠ all tenants live. 73% is gold-200, not the 300-case file. Do not invent extra TPS. Do not claim K8s-ops or Flink on IA.
+**Answer:**
+AssortSmart is a retail merchandise planning SaaS. It helps retailers decide which articles to keep, drop or add each season. I own two parts of it. The first is the AI layer: an engine with three pipelines (Keep/Drop, Missed Opportunities, Top Style) that scores 348k article-seasons, 88k items per pass, by blending deterministic KPI math with structured LLM calls across 7 AI lenses, plus Ask Iris, a shipped WebSocket copilot built on LangGraph. The second is the core platform: a multi-tenant Go/Gin service at 10k peak RPS, a KPI formula parser, tenant isolation across PostgreSQL and ClickHouse, ClickHouse rollups that cut pivots from 189 seconds to 12 seconds, and a Go data pump that copies about 344k rows per second between clusters. The AI layer never queries the 2.11B-row ClickHouse master directly. It receives JSON payloads, and nothing is promoted without passing an 80% CI gate on a 300-case harness.
 
-### Q1.2 Uber via EPAM
+*Follow-up they may ask:* "What is an article-season?" One product (article) in one selling season. A shirt sold in Spring 2026 and again in Fall 2026 is two article-seasons.
 
-1. **FRM:** 36 Spring Boot endpoints, 19M GL, L1–L4, 8-table SOADB, SHA-256, 70% from 14 days to 3, $340M, led 3, 100% coverage, SOX 50% delta-variance.
-2. **Menu:** 24h→2h, $600K, 30K+, 98% offline RAG/Milvus, 95%+, Kafka+Flink exactly-once.
-3. **ANZ Mobility:** 99.9%, 20h/week HISTORICAL. Not Eats.
+<div class="callout warn">
+<b>Say this carefully.</b>
+The 80% gate is a promotion rule, not "every tenant is live at 80%". The 73% cost cut is from a separate 200-case benchmark, not the 300-case file. Do not add TPS or SLA numbers. No Kubernetes operations, Kafka or Flink on this product.
+Off the PDF but true if asked: 1.6M article-seasons in the catalog (a different number from the 348k scored), $100 token spend per pass, 100% Go statement coverage with 1,200+ tests, and the 55GB memory and 16GB spill caps. Cluster Copilot and Hindsight are verbal only.
+</div>
 
-Employment **via EPAM**. No React ownership.
+### Q1.2 What did you do at Uber?
 
-### Q1.3–1.4 Masters / GFG
-GST e-invoicing, 1,500+ clients, Kafka IRP 1M+/day, Spring Boot strangler.
-GFG doubt-support Django, 10K+, 10x spikes, 20%/30%/70%.
+**Answer:**
+I worked on three Uber projects through EPAM. The main one was the FRM (Financial Risk Management) scoping backend for Uber Finance, which I owned: 36 Spring Boot endpoints, 19M raw general ledger rows moved off Google Sheets into MySQL, a four-level FSLI (Financial Statement Line Item) hierarchy, and an 8-table schema on SOADB, Uber's standard for service-owned MySQL. It cut quarterly reconciliation by 70%, from 14 days to 3 days, against a $340M materiality threshold, and I led 3 engineers on the Spring Data JPA / Hibernate migration that took module coverage to 100%. The second was Uber Eats menu ingestion, which cut restaurant onboarding from 24 hours to 2 hours and saves about $600K a year using Gemini 2.5 Pro, LangChain RAG and Milvus at 98% offline field fidelity, with Kafka and Flink for exactly-once catalog upserts. The third, which is historical, was Uber Mobility document compliance in ANZ: 99.9% compliance and about 20 hours a week of manual work removed.
 
----
+*Follow-up they may ask:* "Were you an Uber employee?" No, I was at EPAM Systems working on Uber projects. Always say "Uber via EPAM". I did not own any React front end.
 
-## 2. Complex system
+### Q1.3 What did you do at Masters India?
 
-**A. AssortSmart (best “platform + AI” story)** — 23a architecture; air-gap; Ask Iris frozen scopes; eval gate.
+**Answer:**
+Masters India sells GST compliance and e-invoicing software to Indian enterprises. Clients send invoices, and the system validates them and registers them with the government IRP (Invoice Registration Portal), which returns an invoice number and a signed QR code. I led the migration of a legacy PHP monolith to Spring Boot microservices for 1,500+ clients, which cut p95 latency from 1.2 seconds to 300 milliseconds and raised throughput from 700 to 4,000 requests per minute. I also worked on the bulk pipeline that handled 1M+ government submissions a day on Kafka with PostgreSQL sharded by tax quarter. I mentored 2 engineers there.
 
-**B. Menu** — adversarial + streaming + LLM schema gate.
+### Q1.4 What did you do at GeeksforGeeks?
 
-**C. FRM** — SOX-grade scoping, optimistic locking, SHA-256 keys, 19M GL.
-
-**D. Masters strangler + Kafka IRP** — deadline windows, idempotency.
-
----
-
-## 3. Production issue
-
-Prefer Menu anti-bot or Masters near-miss (on-resume adjacent).
-**Packet OOM leak:** Impact Analytics Python/FastAPI worker; connection/cursor leak in a long-lived async loop; context managers + pool limits + backpressure. **Not a PDF bullet.** Do not claim you operated the Kubernetes cluster.
+**Answer:**
+GeeksforGeeks was my first job, on the courses platform. I stabilised the doubt-support platform for 10K+ daily queries and 10x traffic spikes during live coding contests by migrating its backend from PHP to Django, and built REST APIs for voting, pinning and locking threads. The growth team attributed a 20% lift in premium subscriptions to it. I also built an influencer analytics and earnings dashboard, and the business attributed a 30% course sales lift to it. Asynchronous scheduled workflows for video processing, reminders and data cleanup improved engineering ops efficiency by 70%.
 
 ---
 
-## 4. Performance
+## 2. Scale: "Have you handled millions of requests or rows?"
 
-CH 189s→12s MEASURED POC. Masters p95 1.2s→300ms HISTORICAL. Menu 24h→2h. IA 10k peak RPS is PDF — do not add p99 you cannot defend.
+**The concept in plain words.** Scale questions mix up three different rates, and senior screeners notice. **RPS (requests per second)** counts API calls. **TPS (transactions per second)** counts business operations such as invoice submissions. **Rows per second** counts data moved in bulk. *Tiny example:* one API request that uploads a file of 10,000 invoices is 1 request, 10,000 transactions, and maybe 10,000 rows. Always name which rate you mean.
+
+**Q2.1 What is the biggest scale you've handled?**
+
+**Answer:**
+On API traffic, the AssortSmart Go/Gin platform peaks at 10k requests per second. On data, the ClickHouse master table holds 2.11B rows, and individual rollup partitions reach 4.09B rows. On business transactions, the Masters India pipeline handled 1M+ government submissions a day, about 12 per second on average (1,000,000 divided by 86,400), with estimated peaks of 8 to 10 times that near filing deadlines. For bulk data movement, my Go pump copied about 344k rows per second between ClickHouse Cloud clusters. I keep those four numbers separate because they measure different things.
+
+*Follow-up they may ask:* "What's 344k in requests?" It is not requests at all. It is rows per second, the combined rate of two season streams of roughly 150k to 190k rows per second each.
 
 ---
 
-## 5. Deploy / CI
+## 3. Complex system: "Describe the most complex system you've built"
 
-IA: 100% Go coverage (race/atomic), golangci-lint, SAST/SBOM, Bitbucket. Ask Iris configs promote only if ≥80% offline gate passes vs 74% baseline.
-Masters: 98% deploy, 35%→82% coverage, canary strangler.
-Menu: Kafka rewind after bad parser.
+**The concept in plain words.** A system is complex when it has many moving parts that can fail independently, and the hard part is keeping the whole correct when one part misbehaves. *Tiny example:* an online checkout calls payments, inventory and email. If email is down, checkout should still succeed. Good answers name the failure modes and how the design contains them.
+
+**Option A. AssortSmart AI layer (best "platform plus AI" story).**
+
+**Answer:**
+The most complex system I own is AssortSmart's AI decision layer, because it mixes LLMs, a 2.11B-row database and multiple tenants. The key decision was to decouple the model from the data. The LLM never gets a SQL tool. We build a JSON payload of exactly the context it needs, so cost is predictable and access is controlled by our code. Writes go into ReplacingMergeTree tables as new row versions, and if the model times out the item falls back to its deterministic score, so a pass always completes. A shared registry adds hard timeouts, circuit breakers, durable checkpoints and a config_hash on every row. For Ask Iris, the user's hierarchy access is frozen at the WebSocket handshake, so a conversation can never read another tenant's data.
+
+**Option B. Uber Eats Menu end to end.**
+
+**Answer:**
+Menu ingestion was complex because every stage faced a different enemy. Scraping faced anti-bot defences, so I hardened the Selenium fleet with dynamic proxy pools and adaptive retries and got extraction to 95%+. Streaming faced duplicates and replays, so Kafka and Flink did keyed deduplication by vendor and content hash with idempotent catalog upserts. Extraction faced messy multilingual PDFs, so Gemini 2.5 Pro with LangChain RAG over Milvus produced output that had to pass a strict catalog schema, reaching 98% field fidelity offline. The result was onboarding from 24 hours to 2 hours.
+
+**Option C. Uber FRM.**
+
+**Answer:**
+FRM was complex because it was about correctness under audit, not speed. I designed an 8-table normalized MySQL schema with a polymorphic review-status model, meaning one status model (Draft, Review, ReOpen, Closed) reused across all screens. Updates use optimistic row-locking, cross-table syncs happen in one transaction, and SHA-256 natural keys stop duplicates across quarterly audit trails. On top of that, finite-state-machine gates with 50% delta-variance checks enforce SOX controls. It moved 19M general ledger rows off Sheets and cut reconciliation from 14 days to 3 days.
+
+**Option D. Masters India strangler migration plus Kafka pipeline.**
+
+**Answer:**
+Masters India was complex because traffic spiked hard around tax filing deadlines and the government portal was unreliable. We migrated the PHP monolith route by route with a canary per route, so any route could roll back instantly. Bulk submissions went through Kafka, with idempotency keys built from client, file hash and batch index so 100K+ concurrent imports could be retried without double-registering invoices. Failures after bounded retries went to dead-letter queues. That combination kept 1M+ submissions a day safe.
 
 ---
 
-## 6. L5 fit (packet)
+## 4. Production issue: "Tell me about a production problem you fixed"
 
-“I fit senior because I own RFCs and gates — ClickHouse migration, FRM SOX 50% delta-variance, agent promotion vs a free deterministic baseline — and I mentor. I do not claim K8s cluster operations.”
+**The concept in plain words.** An **OOM (out of memory)** failure happens when a process asks for more memory than it is allowed, and the system kills it. *Tiny example:* a query that groups a whole year of data in one go may need 200GB, while grouping one week needs 11GB. Fixes usually make the unit of work smaller, cap memory, or let the work spill to disk. A good production story covers what broke, how you found it, how you fixed it, and what you changed so it would not recur.
 
-**Debug agentic:** Datadog traces/timeouts/pools first, then LangGraph checkpoint / Evaluator loop / frozen scope / Pydantic-or-schema guards. Same as packet Q2, minus overclaimed infra.
+**Q4.1 Impact Analytics weekly rollup OOM (on the PDF, best default).**
+
+**Answer:**
+The best one is the 170GB out-of-memory failure on our weekly ClickHouse rollup builds. Building a whole season of weekly rollups in one INSERT SELECT kept failing, even with memory caps of 80GB and 200GB. The cause was the size of the grouping: an attribute-level week alone needed over 40GB, and a whole season multiplied that. I sliced the build into one fiscal week per insert and enforced memory and disk-spill caps, roughly a 55GB memory cap, 16GB spill, 8 threads and 4 weeks in flight. After that the weekly builds stopped running out of memory. This was a load-time fix, separate from the pivot speedup.
+
+*Follow-up they may ask:* "Is the 170GB why pivots got faster?" No. The 15.5x is query time. The OOM fix is load time. They are not cause and effect.
+
+**Q4.2 Uber Eats Menu anti-bot (past work).**
+
+**Answer:**
+Our Selenium scraping fleet was losing to partner sites' anti-bot defences, and extraction success sat at an estimated 60-65%. I added dynamic proxy pools and adaptive retries so blocked requests rotated identity and backed off instead of hammering the site. That raised success to 95%+. Because the downstream Kafka and Flink pipeline was idempotent, retries never created duplicate catalog entries.
+
+**Q4.3 Masters India timeout canary (past work).**
+
+**Answer:**
+Early in the Spring Boot cutover, I set API timeouts tighter than the old PHP path, and legitimate calls to the government portal started timing out on the first canary. Because it was a canary, only a small slice of traffic was affected. I moved those calls to an asynchronous flow that returns "202 Accepted" and lets the client poll, aligned timeouts with real portal behaviour, and added idempotency keys, bounded retries and a dead-letter queue. The lesson was to design for third-party latency and safe retries from day one.
+
+**Q4.4 Python connection-leak OOM (a story from older prep, not a PDF bullet).**
+
+Say this carefully. Older prep includes a story about an Impact Analytics Python/FastAPI worker that leaked connections or cursors inside a long-lived async loop until it ran out of memory. The fix was context managers, pool limits and backpressure. It is **not a PDF bullet**, so only use it if asked for "another example", label it as such, and do not claim you operated the Kubernetes cluster.
+
+---
+
+## 5. Performance: "How have you made something faster?"
+
+**The concept in plain words.** **Pre-aggregation** means computing summaries ahead of time so a query reads a small summary table instead of scanning raw rows. *Tiny example:* instead of summing 250 million daily sales rows every time a planner opens a screen, keep a table of sales per product per season, which might be a few million rows. **p95 latency** is the response time 95% of requests beat. It is the right metric for "how slow does it feel for unlucky users".
+
+**Q5.1 Your best performance win?**
+
+**Answer:**
+Planner pivots in AssortSmart, from 189 seconds to 12 seconds, a 15.5x speedup, measured on a 250-million-row benchmark harness. Pivots had been slow on PostgreSQL, so we compared Postgres and ClickHouse, and ClickHouse won the large analytical reads. I then built a pre-aggregation layer of six MergeTree rollup tables: product, store and attribute, each at season and weekly grain, partitioned by season code. The pivot reads the right rollup instead of the raw data. Precisely, 12.3 seconds rounds to 12.
+
+*Follow-up they may ask:* "Why not sub-second?" I don't claim sub-second. 12 seconds was the measured result, and the next step would be narrower rollups or caching, not a promise I can't back.
+
+**Q5.2 An API latency win?**
+
+**Answer:**
+Masters India, where p95 latency dropped 75%, from 1.2 seconds to 300 milliseconds, across 1,500+ enterprise clients during the PHP-to-Spring Boot migration. The gain came from four things: non-blocking calls to the government portal (Spring WebClient and bounded thread pools) so request threads did not sit idle, connection pooling with HikariCP, query and index fixes, and Redis for hot reads. Throughput rose from 700 to 4,000 requests per minute at the same time, roughly 12 to 67 requests per second.
+
+**Q5.3 A process-time win?**
+
+**Answer:**
+Uber Eats restaurant onboarding, from 24 hours to 2 hours. This is end-to-end business time, not API latency. It came from automating menu extraction with RAG and hardening the scraping fleet, so a menu no longer waited for manual entry.
+
+<div class="callout warn">
+<b>Do not add numbers you cannot defend.</b> The 10k peak RPS is on the PDF. Do not add a p99 or an SLA for the Go platform.
+</div>
+
+---
+
+## 6. Deploy and CI: "How do you ship safely?"
+
+**The concept in plain words.** **CI/CD** (continuous integration and delivery) is the automated pipeline that tests every change and deploys it. **Statement coverage** is the share of code lines that tests execute. A **canary** sends a small slice of traffic to a new version first. A **CI gate** blocks promotion if a score is below a bar. *Tiny example:* a pull request runs 1,000 tests, coverage must stay above a threshold, and only then does it deploy to 5% of traffic.
+
+**Q6.1 How do you deploy AI changes safely?**
+
+**Answer:**
+Through a gate. At Impact Analytics, any change to the AI layer (a model, prompt or parameter) must pass an 80% accuracy CI gate on a 300-case proxy evaluation harness before promotion. We also compare against a deterministic baseline. On a separate 200-case benchmark the baseline scored 74%, and when the blended LLM came in around 63% we froze the blend weights instead of retuning them. Every output row carries a config_hash, so if something goes wrong we know exactly which configuration produced it.
+
+**Q6.2 How do you deploy backend changes safely?**
+
+**Answer:**
+Small, reversible steps with measurement. At Masters India we used a canary per route during the strangler migration, raised test coverage from 35% to 82%, and reached 98% deployment success. At Uber FRM we shipped zero-downtime releases through stacked Bazel pull requests, which are small dependent changes merged in order, and module statement coverage reached 100% on the Spring Data JPA / Hibernate migration. At Impact Analytics the Go codebase has 100% statement coverage with 1,200+ tests, which is verbal and not on the PDF.
+
+*Say this carefully:* older prep also lists golangci-lint, SAST/SBOM security scans and Bitbucket pipelines for Impact Analytics. Mention them only if you can describe them.
+
+**Q6.3 How do you recover from a bad streaming deploy?**
+
+**Answer:**
+Rewind and replay. In the Uber Menu pipeline, the recovery path for a bad parser deploy is to roll back the code, rewind the Kafka consumer offsets to before the bad change, and reprocess. That is safe because catalog upserts are idempotent, so replaying a message cannot create duplicates.
+
+---
+
+## 7. General computer-science questions, tied to my work
+
+Senior screens often switch to "explain this concept". Give the definition, a tiny example, then one sentence on where you used it.
+
+**Q7.1 What is idempotency?**
+An operation is idempotent if doing it twice has the same effect as doing it once. *Example:* "set balance to 100" is idempotent, but "add 10 to balance" is not. You make writes idempotent with a unique key the server remembers. At Masters India the key was client + file hash + batch index, so 100K+ concurrent imports could be retried without double-registering invoices.
+
+**Q7.2 What does "exactly-once" really mean?**
+True exactly-once delivery across systems is very hard. In practice you get at-least-once delivery, where a message may arrive twice, and make the write idempotent so the second arrival changes nothing. *Example:* a consumer crashes after writing but before committing its offset, so it re-reads the message and writes again, harmlessly. On Uber Menu, "exactly-once catalog upserts" meant exactly that. I don't claim zero message loss or two-phase commit across third parties.
+
+**Q7.3 What is a circuit breaker?**
+A circuit breaker stops calling a dependency that keeps failing, so you fail fast instead of piling up slow requests. After a cool-down it lets a test call through. *Example:* after 5 failed calls in a row, stop calling the model for a short cool-down period. In the AssortSmart registry the breaker trips after about 5 consecutive failures or a high failure fraction, and items fall back to deterministic scores.
+
+**Q7.4 What is eventual consistency?**
+Eventual consistency means a write becomes visible everywhere after a short delay rather than instantly. *Example:* you update your profile photo and a friend sees the old one for a few seconds. ReplacingMergeTree in ClickHouse is eventually consistent: two versions of a row can coexist until a background merge keeps the newest, so reads that need the latest version must resolve it explicitly.
+
+**Q7.5 Optimistic versus pessimistic locking?**
+Pessimistic locking locks the row when you read it, so others wait. Optimistic locking does not lock. It checks a version number at update time and fails if someone else changed the row. *Example:* `UPDATE ... SET status='Review', version=4 WHERE id=7 AND version=3` updates zero rows if someone got there first. Optimistic locking suits low-conflict workloads, which is why I used it for Uber FRM review-status updates. In Spring Data JPA, a `@Version` field on the entity makes Hibernate add that version check to every update and throw an optimistic-lock exception when it fails.
+
+**Q7.6 What is sharding?**
+Sharding splits one big table across several databases by a key, so each holds a slice. *Example:* invoices for tax quarter Q1 live in one shard and Q2 in another. At Masters India, PostgreSQL was sharded by tax quarter, which matched how filings and queries were naturally grouped.
+
+**Q7.7 What is cache-aside?**
+In cache-aside, the application checks the cache first. On a miss it reads the database and puts the result in the cache for next time. *Example:* first request for client 42's settings hits Postgres, the next hundred hit Redis. At Masters India a Redis cache-aside layer cut database read load by 30%.
+
+**Q7.8 What is dependency injection, and why compile-time?**
+Dependency injection means a component receives its dependencies (database client, config) from outside instead of creating them itself, which makes it easy to test and swap. Compile-time injection, like Google Wire in Go, generates the wiring code at build time, so a missing dependency is a build error rather than a crash at startup. That is how the AssortSmart Go/Gin platform is wired.
+
+**Q7.9 What is the strangler pattern?**
+It replaces a legacy system gradually: new services take over one route at a time while the old system serves the rest. *Example:* route `/validate` to the new Spring Boot service while `/reports` stays on PHP. I used it with a canary per route at Masters India.
+
+---
+
+## 8. Senior fit: "Why are you senior?"
+
+**Answer:**
+I fit senior because I own designs and the gates that protect them, not just tickets. At Impact Analytics I designed the ClickHouse rollup layer and the copy tooling, and I put the AI layer behind a promotion gate that compares against a free deterministic baseline. At Uber FRM I designed the schema and the SOX controls, including the 50% delta-variance checks, and led 3 engineers as tech lead of an EPAM pod. At Masters India I mentored 2 engineers through a production migration. I'm also clear about my limits: I don't claim Kubernetes cluster operations.
+
+---
+
+## 9. "How would you debug a misbehaving AI agent?"
+
+**Answer:**
+I start with the plumbing, then the agent logic. First I check Datadog traces for timeouts, connection pool exhaustion and slow dependencies, because many "agent bugs" are infrastructure bugs. Then I look at the agent itself in LangSmith: which node the supervisor routed to, whether the evaluator loop hit its 3-attempt cap, and whether the frozen hierarchy scope is what I expect for that user. Finally I check the structured-output guards, the schema validation on what the model returned. For the batch engine, the config_hash and the JSON telemetry (tokens, cost, step duration, fallbacks) tell me which configuration and which batch went wrong.
+
+*Say this carefully:* LangSmith is on Ask Iris, not the Keep/Drop batch. The batch has its own JSON telemetry.
+
+---
+
+Related pages: [`32_common_interview_qa.md`](32_common_interview_qa.md) for behavioural questions, [`08_role_targeting_and_rapid_fire.md`](08_role_targeting_and_rapid_fire.md) for tricky one-liners, [`23a_ia_interview_pack.md`](23a_ia_interview_pack.md) for the Impact Analytics architecture, and [`17_senior_systems_study_only.md`](17_senior_systems_study_only.md) for study-only senior topics.

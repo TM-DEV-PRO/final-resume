@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>04_ia_agentic_ai — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_pygo_ai/handbook/04_ia_agentic_ai.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#chapter-4-impact-analytics-assortsmart-agentic-flows-orchestration">Chapter 4 — Impact Analytics: AssortSmart Agentic Flows &amp; Orchestration</a>
+<a class="lvl2" href="#1-the-one-minute-version">1. The one-minute version</a>
+<a class="lvl2" href="#2-the-business-in-plain-english">2. The business in plain English</a>
+<a class="lvl2" href="#3-words-you-need">3. Words you need</a>
+<a class="lvl2" href="#4-architecture">4. Architecture</a>
+<a class="lvl2" href="#5-one-article-step-by-step-worked-example">5. One article, step by step (worked example)</a>
+<a class="lvl2" href="#6-each-resume-bullet-decoded">6. Each resume bullet decoded</a>
+<a class="lvl2" href="#7-tech-used-in-this-chapter-and-why">7. Tech used in this chapter and why</a>
+<a class="lvl2" href="#8-hard-problems">8. Hard problems</a>
+<a class="lvl2" href="#9-say-this-dont-say-this">9. Say this / don't say this</a>
+<a class="lvl2" href="#10-practice-drill">10. Practice drill</a>
+<a class="lvl2" href="#11-3-minute-whiteboard-script">11. 3-minute whiteboard script</a></nav>
+<main><h1 id="chapter-4-impact-analytics-assortsmart-agentic-flows-orchestration">Chapter 4 — Impact Analytics: AssortSmart Agentic Flows &amp; Orchestration</h1>
+<div class="callout note">
+<p><b>How to use this chapter</b><br>
+• Sections 1–5 give you the mental model: what the AI decides, how a score is made, and where the LLM is and isn't allowed to act.<br>
+• Then study one bullet (A1–A5) per sitting. A5 (the evaluation numbers) is the one interviewers try to trip you on. Learn the split table by heart.<br>
+• Practise the worked score example in section 5 until you can do it on a whiteboard.<br>
+• Companion chapters: <a href="03_ia_core_platform.html">Chapter 3 (Core platform)</a>, <a href="02_numbers_explained.html">Chapter 2 (numbers)</a>, <a href="10_core_concepts_explained.html">Chapter 10 (concepts: circuit breakers, checkpoints, RAG, evals)</a>.</p>
+</div>
+<p>Role: <strong>Senior Software Engineer, Impact Analytics, May 2026 to Present</strong> (AssortSmart — Platform &amp; AI). This is the first IA sub-section on the resume: <strong>Agentic Flows &amp; Orchestration</strong>. The agent plane is <strong>Python</strong> (FastAPI, LangGraph). The platform APIs it sits next to are <strong>Go/Gin</strong> (see Chapter 3).</p>
+<hr>
+<h2 id="1-the-one-minute-version">1. The one-minute version</h2>
+<blockquote>
+<p>"On the AI side of AssortSmart I built a decision engine that tells retail planners which products to keep or drop each season, plus two sister pipelines, Missed Opportunities and Top Style. It evaluates 348,000 article-seasons, about 88,000 items per pass. The important design choice is that the money math is deterministic Python and the LLM only does qualitative judgement through seven structured 'lenses'. The model never queries our 2.11-billion-row ClickHouse table. It gets prepared JSON. If the model times out, the article falls back to its deterministic score, so a run always finishes. All three pipelines share an orchestration registry with timeouts, circuit breakers, checkpoints and per-row config hashes. I also shipped Ask Iris, a secure chat copilot for planners built on a LangGraph supervisor with a three-attempt evaluator loop, where the user's data scope is frozen when the socket connects. Nothing gets promoted unless it passes an 80% accuracy gate on a 300-case evaluation set in CI. A separate 200-case benchmark let us pick a model that cut live cost by 73% at full coverage, and when the LLM blend lost to our 74% deterministic baseline, we froze the weights instead of shipping it."</p>
+</blockquote>
+<hr>
+<h2 id="2-the-business-in-plain-english">2. The business in plain English</h2>
+<p><strong>The decision.</strong> Every season a retailer must decide, for each product (article), whether to <strong>keep</strong> it in the range or <strong>drop</strong> it. Keep a bad product and you're stuck with unsold stock and markdowns. Drop a good one and you lose sales. A large retailer has hundreds of thousands of article-seasons to look at. Planners can't review them all by hand.</p>
+<p><strong>The three pipelines (named on the resume).</strong>
+- <strong>Keep/Drop</strong>: a keep or drop recommendation per article-season, with a short explanation a planner can read.
+- <strong>Missed Opportunities</strong> and <strong>Top Style</strong>: sister pipelines on the same framework that surface opportunities and top-performing styles for planners. If an interviewer asks for their exact logic, describe them at the level you personally built and know. Keep/Drop is the one to go deep on.</p>
+<p><strong>Why AI at all?</strong> Simple rules ("drop if sell-through below 40%") miss context: a product may sell slowly because it launched late, because it's cannibalised by its own other colours, or because it only sells when discounted. Those patterns are qualitative. An LLM is good at weighing several pieces of evidence and explaining its reasoning in words. But LLMs are bad at arithmetic and can be confidently wrong. So the design uses each for what it's good at.</p>
+<p><strong>Why the company cares.</strong> Better range decisions directly affect stock, markdowns and sales. Explanations make planners trust and adopt the recommendation. Cost and reliability controls make it affordable to run on every client every season.</p>
+<hr>
+<h2 id="3-words-you-need">3. Words you need</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain meaning (with analogy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LLM</strong></td>
+<td>Large language model (OpenAI, Gemini, Claude). Reads text, writes text.</td>
+</tr>
+<tr>
+<td><strong>Token</strong></td>
+<td>A chunk of text, roughly ¾ of a word. LLM providers charge per token in and out.</td>
+</tr>
+<tr>
+<td><strong>Structured output / structured invoke</strong></td>
+<td>Asking the LLM to reply in a strict JSON shape (schema), and rejecting replies that don't fit. Like a form with fixed boxes instead of a blank letter.</td>
+</tr>
+<tr>
+<td><strong>Deterministic</strong></td>
+<td>Same input always gives the same output. Normal code is deterministic; LLM calls aren't.</td>
+</tr>
+<tr>
+<td><strong>Sell-through</strong></td>
+<td>Share of available stock that sold. Sold 80 of 100 units = 80%.</td>
+</tr>
+<tr>
+<td><strong>Rate of sale</strong></td>
+<td>Units sold per store per week. A speed measure.</td>
+</tr>
+<tr>
+<td><strong>s_det</strong></td>
+<td>The deterministic score (0 to 1) from KPI rules like sell-through and rate of sale.</td>
+</tr>
+<tr>
+<td><strong>Lens</strong></td>
+<td>One focused LLM question about an article, like "Is this product cannibalised by its other colours?" Each lens returns a score, a confidence and reason codes.</td>
+</tr>
+<tr>
+<td><strong>Decider</strong></td>
+<td>An LLM step that picks which lenses matter for this article and how to weight them.</td>
+</tr>
+<tr>
+<td><strong>s_agent</strong></td>
+<td>The combined score from the lenses.</td>
+</tr>
+<tr>
+<td><strong>Blend / s_final</strong></td>
+<td><code>s_final = 0.4 × s_det + 0.6 × s_agent</code>. Keep if <code>s_final ≥ 0.55</code>.</td>
+</tr>
+<tr>
+<td><strong>Payload</strong></td>
+<td>The prepared JSON data the LLM receives.</td>
+</tr>
+<tr>
+<td><strong>ReplacingMergeTree (RMT)</strong></td>
+<td>A ClickHouse table type that keeps only the newest version of each key. Like a notebook where you never erase; you write the new value below and a cleaner later crosses out old lines.</td>
+</tr>
+<tr>
+<td><strong>Eventually consistent</strong></td>
+<td>For a short time you may see an old and a new version. Soon, only the newest remains.</td>
+</tr>
+<tr>
+<td><strong>Circuit breaker</strong></td>
+<td>After too many failures in a row, stop calling the failing service for a while. Like a home fuse that trips to protect the wiring.</td>
+</tr>
+<tr>
+<td><strong>Checkpoint</strong></td>
+<td>Saved progress so a job can resume where it stopped. Like a video game save point.</td>
+</tr>
+<tr>
+<td><strong>config_hash</strong></td>
+<td>A SHA-256 fingerprint of all the settings and prompts used in a run, stamped on every output row.</td>
+</tr>
+<tr>
+<td><strong>Telemetry</strong></td>
+<td>Data the system records about itself: tokens, cost, time, fallbacks.</td>
+</tr>
+<tr>
+<td><strong>WebSocket</strong></td>
+<td>A connection that stays open so the server and browser can send messages both ways, which suits chat.</td>
+</tr>
+<tr>
+<td><strong>JWT handshake</strong></td>
+<td>When the WebSocket opens, the client sends a signed token. The server verifies it once at that moment.</td>
+</tr>
+<tr>
+<td><strong>LangGraph</strong></td>
+<td>A Python library for building LLM workflows as a graph of steps with state, loops and limits.</td>
+</tr>
+<tr>
+<td><strong>Supervisor pattern</strong></td>
+<td>One coordinator node that decides which worker handles each step. Like a dispatcher.</td>
+</tr>
+<tr>
+<td><strong>Evaluator loop</strong></td>
+<td>A check step that grades an answer and asks for a retry if it's not good enough, here at most 3 attempts.</td>
+</tr>
+<tr>
+<td><strong>LangSmith</strong></td>
+<td>A tracing tool for LLM apps: shows each prompt, tool call, tokens and timing.</td>
+</tr>
+<tr>
+<td><strong>Gold set</strong></td>
+<td>Test cases with known correct answers, used to grade the system.</td>
+</tr>
+<tr>
+<td><strong>CI gate</strong></td>
+<td>An automated check in the build pipeline that blocks promotion if a score is below a threshold.</td>
+</tr>
+<tr>
+<td><strong>Coverage (eval sense)</strong></td>
+<td>Share of articles that received a complete score. 100% = no article left pending.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-architecture">4. Architecture</h2>
+<div class="mermaid">flowchart TB
+  CH["ClickHouse master&lt;br/&gt;2.11B rows"] --&gt; FEAT["Feature SQL + KPI math&lt;br/&gt;deterministic Python"]
+  FEAT --&gt; DET["s_det per article"]
+  FEAT --&gt; PAY["Compact JSON payload per batch"]
+  subgraph REG["Shared orchestration registry: timeouts, circuit breaker, checkpoints, telemetry"]
+    PAY --&gt; PEER["Peer benchmark context"]
+    PEER --&gt; DEC["Decider: which lenses, what weights"]
+    DEC --&gt; LENS["7 lenses in parallel&lt;br/&gt;structured JSON out"]
+    LENS --&gt; AG["s_agent"]
+  end
+  DET --&gt; BL["Blend: 0.4 s_det + 0.6 s_agent"]
+  AG --&gt; BL
+  BL --&gt; EXP["Explanation for planner"]
+  EXP --&gt; OUT["Output rows + config_hash&lt;br/&gt;written via ReplacingMergeTree"]
+  AG -.-&gt;|timeout or error| FB["Fallback: deterministic score"]
+  FB --&gt; OUT
+</div>
+<p><em>What to notice: the LLM only ever sees JSON; the database reads and writes are done by our code; every failure path still produces a row.</em></p>
+<p><strong>Box by box.</strong>
+- <strong>ClickHouse master (2.11B rows)</strong>: the big fact table of sales and stock.
+- <strong>Feature SQL + KPI math</strong>: our Python code reads ClickHouse and computes KPIs (sell-through, rate of sale, trends) once, the same way tests do. The formulas live in one place so the number a planner sees and the number a test checks can't drift.
+- <strong>s_det</strong>: the rule-based score.
+- <strong>JSON payload</strong>: only the fields each lens needs, trimmed (for example, the last 12 weeks for trend lenses) to keep token cost down.
+- <strong>Peer → Decider → Lenses</strong>: the fixed batch order. There's <strong>no LLM orchestrator</strong> choosing the order. The Decider only picks lens weights, and Python validates them.
+- <strong>Blend</strong> and <strong>Explain</strong>: the final score and a planner-readable reason.
+- <strong>Output</strong>: rows written by our code, each stamped with the <code>config_hash</code>.</p>
+<p><strong>The seven lenses</strong> (each only runs if the article has the data for it):</p>
+<table>
+<thead>
+<tr>
+<th>Lens</th>
+<th>Question it asks</th>
+<th>Runs only if</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>colour_cannibalization</td>
+<td>Are other colours of this style stealing its sales?</td>
+<td>at least 2 colours</td>
+</tr>
+<tr>
+<td>size_curve</td>
+<td>Is demand concentrated in a few sizes?</td>
+<td>at least 2 sizes</td>
+</tr>
+<tr>
+<td>channel_divergence</td>
+<td>Does it sell differently online vs in store?</td>
+<td>at least 2 channels</td>
+</tr>
+<tr>
+<td>multi_season_consistency</td>
+<td>Did it perform consistently across seasons?</td>
+<td>at least 2 seasons</td>
+</tr>
+<tr>
+<td>trend_velocity</td>
+<td>Is demand speeding up or slowing down?</td>
+<td>at least 3 weeks on sale</td>
+</tr>
+<tr>
+<td>discount_dependency</td>
+<td>Does it only sell when discounted?</td>
+<td>any discount present</td>
+</tr>
+<tr>
+<td>margin_resilience</td>
+<td>Does it hold margin?</td>
+<td>always</td>
+</tr>
+</tbody>
+</table>
+<p>Example: a single-colour, single-size sock sold in one channel for two weeks only qualifies for <code>margin_resilience</code>. No tokens are wasted on lenses with nothing to compare.</p>
+<hr>
+<h2 id="5-one-article-step-by-step-worked-example">5. One article, step by step (worked example)</h2>
+<p><em>The numbers below are illustrative to show the mechanics. The formulas and the threshold are the real ones.</em></p>
+<p>Article: <strong>blue linen shirt, Season 7</strong>.</p>
+<ol>
+<li><strong>Deterministic KPIs.</strong> Sell-through 64%, rate of sale slightly below category median. The rule ramps turn this into <strong>s_det = 0.62</strong>.</li>
+<li><strong>Gate.</strong> It has 3 colours, 5 sizes, 2 channels, 9 weeks on sale, some discounts. All seven lenses are eligible.</li>
+<li><strong>Decider.</strong> Picks mixes, for example a demand-focused mix (trend_velocity, size_curve, channel_divergence) and a risk-focused mix (colour_cannibalization, discount_dependency). Python adds two fixed anchor mixes and renormalises weights.</li>
+<li><strong>Lenses</strong> return, for example: trend_velocity 0.35 (slowing), discount_dependency 0.40 (sells mostly on discount), colour_cannibalization 0.55, margin_resilience 0.60, others around 0.5.</li>
+<li><strong>Mixes combine to s_agent = 0.50.</strong> The spread between mixes feeds a confidence score.</li>
+<li><strong>Blend:</strong> s_final = 0.4 × 0.62 + 0.6 × 0.50 = 0.248 + 0.300 = <strong>0.548</strong>.</li>
+<li><strong>Rule:</strong> keep if s_final ≥ 0.55. 0.548 &lt; 0.55, so <strong>Drop</strong>, with an explanation: "Sell-through is acceptable, but demand is slowing and most units sold on discount."</li>
+<li><strong>Write.</strong> The row is written with <code>config_hash</code>, <code>computed_at</code>, per-lens results and <code>agent_status = ok</code>.</li>
+</ol>
+<p><strong>If the LLM had timed out at step 4:</strong> the batch hits its hard timeout, the article is marked as a fallback, and it gets its deterministic outcome (s_det 0.62 → Keep). The run continues for the other 87,999 items.</p>
+<hr>
+<h2 id="6-each-resume-bullet-decoded">6. Each resume bullet decoded</h2>
+<h3 id="a1-multi-pipeline-decision-engine-348k-article-seasons-88k-per-pass-7-lenses">A1 — Multi-pipeline decision engine: 348k article-seasons, 88k per pass, 7 lenses</h3>
+<blockquote>
+<p><strong>Resume:</strong> Architected a multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style) evaluating 348k article-seasons. Optimized inference at scale—processing 88k items per pass—by blending deterministic KPI math with structured LLM invokes across 7 AI lenses.</p>
+</blockquote>
+<p><strong>In plain words.</strong> One framework, three pipelines. The math is ordinary code. The LLM gives structured opinions through seven lenses. We blend both.</p>
+<p><strong>Why this design.</strong>
+- LLMs make arithmetic mistakes. Financial numbers must be exactly right, so code computes them.
+- Qualitative patterns (cannibalisation, discount dependency) are where an LLM adds value.
+- Structured JSON outputs can be validated: wrong shape means retry or fallback, never a silent bad value.</p>
+<p><strong>Alternatives and why not.</strong>
+- <em>One giant prompt per article</em>: expensive, hard to debug, hard to evaluate lens by lens.
+- <em>Let the LLM compute KPIs with a code or SQL tool</em>: at 88k items, that's a latency, cost and prompt-injection risk, and the math would no longer be deterministic.
+- <em>Pure rules, no LLM</em>: cheaper, but misses context and gives poor explanations. Our evaluation keeps this honest (see A5).</p>
+<p><strong>The numbers.</strong>
+- <strong>348k article-seasons</strong>: the number of product-in-a-season items the engine scores. It's not the same as the <strong>1.6M</strong> article-seasons in the full catalog (off the PDF). Never mix the two.
+- <strong>88k items per pass</strong>: the batch size of one run, chosen to fit memory and provider rate limits.
+- <strong>7 lenses</strong>: the seven active lens types above.
+- <strong>$100 per pass</strong>: true, but not on the resume. Use it only if they ask about cost.</p>
+<p><strong>Questions they will ask.</strong>
+- <em>"How did you handle rate limits at 88k?"</em> Parallel batches with hard per-batch timeouts and backoff. A circuit breaker stops hammering a failing provider. Checkpoints mean a throttle doesn't restart the run.
+- <em>"Why not fine-tune a model?"</em> Structured prompts with few-shot examples plus offline evals got us there. Fine-tuning would add a training pipeline we didn't need. It's also not on the resume.</p>
+<hr>
+<h3 id="a2-json-payloads-not-database-access-replacingmergetree-writes-timeout-fallback">A2 — JSON payloads, not database access; ReplacingMergeTree writes; timeout fallback</h3>
+<blockquote>
+<p><strong>Resume:</strong> Decoupled AI inference from a 2.11B-row ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via ReplacingMergeTree that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.</p>
+</blockquote>
+<p><strong>In plain words.</strong> The LLM never touches the database. Our code reads the data and gives the model a JSON summary. Our code writes the results. If the model is slow, the article gets its rule-based score so the system stays available.</p>
+<p><strong>How it works.</strong>
+- <strong>Read side.</strong> Feature SQL runs in our code against ClickHouse. The result is packed into JSON per batch. The model gets <strong>no SQL tool</strong> on the scoring path.
+- <strong>"Asynchronously"</strong> describes how batches are executed (concurrently, without blocking each other). It doesn't mean the model queries the database "async". If an interviewer says "so the LLM still queries ClickHouse, just asynchronously?", correct them: JSON in, our code writes out.
+- <strong>Write side.</strong> Rows land in ReplacingMergeTree tables keyed by <code>(season_code, article)</code> with a version (latest <code>computed_at</code>). If a retry writes the same article twice, ClickHouse keeps the newest in the background. Readers use <code>argMax(..., computed_at)</code> or <code>LIMIT 1 BY</code> to read the latest row now, instead of relying on <code>OPTIMIZE FINAL</code>.</p>
+<pre><code class="language-sql">SELECT article, argMax(outcome, computed_at) AS outcome
+FROM reco_final_score
+WHERE season_code = 7
+GROUP BY article;
+</code></pre>
+<ul>
+<li><strong>Fallback.</strong> Each LLM batch has a hard timeout. On timeout or error, the article is marked fallback and written with its deterministic score.</li>
+</ul>
+<p><strong>Why.</strong> Letting an LLM run SQL against a production analytical table invites runaway queries, connection-pool exhaustion and prompt-injection attacks. Separating them also makes cost predictable.</p>
+<p><strong>Alternatives.</strong> Plain MergeTree would keep duplicate rows on retries. A transactional database for results would be slower to scan for screens. Two-phase commit across an LLM provider isn't possible.</p>
+<p><strong>Don't say:</strong> "zero corruption guaranteed", "physical air-gap" (old wording), or that the LLM writes to ClickHouse.</p>
+<hr>
+<h3 id="a3-shared-orchestration-registry-timeouts-circuit-breakers-checkpoints-config_hash-telemetry">A3 — Shared orchestration registry: timeouts, circuit breakers, checkpoints, config_hash, telemetry</h3>
+<blockquote>
+<p><strong>Resume:</strong> Engineered a shared orchestration registry to guarantee 88k-article batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.</p>
+</blockquote>
+<p><strong>In plain words.</strong> One shared harness that all three pipelines use, so a run of 88k items survives an LLM provider outage, can resume without redoing work, and records exactly what config produced each row and what it cost.</p>
+<p><strong>How it works.</strong>
+1. <strong>Freeze config.</strong> At run start, weights, guardrails, parameters, prompt files and catalog are frozen. Their SHA-256 hash becomes <code>config_hash</code>. Because prompt text is part of the hash, editing a prompt creates a new config version.
+2. <strong>Deterministic phase first.</strong> s_det for all articles is computed and saved (<code>det.json</code>).
+3. <strong>LLM phase in timed batches.</strong> Each batch has a hard timeout.
+4. <strong>Circuit breaker.</strong> If about 5 calls fail in a row, or too large a fraction fail, the breaker opens: stop calling the provider, mark affected articles as fallback, and wait before trying again. This prevents burning money and time on a provider that's down.</p>
+<pre><code class="language-text">CLOSED  --(about 5 consecutive failures)--&gt;  OPEN  --(cool-down)--&gt;  HALF-OPEN
+HALF-OPEN --(test call succeeds)--&gt; CLOSED          HALF-OPEN --(fails)--&gt; OPEN
+</code></pre>
+<ol start="5">
+<li><strong>Checkpoints.</strong> As LLM chunks finish, per-article progress is appended (<code>agent_progress.json</code>). On <code>--resume</code>, the job reloads <code>det.json</code>, skips finished articles, and continues. That's what "bypass redundant deterministic scoring" means.</li>
+<li><strong>Telemetry.</strong> Each step writes JSON like this (values illustrative):</li>
+</ol>
+<pre><code class="language-json">{&quot;run_id&quot;: &quot;kd-s7-0412&quot;, &quot;step&quot;: &quot;lens.trend_velocity&quot;, &quot;batch&quot;: 17,
+ &quot;tokens_in&quot;: 48210, &quot;tokens_out&quot;: 6120, &quot;usd&quot;: 0.41, &quot;duration_ms&quot;: 18400, &quot;fallbacks&quot;: 2}
+</code></pre>
+<p><strong>Why not Airflow or Temporal?</strong> Those are great general workflow engines. This workload needed resume logic tightly tied to our checkpoints, config hashing and per-run cost JSON. Adding a big external orchestrator was more infrastructure than a batch CLI with an HTTP start path needed.</p>
+<p><strong>Don't say:</strong> human-in-the-loop review queues (not in this system; offline evals replaced earlier critic/evaluator agents in Keep/Drop), LangSmith on this bullet (LangSmith is Ask Iris), or that it's "Hystrix".</p>
+<hr>
+<h3 id="a4-ask-iris-jwt-secured-websocket-copilot">A4 — Ask Iris: JWT-secured WebSocket copilot</h3>
+<blockquote>
+<p><strong>Resume:</strong> Shipped "Ask Iris," a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a LangGraph supervisor with a 3-attempt evaluator loop, utilizing LangSmith for observability, and strictly freezing hierarchy access on the initial socket handshake.</p>
+</blockquote>
+<p><strong>In plain words.</strong> A chat assistant inside the product. A planner can ask "What was sell-through for Women's Tops last week?" or "Why did you drop article 123?" Security is set once when the chat connects and can't be changed by later messages. Answers are checked, and the loop can't run forever.</p>
+<div class="mermaid">sequenceDiagram
+  participant P as Planner browser
+  participant W as FastAPI WebSocket
+  participant S as LangGraph supervisor
+  participant K as Worker with scoped tools
+  participant E as Evaluator
+  P-&gt;&gt;W: connect with JWT
+  W-&gt;&gt;W: verify JWT, resolve tenant and hierarchy, freeze plan_scope
+  P-&gt;&gt;W: Why was article 123 dropped
+  W-&gt;&gt;S: question + frozen plan_scope
+  S-&gt;&gt;K: route to decision-inspection worker
+  K--&gt;&gt;S: reasons from stored scores, within scope
+  S-&gt;&gt;E: check the draft answer
+  E--&gt;&gt;S: pass, or retry, max 3 attempts
+  S--&gt;&gt;W: final answer
+  W--&gt;&gt;P: streamed reply, traced in LangSmith
+</div>
+<p><strong>How it works.</strong>
+- <strong>Handshake.</strong> The JWT comes in the <code>Authorization: Bearer</code> header or a <code>?token=</code> query parameter. The server verifies it and resolves <code>plan_scope</code> (tenant, hierarchy, plan) <strong>once</strong>. Every tool call in that session inherits the frozen scope. A message like "now show me Retailer B" can't widen it.
+- <strong>Supervisor.</strong> Routes each question to the right worker (for example, KPI questions vs decision-inspection questions). Workers call predefined, scope-bound tools. The model doesn't get a raw SQL shell.
+- <strong>Evaluator loop.</strong> Checks the draft answer. If it fails, it retries, capped at <code>MAX_ATTEMPTS = 3</code>. A recursion limit on the graph is a second safety net. After the cap, it returns a graceful "I couldn't answer that reliably" instead of looping.
+- <strong>LangSmith</strong> traces every step: prompts, tool calls, tokens, latency. That's how you debug a bad answer.</p>
+<p><strong>Why WebSocket?</strong> Chat is two-way and streaming. Re-sending auth on every HTTP call is more surface for mistakes. Freezing scope at the start makes the security model simple to reason about.</p>
+<p><strong>The number "3".</strong> Three attempts balance answer quality against cost and latency. One attempt gives no recovery. Unlimited attempts risk infinite loops and runaway token spend.</p>
+<p><strong>Honesty.</strong> Ask Iris is a <strong>shipped capability</strong>. Don't invent usage numbers, accuracy figures or SLAs for it. Don't claim it "generates dynamic charts" (that phrase was dropped).</p>
+<hr>
+<h3 id="a5-300-case-harness-80-ci-gate-73-cost-cut-74-baseline-frozen-weights">A5 — 300-case harness, 80% CI gate, 73% cost cut, 74% baseline, frozen weights</h3>
+<blockquote>
+<p><strong>Resume:</strong> Built a 300-case proxy evaluation harness and an 80% accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by 73% at 100% coverage by benchmarking models against a 74% deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.</p>
+</blockquote>
+<p><strong>In plain words.</strong> We grade the system on test cases before anything ships. CI blocks promotion below 80%. Separately, we benchmarked models and switched to one that's 73% cheaper while still scoring every article. We also compared against the free rule-based baseline (74%). When the LLM blend did worse than that, we didn't "tune" our way around it. We froze the weights.</p>
+<p><strong>The split table: memorise this.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Where it comes from</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>300 cases</strong></td>
+<td>The proxy gold evaluation file (<code>cases.json</code>)</td>
+<td>The test set that CI runs</td>
+</tr>
+<tr>
+<td><strong>80%</strong></td>
+<td><code>eval.json</code> setting <code>gold_min_accuracy: 0.8</code></td>
+<td>The <strong>promotion gate</strong>: below 80%, a config can't be promoted</td>
+</tr>
+<tr>
+<td><strong>73% cheaper, 100% coverage</strong></td>
+<td>A separate <strong>gold-200 benchmark</strong>: the newer model vs the previous mini model, 200 of 200 cases completed</td>
+<td>The model choice for live scoring: same coverage, much lower cost</td>
+</tr>
+<tr>
+<td><strong>74%</strong></td>
+<td>The production deterministic rule (threshold 0.65) on that same 200-case set</td>
+<td>The free baseline the LLM must beat</td>
+</tr>
+<tr>
+<td><strong>Frozen weights</strong></td>
+<td>Same bench: blended LLM about 63%, below the 74% baseline</td>
+<td>Don't retune the 0.4 / 0.6 blend from a small proxy set</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How to say it.</strong> "Promotion requires 80% on a 300-case proxy set in CI. Separately, on a 200-case gold benchmark, we picked a model that was 73% cheaper with every article scored, and we compared everything against a 74% deterministic baseline. When the blend scored lower than the baseline, we froze the weights."</p>
+<p><strong>Why the model choice.</strong> The cheaper model completed all 200 cases at 73% lower cost. An even cheaper option returned some pending (incomplete) rows. Completion reliability won over the last few cents. The model names aren't on the resume. If asked, say "a newer, cheaper model vs the previous mini model".</p>
+<p><strong>Why freezing was the right call.</strong> A small proxy set is easy to overfit. Changing weights to beat a test you've seen is how you fool yourself. Shipping something that loses to a free rule would be worse than shipping nothing.</p>
+<p><strong>Don't say:</strong> "80% accuracy for all tenants in production", "the 300-case suite measured 73%", or any fusion of the two benchmarks into one run.</p>
+<hr>
+<h2 id="7-tech-used-in-this-chapter-and-why">7. Tech used in this chapter and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>One line</th>
+<th>Why here</th>
+<th>Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>The AI ecosystem language</td>
+<td>LLM SDKs, LangGraph, data tooling</td>
+<td>Go (fewer AI libraries)</td>
+</tr>
+<tr>
+<td>FastAPI</td>
+<td>Async Python web framework</td>
+<td>Ask Iris WebSocket and run-start HTTP path</td>
+<td>Django Channels, Flask</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>Graph-based LLM workflows with state and limits</td>
+<td>Supervisor and evaluator loop with a recursion cap</td>
+<td>Hand-rolled loop, CrewAI</td>
+</tr>
+<tr>
+<td>LLM providers (OpenAI, Gemini, Claude)</td>
+<td>Hosted models</td>
+<td>Lens scoring, explanations, chat</td>
+<td>Self-hosted models (ops cost)</td>
+</tr>
+<tr>
+<td>LangSmith</td>
+<td>LLM tracing</td>
+<td>Debug Ask Iris prompts and tool calls</td>
+<td>Langfuse, custom logs</td>
+</tr>
+<tr>
+<td>ClickHouse</td>
+<td>Columnar analytics DB</td>
+<td>The 2.11B-row master, ReplacingMergeTree outputs</td>
+<td>BigQuery</td>
+</tr>
+<tr>
+<td>Redis, PostgreSQL</td>
+<td>Cache and transactional DB</td>
+<td>Shared with the platform (auth, scopes)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="8-hard-problems">8. Hard problems</h2>
+<ol>
+<li><strong>Over-keeping.</strong> Early lens prompts kept too many weak articles (a single strong week or good margin looked fine). Fix: few-shot examples weighted toward "weak or declining demand with thin evidence must Drop", and "thin evidence → neutral score, capped confidence". Any prompt change creates a new config_hash, so it must pass the eval gate.</li>
+<li><strong>KPI drift between lenses and rules.</strong> Lens features once used a naive sell-through formula while the rules used the correct one, so lenses saw about 100% sell-through. Fix: one KPI source of truth used by both SQL generation and tests.</li>
+<li><strong>Provider outages mid-run.</strong> Fix: timeouts, circuit breaker, checkpoints and deterministic fallback, so a 504 doesn't sink 88k items.</li>
+<li><strong>The LLM lost to the baseline.</strong> Fix: freeze weights, keep the gate. This is a good "data over ego" story.</li>
+</ol>
+<hr>
+<h2 id="9-say-this-dont-say-this">9. Say this / don't say this</h2>
+<div class="callout warn">
+<p><b>Say:</b> "the LLM never gets a SQL tool on the scoring path" · "80% is a CI promotion gate" · "73% and 74% come from a separate 200-case benchmark" · "Ask Iris is shipped; I don't quote SLAs for it" · "the batch order is fixed; there's no LLM orchestrator in Keep/Drop".<br><br>
+<b>Don't say:</b> all tenants live at 80% · human review queues / HITL · LangSmith on the Keep/Drop batch · Milvus or vector search at IA (that's Uber Menu) · Kafka, Flink, CDC or Kubernetes operations at IA · that Cluster Recommendation Copilot or Hindsight are resume bullets (they're verbal-only depth) · 348k = 1.6M.</p>
+</div>
+<hr>
+<h2 id="10-practice-drill">10. Practice drill</h2>
+<ol>
+<li><strong>Why not let the LLM compute KPIs?</strong> Math must be exact and repeatable. Code does it once. The LLM judges patterns.</li>
+<li><strong>What is a lens?</strong> One focused, structured LLM question about an article, returning score, confidence and reason codes.</li>
+<li><strong>How is the final score computed?</strong> 0.4 × s_det + 0.6 × s_agent. Keep at 0.55 or above.</li>
+<li><strong>What happens on an LLM timeout?</strong> That article gets its deterministic outcome, is marked fallback, and the run continues.</li>
+<li><strong>Why ReplacingMergeTree?</strong> Retries can write the same article twice. RMT keeps the newest version per key.</li>
+<li><strong>What does config_hash prove?</strong> Exactly which settings and prompts produced a row, so results are reproducible and auditable.</li>
+<li><strong>How does resume work?</strong> Deterministic results are saved first. LLM progress is appended per article. Restart skips finished work.</li>
+<li><strong>What trips the circuit breaker?</strong> Consecutive failures (about 5) or a high failure fraction.</li>
+<li><strong>How does Ask Iris prevent cross-tenant leaks?</strong> Scope is resolved from the JWT at the handshake, frozen, and inherited by every tool call.</li>
+<li><strong>How do you prevent infinite loops?</strong> The evaluator is capped at 3 attempts, and the graph has a recursion limit.</li>
+<li><strong>What is the 300-case set?</strong> The proxy gold set that the CI promotion gate runs.</li>
+<li><strong>Where does 73% come from?</strong> A separate 200-case model benchmark, at 100% coverage.</li>
+<li><strong>What is the 74%?</strong> The production deterministic rule's accuracy on that benchmark.</li>
+<li><strong>Why freeze weights?</strong> The blend scored about 63%, below the baseline. Retuning on a small set would overfit.</li>
+<li><strong>What would you do next?</strong> Grow the gold set, add per-lens evals, and measure held-out Drop recall before any prompt change.</li>
+</ol>
+<hr>
+<h2 id="11-3-minute-whiteboard-script">11. 3-minute whiteboard script</h2>
+<ol>
+<li><strong>Left side (40 s):</strong> ClickHouse 2.11B → our feature SQL and KPI code → two arrows: s_det, and JSON payload. Say: "The model never sees the database."</li>
+<li><strong>Middle box (50 s):</strong> the registry around Peer → Decider → 7 lenses → s_agent. Write "timeouts, breaker, checkpoints, telemetry" on the border. Say: "Fixed order, no LLM orchestrator. Failures fall back to s_det."</li>
+<li><strong>Right side (30 s):</strong> blend formula, keep ≥ 0.55, explanation, RMT write with config_hash.</li>
+<li><strong>Below (40 s):</strong> Ask Iris sequence: JWT handshake → frozen scope → supervisor → worker → evaluator ×3 → LangSmith.</li>
+<li><strong>Corner (20 s):</strong> the eval split table: 300 / 80% gate; 200 bench: 73% cheaper, 100% coverage, 74% baseline, frozen weights. Say: "We refused to ship when the AI lost to the rule."</li>
+</ol></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

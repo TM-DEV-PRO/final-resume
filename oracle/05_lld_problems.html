@@ -58,11 +58,56 @@ strong{color:#fff}
 <a class="lvl2" href="#15-task-scheduler-delayed-job-executor-lld-version">15. Task scheduler / delayed job executor (LLD version)</a>
 <a class="lvl2" href="#lld-answer-checklist-say-it-at-the-end">LLD answer checklist (say it at the end)</a></nav>
 <main><h1 id="05-lld-problems-with-full-designs-and-code">05. LLD problems with full designs and code</h1>
-<p>Each problem: requirements, entities, key decisions, code for the core, concurrency, and extensions. Foundations: <a href="05_lld_foundations.html">05 LLD foundations</a>.</p>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> 15 classic low-level design problems. Each has a plain-English explanation, the classes in plain words, a small class diagram where it helps, working code, a tiny worked example, the concurrency discussion, extensions, and a link to my real projects where one exists.</li>
+<li><b>When to read it:</b> after <a href="05_lld_foundations.html">05 LLD foundations</a>. Do two or three problems a day. Type the code from memory once, then explain it out loud.</li>
+<li><b>What to memorise:</b> LRU (section 1), rate limiter (3), parking lot (4), KV store with TTL and transactions (5) and circuit breaker (8) are the most asked at OCI. For each, memorise the core data structure, the one lock decision, and the first extension you would offer.</li>
+<li><b>Finish every answer</b> with the checklist at the bottom of the page.</li>
+</ul>
+</div>
+<div class="callout highlight">
+<p><b>Tags.</b> Numbers in worked examples are made up for teaching. Project facts come from my resume (PyGo track). <b>ESTIMATED</b> means arithmetic I can show. <b>Verbal</b> means true but not on the PDF.</p>
+</div>
+<p><strong>In plain English.</strong> Each problem below is a small piece of software you could put inside one service: a cache, a limiter, a scheduler, a booking system. The interviewer wants to see you pick the right data structure, split responsibilities into sensible classes, make it safe for several threads, and explain how you would extend it. The code is deliberately short enough to write on a whiteboard in 15 to 20 minutes.</p>
+<p>Words used throughout:</p>
+<ul>
+<li><strong>O(1):</strong> the operation takes the same time no matter how much data there is. Like looking up a word by page number instead of reading the whole book.</li>
+<li><strong>Mutex / lock:</strong> a token only one thread can hold at a time. Like the single key to a shared bathroom.</li>
+<li><strong>Thread-safe:</strong> works correctly even when many threads call it at once.</li>
+<li><strong>Sentinel node:</strong> a dummy node at the start or end of a list so you never have to special-case "empty" or "first item".</li>
+<li><strong>Injectable clock:</strong> passing in the "what time is it" function, so tests can control time.</li>
+</ul>
 <hr>
 <h2 id="1-lru-cache-most-asked-often-with-make-it-thread-safe">1. LRU cache (most asked, often with "make it thread safe")</h2>
-<p><strong>Requirements:</strong> <code>get(key)</code> and <code>put(key, value)</code> in O(1). Capacity limit; evict the least recently used.</p>
-<p><strong>Design:</strong> hashmap key → node, plus a doubly linked list ordered by recency (head = most recent). Sentinel head/tail nodes remove edge cases.</p>
+<p><strong>In plain English.</strong> An LRU (least recently used) cache holds a fixed number of items and, when full, throws out the one that has not been used for the longest time. Think of a small desk where you keep your most recent papers on top: when the desk is full, the paper at the bottom of the pile goes back to the filing cabinet.</p>
+<p><strong>Requirements:</strong> <code>get(key)</code> and <code>put(key, value)</code> in O(1). A capacity limit. Evict the least recently used item.</p>
+<p><strong>Design in plain words.</strong>
+- A <strong>hashmap</strong> from key to node gives O(1) lookup ("where is this paper?").
+- A <strong>doubly linked list</strong> keeps items in recency order, with the most recent at the head. Because each node knows its neighbours on both sides, you can unhook it and move it to the front in O(1).
+- <code>Node</code> is one entry: key, value, and links to previous and next. It stores the key too, so when we evict the tail we know which hashmap entry to delete.
+- Sentinel <code>head</code> and <code>tail</code> nodes mean the list is never truly empty, which removes edge cases.</p>
+<div class="mermaid">classDiagram
+    class LRUCache {
+        -cap int
+        -map dict
+        -head Node
+        -tail Node
+        -lock Lock
+        +get(key)
+        +put(key, val)
+        -_remove(n)
+        -_add_front(n)
+    }
+    class Node {
+        +key
+        +val
+        +prev Node
+        +next Node
+    }
+    LRUCache --&gt; Node
+</div>
 <pre><code class="language-python">import threading
 
 class Node:
@@ -111,8 +156,14 @@ class LRUCache:
             self.map[key] = n
             self._add_front(n)
 </code></pre>
+<p><strong>Worked example (capacity 2).</strong>
+1. <code>put(a, 1)</code>: list is <code>a</code>.
+2. <code>put(b, 2)</code>: list is <code>b, a</code>.
+3. <code>get(a)</code> returns 1 and moves <code>a</code> to the front: <code>a, b</code>.
+4. <code>put(c, 3)</code>: full, so evict the tail <code>b</code>. List is <code>c, a</code>.
+5. <code>get(b)</code> returns None.</p>
 <p>Python shortcut (say you know it): <code>collections.OrderedDict</code> with <code>move_to_end</code> and <code>popitem(last=False)</code>.</p>
-<p><strong>Go version with a mutex</strong> (uses <code>container/list</code>):</p>
+<p><strong>Go version with a mutex</strong> (uses the standard <code>container/list</code> doubly linked list). <code>entry</code> holds the key and value, <code>items</code> maps key to list element, and the same "move to front on access, remove from back when full" logic applies.</p>
 <pre><code class="language-go">type entry struct {
     key string
     val []byte
@@ -155,14 +206,35 @@ func (c *LRU) Put(k string, v []byte) {
     c.items[k] = c.ll.PushFront(&amp;entry{k, v})
 }
 </code></pre>
-<p><strong>Concurrency discussion:</strong>
-- Even <code>get</code> mutates the list, so a read-write lock doesn't help (every op writes). Use one mutex.
-- To scale: <strong>shard</strong> the cache into N segments by <code>hash(key) % N</code>, each with its own lock (like Java's old ConcurrentHashMap). That's approximate LRU globally, which is fine.
-- Or sample-based LRU (Redis evicts the oldest of 5 random keys), which has no list and less contention.
-- <strong>Extensions:</strong> TTL per entry (store an expiry, check on get, plus a background sweeper), size-based capacity (track bytes), eviction callbacks, and metrics (hit rate).</p>
+<p><strong>Concurrency discussion.</strong>
+- Even <code>get</code> changes the list order, so a read-write lock does not help (every operation is a write). Use one mutex.
+- To scale, <strong>shard</strong> the cache into N segments by <code>hash(key) % N</code>, each with its own lock (like Java's old ConcurrentHashMap). That makes LRU approximate globally, which is fine for a cache.
+- Or use sample-based LRU (Redis evicts the oldest of a few random keys, 5 by default), which needs no list and has less contention.</p>
+<p><strong>Extensions:</strong> TTL per entry (store an expiry, check on get, plus a background sweeper), size-based capacity (track bytes), eviction callbacks, and metrics (hit rate).</p>
+<p><strong>Speakable opener.</strong></p>
+<blockquote>
+<p>"I will use a hashmap for O(1) lookup and a doubly linked list for recency order, with sentinel head and tail nodes. Get moves the node to the front, put adds at the front and evicts from the tail when full. Since even get mutates the list, one mutex protects both structures, and if contention becomes a problem I would shard by key hash."</p>
+</blockquote>
+<p><strong>Project tie-in.</strong> At Masters India a Redis cache-aside layer cut DB read load by 30%. Redis's eviction policies (LRU, LFU, TTL) are exactly what this class implements in miniature.</p>
 <hr>
 <h2 id="2-lfu-cache-o1">2. LFU cache (O(1))</h2>
-<p><strong>Design:</strong> <code>key → (value, freq)</code>, <code>freq → OrderedDict of keys</code> (LRU order within a frequency), and a <code>min_freq</code> pointer.</p>
+<p><strong>In plain English.</strong> An LFU (least frequently used) cache evicts the item that has been used the <em>fewest</em> times. If several items tie, it evicts the least recent among them. Think of a playlist that drops the song you have played least, and if two songs tie, the one you played longest ago.</p>
+<p><strong>Design in plain words.</strong>
+- <code>vals</code> maps key to <code>(value, freq)</code>.
+- <code>buckets</code> maps each frequency to an <code>OrderedDict</code> of keys, which keeps LRU order inside that frequency.
+- <code>min_freq</code> points at the lowest frequency that currently has keys, so eviction is O(1): pop the oldest key from <code>buckets[min_freq]</code>.
+- <code>_touch</code> moves a key from frequency f to f + 1, and bumps <code>min_freq</code> if bucket f just became empty.</p>
+<div class="mermaid">classDiagram
+    class LFUCache {
+        -cap int
+        -vals dict
+        -buckets dict
+        -min_freq int
+        +get(key)
+        +put(key, value)
+        -_touch(key)
+    }
+</div>
 <pre><code class="language-python">from collections import defaultdict, OrderedDict
 
 class LFUCache:
@@ -204,9 +276,42 @@ class LFUCache:
         self.buckets[1][key] = None
         self.min_freq = 1
 </code></pre>
+<p><strong>Worked example (capacity 2).</strong>
+1. <code>put(a)</code>, <code>put(b)</code>: both at frequency 1. <code>min_freq = 1</code>.
+2. <code>get(a)</code>: <code>a</code> moves to frequency 2. Bucket 1 still has <code>b</code>, so <code>min_freq</code> stays 1.
+3. <code>put(c)</code>: full, evict the oldest key in bucket 1, which is <code>b</code>. Insert <code>c</code> at frequency 1.
+4. <code>get(b)</code> returns -1.</p>
+<p><strong>Concurrency:</strong> same as LRU. Every operation mutates, so one lock around <code>get</code> and <code>put</code>, or sharding.</p>
+<p><strong>When to pick LFU over LRU:</strong> when popularity is stable over time (a product catalog), because one-off scans will not flush the popular items. LRU is better when recent items are most likely to be reused.</p>
 <hr>
 <h2 id="3-rate-limiter-library-strategy-thread-safety">3. Rate limiter library (Strategy + thread safety)</h2>
+<p><strong>In plain English.</strong> A rate limiter library answers one question per request: "may this caller go ahead right now?" The algorithm is pluggable (a Strategy), so you can switch between token bucket and sliding window without touching callers. Think of a nightclub with a door policy that can change from "10 people per minute" to "no more than 50 inside" without retraining the door staff on anything except the rule.</p>
 <p><strong>Requirements:</strong> <code>allow(key) -&gt; bool</code>. Pluggable algorithms (token bucket, sliding window). Per-key limits. Thread-safe. An injectable clock for tests.</p>
+<p><strong>Classes in plain words.</strong>
+- <code>RateLimiter</code> is the interface: one method, <code>allow(key)</code>.
+- <code>TokenBucketLimiter</code> keeps, per key, how many tokens are left and when it last refilled. Tokens drip in at <code>rate</code> per second up to <code>capacity</code>. A request spends one token. This allows short bursts.
+- <code>SlidingWindowLogLimiter</code> keeps, per key, a queue of request timestamps from the last <code>window</code> seconds. If there are fewer than <code>limit</code>, allow and record. Exact, but stores every timestamp.</p>
+<div class="mermaid">classDiagram
+    class RateLimiter {
+        +allow(key) bool
+    }
+    class TokenBucketLimiter {
+        -rate float
+        -cap int
+        -buckets dict
+        -clock func
+        +allow(key) bool
+    }
+    class SlidingWindowLogLimiter {
+        -limit int
+        -window float
+        -logs dict
+        -clock func
+        +allow(key) bool
+    }
+    RateLimiter &lt;|.. TokenBucketLimiter
+    RateLimiter &lt;|.. SlidingWindowLogLimiter
+</div>
 <pre><code class="language-python">import threading, time
 from abc import ABC, abstractmethod
 from collections import deque
@@ -249,7 +354,51 @@ class SlidingWindowLogLimiter(RateLimiter):
                 return True
             return False
 </code></pre>
-<p><strong>Go token bucket</strong> (per-key, lock striping would be the next step):</p>
+<p><strong>Worked example (token bucket, rate 1 per second, capacity 2, fake clock).</strong></p>
+<table>
+<thead>
+<tr>
+<th>Time (s)</th>
+<th>Tokens before</th>
+<th>Allowed?</th>
+<th>Tokens after</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.0</td>
+<td>2 (new key)</td>
+<td>yes</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0.0</td>
+<td>1</td>
+<td>yes</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0.0</td>
+<td>0</td>
+<td>no</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>0.5</td>
+<td>no</td>
+<td>0.5</td>
+</tr>
+<tr>
+<td>1.0</td>
+<td>1.0</td>
+<td>yes</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Worked example (sliding window, limit 3 per 10 s).</strong> Requests at t = 0, 2, 4 are allowed. t = 5 is denied (3 in the window). At t = 10.5 the entry from t = 0 has aged out, so it is allowed.</p>
+<p><strong>Go token bucket</strong> (per-key buckets under one mutex. Lock striping would be the next step). <code>now</code> is injected for tests.</p>
 <pre><code class="language-go">type bucket struct {
     tokens float64
     last   time.Time
@@ -281,11 +430,61 @@ func (tb *TokenBucket) Allow(key string) bool {
     return false
 }
 </code></pre>
-<p><strong>Discussion:</strong> a global lock is a bottleneck, so use a lock per key (a map of locks, itself guarded) or striped locks. Evict idle keys (LRU/TTL) so memory doesn't grow forever. Distributed version: <a href="04_system_design_questions.html">system design Q1</a>.</p>
+<p><strong>Concurrency discussion.</strong> A global lock becomes a bottleneck under many keys. Use a lock per key (a map of locks, itself guarded) or striped locks (N locks, pick one by <code>hash(key) % N</code>). Evict idle keys (LRU or TTL) so memory does not grow forever. The distributed version is <a href="04_system_design_questions.html">system design Q1</a>.</p>
+<p><strong>Speakable opener.</strong></p>
+<blockquote>
+<p>"I will define a RateLimiter interface with one allow method, and implement token bucket and sliding window log as two strategies. Each keeps per-key state under a lock and takes an injected clock, so I can test refill behaviour without sleeping. The first scaling step is striped locks, and the distributed version moves the bucket into Redis with a Lua script."</p>
+</blockquote>
+<p><strong>Project tie-in.</strong> At Masters India, the client side of rate limiting mattered: calls to the government IRP used bounded concurrency and backoff with jitter, with a dead-letter queue after max attempts.</p>
 <hr>
 <h2 id="4-parking-lot">4. Parking lot</h2>
-<p><strong>Requirements (clarify):</strong> multiple floors; spot types (motorcycle, compact, large, EV); vehicles park in a fitting spot; tickets on entry; pay on exit with pluggable pricing; show free spots per type; multiple entry gates at once (concurrency).</p>
+<p><strong>In plain English.</strong> Model a multi-floor car park: vehicles arrive, get a fitting spot and a ticket, and pay on exit. The interesting parts are matching vehicle sizes to spot sizes, making pricing pluggable, and making sure two entry gates never hand out the same spot.</p>
+<p><strong>Requirements (clarify):</strong> multiple floors. Spot types (small, medium, large; EV as an extension). Vehicles park in a fitting spot. Tickets on entry. Pay on exit with pluggable pricing. Show free spots per type. Several entry gates at once (concurrency).</p>
 <p><strong>Entities:</strong> <code>ParkingLot</code>, <code>Floor</code>, <code>Spot</code> (type, id, occupied), <code>Vehicle</code> (type, plate), <code>Ticket</code>, <code>SpotAssignmentStrategy</code>, <code>PricingStrategy</code>, <code>Payment</code>.</p>
+<p><strong>Classes in plain words.</strong>
+- <code>VehicleType</code> and <code>SpotType</code> are enums. <code>FITS</code> says which spot types each vehicle can use, smallest first, so a bike takes a small spot before a large one.
+- <code>Spot</code> knows its floor, type and current vehicle.
+- <code>Vehicle</code> is frozen (immutable), because a plate and type never change.
+- <code>Ticket</code> records who parked where and when.
+- <code>PricingStrategy</code> is the interface. <code>HourlyPricing</code> rounds up to whole hours and multiplies by a rate per spot type.
+- <code>ParkingLot</code> keeps a stack of free spots per type and a map of active tickets, all under one lock.</p>
+<div class="mermaid">classDiagram
+    class ParkingLot {
+        -free dict
+        -active dict
+        -pricing PricingStrategy
+        -lock Lock
+        +park(vehicle) Ticket
+        +leave(ticket_id) float
+        +availability() dict
+    }
+    class Spot {
+        +id str
+        +floor int
+        +type SpotType
+        +vehicle Vehicle
+    }
+    class Vehicle {
+        +plate str
+        +type VehicleType
+    }
+    class Ticket {
+        +id str
+        +vehicle Vehicle
+        +spot Spot
+        +entry_ts float
+    }
+    class PricingStrategy {
+        +price(ticket, exit_ts) float
+    }
+    class HourlyPricing
+    ParkingLot "1" *-- "many" Spot
+    ParkingLot --&gt; PricingStrategy
+    ParkingLot --&gt; Ticket
+    Ticket --&gt; Spot
+    Ticket --&gt; Vehicle
+    PricingStrategy &lt;|.. HourlyPricing
+</div>
 <pre><code class="language-python">from dataclasses import dataclass, field
 from enum import Enum
 import itertools, threading, time, uuid
@@ -363,14 +562,42 @@ class ParkingLot:
         with self.lock:
             return {t.name: len(v) for t, v in self.free.items()}
 </code></pre>
-<p><strong>Talking points:</strong>
-- Spot assignment is a <strong>strategy</strong> (nearest to the gate: a min-heap per type keyed by distance).
+<p><strong>Worked example.</strong> A car parks in a MEDIUM spot at t = 0 and leaves at t = 7,800 seconds (2 hours 10 minutes). The ceiling trick: <code>-(-7800 // 3600)</code> is <code>-(-3)</code> = 3 hours. Fee = 3 × 2.0 = 6.0. If no MEDIUM spot were free, <code>FITS</code> would try LARGE next and the fee would be 3 × 4.0 = 12.0.</p>
+<p><strong>Talking points.</strong>
+- Spot assignment is a <strong>strategy</strong>. "Nearest to the gate" is a min-heap per type keyed by distance.
 - Pricing is a <strong>strategy</strong> (hourly, flat, weekend, EV surcharge).
-- <strong>Concurrency:</strong> one lock is simple and correct at gate throughput. At scale: a lock per spot type, or a DB with <code>SELECT ... FOR UPDATE SKIP LOCKED</code> to claim a free spot.
-- <strong>Extensions:</strong> reservations, display boards (<strong>observer</strong> on availability changes), and payment methods (strategy).</p>
+- <strong>Concurrency:</strong> one lock is simple and correct at gate throughput (a few cars a second). At scale, a lock per spot type, or a database with <code>SELECT ... FOR UPDATE SKIP LOCKED</code> to claim a free spot (each gate skips rows another gate has locked).
+- <strong>Extensions:</strong> reservations, display boards (an <strong>observer</strong> on availability changes), and payment methods (a strategy).</p>
+<p><strong>Speakable opener.</strong></p>
+<blockquote>
+<p>"The parts that vary are spot assignment and pricing, so both become strategies. The lot keeps a free-spot stack per type and an active-ticket map under one lock, which is enough for gate-level throughput and guarantees two gates never grab the same spot. If this moved to a database I would claim spots with SELECT FOR UPDATE SKIP LOCKED."</p>
+</blockquote>
 <hr>
 <h2 id="5-in-memory-key-value-store-with-ttl-and-transactions">5. In-memory key-value store with TTL and transactions</h2>
+<p><strong>In plain English.</strong> Build a mini Redis: store values by key, let keys expire after a time-to-live, and support transactions you can roll back, including nested ones. Think of writing in pencil inside a "begin" bracket. Rollback erases back to the bracket. Commit makes it ink (or, if nested, hands the eraser marks to the outer bracket).</p>
 <p><strong>Requirements:</strong> <code>set</code>, <code>get</code>, <code>delete</code>, <code>set(key, val, ttl)</code>, <code>begin</code>, <code>commit</code>, <code>rollback</code> (nested transactions). Thread-safe.</p>
+<p><strong>Design in plain words.</strong>
+- <code>data</code> maps key to <code>(value, expires_at or None)</code>.
+- <code>expiry</code> is a min-heap of <code>(expires_at, key)</code> so a sweeper can find the next key to expire in O(log n).
+- <code>tx</code> is a stack of undo logs. Each level records, for every key it touched, the value <em>before</em> the first change in that level (or a <code>_MISSING</code> marker if the key did not exist).
+- <strong>Lazy expiry:</strong> <code>get</code> checks whether a key has expired and deletes it on the spot. <strong>Active expiry:</strong> <code>sweep</code> runs in the background and removes expired keys from the heap.
+- <code>RLock</code> (a re-entrant lock) lets a method that holds the lock call another method that takes it again.</p>
+<div class="mermaid">classDiagram
+    class KVStore {
+        -data dict
+        -expiry heap
+        -tx list
+        -clock func
+        -lock RLock
+        +get(key)
+        +set(key, value, ttl)
+        +delete(key)
+        +begin()
+        +commit()
+        +rollback()
+        +sweep()
+    }
+</div>
 <pre><code class="language-python">import heapq, threading, time
 
 class KVStore:
@@ -444,14 +671,52 @@ class KVStore:
                 if v and v[1] == exp:           # skip stale heap entries
                     del self.data[key]
 </code></pre>
-<p><strong>Talking points:</strong> lazy + active expiry (like Redis). The undo log per transaction level makes rollback O(changes). Note this transaction model is single-client (global); multi-client isolation would need MVCC or per-session write sets with commit-time conflict checks (optimistic concurrency). Persistence: an append-only log (AOF) + snapshots.</p>
+<p><strong>Worked example (nested transactions).</strong>
+1. <code>set(a, 1)</code>. Data: <code>a = 1</code>.
+2. <code>begin()</code>, then <code>set(a, 2)</code>. Level 1 undo log records <code>a</code> was 1.
+3. <code>begin()</code>, then <code>delete(a)</code>. Level 2 undo log records <code>a</code> was 2.
+4. <code>rollback()</code> pops level 2 and restores <code>a = 2</code>.
+5. <code>commit()</code> pops level 1. No parent, so the change is final. <code>get(a)</code> returns 2.</p>
+<p>If instead step 4 were <code>commit()</code>, level 2's undo entry would merge into level 1 with <code>setdefault</code>, which keeps level 1's older value (<code>a</code> was 1). A later rollback of level 1 would then correctly restore <code>a = 1</code>.</p>
+<p><strong>Worked example (TTL).</strong> <code>set(s, "x", ttl=5)</code> at t = 100 stores expiry 105 and pushes <code>(105, s)</code> on the heap. <code>get(s)</code> at t = 104 returns "x". At t = 106 <code>get</code> sees it expired and deletes it. If <code>s</code> was overwritten at t = 103 with a new TTL, the old heap entry <code>(105, s)</code> no longer matches the stored expiry, so <code>sweep</code> skips it ("stale heap entries").</p>
+<p><strong>Talking points.</strong> Lazy plus active expiry is how Redis does it. The undo log per transaction level makes rollback cost proportional to the number of changes, not the size of the store. Note this transaction model is single-client (global). Multi-client isolation would need MVCC or per-session write sets with commit-time conflict checks (optimistic concurrency). Persistence would be an append-only log (AOF) plus periodic snapshots.</p>
+<p><strong>Speakable opener.</strong></p>
+<blockquote>
+<p>"Data is a dict of value and expiry, plus a min-heap of expiries for active sweeping, and get also expires lazily. Transactions are a stack of undo logs that record each key's value before its first change at that level. Rollback replays the top log, and a nested commit merges its undo info into the parent, keeping the older value. One re-entrant lock makes it thread-safe."</p>
+</blockquote>
 <hr>
 <h2 id="6-logger-logging-framework">6. Logger / logging framework</h2>
-<p><strong>Requirements:</strong> levels (DEBUG, INFO, WARN, ERROR), multiple sinks (console, file, remote), formatting, async (don't block callers), and thread-safe.</p>
-<p><strong>Design:</strong>
-- <code>Logger</code> has a level filter and a list of <code>Handler</code>s (chain of responsibility / observer).
-- <code>Formatter</code> is a strategy (JSON, text).
-- <code>AsyncHandler</code> decorates another handler: a bounded queue + a worker thread. When the queue is full, it drops DEBUG and blocks or drops with a counter for others. Say which you choose.</p>
+<p><strong>In plain English.</strong> A logging framework lets code write messages at different importance levels to one or more destinations, without slowing down the request that is logging. Think of a newsroom: reporters (callers) hand notes to a desk (the logger), which filters by importance and passes them to printers (handlers), and a mailroom (the async handler) delivers in the background so reporters never wait.</p>
+<p><strong>Requirements:</strong> levels (DEBUG, INFO, WARN, ERROR), multiple sinks (console, file, remote), formatting, async (do not block callers), thread-safe.</p>
+<p><strong>Design in plain words.</strong>
+- <code>Logger</code> has a minimum level and a list of <code>Handler</code>s. It drops messages below its level and sends the rest to every handler (chain of responsibility / observer).
+- <code>Handler</code> is the interface with one method, <code>emit(record)</code>.
+- <code>ConsoleHandler</code> writes JSON lines to stdout.
+- <code>AsyncHandler</code> is a <strong>decorator</strong> around another handler: it puts records on a bounded queue and a background thread drains it. When the queue is full it drops the record and counts the drop, so a slow sink can never block the request path. Say this choice out loud (dropping vs blocking).
+- <code>Formatter</code> would be a strategy (JSON or text).</p>
+<div class="mermaid">classDiagram
+    class Logger {
+        -name str
+        -level int
+        -handlers list
+        +log(level, msg, fields)
+        +info(msg)
+        +error(msg)
+    }
+    class Handler {
+        +emit(record)
+    }
+    class ConsoleHandler
+    class AsyncHandler {
+        -inner Handler
+        -q Queue
+        -dropped int
+    }
+    Logger --&gt; Handler
+    Handler &lt;|.. ConsoleHandler
+    Handler &lt;|.. AsyncHandler
+    AsyncHandler --&gt; Handler
+</div>
 <pre><code class="language-python">import queue, threading, json, time, sys
 
 class Handler:
@@ -493,10 +758,42 @@ class Logger:
     def info(self, msg, **f): self.log(&quot;INFO&quot;, msg, **f)
     def error(self, msg, **f): self.log(&quot;ERROR&quot;, msg, **f)
 </code></pre>
-<p>My tie-in: structured JSON logs with a <code>request_id</code> field is what made ELK triage 70% faster at Masters.</p>
+<p><strong>Worked example.</strong></p>
+<pre><code class="language-python">log = Logger(&quot;invoices&quot;, level=&quot;INFO&quot;, handlers=[AsyncHandler(ConsoleHandler())])
+log.log(&quot;DEBUG&quot;, &quot;parsed row&quot;)                         # dropped: below INFO
+log.info(&quot;submitted&quot;, request_id=&quot;r-91&quot;, invoice=&quot;INV-7&quot;)
+# background thread prints:
+# {&quot;ts&quot;: 1700000000.1, &quot;level&quot;: &quot;INFO&quot;, &quot;logger&quot;: &quot;invoices&quot;, &quot;msg&quot;: &quot;submitted&quot;, &quot;request_id&quot;: &quot;r-91&quot;, &quot;invoice&quot;: &quot;INV-7&quot;}
+</code></pre>
+<p><strong>Concurrency:</strong> <code>queue.Queue</code> is thread-safe, so many request threads can call <code>emit</code> at once. The <code>dropped</code> counter increment is not atomic in principle, so protect it with a lock or use a per-thread counter if exact counts matter. Expose <code>dropped</code> as a metric.</p>
+<p><strong>Extensions:</strong> a file handler with rotation, sampling for DEBUG, a remote handler with batching and retry, and per-module levels.</p>
+<p><strong>Project tie-in.</strong> Structured JSON logs with a <code>request_id</code> field are what made ELK triage about 70% faster at Masters India (ESTIMATED, roughly 30 minutes to under 10). The <code>**fields</code> argument above is how you get that request ID into every line.</p>
 <hr>
 <h2 id="7-in-memory-pub-sub-message-broker">7. In-memory pub-sub / message broker</h2>
-<p><strong>Requirements:</strong> topics, publish, subscribe with a callback or pull; each subscriber gets every message (fan-out); consumer offsets (replay); bounded memory.</p>
+<p><strong>In plain English.</strong> A pub-sub broker lets publishers post messages to a topic and lets every subscriber group read all of them at its own pace. This version is Kafka in miniature: each topic is an append-only log, and each consumer group keeps its own bookmark (offset). Like a noticeboard where every team has its own sticky note marking how far down they have read.</p>
+<p><strong>Requirements:</strong> topics, publish, subscribe with a callback or by polling. Each subscriber group gets every message (fan-out). Consumer offsets (replay). Bounded memory.</p>
+<p><strong>Classes in plain words.</strong>
+- <code>Topic</code> holds the log (a list), a retention limit, and <code>base</code>, the offset of the first message still kept. When the log exceeds retention, old messages are dropped and <code>base</code> moves forward. A <code>Condition</code> lets readers wait for new messages instead of spinning.
+- <code>read(offset)</code> returns up to <code>max_n</code> messages from that offset and the next offset. If the reader fell behind retention, it starts from the oldest kept message.
+- <code>Broker</code> maps names to topics and <code>(topic, group)</code> to committed offsets. <code>poll</code> reads from the committed offset. <code>commit</code> moves the bookmark.</p>
+<div class="mermaid">classDiagram
+    class Broker {
+        -topics dict
+        -offsets dict
+        +publish(topic, msg)
+        +poll(topic, group)
+        +commit(topic, group, offset)
+    }
+    class Topic {
+        -log list
+        -retention int
+        -base int
+        -cond Condition
+        +publish(msg)
+        +read(offset, max_n, timeout)
+    }
+    Broker "1" *-- "many" Topic
+</div>
 <pre><code class="language-python">import threading
 from collections import defaultdict
 
@@ -538,9 +835,30 @@ class Broker:
     def commit(self, topic, group, offset):     # commit after processing = at-least-once
         self.offsets[(topic, group)] = offset
 </code></pre>
-<p><strong>Talking points:</strong> offsets committed after processing give at-least-once delivery. Retention drops old messages, and a slow group can fall behind retention (detect it and alert). Partitioning for parallelism. Backpressure: bounded logs. It's Kafka in miniature (<a href="04_system_design_questions.html">SD Q9</a>).</p>
+<p><strong>Worked example (why commit-after-process means at-least-once).</strong>
+1. Publish <code>m0, m1, m2</code> to <code>invoices</code>.
+2. Group <code>billing</code> polls and gets <code>[m0, m1, m2]</code> with next offset 3.
+3. It processes <code>m0</code> and <code>m1</code>, then crashes before calling <code>commit</code>.
+4. On restart it polls from committed offset 0 and gets all three again. <code>m0</code> and <code>m1</code> are processed twice, so the consumer must be idempotent.
+5. Group <code>analytics</code> is unaffected, because it has its own offset.</p>
+<p><strong>Talking points.</strong> Offsets committed after processing give at-least-once delivery. Retention drops old messages, and a slow group can fall behind retention, so detect it and alert. Partition each topic for parallelism. Bounded logs provide backpressure. It is Kafka in miniature (<a href="04_system_design_questions.html">SD Q9</a>).</p>
+<p><strong>Project tie-in.</strong> Real Kafka at Masters India (partitioned by client GSTIN, offset reset to replay after a parser bug) and at Uber Menu (keyed dedup with Flink, idempotent catalog upserts) relied on exactly this at-least-once plus idempotent-consumer behaviour.</p>
 <hr>
 <h2 id="8-circuit-breaker-class-state-pattern">8. Circuit breaker class (State pattern)</h2>
+<p><strong>In plain English.</strong> A circuit breaker wraps calls to a flaky dependency. After too many failures it "trips" and refuses calls for a cool-off period, then lets one trial call through to test recovery. Like the fuse box at home: it cuts power when something is wrong, and you flip it back to test.</p>
+<p><strong>Design in plain words.</strong>
+- Three states: <strong>CLOSED</strong> (normal, counting failures), <strong>OPEN</strong> (reject immediately with <code>CircuitOpen</code>), <strong>HALF_OPEN</strong> (one trial call allowed).
+- In OPEN, once <code>cooldown</code> has passed, the next caller moves it to HALF_OPEN and becomes the trial. Other callers during the trial are rejected.
+- A failure in HALF_OPEN, or reaching the failure threshold in CLOSED, moves it to OPEN and records the time.
+- Any success resets to CLOSED with zero failures.
+- The lock protects only the state changes, not the call itself, so slow calls do not block other threads from checking state.</p>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; CLOSED
+    CLOSED --&gt; OPEN: failures reach threshold
+    OPEN --&gt; HALF_OPEN: cooldown elapsed, next call is the trial
+    HALF_OPEN --&gt; CLOSED: trial succeeds
+    HALF_OPEN --&gt; OPEN: trial fails
+</div>
 <pre><code class="language-python">import threading, time
 
 class CircuitOpen(Exception):
@@ -575,9 +893,26 @@ class CircuitBreaker:
             self.state, self.failures = self.CLOSED, 0
         return result
 </code></pre>
-<p>Fallback belongs to the caller: <code>try: breaker.call(llm) except (CircuitOpen, TimeoutError): score = deterministic_score(item)</code>. That's exactly the Keep/Drop registry behavior.</p>
+<p><strong>Worked example (threshold 5, cooldown 30 s).</strong> Five failures in a row at t = 0 to 4 trip it to OPEN at t = 4. Calls at t = 10 and t = 20 get <code>CircuitOpen</code> instantly without touching the dependency. At t = 34 the next call becomes the trial. If it succeeds, the breaker is CLOSED again. If it fails, it is OPEN until t = 64.</p>
+<p><strong>Fallback belongs to the caller:</strong></p>
+<pre><code class="language-python">try:
+    score = breaker.call(llm_score, item)
+except (CircuitOpen, TimeoutError):
+    score = deterministic_score(item)
+</code></pre>
+<p><strong>Project tie-in.</strong> That is exactly the Keep/Drop orchestration registry behaviour at Impact Analytics: a breaker per provider that trips after about 5 consecutive failures or a fail fraction, and items that fall back to the deterministic baseline score so the run still finishes. Fallbacks are counted in the per-run telemetry.</p>
+<p><strong>Speakable opener.</strong></p>
+<blockquote>
+<p>"This is the State pattern with three states. Closed counts failures, Open rejects instantly until a cooldown passes, and Half-open lets exactly one trial through. I keep the lock only around state transitions, not around the call, and I leave the fallback to the caller, because the right fallback depends on the business. In my batch engine the fallback is the deterministic score."</p>
+</blockquote>
 <hr>
 <h2 id="9-consistent-hashing-ring">9. Consistent hashing ring</h2>
+<p><strong>In plain English.</strong> Consistent hashing decides which server owns which key, in a way that moves very few keys when servers are added or removed. Picture a clock face. Servers sit at several positions around it, and each key belongs to the next server clockwise. Adding a server only takes over the keys just before it.</p>
+<p><strong>Design in plain words.</strong>
+- <code>ring</code> is a sorted list of hash positions. <code>owner</code> maps each position to its server.
+- Each server gets <code>vnodes</code> positions (virtual nodes) by hashing <code>"node#i"</code>. More positions give a more even spread.
+- <code>get(key)</code> hashes the key and uses binary search (<code>bisect</code>) to find the next position clockwise, wrapping around with <code>% len(ring)</code>.
+- <code>get_n(key, n)</code> walks clockwise collecting <em>distinct</em> servers, which gives replica placement.</p>
 <pre><code class="language-python">import bisect, hashlib
 
 class HashRing:
@@ -617,9 +952,41 @@ class HashRing:
             i += 1
         return out
 </code></pre>
+<p><strong>Worked example.</strong> Add servers A, B and C with 100 virtual nodes each, so the ring has 300 positions. Each server owns roughly a third of keys. Remove B: only B's keys move, spread over A and C, so about 1/3 of keys move. With plain <code>hash % 3</code> changing to <code>hash % 2</code>, about half or more of all keys would move.</p>
+<p><strong>Talking points.</strong>
+- MD5 is used for spread, not security. Any fast, well-distributed hash works.
+- <code>add</code> and <code>remove</code> are O(vnodes × N) because of list inserts. A balanced tree or a rebuilt sorted array is fine for rare membership changes.
+- Not thread-safe as written. Membership changes are rare, so build a new ring and swap the reference atomically (copy-on-write), so readers never see a half-built ring.</p>
+<p><strong>Where it is used:</strong> cache clusters (SD Q5), Dynamo-style KV stores (SD Q2).</p>
 <hr>
 <h2 id="10-vending-machine-state-pattern">10. Vending machine (State pattern)</h2>
-<p><strong>States:</strong> Idle → HasMoney → Dispensing → Idle, plus an OutOfStock check. Each state class handles <code>insert_coin</code>, <code>select</code>, <code>refund</code>, and <code>dispense</code>, and returns the next state. That replaces nested ifs. Inventory is a map of slot → (product, count). Change-making is greedy for canonical coin systems.</p>
+<p><strong>In plain English.</strong> A vending machine behaves differently depending on whether you have inserted money. Instead of a tangle of <code>if</code> statements, each state is its own class that knows which actions are valid. Like a board game where the rules change by phase.</p>
+<p><strong>States:</strong> Idle, then HasMoney, then (dispensing) back to Idle, plus an out-of-stock check. Each state class handles <code>insert</code>, <code>select</code> and <code>refund</code>, and sets the next state. Inventory is a map of slot to <code>(product, price, count)</code>. Making change is greedy for canonical coin systems (like 1, 2, 5, 10), where always taking the biggest coin is optimal.</p>
+<p><strong>Classes in plain words.</strong>
+- <code>State</code> is the base: every action raises "invalid" unless a subclass allows it.
+- <code>Idle</code> only accepts <code>insert</code>, which adds to the balance and moves to <code>HasMoney</code>.
+- <code>HasMoney</code> accepts more money, a selection (checks stock and funds, decrements stock, returns product and change, goes back to Idle), or a refund.
+- <code>VendingMachine</code> holds inventory, balance and the current state, and forwards every call to the state.</p>
+<div class="mermaid">classDiagram
+    class State {
+        +insert(m, amount)
+        +select(m, slot)
+        +refund(m)
+    }
+    class Idle
+    class HasMoney
+    class VendingMachine {
+        -inventory dict
+        -balance int
+        -state State
+        +insert(amount)
+        +select(slot)
+        +refund()
+    }
+    State &lt;|-- Idle
+    State &lt;|-- HasMoney
+    VendingMachine --&gt; State
+</div>
 <pre><code class="language-python">class State:
     def insert(self, m, amount): raise RuntimeError(&quot;invalid&quot;)
     def select(self, m, slot): raise RuntimeError(&quot;invalid&quot;)
@@ -655,45 +1022,222 @@ class VendingMachine:
     def select(self, slot): return self.state.select(self, slot)
     def refund(self): return self.state.refund(self)
 </code></pre>
+<p><strong>Worked example.</strong></p>
+<pre><code class="language-python">vm = VendingMachine({&quot;A1&quot;: (&quot;chips&quot;, 30, 2)})
+vm.select(&quot;A1&quot;)      # RuntimeError: invalid (Idle does not allow select)
+vm.insert(20)        # Idle -&gt; HasMoney, balance 20
+vm.select(&quot;A1&quot;)      # RuntimeError: insufficient funds
+vm.insert(30)        # balance 50
+vm.select(&quot;A1&quot;)      # (&quot;chips&quot;, 20), stock now 1, back to Idle
+</code></pre>
+<p><strong>Concurrency:</strong> a physical machine has one user, but if exposed over a network, wrap each public method in a lock so two selections cannot both take the last item.</p>
+<p><strong>Project tie-in.</strong> The same idea is the polymorphic review-status model at Uber FRM (via EPAM): Draft, Review, ReOpen and Closed, reused across screens, with FSM gates such as the 50% delta-variance check that blocks a transition until reviewed.</p>
 <hr>
 <h2 id="11-elevator-system">11. Elevator system</h2>
-<p><strong>Requirements:</strong> N elevators, M floors, hall calls (up/down) and car calls (floor buttons), minimize wait time, and concurrency (requests arrive anytime).</p>
-<p><strong>Entities:</strong> <code>Elevator</code> (current floor, direction, stop set, state: IDLE/MOVING_UP/MOVING_DOWN/DOORS_OPEN/MAINTENANCE), <code>Request</code> (floor, direction), <code>Dispatcher</code> with a pluggable <code>SchedulingStrategy</code>, and a <code>Controller</code> loop per elevator.</p>
-<p><strong>Scheduling:</strong>
-- <strong>SCAN / LOOK</strong> per elevator: keep moving in the current direction serving stops (two heaps: up-stops as a min-heap, down-stops as a max-heap), and reverse when none remain.
-- <strong>Dispatch</strong> a hall call to the elevator with the lowest cost: an idle elevator's distance; the distance if moving toward the call in the same direction; otherwise the distance to the turnaround plus back.</p>
-<p><strong>Concurrency:</strong> a request queue (thread-safe) feeds the dispatcher; each elevator runs in its own thread/goroutine with a lock on its stop set. In Go: a channel per elevator for assigned requests and a <code>select</code> loop with a ticker for movement.</p>
+<p><strong>In plain English.</strong> Several lifts serve many floors. People press up or down in the hall (hall calls) or a floor number inside the lift (car calls). The design is about which lift answers which call, and in what order a lift visits its stops, while requests arrive at any moment.</p>
+<p><strong>Requirements:</strong> N elevators, M floors, hall calls (up or down) and car calls (floor buttons), minimise wait time, concurrency (requests arrive any time).</p>
+<p><strong>Entities in plain words.</strong>
+- <code>Elevator</code>: current floor, direction, a set of stops, and a state (IDLE, MOVING_UP, MOVING_DOWN, DOORS_OPEN, MAINTENANCE).
+- <code>Request</code>: floor and direction.
+- <code>Dispatcher</code>: assigns each hall call to an elevator using a pluggable <code>SchedulingStrategy</code>.
+- <code>Controller</code>: one loop per elevator that moves it and opens doors.</p>
+<div class="mermaid">classDiagram
+    class Dispatcher {
+        -elevators list
+        -strategy SchedulingStrategy
+        +submit(request)
+    }
+    class SchedulingStrategy {
+        +choose(elevators, request) Elevator
+    }
+    class NearestCarStrategy
+    class Elevator {
+        +floor int
+        +direction
+        +state
+        -up_stops minheap
+        -down_stops maxheap
+        +add_stop(floor)
+        +step()
+    }
+    class Request {
+        +floor int
+        +direction
+    }
+    Dispatcher --&gt; SchedulingStrategy
+    Dispatcher "1" o-- "many" Elevator
+    SchedulingStrategy &lt;|.. NearestCarStrategy
+    Dispatcher --&gt; Request
+</div>
+<p><strong>Scheduling.</strong>
+- <strong>SCAN / LOOK per elevator:</strong> keep moving in the current direction serving stops, and reverse only when no stops remain ahead. Like a lift that does not turn around halfway up for someone below. Implement with two heaps: up-stops as a min-heap, down-stops as a max-heap.
+- <strong>Dispatch</strong> a hall call to the elevator with the lowest cost: an idle elevator's distance, or the distance if it is already moving toward the call in the same direction, or otherwise the distance to its turnaround point plus the distance back.</p>
+<pre><code class="language-python">def cost(e, req):
+    if e.state == &quot;IDLE&quot;:
+        return abs(e.floor - req.floor)
+    moving_up = e.state == &quot;MOVING_UP&quot;
+    if moving_up and req.direction == &quot;UP&quot; and req.floor &gt;= e.floor:
+        return req.floor - e.floor
+    if not moving_up and req.direction == &quot;DOWN&quot; and req.floor &lt;= e.floor:
+        return e.floor - req.floor
+    turn = e.highest_stop() if moving_up else e.lowest_stop()
+    return abs(turn - e.floor) + abs(turn - req.floor)
+</code></pre>
+<p>(<code>highest_stop</code> and <code>lowest_stop</code> are small helpers on <code>Elevator</code>.)</p>
+<p><strong>Worked example.</strong> Lift 1 is idle at floor 2. Lift 2 is at floor 5 moving up to 9. A hall call comes at floor 7 going up. Cost for lift 1 = |2 - 7| = 5. Cost for lift 2 = 7 - 5 = 2, because it is already heading that way. Assign lift 2.</p>
+<p><strong>Concurrency:</strong> a thread-safe request queue feeds the dispatcher. Each elevator runs in its own thread or goroutine with a lock on its stop set. In Go: a channel per elevator for assigned requests, and a <code>select</code> loop with a ticker for movement.</p>
+<p><strong>Extensions:</strong> maintenance mode, VIP or fire-service override, energy-saving parking of idle lifts, and destination dispatch (passengers enter their floor in the hall).</p>
 <hr>
 <h2 id="12-movie-ticket-booking-bookmyshow-the-concurrency-part">12. Movie ticket booking (BookMyShow): the concurrency part</h2>
+<p><strong>In plain English.</strong> Many people look at the same seat map at once. The hard part is making sure two users cannot both buy seat F7. The standard answer is a short temporary hold while the user pays, then a confirm that only succeeds if the hold is still theirs.</p>
 <p><strong>Hard part:</strong> two users selecting the same seat.</p>
+<div class="mermaid">sequenceDiagram
+    participant U1 as User1
+    participant U2 as User2
+    participant S as BookingService
+    participant DB as SeatsDB
+    U1-&gt;&gt;S: hold F7
+    S-&gt;&gt;DB: UPDATE seat F7 to HELD if FREE or expired
+    DB--&gt;&gt;S: 1 row updated
+    S--&gt;&gt;U1: held for 10 min
+    U2-&gt;&gt;S: hold F7
+    S-&gt;&gt;DB: same conditional UPDATE
+    DB--&gt;&gt;S: 0 rows updated
+    S--&gt;&gt;U2: seat taken
+    U1-&gt;&gt;S: confirm with payment idempotency key
+    S-&gt;&gt;DB: HELD by User1 and not expired, set BOOKED
+</div>
+<p><em>What to notice:</em> the database's conditional update is the referee. Whoever's update touches the row wins, and the other sees 0 rows.</p>
 <ul>
 <li><strong>Temporary hold:</strong> <code>hold(show_id, seats, user)</code> sets the seat status to HELD with <code>hold_expires_at = now + 10 min</code>, atomically:</li>
-<li>DB: <code>UPDATE seats SET status='HELD', user=?, expires=? WHERE show_id=? AND seat_id IN (...) AND (status='FREE' OR expires &lt; now)</code>, and check that the affected row count equals the seat count, otherwise roll back.</li>
-<li>Or optimistic versions per seat, or Redis <code>SET seat:{show}:{id} user NX PX 600000</code> per seat (then all-or-nothing with a Lua script).</li>
-<li><strong>Confirm</strong> after payment: HELD by this user and not expired → BOOKED. Payment uses an idempotency key.</li>
-<li><strong>Expiry:</strong> lazy (the condition in the UPDATE) plus a sweeper.</li>
-<li><strong>Entities:</strong> Movie, Theater, Screen, Show, Seat, Booking, Payment. Pricing strategy per seat class.</li>
+<li>Database: <code>UPDATE seats SET status='HELD', user=?, expires=? WHERE show_id=? AND seat_id IN (...) AND (status='FREE' OR expires &lt; now)</code>, then check that the affected row count equals the seat count. Otherwise roll back, so you never hold half a group booking.</li>
+<li>Or optimistic versions per seat, or Redis <code>SET seat:{show}:{id} user NX PX 600000</code> per seat (NX means only if not exists, PX 600000 is a 10-minute expiry), made all-or-nothing with a Lua script.</li>
+<li><strong>Confirm</strong> after payment: if HELD by this user and not expired, set BOOKED. Payment uses an idempotency key so a retried payment does not charge twice.</li>
+<li><strong>Expiry:</strong> lazy (the <code>expires &lt; now</code> condition in the UPDATE) plus a sweeper that frees stale holds.</li>
+<li><strong>Entities:</strong> Movie, Theater, Screen, Show, Seat, Booking, Payment. A pricing strategy per seat class.</li>
 </ul>
-<p>This is the same <strong>optimistic row locking</strong> idea I used at Uber FRM so concurrent reviewers never overwrite each other.</p>
+<p><strong>Worked example.</strong> A user holds seats F7 and F8. The UPDATE affects only 1 row because F8 was just taken. 1 is not equal to 2, so the transaction rolls back and F7 is released too. The user is asked to pick again.</p>
+<p><strong>Project tie-in.</strong> This is the same <strong>optimistic row locking</strong> idea I used at Uber FRM (via EPAM) so concurrent reviewers never overwrite each other: the update includes the expected version, and zero rows updated means someone else got there first.</p>
+<p>More on how this came up in the real loop: <a href="08b_backend_python_dsa.html">08b backend, Python and DSA</a>.</p>
 <hr>
 <h2 id="13-splitwise-expense-sharing">13. Splitwise (expense sharing)</h2>
+<p><strong>In plain English.</strong> Friends share expenses. The app records who paid what, splits each expense among people, keeps running balances, and suggests a small number of payments to settle up.</p>
+<p><strong>Classes in plain words.</strong>
+- <code>User</code>, <code>Group</code>.
+- <code>Expense</code>: payer, amount, participants, and a split strategy.
+- <code>SplitStrategy</code> (a <strong>Strategy</strong>): EQUAL, EXACT or PERCENT. Each validates its inputs (percentages must add to 100, exact amounts must add to the total).
+- <code>BalanceSheet</code>: <code>balances[a][b]</code> = how much a owes b.</p>
+<div class="mermaid">classDiagram
+    class Expense {
+        +payer User
+        +amount_cents int
+        +participants list
+        +split SplitStrategy
+    }
+    class SplitStrategy {
+        +shares(amount_cents, participants) dict
+    }
+    class EqualSplit
+    class ExactSplit
+    class PercentSplit
+    class BalanceSheet {
+        -balances dict
+        +apply(expense)
+        +simplify() list
+    }
+    Expense --&gt; SplitStrategy
+    SplitStrategy &lt;|.. EqualSplit
+    SplitStrategy &lt;|.. ExactSplit
+    SplitStrategy &lt;|.. PercentSplit
+    BalanceSheet --&gt; Expense
+</div>
 <ul>
-<li>Entities: User, Group, Expense (payer, amount, split strategy: EQUAL, EXACT, PERCENT), and a Balance sheet <code>balances[a][b]</code>.</li>
-<li>The split strategy is a <strong>Strategy</strong> that validates the sums (percentages add to 100).</li>
-<li><strong>Simplify debts:</strong> compute each user's net balance. Then greedily match the largest creditor with the largest debtor (two heaps). That gives at most n-1 transactions. (The true minimum is NP-hard in general, so say greedy.)</li>
-<li>Use integer cents, never floats, for money. Distribute rounding remainders deterministically.</li>
+<li><strong>Simplify debts:</strong> compute each user's net balance (what they are owed minus what they owe). Then greedily match the largest creditor with the largest debtor, using two heaps. That gives at most n - 1 transactions. The true minimum is NP-hard in general, so say "greedy".</li>
+<li><strong>Money:</strong> use integer cents, never floats. Distribute rounding remainders deterministically (for example, the first k participants get one extra cent).</li>
 </ul>
+<pre><code class="language-python">def equal_shares(amount_cents, people):
+    base, rem = divmod(amount_cents, len(people))
+    return {p: base + (1 if i &lt; rem else 0) for i, p in enumerate(people)}
+# equal_shares(1000, [&quot;A&quot;,&quot;B&quot;,&quot;C&quot;]) -&gt; {&quot;A&quot;: 334, &quot;B&quot;: 333, &quot;C&quot;: 333}
+</code></pre>
+<p><strong>Worked example (simplify).</strong> Net balances: A +50, B +30, C -60, D -20.
+1. Largest creditor A (50), largest debtor C (60). C pays A 50. Now A 0, C -10.
+2. Creditor B (30), largest debtor D (20). D pays B 20. Now B +10.
+3. C pays B 10. Everyone is at 0.</p>
+<p>Three payments for four people, which matches the n - 1 bound.</p>
 <hr>
 <h2 id="14-in-memory-file-system">14. In-memory file system</h2>
+<p><strong>In plain English.</strong> Model folders and files in memory, with commands like <code>mkdir -p</code>, <code>ls</code>, and reading or appending file content. Folders contain folders and files, and both can answer "how big are you?", which is the <strong>Composite</strong> pattern.</p>
+<p><strong>Classes in plain words.</strong>
+- <code>Node</code> is the shared base with a name and <code>size()</code>.
+- <code>Directory</code> holds a map of child name to node. Its size is the sum of its children.
+- <code>File</code> holds content. Its size is the content length.
+- <code>FileSystem</code> parses paths by <code>/</code> and walks from the root.</p>
+<div class="mermaid">classDiagram
+    class Node {
+        +name str
+        +size() int
+    }
+    class Directory {
+        -children dict
+        +size() int
+    }
+    class File {
+        -content str
+        +size() int
+    }
+    class FileSystem {
+        -root Directory
+        +mkdir(path)
+        +ls(path) list
+        +add_content(path, text)
+        +read(path) str
+    }
+    Node &lt;|-- Directory
+    Node &lt;|-- File
+    Directory "1" o-- "many" Node
+    FileSystem --&gt; Directory
+</div>
+<pre><code class="language-python">class FileSystem:
+    def __init__(self):
+        self.root = {&quot;dirs&quot;: {}, &quot;files&quot;: {}}
+    def _walk(self, path, create=False):
+        node = self.root
+        for part in [p for p in path.split(&quot;/&quot;) if p]:
+            if part not in node[&quot;dirs&quot;]:
+                if not create:
+                    raise FileNotFoundError(path)
+                node[&quot;dirs&quot;][part] = {&quot;dirs&quot;: {}, &quot;files&quot;: {}}
+            node = node[&quot;dirs&quot;][part]
+        return node
+    def mkdir(self, path):                       # mkdir -p
+        self._walk(path, create=True)
+    def ls(self, path):
+        return sorted({**self._walk(path)[&quot;dirs&quot;], **self._walk(path)[&quot;files&quot;]})
+# fs.mkdir(&quot;/a/b/c&quot;); fs.ls(&quot;/a&quot;) -&gt; [&quot;b&quot;]
+</code></pre>
+<p>(A compact dictionary version for a whiteboard. Real <code>ls</code> on a file path returns just the file name, and <code>add_content</code> / <code>read</code> would split off the last path segment as the file name.)</p>
 <ul>
-<li>A <code>Node</code> base with <code>Directory</code> (children map) and <code>File</code> (content) (<strong>Composite</strong>).</li>
-<li><code>mkdir -p</code>, <code>ls</code> (sorted), <code>addContentToFile</code>, <code>readContentFromFile</code>: path parsing by <code>/</code>, walking from the root.</li>
-<li>Extensions: permissions, size (composite <code>size()</code>), search by name (DFS), and a trie-shaped path index.</li>
+<li>Commands: <code>mkdir -p</code>, <code>ls</code> (sorted), <code>addContentToFile</code>, <code>readContentFromFile</code>, with path parsing by <code>/</code> and walking from the root.</li>
+<li><strong>Extensions:</strong> permissions, size (composite <code>size()</code>), search by name (DFS, depth-first search), and a trie-shaped path index for fast prefix lookups.</li>
+<li><strong>Concurrency:</strong> a read-write lock per directory, or one global lock for simplicity. Renames across directories need both locks taken in a fixed order to avoid deadlock.</li>
 </ul>
 <hr>
 <h2 id="15-task-scheduler-delayed-job-executor-lld-version">15. Task scheduler / delayed job executor (LLD version)</h2>
+<p><strong>In plain English.</strong> Run tasks after a delay or on a repeating schedule, using a pool of worker threads. Think of a kitchen timer rack: timers are sorted by when they ring, one person watches the soonest timer, and when it rings, they hand the dish to whichever cook is free.</p>
 <p><strong>Requirements:</strong> <code>schedule(task, delay)</code>, <code>schedule_at_fixed_rate(task, period)</code>, cancel, and a worker pool.</p>
-<p><strong>Design:</strong> a min-heap of <code>(run_at, seq, task)</code> guarded by a <code>Condition</code>. A scheduler thread waits until the earliest <code>run_at</code> (<code>cond.wait(timeout=run_at - now)</code>), wakes early when a sooner task is added, and hands due tasks to a worker pool (a <code>ThreadPoolExecutor</code>). Recurring tasks re-push themselves. Cancel by marking a flag (lazy deletion).</p>
+<p><strong>Design in plain words.</strong>
+- A <strong>min-heap</strong> of <code>(run_at, seq, job)</code> keeps the soonest job on top. <code>seq</code> breaks ties so jobs with the same time keep insertion order and dicts are never compared.
+- A <strong>Condition</strong> variable guards the heap. The scheduler thread sleeps until the earliest <code>run_at</code> with <code>cond.wait(timeout=run_at - now)</code>. When a sooner job is added, <code>notify</code> wakes it early so it can re-check.
+- Due jobs are handed to a <code>ThreadPoolExecutor</code>, so a slow task never delays the scheduler loop.
+- Recurring jobs re-push themselves with <code>run_at + period</code>.
+- Cancel marks a flag. The job is skipped when it reaches the top (lazy deletion), which avoids searching the heap.</p>
+<div class="mermaid">flowchart LR
+    C["schedule or cancel"] --&gt; H["Min-heap by run_at, guarded by Condition"]
+    H --&gt; L["Scheduler loop: wait until earliest run_at"]
+    L --&gt;|"due and not cancelled"| P["ThreadPoolExecutor workers"]
+    L --&gt;|"recurring"| H
+</div>
 <pre><code class="language-python">import heapq, itertools, threading, time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -731,15 +1275,26 @@ class Scheduler:
             if not job[&quot;cancelled&quot;]:
                 self.pool.submit(job[&quot;fn&quot;])
 </code></pre>
+<p><strong>Worked example.</strong> At t = 0, <code>schedule(report, 5)</code> is pushed and the loop sleeps for 5 seconds. At t = 1, <code>schedule(ping, 1)</code> is pushed with <code>run_at = 2</code> and <code>notify</code> wakes the loop. The heap top is now <code>ping</code>, so the loop sleeps 1 second, runs <code>ping</code> at t = 2, then sleeps until t = 5 for <code>report</code>.</p>
+<p><strong>Talking points.</strong>
+- Using <code>run_at + period</code> (not <code>now + period</code>) keeps a fixed rate with no drift.
+- If tasks run longer than their period, they overlap in the pool. Say whether that is allowed, or skip a run if the previous one is still going.
+- Persistence and distribution turn this into the job scheduler in <a href="04_system_design_questions.html">SD Q6</a>.</p>
+<p><strong>Project tie-in.</strong> The AssortSmart orchestration registry is the batch, durable cousin of this: bounded parallel batches, hard timeouts, checkpoints and <code>--resume</code>, instead of an in-memory heap.</p>
 <hr>
 <h2 id="lld-answer-checklist-say-it-at-the-end">LLD answer checklist (say it at the end)</h2>
+<p><strong>In plain English.</strong> Close every LLD answer by walking through these five points in about a minute. It shows you think about change, threads, failure, testing and scale without being asked.</p>
 <ol>
 <li>Which parts vary, and which interface hides them.</li>
-<li>Which objects are shared across threads, and how they're protected.</li>
+<li>Which objects are shared across threads, and how they are protected.</li>
 <li>How it fails (invalid input, full capacity, timeouts) and what the caller sees.</li>
-<li>How I'd test it (fakes via DI, a concurrency stress test, property tests).</li>
+<li>How I would test it (fakes via DI, a concurrency stress test, property tests).</li>
 <li>How it would become distributed (sharding, persistence, replication), which connects to system design.</li>
-</ol></main>
+</ol>
+<p><strong>Speakable example (for the LRU cache).</strong></p>
+<blockquote>
+<p>"The part that varies is the eviction policy, so in a fuller version I would put it behind an EvictionPolicy interface. The cache is shared, so one mutex protects both the map and the list, and I would shard by key hash if contention showed up. A miss returns None rather than raising. I would test with a fake clock for TTLs, a stress test with many threads checking that size never exceeds capacity, and a property test against a reference OrderedDict. To distribute it, I would put nodes on a consistent hash ring with a replica each."</p>
+</blockquote></main>
 </div>
 
 <script type="module">

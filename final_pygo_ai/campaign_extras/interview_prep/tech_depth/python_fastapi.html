@@ -40,32 +40,311 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/tech_depth/python_fastapi.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#python-fastapi-pydantic-asyncio">Python + FastAPI + Pydantic + asyncio</a>
-<a class="lvl2" href="#what">What</a>
-<a class="lvl2" href="#how-used-here">How used here</a>
-<a class="lvl2" href="#tradeoffs">Tradeoffs</a>
-<a class="lvl2" href="#failure-modes">Failure modes</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a></nav>
-<main><h1 id="python-fastapi-pydantic-asyncio">Python + FastAPI + Pydantic + asyncio</h1>
-<h2 id="what">What</h2>
-<p>Python is the primary language across IA agent service Uber FRM Menu Masters. FastAPI for HTTP APIs. Pydantic for request/response validation. asyncio/Celery for concurrent and background work.</p>
-<h2 id="how-used-here">How used here</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#python-fastapi-pydantic-asyncio-celery-and-django">Python, FastAPI, Pydantic, asyncio, Celery (and Django)</a>
+<a class="lvl2" href="#1-python-for-backends-in-plain-english">1. Python for backends, in plain English</a>
+<a class="lvl2" href="#2-fastapi-and-pydantic">2. FastAPI and Pydantic</a>
+<a class="lvl2" href="#3-where-i-used-python-and-fastapi">3. Where I used Python and FastAPI</a>
+<a class="lvl2" href="#4-design-decisions">4. Design decisions</a>
+<a class="lvl2" href="#5-failure-modes">5. Failure modes</a>
+<a class="lvl2" href="#6-interview-questions-with-speakable-answers">6. Interview questions with speakable answers</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="python-fastapi-pydantic-asyncio-celery-and-django">Python, FastAPI, Pydantic, asyncio, Celery (and Django)</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li>IA: FastAPI hosts LangGraph/MCP agent chat endpoints.</li>
-<li>FRM: FastAPI handlers → services → repositories → SQLAlchemy MySQL.</li>
-<li>Masters: FastAPI microservices strangler replacing PHP.</li>
-<li>Menu: Python Selenium + RAG pipeline services on GCP.</li>
+<li><strong>What it covers:</strong> Python as a backend language (the GIL, async versus threads), how FastAPI and Pydantic work, Celery for background jobs, and Django briefly. Then where I used each: the Impact Analytics agent plane, the 36 Uber FRM endpoints, the Masters India PHP-to-FastAPI strangler migration, Uber Menu's Python services, and GeeksforGeeks on Django.</li>
+<li><strong>When to read it:</strong> before any Python backend round, and before the FRM and Masters deep dives.</li>
+<li><strong>What to memorise:</strong> at Masters, p95 went from 1.2 seconds to 300 milliseconds and throughput from 700 to 4,000 requests per minute. The causes were async I/O, pooling, query fixes and Redis, not "FastAPI is fast". At FRM: 36 endpoints, handler, service and repository layers, <code>asyncio.to_thread</code> for sync SQLAlchemy, and 100% module statement coverage. At IA, Python is the agent plane while the platform is Go.</li>
 </ul>
-<h2 id="tradeoffs">Tradeoffs</h2>
-<p>FastAPI speed of delivery and typing vs Go raw throughput. Chose FastAPI for agent/ORM-heavy domains Go for shared compute doing layer.</p>
-<h2 id="failure-modes">Failure modes</h2>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. STATED means printed on the resume from the project source. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. Verbal means true but off the resume.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
 <ul>
-<li>Blocking calls inside async routes</li>
-<li>Over-fat handlers without service layer</li>
-<li>Pydantic model drift vs DB schema</li>
+<li><strong>IA platform APIs are Go/Gin.</strong> Python at IA is the agent plane: the Keep/Drop batch pipeline and Ask Iris (FastAPI WebSocket plus LangGraph). Older prep said "FastAPI hosts LangGraph/MCP agent chat endpoints". Drop "MCP", which is skills-level.</li>
+<li><strong>FastAPI did not make Masters faster by itself.</strong> The latency win came from async I/O on IRP calls, connection pooling, query and index fixes, and Redis for reads.</li>
+<li><strong>Mentored 2</strong> (Masters) and <strong>led 3</strong> (FRM) are different teams. Do not merge them.</li>
+<li><strong>36 FastAPI endpoints</strong> on this track. About 31 are functional routes in the scoping service plus the collaboration-service APIs from the design doc. Do not claim you built the collaboration or Slack notification service.</li>
+<li>Snippets are teaching sketches, not company code.</li>
 </ul>
-<h2 id="likely-questions">Likely questions</h2>
-<p>Why FastAPI vs Flask/Django REST? How do you structure layers? How do you test handlers? When would you move a path to Go?</p></main>
+</div>
+<hr>
+<h2 id="1-python-for-backends-in-plain-english">1. Python for backends, in plain English</h2>
+<p>Python is a high-level, dynamically typed language with a huge ecosystem. For backends its strengths are speed of development, readable code, and the best libraries for data and AI work. Its weakness is raw CPU speed and the GIL.</p>
+<h3 id="11-the-gil">1.1 The GIL</h3>
+<p>The <strong>GIL</strong> (Global Interpreter Lock) in CPython means only one thread runs Python bytecode at a time inside one process. Think of a kitchen with one knife: several cooks can be in the kitchen, but only one can chop at a time.</p>
+<ul>
+<li>For <strong>I/O-bound</strong> work (waiting on databases, HTTP calls, LLM APIs), the GIL is released while waiting, so threads and async work well.</li>
+<li>For <strong>CPU-bound</strong> work (heavy number crunching in pure Python), threads don't help. You use multiple processes, native libraries (NumPy) or another language.</li>
+</ul>
+<p>That is part of why IA's high-RPS platform is Go while the LLM-heavy agent plane is Python. The agent plane mostly waits on model APIs.</p>
+<h3 id="12-asyncio">1.2 asyncio</h3>
+<p><strong>asyncio</strong> is Python's built-in framework for cooperative concurrency. An <code>async def</code> function can <code>await</code> a slow operation, and while it waits the <strong>event loop</strong> runs other tasks. One thread can juggle thousands of waiting network calls. Analogy: a waiter who takes an order, hands it to the kitchen, and serves other tables instead of standing at the kitchen door.</p>
+<p>The main rule: <strong>never block the event loop.</strong> A synchronous database call or <code>time.sleep</code> inside an <code>async def</code> freezes every other request on that worker. Offload blocking work with <code>await asyncio.to_thread(fn)</code> or use an async driver.</p>
+<pre><code class="language-python"># Teaching sketch.
+async def submit_batch(batch):
+    results = await asyncio.gather(*(irp_client.register(inv) for inv in batch))  # concurrent I/O
+    await asyncio.to_thread(repo.save_results, results)   # sync DB call off the event loop
+    return results
+</code></pre>
+<h3 id="13-typing">1.3 Typing</h3>
+<p>Python type hints (<code>def f(x: int) -&gt; str</code>) are not enforced at runtime by Python itself, but tools such as mypy check them, and frameworks such as Pydantic and FastAPI <strong>use them at runtime</strong> to validate data.</p>
+<hr>
+<h2 id="2-fastapi-and-pydantic">2. FastAPI and Pydantic</h2>
+<h3 id="21-what-they-are">2.1 What they are</h3>
+<p><strong>FastAPI</strong> is a modern Python web framework built on <strong>Starlette</strong> (the async web toolkit) and <strong>Pydantic</strong> (data validation). It runs on an <strong>ASGI</strong> server such as Uvicorn. <strong>ASGI</strong> (Asynchronous Server Gateway Interface) is the async successor to WSGI and supports async handlers and WebSockets.</p>
+<p><strong>Pydantic</strong> turns type-annotated classes into validators. Incoming JSON is parsed into a typed object or rejected with a clear 422 error.</p>
+<h3 id="22-the-ideas-interviewers-probe">2.2 The ideas interviewers probe</h3>
+<pre><code class="language-python"># Teaching sketch of a FastAPI route.
+class ThresholdUpdate(BaseModel):
+    materiality_usd: Decimal = Field(gt=0)
+    fiscal_quarter: Literal[&quot;Q1&quot;, &quot;Q2&quot;, &quot;Q3&quot;, &quot;Q4&quot;]
+
+def get_auth_email(request: Request) -&gt; str:
+    email = request.headers.get(&quot;x-auth-params-email&quot;)
+    if not email:
+        raise HTTPException(status_code=401)
+    return email
+
+@router.patch(&quot;/thresholds/{uuid}&quot;, response_model=ThresholdOut)
+async def update_threshold(uuid: str, body: ThresholdUpdate,
+                           email: str = Depends(get_auth_email),
+                           svc: ThresholdService = Depends(get_service)):
+    return await svc.update(uuid, body, updated_by=email)
+</code></pre>
+<ul>
+<li><strong>Validation from types.</strong> <code>ThresholdUpdate</code> rejects a negative materiality or an unknown quarter before your code runs.</li>
+<li><strong>Dependency injection with <code>Depends</code>.</strong> Auth, database sessions and services are injected per request, and tests can override them.</li>
+<li><strong>Automatic OpenAPI docs.</strong> Every route's schema is published at <code>/docs</code>. That helped at Masters, where enterprise clients integrate against the API.</li>
+<li><strong><code>async def</code> versus <code>def</code>.</strong> FastAPI runs <code>async def</code> handlers on the event loop and plain <code>def</code> handlers in a thread pool. Mixing them wrongly (sync I/O inside <code>async def</code>) is the most common performance bug.</li>
+<li><strong>WebSockets</strong> are first-class, which is how Ask Iris is served.</li>
+</ul>
+<h3 id="23-layering-i-enforced">2.3 Layering I enforced</h3>
+<div class="mermaid">flowchart LR
+    H["Handler: HTTP, auth, validation, error mapping"] --&gt; S["Service: business logic, tree building"]
+    S --&gt; R["Repository: all SQL and session lifecycle"]
+    R --&gt; M["Models: SQLAlchemy 2.0 typed classes"]
+    M --&gt; DB["MySQL"]
+</div>
+<p><em>What to notice: dependencies point one way, so each layer can be unit tested with the layer below mocked.</em></p>
+<ul>
+<li><strong>Handlers</strong> stay thin: HTTP, auth header, parameter validation, mapping errors to status codes.</li>
+<li><strong>Services</strong> own orchestration, such as building the L1 to L4 tree and summing children into parents.</li>
+<li><strong>Repositories</strong> own every session: open, <code>commit</code> on success, <code>rollback</code> on any exception, <code>close</code> in <code>finally</code>.</li>
+<li><strong>Models</strong> hold column definitions.</li>
+</ul>
+<hr>
+<h2 id="3-where-i-used-python-and-fastapi">3. Where I used Python and FastAPI</h2>
+<h3 id="31-uber-frm-36-fastapi-endpoints-uber-via-epam">3.1 Uber FRM: 36 FastAPI endpoints (Uber via EPAM)</h3>
+<blockquote>
+<p>Owned the Financial Risk Management scoping backend, reducing quarterly reconciliation time by <strong>70%</strong> (from <strong>14 days to 3 days</strong>) against a <strong>$340M</strong> materiality threshold. Engineered the Sheets-to-MySQL migration across <strong>19M</strong> raw GL rows, shipping <strong>36 FastAPI</strong> endpoints to automate custom financial math and a nested 4-level FSLI (L1-L4) hierarchy with dynamic quarter-annualization.</p>
+</blockquote>
+<p>How it was built:</p>
+<ul>
+<li><strong>Layered as above.</strong> Work was sliced by layer so 3 engineers could build one feature without colliding.</li>
+<li><strong>Auth:</strong> every write path reads the <code>x-auth-params-email</code> header injected by Uber's gateway, returns 401 if missing, and records <code>created_by</code> / <code>updated_by</code>. Authorization was upstream.</li>
+<li><strong>Sync ORM inside async handlers:</strong> SQLAlchemy calls were synchronous, so handlers used <code>await asyncio.to_thread(...)</code>.</li>
+<li><strong>Quarter-annualization:</strong> scaling a quarter's figure to a yearly view, so thresholds compare like with like.</li>
+<li><strong>Testing:</strong> FastAPI's <code>TestClient</code> with <code>AsyncMock</code> and <code>patch</code> to inject fake services. Tests covered status codes, response shapes, the 401-on-missing-header path and error mapping, with no database. Bazel <code>uber_py_test</code> targets per layer gated every merge. The suite grew past 1,100 tests (verbal), and the migrated module reached 100% statement coverage.</li>
+<li><strong>Reconciliation v1 to v2:</strong> Sheets-backed v1 APIs ran in parallel with MySQL-backed v2 until they matched. The change set was 18 files and +1,268 lines (verbal).</li>
+</ul>
+<p>Numbers: 36 endpoints (MEASURED: about 31 functional routes plus the collaboration-service APIs from the design doc). 70%, from 14 days to 3 days (STATED). See <a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a> for the schema and the column-aliasing bug.</p>
+<h3 id="32-masters-india-php-monolith-to-fastapi-microservices">3.2 Masters India: PHP monolith to FastAPI microservices</h3>
+<blockquote>
+<p>Reduced p95 API latency by <strong>75%</strong> (from <strong>1.2s to 300ms</strong>) across <strong>1,500+</strong> enterprise clients by spearheading the migration of a legacy PHP monolith to a <strong>FastAPI</strong> microservices architecture. Mentored two engineers through the transition, optimizing backend design to drive overall system throughput from <strong>700 to 4,000 requests per minute</strong>.</p>
+</blockquote>
+<p><strong>In plain words:</strong> the old PHP (Laravel) monolith was synchronous. One slow call to the government IRP held a worker for the whole round trip, deployments were all-or-nothing, and scaling meant scaling everything. Filing-deadline spikes caused pileups and timeouts.</p>
+<p><strong>The playbook (strangler pattern).</strong> The <strong>strangler pattern</strong> replaces a legacy system piece by piece, routing one endpoint at a time to the new service, like a vine that slowly grows around a tree.</p>
+<ol>
+<li>New FastAPI services went behind the existing gateway one domain at a time: auth, e-invoice submit, bulk import, reconciliation.</li>
+<li><strong>Canary per route:</strong> Nginx sent a small percentage of one endpoint's traffic to the new service, we watched error rate and latency, then ramped to 100%. Rollback was a config change.</li>
+<li><strong>Shared database first, split later,</strong> so there were never two sources of truth during cutover. No dual writes.</li>
+<li><strong>Contract tests</strong> recorded monolith responses for top endpoints and asserted the FastAPI replacements matched field for field.</li>
+<li><strong>Async by default:</strong> IRP calls, PDF generation, webhooks and email went through workers with retries and idempotency keys.</li>
+</ol>
+<div class="mermaid">flowchart LR
+    C["Enterprise clients"] --&gt; GW["Gateway with per-route canary"]
+    GW --&gt;|"not yet migrated"| PHP["Legacy PHP monolith"]
+    GW --&gt;|"migrated routes"| FA["FastAPI services"]
+    FA --&gt; RD["Redis cache"]
+    FA --&gt; PG["PostgreSQL"]
+    FA --&gt; Q["Kafka and Celery for async work"]
+    PHP --&gt; PG
+</div>
+<p><em>What to notice: both old and new code read the same database during cutover, so there is only one source of truth.</em></p>
+<p><strong>Where the latency came from:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Cause</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Async I/O for IRP and internal calls</td>
+<td>Workers no longer blocked on the portal. This is the main p95 tail win</td>
+</tr>
+<tr>
+<td>Connection pooling per service</td>
+<td>No connect storm per request</td>
+</tr>
+<tr>
+<td>Query and index fixes, N+1 removal, pagination</td>
+<td>Faster database time</td>
+</tr>
+<tr>
+<td>Redis cache-aside for hot reads</td>
+<td>Helped p50 and read-heavy routes. Read load down 30%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>A failure story from the migration:</strong> an early canary showed timeout mismatches. PHP allowed 60 seconds and the new services used 10 seconds, but some IRP calls legitimately took longer. We moved those calls fully async and returned <strong>202 Accepted</strong> with a status endpoint for polling.</p>
+<p><strong>Mentoring two engineers:</strong> each owned a service extraction. I set the conventions (router, service, repository, Pydantic at the boundary, retry and idempotency helpers), reviewed their early PRs closely and paired on the first canary cutover.</p>
+<p><strong>Numbers:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Derivation</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>75% p95 cut</td>
+<td>(1.2 - 0.3) / 1.2 = 75%</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>From 1.2 seconds to 300 milliseconds</td>
+<td>p95, not average</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>1,500+ clients</td>
+<td>Older resumes said 2,500+. Use 1,500+</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>From 700 to 4,000 requests per minute</td>
+<td>About 12 to 67 per second, about 5.7 times more</td>
+<td>HISTORICAL, per second ESTIMATED</td>
+</tr>
+</tbody>
+</table>
+<h3 id="33-celery-at-masters-india">3.3 Celery at Masters India</h3>
+<p><strong>Celery</strong> is a Python distributed task queue. Your code enqueues a task onto a <strong>broker</strong> (such as Redis or RabbitMQ), and worker processes pick it up and run it, with retries, rate limits and scheduling. Think of a ticket rail in a kitchen: the waiter clips tickets, cooks take them in turn.</p>
+<p>At Masters, Celery ran validation chains for bulk imports (schema, GSTIN checks, duplicate checks with idempotency keys), PDF generation, webhooks and email, with retries and task rate limits. Kafka carried events between pipeline stages. See <a href="kafka_streaming.html">kafka_streaming.md</a>.</p>
+<pre><code class="language-python"># Teaching sketch.
+@app.task(bind=True, max_retries=5, rate_limit=&quot;50/s&quot;)   # illustrative values
+def register_invoice(self, idem_key, payload):
+    if already_done(idem_key):
+        return
+    try:
+        irp.register(payload)
+    except IRPTimeout as exc:
+        raise self.retry(exc=exc, countdown=2 ** self.request.retries)
+</code></pre>
+<p><strong>Celery or Kafka?</strong> Celery is for "run this job, retry it, rate-limit it". Kafka is for "keep this ordered stream, let several consumers read it, replay it later". We used both, for those different jobs.</p>
+<h3 id="34-impact-analytics-the-python-agent-plane">3.4 Impact Analytics: the Python agent plane</h3>
+<ul>
+<li><strong>Keep/Drop, Missed Opportunities and Top Style</strong> run as a Python batch pipeline: deterministic KPI math, structured LLM lens calls, blending, checkpoints (<code>det.json</code>, <code>agent_progress.json</code>, <code>--resume</code>), and JSON telemetry. See <a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a>.</li>
+<li><strong>Ask Iris</strong> is a FastAPI WebSocket endpoint. It verifies the JWT on the handshake, freezes <code>plan_scope</code>, and runs a LangGraph supervisor with a 3-attempt evaluator.</li>
+<li><strong>Why Python here:</strong> the LLM ecosystem (LangGraph, provider SDKs, Pydantic schemas for structured output) is strongest in Python, and the work is I/O-bound on model APIs.</li>
+</ul>
+<h3 id="35-uber-menu-python-services">3.5 Uber Menu: Python services</h3>
+<p>The Selenium scrapers and the LangChain RAG extraction with Gemini 2.5 Pro were Python services on GCP. See <a href="selenium_scraping.html">selenium_scraping.md</a>.</p>
+<h3 id="36-geeksforgeeks-django">3.6 GeeksforGeeks: Django</h3>
+<blockquote>
+<p>Stabilized the doubt-support platform to handle <strong>10K+</strong> daily queries and <strong>10x</strong> traffic spikes during live coding contests by migrating the backend to <strong>Django</strong>. Engineered high-throughput REST APIs for voting, pinning, and locking threads utilizing MySQL, MongoDB, Redis, and Elasticsearch, driving a <strong>20%</strong> lift in premium subscriptions.</p>
+</blockquote>
+<p><strong>Django</strong> is a "batteries included" Python web framework: ORM, admin, auth, forms and migrations out of the box. Django REST Framework (DRF) adds API tooling. We rebuilt the PHP doubt platform incrementally, page by page, behind the same URLs. Reliability came from ORM-managed transactions, request validation and separating reads from writes. Votes used a unique (user, content) constraint, so double-submitting is idempotent, with Redis counters for display.</p>
+<p>10K+ a day averages about 0.1 per second, so the engineering challenge was the 10x contest spikes, not the average.</p>
+<p><strong>Why Django there and FastAPI at Masters?</strong> In 2021 GFG was a CMS-style product that benefited from Django's admin, auth and ORM. Masters needed async I/O for slow government APIs, which FastAPI handles natively.</p>
+<hr>
+<h2 id="4-design-decisions">4. Design decisions</h2>
+<h3 id="fastapi-as-the-service-framework-frm-and-masters">FastAPI as the service framework (FRM and Masters)</h3>
+<ul>
+<li><strong>Why:</strong> async-native for slow third parties, Pydantic validation at the boundary, automatic OpenAPI docs, a small footprint per service.</li>
+<li><strong>Alternatives:</strong></li>
+<li><em>Flask:</em> simple, but synchronous by default and validation is bolt-on.</li>
+<li><em>Django or DRF:</em> great batteries, heavier per service, and async support came later.</li>
+<li><em>Go:</em> better raw throughput and concurrency. I use it where that matters (the IA platform), and Python where libraries and delivery speed matter more.</li>
+<li><strong>Trade-off:</strong> you must be disciplined about blocking calls in async code.</li>
+<li><strong>When I'd move a path to Go:</strong> when a route is hot, CPU-heavy or latency-critical at high RPS, and its logic is stable and deterministic.</li>
+</ul>
+<hr>
+<h2 id="5-failure-modes">5. Failure modes</h2>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>Symptom</th>
+<th>Guard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blocking call inside <code>async def</code></td>
+<td>Latency spikes for every request on the worker</td>
+<td>Async drivers or <code>asyncio.to_thread</code>. Lint for it in review</td>
+</tr>
+<tr>
+<td>Fat handlers</td>
+<td>Business logic untestable without HTTP</td>
+<td>Handler, service and repository layering</td>
+</tr>
+<tr>
+<td>Pydantic models drifting from the DB schema</td>
+<td>500s or silent field loss</td>
+<td>Response models, contract tests, migrations reviewed together</td>
+</tr>
+<tr>
+<td>Timeout mismatch in a migration</td>
+<td>Canary errors on slow third-party calls</td>
+<td>Make long calls async and return 202 with polling</td>
+</tr>
+<tr>
+<td>Connection leaks</td>
+<td>Pool exhaustion under load</td>
+<td>Repositories always <code>close()</code> in <code>finally</code>, pooled sessions</td>
+</tr>
+<tr>
+<td>Unbounded retries</td>
+<td>Retry storms against a fragile dependency</td>
+<td>Bounded retries with exponential backoff and jitter, DLQ</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="6-interview-questions-with-speakable-answers">6. Interview questions with speakable answers</h2>
+<p><strong>Q1. Why FastAPI over Flask or Django at Masters?</strong>
+We were calling a slow, flaky government portal on every invoice, so async I/O was the core need, and FastAPI is async-native. Pydantic gave strict validation at the boundary for compliance data, and the automatic OpenAPI docs helped enterprise clients integrate. Each microservice stayed small. Django would have brought batteries we didn't need per service.</p>
+<p><strong>Q2. What actually made Masters 75% faster at p95?</strong>
+Not the framework by itself. The tail came down because IRP calls stopped blocking workers, which is async I/O. Per-service connection pooling replaced per-request connects. We fixed queries with composite indexes, removed N+1 patterns and paginated lists. Redis cache-aside cut database read load by about 30%, which mostly helped the middle of the distribution. Together that took p95 from 1.2 seconds to 300 milliseconds.</p>
+<p><strong>Q3. How did you migrate a monolith without downtime?</strong>
+With the strangler pattern. New FastAPI services went behind the existing gateway one route at a time. Each route started as a canary with a small percentage of traffic, we watched errors and latency, then ramped up. Rollback was a config change. Both systems shared the database during cutover, so there were no dual writes, and contract tests pinned the old responses field by field.</p>
+<p><strong>Q4. How do you structure a FastAPI service?</strong>
+Thin handlers that only do HTTP, auth and error mapping. Services that own business logic. Repositories that own every SQL statement and the session lifecycle. Typed models underneath. Dependencies point one way, so I can test a handler with a mocked service and a service with a mocked repository, with no database. At FRM that is how three engineers worked on one feature in parallel.</p>
+<p><strong>Q5. What is the GIL and when does it matter?</strong>
+It's a lock in CPython that lets only one thread run Python bytecode at a time per process. For I/O-bound services it barely matters, because the lock is released while waiting on the network. For CPU-bound work you need processes, native libraries or another language. That's one reason our high-RPS platform at IA is Go, while the agent plane, which mostly waits on model APIs, is Python.</p>
+<p><strong>Q6. <code>async def</code> or <code>def</code> for a FastAPI route?</strong>
+Use <code>async def</code> when everything inside is non-blocking, for example async HTTP clients and async drivers. Use plain <code>def</code> when the code is synchronous, and FastAPI will run it in a thread pool. The bug to avoid is synchronous I/O inside <code>async def</code>, which freezes the event loop. At FRM the ORM was synchronous, so async handlers offloaded repository calls with <code>asyncio.to_thread</code>.</p>
+<p><strong>Q7. How did you test the FRM API?</strong>
+With FastAPI's <code>TestClient</code> plus <code>AsyncMock</code> and <code>patch</code>. Handlers accepted injected services, so tests swapped in fakes and asserted status codes, response shapes, the 401 when the auth header is missing, and error mapping, with no database. Bazel test targets per layer had to pass before merge, and every PR had to add or update tests. The migrated module reached 100% statement coverage.</p>
+<p><strong>Q8. Celery versus Kafka?</strong>
+Different tools. Celery is a task queue: run this job, retry it, rate-limit it, schedule it. Kafka is a durable ordered log that many consumers can read and replay. At Masters we used Celery for validation chains, PDFs and webhooks, and Kafka as the event bus between pipeline stages.</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a> for SQLAlchemy 2.0, schemas and caching</li>
+<li><a href="go_gin.html">go_gin.md</a> for when the platform is Go instead</li>
+<li><a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a> for the IA agent plane</li>
+<li><a href="kafka_streaming.html">kafka_streaming.md</a> for the Masters bus</li>
+<li><a href="../architecture/02_uber_frm.html">../architecture/02_uber_frm.md</a></li>
+<li><a href="../architecture/04_masters_gst.html">../architecture/04_masters_gst.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

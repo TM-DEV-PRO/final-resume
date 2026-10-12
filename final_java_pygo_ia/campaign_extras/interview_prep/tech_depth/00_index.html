@@ -40,68 +40,202 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/tech_depth/00_index.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#tech-depth-index">Tech Depth Index</a></nav>
-<main><h1 id="tech-depth-index">Tech Depth Index</h1>
-<p>One page per resume technology. Each file covers what / how used here / tradeoffs / failure modes / likely questions.</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#tech-depth-index">Tech depth index</a>
+<a class="lvl2" href="#where-each-technology-lives">Where each technology lives</a>
+<a class="lvl2" href="#the-pages">The pages</a>
+<a class="lvl2" href="#suggested-study-order">Suggested study order</a>
+<a class="lvl2" href="#elsewhere-in-the-repo">Elsewhere in the repo</a></nav>
+<main><h1 id="tech-depth-index">Tech depth index</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
+<ul>
+<li><strong>What it covers:</strong> the map of the tech-depth folder. There is one study page per technology group on my resume. Each page teaches the technology from scratch, shows exactly where I used it, explains the design choices, ties the numbers, and ends with interview questions and speakable answers.</li>
+<li><strong>When to read it:</strong> at the start of a study session, to pick the pages that match the job description. Read the "Where each technology lives" table before any round.</li>
+<li><strong>What to memorise:</strong> the placement table below. Most interview slip-ups are putting a technology on the wrong project.</li>
+<li><strong>Which resume:</strong> these pages match <code>Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf</code>, whose summary says "Expertise in Java, Python and Go microservices". Uber FRM and Masters India are Java and Spring Boot. Impact Analytics is Go/Gin plus a Python agent plane.</li>
+</ul>
+</div>
+<p><strong>Labels used across these pages.</strong> MEASURED means we have a log, doc, config or code for it. STATED means printed on the resume from the project's own source with no extra arithmetic in prep. ESTIMATED means arithmetic I can show ("roughly, derived from..."). HISTORICAL means from my past work records. TARGET means a design goal ("targeting"). Verbal means true but not printed on the resume.</p>
+<hr>
+<h2 id="where-each-technology-lives">Where each technology lives</h2>
 <table>
 <thead>
 <tr>
-<th>File</th>
-<th>Topics</th>
+<th>Technology</th>
+<th>Project</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go, Gin, Google Wire, h2c, Datadog</td>
+<td>Impact Analytics (Core)</td>
+<td>10k peak RPS. No SLA. No Kubernetes operations</td>
+</tr>
+<tr>
+<td>ClickHouse, BigQuery</td>
+<td>Impact Analytics</td>
+<td>15.5x pivots, 170GB OOM fix, about 344k rows per second, 4.09B in flight, 2.11B master</td>
+</tr>
+<tr>
+<td>LangGraph, LangSmith</td>
+<td>Impact Analytics, Ask Iris</td>
+<td>Supervisor plus 3-attempt evaluator. Keep/Drop has a fixed step order and no LLM orchestrator</td>
+</tr>
+<tr>
+<td>Python, FastAPI (agent plane)</td>
+<td>Impact Analytics</td>
+<td>Keep/Drop batch, Ask Iris WebSocket. Never Spring Boot at IA</td>
+</tr>
+<tr>
+<td>PostgreSQL, Redis</td>
+<td>IA (thin metadata, auth cache), Masters (sharded, cache-aside)</td>
+<td></td>
+</tr>
+<tr>
+<td>Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker</td>
+<td>Uber FRM (Uber via EPAM)</td>
+<td>36 Spring Boot endpoints, 8-table schema, 100% module statement coverage</td>
+</tr>
+<tr>
+<td>Python, Selenium, Kafka, Flink, LangChain RAG, Gemini 2.5 Pro, Milvus</td>
+<td>Uber Menu (Uber via EPAM)</td>
+<td>30K+ menus a month, from 24 hours to 2 hours, 98% offline field fidelity</td>
+</tr>
+<tr>
+<td>Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, ELK, New Relic, AWS</td>
+<td>Masters India</td>
+<td>PHP monolith to Spring Boot microservices. 1M+ submissions a day. No Flink</td>
+</tr>
+<tr>
+<td>Django, MySQL, MongoDB, Redis, Elasticsearch</td>
+<td>GeeksforGeeks</td>
+<td>10K+ daily queries</td>
+</tr>
+<tr>
+<td>Spring MVC, Spring Security, Spring Batch, Maven, Amazon S3, Celery, asyncio</td>
+<td>Skills-level</td>
+<td>On the skills line. No bullet names them</td>
+</tr>
+<tr>
+<td>MCP, tool calling</td>
+<td>Skills-level</td>
+<td>IA tool design (Cluster Copilot, 14 tools) is verbal only</td>
+</tr>
+<tr>
+<td>C, C++, pgvector, DynamoDB, Kubernetes, gRPC</td>
+<td>Literacy</td>
+<td>No production ownership claims</td>
+</tr>
+</tbody>
+</table>
+<div class="callout warn">
+<p><strong>The lines interviewers check most</strong></p>
+<ul>
+<li>No Kafka, Flink, CDC, Milvus or Kubernetes operations at Impact Analytics.</li>
+<li>80% is a CI promotion gate on 300 cases. 73% and 74% come from a separate gold-200 benchmark.</li>
+<li>15.5x is query time. 170GB OOM is load time. Not cause and effect.</li>
+<li>344k is rows per second, not requests. 4.09B was measured in flight.</li>
+<li>"Exactly-once" means at-least-once delivery plus idempotent writes.</li>
+<li>Led 3 (Uber FRM) and mentored 2 (Masters India) are different teams.</li>
+<li>IA platform APIs are Go/Gin. Spring Boot belongs to Uber FRM and Masters India only.</li>
+</ul>
+</div>
+<hr>
+<h2 id="the-pages">The pages</h2>
+<table>
+<thead>
+<tr>
+<th>Page</th>
+<th>What it covers</th>
+<th>Read it before</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><a href="python_fastapi.html">python_fastapi.md</a></td>
-<td>Python FastAPI Pydantic asyncio</td>
+<td>Python, GIL, asyncio, FastAPI, Pydantic, Celery, Django. The IA agent plane (Ask Iris), Menu's Python services, GFG on Django, plus a pointer to the Java services and a Python-to-Spring comparison table</td>
+<td>Python backend and AI rounds, IA Agentic deep dive</td>
 </tr>
 <tr>
 <td><a href="go_gin.html">go_gin.md</a></td>
-<td>Go Gin doing layer</td>
+<td>Go, Gin, goroutines, context, Wire, h2c, nested timeouts, Datadog, the KPI formula compiler, the copier</td>
+<td>Go rounds, platform design, IA Core</td>
 </tr>
 <tr>
 <td><a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a></td>
-<td>LangGraph MCP RAG tool calling prompt eng embeddings offline eval LangSmith</td>
+<td>LLM agents, structured outputs, LangGraph and Ask Iris, Keep/Drop lenses, tool calling, MCP, prompt engineering, offline eval, RAG, Milvus, LangChain, LangSmith</td>
+<td>AI engineer rounds, IA Agentic, Menu RAG</td>
 </tr>
 <tr>
 <td><a href="clickhouse.html">clickhouse.md</a></td>
-<td>ClickHouse OLAP pivots</td>
+<td>Columnar storage, MergeTree, partitions, ReplacingMergeTree, the six rollups, the 170GB OOM, the Go copier, the 2.11B master</td>
+<td>Data platform rounds, IA Core, "hardest problem"</td>
 </tr>
 <tr>
 <td><a href="kafka_streaming.html">kafka_streaming.md</a></td>
-<td>Kafka Menu + Masters + IA</td>
+<td>Kafka fundamentals (partitions, keys, consumer groups, offsets, DLQ, lag) at Uber Menu and Masters India, and the Spring Kafka client view (<code>@KafkaListener</code>, <code>DefaultErrorHandler</code>, <code>DeadLetterPublishingRecoverer</code>)</td>
+<td>Streaming and event-driven design</td>
 </tr>
 <tr>
 <td><a href="flink.html">flink.md</a></td>
-<td>Flink Menu hot path vs Spark backfill</td>
+<td>Flink fundamentals (keyed state, event time, watermarks, checkpoints) on the Menu hot path. Spark as a verbal backfill option</td>
+<td>Menu deep dive, "why Flink"</td>
 </tr>
 <tr>
 <td><a href="kafka_flink_scale_defense.html">kafka_flink_scale_defense.md</a></td>
-<td>Where / why at high numbers / attack answers</td>
+<td>Attack-and-defense sheet: "30K a month is tiny", peak rates, exactly-once, recovery</td>
+<td>The night before a streaming or system design round</td>
 </tr>
 <tr>
 <td><a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a></td>
-<td>AuthN/AuthZ, API vs AI limits, per-tenant quotas</td>
+<td>AuthN versus AuthZ, JWT, OIDC, constant-time keys, multi-tenancy, token buckets. The IA waterfall, Ask Iris scope freeze, AI-level budgets, FRM, Masters, Menu</td>
+<td>Security and multi-tenant SaaS questions</td>
 </tr>
 <tr>
 <td><a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a></td>
-<td>PG MySQL Redis SQLAlchemy</td>
+<td>Transactions, indexes, locking, sharding, cache-aside. Spring Data JPA and Hibernate at FRM (<code>@Version</code>, <code>@Transactional</code>, the column-aliasing bug), Masters quarter shards through Hibernate, JdbcTemplate and HikariCP, Spring Data Redis, MongoDB and Elasticsearch briefly</td>
+<td>Database and schema design rounds, FRM and Masters deep dives</td>
 </tr>
 <tr>
 <td><a href="observability_cloud.html">observability_cloud.md</a></td>
-<td>Datadog LangSmith ELK New Relic Docker GCP AWS</td>
+<td>Logs, metrics and traces. Datadog, LangSmith, JSON telemetry, ELK, New Relic, Docker, GCP, AWS, Kubernetes literacy, Bazel, CI/CD</td>
+<td>Debugging, on-call and DevOps questions</td>
 </tr>
 <tr>
 <td><a href="selenium_scraping.html">selenium_scraping.md</a></td>
-<td>Selenium anti-bot</td>
+<td>WebDriver, waits, bot detection, proxy pools, adaptive retries, the Menu fleet</td>
+<td>Menu deep dive, "design a crawler"</td>
 </tr>
 <tr>
 <td><a href="skills_fundamentals_map.html">skills_fundamentals_map.md</a></td>
-<td>Every skills-row item → fundamentals + placement</td>
+<td>Every skills-line item: what it is, fundamentals, where used, claim strength</td>
+<td>Any "tell me about X on your resume" moment</td>
 </tr>
 </tbody>
 </table>
-<p>Also open <strong><code>prep/36_skills_ai_agents_defense.md</code></strong> (final folder) for the expanded AI skills PDF line.</p></main>
+<hr>
+<h2 id="suggested-study-order">Suggested study order</h2>
+<ol>
+<li><a href="skills_fundamentals_map.html">skills_fundamentals_map.md</a>, to know what you can claim and how strongly.</li>
+<li>The pages for your two strongest stories: <a href="clickhouse.html">clickhouse.md</a> and <a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a> (Impact Analytics).</li>
+<li><a href="go_gin.html">go_gin.md</a> and <a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a> (IA Core).</li>
+<li><a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a> and <a href="kafka_streaming.html">kafka_streaming.md</a> for the Java services (Uber FRM and Masters India), then <a href="python_fastapi.html">python_fastapi.md</a> for the Python side and the Spring comparison table.</li>
+<li><a href="flink.html">flink.md</a>, <a href="selenium_scraping.html">selenium_scraping.md</a>, then <a href="kafka_flink_scale_defense.html">kafka_flink_scale_defense.md</a> (Uber Menu and Masters streaming).</li>
+<li><a href="observability_cloud.html">observability_cloud.md</a> last, as glue for "how do you debug it".</li>
+</ol>
+<hr>
+<h2 id="elsewhere-in-the-repo">Elsewhere in the repo</h2>
+<ul>
+<li>Handbook tech glossary (one entry per technology, shorter, including Java, Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, Spring Batch, Maven and JUnit): <a href="../../../handbook/09_tech_glossary.html">../../../handbook/09_tech_glossary.md</a></li>
+<li>Generative AI skills defense table: <a href="../../../prep/36_skills_ai_agents_defense.html">../../../prep/36_skills_ai_agents_defense.md</a></li>
+<li>Every resume number, derived: <a href="../../../prep/09_metrics_derivations.html">../../../prep/09_metrics_derivations.md</a></li>
+<li>IA bullet-by-bullet defense: <a href="../../../prep/43_ia_bullet_defense.html">../../../prep/43_ia_bullet_defense.md</a></li>
+<li>ClickHouse rollups and copier: <a href="../../../prep/42_clickhouse_rollup_migration.html">../../../prep/42_clickhouse_rollup_migration.md</a></li>
+<li>Architecture pages: <a href="../architecture/00_index.html">../architecture/00_index.md</a></li>
+<li>Numbers defense: <a href="../numbers_defense.html">../numbers_defense.md</a></li>
+<li>Design decisions and trade-offs: <a href="../design_decisions_tradeoffs.html">../design_decisions_tradeoffs.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

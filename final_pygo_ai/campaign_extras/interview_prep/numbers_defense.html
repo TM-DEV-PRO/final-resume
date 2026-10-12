@@ -41,69 +41,373 @@ strong{color:#fff}
 <div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final PyGo+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/numbers_defense.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#resume-number-catalog-numbers-defense">Resume Number Catalog / Numbers Defense</a>
-<a class="lvl2" href="#impact-analytics-pdf">Impact Analytics (PDF)</a>
-<a class="lvl2" href="#uber-frm">Uber FRM</a>
-<a class="lvl2" href="#uber-menu-anz-masters-gfg">Uber Menu / ANZ / Masters / GFG</a></nav>
+<a class="lvl2" href="#what-the-tags-mean">What the tags mean</a>
+<a class="lvl2" href="#three-rules-for-saying-any-number">Three rules for saying any number</a>
+<a class="lvl2" href="#impact-analytics-agentic-flows-and-orchestration">Impact Analytics: Agentic Flows and Orchestration</a>
+<a class="lvl2" href="#impact-analytics-core-infrastructure-and-pipeline">Impact Analytics: Core Infrastructure and Pipeline</a>
+<a class="lvl2" href="#uber-via-epam-frm-scoping-platform">Uber via EPAM: FRM Scoping Platform</a>
+<a class="lvl2" href="#uber-via-epam-menu-ingestion-uber-eats">Uber via EPAM: Menu Ingestion (Uber Eats)</a>
+<a class="lvl2" href="#uber-mobility-anz-document-compliance-historical">Uber Mobility: ANZ Document Compliance (HISTORICAL)</a>
+<a class="lvl2" href="#masters-india-gst-and-e-invoicing">Masters India: GST and e-invoicing</a>
+<a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
+<a class="lvl2" href="#education-and-achievements">Education and achievements</a>
+<a class="lvl2" href="#off-the-pdf-numbers-you-may-say-with-a-caveat">Off the PDF: numbers you may say, with a caveat</a></nav>
 <main><h1 id="resume-number-catalog-numbers-defense">Resume Number Catalog / Numbers Defense</h1>
-<p>Interview sheet for <code>Tarun_Mittal_SSE_5yr.pdf</code>. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>. Cross-links: <code>../../prep/GROUND_TRUTH.md</code>, <code>../../prep/18_resume_number_catalog.md</code>.</p>
-<h2 id="impact-analytics-pdf">Impact Analytics (PDF)</h2>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li>It explains every number on <code>Tarun_Mittal_SSE_5yr.pdf</code>: what it measures, where it came from, why it mattered to the business, how to say it out loud, and what not to say.</li>
+<li>Read it before any round where they'll go through your resume line by line. Re-read the "Don't say" lines the morning of the interview.</li>
+<li>Memorise the spoken form of each number and the one-sentence derivation. If you can say where a number came from in one breath, it sounds credible.</li>
+<li>A short "off the PDF" list at the end covers numbers you may say out loud but that aren't on the resume.</li>
+</ul>
+</div>
+<p>Sources: canonical IA claims are in <code>docs/ASSORTSMART_TAB_RESUME.md</code>. Cross-links: <a href="../../prep/GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>, <a href="../../prep/18_resume_number_catalog.html"><code>18_resume_number_catalog.md</code></a>, <a href="../../prep/09_metrics_derivations.html"><code>09_metrics_derivations.md</code></a>.</p>
+<h2 id="what-the-tags-mean">What the tags mean</h2>
+<ul>
+<li><strong>MEASURED</strong> means there is a benchmark, log, document or code behind it.</li>
+<li><strong>TARGET</strong> means it was a design goal. Say "targeting".</li>
+<li><strong>ESTIMATED</strong> means it's arithmetic I can show on a whiteboard. Say "roughly, derived from...".</li>
+<li><strong>HISTORICAL</strong> means it comes from my past work records and wasn't re-measured.</li>
+<li><strong>PDF</strong> means it is on the resume as written and I defend it as written.</li>
+<li><strong>CI GATE</strong> means it is a release check, not a live production result.</li>
+</ul>
+<h2 id="three-rules-for-saying-any-number">Three rules for saying any number</h2>
+<ol>
+<li><strong>Say it as a change, slowly.</strong> "From 189 seconds to 12 seconds" is easier to hear than "15.5x".</li>
+<li><strong>Say what it measured.</strong> "On a 250-million-row test" or "on a fixed test set".</li>
+<li><strong>Stop after the number.</strong> Let them ask the follow-up. You have the derivation ready.</li>
+</ol>
+<hr>
+<h2 id="impact-analytics-agentic-flows-and-orchestration">Impact Analytics: Agentic Flows and Orchestration</h2>
+<p><strong>Context in plain words.</strong> AssortSmart helps retailers plan assortments: which products to keep, drop or add each season. An <em>article</em> is one product. An <em>article-season</em> is one product in one selling season, like "blue denim jacket, Spring 2026". The AI decision engine scores article-seasons and recommends what to do.</p>
+<h3 id="348k-article-seasons-evaluated-pdf">348k article-seasons evaluated (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of product-in-season combinations the decision engine scored across its pipelines: Keep/Drop, Missed Opportunities and Top Style.</li>
+<li><strong>How it was derived.</strong> It's the count of rows the engine scored, from the AssortSmart run records.</li>
+<li><strong>Why it mattered.</strong> Planners can't review that many items by hand each season. Scoring them all means every item gets a consistent recommendation.</li>
+<li><strong>Say it.</strong> "The engine evaluates about 348 thousand article-seasons, where an article-season is one product in one selling season."</li>
+<li><strong>Don't say.</strong> Don't mix it with <strong>1.6 million</strong>. That's the size of the whole catalog, it's off the PDF, and it's a different number. Scored is 348k.</li>
+</ul>
+<h3 id="88k-items-per-pass-pdf">88k items per pass (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> How many items one batch run of the engine processes.</li>
+<li><strong>How it was derived.</strong> It's the batch size of a single pass in the run records.</li>
+<li><strong>Why it mattered.</strong> It shows the orchestration has to survive long batch runs. A provider failure halfway through 88 thousand items can't mean starting over.</li>
+<li><strong>Say it.</strong> "One pass processes about 88 thousand items."</li>
+<li><strong>Don't say.</strong> Don't claim a specific number of passes unless you know how they split. If someone divides 348k by 88k and gets about 4, say "roughly, depending on the pipeline".</li>
+</ul>
+<h3 id="7-ai-lenses-pdf">7 AI lenses (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of separate LLM judgments made per item. A <em>lens</em> is one angle of analysis, like a specialist giving an opinion on one aspect. A <em>decider</em> step combines them.</li>
+<li><strong>How it was derived.</strong> It's a count from the pipeline design.</li>
+<li><strong>Why it mattered.</strong> Splitting the judgment into focused lenses makes each prompt simpler and each output easier to check.</li>
+<li><strong>Say it.</strong> "Each item is looked at through seven AI lenses, and a decider combines them into one AI score."</li>
+<li><strong>Don't say.</strong> Don't say there's an LLM orchestrator choosing which lens to run. Keep/Drop runs in a fixed order: peer comparison, decider, lenses, blend, explanation.</li>
+</ul>
+<h3 id="the-blend-04-06-and-055-verbal-design-detail">The blend: 0.4, 0.6 and 0.55 (verbal design detail)</h3>
+<ul>
+<li><strong>What it measures.</strong> How the final score is built. The deterministic score (from sell-through and rate of sale) gets weight 0.4. The AI score gets weight 0.6. An item is kept if the final score is 0.55 or higher.</li>
+<li><strong>Worked example.</strong> Deterministic score 0.70, AI score 0.45. Final = 0.4 × 0.70 + 0.6 × 0.45 = 0.28 + 0.27 = 0.55. That's exactly the threshold, so the item is kept.</li>
+<li><strong>Say it.</strong> "The final score is 40% rule-based and 60% AI, and we keep the item at 0.55 or above."</li>
+<li><strong>Don't say.</strong> Don't say these weights were retuned after the benchmark. They were frozen (see 74% below).</li>
+</ul>
+<h3 id="211b-row-clickhouse-master-pdf">2.11B-row ClickHouse master (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of rows in the main ClickHouse fact table, which holds detailed sales and inventory facts.</li>
+<li><strong>How it was derived.</strong> It's the table's row count.</li>
+<li><strong>Why it mattered.</strong> It explains the design choice. A table that large is too risky to let an LLM query directly. A bad generated query could be very slow or expensive, and a bad write would be very hard to undo. So the engine gets prepared JSON context instead.</li>
+<li><strong>Say it.</strong> "The main ClickHouse table has about 2.11 billion rows, so the AI never touches it directly. It gets prepared JSON."</li>
+<li><strong>Don't say.</strong> Don't say "sub-second queries on 2.11 billion rows". That isn't claimed.</li>
+</ul>
+<h3 id="300-case-evaluation-harness-and-80-ci-gate-pdf-ci-gate">300-case evaluation harness and 80% CI gate (PDF, CI GATE)</h3>
+<ul>
+<li><strong>What it measures.</strong> The 300 is the number of test cases in a proxy evaluation set. <em>Proxy</em> means it stands in for real decisions with known answers. The 80% is the minimum accuracy a model or prompt change must reach on that set before it can be promoted. In config it's <code>gold_min_accuracy: 0.8</code>.</li>
+<li><strong>How it was derived.</strong> 300 is the count of cases in the evaluation file. 80% is the threshold set in the gate config.</li>
+<li><strong>Why it mattered.</strong> It stops a "looks good in a demo" change from reaching users. A change that makes the AI worse is blocked automatically.</li>
+<li><strong>Say it.</strong> "We have a 300-case evaluation set, and CI blocks any change that scores below 80% on it."</li>
+<li><strong>Don't say.</strong> Never say "the AI is 80% accurate in production" or "all tenants are live at 80%". It's a release gate.</li>
+</ul>
+<h3 id="73-lower-cost-at-100-coverage-pdf-measured">73% lower cost at 100% coverage (PDF, MEASURED)</h3>
+<ul>
+<li><strong>What it measures.</strong> In a separate benchmark of 200 gold-labelled items, a newer, cheaper model cost 73% less to run than the previous model. It also completed all 200 items. That's what "100% coverage" means here: every item got a valid answer, none timed out or failed.</li>
+<li><strong>How it was derived.</strong> Comparing the total cost of the two models on the same 200 items. The model names (gpt-5.6-luna versus gpt-5.4-mini) are off the PDF. Use them only if asked.</li>
+<li><strong>Why it mattered.</strong> Lower cost per run, with no loss of completeness, makes it affordable to run the engine regularly.</li>
+<li><strong>Say it.</strong> "On a 200-item benchmark, switching models cut execution cost by 73%, and it still answered all 200."</li>
+<li><strong>Don't say.</strong> Don't say this came from the 300-case file. It's a different set. And "100% coverage" here is not test coverage. It means 200 out of 200 items completed.</li>
+</ul>
+<h3 id="74-deterministic-baseline-and-freezing-the-weights-pdf-measured">74% deterministic baseline, and freezing the weights (PDF, MEASURED)</h3>
+<ul>
+<li><strong>What it measures.</strong> The accuracy of the rule-based scorer alone on that same 200-item set, using the production threshold of 0.65.</li>
+<li><strong>How it was derived.</strong> Running the deterministic scorer on the gold-200 set and counting correct decisions.</li>
+<li><strong>Why it mattered.</strong> The blended LLM score came out at about 63%, which is worse than 74%. So we did not retune the blend to make the AI look better. We froze the weights and kept the safer setup.</li>
+<li><strong>Say it.</strong> "The rule-based baseline scored 74% on the benchmark. The AI blend scored lower, so we froze the weights instead of shipping a worse model."</li>
+<li><strong>Don't say.</strong> Don't fuse 73%, 74% and 80% into one story. 80% is the gate on the 300-case file. 73% and 74% come from the 200-item benchmark.</li>
+</ul>
+<h3 id="ask-iris-pdf-capability-no-numbers">Ask Iris (PDF capability, no numbers)</h3>
+<ul>
+<li><strong>What it is.</strong> A copilot that planners chat with over a secure WebSocket (a connection that stays open for live back-and-forth) to ask about KPIs and inspect AI decisions.</li>
+<li><strong>The one number.</strong> It uses a 3-attempt evaluator loop. After 3 failed attempts it stops and answers with what it has, so it can't loop forever.</li>
+<li><strong>Say it.</strong> "Ask Iris is shipped. It has an evaluator that retries at most three times."</li>
+<li><strong>Don't say.</strong> Don't invent usage, latency or uptime numbers.</li>
+</ul>
+<hr>
+<h2 id="impact-analytics-core-infrastructure-and-pipeline">Impact Analytics: Core Infrastructure and Pipeline</h2>
+<h3 id="10k-peak-rps-pdf">10k peak RPS (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> RPS is requests per second. 10k peak means the Go/Gin platform is built for and handles bursts of about 10,000 requests per second.</li>
+<li><strong>How it was derived.</strong> It's the peak figure stated for the platform on the AssortSmart record.</li>
+<li><strong>Why it mattered.</strong> The edge serves many retailers at once and has no reverse proxy in front of it, so it has to protect itself under load. That's why it has nested timeouts and native HTTP/2.</li>
+<li><strong>Say it.</strong> "The Go platform handles peaks of about ten thousand requests per second."</li>
+<li><strong>Don't say.</strong> Don't invent average load, latency SLAs or TPS. Don't say you operated Kubernetes for it.</li>
+</ul>
+<h3 id="155x-faster-from-189-seconds-to-12-seconds-on-250m-rows-pdf-measured">15.5x faster, from 189 seconds to 12 seconds, on 250M rows (PDF, MEASURED)</h3>
+<ul>
+<li><strong>What it measures.</strong> How long one planner pivot query took. A <em>pivot</em> is the grid view that groups numbers by product, store and time. It went from 189 seconds on Postgres to about 12 seconds on ClickHouse with pre-aggregated rollups.</li>
+<li><strong>How it was derived.</strong> A benchmark harness with 250 million rows, where both databases held identical data. The ClickHouse time was 12.3 seconds, rounded to 12 on the PDF. 189 ÷ 12.3 is about 15.4, and the benchmark doc reports about 15.5x. Either way, say "about fifteen times".</li>
+<li><strong>Why it mattered.</strong> At over three minutes, planners would give up on the screen. At 12 seconds the workflow becomes usable.</li>
+<li><strong>Say it.</strong> "Planner pivots went from 189 seconds to 12 seconds on a 250-million-row test, about fifteen times faster."</li>
+<li><strong>Don't say.</strong> Don't say "sub-second". Don't say the 170 GB fix caused this speed-up.</li>
+</ul>
+<h3 id="six-rollup-tables-pdf">Six rollup tables (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of pre-aggregated tables. A <em>rollup</em> stores totals in advance, like keeping a running monthly total instead of adding up receipts every time. The six are product, store and attribute, each at season level and at weekly level.</li>
+<li><strong>Say it.</strong> "Six rollup tables: product, store and attribute, each by season and by week."</li>
+</ul>
+<h3 id="170-gb-out-of-memory-prevented-pdf">170 GB out-of-memory prevented (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The memory one query would have needed to build a whole season's weekly rollup in one go. OOM means out of memory, where the database kills the query.</li>
+<li><strong>How it was derived.</strong> From the failed runs. The whole-season build needed about 170 GB of working memory and failed even when the cap was raised to 80 GB and then 200 GB.</li>
+<li><strong>Why it mattered.</strong> Without a fix, there was no weekly level of detail at all.</li>
+<li><strong>The fix in one line.</strong> Build one fiscal week per insert, with memory and disk-spill caps. A product week needed about 11 GB. An attribute week went above 40 GB.</li>
+<li><strong>Say it.</strong> "Building a whole season at once needed about 170 GB and crashed. I sliced it into one week per insert, and it fit."</li>
+<li><strong>Don't say.</strong> This is load time, not query time. It is not why pivots got faster. The exact caps (55 GB memory, 16 GB spill, 8 threads, 4 weeks in flight) are verbal detail, not on the PDF.</li>
+</ul>
+<h3 id="about-344k-rows-per-second-pdf-measured">About 344k rows per second (PDF, MEASURED)</h3>
+<ul>
+<li><strong>What it measures.</strong> The combined copy speed of the custom Go data pump while migrating rollups between ClickHouse Cloud clusters.</li>
+<li><strong>How it was derived.</strong> Two season streams ran at the same time, each around 150k to 190k rows per second. Added together that's about 344k rows per second.</li>
+<li><strong>Why it mattered.</strong> Cross-cluster IP allowlists blocked ClickHouse's own cluster-to-cluster copy. The pump made multi-billion-row moves practical anyway.</li>
+<li><strong>Say it.</strong> "The pump copied about 344 thousand rows per second, combined across two streams."</li>
+<li><strong>Don't say.</strong> This is rows per second, an ingest rate. It is <strong>not</strong> requests per second or transactions per second.</li>
+</ul>
+<h3 id="partitions-up-to-409b-rows-pdf-measured">Partitions up to 4.09B rows (PDF, MEASURED)</h3>
+<ul>
+<li><strong>What it measures.</strong> The biggest partition group copied: the attribute weekly table across two seasons. A <em>partition</em> is a slice of a table, here one season.</li>
+<li><strong>How it was derived.</strong> 2,779,317,472 rows plus 1,311,108,195 rows equals 4,090,425,667, which is about 4.09 billion.</li>
+<li><strong>Say it.</strong> "The largest table we moved had about 4.09 billion rows across two seasons."</li>
+<li><strong>Don't say.</strong> The 4.09B copy was measured in flight. Don't say the cutover finished.</li>
+</ul>
+<h3 id="500k-row-double-buffered-batches-pdf">500k-row double-buffered batches (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The batch size the pump reads and writes. <em>Double-buffered</em> means while one batch is being sent, the next one is already being read, so neither side waits.</li>
+<li><strong>Say it.</strong> "It moved 500 thousand rows per batch, reading the next batch while sending the previous one."</li>
+</ul>
+<hr>
+<h2 id="uber-via-epam-frm-scoping-platform">Uber via EPAM: FRM Scoping Platform</h2>
+<p><strong>Context in plain words.</strong> FRM (Financial Risk Management) is the Uber Finance team that decides each quarter which accounts and entities need audit attention. Before this platform, much of that work was done in Google Sheets.</p>
+<h3 id="70-from-14-days-to-3-days-pdf">70%, from 14 days to 3 days (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The calendar time for the quarterly reconciliation, which is checking that numbers in the finance system match the filed reports.</li>
+<li><strong>How it was derived.</strong> The technical design doc framed the cut, and that's what the platform delivered for the close. If someone does the math, 14 to 3 is about a 79% cut, so 70% is the conservative figure.</li>
+<li><strong>Why it mattered.</strong> Two weeks of analyst time each quarter became about three days. That leaves more time before filing deadlines and less manual error.</li>
+<li><strong>Say it.</strong> "Quarterly reconciliation went from 14 days to 3 days."</li>
+<li><strong>Don't say.</strong> Don't walk it back unprompted. Older prep called this a "TARGET". The current resume states it as the outcome, and that's what you defend.</li>
+</ul>
+<h3 id="340m-materiality-threshold-pdf">$340M materiality threshold (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> <em>Materiality</em> is the money amount above which a misstatement matters to auditors. Accounts or entities above it get scoped in for review.</li>
+<li><strong>How it was derived.</strong> From the Q4 2025 close data the platform worked with. Residual materiality on that close was $170M, and the significance thresholds were 5%.</li>
+<li><strong>Say it.</strong> "The platform scoped against a 340-million-dollar materiality threshold."</li>
+<li><strong>Don't say.</strong> Don't say you set the threshold. Finance sets it. The platform computes against it.</li>
+</ul>
+<h3 id="19m-raw-gl-rows-pdf">19M raw GL rows (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of raw general ledger rows migrated off Sheets into MySQL. A <em>general ledger</em> is a company's master list of accounting entries.</li>
+<li><strong>Say it.</strong> "We migrated about 19 million raw general-ledger rows off Sheets."</li>
+<li><strong>If they push on volume.</strong> Individual quarterly extracts were roughly 38K to 95K rows, around 1.7K to 1.8K accounts and about 400 entities. Say: "The value was correctness, hierarchy and auditability, not big-data throughput."</li>
+<li><strong>Don't say.</strong> Don't invent where the 19M comes from beyond "raw GL rows migrated off Sheets".</li>
+</ul>
+<h3 id="36-fastapi-endpoints-pdf">36 FastAPI endpoints (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of API routes.</li>
+<li><strong>How it was derived.</strong> About 31 functional routes in the scoping service handler, plus the collaboration-service APIs for comments and notifications from the design doc, make 36.</li>
+<li><strong>Say it.</strong> "Thirty-six FastAPI endpoints."</li>
+<li><strong>Don't say.</strong> Older prep said "30+, don't say 36". That guidance is obsolete. Don't claim you built the collaboration or Slack notification service itself.</li>
+</ul>
+<h3 id="l1-to-l4-fsli-hierarchy-pdf">L1 to L4 FSLI hierarchy (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> FSLI means Financial Statement Line Item, like "Cash" or "Revenue". L1 to L4 are four nested levels, like a folder tree from broad category down to detail.</li>
+<li><strong>Say it.</strong> "A four-level line-item hierarchy, with annualisation for partial quarters."</li>
+</ul>
+<h3 id="8-table-schema-pdf">8-table schema (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The number of tables in the normalised MySQL schema on SOADB, Uber's standard service-owned MySQL.</li>
+<li><strong>Verbal depth.</strong> The code has 11 ORM models. The product has 8 screens. Don't confuse 8 tables with 8 screens.</li>
+</ul>
+<h3 id="led-3-engineers-100-coverage-50-delta-variance-pdf">Led 3 engineers, 100% coverage, 50% delta-variance (PDF)</h3>
+<ul>
+<li><strong>Led 3.</strong> Tech lead of an EPAM pod of 3, not a people manager. Not to be merged with "mentored 2" at Masters.</li>
+<li><strong>100%.</strong> Statement coverage of the migrated module, meaning every line ran during tests. 1,100+ tests is verbal, off the PDF.</li>
+<li><strong>50% delta-variance.</strong> An automated gate in the review workflow. If a line's value moved more than 50% against its comparison period (for example the prior year), it is flagged and cannot pass the gate automatically. This supports SOX (Sarbanes-Oxley, the US law on financial controls) compliance. Keep the exact transition rules qualitative.</li>
+<li><strong>Say it.</strong> "I led three engineers, took the module to 100% coverage, and added review gates that flag any line that moved more than 50% against its comparison period."</li>
+</ul>
+<hr>
+<h2 id="uber-via-epam-menu-ingestion-uber-eats">Uber via EPAM: Menu Ingestion (Uber Eats)</h2>
+<h3 id="from-24-hours-to-2-hours-pdf-historical">From 24 hours to 2 hours (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>What it measures.</strong> How long it took to onboard a restaurant's menu onto Uber Eats.</li>
+<li><strong>Why it mattered.</strong> Faster onboarding means restaurants start selling sooner, and fewer menus wait in a manual queue.</li>
+<li><strong>Say it.</strong> "Restaurant onboarding went from 24 hours to 2 hours."</li>
+</ul>
+<h3 id="600k-a-year-saved-pdf-historical-estimated-arithmetic">$600K a year saved (PDF, HISTORICAL, ESTIMATED arithmetic)</h3>
+<ul>
+<li><strong>What it measures.</strong> Annual cost avoided by replacing a third-party and manual menu-processing cost.</li>
+<li><strong>How it was derived.</strong> About $2 per menu × 30,000 menus per month × 12 months = $720K list. Floored to $600K to be conservative.</li>
+<li><strong>Say it.</strong> "About 600 thousand dollars a year. That's roughly two dollars a menu across 30 thousand menus a month, rounded down."</li>
+<li><strong>Don't say.</strong> Don't say $720K. The resume uses the conservative floor.</li>
+</ul>
+<h3 id="30k-menus-a-month-pdf-historical">30K+ menus a month (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>Say it.</strong> "Over 30 thousand menus a month."</li>
+<li><strong>Don't say.</strong> The Kafka peak of roughly 200 to 500 events per second is a prep-only estimate. Don't put it next to this number.</li>
+</ul>
+<h3 id="98-field-fidelity-pdf-offline-evaluation">98% field fidelity (PDF, offline evaluation)</h3>
+<ul>
+<li><strong>What it measures.</strong> The share of extracted menu fields (item name, price, description and so on) that matched the known correct answer on an offline test set.</li>
+<li><strong>How it was derived.</strong> An offline evaluation: a fixed set of menus with labelled correct answers, compared field by field.</li>
+<li><strong>Say it.</strong> "98% field accuracy on an offline evaluation."</li>
+<li><strong>Don't say.</strong> Always say "offline". Older prep also mentions "100% schema consistency". That means a schema check rejected malformed output, and it isn't on the PDF.</li>
+</ul>
+<h3 id="95-extraction-success-pdf-historical-baseline-estimated">95%+ extraction success (PDF, HISTORICAL, baseline ESTIMATED)</h3>
+<ul>
+<li><strong>What it measures.</strong> The share of scraping attempts that successfully pulled a menu.</li>
+<li><strong>How it was derived.</strong> The baseline was an estimated 60% to 65% before hardening the Selenium fleet with proxy pools and adaptive retries.</li>
+<li><strong>Say it.</strong> "Extraction success rose to over 95%, from roughly 60 to 65%."</li>
+</ul>
+<h3 id="exactly-once-catalog-upserts-pdf-wording">Exactly-once catalog upserts (PDF wording)</h3>
+<ul>
+<li><strong>What it means.</strong> Each menu change lands in the catalog once, even if a message is delivered twice. In practice this is at-least-once delivery plus idempotent upserts. <em>Idempotent</em> means doing it twice has the same effect as doing it once.</li>
+<li><strong>Don't say.</strong> Don't claim zero message loss or two-phase commit across third parties.</li>
+</ul>
+<hr>
+<h2 id="uber-mobility-anz-document-compliance-historical">Uber Mobility: ANZ Document Compliance (HISTORICAL)</h2>
+<ul>
+<li><strong>99.9% regulatory compliance.</strong> The share of driver and vehicle documents that met local authority rules after automating the checks with a deterministic validation backend.</li>
+<li><strong>20 hours a week.</strong> The manual review time removed.</li>
+<li><strong>Say it.</strong> "99.9% compliance and about 20 hours a week of manual work removed."</li>
+<li><strong>Don't say.</strong> It's Uber Mobility in Australia and New Zealand, not Uber Eats. Don't add Selenium or RAG to this story.</li>
+</ul>
+<hr>
+<h2 id="masters-india-gst-and-e-invoicing">Masters India: GST and e-invoicing</h2>
+<p><strong>Context in plain words.</strong> Masters India sells GST compliance software. Enterprise clients send invoices, and the platform validates them and registers them with the government's IRP (Invoice Registration Portal), which returns an invoice reference number and a signed QR code.</p>
+<h3 id="75-from-12-seconds-to-300-milliseconds-pdf-historical">75%, from 1.2 seconds to 300 milliseconds (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>What it measures.</strong> p95 API latency, meaning 95% of requests finished within this time.</li>
+<li><strong>How it was derived.</strong> (1,200 − 300) ÷ 1,200 = 0.75, so 75%.</li>
+<li><strong>Why it happened.</strong> Async IO for government-portal calls, connection pooling, query and index fixes, and Redis for reads.</li>
+<li><strong>Say it.</strong> "p95 latency went from 1.2 seconds to 300 milliseconds."</li>
+</ul>
+<h3 id="1500-enterprise-clients-pdf-historical">1,500+ enterprise clients (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>Say it.</strong> "Over 1,500 enterprise clients."</li>
+</ul>
+<h3 id="700-to-4000-requests-per-minute-pdf-historical">700 to 4,000 requests per minute (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>How to convert.</strong> 700 ÷ 60 is about 12 requests per second. 4,000 ÷ 60 is about 67 requests per second. That's roughly 5.7 times more.</li>
+<li><strong>Say it.</strong> "Throughput went from 700 to 4,000 requests per minute."</li>
+</ul>
+<h3 id="1m-daily-government-submissions-pdf-estimated-average">1M+ daily government submissions (PDF, ESTIMATED average)</h3>
+<ul>
+<li><strong>How to convert.</strong> 1,000,000 ÷ 86,400 seconds in a day is about 12 per second on average. Peaks around filing deadlines were roughly 8 to 10 times higher (ESTIMATED).</li>
+<li><strong>Say it.</strong> "Over a million government submissions a day. That's about 12 a second on average, with big peaks around deadlines."</li>
+</ul>
+<h3 id="100k-concurrent-imports-pdf">100K+ concurrent imports (PDF)</h3>
+<ul>
+<li><strong>What it measures.</strong> The scale of bulk imports processed with exactly-once, idempotent handling. The idempotency key was client plus file hash plus batch index.</li>
+<li><strong>Note.</strong> Older prep said "100K+ per import". The resume says "100K+ concurrent imports". Use the resume wording.</li>
+</ul>
+<h3 id="mentored-2-pdf">Mentored 2 (PDF)</h3>
+<ul>
+<li>Two junior engineers during the migration. Never merge with "led 3" at Uber.</li>
+</ul>
+<h3 id="triage-down-70-database-reads-down-30-pdf-historical">Triage down 70%, database reads down 30% (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>Triage 70%.</strong> Time to find the cause of an incident. Baseline ESTIMATED at about 30 minutes, down to under 10, after adding ELK logs and New Relic tracing.</li>
+<li><strong>Reads 30%.</strong> Database read load fell by 30% after a Redis cache-aside layer. <em>Cache-aside</em> means the app checks Redis first and only goes to the database on a miss.</li>
+<li><strong>Say it.</strong> "Incident triage went from about half an hour to under ten minutes, and database reads dropped by 30%."</li>
+</ul>
+<h3 id="coverage-35-to-82-98-deployment-success-pdf-historical">Coverage 35% to 82%, 98% deployment success (PDF, HISTORICAL)</h3>
+<ul>
+<li><strong>Coverage.</strong> Test coverage went from 35% to 82%.</li>
+<li><strong>Deployment success.</strong> 98% of deploys went out successfully, from release records. If asked for exact counts, keep it qualitative.</li>
+</ul>
+<hr>
+<h2 id="geeksforgeeks">GeeksforGeeks</h2>
+<ul>
+<li><strong>10K+ daily queries.</strong> Questions posted and handled on the doubt-support platform each day. Older resumes conflicted on this number, so use 10K+.</li>
+<li><strong>10x traffic spikes.</strong> Traffic during live coding contests compared to normal.</li>
+<li><strong>20% lift in premium subscriptions.</strong> A relative lift, attributed by the growth team.</li>
+<li><strong>30% course sales lift and 70% ops efficiency.</strong> Business attribution, not your own measurement. Say: "I owned the engineering. The business team attributed the lift."</li>
+</ul>
+<hr>
+<h2 id="education-and-achievements">Education and achievements</h2>
+<ul>
+<li><strong>Google Code Jam 2021 qualifier, rank 2260 of 37,000+.</strong></li>
+<li><strong>Smart India Hackathon 2020 finalist, top 3 nationally.</strong></li>
+<li>CGPA is not on the PDF. Don't volunteer it.</li>
+</ul>
+<hr>
+<h2 id="off-the-pdf-numbers-you-may-say-with-a-caveat">Off the PDF: numbers you may say, with a caveat</h2>
+<p>Always preface these with "that's not on my resume, but...".</p>
 <table>
 <thead>
 <tr>
-<th>Resume number</th>
-<th>Tag</th>
-<th>Defense</th>
+<th>Number</th>
+<th>What it is</th>
+<th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>10k peak RPS</td>
-<td>PDF / AssortSmart tab</td>
-<td>Go/Gin edge; do not invent extra TPS</td>
+<td>$100 per pass</td>
+<td>Token spend for one engine pass</td>
+<td>MEASURED, off PDF</td>
 </tr>
 <tr>
-<td>189s→12s on 250M (~15.5×)</td>
-<td>MEASURED POC</td>
-<td><code>21_ia_pivot_benchmark_source.md</code>; PDF rounds 12.3→12</td>
+<td>1.6M article-seasons</td>
+<td>Size of the whole catalog. Not the 348k scored</td>
+<td>Verbal</td>
 </tr>
 <tr>
-<td>1.6M article-seasons · six ClickHouse rollup tables</td>
-<td>PDF / AssortSmart tab</td>
-<td>Catalog after CH migration</td>
+<td>100% Go coverage, 1,200+ tests</td>
+<td>Impact Analytics Go code</td>
+<td>LinkedIn, off PDF</td>
 </tr>
 <tr>
-<td>100.0% · 1,200+ Go tests</td>
-<td>PDF</td>
-<td>race/atomic gate</td>
+<td>55 GB, 16 GB, 8 threads, 4 weeks</td>
+<td>Out-of-memory fix caps</td>
+<td>Verbal</td>
 </tr>
 <tr>
-<td>348k article-seasons · 88k/pass · &lt;$100 · 7 lenses</td>
-<td>PDF / AssortSmart tab</td>
-<td>Keep/Drop + Missed Opp + Top Style</td>
+<td>1,100+ tests</td>
+<td>Uber FRM test count</td>
+<td>Verbal</td>
 </tr>
 <tr>
-<td>2.11B-row fact · air-gap · RMT</td>
-<td>PDF / AssortSmart tab</td>
-<td></td>
+<td>Copilot numbers (8.5%, 37 of 437, 14 tools)</td>
+<td>Cluster Recommendation Copilot</td>
+<td>Verbal, not a resume bullet</td>
 </tr>
 <tr>
-<td>Ask Iris shipped</td>
-<td>PDF capability</td>
-<td>no tenant-wide SLA</td>
-</tr>
-<tr>
-<td>300-case · 80% CI gate · 74% baseline</td>
-<td>promotion gate</td>
-<td>not all tenants live</td>
+<td>Line-plan 12B versus about 25M</td>
+<td>A projected flat table versus an aggregate</td>
+<td>Verbal. Never put 12B on the PDF</td>
 </tr>
 </tbody>
 </table>
-<p>| Hindsight / Cluster Copilot numbers | verbal / not on PDF | <code>projects/01b_hindsight_defense.md</code> |</p>
-<p><strong>Do NOT</strong> put projected 12B on the PDF. <strong>Do NOT</strong> claim IA Kafka/Flink/K8s-ops.</p>
-<h2 id="uber-frm">Uber FRM</h2>
-<p>| 70% · 14d→3d · $340M · 19M GL · 36 FastAPI endpoints · L1–L4 · 8-table SOADB · SHA-256 · led 3 · 100% · SOX 50% | PDF |</p>
-<h2 id="uber-menu-anz-masters-gfg">Uber Menu / ANZ / Masters / GFG</h2>
-<p>Same as <code>../../prep/18_resume_number_catalog.md</code>. Menu 98% = offline. ANZ = HISTORICAL Mobility. Spark not on PDF.\n</p></main>
+<p><strong>Removed from this page:</strong> older prep listed "2.4B rollups" as a PDF number. It is not on the current resume. Don't quote it as a resume number.</p>
+<p><strong>Never claim at Impact Analytics:</strong> Kafka, Flink, CDC, Kubernetes operations, Milvus, or human review queues.</p></main>
 </div>
 
 <script type="module">

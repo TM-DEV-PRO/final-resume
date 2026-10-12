@@ -45,6 +45,7 @@ OCI loops are usually 4 to 5 rounds, 45 to 60 minutes each. Each interviewer own
     - [08a Linux, TCP states, queues, production troubleshooting](08a_linux_tcp_troubleshooting.md)
     - [08b Django, BookMyShow, fault tolerance, CAP, OCR+RAG, Python, DSA, lookup performance](08b_backend_python_dsa.md)
     - [08c Hiring manager answers and Terraform count → for_each](08c_behavioral_terraform.md)
+11. [Study Handbook: every project, number and technology explained in plain English](../final_java_pygo_ia/handbook/00_START_HERE.md) (the Java + Python + Go track, which matches the primary resume; [Python + Go version](../final_pygo_ai/handbook/00_START_HERE.md))
 
 ---
 

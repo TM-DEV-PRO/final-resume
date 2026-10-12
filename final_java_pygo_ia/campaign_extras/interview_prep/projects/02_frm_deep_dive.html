@@ -40,61 +40,649 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/projects/02_frm_deep_dive.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</a>
-<a class="lvl2" href="#0-the-four-bullets-i-am-defending-jul-2026-hardened-wording">0. The four bullets I am defending (Jul 2026 hardened wording)</a>
-<a class="lvl2" href="#1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</a>
-<a class="lvl2" href="#2-the-real-database-schema-11-sqlalchemy-20-models">2. The real database schema (11 SQLAlchemy 2.0 models)</a>
-<a class="lvl2" href="#3-api-surface-from-handlerscoping_handlerpy">3. API surface (from handler/scoping_handler.py)</a>
-<a class="lvl2" href="#4-the-recon-v1-to-v2-migration-the-story-i-own">4. The recon v1 to v2 migration (the story I own)</a>
-<a class="lvl2" href="#5-leadership-leading-a-pod-of-3-engineers">5. Leadership: leading a pod of 3 engineers</a>
-<a class="lvl2" href="#6-honesty-guardrails-do-not-oversell">6. Honesty guardrails (do not oversell)</a>
-<a class="lvl2" href="#7-rapid-fire-qa-12">7. Rapid-fire Q&amp;A (12+)</a>
-<a class="lvl2" href="#8-one-paragraph-verbal-summary-for-walk-me-through-frm">8. One-paragraph verbal summary (for "walk me through FRM")</a>
-<a class="lvl2" href="#mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</a>
-<a class="lvl2" href="#confidence-audit">Confidence audit</a></nav>
-<main><blockquote>
-<p><strong>PDF sync (Sep 2026):</strong> FRM PDF claims are 36 endpoints, 19M GL, 70% 14d→3d, 8-table SOADB, SHA-256, 100% coverage, SOX 50% delta-variance. Older “30+ APIs / targeting 70% / do not say 36” language in this file is <strong>obsolete</strong>. Use <code>../../prep/11_uber_frm_deep_dive.md</code> §0.</p>
-</blockquote>
-<h1 id="11-uber-frm-risk-scoping-platform-deep-dive">11. Uber FRM Risk Scoping Platform: Deep Dive</h1>
-<blockquote>
-<p><strong>Start here for interviews:</strong> <a href="../../../prep/23b_uber_interview_packs.html"><code>23b_uber_interview_packs.md</code></a> § Uber FRM.</p>
-</blockquote>
-<p>Defense material for the four Uber FRM resume bullets. Every number here traces to <code>GROUND_TRUTH.md</code> or to the code in <code>KNOWLEDGE-MATERIAL/UBER-WORK/FRM PROJECT/frm_scoping_service/</code>. Tags: <strong>MEASURED</strong> (documented artifact or code), <strong>TARGET</strong> (design goal, say "targeting"), <strong>ESTIMATED</strong> (derived, say so). No number here is invented.</p>
-<p>Role framing: Software Development Engineer 2 at Uber Finance via EPAM Systems, Jul 2024 to May 2026. This was Uber's internal monorepo (Bazel, Fusion.js, SOADB MySQL, langfx FastAPI framework).</p>
-<hr>
-<h2 id="0-the-four-bullets-i-am-defending-jul-2026-hardened-wording">0. The four bullets I am defending (Jul 2026 hardened wording)</h2>
-<ol>
-<li><strong>Owned</strong> Uber's <strong>FRM Risk Scoping backend (Spring Boot, MySQL)</strong> across <strong>30+ REST APIs</strong> powering <strong>8</strong> scoping screens, automating quarterly close at <strong>$340M group materiality</strong>, targeting a <strong>70% cut</strong> in manual reconciliation (<strong>~2 weeks → ~3–4 days</strong>, ESTIMATED baseline; 70% is TDD TARGET).</li>
-<li><strong>Owned</strong> the Sheets → <strong>MySQL</strong> recon v2 migration (<strong>18 files</strong>), shipping parallel <strong>/v2</strong> APIs that build <strong>L1→L2→L3</strong> FSLI trees, tie <strong>HFM</strong> amounts to public <strong>10-Q</strong> filings, and give each line a durable ID for audit.</li>
-<li><strong>Automated</strong> in-scope decisions across <strong>~55 line items × 14 entities</strong> by encoding materiality, qualitative override, residual-risk, and <strong>5%</strong> component-threshold logic in the scoping services against <strong>$340M / $170M</strong> thresholds.</li>
-<li><strong>Led 3 engineers</strong> on the FRM backend by owning API contracts and layered design reviews for Finance's quarterly scoping.</li>
-</ol>
-<p>Java track maps FastAPI layers to Spring Boot controller / service / repository / JPA. Same ownership and numbers. Do not say 36 endpoints or 19M GL rows.</p>
-<hr>
-<h2 id="1-what-frm-risk-scoping-actually-is-plain-language">1. What FRM Risk Scoping actually IS (plain language)</h2>
-<p>FRM is Uber's Financial Risk Management team inside Finance. Once a quarter, during the financial close, they run the <strong>Scoping Process</strong>: deciding which financial line items (FSLIs, Financial Statement Line Items) and which legal entities are "in scope" for risk assessment and audit testing. The output is the evidence PwC (external auditor) uses to build their <strong>audit work papers</strong>. Getting scoping right is a SOX-style compliance activity: too narrow and you miss risk, too broad and you waste audit hours.</p>
-<p>Before this tool it was a manual Google Sheets workbook (the legacy "DSW version") with formulas, manual parent-child mapping, and no collaboration, no history, no audit trail. The TDD (<code>FRM _ Scoping Tool - Technical Design Doc .docx</code>, authored by Priyadharshini Govindan, reviewed by Ramesh Raju, started 02-02-2026) frames the problem as "flat-file storage prevents the system from handling complex recursive financial hierarchies, leading to manual mapping errors and lack of real-time data visibility."</p>
-<p>The concepts you must be able to explain:</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#uber-frm-risk-scoping-platform-deep-dive">Uber FRM Risk Scoping Platform: Deep Dive</a>
+<a class="lvl2" href="#1-the-one-minute-version-say-this-out-loud">1. The one-minute version (say this out loud)</a>
+<a class="lvl2" href="#2-the-business-in-plain-english">2. The business in plain English</a>
+<a class="lvl2" href="#3-finance-concepts-from-zero">3. Finance concepts from zero</a>
+<a class="lvl2" href="#4-words-you-need-glossary">4. Words you need (glossary)</a>
+<a class="lvl2" href="#5-architecture">5. Architecture</a>
+<a class="lvl2" href="#6-one-request-step-by-step">6. One request, step by step</a>
+<a class="lvl2" href="#7-each-resume-bullet-decoded">7. Each resume bullet decoded</a>
+<a class="lvl2" href="#8-the-schema-in-depth-11-jpa-entities">8. The schema in depth (11 JPA entities)</a>
+<a class="lvl2" href="#9-the-numbers-explained">9. The numbers, explained</a>
+<a class="lvl2" href="#10-api-surface-36-endpoints">10. API surface (36 endpoints)</a>
+<a class="lvl2" href="#11-design-decisions">11. Design decisions</a>
+<a class="lvl2" href="#12-the-recon-v1-to-v2-migration-the-story-i-own-end-to-end">12. The recon v1 to v2 migration (the story I own end to end)</a>
+<a class="lvl2" href="#13-hard-problem-the-column-aliasing-bug-tell-this-precisely">13. Hard problem: the column-aliasing bug (tell this precisely)</a>
+<a class="lvl2" href="#14-other-hard-problems-and-what-could-still-go-wrong">14. Other hard problems and what could still go wrong</a>
+<a class="lvl2" href="#15-leadership-leading-a-pod-of-3-engineers">15. Leadership: leading a pod of 3 engineers</a>
+<a class="lvl2" href="#16-tech-used-in-this-project-and-why">16. Tech used in this project and why</a>
+<a class="lvl2" href="#17-interview-questions-with-speakable-answers">17. Interview questions with speakable answers</a>
+<a class="lvl2" href="#18-say-this-dont-say-this">18. Say this / don't say this</a>
+<a class="lvl2" href="#19-confidence-audit">19. Confidence audit</a>
+<a class="lvl2" href="#20-practice-drill">20. Practice drill</a>
+<a class="lvl2" href="#21-three-minute-whiteboard-script">21. Three-minute whiteboard script</a></nav>
+<main><h1 id="uber-frm-risk-scoping-platform-deep-dive">Uber FRM Risk Scoping Platform: Deep Dive</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li><strong>Materiality</strong>: the dollar threshold above which a misstatement would matter to a reader of the financials. Group materiality on the Q4 2025 sample was <strong>$340M</strong> (MEASURED, from the CSVs / metrics table); residual threshold <strong>$170M</strong>. Materiality is stored as a metric in <code>frm_metrics_table</code> (<code>metric_key = "materiality"</code>).</li>
-<li><strong>Group scoping vs component scoping</strong>: <em>Group scoping</em> looks at the consolidated Uber balance sheet and income statement, line by line, and asks "is this FSLI significant to the group?" <em>Component scoping</em> drills down to the individual entity or component level under each FSLI and decides which components get tested. Group is the top of the tree, component is the leaves.</li>
-<li><strong>Thresholds (5% rule)</strong>: from <code>Scoping Features.docx</code>, a component is a <strong>Financially Significant Component</strong> if <code>Total Revenue % &gt; 5%</code> OR <code>|Total Assets %| &gt; 5%</code>. Those 5% benchmarks are configurable (<code>assets_benchmark</code>, <code>revenue_benchmark</code> metrics) and recomputed via the <code>PUT /update_benchmark_thresholds</code> endpoint.</li>
-<li><strong>Quantitative vs qualitative material</strong>: Quantitative Material = "YES if HFM Amount &gt; Materiality". Qualitative Material is a manual yes/no answer to a scoping question. <strong>Overall Significance = Significant if quantitative OR qualitative is YES</strong> (this exact rule is in the code: <code>conclusion_overall_significance_from_balance_sheet_materials</code>).</li>
-<li><strong>Residual risk</strong>: after removing what is already covered by in-scope components, what balance and multiple of materiality is left uncovered. Computed per leaf: Residual Balances = HFM Amount - Total in Scope, Residual Multiples = Residual Balances / Materiality (from <code>Scoping Features.docx</code> calculation matrix). Flags: <code>&gt; 50% Materiality</code>, <code>&gt; % threshold change</code>.</li>
-<li><strong>EMI entities (Equity Method Investments)</strong>: minority investments Uber accounts for under the equity method (for example stakes where Uber owns a percentage but does not consolidate). These are scoped separately in the EMI screen, one grid column per investee, with fields like ownership %, asset balance, preliminary income/loss, auditor, framework.</li>
-<li><strong>10-Q reconciliation</strong>: Uber's source-of-truth financial numbers come from <strong>Oracle HFM</strong> (Hyperion Financial Management). The recon screen checks HFM amounts against the <strong>publicly filed 10-Q</strong> amounts, line by line, so scoping is built on numbers that tie to what was filed with the SEC. <code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>.</li>
-<li><strong>HFM (Oracle HFM)</strong>: the consolidation system. An ETL job (owned by the data pipeline, not entirely by me: see honesty guardrails) extracts raw GL balances and entity data from HFM and loads them into the MySQL tables.</li>
+<li><strong>What it covers:</strong> everything you need to explain the Uber FRM (Financial Risk Management) Scoping Platform from zero. The finance ideas first, then the architecture, then each resume bullet decoded, then the hard problems and a large bank of interview answers.</li>
+<li><strong>When to read it:</strong> the week before any interview where Uber via EPAM will come up, and again the night before. Read sections 1 to 5 once slowly. After that, the Q&amp;A and the practice drill are what you re-read.</li>
+<li><strong>What to memorise:</strong> the one-minute version (section 1), the five finance words (close, materiality, FSLI, scoping, residual risk), the numbers table (section 9), and the column-aliasing bug story (section 13).</li>
+<li><strong>Shorter version:</strong> the combined FRM + Menu pack is <a href="02_03_uber_frm_menu.html">02_03_uber_frm_menu.md</a>. The canonical prep file is <a href="../../../prep/11_uber_frm_deep_dive.html">prep/11_uber_frm_deep_dive.md</a> and the interview pack is <a href="../../../prep/23b_uber_interview_packs.html">23b_uber_interview_packs.md</a>. Locked numbers live in <a href="../../../prep/GROUND_TRUTH.html">GROUND_TRUTH.md</a>.</li>
 </ul>
-<p>The 8 screens (MEASURED, TDD + <code>Scoping Features.docx</code>): <strong>Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary</strong>.</p>
+</div>
+<p><strong>What the tags on this page mean.</strong> Some facts carry a tag so you know how hard you can lean on them.</p>
+<ul>
+<li><strong>PDF</strong> means the fact is printed on the current resume (<code>Tarun_Mittal_SSE_5yr_Java_PyGo_AI.pdf</code>). Defend it as written.</li>
+<li><strong>MEASURED</strong> means there is a log, a document or code behind it (for example the route count in the controller class, or the Q4 2025 CSVs).</li>
+<li><strong>TARGET</strong> means a design goal. Say "targeting".</li>
+<li><strong>ESTIMATED</strong> means arithmetic you can show on a whiteboard. Say "roughly, derived from...".</li>
+<li><strong>VERBAL</strong> means true and useful depth, but not printed on the resume. Use it when asked, do not lead with it.</li>
+</ul>
+<p><strong>Role framing.</strong> Software Development Engineer 2 at Uber Finance <strong>via EPAM Systems</strong>, Bangalore, July 2024 to May 2026. Always say "Uber via EPAM". The work lived in Uber's internal monorepo: Bazel builds, a Fusion.js frontend, SOADB MySQL, and a Spring Boot backend service. The stack line is <strong>Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker</strong>.</p>
 <hr>
-<h2 id="2-the-real-database-schema-11-sqlalchemy-20-models">2. The real database schema (11 SQLAlchemy 2.0 models)</h2>
-<p>All models use SQLAlchemy 2.0 <code>Mapped[...]</code> / <code>mapped_column(...)</code> typing on a shared <code>DeclarativeBase</code> (<code>database/models/base.py</code>). Every table carries <code>fiscal_quarter</code> (String(4)) + <code>fiscal_year</code> (String(8)) as the period key and audit columns (<code>created_at/by</code>, <code>updated_at/by</code>). There are no DB-level foreign keys in the ORM: relationships are logical, joined on <code>level_id</code> and the fiscal period (this matters, see the bug story).</p>
+<h2 id="1-the-one-minute-version-say-this-out-loud">1. The one-minute version (say this out loud)</h2>
+<p>"At Uber, via EPAM, I owned the backend of the FRM Scoping Platform for Uber Finance. Every quarter, during the financial close, the Financial Risk Management team has to decide which lines of the financial statements and which legal entities are important enough for the external auditor, PwC, to test. They used to do that in a big Google Sheets workbook. I replaced it with a Spring Boot and MySQL service: 36 endpoints that automate the financial math, a nested four-level line-item hierarchy, and dynamic quarter-annualization, on top of 19 million raw general-ledger rows migrated off Sheets. Quarterly reconciliation went from 14 days to 3 days, which is the 70% cut on my resume, against a $340M materiality threshold. I designed an 8-table normalized schema on Uber's SOADB MySQL with optimistic row-locking, atomic cross-table syncs and SHA-256 natural keys so several managers could edit during close without clobbering each other or creating duplicate audit rows. And I led 3 engineers through a Spring Data JPA / Hibernate migration that killed a class of column-aliasing bugs and took module statement coverage to 100%, shipped with stacked Bazel PRs and SOX gates."</p>
+<p><strong>Shorter, 20-second version:</strong> "At Uber via EPAM I owned the FRM scoping backend for Uber Finance, a Spring Boot and MySQL platform that replaced a Google Sheets quarterly close. It cut reconciliation from 14 days to 3, migrated 19M raw ledger rows off Sheets, and I led 3 engineers on the ORM migration that got coverage to 100%."</p>
+<hr>
+<h2 id="2-the-business-in-plain-english">2. The business in plain English</h2>
+<p><strong>Who the users are.</strong> The FRM team inside Uber Finance. They are accountants and risk managers, not engineers. Once a quarter they run the <strong>Scoping Process</strong>.</p>
+<p><strong>What they do.</strong> Uber is a public company. Its financial statements are audited by PwC (PricewaterhouseCoopers, the external auditor). An auditor cannot test every number, so the company and the auditor agree on which parts matter. "Scoping" is that decision: which financial line items and which legal entities are "in scope" for risk assessment and audit testing. The output of scoping becomes the evidence PwC uses to build its <strong>audit work papers</strong> (the auditor's own file proving what it checked and why).</p>
+<p><strong>What hurt before.</strong> The legacy process was a manual Google Sheets workbook (internally called the "DSW version"). It had formulas, manual parent-child mapping of line items, no stable ID per line, no history, no audit trail, and no safe way for two people to edit at once. The technical design doc (TDD) put it this way: "flat-file storage prevents the system from handling complex recursive financial hierarchies, leading to manual mapping errors and lack of real-time data visibility." (TDD: "FRM Scoping Tool - Technical Design Doc", authored by Priyadharshini Govindan, reviewed by Ramesh Raju, started 02-02-2026.)</p>
+<p><strong>Why the company paid for this.</strong> Scoping is a SOX compliance activity. If you scope too narrowly, you miss real risk and that can become an audit finding. If you scope too broadly, you waste expensive audit hours. A spreadsheet that silently maps a line to the wrong parent is a compliance risk, and a two-week manual close is a cost. The platform made the numbers traceable, made each decision attributable to a person, and made the close much faster.</p>
+<hr>
+<h2 id="3-finance-concepts-from-zero">3. Finance concepts from zero</h2>
+<p>You do not need a finance degree. You need these ten ideas, each with a tiny example. All dollar examples marked "illustrative" are made-up round numbers for teaching. The real numbers ($340M, $170M) are marked as such.</p>
+<h3 id="31-the-financial-close">3.1 The financial close</h3>
+<p>The <strong>close</strong> is the period-end routine where accounting finalises the books for a quarter. Every transaction is posted, balances are checked, entities are consolidated, and the numbers are frozen so they can be reported. Think of it as "closing the shop's till at the end of the day", but for a company with hundreds of legal entities and a three-month day. Scoping happens inside the close, so it runs against a hard deadline.</p>
+<h3 id="32-the-general-ledger-gl">3.2 The general ledger (GL)</h3>
+<p>The <strong>general ledger</strong> is the master record of every account and its balance. Each row says, roughly, "this entity, this account, this period, this amount". Think of it as the company's master bank statement, split into thousands of labelled pots.</p>
+<p>Illustrative GL rows:</p>
+<pre><code class="language-text">entity        account                     period    amount_usd
+UBER-US-01    1000 Cash and equivalents   Q4-2025   1,250,000,000
+UBER-NL-02    1000 Cash and equivalents   Q4-2025     310,000,000
+UBER-US-01    4000 Revenue                Q4-2025   2,900,000,000
+</code></pre>
+<p>On the real project, individual quarterly GL extracts were about 38K to 95K rows each, covering roughly 1.7K to 1.8K accounts and about 400 entities (MEASURED from the Q4 2025 CSVs). The resume's <strong>19M</strong> is the total of raw GL rows migrated off Sheets (PDF). Section 9 explains how to talk about both.</p>
+<h3 id="33-hfm-and-the-10-q">3.3 HFM and the 10-Q</h3>
+<p><strong>HFM (Oracle Hyperion Financial Management)</strong> is the consolidation system. Entity trial balances are loaded into it, translated into one currency, and run through intercompany eliminations and minority-interest and equity adjustments. The output is the consolidated group number. Think of HFM as the kitchen where each branch's ingredients are combined into one meal.</p>
+<p>The <strong>10-Q</strong> is the quarterly report Uber files with the SEC (US Securities and Exchange Commission). Its numbers are public and attested. If HFM is the kitchen, the 10-Q is the plate that was served to the public.</p>
+<p><strong>Reconciliation (recon)</strong> means checking the two agree, line by line. In the system:</p>
+<pre><code class="language-text">difference = hfm_amount_in_millions - financial_statement_amount_in_millions
+</code></pre>
+<p>Illustrative: HFM says Cash = $6,120M, the 10-Q says $6,120M, difference 0, fine. HFM says Accrued liabilities = $1,503M, the 10-Q says $1,500M, difference $3M, and someone must explain the break before scoping proceeds.</p>
+<h3 id="34-fsli-and-the-l1-to-l4-tree">3.4 FSLI and the L1 to L4 tree</h3>
+<p>An <strong>FSLI (Financial Statement Line Item)</strong> is one line on the balance sheet or income statement, for example Cash, Accounts Receivable, or Revenue. FSLIs nest. A parent line is the sum of its children, which makes a tree. On this project the tree has four levels, <strong>L1 to L4</strong> (PDF).</p>
+<p>Illustrative tree:</p>
+<pre><code class="language-text">L1  Assets
+ └─ L2  Current assets
+     ├─ L3  Cash and cash equivalents
+     │    ├─ L4  Cash in bank
+     │    └─ L4  Money market funds
+     └─ L3  Accounts receivable, net
+L1  Revenue
+ └─ L2  Mobility revenue
+     └─ L3  ...
+</code></pre>
+<p>The rule that matters in interviews: <strong>a parent must equal the sum of its children.</strong> If one leaf is duplicated or mapped to the wrong parent, the parent is silently wrong. In the database, the scoping fact tables carry <code>level_1</code> to <code>level_4</code> columns. The recon v2 tree is built to L3.</p>
+<h3 id="35-materiality-with-the-340m-example">3.5 Materiality, with the $340M example</h3>
+<p><strong>Materiality</strong> is the dollar threshold above which a misstatement would change the decision of someone reading the financials. Auditors usually set it top-down as a percentage of a key figure such as pre-tax income, total assets or revenue. Think of it as "the smallest mistake anyone would care about".</p>
+<p>On the Q4 2025 close, group materiality was <strong>$340M</strong> and the residual threshold was <strong>$170M</strong> (MEASURED, from the metrics table and CSVs). Present them as "on the Q4 2025 close", not as permanent constants. Materiality is stored as data, not code: a row in <code>frm_metrics_table</code> with <code>metric_key = "materiality"</code>.</p>
+<p>Worked example with the real threshold and illustrative balances:</p>
+<pre><code class="language-text">FSLI                     HFM amount   &gt; $340M?   Quantitative material
+Cash and equivalents     $6,120M      yes        YES
+Prepaid expenses         $   95M      no         NO
+Goodwill                 $8,000M      yes        YES
+</code></pre>
+<h3 id="36-quantitative-vs-qualitative-and-overall-significance">3.6 Quantitative vs qualitative, and Overall Significance</h3>
+<p>Each line gets two independent tests.</p>
+<ul>
+<li><strong>Quantitative Material</strong> = "YES if HFM Amount &gt; Materiality". Pure arithmetic.</li>
+<li><strong>Qualitative Material</strong> = a manual yes/no answer to a scoping question, for example "Is this account subject to significant judgment or estimates?". A small line can still matter because it is risky.</li>
+<li><strong>Overall Significance = Significant if quantitative OR qualitative is YES.</strong> This exact rule is in the code as <code>conclusion_overall_significance_from_balance_sheet_materials</code>.</li>
+</ul>
+<p>Example: Prepaid expenses is $95M, so quantitative is NO. A manager answers the risk question YES. Overall Significance becomes Significant, so the line is in scope.</p>
+<h3 id="37-scoping-group-vs-component">3.7 Scoping: group vs component</h3>
+<p><strong>Scoping</strong> is deciding what gets tested. It happens at two levels.</p>
+<ul>
+<li><strong>Group scoping</strong> looks at the consolidated balance sheet and income statement, line by line, and asks "is this FSLI significant to the group?"</li>
+<li><strong>Component scoping</strong> drills under each FSLI to the individual entity or component and decides which components get tested.</li>
+</ul>
+<p>Group is the top of the tree, component is the leaves. On the Q4 2025 sample that meant about 55 line items (about 26 balance-sheet and 29 income-statement FSLIs) across 14 entities (MEASURED sample, VERBAL depth).</p>
+<h3 id="38-the-5-rule-financially-significant-components">3.8 The 5% rule (financially significant components)</h3>
+<p>From the Scoping Features doc: a component is a <strong>Financially Significant Component</strong> if <code>Total Revenue % &gt; 5%</code> OR <code>|Total Assets %| &gt; 5%</code>. The absolute value on assets matters because a component can carry a large negative balance. The 5% benchmarks are configurable metrics (<code>assets_benchmark</code>, <code>revenue_benchmark</code>) and are recomputed through <code>PUT /update_benchmark_thresholds</code>.</p>
+<p>Illustrative: group revenue is $40B. Entity NL-02 has $2.4B revenue, which is 6%, so it is significant. Entity SG-07 has $0.8B revenue (2%) and 1% of assets, so it is not significant on size. It could still be pulled in "due to risk" or "due to coverage", which are separate columns in the threshold table.</p>
+<h3 id="39-residual-risk">3.9 Residual risk</h3>
+<p><strong>Residual risk</strong> answers: after everything we already put in scope, how much uncovered balance is left, and does it still matter? It proves the leftover is small enough to ignore. Computed per leaf, from the Scoping Features calculation matrix:</p>
+<pre><code class="language-text">Residual Balances  = HFM Amount - Total in Scope
+Residual Multiples = Residual Balances / Materiality
+</code></pre>
+<p>Illustrative with the real $340M: a line has HFM $900M and in-scope components cover $700M. Residual balance is $200M. Residual multiple is 200 / 340 = 0.59. That is more than 50% of materiality, so the screen flags it. The flags are "&gt; 50% Materiality" and "&gt; % threshold change". The residual threshold on the Q4 2025 close was $170M.</p>
+<h3 id="310-quarter-annualization">3.10 Quarter-annualization</h3>
+<p>Materiality is an annual idea, but in Q1 to Q3 you only have part of a year of income-statement activity. <strong>Quarter-annualization</strong> scales a part-year figure up to a full-year equivalent so it can be compared fairly with annual thresholds. The resume says the platform does this dynamically (PDF), meaning the factor depends on which quarter you are in.</p>
+<p>The general textbook method, illustrative: year-to-date revenue at the end of Q2 is $20B. Annualized = 20 × (4 / 2) = $40B. At the end of Q3 with $31B YTD, annualized = 31 × (4 / 3) ≈ $41.3B. Balance-sheet amounts are point-in-time balances, so they are not annualized the same way. If asked for the exact formula in the code, keep it at this level unless you have re-checked it.</p>
+<h3 id="311-emi-entities">3.11 EMI entities</h3>
+<p><strong>EMI (Equity Method Investments)</strong> are minority stakes Uber accounts for under the equity method: Uber owns a percentage of another company but does not consolidate it. They have their own screen, one grid column per investee, with fields like ownership %, asset balance, preliminary income or loss, auditor and reporting framework.</p>
+<h3 id="312-sox-and-pwc">3.12 SOX and PwC</h3>
+<p><strong>SOX (the Sarbanes-Oxley Act)</strong> is a US law that makes management of a public company responsible for internal controls over financial reporting, and makes the external auditor test those controls. In engineering terms, SOX means: every number must be traceable, every change must be attributable to a person, and every control must be repeatable and evidenced. <strong>PwC</strong> is Uber's external auditor and the consumer of the scoping output. This is why the platform cares so much about audit trails, stable IDs and automated gates.</p>
+<hr>
+<h2 id="4-words-you-need-glossary">4. Words you need (glossary)</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>One-line meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FRM</td>
+<td>Financial Risk Management, the team inside Uber Finance that runs scoping.</td>
+</tr>
+<tr>
+<td>Close</td>
+<td>The period-end routine that finalises a quarter's books.</td>
+</tr>
+<tr>
+<td>GL</td>
+<td>General ledger, the master record of accounts and balances.</td>
+</tr>
+<tr>
+<td>HFM</td>
+<td>Oracle Hyperion Financial Management, the consolidation system and source of truth.</td>
+</tr>
+<tr>
+<td>10-Q</td>
+<td>The quarterly report filed with the SEC.</td>
+</tr>
+<tr>
+<td>FSLI</td>
+<td>Financial Statement Line Item, one line on the balance sheet or income statement.</td>
+</tr>
+<tr>
+<td>L1 to L4</td>
+<td>The four levels of the FSLI tree.</td>
+</tr>
+<tr>
+<td>Materiality</td>
+<td>The dollar size of a mistake that would matter ($340M on Q4 2025).</td>
+</tr>
+<tr>
+<td>Scoping</td>
+<td>Deciding which lines and entities the auditor tests.</td>
+</tr>
+<tr>
+<td>Residual risk</td>
+<td>Uncovered balance left after scoping, measured against materiality.</td>
+</tr>
+<tr>
+<td>EMI</td>
+<td>Equity Method Investment, a minority stake that is not consolidated.</td>
+</tr>
+<tr>
+<td>SOX</td>
+<td>Sarbanes-Oxley, the US law about internal financial controls.</td>
+</tr>
+<tr>
+<td>SOADB</td>
+<td>Uber's "service-owned" MySQL standard. Each service owns its own MySQL database on a managed platform.</td>
+</tr>
+<tr>
+<td>ORM</td>
+<td>Object-Relational Mapper. Lets Java classes stand in for database tables, like a translator between objects and rows.</td>
+</tr>
+<tr>
+<td>Spring Boot</td>
+<td>The standard Java framework for building web services. It wires your classes together at startup and gives you a ready web server, so you write the business code and not the plumbing.</td>
+</tr>
+<tr>
+<td>Bean</td>
+<td>Any object Spring creates and manages for you (a controller, a service, a repository). Spring hands each bean the other beans it needs, which is called dependency injection.</td>
+</tr>
+<tr>
+<td><code>@RestController</code></td>
+<td>A Java annotation (a tag on a class or method that frameworks read) marking a class whose methods answer HTTP requests and return JSON. <code>@GetMapping</code> and <code>@PatchMapping</code> tie a method to a URL and verb.</td>
+</tr>
+<tr>
+<td><code>@Service</code></td>
+<td>Marks the class that holds business rules. It sits between the controller and the repository.</td>
+</tr>
+<tr>
+<td>JPA</td>
+<td>Jakarta Persistence API, the Java standard for ORMs. It defines annotations like <code>@Entity</code>, <code>@Id</code> and <code>@Version</code>.</td>
+</tr>
+<tr>
+<td>Hibernate</td>
+<td>The most common JPA implementation. It turns entity changes into SQL, tracks what changed, and runs the version check for optimistic locking.</td>
+</tr>
+<tr>
+<td>Spring Data JPA</td>
+<td>A layer on top of JPA where you declare a repository interface and Spring writes the implementation. <code>findById</code>, <code>save</code> and custom <code>@Query</code> methods come for free.</td>
+</tr>
+<tr>
+<td><code>@Entity</code></td>
+<td>Marks a Java class as a mapped table. Each field is a column, and one object is one row.</td>
+</tr>
+<tr>
+<td><code>@Version</code></td>
+<td>A JPA annotation on a numeric field. Hibernate adds <code>AND version = ?</code> to every update and increments it, which is optimistic locking for free.</td>
+</tr>
+<tr>
+<td><code>@Transactional</code></td>
+<td>Marks a method whose database work must succeed or fail as one unit. Spring opens a transaction before the method and commits after, or rolls back if a runtime exception escapes.</td>
+</tr>
+<tr>
+<td>Bean Validation</td>
+<td>The Java standard for declaring input rules with annotations such as <code>@NotNull</code> and <code>@Pattern</code>. <code>@Valid</code> on a request body makes Spring check them before your code runs.</td>
+</tr>
+<tr>
+<td>DTO</td>
+<td>Data Transfer Object, a small class or Java <code>record</code> that defines the exact shape of a request or response, separate from the database entity.</td>
+</tr>
+<tr>
+<td>HikariCP</td>
+<td>The connection pool Spring Boot uses by default. It keeps a set of open MySQL connections ready to reuse, like a taxi rank instead of calling a new cab each time.</td>
+</tr>
+<tr>
+<td>JUnit 5</td>
+<td>The standard Java test framework. Each <code>@Test</code> method is one test.</td>
+</tr>
+<tr>
+<td>Mockito</td>
+<td>A Java library for fake objects ("mocks"), so a controller can be tested with a fake service and no database.</td>
+</tr>
+<tr>
+<td>MockMvc</td>
+<td>Spring's tool for sending fake HTTP requests to controllers inside a test and checking status codes and JSON, without starting a real server.</td>
+</tr>
+<tr>
+<td>Bazel</td>
+<td>Google-style build system used by Uber's monorepo. It builds and tests only what changed.</td>
+</tr>
+<tr>
+<td>Stacked PRs</td>
+<td>A chain of small pull requests where each builds on the previous one, reviewed and merged in order.</td>
+</tr>
+<tr>
+<td>Natural key</td>
+<td>An ID derived from the data itself (for example a hash of the question text) instead of a random number. Same data, same ID.</td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td>A cryptographic hash. Same input always gives the same 64-character output, and different inputs practically never collide.</td>
+</tr>
+<tr>
+<td>Optimistic locking</td>
+<td>Let everyone read freely, and at write time check that nobody changed the row since you read it. Like a shared doc that warns "this cell changed since you opened it".</td>
+</tr>
+<tr>
+<td>FSM</td>
+<td>Finite State Machine. A fixed set of states (Draft, Review, ReOpen, Closed) and the allowed moves between them.</td>
+</tr>
+<tr>
+<td>Delta variance</td>
+<td>How much a number moved compared with its comparison value, as a percentage.</td>
+</tr>
+<tr>
+<td>Allowlist</td>
+<td>A list of the only things permitted. Anything not on it is rejected.</td>
+</tr>
+<tr>
+<td>Statement coverage</td>
+<td>The percentage of code lines (statements) executed by the test suite.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-architecture">5. Architecture</h2>
+<p>The platform is a classic layered web service. Data comes from HFM through a shared ETL pipeline into MySQL. My service reads and writes that MySQL and serves the screens.</p>
+<div class="mermaid">flowchart LR
+  HFM["Oracle HFM consolidation"] --&gt; ETL["Shared ETL pipeline"]
+  ETL --&gt; DB[("MySQL on SOADB")]
+  UI["React screens on Fusion.js"] --&gt; GW["Uber gateway adds auth email header"]
+  GW --&gt; H["Controller layer: HTTP, auth, errors"]
+  H --&gt; S["Service layer: rules, trees, annualization, transactions"]
+  S --&gt; R["Repository layer: Spring Data JPA queries"]
+  R --&gt; DB
+  UI --&gt; COLLAB["frm-collaboration-service: comments, notifications"]
+  UI --&gt; PWC["Output used for PwC audit work papers"]
+</div>
+<p><em>What to notice: the ETL and the collaboration service are drawn outside my service on purpose. I owned the controller, service and repository boxes and the schema.</em></p>
+<p>Walking through it box by box:</p>
+<ol>
+<li><strong>Oracle HFM</strong> is the source of truth for consolidated numbers.</li>
+<li><strong>Shared ETL pipeline.</strong> Scheduled jobs extract raw balances and entity data from HFM, cleanse them, resolve the recursive parent-child hierarchy into <code>level_mapping</code>, and load normalized rows into the fact tables keyed by fiscal quarter and year. This was a shared pipeline responsibility. My service consumes those tables.</li>
+<li><strong>MySQL on SOADB.</strong> The relational store. All scoping facts, metrics, thresholds, questions and answers live here.</li>
+<li><strong>Gateway.</strong> Uber's gateway authenticates the user and injects an <code>x-auth-params-email</code> header. The service trusts the edge and records the email for the audit trail.</li>
+<li><strong>Controller layer.</strong> One thin Spring Boot <code>@RestController</code> mapped under <code>/frm-scoping</code>. A controller is the class whose methods answer HTTP requests. It reads the auth header, validates parameters and bodies with Bean Validation, calls a service, and leaves error-to-status mapping to one shared <code>@RestControllerAdvice</code> class (a global exception handler).</li>
+<li><strong>Service layer.</strong> <code>@Service</code> classes with the business rules: significance, 5% thresholds, residual risk, quarter-annualization, building the L1 to L4 trees and summing children into parents. Service methods that write are marked <code>@Transactional</code>, so each one is a single all-or-nothing database transaction.</li>
+<li><strong>Repository layer.</strong> Spring Data JPA repository interfaces own every query. You declare <code>interface BalanceSheetRepository extends JpaRepository&lt;BalanceSheet, String&gt;</code> and Spring generates the implementation. Custom reads use <code>@Query</code> with explicit aliases. Hibernate, underneath, turns entity changes into SQL.</li>
+<li><strong>Collaboration service.</strong> Comments and notifications live in a separate <code>frm-collaboration-service</code>. I did not build its real-time or Slack notification parts.</li>
+</ol>
+<p>An ASCII view of the same layering, useful on a whiteboard:</p>
+<pre><code class="language-text">Oracle HFM (consolidation)
+        |  ETL (shared pipeline; my service consumes it)
+        v
++-----------------------------------------------------------+
+|  MySQL (SOADB): 8-table normalized core schema            |
+|  (11 JPA entity classes in the scoping service)           |
+|  level_mapping &lt;-- balance_sheet / income_statement       |
+|                &lt;-- component_entity                       |
+|  recon_* (v2), frm_metrics_table, threshold_table_v2      |
+|  emi_data, scoping_questions / scoping_assessments        |
++-----------------------------------------------------------+
+        ^
+        |  repository (Spring Data JPA) -&gt; service (rules,
+        |  trees, @Transactional) -&gt; controller (HTTP, auth,
+        |  errors)   /frm-scoping/*
++-------+---------------------------------------------------+
+|  Spring Boot, Hibernate, Bean Validation, HikariCP pool   |
+|  x-auth-params-email -&gt; created_by / updated_by           |
++-----------------------------------------------------------+
+        ^
+        |  36 endpoints across the FRM backend surface
++-------+--------------+     +-----------------------------+
+|  React (Fusion.js)   |     |  frm-collaboration-service  |
+|  8 screens           |     |  comments / notifications   |
+|  -&gt; PwC work papers  |     |  (separate, not my build)   |
++----------------------+     +-----------------------------+
+</code></pre>
+<p>The <strong>8 screens</strong> (MEASURED from the TDD and Scoping Features doc, VERBAL depth): Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary. I owned the backend that powers them, not the React UI.</p>
+<hr>
+<h2 id="6-one-request-step-by-step">6. One request, step by step</h2>
+<p>Two flows cover almost every interview question: a read that builds a tree, and a write that changes a decision.</p>
+<h3 id="61-a-read-show-me-the-reconciliation-tree-for-q4-2025">6.1 A read: "show me the reconciliation tree for Q4 2025"</h3>
+<div class="mermaid">sequenceDiagram
+  participant UI as Recon screen
+  participant GW as Uber gateway
+  participant H as Controller
+  participant S as Recon service
+  participant R as Repository
+  participant DB as MySQL
+  UI-&gt;&gt;GW: GET /frm-scoping/v2/recon_balance_sheet?fiscal_quarter=Q4&amp;fiscal_year=2025
+  GW-&gt;&gt;H: same request plus x-auth-params-email
+  H-&gt;&gt;H: validate query params with Bean Validation, 400 if missing
+  H-&gt;&gt;S: fetchTree for Q4 2025 on the same request thread
+  S-&gt;&gt;R: findReconBalanceSheetRows for Q4 2025
+  R-&gt;&gt;DB: SELECT leaf rows WHERE period matches AND is_level_active
+  DB--&gt;&gt;R: flat L3 leaf rows
+  R--&gt;&gt;S: rows as typed projection objects
+  S-&gt;&gt;S: group into L1, L2, L3, sum children into parents, apply FSLI order
+  S--&gt;&gt;H: ReconFetchResponse DTO
+  H--&gt;&gt;UI: 200 JSON tree
+</div>
+<p><em>What to notice: the database returns flat leaves. The tree and the parent sums are built in Java, in the service layer. Spring MVC runs each request on its own thread from the web server's pool, so a blocking database call simply waits on that thread and nothing else needs offloading.</em></p>
+<p>A simplified response (field names inside the nodes are shortened for illustration, amounts are illustrative):</p>
+<pre><code class="language-json">{
+  &quot;level_1_fslis&quot;: [
+    {
+      &quot;level_1&quot;: &quot;Assets&quot;,
+      &quot;hfm_amount_in_millions&quot;: 6215,
+      &quot;children&quot;: [
+        {
+          &quot;level_2&quot;: &quot;Current assets&quot;,
+          &quot;children&quot;: [
+            {&quot;level_3&quot;: &quot;Cash and cash equivalents&quot;,
+             &quot;hfm_amount_in_millions&quot;: 6120,
+             &quot;financial_statement_amount_in_millions&quot;: 6120,
+             &quot;difference&quot;: 0},
+            {&quot;level_3&quot;: &quot;Prepaid expenses&quot;,
+             &quot;hfm_amount_in_millions&quot;: 95,
+             &quot;financial_statement_amount_in_millions&quot;: 92,
+             &quot;difference&quot;: 3}
+          ]
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>An empty period returns <code>"level_1_fslis": []</code>, not an error. Negative amounts render with parentheses, for example <code>($8)</code>.</p>
+<h3 id="62-a-write-mark-this-line-in-scope-and-send-it-to-review">6.2 A write: "mark this line in scope and send it to Review"</h3>
+<div class="mermaid">sequenceDiagram
+  participant UI as Group Scoping screen
+  participant H as Controller
+  participant S as Group BS service
+  participant R as Repository
+  participant DB as MySQL
+  UI-&gt;&gt;H: PATCH /frm-scoping/group_balance_sheet/{uuid} with conclusion_scope, group_status Review and the version it read
+  H-&gt;&gt;H: read x-auth-params-email, 401 if missing, validate body
+  H-&gt;&gt;S: updateScopeAndStatus, a transactional method
+  S-&gt;&gt;S: check status is one of Draft, Review, ReOpen, Closed
+  S-&gt;&gt;R: findById uuid
+  R-&gt;&gt;DB: BEGIN, SELECT row including version
+  S-&gt;&gt;S: compare client version, set fields and updated_by
+  S-&gt;&gt;DB: at commit Hibernate sends UPDATE ... WHERE uuid matches AND version matches
+  alt row unchanged since read
+    DB--&gt;&gt;S: 1 row updated, version plus 1
+    S-&gt;&gt;DB: COMMIT
+    H--&gt;&gt;UI: 200
+  else someone else edited first
+    DB--&gt;&gt;S: 0 rows updated
+    S-&gt;&gt;DB: ROLLBACK after OptimisticLockException
+    H--&gt;&gt;UI: 409 Conflict, reload and retry
+  end
+</div>
+<p><em>What to notice: no lock is held while the manager is thinking. The conflict check happens only at the instant of the write, and the editor's email is stored as <code>updated_by</code>. The version check is the optimistic row-locking from bullet F2. The 409 is the standard Spring mapping for a failed version check. Defend the mechanism ("a version check on update") and do not recite exact column names beyond that.</em></p>
+<hr>
+<h2 id="7-each-resume-bullet-decoded">7. Each resume bullet decoded</h2>
+<p>These are the exact three bullets on the current PDF, followed by the stack line.</p>
+<h3 id="71-bullet-f1-ownership-the-70-cut-19m-rows-36-endpoints">7.1 Bullet F1: ownership, the 70% cut, 19M rows, 36 endpoints</h3>
+<blockquote>
+<p>Owned the Financial Risk Management scoping backend, reducing quarterly reconciliation time by <strong>70%</strong> (from <strong>14 days to 3 days</strong>) against a <strong>$340M</strong> materiality threshold. Engineered the Sheets-to-MySQL migration across <strong>19M</strong> raw GL rows, shipping <strong>36 Spring Boot</strong> endpoints to automate custom financial math and a nested 4-level FSLI (L1–L4) hierarchy with dynamic quarter-annualization.</p>
+</blockquote>
+<p><strong>In plain words.</strong> I owned the server side of the scoping tool. The close used to take about two weeks of manual spreadsheet work. With the platform it took three days. The data moved out of Google Sheets into MySQL, and 36 API endpoints now do the math that used to live in spreadsheet formulas: significance tests, 5% thresholds, residual risk, annualizing part-year numbers, and rolling leaf lines up a four-level tree.</p>
+<p><strong>How it works.</strong></p>
+<ul>
+<li><strong>Data in.</strong> HFM-loaded GL data lands in MySQL tables keyed by <code>fiscal_quarter</code> and <code>fiscal_year</code>. Every fact row carries a <code>level_id</code> that points to <code>level_mapping</code>, which holds the L1 to L4 path text.</li>
+<li><strong>Math in the service layer.</strong> The rules from section 3 are plain Java methods on <code>@Service</code> classes, deterministic and testable. Money is <code>BigDecimal</code> (exact decimal arithmetic), never <code>double</code>. Quantitative = HFM &gt; materiality. Overall = quantitative OR qualitative. Component significant = revenue % &gt; 5% OR |assets %| &gt; 5%. Residual = HFM minus total in scope, divided by materiality. Annualization scales part-year income-statement figures.</li>
+<li><strong>Tree building.</strong> The repository returns flat leaves. The service groups them by L1, L2, L3 (and L4 in the scoping tables), sums children into parents, and orders lines in financial-statement order.</li>
+<li><strong>Endpoints.</strong> 36 across the FRM backend surface (section 10 has the breakdown).</li>
+</ul>
+<p>A tiny version of the tree roll-up, to show the idea (simplified, not a paste of the repo):</p>
+<pre><code class="language-java">record Leaf(String level1, String level2, String level3, BigDecimal hfmAmount) {}
+record Node(String name, BigDecimal hfmAmount, List&lt;?&gt; children) {}
+
+static List&lt;Node&gt; buildTree(List&lt;Leaf&gt; leaves) {
+    Map&lt;String, Map&lt;String, List&lt;Leaf&gt;&gt;&gt; tree = leaves.stream().collect(
+        groupingBy(Leaf::level1, LinkedHashMap::new,
+            groupingBy(Leaf::level2, LinkedHashMap::new, toList())));
+    List&lt;Node&gt; out = new ArrayList&lt;&gt;();
+    tree.forEach((l1, l2s) -&gt; {
+        List&lt;Node&gt; l2Nodes = new ArrayList&lt;&gt;();
+        l2s.forEach((l2, rows) -&gt; l2Nodes.add(new Node(l2, sum(rows, Leaf::hfmAmount), rows)));
+        out.add(new Node(l1, sum(l2Nodes, Node::hfmAmount), l2Nodes));
+    });
+    return out;
+}
+
+static &lt;T&gt; BigDecimal sum(List&lt;T&gt; xs, Function&lt;T, BigDecimal&gt; f) {
+    return xs.stream().map(f).reduce(BigDecimal.ZERO, BigDecimal::add);
+}
+</code></pre>
+<p>A <code>record</code> is a compact Java class that just holds data, which is ideal for DTOs. <code>LinkedHashMap</code> keeps insertion order, so lines stay in the order they arrived until the FSLI ordering step sorts them.</p>
+<p><strong>Why this design.</strong> Finance needed one source of truth with stable IDs per line, so comments and audit history can attach to a line. A relational store with period keys gives that. Encoding the rules as code makes them repeatable and testable, which is what SOX wants.</p>
+<p><strong>Alternatives and why not.</strong> Keep Sheets and add scripts: still no stable IDs, no concurrency control, no audit trail. A data warehouse: overkill for this size and it does not give transactional edit semantics. A low-code tool: could not model the recursive hierarchy and the custom rules cleanly.</p>
+<p><strong>The numbers.</strong> Section 9 has every number in detail. Short version: 70% and 14 to 3 days is the close outcome, $340M is the Q4 2025 materiality, 19M is raw GL rows migrated off Sheets, 36 is the endpoint count.</p>
+<p><strong>Questions they will ask.</strong></p>
+<ul>
+<li><em>"Is 70% measured?"</em> "It's the outcome of the platform for the close: reconciliation went from 14 days to 3. The technical design doc framed that cut, and that's what the platform delivered for the close."</li>
+<li><em>"How do you get 36?"</em> "About 31 functional routes in the scoping service controller, plus the collaboration-service APIs for comments and notifications defined in the design doc. Together that's the 36-endpoint backend surface."</li>
+<li><em>"19M rows sounds big for a finance tool. Where's the scale challenge?"</em> "The 19M is the raw GL rows we migrated off Sheets. A single quarter's extract is much smaller, tens of thousands of rows. The hard part was never throughput. It was correctness, the hierarchy, and auditability."</li>
+</ul>
+<h3 id="72-bullet-f2-schema-locking-atomic-syncs-natural-keys">7.2 Bullet F2: schema, locking, atomic syncs, natural keys</h3>
+<blockquote>
+<p>Resolved ETL pipeline lock contention during financial close by designing an 8-table normalized MySQL schema on Uber's SOADB featuring a polymorphic review-status model. Guaranteed real-time, multi-user collaboration integrity by implementing optimistic row-locking, atomic cross-table syncs, and deterministic SHA-256 natural-key hashing to eliminate data duplication across quarterly audit trails.</p>
+</blockquote>
+<p><strong>In plain words.</strong> During close, two things hit the data at the same time: the ETL loading fresh numbers, and several managers editing scoping decisions. If they block each other, the close slows down. I designed a normalized schema where each edit touches a small, specific row, used optimistic locks so nobody holds a lock while thinking, made multi-table updates all-or-nothing, and gave rows IDs derived from their content so re-running a load cannot create duplicates.</p>
+<p><strong>ETL lock contention, explained.</strong> A database lock is like a "do not disturb" sign on a row. A pessimistic design puts the sign up when a user opens a record and takes it down when they save, which can be minutes. Meanwhile the ETL wants to refresh those rows and waits. With a wide, denormalized table, one edit can block a large chunk of the data. A normalized schema splits facts, mappings, metrics, thresholds, questions and answers into their own tables, so an answer edit in <code>scoping_assessments</code> does not touch the rows the ETL is loading into <code>balance_sheet</code>. Short transactions plus optimistic locking keep the remaining overlap tiny.</p>
+<p><strong>8 tables vs 11 entities.</strong> The PDF says an 8-table normalized schema. The scoping service code has 11 JPA entity classes (section 8). If an interviewer notices, say: "The 8 is the core normalized scoping schema. The service code also carries supporting tables such as the recon v2 leaf tables and the metrics key-value store, which is why you see 11 entity classes." Do not recite an exact eight-table list unless you have re-checked it.</p>
+<p><strong>Polymorphic review-status model.</strong> One status vocabulary, <strong>Draft, Review, ReOpen, Closed</strong>, reused across different screens and tables instead of a custom status per screen. The fact tables carry <code>group_status</code>, <code>component_status</code> and <code>residual_status</code>. The threshold table carries <code>review_status</code>. The same validation code accepts only the allowed values, so every screen behaves the same way and the audit story is uniform. "Polymorphic" here means one status model that applies to many kinds of record.</p>
+<div class="mermaid">flowchart LR
+  D["Draft"] --&gt; RV["Review"]
+  RV --&gt; C["Closed"]
+  C --&gt; RO["ReOpen"]
+  RO --&gt; RV
+</div>
+<p><em>What to notice: this is the typical lifecycle the names describe. The same four states apply on Group Scoping, Component Scoping, Residual Risk and Threshold Setup.</em></p>
+<p><strong>Optimistic row-locking.</strong> Every editor reads freely. When they save, the update only succeeds if the row still has the version they read. If someone else saved first, zero rows match and the second editor must reload. JPA supports this natively with one annotation, <code>@Version</code>. The general shape (illustrative, not a paste of the repo):</p>
+<pre><code class="language-java">@Entity
+@Table(name = &quot;balance_sheet&quot;)
+public class BalanceSheet {
+    @Id
+    @Column(length = 64)
+    private String uuid;
+
+    @Column(name = &quot;group_status&quot;, length = 16)
+    private String groupStatus;
+
+    @Version
+    private long version;      // Hibernate checks and bumps this on every update
+    // getters, setters, other columns
+}
+</code></pre>
+<p>This is what Hibernate sends at commit time:</p>
+<pre><code class="language-sql">UPDATE balance_sheet
+SET group_status = 'Review', version = 8, updated_by = 'manager@uber.com'
+WHERE uuid = ? AND version = 7;
+-- 1 row updated: success. 0 rows updated: someone else saved first.
+</code></pre>
+<p>If zero rows match, Hibernate throws <code>OptimisticLockException</code> (Spring wraps it as <code>ObjectOptimisticLockingFailureException</code>), the transaction rolls back, and the global exception handler turns it into HTTP 409 Conflict.</p>
+<p>One subtlety worth knowing. <code>@Version</code> on its own only guards the short gap between loading the row and committing inside one request. To guard the manager's think time (the minutes between opening the screen and clicking save), the client sends back the version it originally read, and the service compares it first:</p>
+<pre><code class="language-java">@Transactional
+public BalanceSheet updateScopeAndStatus(String uuid, GroupPatchRequest req, String email) {
+    BalanceSheet row = repo.findById(uuid)
+        .orElseThrow(() -&gt; new NotFoundException(&quot;balance_sheet row not found&quot;));
+    if (row.getVersion() != req.version()) {
+        throw new ObjectOptimisticLockingFailureException(BalanceSheet.class, uuid);
+    }
+    row.setConclusionScope(req.conclusionScope());
+    row.setGroupStatus(req.groupStatus());
+    row.setUpdatedBy(email);
+    return row;   // no save() call needed: Hibernate flushes the change at commit
+}
+</code></pre>
+<p>Hibernate's "dirty checking" is why there is no explicit <code>save()</code>. Inside a transaction, Hibernate remembers what every loaded entity looked like and writes only the fields that changed when the transaction commits.</p>
+<p><strong>Atomic cross-table syncs.</strong> Some edits must land in two tables or none. Real examples from the code:</p>
+<ul>
+<li>The EMI "Total" column patch mirrors the amount into <code>balance_sheet</code> or <code>income_statement</code> in the <strong>same</strong> transaction before commit.</li>
+<li>A <code>scoping_assessments</code> write with <code>sync_required</code> updates the mapped line table and the assessment together, and rolls back everything if the line sync affects zero rows.</li>
+<li>Updating benchmarks updates both <code>assets_benchmark</code> and <code>revenue_benchmark</code> and commits once, throwing a not-found exception if either row is missing.</li>
+</ul>
+<p>The Spring pattern that makes this safe is one <code>@Transactional</code> service method. Spring wraps the method in a proxy (a stand-in object that runs code before and after yours). The proxy begins a transaction, calls your method, and commits. If a runtime exception escapes, it rolls back every write made inside the method.</p>
+<pre><code class="language-java">@Service
+public class EmiService {
+    private final EmiDataRepository emiRepo;
+    private final BalanceSheetRepository factRepo;
+
+    EmiService(EmiDataRepository emiRepo, BalanceSheetRepository factRepo) {
+        this.emiRepo = emiRepo;
+        this.factRepo = factRepo;
+    }
+
+    @Transactional
+    public void patchEmiTotal(String emiUuid, String levelId, BigDecimal amount, String email) {
+        emiRepo.updateTotal(emiUuid, amount, email);
+        int rows = factRepo.mirrorTotal(levelId, amount);
+        if (rows == 0) {
+            throw new NotFoundException(&quot;mapped line not found&quot;);   // rolls back both writes
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-java">public interface BalanceSheetRepository extends JpaRepository&lt;BalanceSheet, String&gt; {
+    @Modifying
+    @Query(&quot;UPDATE BalanceSheet b SET b.hfmAmount = :amount WHERE b.levelId = :levelId&quot;)
+    int mirrorTotal(@Param(&quot;levelId&quot;) String levelId, @Param(&quot;amount&quot;) BigDecimal amount);
+}
+</code></pre>
+<p>Three Spring facts interviewers like to probe. First, rollback happens by default only for unchecked (runtime) exceptions, which is why <code>NotFoundException</code> extends <code>RuntimeException</code>. Second, calling a <code>@Transactional</code> method from another method in the same class skips the proxy, so no transaction starts. Keep transactional entry points public and call them from outside the class. Third, <code>@Modifying</code> bulk updates go straight to SQL, so they skip the <code>@Version</code> check and the in-memory entity state. That is why edits that need the version check go through loaded entities, as in the optimistic-locking example above, while bulk updates suit derived mirrors like this one.</p>
+<p><strong>SHA-256 natural keys.</strong> Default qualitative questions are seeded per page. If the seed runs twice with random IDs, you get duplicate questions, and duplicate answers across quarterly audit trails. Instead the <code>scoping_questions.uuid</code> is SHA-256 of <code>question_text</code> plus the normalized <code>page_name</code>, and the bulk endpoint upserts. Same question, same ID, every time.</p>
+<pre><code class="language-java">static String questionUuid(String questionText, String pageName) {
+    String normalizedPage = pageName.strip().toLowerCase(Locale.ROOT);  // normalization shown for illustration
+    try {
+        MessageDigest sha = MessageDigest.getInstance(&quot;SHA-256&quot;);
+        byte[] hash = sha.digest((questionText + normalizedPage).getBytes(StandardCharsets.UTF_8));
+        return HexFormat.of().formatHex(hash);   // 64 hex characters
+    } catch (NoSuchAlgorithmException e) {
+        throw new IllegalStateException(&quot;SHA-256 is always available on the JVM&quot;, e);
+    }
+}
+</code></pre>
+<p><code>MessageDigest</code> is the JDK's built-in hashing class. Fixing the charset to UTF-8 matters: hashing with the machine's default charset could give a different ID on a different server, which would break the "same input, same ID" promise.</p>
+<p>Re-posting the same payload to <code>POST /scoping_questions/bulk</code> updates in place instead of inserting a second copy.</p>
+<p><strong>Why this design.</strong> Close week is exactly when contention and duplicates hurt most. Optimistic locking fits because conflicts are rare (managers mostly edit different lines) but must be caught when they happen. Natural keys make loads replay-safe.</p>
+<p><strong>Alternatives and why not.</strong> Pessimistic locks everywhere (<code>SELECT ... FOR UPDATE</code>, which JPA exposes as <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>, held during editing): blocks the ETL and other editors for the whole think time. Last-write-wins with no check: silently loses a manager's decision, which is unacceptable for audit. Random UUIDs or auto-increment IDs: re-running a seed or load duplicates rows.</p>
+<p><strong>Trade-off.</strong> Optimistic locking pushes conflict handling to the client (reload and retry). Natural keys mean that if the hashed fields change (a question is reworded), it becomes a new ID by design.</p>
+<p><strong>Say this carefully.</strong> The bullet says "real-time, multi-user collaboration integrity". The integrity part is the scoping service's writes: optimistic locks, atomic syncs, natural keys, <code>updated_by</code>. The real-time push to other users' screens and the Slack notifications belonged to the separate collaboration service and the frontend (TanStack Query polling or a WebSocket-lite model in the design doc). Do not claim you built those. Older prep placed version-check concurrency only in the collaboration service. The current resume claims optimistic row-locking on the scoping writes, so defend it as the version check on update and keep the detail at the pattern level shown above.</p>
+<p><strong>Questions they will ask.</strong></p>
+<ul>
+<li><em>"Why optimistic and not pessimistic locking?"</em> "Because conflicts are rare but costly. Managers usually work different lines, so holding locks while someone thinks would mostly block the ETL and other users for nothing. With a version check, nobody waits, and the rare real conflict is caught at save time instead of silently overwriting someone."
+  <em>Follow-up they may ask:</em> "What actually happens in Spring on a conflict?" "The entity has a <code>@Version</code> field. Hibernate adds <code>AND version = ?</code> to the update, sees zero rows changed, and throws <code>OptimisticLockException</code>. Spring rolls the transaction back, and our controller advice returns 409 so the screen reloads the row."</li>
+<li><em>"What does SHA-256 buy you over an auto-increment ID?"</em> "Determinism. The same question on the same page always gets the same ID, so re-running a seed or a quarterly load upserts in place instead of duplicating rows in the audit trail."</li>
+</ul>
+<h3 id="73-bullet-f3-leading-3-orm-migration-100-coverage-sox-gates">7.3 Bullet F3: leading 3, ORM migration, 100% coverage, SOX gates</h3>
+<blockquote>
+<p>Led <strong>3 engineers</strong> in a core Spring Data JPA / Hibernate migration that eliminated latent column-aliasing bugs and raised module statement coverage to <strong>100%</strong>. Orchestrated zero-downtime releases via stacked Bazel PRs, embedding reporting SQL allowlists and automated FSM gates with <strong>50%</strong> delta-variance checks to enforce SOX compliance.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Parts of the code built results from hand-written native SQL and mapped columns into maps by name, which broke silently when two joined tables had the same column names. I led a pod of 3 engineers moving that code to JPA entities and Spring Data JPA repository queries with explicit aliases and typed projections, and we tested the migrated modules until every statement was covered. We shipped in small stacked PRs so nothing went down. Reporting queries were restricted to an approved list, and status changes were gated by an automated check that flags big swings in numbers.</p>
+<p><strong>How it works.</strong></p>
+<ul>
+<li><strong>The ORM migration.</strong> Native SQL whose rows were copied into a <code>Map</code> keyed by column label was replaced with <code>@Entity</code> classes and Spring Data JPA repository methods. Joined reads use <code>@Query</code> with an explicit <code>AS</code> alias on every projected column, returned as typed interface projections. Section 13 tells the bug story in full.</li>
+<li><strong>100% module statement coverage.</strong> Statement coverage is the share of code lines the tests execute (in Java it is usually measured with JaCoCo, which reports line and branch coverage). "Module" matters: it is the coverage of the modules the migration touched, not a claim about the whole service. The suite grew past 1,100 tests (VERBAL. A count of <code>@Test</code> methods across about 65 test classes finds roughly 1,288).</li>
+<li><strong>Stacked Bazel PRs.</strong> A big change is split into a chain of small PRs, each building on the previous one and each passing its Bazel <code>java_test</code> targets before merge. Illustrative shape of a stack: entities first, then DTOs, then repositories, then services, then controller routes added alongside the old ones, then the UI switch. Because new paths are added next to old ones (like <code>/v2/recon_*</code> next to v1), each merge is safe to deploy with zero downtime.</li>
+<li><strong>Reporting SQL allowlists.</strong> Reporting reads can only run approved, parameterized queries over approved columns. Anything not on the list is rejected. For SOX, that means every number on a report comes from a reviewed query, not ad hoc SQL.</li>
+<li><strong>FSM gates with 50% delta-variance checks.</strong> The review-status state machine (Draft, Review, ReOpen, Closed) is the FSM. A gate is an automated check that runs when a record tries to move state. The delta-variance check compares a number with its comparison value (for example current amount against <code>hfm_amount_previous_year</code>) and flags any movement over 50%, so a big unexplained swing cannot quietly advance. If asked for the exact formula, keep it at this level unless you have re-checked the code. The Residual Risk screen also has a "&gt; 50% of materiality" flag. That is a related but different check, so do not mix them up.</li>
+</ul>
+<p>Illustrative gate:</p>
+<pre><code class="language-java">private static final Set&lt;String&gt; STATUSES = Set.of(&quot;Draft&quot;, &quot;Review&quot;, &quot;ReOpen&quot;, &quot;Closed&quot;);
+private static final BigDecimal MAX_DELTA = new BigDecimal(&quot;0.50&quot;);
+
+boolean canAdvance(BalanceSheet row, String toStatus) {
+    if (!STATUSES.contains(toStatus)) {
+        throw new IllegalArgumentException(&quot;invalid status: &quot; + toStatus);
+    }
+    BigDecimal prev = row.getHfmAmountPreviousYear();
+    if (prev != null &amp;&amp; prev.signum() != 0) {
+        BigDecimal delta = row.getHfmAmount().subtract(prev).abs()
+            .divide(prev.abs(), 4, RoundingMode.HALF_UP);
+        if (delta.compareTo(MAX_DELTA) &gt; 0) {
+            return row.hasReviewerExplanation();
+        }
+    }
+    return true;
+}
+</code></pre>
+<p><code>BigDecimal.divide</code> needs a scale and rounding mode, otherwise a repeating decimal such as 1/3 throws an exception. <code>compareTo</code> is used instead of <code>equals</code> because <code>equals</code> on <code>BigDecimal</code> also compares scale, so <code>0.5</code> and <code>0.50</code> would not be equal.</p>
+<p><strong>Why this design.</strong> SOX needs controls that are automatic, repeatable and evidenced. A state machine with gates is a control you can show an auditor. Allowlisted SQL is a control on what reports can say. Full statement coverage on the migrated modules was the proof that the migration did not change behaviour.</p>
+<p><strong>Alternatives and why not.</strong> Fix the aliasing bugs one by one in raw SQL: whack-a-mole, the pattern stays dangerous. A big-bang rewrite in one PR: impossible to review, risky to deploy during close. Manual review of every status change: slow and not evidenced.</p>
+<p><strong>Leadership framing.</strong> Tech lead of an EPAM pod inside Uber, not a people manager. Do not merge this with "mentored 2" from Masters India. Section 15 has the details.</p>
+<p><strong>Questions they will ask.</strong></p>
+<ul>
+<li><em>"100% coverage sounds like vanity."</em> "It's statement coverage on the modules the ORM migration touched, not the whole service. The point was proof: when you change how every query maps its columns, you want every line exercised so you know behaviour didn't change."</li>
+<li><em>"What's a delta-variance gate?"</em> "A check on a status transition. If a line's amount moved more than 50% against its comparison value, it can't silently move forward. It needs a reviewer's attention first. That's the kind of automated, evidenced control SOX auditors want to see."</li>
+</ul>
+<p><strong>Stack line:</strong> Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker.</p>
+<hr>
+<h2 id="8-the-schema-in-depth-11-jpa-entities">8. The schema in depth (11 JPA entities)</h2>
+<p>All entities are <code>@Entity</code> classes that extend one shared <code>@MappedSuperclass</code> base. A mapped superclass is a parent class whose fields are copied into every child table without being a table itself. The base carries <code>fiscal_quarter</code> (<code>VARCHAR(4)</code>) and <code>fiscal_year</code> (<code>VARCHAR(8)</code>) as the period key, plus audit columns (<code>created_at</code>, <code>created_by</code>, <code>updated_at</code>, <code>updated_by</code>). There are <strong>no database-level foreign keys</strong> and no JPA <code>@ManyToOne</code> relationships between these entities. Relationships are logical, joined on <code>level_id</code> and the fiscal period in explicit queries. This matters for the bug story in section 13.</p>
+<pre><code class="language-java">@MappedSuperclass
+public abstract class PeriodAuditedEntity {
+    @Column(name = &quot;fiscal_quarter&quot;, length = 4)  protected String fiscalQuarter;
+    @Column(name = &quot;fiscal_year&quot;, length = 8)     protected String fiscalYear;
+    @Column(name = &quot;created_at&quot;)                  protected Instant createdAt;
+    @Column(name = &quot;created_by&quot;)                  protected String createdBy;
+    @Column(name = &quot;updated_at&quot;)                  protected Instant updatedAt;
+    @Column(name = &quot;updated_by&quot;)                  protected String updatedBy;
+}
+</code></pre>
 <table>
 <thead>
 <tr>
 <th>#</th>
-<th>Python model</th>
-<th><code>__tablename__</code></th>
+<th>JPA entity class</th>
+<th>Table name</th>
 <th>Purpose</th>
 <th>Key columns</th>
 </tr>
@@ -104,84 +692,84 @@ strong{color:#fff}
 <td>1</td>
 <td><code>BalanceSheet</code></td>
 <td><code>balance_sheet</code></td>
-<td>Group + component BS scoping facts</td>
+<td>Group and component balance-sheet scoping facts</td>
 <td><code>uuid</code> (PK), <code>level_id</code>, <code>level_1..level_4</code>, <code>hfm_amount</code>, <code>hfm_amount_previous_year</code>, <code>percentage_of_total</code>, <code>group_multiple</code>, <code>quantitative_material</code>, <code>qualitative_material</code>, <code>conclusion_overall_significance</code>, <code>conclusion_scope</code>, <code>total_inscope</code>, <code>residual_balances</code>, <code>residual_multiples</code>, <code>group_status</code>, <code>component_status</code>, <code>residual_status</code>, <code>is_level_active</code></td>
 </tr>
 <tr>
 <td>2</td>
 <td><code>IncomeStatement</code></td>
 <td><code>income_statement</code></td>
-<td>Group + component IS scoping facts</td>
-<td>same shape as <code>balance_sheet</code>; also has classmethods <code>fetch_for_period</code>, <code>uuid_exists</code>, <code>get_qualitative_and_conclusion</code>, <code>update_scope_and_status</code> (ORM-side query helpers)</td>
+<td>Group and component income-statement facts</td>
+<td>Same shape as <code>balance_sheet</code>. Its repository adds period-scoped query methods such as <code>findByFiscalQuarterAndFiscalYear</code>, <code>existsById</code>, a qualitative-and-conclusion projection, and the scope-and-status update</td>
 </tr>
 <tr>
 <td>3</td>
 <td><code>EmiData</code></td>
 <td><code>emi_data</code></td>
-<td>EMI grid, one row per investee/column</td>
-<td><code>uuid</code> (PK), <code>investee</code>, <code>investee_entity</code>, <code>uber_investor_entity</code>, <code>uber_ownership_equity_interest_percentage</code>, <code>asset_balance</code>, <code>preliminary_income_loss_on_investments</code>, <code>auditor</code>, <code>financial_reporting_framework</code>, <code>significant_emi</code>, <code>is_active</code>; <code>@validates</code> strips whitespace on all string columns</td>
+<td>EMI grid, one row per investee column</td>
+<td><code>uuid</code> (PK), <code>investee</code>, <code>investee_entity</code>, <code>uber_investor_entity</code>, <code>uber_ownership_equity_interest_percentage</code>, <code>asset_balance</code>, <code>preliminary_income_loss_on_investments</code>, <code>auditor</code>, <code>financial_reporting_framework</code>, <code>significant_emi</code>, <code>is_active</code>. A <code>@PrePersist</code> / <code>@PreUpdate</code> callback (a method JPA runs just before insert or update) strips whitespace on all string columns</td>
 </tr>
 <tr>
 <td>4</td>
 <td><code>ScopingMetrics</code></td>
 <td><code>frm_metrics_table</code></td>
-<td>key/value metrics (materiality, benchmarks)</td>
+<td>Key-value metrics (materiality, benchmarks)</td>
 <td><code>uuid</code> (PK), <code>metric_key</code>, <code>metric_value</code> (String(512)), <code>unit</code>, <code>is_active</code></td>
 </tr>
 <tr>
 <td>5</td>
 <td><code>ScopingQuestion</code></td>
 <td><code>scoping_questions</code></td>
-<td>default qualitative questions per page</td>
-<td><code>uuid</code> (PK, SHA-256 of question_text + normalized page_name), <code>question_text</code> (Text), <code>page_name</code>, <code>is_active</code></td>
+<td>Default qualitative questions per page</td>
+<td><code>uuid</code> (PK, SHA-256 of <code>question_text</code> + normalized <code>page_name</code>), <code>question_text</code> (Text), <code>page_name</code>, <code>is_active</code></td>
 </tr>
 <tr>
 <td>6</td>
 <td><code>ScopingAssessment</code></td>
 <td><code>scoping_assessments</code></td>
-<td>per-line answers to questions</td>
+<td>Per-line answers to questions</td>
 <td><code>uuid</code> (PK), <code>question_id</code>, <code>line_id</code>, <code>answer_text</code> (Text)</td>
 </tr>
 <tr>
 <td>7</td>
 <td><code>ThresholdSetup</code></td>
 <td><code>threshold_table_v2</code></td>
-<td>legal-entity threshold significance</td>
+<td>Legal-entity threshold significance</td>
 <td><code>uuid</code> (PK), <code>legal_entity</code>, <code>total_assets</code>, <code>total_assets_percentage</code>, <code>total_revenue</code>, <code>total_revenue_percentage</code>, <code>financially_significant_component</code>, <code>significant_due_to_risk</code>, <code>inscope_due_to_coverage</code>, <code>conclusion</code>, <code>review_status</code></td>
 </tr>
 <tr>
 <td>8</td>
 <td><code>LevelMapping</code></td>
 <td><code>level_mapping</code></td>
-<td>maps FSLI text hierarchy to a stable <code>level_id</code></td>
-<td><code>uuid</code> (PK, used as the join target), <code>level1..level4</code>, <code>is_active</code></td>
+<td>Maps FSLI text hierarchy to a stable <code>level_id</code></td>
+<td><code>uuid</code> (PK, the join target), <code>level1..level4</code>, <code>is_active</code></td>
 </tr>
 <tr>
 <td>9</td>
 <td><code>ComponentEntityRow</code></td>
 <td><code>component_entity</code></td>
-<td>per-component HFM amounts by <code>level_id</code></td>
+<td>Per-component HFM amounts by <code>level_id</code></td>
 <td><code>uuid</code> (PK), <code>level_id</code>, <code>scoping_component</code>, <code>amount</code></td>
 </tr>
 <tr>
 <td>10</td>
 <td><code>ReconBalanceSheet</code></td>
 <td><code>recon_balance_sheet</code></td>
-<td>recon v2 BS leaf rows</td>
+<td>Recon v2 balance-sheet leaf rows</td>
 <td><code>uuid</code> (PK), <code>level_id</code>, <code>level_1..level_3</code>, <code>hfm_amount</code>, <code>hfm_amount_in_millions</code>, <code>financial_statement_amount_in_millions</code>, <code>difference</code>, <code>is_level_active</code></td>
 </tr>
 <tr>
 <td>11</td>
 <td><code>ReconIncomeStatement</code></td>
 <td><code>recon_income_statement</code></td>
-<td>recon v2 IS leaf rows</td>
-<td>same shape as <code>recon_balance_sheet</code></td>
+<td>Recon v2 income-statement leaf rows</td>
+<td>Same shape as <code>recon_balance_sheet</code></td>
 </tr>
 </tbody>
 </table>
-<p>Note the table name traps to say out loud: the threshold table is physically <code>threshold_table_v2</code> (the model class is <code>ThresholdSetup</code>), and the metrics/materiality store is <code>frm_metrics_table</code> (class <code>ScopingMetrics</code>). GROUND_TRUTH notes the full physical <code>schema.uql</code> has 16+ tables (collaboration service, comments, notifications live elsewhere); the scoping service itself owns these 11 ORM models. Say "11 SQLAlchemy models in the scoping service", not "the whole database is 11 tables".</p>
-<h3 id="ascii-er-sketch-logical-joins-not-fk-constraints">ASCII ER sketch (logical joins, not FK constraints)</h3>
-<pre><code>                         level_mapping (level_id = uuid)
+<p><strong>Name traps to say correctly.</strong> The threshold table is physically <code>threshold_table_v2</code> (entity class <code>ThresholdSetup</code>). The metrics and materiality store is <code>frm_metrics_table</code> (class <code>ScopingMetrics</code>). The full physical schema file (<code>schema.uql</code>) has 16+ tables because the collaboration service, comments and notifications live there too. The scoping service itself owns these 11 entity classes. So say "11 JPA entities in the scoping service", never "the whole database is 11 tables". The PDF's "8-table normalized schema" is the core scoping schema (see section 7.2).</p>
+<p><strong>How the tables connect.</strong> Logical joins, not foreign-key constraints:</p>
+<pre><code class="language-text">                         level_mapping (level_id = uuid)
                          level1 / level2 / level3 / level4
                                     ^        ^
              join on level_id +     |        |     join on level_id +
@@ -211,184 +799,641 @@ strong{color:#fff}
    recon_balance_sheet / recon_income_statement  (v2 recon leaves,
       level_1..level_3, hfm vs financial_statement amount, difference)
 </code></pre>
-<p>The spine is <code>level_mapping</code>: the fact tables (<code>balance_sheet</code>, <code>income_statement</code>) and <code>component_entity</code> all carry a <code>level_id</code> that equals <code>level_mapping.uuid</code>, and joins are always ANDed with <code>fiscal_quarter</code>, <code>fiscal_year</code>, and the active flags (<code>lm.is_active = 'true'</code>, <code>is_level_active = 'true'</code>). <code>scoping_assessments.line_id</code> points at a fact row <code>uuid</code>; <code>scoping_assessments.question_id</code> points at <code>scoping_questions.uuid</code>.</p>
+<p><em>What to notice: <code>level_mapping</code> is the spine. Everything hangs off <code>level_id</code> plus the fiscal period.</em></p>
+<p>The fact tables (<code>balance_sheet</code>, <code>income_statement</code>) and <code>component_entity</code> all carry a <code>level_id</code> equal to <code>level_mapping.uuid</code>. Joins are always ANDed with <code>fiscal_quarter</code>, <code>fiscal_year</code> and the active flags (<code>lm.is_active = 'true'</code>, <code>is_level_active = 'true'</code>). <code>scoping_assessments.line_id</code> points at a fact row's <code>uuid</code>, and <code>scoping_assessments.question_id</code> points at <code>scoping_questions.uuid</code>.</p>
+<p>A sample join, to make it concrete:</p>
+<pre><code class="language-sql">SELECT i.uuid AS fsli_id, lm.level1 AS level_1, lm.level2 AS level_2, i.hfm_amount
+FROM balance_sheet i
+JOIN level_mapping lm
+  ON i.level_id = lm.uuid
+ AND i.fiscal_quarter = lm.fiscal_quarter
+ AND i.fiscal_year = lm.fiscal_year
+WHERE i.fiscal_quarter = 'Q4' AND i.fiscal_year = '2025'
+  AND lm.is_active = 'true' AND i.is_level_active = 'true';
+</code></pre>
+<p>Money is stored as <code>DECIMAL(18,2)</code> and percentages as <code>DECIMAL(5,2)</code>. In the entities those columns are <code>BigDecimal</code> fields, for example <code>@Column(name = "hfm_amount", precision = 18, scale = 2) private BigDecimal hfmAmount;</code>.</p>
 <hr>
-<h2 id="3-api-surface-from-handlerscoping_handlerpy">3. API surface (from <code>handler/scoping_handler.py</code>)</h2>
-<p>One <code>APIRouter(prefix="/frm-scoping", tags=["FRM Scoping Tool"])</code>. I counted the <code>add_api_route(...)</code> registrations directly in <code>setup_routes()</code>: <strong>32 route registrations, one of which is <code>/health</code></strong>, so 31 functional endpoints plus the health check. That is the honest basis for "<strong>30+ REST endpoints</strong>" on the resume. Do NOT say 36 (that number only appears if you also count the separate <code>frm-collaboration-service</code> comment/notification APIs listed in the TDD).</p>
-<p>Route groups (all under <code>/frm-scoping</code>):</p>
+<h2 id="9-the-numbers-explained">9. The numbers, explained</h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>Source / tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>70%</strong>, from <strong>14 days to 3 days</strong></td>
+<td>Quarterly reconciliation time, before vs after the platform</td>
+<td>PDF. Framed in the TDD (section 3.1)</td>
+</tr>
+<tr>
+<td><strong>$340M</strong></td>
+<td>Group materiality on the Q4 2025 close</td>
+<td>PDF, MEASURED</td>
+</tr>
+<tr>
+<td><strong>$170M</strong></td>
+<td>Residual threshold on the Q4 2025 close</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>19M</strong></td>
+<td>Raw GL rows migrated off Sheets into MySQL</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>36</strong></td>
+<td>Spring Boot endpoints across the FRM backend surface</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>L1 to L4</strong></td>
+<td>Depth of the FSLI hierarchy</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>8</strong></td>
+<td>Tables in the core normalized schema</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>11</strong></td>
+<td>JPA entity classes in the scoping service code</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>Engineers I led (EPAM pod, tech lead)</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>100%</strong></td>
+<td>Statement coverage of the modules touched by the ORM migration</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>50%</strong></td>
+<td>Delta-variance threshold in the FSM gates</td>
+<td>PDF</td>
+</tr>
+<tr>
+<td><strong>5%</strong></td>
+<td>Revenue and assets benchmarks for significant components</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>8 screens</strong></td>
+<td>Product surface the backend powers</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>~55 FSLIs × 14 entities</strong></td>
+<td>Q4 2025 scoping sample (about 26 balance sheet + 29 income statement)</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>38K to 95K rows</strong></td>
+<td>Size of individual quarterly GL extracts (~1.7K to 1.8K accounts, ~400 entities)</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>18 files, +1,268 / -4 lines</strong></td>
+<td>The recon v1 to v2 migration branch</td>
+<td>MEASURED, VERBAL</td>
+</tr>
+<tr>
+<td><strong>1,100+ tests</strong></td>
+<td>JUnit <code>@Test</code> methods in the service (a count finds about 1,288)</td>
+<td>VERBAL</td>
+</tr>
+<tr>
+<td><strong>32 route mappings</strong></td>
+<td>Request-mapping methods in the scoping controller, one of which is <code>/health</code></td>
+<td>MEASURED, VERBAL</td>
+</tr>
+</tbody>
+</table>
+<p><strong>70%, from 14 days to 3 days.</strong>
+- <em>What it measures:</em> the time Finance spent on quarterly reconciliation during close, before and after the platform.
+- <em>How it was derived:</em> the TDD's goal, section 3.1, reads "Achieve a 70% reduction in time spent on manual data ingestion and reconciliation through automated ETL pipelines". The 14 to 3 days is the close timeline before and after.
+- <em>Why it mattered:</em> close runs against a hard deadline and PwC is waiting. Eleven fewer days of manual work per quarter is the business case.
+- <em>How to say it:</em> "Quarterly reconciliation went from 14 days to 3 days, a 70% cut."
+- <em>If an interviewer does the arithmetic:</em> (14 − 3) / 14 is about 79%, so 70% is the more conservative figure. Say: "The 70% is the figure the design doc framed for manual ingestion and reconciliation effort. On the calendar it was 14 days down to 3, so if anything 70% under-states it."
+- <em>What not to say:</em> do not walk it back unprompted ("it was only a target"). Older prep tagged it as a TARGET with an estimated "~2 weeks to ~3–4 days" baseline. That guidance is obsolete. The current resume states the outcome. If pressed: "The technical design doc framed that cut and that's what the platform delivered for the close."</p>
+<p><strong>$340M materiality.</strong>
+- <em>What it measures:</em> the dollar size of a misstatement that would matter to a reader of Uber's group financials, on the Q4 2025 close.
+- <em>How derived:</em> set by Finance and auditors, stored in <code>frm_metrics_table</code> as <code>metric_key = "materiality"</code>. Read from the metrics table and CSVs.
+- <em>Why it mattered:</em> it is the threshold every quantitative significance test compares against. Residual risk is measured in multiples of it.
+- <em>How to say it:</em> "against a $340 million materiality threshold on the Q4 2025 close".
+- <em>What not to say:</em> that it is a fixed constant. It is data, editable per close.</p>
+<p><strong>19M raw GL rows.</strong>
+- <em>What it measures:</em> the raw general-ledger rows migrated off Google Sheets into MySQL.
+- <em>How to say it:</em> "a Sheets-to-MySQL migration across 19 million raw GL rows".
+- <em>If asked how that squares with per-quarter size:</em> individual quarterly extracts were about 38K to 95K rows, around 1.7K to 1.8K accounts and about 400 entities. Say: "Per quarter it's tens of thousands of rows, so the value was correctness, hierarchy and auditability, not big-data throughput."
+- <em>What not to say:</em> do not invent a breakdown of where 19M comes from beyond "raw GL rows migrated off Sheets". Do not repeat older prep's "do not claim 19M" or its "19M rows to 300K" line. Both are obsolete.</p>
+<p><strong>36 endpoints.</strong>
+- <em>What it measures:</em> the API surface of the FRM backend.
+- <em>How derived:</em> the scoping controller has 32 request-mapping methods (<code>@GetMapping</code>, <code>@PatchMapping</code>, <code>@PutMapping</code>, <code>@PostMapping</code>), one of which is <code>/health</code>, so about 31 functional routes. The collaboration-service APIs for comments and notifications from the TDD bring the backend surface to 36.
+- <em>How to say it:</em> "36 Spring Boot endpoints".
+- <em>What not to say:</em> do not say "30+" as if correcting the resume. Older prep said "30+, do not say 36". That is obsolete. Also do not claim you built the real-time or Slack notification service.</p>
+<p><strong>100% module statement coverage.</strong>
+- <em>What it measures:</em> the share of statements executed by tests in the modules touched by the ORM migration.
+- <em>How to say it:</em> "raised module statement coverage to 100%".
+- <em>What not to say:</em> "the whole service is at 100%". Older prep said "do not quote a coverage % for FRM". That was written before the PDF claim and is obsolete for the migrated modules. The 35% to 82% coverage story belongs to Masters India, not FRM.</p>
+<p><strong>50% delta-variance.</strong> An automated gate threshold: movements over 50% against the comparison value get flagged at status transitions. Keep the exact formula qualitative.</p>
+<p><strong>Led 3.</strong> A three-engineer EPAM pod. Never merge with "mentored 2" at Masters India.</p>
+<hr>
+<h2 id="10-api-surface-36-endpoints">10. API surface (36 endpoints)</h2>
+<p>One <code>@RestController</code> class, <code>ScopingController</code>, annotated <code>@RequestMapping("/frm-scoping")</code> so every method's path starts with that prefix. Counting its request-mapping methods gives 32, one of which is <code>/health</code>. That is about 31 functional scoping routes. Adding the collaboration-service APIs (comments and notifications) listed in the TDD gives the 36-endpoint backend surface on the resume.</p>
+<p>Route groups in the scoping service, all under <code>/frm-scoping</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Routes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Health and smoke</td>
+<td><code>GET /health</code>, <code>POST /scoping</code> (welcome echo)</td>
+</tr>
+<tr>
+<td>Reconciliation v1 (Sheets-backed)</td>
+<td><code>GET /recon_balance_sheet</code>, <code>GET /recon_income_statement</code> (served by <code>RiskScopingService</code>)</td>
+</tr>
+<tr>
+<td>Reconciliation v2 (MySQL-backed, my migration)</td>
+<td><code>GET /v2/recon_balance_sheet</code>, <code>GET /v2/recon_income_statement</code> (served by <code>NewReconBalanceSheetService</code>, <code>NewReconIncomeStatementService</code>)</td>
+</tr>
+<tr>
+<td>Group scoping</td>
+<td><code>GET /group_balance_sheet</code>, <code>PATCH /group_balance_sheet/{balance_sheet_uuid}</code>, <code>GET /group_income_statement</code>, <code>PATCH /group_income_statement/{income_statement_uuid}</code> (update <code>conclusion_scope</code> and/or <code>group_status</code>. Allowed statuses Draft, Review, ReOpen, Closed)</td>
+</tr>
+<tr>
+<td>Component scoping</td>
+<td><code>GET /bs_components</code>, <code>GET /is_components</code>, cascading filter options <code>GET /bs_component_filters</code>, <code>GET /is_component_filters</code> (distinct <code>level_1..level_4</code> options)</td>
+</tr>
+<tr>
+<td>Residual risk</td>
+<td><code>GET /residual_risk?fsli_type=bs</code> or <code>fsli_type=is</code></td>
+</tr>
+<tr>
+<td>EMI</td>
+<td><code>GET /emi_scoping</code> (v1 comparison view), <code>GET /emi_data</code> (MySQL grid), <code>PATCH /emi_data/{uuid}</code></td>
+</tr>
+<tr>
+<td>Metrics, materiality, thresholds</td>
+<td><code>POST /add_scoping_metrics</code>, <code>GET /scoping_metrics</code>, <code>PUT /update_benchmark_thresholds</code>, <code>GET</code> and <code>PUT /materiality</code>, <code>GET</code> and <code>PUT /active-page-number</code>, <code>GET /threshold-setup</code>, <code>PATCH /threshold-setup/{uuid}</code></td>
+</tr>
+<tr>
+<td>Questions and assessments</td>
+<td><code>POST /scoping_questions/bulk</code>, <code>GET /scoping_questions</code>, <code>POST /scoping_assessments</code>, <code>GET /scoping_assessments</code>, <code>PATCH /scoping_assessments/{assessment_uuid}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cross-cutting details worth mentioning.</strong></p>
 <ul>
-<li><strong>Health / smoke</strong>: <code>GET /health</code>, <code>POST /scoping</code> (welcome echo).</li>
-<li><strong>Reconciliation (v1, Sheets-backed)</strong>: <code>GET /recon_balance_sheet</code>, <code>GET /recon_income_statement</code> (served by <code>RiskScopingService</code>).</li>
-<li><strong>Reconciliation (v2, MySQL-backed)</strong>: <code>GET /v2/recon_balance_sheet</code>, <code>GET /v2/recon_income_statement</code> (served by <code>NewReconBalanceSheetService</code> / <code>NewReconIncomeStatementService</code>). This is the migration I owned.</li>
-<li><strong>Group scoping</strong>: <code>GET /group_balance_sheet</code>, <code>PATCH /group_balance_sheet/{balance_sheet_uuid}</code>, <code>GET /group_income_statement</code>, <code>PATCH /group_income_statement/{income_statement_uuid}</code> (update <code>conclusion_scope</code> and/or <code>group_status</code>; allowed statuses Draft, Review, ReOpen, Closed).</li>
-<li><strong>Component scoping</strong>: <code>GET /bs_components</code>, <code>GET /is_components</code>, plus cascading filter option endpoints <code>GET /bs_component_filters</code>, <code>GET /is_component_filters</code> (return distinct <code>level_1..level_4</code> options).</li>
-<li><strong>Residual risk</strong>: <code>GET /residual_risk?fsli_type=bs|is</code>.</li>
-<li><strong>EMI</strong>: <code>GET /emi_scoping</code> (v1 comparison view), <code>GET /emi_data</code> (MySQL grid), <code>PATCH /emi_data/{uuid}</code>.</li>
-<li><strong>Metrics / materiality / thresholds</strong>: <code>POST /add_scoping_metrics</code>, <code>GET /scoping_metrics</code>, <code>PUT /update_benchmark_thresholds</code>, <code>GET|PUT /materiality</code>, <code>GET|PUT /active-page-number</code>, <code>GET /threshold-setup</code>, <code>PATCH /threshold-setup/{uuid}</code>.</li>
-<li><strong>Scoping questions / assessments</strong>: <code>POST /scoping_questions/bulk</code>, <code>GET /scoping_questions</code>, <code>POST /scoping_assessments</code>, <code>GET /scoping_assessments</code>, <code>PATCH /scoping_assessments/{assessment_uuid}</code>.</li>
+<li><strong>Auth.</strong> Every write path calls a small <code>requireAuthEmail(...)</code> helper, which reads the <code>x-auth-params-email</code> header and throws an unauthorized exception (401) if it is missing. That email is stored as <code>updated_by</code> or <code>created_by</code>.</li>
+<li><strong>Thread-per-request.</strong> Spring MVC on an embedded Tomcat server gives each HTTP request its own thread from a pool. JDBC and Hibernate calls block that thread while MySQL answers, which is normal and fine here. Nothing needs to be pushed to a background thread. The practical ceilings are the Tomcat thread pool and the HikariCP connection pool, and both are far above this tool's request rate.</li>
+<li><strong>Constructor injection.</strong> <code>ScopingController</code> receives its services through its constructor. Spring supplies the real beans at runtime, and tests simply pass Mockito mocks into the same constructor. Heavy services can be marked <code>@Lazy</code> so Spring builds them on first use, which keeps startup fast.</li>
+<li><strong>Error contract.</strong> One <code>@RestControllerAdvice</code> class maps exceptions to status codes in a single place. A not-found exception maps to 404. Bean Validation failures (<code>MethodArgumentNotValidException</code> for bodies, <code>ConstraintViolationException</code> for query parameters) map to 400 with the list of field errors. A bad argument also maps to 400. A failed <code>@Version</code> check maps to 409. A Sheets-unavailable exception (v1 recon) maps to 503. Anything else is 500.</li>
 </ul>
-<p>Cross-cutting details worth mentioning in an interview:
-- <strong>Auth</strong>: every write path calls <code>_get_auth_email(request)</code> which reads the <code>x-auth-params-email</code> header and raises 401 if missing. That email is stored as <code>updated_by</code> / <code>created_by</code>. Uber's gateway injects this header after authenticating the user, so the service trusts the edge and just records identity for the audit trail.
-- <strong>Async offload</strong>: the DB calls are synchronous SQLAlchemy, so blocking work is pushed off the event loop with <code>await asyncio.to_thread(...)</code>. The FastAPI handler stays async; the repository runs on a thread.
-- <strong>Lazy service init</strong>: <code>ScopingHandler</code> defers constructing the heavy SQLAlchemy-backed services (<code>GroupBalanceSheetService</code>, etc.) so app startup and <code>/openapi.json</code> stay fast unless those endpoints are actually hit.
-- <strong>Error contract</strong>: <code>ValueError</code> with "not found"-style messages maps to 404, other validation to 400/422, <code>RuntimeError</code> (Sheets unavailable) to 503, everything else to 500. Pydantic <code>ValidationError</code> on query params is re-raised as 422 via <code>jsonable_encoder(e.errors())</code>.</p>
+<p>A tiny controller and request DTO in the house style (simplified):</p>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/frm-scoping&quot;)
+public class ScopingController {
+    private final GroupBalanceSheetService groupBsService;
+
+    ScopingController(GroupBalanceSheetService groupBsService) {
+        this.groupBsService = groupBsService;
+    }
+
+    @PatchMapping(&quot;/group_balance_sheet/{uuid}&quot;)
+    public GroupLineDto patchGroupBalanceSheet(
+            @PathVariable String uuid,
+            @Valid @RequestBody GroupPatchRequest body,
+            @RequestHeader(name = &quot;x-auth-params-email&quot;, required = false) String email) {
+        String editor = requireAuthEmail(email);                 // 401 if header missing
+        return GroupLineDto.from(groupBsService.updateScopeAndStatus(uuid, body, editor));
+    }
+}
+
+public record GroupPatchRequest(
+        String conclusionScope,
+        @Pattern(regexp = &quot;Draft|Review|ReOpen|Closed&quot;) String groupStatus,
+        @NotNull Long version) {}
+</code></pre>
+<p><code>@PathVariable</code> pulls <code>{uuid}</code> out of the URL. <code>@RequestBody</code> turns the JSON body into the record. <code>@Valid</code> makes Spring run the Bean Validation rules on it first, so a bad status never reaches the service.</p>
+<p>And the one place errors become status codes:</p>
+<pre><code class="language-java">@RestControllerAdvice
+class ApiErrorHandler {
+    @ExceptionHandler(NotFoundException.class)
+    ResponseEntity&lt;ApiError&gt; notFound(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiError(e.getMessage()));
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    ResponseEntity&lt;ApiError&gt; conflict(ObjectOptimisticLockingFailureException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiError(&quot;row changed, reload and retry&quot;));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity&lt;ApiError&gt; invalid(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new ApiError(&quot;invalid request&quot;));
+    }
+}
+</code></pre>
 <hr>
-<h2 id="4-the-recon-v1-to-v2-migration-the-story-i-own">4. The recon v1 to v2 migration (the story I own)</h2>
-<p>Source: <code>RECON_API_MIGRATION.md</code> (branch <code>tmitta1/recon-income-api-migration</code>, dated 2026-05-06, 2 commits, <strong>18 files changed, 1,268 insertions, 4 deletions</strong>) plus <code>service/recon_service.py</code> and the repository.</p>
-<h3 id="why">Why</h3>
-<p>The v1 reconciliation endpoints were <strong>Google Sheets backed</strong>: the L3 line data lived only in a sheet, "lacks direct storage in the database" (<code>Scoping Features.docx</code>). That meant you could not attach comments to a specific recon line (no stable line-item ID), could not track it by quarter/year, and the numbers were not part of the relational source of truth. The fix, per the TDD's SSOT goal, was to persist recon L3 data in MySQL (<code>recon_balance_sheet</code>, <code>recon_income_statement</code>) keyed by quarter and year, so recon becomes queryable, comment-mappable, and consistent with the rest of scoping.</p>
-<h3 id="how-the-safe-migration-pattern">How (the safe migration pattern)</h3>
+<h2 id="11-design-decisions">11. Design decisions</h2>
+<p>Each decision answers: what, why, how, alternatives, trade-off, and what I would do differently.</p>
+<p><strong>MySQL on SOADB.</strong>
+- <em>What:</em> MySQL with InnoDB, on Uber's service-owned database standard.
+- <em>Why:</em> it was the platform standard for service-owned relational data, and it gives ACID transactions for multi-user edits during close. The data is highly relational (hierarchies, period keys).
+- <em>How:</em> period-keyed tables, logical joins on <code>level_id</code>, short transactions.
+- <em>Alternatives:</em> PostgreSQL has recursive CTEs and better JSON, but choosing it meant fighting the platform for no product gain. A columnar warehouse is wrong for transactional edits.
+- <em>Trade-off:</em> no recursive SQL, so the hierarchy is flattened in the ETL.
+- <em>Differently:</em> add composite indexes on <code>(fiscal_quarter, fiscal_year, level_id)</code> from day one.</p>
+<p><strong>Controller / service / repository layering.</strong>
+- <em>What:</em> three layers with dependencies pointing one way: <code>@RestController</code>, then <code>@Service</code>, then Spring Data JPA repository.
+- <em>Why:</em> testability and parallel work. A controller can be tested with MockMvc and a mocked service, a service with a mocked repository, with zero database. Three engineers can work one feature across layers without merge collisions.
+- <em>Alternatives:</em> fat controller methods with SQL inline. Faster to start, much harder to test and review.
+- <em>Trade-off:</em> more files per change.
+- <em>Differently:</em> add a typed domain layer earlier so rules never touch raw rows or untyped maps.</p>
+<p><strong>Hierarchy via <code>level_mapping</code> and <code>level_id</code>.</strong>
+- <em>What:</em> facts store a stable <code>level_id</code>, not the hierarchy text.
+- <em>Why:</em> a rename of a parent node does not rewrite thousands of fact rows.
+- <em>Alternatives:</em> recursive SQL at read time, or storing text paths on every fact.
+- <em>Trade-off:</em> logical joins only, no foreign keys, so the app must enforce consistency.
+- <em>Differently:</em> add database foreign keys where the platform allows, or at least nightly integrity checks.</p>
+<p><strong>Deterministic rule engine for materiality.</strong>
+- <em>What:</em> quantitative OR qualitative, 5% component benchmarks, residual multiples, all in Java service code with <code>BigDecimal</code> math.
+- <em>Why:</em> auditable and matches the finance process exactly. Thresholds are data, not code.
+- <em>Trade-off:</em> the qualitative part stays a human judgment by design.</p>
+<p><strong>Parallel v1 and v2 recon cutover.</strong>
+- <em>What:</em> new <code>/v2</code> endpoints alongside v1.
+- <em>Why:</em> zero downtime and side-by-side QA on the same period.
+- <em>Trade-off:</em> two paths to maintain until the UI cutover.</p>
+<p><strong>Explicit aliases on every joined column.</strong>
+- <em>What:</em> an explicit <code>AS</code> alias on every projected column in JPQL and native queries, read through typed interface projections instead of label-keyed maps.
+- <em>Why:</em> kills silent last-write-wins collisions on joined column names.
+- <em>Trade-off:</em> strict select discipline on every join.</p>
+<p><strong>Trust the gateway, record the email.</strong>
+- <em>What:</em> the service reads <code>x-auth-params-email</code> and stores it.
+- <em>Why:</em> audit trail for a SOX tool without duplicating Uber's auth.
+- <em>Trade-off:</em> fine-grained authorization lives upstream, not in the service.
+- <em>Differently:</em> verify a signed token with Spring Security (a JWT resource-server filter) and add role checks with <code>@PreAuthorize</code> on service methods.</p>
+<p><strong>Blocking JDBC on a thread-per-request stack.</strong>
+- <em>What:</em> classic Spring MVC with Hibernate over JDBC, one server thread per request.
+- <em>Why:</em> JPA and Hibernate are blocking APIs by design. The workload is low-volume, transactional reads and writes. A reactive stack (Spring WebFlux) would need a different, non-JPA data layer for no real gain.
+- <em>Alternatives:</em> WebFlux with R2DBC, or <code>@Async</code> to push work to a background executor. Neither fits request-response edits that must finish inside one transaction.
+- <em>Trade-off:</em> the Tomcat thread pool and the HikariCP pool size are the ceiling under load, acceptable at this request rate.</p>
+<p><strong>Optimistic over pessimistic locking, natural keys over random IDs.</strong> Covered in section 7.2.</p>
+<hr>
+<h2 id="12-the-recon-v1-to-v2-migration-the-story-i-own-end-to-end">12. The recon v1 to v2 migration (the story I own end to end)</h2>
+<p>Source: the migration writeup (branch <code>tmitta1/recon-income-api-migration</code>, dated 2026-05-06, 2 commits, <strong>18 files changed, 1,268 insertions, 4 deletions</strong>) plus the recon service class and its repository.</p>
+<p><strong>Why.</strong> The v1 reconciliation endpoints were Google Sheets backed. The L3 line data lived only in a sheet and "lacks direct storage in the database" (Scoping Features doc). So you could not attach comments to a specific recon line (no stable line ID), could not track it by quarter and year, and the numbers were not part of the relational source of truth. The fix, following the TDD's single-source-of-truth goal, was to persist recon L3 data in MySQL (<code>recon_balance_sheet</code>, <code>recon_income_statement</code>) keyed by quarter and year.</p>
+<p><strong>How (the safe migration pattern).</strong></p>
 <ol>
-<li><strong>Add v2 alongside v1, do not replace.</strong> New endpoints <code>GET /v2/recon_balance_sheet</code> and <code>GET /v2/recon_income_statement</code> were added; the v1 <code>GET /recon_balance_sheet</code> / <code>GET /recon_income_statement</code> stayed untouched. This is a parallel-run: both endpoints live at the same time.</li>
-<li><strong>New layers top to bottom</strong>: ORM models (2), Pydantic response schema (<code>ReconLevel3Item</code>, <code>ReconLevel2Node</code>, <code>ReconLevel1Node</code>, <code>ReconFetchResponse</code>), repository readers (<code>fetch_recon_balance_sheet_rows</code>, <code>fetch_recon_income_statement_rows</code>), and a service (<code>recon_service.py</code>) that builds the L1 -&gt; L2 -&gt; L3 nested tree and aggregates child sums up to parents.</li>
-<li><strong>Comparison / validation</strong>: v2 returns HFM amount, the filed financial statement amount, and the difference per line (<code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>, with a null fallback that recomputes it). QA compared v1 (Sheets) and v2 (MySQL) responses for the same period side by side, plus the <code>RECON_API_MIGRATION.md</code> test plan: happy paths, empty period returns <code>level_1_fslis: []</code>, missing params return 422, and a v1 regression check that the old shape (<code>headers</code>, <code>data</code>, <code>analytics</code>) is unchanged.</li>
-<li><strong>FSLI display ordering</strong>: the financial-statement order is hardcoded in <code>_BS_FSLI_ORDER</code> and <code>_IS_FSLI_ORDER</code> dicts keyed by parent-path tuples. Unknown FSLIs (not in the dict) are appended at the end rather than dropped, so new source data cannot break the API. Negative amounts render with parentheses, for example <code>($8)</code>.</li>
-<li><strong>Cutover</strong>: the UI (<code>/risk-scoping/reconciliation</code>) was pointed at v2 once verified on staging (<code>frm-staging.uberinternal.com</code>); v1 stayed as a fallback and for regression safety.</li>
+<li><strong>Add v2 next to v1, do not replace.</strong> New <code>GET /v2/recon_balance_sheet</code> and <code>GET /v2/recon_income_statement</code>. The v1 routes stayed untouched. Both run at the same time.</li>
+<li><strong>New layers top to bottom.</strong> Two JPA entities (<code>ReconBalanceSheet</code>, <code>ReconIncomeStatement</code>). Response DTOs as Java records (<code>ReconLevel3Item</code>, <code>ReconLevel2Node</code>, <code>ReconLevel1Node</code>, <code>ReconFetchResponse</code>). Spring Data JPA repository readers (<code>findReconBalanceSheetRows</code>, <code>findReconIncomeStatementRows</code>). A service that builds the L1, L2, L3 tree and sums children into parents. New controller methods for the <code>/v2</code> paths.</li>
+<li><strong>Comparison and validation.</strong> v2 returns HFM amount, filed statement amount and the difference per line, with a null fallback that recomputes the difference. QA compared v1 and v2 responses for the same period side by side. The test plan covered happy paths, empty period returning <code>level_1_fslis: []</code>, missing params returning a 400 validation error, and a v1 regression check that the old shape (<code>headers</code>, <code>data</code>, <code>analytics</code>) was unchanged.</li>
+<li><strong>FSLI display order.</strong> Financial-statement order is hardcoded in the <code>BS_FSLI_ORDER</code> and <code>IS_FSLI_ORDER</code> constants, keyed by parent-path lists. Unknown FSLIs are appended at the end rather than dropped, so new source data cannot break the API. Negative amounts render with parentheses, for example <code>($8)</code>.</li>
+<li><strong>Cutover.</strong> The reconciliation screen was pointed at v2 once verified on staging. v1 stayed as a fallback and for regression safety.</li>
 </ol>
-<h3 id="the-column-aliasing-bug-tell-this-precisely">The column-aliasing bug (tell this precisely)</h3>
-<p>The legacy read path built row dicts from a raw SQL result like this (still visible in <code>_fetch_fiscal_period_rows</code> and the component readers):</p>
-<pre><code class="language-python">result = session.execute(text(sql), bind)
-keys = list(result.keys())
-rows = [dict(zip(keys, tuple(r))) for r in result.fetchall()]
+<div class="mermaid">flowchart LR
+  UI["Reconciliation screen"] --&gt; V1["v1 routes, Sheets-backed"]
+  UI --&gt; V2["v2 routes, MySQL-backed"]
+  V1 --&gt; SH["Google Sheets"]
+  V2 --&gt; MY[("recon_balance_sheet and recon_income_statement")]
+  QA["QA side-by-side diff for one period"] --&gt; V1
+  QA --&gt; V2
+</div>
+<p><em>What to notice: both paths are live at once. The UI switches only after QA sees matching numbers, and v1 stays as a fallback.</em></p>
+<hr>
+<h2 id="13-hard-problem-the-column-aliasing-bug-tell-this-precisely">13. Hard problem: the column-aliasing bug (tell this precisely)</h2>
+<p><strong>What broke.</strong> The legacy read path ran a native SQL query (plain SQL passed straight to MySQL, bypassing the entity mapping) and copied each result row into a <code>Map</code> keyed by column label. That was the pattern in the fiscal-period reader (<code>fetchFiscalPeriodRows</code>) and the component readers:</p>
+<pre><code class="language-java">List&lt;Tuple&gt; result = em.createNativeQuery(sql, Tuple.class)
+        .setParameter(&quot;q&quot;, quarter).setParameter(&quot;y&quot;, year)
+        .getResultList();
+List&lt;Map&lt;String, Object&gt;&gt; rows = new ArrayList&lt;&gt;();
+for (Tuple t : result) {
+    Map&lt;String, Object&gt; row = new HashMap&lt;&gt;();
+    for (TupleElement&lt;?&gt; col : t.getElements()) {
+        row.put(col.getAlias(), t.get(col));     // last column with the same label wins
+    }
+    rows.add(row);
+}
 </code></pre>
-<p><code>dict(zip(result.keys(), row))</code> is only safe if <code>result.keys()</code> is unique. The moment you <strong>join two tables that share column names</strong>, it stops being safe. The component/scoping aggregate joins the fact table (<code>balance_sheet</code> or <code>income_statement</code>, aliased <code>i</code>) to <code>level_mapping</code> (aliased <code>lm</code>), and both sides carry <code>uuid</code>, <code>level_id</code>, <code>fiscal_quarter</code>, <code>fiscal_year</code>, and level columns. When such a join projects <code>i.uuid</code> and <code>lm.uuid</code> (or <code>i.fiscal_quarter</code> and <code>lm.fiscal_quarter</code>) without distinct labels, the driver returns two columns literally named <code>uuid</code>. <code>zip</code> pairs positionally and <code>dict</code> keeps the <strong>last</strong> write, so the row dict silently took the <code>level_mapping</code> uuid instead of the fact uuid (and similar collisions on the period columns). Symptom: recon/component rows that looked correct but keyed off the wrong identifier, so PATCH-by-uuid and comment mapping pointed at the wrong line.</p>
-<p>The fix is in <code>_component_scoping_rows_select</code> (and the pattern I carried into recon): move from raw SQL to a SQLAlchemy <code>select()</code> on <code>aliased()</code> models and give <strong>every projected column an explicit <code>.label()</code></strong> so <code>result.keys()</code> is unambiguous:</p>
-<pre><code class="language-python">i = aliased(fact_model, name=&quot;i&quot;)
-lm = aliased(LevelMapping, name=&quot;lm&quot;)
-select(
-    func.min(i.uuid).label(&quot;fsli_id&quot;),          # fact identity, uniquely named
-    func.min(i.level_id).label(&quot;level_id&quot;),
-    func.max(lm.uuid).label(&quot;level_mapping_uuid&quot;),   # mapping identity, separately named
-    lm.level1.label(&quot;level_1&quot;),
-    func.max(lm.fiscal_quarter).label(&quot;level_mapping_fiscal_quarter&quot;),
-    ...
-)
+<p><code>em</code> is the JPA <code>EntityManager</code>, the low-level object Spring Data JPA uses underneath. A <code>Tuple</code> is one result row whose columns you can read by position or by label. Spring's <code>JdbcTemplate.queryForList</code> behaves the same way, because its default row mapper also builds a map keyed by column label.</p>
+<p>Copying into a map by label is only safe if every label is unique. The component and scoping aggregates join the fact table (<code>balance_sheet</code> or <code>income_statement</code>, aliased <code>i</code>) to <code>level_mapping</code> (aliased <code>lm</code>). Both sides carry <code>uuid</code>, <code>level_id</code>, <code>fiscal_quarter</code>, <code>fiscal_year</code> and level columns. When a join projected <code>i.uuid</code> and <code>lm.uuid</code> without distinct aliases, the driver returned two columns literally labelled <code>uuid</code>. The loop writes them in order and <code>put</code> keeps the <strong>last</strong> write, so the row silently took the <code>level_mapping</code> uuid instead of the fact uuid. The period columns could collide the same way.</p>
+<p>A tiny reproduction anyone can follow:</p>
+<pre><code class="language-java">List&lt;String&gt; labels = List.of(&quot;uuid&quot;, &quot;level_1&quot;, &quot;uuid&quot;);   // fact uuid, then mapping uuid
+Object[] values = {&quot;fact-123&quot;, &quot;Assets&quot;, &quot;map-999&quot;};
+Map&lt;String, Object&gt; row = new HashMap&lt;&gt;();
+for (int i = 0; i &lt; labels.size(); i++) row.put(labels.get(i), values[i]);
+// {uuid=map-999, level_1=Assets}   &lt;- fact identity lost, no exception thrown
 </code></pre>
-<p>Now <code>dict(zip(result.keys(), row))</code> cannot collide, and <code>_finalize_component_scoping_row</code> deterministically maps <code>fsli_id</code> back onto <code>uuid</code>. The general lesson to state: with <code>result.keys()</code> row mapping, ambiguous/duplicate column names across joined tables cause silent last-write-wins overwrites; labeling every column (or using ORM entity rows / <code>RowMapping</code>) removes the ambiguity.</p>
-<h3 id="what-could-still-go-wrong-say-this-proactively">What could still go wrong (say this proactively)</h3>
+<p><strong>How it was found.</strong> Rows looked correct on screen but were keyed off the wrong identifier, so PATCH-by-uuid and comment mapping pointed at the wrong line. It surfaced when an edit to one recon line appeared to affect a different line.</p>
+<p><strong>How it was fixed.</strong> Move the reads onto Spring Data JPA repository methods and give <strong>every projected column an explicit, unique alias</strong>, read through a typed interface projection instead of a label-keyed map. An interface projection is a Java interface with one getter per alias. Spring fills it in by matching each alias to a getter name, so there is no map to collide. This is the component scoping query (<code>findComponentScopingRows</code>), and I carried the same pattern into recon:</p>
+<pre><code class="language-java">public interface ComponentScopingRow {
+    String getFsliId();             // fact identity, uniquely named
+    String getLevelId();
+    String getLevelMappingUuid();   // mapping identity, separately named
+    String getLevel1();
+    String getLevelMappingFiscalQuarter();
+}
+
+@Query(&quot;&quot;&quot;
+    SELECT MIN(i.uuid)           AS fsliId,
+           MIN(i.levelId)        AS levelId,
+           MAX(lm.uuid)          AS levelMappingUuid,
+           lm.level1             AS level1,
+           MAX(lm.fiscalQuarter) AS levelMappingFiscalQuarter
+    FROM BalanceSheet i
+    JOIN LevelMapping lm
+      ON i.levelId = lm.uuid
+     AND i.fiscalQuarter = lm.fiscalQuarter
+     AND i.fiscalYear = lm.fiscalYear
+    WHERE i.fiscalQuarter = :q AND i.fiscalYear = :y
+    GROUP BY lm.level1
+    &quot;&quot;&quot;)
+List&lt;ComponentScopingRow&gt; findComponentScopingRows(@Param(&quot;q&quot;) String q, @Param(&quot;y&quot;) String y);
+</code></pre>
+<p>This is JPQL (Java Persistence Query Language), SQL-like text written against entity and field names instead of table and column names. Hibernate translates it to MySQL SQL. Where a read has to stay as native SQL, the same rule applies: <code>i.uuid AS fsli_id, lm.uuid AS level_mapping_uuid</code>, never two bare <code>uuid</code> columns.</p>
+<p>Now nothing can collide, and <code>finalizeComponentScopingRow</code> deterministically maps <code>fsliId</code> back onto the response's <code>uuid</code>.</p>
+<p><strong>What I learned.</strong> With name-based row mapping, duplicate column names across joined tables cause silent last-write-wins overwrites. Aliasing every column, and mapping to typed projections or entities instead of label-keyed maps, removes the ambiguity. The bigger lesson: bugs that raise no error are the dangerous ones in finance software, so you need invariants (parent equals sum of children) that catch them.</p>
+<p><strong>How it connects to the resume.</strong> This is the "latent column-aliasing bugs" in bullet F3. Moving the whole read layer to Spring Data JPA repositories with aliased, typed projections removed the pattern, not just the one instance.</p>
+<hr>
+<h2 id="14-other-hard-problems-and-what-could-still-go-wrong">14. Other hard problems and what could still go wrong</h2>
+<p>Say these proactively. It signals that you understand the system's weak spots.</p>
 <ul>
-<li><strong>Aggregation vs identity</strong>: because L1/L2 amounts are <code>SUM</code>s of children, a duplicated or mis-mapped leaf double-counts. Hence the test-plan checks that a parent equals the sum of its children.</li>
-<li><strong>Active-flag drift</strong>: joins require <code>is_active = 'true'</code> and <code>is_level_active = 'true'</code>; if the ETL loads rows with the wrong flag the line vanishes from the tree with no error.</li>
-<li><strong>Currency parsing</strong>: amounts arrive as display strings in places (<code>parse_currency_display_to_float</code>); a malformed string silently becomes 0.0.</li>
-<li><strong>Hardcoded FSLI order</strong> is brittle if Finance renames a line; unknowns fall to the bottom rather than erroring, which is safe but can look "out of order".</li>
+<li><strong>Aggregation vs identity.</strong> L1 and L2 amounts are sums of children, so one duplicated or mis-mapped leaf double-counts and quietly inflates a parent. The test plan checks that a parent equals the sum of its children.</li>
+<li><strong>Active-flag drift.</strong> Joins require <code>is_active = 'true'</code> and <code>is_level_active = 'true'</code>. If the ETL loads rows with the wrong flag, the line vanishes from the tree with no error.</li>
+<li><strong>Currency parsing.</strong> Some amounts arrive as display strings (<code>parseCurrencyDisplayToDouble</code>). A malformed string silently becomes 0.0.</li>
+<li><strong>Hardcoded FSLI order.</strong> Brittle if Finance renames a line. Unknown lines fall to the bottom rather than erroring, which is safe but can look "out of order".</li>
+<li><strong>ETL ownership boundary.</strong> Many of these risks start upstream in the shared pipeline. I would harden them with validation and reconciliation alerts instead of trusting the load.</li>
 </ul>
 <hr>
-<h2 id="5-leadership-leading-a-pod-of-3-engineers">5. Leadership: leading a pod of 3 engineers</h2>
-<p>Headcount is confirmed in GROUND_TRUTH: <strong>led 3 engineers (EPAM pod)</strong> at Uber. Frame it as a tech-lead-of-a-pod, not a people manager (EPAM contractor structure inside Uber).</p>
-<p>What "led" concretely meant, tied to artifacts:
-- <strong>Task breakdown by layer</strong>: work was sliced along the handler / service / repository / model boundary so two engineers could work the same feature without colliding (one on the Pydantic schema + handler, one on the repository + ORM). The recon migration is a clean example: 18 files but cleanly split across the five layers.
-- <strong>Layered architecture conventions</strong>: I set and enforced the conventions that show up consistently across the codebase: handlers stay thin and only do HTTP + auth + error mapping; services own orchestration and tree building; repositories own all SQLAlchemy and session lifecycle (<code>get_read_write()</code> / <code>commit</code> / <code>rollback</code> / <code>close</code> in <code>finally</code>); models hold column definitions plus period-scoped query classmethods. These came out of the <strong>backend team syncs</strong> (see <code>Notes - FRM CT Backend Team Sync.docx</code> in KT&amp;DOCS).
-- <strong>Code review gates</strong>: every PR had to add or update tests in the matching <code>tests/</code> folder and pass the Bazel <code>uber_py_test</code> targets before merge. That is why the suite grew to 1,100+ tests (see below).
-- <strong>Consistency reviews</strong>: I pushed patterns like "every write path reads <code>x-auth-params-email</code> and records <code>updated_by</code>", "no bare <code>except</code> that swallows, always log with <code>exc_info</code> and re-map to an HTTPException", and "offload blocking DB work with <code>asyncio.to_thread</code>". You can see these applied uniformly, which is the tell of an enforced convention rather than one person's style.</p>
-<p>Behavioral answer shape: situation (manual Sheets close, PwC deadline pressure), task (stand up the platform and keep 3 engineers unblocked), action (layered decomposition + review discipline + test gates), result (8 screens shipped, recon migrated, targeting the 70% effort cut).</p>
-<hr>
-<h2 id="6-honesty-guardrails-do-not-oversell">6. Honesty guardrails (do not oversell)</h2>
+<h2 id="15-leadership-leading-a-pod-of-3-engineers">15. Leadership: leading a pod of 3 engineers</h2>
+<p>I was the <strong>tech lead of a 3-engineer EPAM pod</strong> inside Uber Finance, not a people manager. EPAM is the contracting firm, so formal management sat with EPAM.</p>
+<p>What "led" concretely meant:</p>
 <ul>
-<li><strong>70% is a TARGET, not a measured KPI.</strong> It is TDD section 3.1's goal: "Achieve a 70% reduction in time spent on manual data ingestion and reconciliation through automated ETL pipelines." Always say "<strong>targeting</strong> a 70% cut" or give the baseline as ESTIMATED (~2 weeks manual close down to ~3-4 days). Never claim it was measured post-launch.</li>
-<li><strong>Endpoint count is 30+.</strong> Code truth is 32 <code>add_api_route</code> registrations including <code>/health</code> (31 functional + health). Say "30+"; do not say 36 (that only holds if you fold in the separate collaboration service).</li>
-<li><strong>Do NOT claim 19M rows.</strong> Real scale (MEASURED from the Q4 2025 CSVs): raw GL extracts up to ~95K rows per quarter (individual dumps of ~76K / ~38K / ~95K), roughly <strong>1.7K-1.8K accounts</strong> and <strong>~400 entities</strong>. The "19M rows to 300K" line was unsupported and is dropped. If asked about volume, this is a <strong>tens-of-thousands-of-rows</strong> system, not big data; the value is correctness, hierarchy, and auditability, not throughput.</li>
-<li><strong>Materiality $340M / residual $170M</strong> are from the Q4 2025 sample (MEASURED), and ~26 balance-sheet FSLIs / ~29 income-statement FSLIs, 14 entities in that sample. Present them as "on the Q4 2025 close", not as fixed constants.</li>
-<li><strong>Test count</strong>: a grep of <code>def test_</code> across the 65 test files returns roughly <strong>1,288</strong> test functions. The resume says <strong>1,100+</strong>, which is deliberately conservative and safe. GROUND_TRUTH's "~1125" is in the same ballpark. <strong>Coverage percentage is unverified</strong>: do not quote a coverage number for FRM (the 82% coverage figure belongs to Masters India, not this project).</li>
-<li><strong>ETL ownership</strong>: the HFM extract/transform/load pipeline is described in the TDD but was a shared/pipeline responsibility. Say "the service consumes HFM-loaded MySQL tables" and "I owned the scoping APIs and the recon migration", not "I built the entire ETL".</li>
-<li><strong>Real-time collaboration / Slack notifications</strong> live in the separate <code>frm-collaboration-service</code>. Do not claim I built that; I built the scoping service.</li>
+<li><strong>Task breakdown by layer.</strong> Work was sliced along the controller, service, repository and entity boundary so two engineers could build the same feature without colliding (one on the DTOs and controller, one on the repository and entities). The recon migration is a clean example: 18 files split cleanly across the five layers.</li>
+<li><strong>Layered conventions.</strong> I set and enforced conventions that show up uniformly in the code. Controllers stay thin and only do HTTP, auth and validation. Error-to-status mapping lives only in the <code>@RestControllerAdvice</code>. Services own orchestration, tree building and the <code>@Transactional</code> boundaries. Repositories own all queries, with an explicit alias on every joined column. Entities hold columns and the <code>@Version</code> field, nothing else. These came out of the backend team syncs.</li>
+<li><strong>Review gates.</strong> Every PR had to add or update tests in the matching test package and pass the Bazel <code>java_test</code> targets before merge. That is why the suite grew past 1,100 tests.</li>
+<li><strong>Consistency reviews.</strong> Every write path reads <code>x-auth-params-email</code> and records <code>updated_by</code>. No empty <code>catch</code> blocks that swallow errors: always log with the stack trace and let the exception reach the controller advice. No <code>@Transactional</code> on controllers, and no self-calls into transactional methods. The uniformity across many files is the evidence these were enforced standards.</li>
+<li><strong>The ORM migration.</strong> I led the pod through the Spring Data JPA / Hibernate migration in bullet F3, sequencing it as stacked PRs.</li>
+</ul>
+<p><strong>Behavioural answer shape (STAR).</strong> Situation: a manual Sheets close under PwC deadline pressure. Task: stand up the platform and keep 3 engineers unblocked. Action: layered decomposition, review discipline, test gates, stacked PRs for the ORM migration. Result: 8 screens powered, recon migrated, reconciliation from 14 days to 3, module coverage to 100%.</p>
+<hr>
+<h2 id="16-tech-used-in-this-project-and-why">16. Tech used in this project and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is</th>
+<th>Why here</th>
+<th>Alternative considered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java</td>
+<td>Statically typed JVM language</td>
+<td>Strong types for a finance domain model, <code>BigDecimal</code> for exact money math</td>
+<td>Go (thinner ORM and transaction tooling for this shape)</td>
+</tr>
+<tr>
+<td>Spring Boot</td>
+<td>Java web service framework</td>
+<td>REST controllers, dependency injection, declarative transactions and validation out of the box</td>
+<td>Plain servlets or a micro-framework (more hand-written plumbing)</td>
+</tr>
+<tr>
+<td>Bean Validation + DTOs</td>
+<td>Annotation-based input rules on request records</td>
+<td>Bad input rejected before service code runs, one error shape</td>
+<td>Hand-written <code>if</code> checks in every controller</td>
+</tr>
+<tr>
+<td>Spring Data JPA</td>
+<td>Repository interfaces generated by Spring</td>
+<td>Less boilerplate, <code>@Query</code> with explicit aliases killed the aliasing bug</td>
+<td><code>JdbcTemplate</code> with label-keyed maps (the source of the bug)</td>
+</tr>
+<tr>
+<td>Hibernate</td>
+<td>JPA implementation</td>
+<td>Dirty checking, <code>@Version</code> optimistic locking, SQL generation</td>
+<td>MyBatis or jOOQ (more SQL control, no built-in version check)</td>
+</tr>
+<tr>
+<td>HikariCP</td>
+<td>JDBC connection pool, Spring Boot default</td>
+<td>Reused, validated MySQL connections</td>
+<td>Opening a connection per request (slow, exhausts MySQL)</td>
+</tr>
+<tr>
+<td>MySQL on SOADB</td>
+<td>Relational database standard</td>
+<td>Platform standard, ACID edits</td>
+<td>PostgreSQL, a warehouse</td>
+</tr>
+<tr>
+<td>JUnit 5 + Mockito + MockMvc</td>
+<td>Test framework, mocks, controller test harness</td>
+<td>Layer-by-layer tests with no database</td>
+<td>Only end-to-end tests (slow, hard to pinpoint failures)</td>
+</tr>
+<tr>
+<td>Bazel</td>
+<td>Monorepo build and test</td>
+<td>Uber monorepo, per-package test targets gate merges</td>
+<td>Not a choice, it is the environment</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>Container packaging</td>
+<td>Standard deployment unit</td>
+<td>n/a</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why Spring Boot, in more depth.</strong> The workload is request-response API serving with heavy input validation and multi-table transactional writes. Spring Boot covers exactly that: <code>@RestController</code> for the HTTP surface, Bean Validation for request checks, <code>@Transactional</code> for all-or-nothing writes, Spring Data JPA for the repository layer, and generated OpenAPI (Swagger) docs that Finance users and QA used directly. Its constructor injection also makes every layer easy to test with mocks.</p>
+<p><strong>Bazel test setup.</strong> Each package has a <code>BUILD.bazel</code> declaring <code>java_test</code> targets that run its JUnit 5 tests, with dependencies on the package library plus JUnit, Mockito and Spring's test support. CI runs five layer targets (entity, DTO, repository, service, controller) and all must pass to merge. The app itself is a <code>java_binary</code> (<code>frm_scoping_service</code>) over a <code>java_library</code>, packaged into a Docker image.</p>
+<hr>
+<h2 id="17-interview-questions-with-speakable-answers">17. Interview questions with speakable answers</h2>
+<h3 id="stack-and-design">Stack and design</h3>
+<p><strong>Q. Why Spring Boot?</strong>
+Because the workload is request-response API serving with heavy validation and multi-table transactional writes, and Spring Boot gives all of that out of the box. <code>@RestController</code> defines the HTTP surface, Bean Validation rejects bad input before my code runs, <code>@Transactional</code> makes multi-table writes all-or-nothing, and Spring Data JPA gives the repository layer. The generated OpenAPI docs were something Finance users and QA actually used. It runs one thread per request, so blocking JDBC calls are simply normal code with no async plumbing.
+<em>Follow-up they may ask:</em> "Why not WebFlux?" "JPA and Hibernate are blocking by design, and the request rate is low. A reactive stack would have meant a different data layer for no gain."</p>
+<p><strong>Q. Why MySQL and not PostgreSQL? Postgres has recursive CTEs and better JSON.</strong>
+Both things are true: it was the right tool and it was the platform standard, and I won't pretend I picked it in a vacuum. Uber's SOADB standard for service-owned data is MySQL on InnoDB, so anything else meant fighting the platform for no product gain. On the merits it fits too. Per quarter the working set is tens of thousands of rows, and I don't need recursive SQL because the ETL flattens the hierarchy into a stable <code>level_id</code>. InnoDB gives the ACID multi-user edit semantics the close needs, and that's what matters here.
+<em>Follow-up they may ask:</em> "Then why the 19M?" "That's the total raw GL migrated off Sheets. The per-quarter working set is much smaller, so the challenge is correctness, not throughput."</p>
+<p><strong>Q. Why the controller / service / repository layering?</strong>
+Separation of concerns and testability. Controllers only do HTTP: auth header, Bean Validation, calling the service. Services own business logic, tree building and the <code>@Transactional</code> boundaries, and repositories own every query. Because dependencies point one way and are injected through constructors, I can test a controller with MockMvc and a mocked service, and a service with a mocked repository, with no database. It also let 3 engineers work one feature across layers without merge collisions.</p>
+<p><strong>Q. "Spring Data JPA / Hibernate migration" sounds like a buzzword. What actually changed?</strong>
+Three concrete things. First, every table became an <code>@Entity</code> with typed fields and a <code>@Version</code> column, so optimistic locking is enforced by Hibernate instead of by hand-written <code>WHERE</code> clauses. Second, the joined reads moved from native SQL copied into label-keyed maps to repository <code>@Query</code> methods with an explicit alias on every column, returned as typed interface projections. That is exactly what killed the column-aliasing bug. Third, transactions became declarative: <code>@Transactional</code> on service methods replaced hand-rolled begin, commit and rollback code. So it isn't decoration. Typed entities plus aliased projections are the mechanism behind the correctness fix I'm proudest of.</p>
+<p><strong>Q. What does <code>@Transactional</code> actually do, and where does it bite?</strong>
+Spring wraps the bean in a proxy. When an outside caller calls the method, the proxy opens a transaction, runs the method, and commits, or rolls back if a runtime exception escapes. It bites in three places. Checked exceptions don't roll back unless you say <code>rollbackFor</code>. A call from another method in the same class bypasses the proxy, so no transaction starts. And bulk <code>@Modifying</code> queries skip <code>@Version</code> and the in-memory entity state. That's why our rule was: transactional entry points are public service methods called from the controller, and manager edits go through loaded entities.</p>
+<p><strong>Q. How do you model a recursive hierarchy in a database with no recursive queries? That sounds contradictory.</strong>
+I resolve recursion once, in the ETL, not on every read. <code>level_mapping</code> holds the flattened path columns <code>level1</code> to <code>level4</code> and a stable <code>uuid</code> used as <code>level_id</code>. Every fact row stores that <code>level_id</code> instead of the text, so renaming a parent doesn't rewrite thousands of rows. At read time the service builds the tree in Java and sums children into parents. So the hierarchy is recursive in shape but materialised into stable IDs, which is faster and safer than recursive SQL at this size.</p>
+<p><strong>Q. What is <code>level_id</code>, and why join on it plus the period?</strong>
+<code>level_id</code> on a fact row equals <code>level_mapping.uuid</code>. Joins always AND <code>level_id</code> with <code>fiscal_quarter</code>, <code>fiscal_year</code> and the active flags, because the same logical line exists once per period. Joining on the ID alone would fan out across quarters and multiply amounts.</p>
+<p><strong>Q. Why DECIMAL(18,2) for money and DECIMAL(5,2) for percentages?</strong>
+Money must be exact, so it's <code>DECIMAL</code> in the database and <code>BigDecimal</code> in Java, with conversion to display strings only at the edge. Percentages fit in <code>(5,2)</code>, up to 999.99%. A <code>double</code> would accumulate rounding errors in parent sums, and in finance a one-cent drift is a reconciliation break. The two <code>BigDecimal</code> traps I watch for are <code>equals</code> comparing scale (so I use <code>compareTo</code>) and <code>divide</code> needing an explicit rounding mode.</p>
+<h3 id="finance-logic">Finance logic</h3>
+<p><strong>Q. Explain materiality and FSLI like I don't have a finance degree, then tell me where they live in your system.</strong>
+An FSLI is one line on the balance sheet or income statement, like Cash or Revenue. Materiality is the dollar size of a mistake that would change a reader's decision, usually set as a percentage of a key figure like pre-tax income or revenue. In my system it isn't hard-coded. It's a row in <code>frm_metrics_table</code> with <code>metric_key = "materiality"</code>, and on the Q4 2025 close it was $340 million with a $170 million residual threshold. The FSLIs are rows in <code>balance_sheet</code> and <code>income_statement</code>, about 26 and 29 on that close, each with its HFM amount and computed significance.</p>
+<p><strong>Q. Walk me through the rule engine. What's the boolean logic that flags an item?</strong>
+Two independent tests and an OR. Quantitative Material is YES if the HFM amount is above materiality. Qualitative Material is a manager's yes or no answer to a scoping question. Overall Significance is Significant if either is YES, and that exact rule is the function <code>conclusion_overall_significance_from_balance_sheet_materials</code>. At component level a second rule applies: Financially Significant if revenue share is over 5% or absolute assets share is over 5%, and those benchmarks are configurable through <code>PUT /update_benchmark_thresholds</code>. It's deterministic and auditable, not a black box.</p>
+<p><strong>Q. Residual risk sounds made up. What does it compute?</strong>
+It answers "after everything already in scope, how much uncovered balance is left, and does it still matter?". Per leaf, residual balance is HFM amount minus total in scope, and residual multiple is that divided by materiality. Both are stored on the fact rows. The screen flags lines over 50% of materiality or over a percentage-change threshold, served by <code>GET /residual_risk?fsli_type=bs|is</code>. Scoping isn't just "flag the big lines", it also proves the leftover is small enough to ignore.</p>
+<p><strong>Q. What is quarter-annualization and why does it matter?</strong>
+Materiality is an annual concept, but in Q1 to Q3 you only have part of a year of income-statement activity. Annualization scales the part-year figure to a full-year equivalent so comparisons against annual thresholds are fair. For example, half a year of revenue is scaled by four over two. The platform picks the factor dynamically from the fiscal quarter, so the same code works in every close.</p>
+<p><strong>Q. Walk me through how HFM numbers get checked against the 10-Q.</strong>
+HFM is the consolidation system: entity balances go in, get currency-translated, intercompany-eliminated and adjusted, and the consolidated group number comes out. The 10-Q is what was filed with the SEC, so it's the publicly attested truth. The recon screen puts them side by side per line, <code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>, and a nonzero difference must be explained before scoping proceeds. In v2 those rows are persisted by quarter and year with stable IDs, so every break is queryable and commentable, which Sheets couldn't do.</p>
+<p><strong>Q. If HFM doesn't tie to the 10-Q, does your system block or just display?</strong>
+It surfaces and persists the per-line difference, so a break is explicit, never hidden. Because recon lines have stable IDs, a manager can attach a comment explaining or resolving each break. It doesn't hard-block scoping in that code path. The control is procedural: a manager reviews and clears differences before finalising. The tool enforces visibility and auditability, humans enforce sign-off, and the FSM gates enforce that big swings get attention before a record advances.</p>
+<p><strong>Q. What are the 8 screens, and which carry real logic?</strong>
+Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk and Summary. Reconciliation runs the HFM-versus-10-Q tie-out. Group Scoping applies the quantitative-or-qualitative rule with the Draft, Review, ReOpen, Closed status flow. Component Scoping applies the 5% rule, Threshold Setup manages legal-entity significance, Residual Risk computes residual balances and multiples, and EMI handles equity-method stakes. Materiality and Summary are lighter but still write through. I owned the backend for all of them, not the React UI.</p>
+<h3 id="data-integrity-and-concurrency">Data integrity and concurrency</h3>
+<p><strong>Q. Multiple managers edit the same close. How do you stop them clobbering each other?</strong>
+Writes are keyed by <code>uuid</code> with explicit column sets, run in a single transaction with rollback on failure, and use optimistic row-locking: the update only succeeds if the row still has the version the editor read. If someone saved first, zero rows match and the second editor reloads instead of silently overwriting. Every mutation records <code>updated_by</code> from the auth header, so it's attributable. What I didn't build is the real-time push to other screens and the notifications. Those were the collaboration service and the frontend.</p>
+<p><strong>Q. How do you handle transactions?</strong>
+Declaratively, with <code>@Transactional</code> on the service methods that write. Spring opens the transaction before the method, commits after it, and rolls back if a runtime exception escapes. The connection comes from the HikariCP pool and goes back to it at the end. Multi-step writes happen inside one transactional method so they're atomic. For example, the EMI Total patch mirrors the amount into <code>balance_sheet</code> or <code>income_statement</code> in the same transaction, and an assessment write with <code>sync_required</code> rolls back entirely if the line sync touches zero rows. Updating benchmarks writes both rows and commits once, or throws and rolls back if either is missing.</p>
+<p><strong>Q. Idempotency?</strong>
+GETs are naturally idempotent. PATCH and PUT set explicit values by primary key, so replaying the same request gives the same state. Scoping questions use a deterministic SHA-256 ID from question text plus normalized page name and are upserted, so re-posting the same payload updates in place. Assessments are "create once, then update" per line. <code>POST /add_scoping_metrics</code> appends, which is acceptable because metrics are versioned by <code>is_active</code> and timestamp.</p>
+<p><strong>Q. What resolved the ETL lock contention?</strong>
+A normalized schema so edits and loads touch different, narrow rows, short transactions, and optimistic locking so no lock is held while a manager is thinking. With pessimistic locks held during an edit, the ETL refresh would wait on every open record. With version checks, nobody waits, and the rare real conflict is caught at save time.</p>
+<h3 id="auth-scale-caching">Auth, scale, caching</h3>
+<p><strong>Q. Your auth is one header. Elegant or a gaping hole?</strong>
+The service reads <code>x-auth-params-email</code>, returns 401 if it's missing, and stores the email as <code>created_by</code> and <code>updated_by</code>. It works because Uber's gateway authenticates the user and only injects the header after that, so the service trusts the edge and captures identity for the audit trail, which a SOX tool needs. The honest limitation is that this is authentication trust plus audit, not fine-grained authorization. That was enforced upstream. Standalone, I'd verify a signed token with Spring Security and add role checks with <code>@PreAuthorize</code>.</p>
+<p><strong>Q. How would you scale it?</strong>
+It barely needs scaling, but here's the plan. There's already one HikariCP connection pool, created once at startup and shared by every request, with connection validation so a connection MySQL has silently dropped is discarded before use instead of failing a request. I'd add read-replica routing, since the internal MySQL setup already exposes a read/write split (in Spring that's a routing data source, with <code>@Transactional(readOnly = true)</code> reads sent to the replica), then cache per-period GET responses because a closed period's tree is immutable and expensive to build. And composite indexes on <code>(fiscal_quarter, fiscal_year, level_id)</code>. Writes are low volume, so the bottleneck is read fan-out of nested trees, and caching solves that.</p>
+<p><strong>Q. Where's your caching and what are your latency numbers?</strong>
+Server-side, the only thing reused across requests in the shipped service is the HikariCP connection pool, and that's connection reuse, not a data cache. There's no Redis, no response cache and no Hibernate second-level cache, so I won't claim one. The design doc has the frontend using TanStack Query for client caching and virtual scrolling, with a sub-second grid target. That's a target, not a latency I measured. If I added caching, it would be a per-period response cache plus composite indexes, and I'd label that as what I would do, not what shipped.</p>
+<p><strong>Q. Is this even a hard engineering problem, or a spreadsheet with extra steps?</strong>
+It's deliberately not a throughput problem, and pretending otherwise is how people get caught. We migrated 19 million raw GL rows off Sheets, but a single quarter's extract is tens of thousands of rows. The hard part is correctness, hierarchy and auditability under a close deadline: parent equal to sum of children, running v1 and v2 in parallel, and fixing an identity bug that silently mapped rows to the wrong line. A wrong number here becomes audit evidence for an SEC filing, so trustworthiness is the whole product.</p>
+<h3 id="testing-and-delivery">Testing and delivery</h3>
+<p><strong>Q. How did you test controllers?</strong>
+The scoping controller test class alone has about 112 JUnit 5 tests. They use <code>@WebMvcTest</code>, which starts only the web layer of Spring, plus MockMvc to send fake HTTP requests, with every service replaced by a Mockito mock, so no database is touched. Tests assert status codes, JSON shapes, the 401-on-missing-header path in a dedicated auth test class, the 409 on a version conflict, and the error-to-status mapping in the controller advice. Services are tested the same way one layer down, with mocked repositories.</p>
+<p>A representative test:</p>
+<pre><code class="language-java">@WebMvcTest(ScopingController.class)
+class ScopingControllerAuthTest {
+    @Autowired MockMvc mvc;
+    @MockitoBean GroupBalanceSheetService groupBsService;   // @MockBean before Spring Boot 3.4
+
+    @Test
+    void patchWithoutAuthHeaderReturns401() throws Exception {
+        mvc.perform(patch(&quot;/frm-scoping/group_balance_sheet/abc&quot;)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(&quot;{\&quot;groupStatus\&quot;:\&quot;Review\&quot;,\&quot;version\&quot;:7}&quot;))
+           .andExpect(status().isUnauthorized());
+        verifyNoInteractions(groupBsService);
+    }
+
+    @Test
+    void staleVersionReturns409() throws Exception {
+        when(groupBsService.updateScopeAndStatus(eq(&quot;abc&quot;), any(), eq(&quot;m@uber.com&quot;)))
+            .thenThrow(new ObjectOptimisticLockingFailureException(BalanceSheet.class, &quot;abc&quot;));
+        mvc.perform(patch(&quot;/frm-scoping/group_balance_sheet/abc&quot;)
+                .header(&quot;x-auth-params-email&quot;, &quot;m@uber.com&quot;)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(&quot;{\&quot;groupStatus\&quot;:\&quot;Review\&quot;,\&quot;version\&quot;:7}&quot;))
+           .andExpect(status().isConflict());
+    }
+}
+</code></pre>
+<p>For repository queries such as the aliased projections, a test against a real MySQL in a throwaway container (Testcontainers) is the general best practice, because an in-memory database can hide MySQL-specific SQL behaviour.</p>
+<p><strong>Q. You claim 1,100+ tests and 100% coverage. Sounds inflated.</strong>
+The resume number is 100% statement coverage on the modules the ORM migration touched, not the whole service. The 1,100+ test count is conservative: a count of <code>@Test</code> methods across about 65 test classes finds roughly 1,288. They're not trivial. The layered design means controllers are tested against mocked services and services against mocked repositories, covering status codes, shapes, auth failures and error mapping.</p>
+<p><strong>Q. Bazel for a Java service? Why does CI actually gate anything?</strong>
+Bazel is the Uber monorepo build system, so it's the environment, not a choice. Each package has a <code>BUILD.bazel</code> with <code>java_test</code> targets that run its JUnit 5 tests. CI runs five layer targets, entity, DTO, repository, service and controller, and all must pass to merge. The gate is real because my review rule was that every PR adds or updates tests in the matching folder, and stacked PRs meant each small step was tested on its own.</p>
+<p><strong>Q. What are reporting SQL allowlists and why do they matter for SOX?</strong>
+An allowlist means reporting reads can only run approved, parameterized queries. Anything not on the list is rejected. For SOX, that turns "where did this number come from?" into a reviewed, repeatable answer instead of someone's ad hoc SQL. It also shuts the door on injection through report parameters.</p>
+<h3 id="ownership-and-leadership">Ownership and leadership</h3>
+<p><strong>Q. Did you build the HFM ETL?</strong>
+No. The service consumes HFM-loaded MySQL tables. I owned the scoping backend, the schema and the recon v2 migration, and the ETL pipeline was a shared responsibility. I can explain how it works: extract balances from HFM, resolve the hierarchy into <code>level_mapping</code>, load period-keyed rows.</p>
+<p><strong>Q. "Led 3 engineers" is easy to inflate. What did leading look like?</strong>
+I was tech lead of a 3-engineer EPAM pod, not a people manager. I sliced work along the controller, service, repository and entity boundary so two people could build the same feature without collisions. I set conventions that appear uniformly in the code, like thin controllers, transactions only on service methods, and the <code>updated_by</code> pattern on every write. And I ran the review gate and led the Spring Data JPA / Hibernate migration as stacked PRs to 100% module coverage.</p>
+<p><strong>Q. What was the hardest part?</strong>
+Getting the tree correct and consistent between v1 and v2 while the underlying identity was ambiguous because of the column-aliasing bug, under a hard close deadline, without breaking the live v1 path. The parallel run, explicit column labels and the parent-equals-sum-of-children checks are what made the cutover safe.</p>
+<p><strong>Q. What's the single thing most likely to silently produce a wrong scoping result?</strong>
+Aggregation identity errors. Parents are sums of children, so one duplicated or mis-mapped leaf quietly inflates a parent, which is exactly what the aliasing bug could cause. My defences are the parent-equals-sum invariant, labels on every joined column, and active-flag discipline in joins. The remaining risk is upstream data issues, like a malformed currency string parsing to 0.0, which I'd harden with validation and reconciliation alerts.</p>
+<hr>
+<h2 id="18-say-this-dont-say-this">18. Say this / don't say this</h2>
+<div class="callout warn">
+<p><strong>Say this</strong></p>
+<ul>
+<li>"Uber via EPAM." Tech lead of a 3-engineer pod, not a people manager.</li>
+<li>"Reconciliation went from 14 days to 3 days, a 70% cut, against a $340M materiality threshold." If pressed: "the technical design doc framed that cut and that's what the platform delivered for the close."</li>
+<li>"36 Spring Boot endpoints." If asked for the breakdown: about 31 functional scoping routes plus the collaboration-service comment and notification APIs from the design doc.</li>
+<li>"19M raw GL rows migrated off Sheets." If asked about per-quarter size: tens of thousands of rows per extract, so the value is correctness and auditability.</li>
+<li>"8-table normalized core schema." If asked about the code: 11 JPA entity classes in the scoping service.</li>
+<li>"100% statement coverage on the modules the ORM migration touched."</li>
+<li>"$340M and $170M were the Q4 2025 close values."</li>
+</ul>
+<p><strong>Don't say this</strong></p>
+<ul>
+<li>"I built the HFM ETL." It was a shared pipeline. Say the service consumes HFM-loaded tables.</li>
+<li>"I built the real-time collaboration / WebSockets / Slack notifications." Those were the separate collaboration service and the frontend.</li>
+<li>"The whole service is at 100% coverage." It is module statement coverage.</li>
+<li>Any FRM p95 latency, Redis, response cache or Hibernate second-level cache. Only the HikariCP connection pool is reused across requests.</li>
+<li>"I built the React screens." You owned the backend that powers them.</li>
+<li>Materiality as a fixed constant. Qualify it as the Q4 2025 close.</li>
+<li>"30+ endpoints", "70% was only a target", "don't count 19M". That was older prep. The current resume states 36, 70% and 19M, so defend them.</li>
+<li>Merging "led 3" (FRM) with "mentored 2" (Masters India). The 35% to 82% coverage figure is Masters India too.</li>
+<li>Internal hosts or staging URLs.</li>
+</ul>
+</div>
+<hr>
+<h2 id="19-confidence-audit">19. Confidence audit</h2>
+<p><strong>SOLID</strong> means it traces to code, a design doc, or the PDF and you can defend it directly. <strong>NEEDS CARE</strong> means it needs a qualifier or sits partly outside your direct authorship.</p>
+<ul>
+<li><strong>F1 backend ownership:</strong> SOLID. The screens are product surface powered by your APIs. Do not claim UI ownership.</li>
+<li><strong>F1 70%, 14 to 3 days, $340M:</strong> SOLID as PDF outcome and Q4 2025 materiality. Defend as written, explain the TDD framing only if pressed.</li>
+<li><strong>F1 36 endpoints:</strong> SOLID with the breakdown (about 31 scoping routes plus collaboration APIs). NEEDS CARE only in that you did not build the collaboration service's real-time or Slack parts.</li>
+<li><strong>F1 19M:</strong> SOLID as "raw GL rows migrated off Sheets". NEEDS CARE: do not invent a breakdown.</li>
+<li><strong>F1 L1 to L4 and quarter-annualization:</strong> SOLID. Keep the annualization formula at the general level.</li>
+<li><strong>F2 8-table schema, polymorphic status, atomic syncs, SHA-256 keys:</strong> SOLID. The atomic syncs and natural keys are directly in the code.</li>
+<li><strong>F2 optimistic row-locking:</strong> NEEDS CARE. Defend as the version check on update. Do not extend it into real-time push or WebSocket conflict resolution.</li>
+<li><strong>F3 led 3, ORM migration, aliasing bugs:</strong> SOLID.</li>
+<li><strong>F3 100%:</strong> SOLID as module statement coverage. NEEDS CARE if someone hears "whole service".</li>
+<li><strong>F3 stacked Bazel PRs, SQL allowlists, 50% delta-variance FSM gates:</strong> SOLID as PDF. NEEDS CARE on exact formulas. Explain the mechanism and keep the formula qualitative.</li>
+<li><strong>Verbal depth (8 screens, ~55 × 14, 11 models, 18-file recon writeup, $170M residual, 1,100+ tests):</strong> SOLID as supporting depth, not printed bullets.</li>
+<li><strong>Caching and latency:</strong> NEEDS CARE. Server-side, only the HikariCP connection pool is reused. There is no data cache. Frontend caching and the sub-second grid are design-doc targets.</li>
 </ul>
 <hr>
-<h2 id="7-rapid-fire-qa-12">7. Rapid-fire Q&amp;A (12+)</h2>
-<p><strong>Q1. Why FastAPI?</strong>
-It is the Uber-internal standard for Python HTTP services (via the <code>langfx</code>/<code>uber.ai.langfx.fastapi</code> framework), and the workload is I/O-bound API serving with heavy request/response validation. Pydantic models give me typed request validation, automatic 422s, and a free OpenAPI/Swagger surface that Finance users and QA used directly. Async handlers let me offload blocking SQLAlchemy calls with <code>asyncio.to_thread</code> while keeping the event loop responsive.</p>
-<p><strong>Q2. Why MySQL (and not Postgres or a warehouse)?</strong>
-It was mandated by Uber's <strong>SOADB</strong> standard (MySQL + InnoDB) for service-owned relational data, which gives ACID guarantees for multi-user concurrent edits during close. The data is small (tens of thousands of rows/quarter) and highly relational (recursive FSLI hierarchies), so a row store with composite indexes on <code>(fiscal_quarter, fiscal_year)</code> is exactly right; a columnar warehouse would be overkill and would not give the transactional edit semantics the scoping workflow needs.</p>
-<p><strong>Q3. Why the layered handler / service / repository pattern?</strong>
-Separation of concerns and testability. Handlers do only HTTP (auth header, param validation, error-to-status mapping). Services own business logic and tree building. Repositories own every session and all SQL. Because dependencies point one direction, I can unit test a handler with a mocked service and a service with a mocked repository, with zero database. It also let 3 engineers work the same feature across layers without merge collisions.</p>
-<p><strong>Q4. How does auth work?</strong>
-There is no password logic in the service. Uber's gateway authenticates the user and injects an <code>x-auth-params-email</code> header. <code>_get_auth_email(request)</code> pulls it, returns 401 if missing, and the email is persisted as <code>created_by</code> / <code>updated_by</code> on every mutation. So the service trusts the authenticated edge and its own job is identity capture for the audit trail. Authorization (who may edit) was enforced upstream, which is a fair thing to call out as a limitation.</p>
-<p><strong>Q5. How would you scale it?</strong>
-It barely needs scaling given the data size, but: the SQLAlchemy engine already uses <code>pool_pre_ping=True</code> and a cached engine per config (<code>MySQLManager</code> memoizes the <code>nemo</code> instance). To scale reads I would add read-replica routing (the internal <code>MySQLDatabase</code> already exposes read/write split), cache per-period GET responses (the tree is expensive to build and immutable within a closed period), and add composite indexes on <code>(fiscal_quarter, fiscal_year, level_id)</code>. Writes are low volume (managers editing cells), so the bottleneck is read fan-out of the nested trees, which caching solves.</p>
-<p><strong>Q6. How does ETL from HFM work?</strong>
-Scheduled Python jobs extract raw balances and entity data from Oracle HFM, transform them (cleansing, recursive parent-child hierarchy resolution into <code>level_mapping</code>, aggregations), and load normalized rows into <code>balance_sheet</code> / <code>income_statement</code> / <code>component_entity</code> / recon tables keyed by period. My service consumes those loaded tables; I owned the scoping and recon APIs on top, and the pipeline was a shared responsibility (honesty guardrail).</p>
-<p><strong>Q7. Why not just keep the Google Sheets workflow?</strong>
-Sheets cannot model recursive financial hierarchies safely, has no stable per-line IDs (so you cannot attach comments or audit history), no concurrency control (managers overwrite each other), and no single source of truth (versions drift). For a SOX-adjacent, PwC-audited process that is a real risk. The relational schema gives referential integrity, period keys, an audit trail, and comment mapping, which is the whole point of the tool.</p>
-<p><strong>Q8. How do you handle transactions?</strong>
-Every repository function opens a session via <code>db.get_read_write()</code>, does its work, <code>commit()</code>s on success, <code>rollback()</code>s on any exception, and <code>close()</code>s in a <code>finally</code>. Multi-step writes are done in one session so they are atomic: for example updating benchmark metrics updates both <code>assets_benchmark</code> and <code>revenue_benchmark</code> and commits once (raising <code>ValueError</code> if either row is missing), and the EMI "Total" column patch mirrors the amount into <code>balance_sheet</code> / <code>income_statement</code> in the <strong>same</strong> transaction before commit. The <code>scoping_assessments</code> write with <code>sync_required</code> updates the mapped line table and the assessment together, and rolls back the whole thing if the line sync affects zero rows.</p>
-<p><strong>Q9. Idempotency?</strong>
-GETs are naturally idempotent. PATCH/PUT are idempotent by design: they set explicit column values by primary key (<code>uuid</code>), so replaying the same PATCH yields the same state. <code>scoping_questions</code> bulk uses a <strong>deterministic uuid</strong> (SHA-256 of <code>question_text</code> + normalized <code>page_name</code>) and upserts, so re-injecting the same payload updates in place instead of duplicating. <code>scoping_assessments</code> are "create once, then update" per line (from <code>Scoping Features.docx</code>). What is not strictly idempotent is <code>POST /add_scoping_metrics</code> (append), which is acceptable because those are versioned by <code>is_active</code> and timestamp.</p>
-<p><strong>Q10. How did you test handlers with mocks?</strong>
-<code>handler/tests/test_scoping_handler.py</code> (112 test functions in that file alone) uses FastAPI's <code>TestClient</code> plus <code>unittest.mock</code> (<code>AsyncMock</code>, <code>MagicMock</code>, <code>patch</code>). I inject fake services into <code>ScopingHandler(...)</code> (its constructor takes optional service instances precisely for this) and <code>patch</code> the repository-level functions (for example <code>...recon_service.fetch_recon_balance_sheet_rows</code>) so no database is touched. Tests assert status codes, response shapes, the 401-on-missing-header path (<code>test_scoping_handler_auth.py</code>), and error-to-status mapping.</p>
-<p><strong>Q11. Bazel test setup?</strong>
-Each package has a <code>tests/BUILD.bazel</code> declaring an <code>uber_py_test</code> target named <code>py_default_test</code>, <code>python_version = "3.11"</code>, listing the test srcs and deps (the package library plus <code>@third_party_python_base//pytest</code>, <code>//fastapi</code>, etc.). CI runs the five layer targets (database, schema, repository, service, handler) as shown in <code>RECON_API_MIGRATION.md</code>; all must PASS to merge. The app itself is a <code>py_binary</code> (<code>frm_scoping_service</code>) with a <code>py_library</code>.</p>
-<p><strong>Q12. What is <code>level_id</code> and why join on it plus period?</strong>
-<code>level_id</code> on a fact row equals <code>level_mapping.uuid</code>, and <code>level_mapping</code> holds the <code>level1..level4</code> text hierarchy. Facts store the id, not the text, so hierarchy renames do not rewrite every fact. Joins always AND <code>level_id</code> with <code>fiscal_quarter</code> + <code>fiscal_year</code> + active flags because the same logical FSLI exists once per period; joining on id alone would fan out across quarters.</p>
-<p><strong>Q13. Why store amounts as DECIMAL(18,2) and percentages as DECIMAL(5,2)?</strong>
-Money must be exact (no float rounding), so <code>DECIMAL</code>/<code>Numeric</code> in the DB and <code>Decimal</code> in Python; <code>_to_float</code> only converts at the display/aggregation edge. Percentages fit in <code>(5,2)</code> (up to 999.99%).</p>
-<p><strong>Q14. What was the hardest part?</strong>
-Getting the recursive tree correct and consistent between v1 and v2 while the underlying identity was ambiguous (the column-aliasing bug), under a hard quarterly-close deadline, without breaking the live v1 path. The parallel-run plus explicit column labeling plus the parent-equals-sum-of-children invariant checks are what made the cutover safe.</p>
+<h2 id="20-practice-drill">20. Practice drill</h2>
+<p>Answer each out loud in 2 to 4 sentences, then check against the sections above.</p>
+<ol>
+<li><strong>What is scoping, in one breath?</strong> Deciding which financial lines and legal entities are important enough for PwC to test each quarter. Too narrow misses risk, too broad wastes audit hours.</li>
+<li><strong>What was materiality on Q4 2025, and where is it stored?</strong> $340M, with a $170M residual threshold. It's a row in <code>frm_metrics_table</code>, not a constant.</li>
+<li><strong>State the significance rule.</strong> Quantitative is HFM amount above materiality. Qualitative is a manager's answer. Significant if either is YES.</li>
+<li><strong>State the 5% rule.</strong> A component is financially significant if its revenue share is over 5% or its absolute assets share is over 5%. Benchmarks are configurable.</li>
+<li><strong>Compute a residual multiple.</strong> HFM $900M, in scope $700M, residual $200M, multiple 200 / 340 ≈ 0.59, which is over 50% of materiality, so it's flagged.</li>
+<li><strong>What is quarter-annualization?</strong> Scaling part-year income-statement figures to a full-year equivalent (for example × 4/2 at Q2) so they compare fairly with annual thresholds.</li>
+<li><strong>Why 36 endpoints?</strong> About 31 functional scoping routes plus the collaboration-service comment and notification APIs from the design doc.</li>
+<li><strong>How does 19M square with tens of thousands per quarter?</strong> 19M is the raw GL migrated off Sheets. Per-quarter extracts are 38K to 95K rows. The value was correctness, not throughput.</li>
+<li><strong>14 to 3 days is 79%. Why does the resume say 70%?</strong> 70% is the figure the design doc framed for manual reconciliation effort, so it's the conservative number.</li>
+<li><strong>Explain optimistic row-locking.</strong> Read freely, and at save time update only if the version still matches. Zero rows updated means someone saved first, so reload. No locks held while thinking.</li>
+<li><strong>Why SHA-256 natural keys?</strong> Same question text and page always give the same ID, so re-running a seed or load upserts instead of duplicating audit rows.</li>
+<li><strong>Tell the column-aliasing bug in 30 seconds.</strong> A join returned two columns named <code>uuid</code>. Copying the row into a map by column label kept the last one, so rows took the mapping's ID and edits hit the wrong line. Fixed with Spring Data JPA <code>@Query</code> methods that give every column a unique alias and return typed projections.</li>
+<li><strong>What does 100% mean exactly?</strong> Statement coverage on the modules the ORM migration touched.</li>
+<li><strong>What is an FSM gate with a 50% delta-variance check?</strong> At a status transition, a line that moved more than 50% against its comparison value can't silently advance. It needs a reviewer's attention.</li>
+<li><strong>What did you not build?</strong> The HFM ETL (shared), the collaboration service's real-time and Slack parts, and the React UI.</li>
+</ol>
 <hr>
-<h2 id="8-one-paragraph-verbal-summary-for-walk-me-through-frm">8. One-paragraph verbal summary (for "walk me through FRM")</h2>
-<p>"At Uber Finance I built the FRM Risk Scoping platform, a FastAPI + MySQL tool that replaced a manual Google Sheets close for the quarterly scoping process, the activity that decides which financial line items and entities are in scope for PwC's audit. It is 8 screens and 30-plus REST endpoints over an 11-table SQLAlchemy 2.0 schema, in a strict handler / service / repository layering with header-based auth. On the Q4 2025 close, group materiality was $340M. The project's goal was targeting a 70% cut in manual ingestion and reconciliation time. I personally owned migrating reconciliation from Sheets-backed v1 APIs to MySQL-backed v2 APIs, running both in parallel and validating HFM against the filed 10-Q, and I fixed a latent column-aliasing bug where joined tables produced duplicate result-key names and silently mapped rows to the wrong identity, by moving to SQLAlchemy aliased selects with explicit labels. I led a pod of 3 engineers and we grew the service to 1,100-plus pytest tests gated by Bazel CI."</p>
-<hr>
-<h2 id="mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</h2>
-<p>Adversarial round with a skeptical senior engineering manager from a fintech background. Questions are the ones designed to expose exaggeration; answers are grounded only in the code and KT docs. Anything not in the shipped scoping-service code is labeled design intent, not implemented fact.</p>
-<p><strong>Q1. You put "30+ REST APIs" on a resume. That reads like padding. Show me the real number and prove you are not double counting trivial routes.</strong>
-The honest basis is code, not marketing. In <code>handler/scoping_handler.py</code>, <code>setup_routes()</code> makes exactly 32 <code>add_api_route(...)</code> registrations, one of which is <code>/health</code>, so it is 31 functional endpoints plus a health check. I say "30+" precisely so I am under-claiming against the real count. I do not say 36, because that number only appears if you fold in the separate <code>frm-collaboration-service</code> comment and notification APIs, which I did not build. The 31 span reconciliation v1 and v2, group balance sheet and income statement, component scoping and filters, residual risk, EMI, metrics and materiality and benchmarks, threshold setup, and scoping questions and assessments. None of them are duplicate verbs on the same resource for padding; the PATCH and PUT routes carry distinct business logic like status transitions and benchmark recomputation.</p>
-<p><strong>Q2. Why MySQL and not PostgreSQL? Postgres has recursive CTEs and better JSON. Defend the choice or admit it was handed to you.</strong>
-Both are true at once: it was the right tool and it was the platform standard, and I will not pretend I picked it in a vacuum. Uber's SOADB standard for service-owned relational data is MySQL on InnoDB, so choosing anything else would have meant fighting the platform for no product gain. On the merits it still fits: the working set is tiny, up to about 95K raw GL rows per quarter and roughly 1.7K to 1.8K accounts and about 400 entities, so this is a tens-of-thousands-of-rows correctness problem, not a scale problem. I did not need Postgres recursive CTEs because I do not resolve the hierarchy in SQL at query time; the ETL flattens the recursive FSLI tree into a stable <code>level_id</code> in <code>level_mapping</code>, and the API joins facts to that id plus the fiscal period. InnoDB gives me the ACID multi-user edit semantics the close needs, and that is what actually matters here.</p>
-<p><strong>Q3. "SQLAlchemy 2.0" is a buzzword unless you can tell me what 2.0 actually changed for you. What did the 2.0 style buy you on this project?</strong>
-Concretely, every model is a <code>Mapped[...]</code> / <code>mapped_column(...)</code> declaration on a shared <code>DeclarativeBase</code>, which gives me typed attributes the type checker can see instead of the old implicit <code>Column</code> attributes. The read paths use the 2.0 <code>select()</code> construct with <code>aliased()</code> models rather than legacy <code>Query</code>, which is exactly what let me kill the column-aliasing bug by labeling every projected column. It also standardized session handling: repositories open a session with <code>get_read_write()</code>, commit on success, roll back on any exception, and close in a <code>finally</code>. So 2.0 is not decoration here; the typed models plus <code>select()</code> with explicit <code>.label()</code> are the mechanism behind the correctness fix I am proudest of.</p>
-<p><strong>Q4. In the Java variant of your resume this is Spring Boot and Hibernate. Which is the lie?</strong>
-Neither is a lie, and I would tell an interviewer the truth up front: the actual implementation is Python, FastAPI, and SQLAlchemy 2.0. When I present the Java framing I am mapping the same architecture onto the Spring vocabulary because the patterns are one to one: the FastAPI handler layer is the Spring <code>@RestController</code>, the service layer is <code>@Service</code>, the repository layer is the Spring Data JPA repository, and the SQLAlchemy declarative models map to JPA entities under Hibernate. The <code>x-auth-params-email</code> middleware is a servlet filter or <code>HandlerInterceptor</code>, and the Bazel <code>uber_py_test</code> gate is the equivalent of a Maven or Gradle Surefire gate. I position it as "transferable architecture, implemented in Python," and I never claim I wrote Hibernate code that I did not write.</p>
-<p><strong>Q5. Explain materiality and FSLI to me like I do not have a finance degree, then tell me exactly where they live in your system.</strong>
-An FSLI is a Financial Statement Line Item, one line on the balance sheet or income statement, for example Cash, Accounts Receivable, or Revenue. Materiality is the dollar threshold above which a misstatement would change the decision of someone reading the financials; auditors set it top-down, commonly as a percentage of a key figure like pre-tax income, total assets, or revenue. In my system materiality is not hard coded; it is a row in <code>frm_metrics_table</code> with <code>metric_key = "materiality"</code>, and on the Q4 2025 close it was $340M with a residual threshold of $170M. The FSLIs live as rows in <code>balance_sheet</code> and <code>income_statement</code>, about 26 balance-sheet and 29 income-statement line items on that close, each carrying its HFM amount and its computed significance conclusion.</p>
-<p><strong>Q6. Walk me through the rule engine. What is the actual boolean logic that flags an item as material, and where is it in code?</strong>
-There are two independent tests per line and then an OR. Quantitative Material is "YES if HFM Amount &gt; Materiality," a straight value against the $340M threshold. Qualitative Material is a manual yes or no answer captured against a scoping question. The overall verdict is Overall Significance = Significant if quantitative OR qualitative is YES, and that exact rule is in the code as <code>conclusion_overall_significance_from_balance_sheet_materials</code>. At the component level there is a second rule set from <code>Scoping Features.docx</code>: a component is a Financially Significant Component if Total Revenue % &gt; 5% OR absolute Total Assets % &gt; 5%, where the 5% benchmarks are configurable metrics (<code>assets_benchmark</code>, <code>revenue_benchmark</code>) recomputed via <code>PUT /update_benchmark_thresholds</code>. So it is threshold comparisons and a benchmark rule, deterministic and auditable, not a black box.</p>
-<p><strong>Q7. Residual risk sounds like a made-up screen. What does it actually compute?</strong>
-It answers "after everything we already put in scope, how much uncovered balance is left and does it still matter." Per leaf line the computation is Residual Balances = HFM Amount minus Total in Scope, and Residual Multiples = Residual Balances divided by Materiality, both from the <code>Scoping Features.docx</code> calculation matrix and stored on the fact rows as <code>residual_balances</code> and <code>residual_multiples</code>. The screen then flags lines where residual exceeds 50% of materiality or crosses a percentage-change threshold, which is what tells a manager an uncovered remainder is still audit-relevant. It is served by <code>GET /residual_risk?fsli_type=bs|is</code>. The point is that scoping is not just "flag the big lines," it also proves the leftover is small enough to ignore.</p>
-<p><strong>Q8. How do you model a recursive financial hierarchy in a database that you just told me has no recursive queries? That smells contradictory.</strong>
-The trick is I resolve recursion once, in the ETL, not on every read. <code>level_mapping</code> holds the flattened path columns <code>level1</code> through <code>level4</code> and a stable <code>uuid</code> that I use as <code>level_id</code>. Every fact row in <code>balance_sheet</code>, <code>income_statement</code>, and <code>component_entity</code> stores that <code>level_id</code> instead of the hierarchy text, so a rename of a parent node does not rewrite thousands of fact rows. At read time the service builds the L1 to L2 to L3 nested tree in application code and aggregates child sums up to parents, and joins always AND <code>level_id</code> with <code>fiscal_quarter</code>, <code>fiscal_year</code>, and the active flags. So the hierarchy is real and recursive in shape, but it is materialized into stable ids, which is both faster and safer than recursive SQL for a dataset this size.</p>
-<p><strong>Q9. Tell me the column-aliasing bug precisely. What broke, how did it surface, and how did you find it? No hand waving.</strong>
-The legacy read path built row dicts with <code>dict(zip(result.keys(), row))</code> off a raw SQL result. That is only safe when <code>result.keys()</code> is unique. The component aggregate joins the fact table (aliased <code>i</code>) to <code>level_mapping</code> (aliased <code>lm</code>), and both sides carry <code>uuid</code>, <code>level_id</code>, <code>fiscal_quarter</code>, and <code>fiscal_year</code>. When the projection returned two columns literally named <code>uuid</code>, <code>zip</code> paired positionally and <code>dict</code> kept the last write, so the row silently took the <code>level_mapping</code> uuid instead of the fact uuid. The symptom was rows that looked correct on screen but keyed off the wrong identifier, so PATCH-by-uuid and comment mapping pointed at the wrong line; it surfaced when an edit to one recon line appeared to affect a different line. The fix was to move to a SQLAlchemy <code>select()</code> on <code>aliased()</code> models and give every projected column an explicit <code>.label()</code>, for example <code>func.min(i.uuid).label("fsli_id")</code> versus <code>func.max(lm.uuid).label("level_mapping_uuid")</code>, so <code>result.keys()</code> can no longer collide.</p>
-<p><strong>Q10. The 10-Q validation is the part I trust least. Walk me through exactly how HFM numbers get checked against a public filing.</strong>
-HFM is Oracle Hyperion Financial Management, the consolidation system where entity trial balances are loaded, currency-translated, and run through intercompany eliminations and minority-interest and equity adjustments to produce the consolidated group numbers. The 10-Q is the quarterly report filed with the SEC, so its line items are the post-consolidation, publicly attested truth. The recon screen puts the two side by side per line: <code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>, and a nonzero difference means HFM and the filed statement do not tie and someone has to explain it before scoping proceeds. This is a standard finance tie-out: you reconcile the consolidated HFM output against the filed statements so that scoping is built on numbers that match what went to the SEC. In my system the v2 recon endpoints persist those leaf rows in <code>recon_balance_sheet</code> and <code>recon_income_statement</code> keyed by quarter and year so the tie-out is queryable and comment-mappable, which the old Sheets version could not do.</p>
-<p><strong>Q11. What are the 8 screens, and which ones carry real logic versus being glorified tables?</strong>
-The 8 are Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, and Summary. Reconciliation runs the HFM-versus-10-Q tie-out. Materiality stores and edits the $340M threshold and benchmarks. EMI Scoping handles Equity Method Investments, one grid column per investee with ownership percentage, asset balance, and preliminary income or loss. Group Scoping applies the quantitative-OR-qualitative significance rule at the consolidated level with status transitions Draft, Review, ReOpen, and Closed; Component Scoping drills into entities under each FSLI and applies the 5% Financially Significant Component rule; Threshold Setup manages legal-entity significance; Residual Risk computes the residual balance and multiple; and Summary rolls up coverage. So Group, Component, Residual, Threshold, and EMI carry real rule logic; Reconciliation carries the tie-out; Materiality and Summary are lighter but still write-through.</p>
-<p><strong>Q12. Multiple managers edit the same close at once. How do you stop them from clobbering each other? Be specific about what you actually built versus what was designed.</strong>
-I will separate the two cleanly. What I built in the scoping service: writes are keyed by <code>uuid</code> primary key with explicit column sets, each write runs in a single committed transaction with rollback on failure, and every mutation records <code>updated_by</code> from the auth header, so the system of record is consistent and attributable. What is design intent in the TDD, not something I hand-wrote in the scoping service: true real-time multi-user sync uses a WebSocket-lite or polling model on the frontend via TanStack Query, and Optimistic Concurrency Control with version numbers lives in the separate <code>frm-collaboration-service</code> and its own MySQL, which checks that no other manager modified a record since it was fetched. So if you ask "did you personally ship WebSocket conflict resolution," the honest answer is no; the scoping service relies on transactional per-uuid writes, and the real-time and version-check layers are the collaboration service and the client.</p>
-<p><strong>Q13. Your auth is one header. That is either elegant or a gaping hole. Convince me it is not the latter.</strong>
-The service reads <code>x-auth-params-email</code> via <code>_get_auth_email(request)</code>, returns 401 if it is missing, and stores that email as <code>created_by</code> and <code>updated_by</code>. It works because Uber's gateway authenticates the user at the edge and injects that header only after authentication, so the service trusts the edge and its job is identity capture for the audit trail, which is exactly what a SOX-adjacent tool needs. The honest limitation, and I say it before the interviewer does, is that this is authentication trust plus audit, not fine-grained authorization; the service does not itself decide who is allowed to edit which entity, that was enforced upstream. If I were hardening it standalone I would add role checks in a dependency and verify a signed token rather than a plain header, so the service does not blindly trust an internal-only assumption.</p>
-<p><strong>Q14. You claim "1,100+ tests." Sounds inflated. What is the real count, what do they actually cover, and could they all be trivial?</strong>
-The real count is higher than the resume: a grep of <code>def test_</code> across the roughly 65 test files returns about 1,288 test functions, and I wrote 1,100+ deliberately to under-claim. They are not trivial: <code>handler/tests/test_scoping_handler.py</code> alone has about 112 functions using FastAPI's <code>TestClient</code> with <code>AsyncMock</code> and <code>patch</code> to inject fake services, so handlers are tested for status codes, response shapes, the 401-on-missing-header path, and error-to-status mapping with zero database. The layered design is what makes this possible; I can unit test a handler against a mocked service and a service against a mocked repository. What I do not claim is a coverage percentage, because I never verified one for this project, so I quote the test count, not a coverage number.</p>
-<p><strong>Q15. Bazel for a Python service? Explain the test setup and why CI actually gates anything.</strong>
-Bazel is the Uber monorepo build system, so it is not a choice, it is the environment. Each package has a <code>tests/BUILD.bazel</code> declaring an <code>uber_py_test</code> target, <code>python_version = "3.11"</code>, listing its srcs and deps including the package library and third-party pytest and FastAPI. The app itself is a <code>py_binary</code> over a <code>py_library</code>. CI runs the five layer targets, database, schema, repository, service, and handler, and all must pass before merge, which is documented in <code>RECON_API_MIGRATION.md</code>. The gate is real because the review convention I enforced was that every PR must add or update tests in the matching <code>tests/</code> folder, which is the direct reason the suite grew past 1,100.</p>
-<p><strong>Q16. "Led 3 engineers" is the easiest thing on a resume to inflate. What did leading actually look like, with evidence?</strong>
-I was the tech lead of a 3-engineer EPAM pod inside Uber Finance, not a people manager, and I say that framing plainly. Leading meant three concrete things backed by the codebase. First, I sliced work along the handler, service, repository, model boundary so two engineers could build the same feature without merge collisions; the recon migration is the clean example, 18 files and 1,268 insertions split across five layers. Second, I set and enforced the conventions that appear uniformly across the code: thin handlers doing only HTTP, auth, and error mapping; services owning tree building; repositories owning every session; and the <code>x-auth-params-email</code> plus <code>updated_by</code> pattern on every write. Third, I ran the review gate that required tests with every PR and passing Bazel targets before merge, which came out of the backend team syncs documented in <code>Notes - FRM CT Backend Team Sync.docx</code>. The uniformity of those patterns across many files is the evidence it was an enforced standard, not one person's style.</p>
-<p><strong>Q17. Where is your caching and what are your latency numbers? Fintech grids get slow.</strong>
-I will be exact about what exists versus what was planned. In the shipped scoping service, the only server-side caching is that <code>MySQLManager</code> memoizes the SQLAlchemy engine per config with <code>pool_pre_ping=True</code>; there is no Redis and no response cache in my code, so I will not claim one. The frontend, per the TDD, uses TanStack Query for client-side caching and Base Web virtual scrolling to render thousands of FSLIs, and the TDD states a sub-second grid target. Those are design intent and NFR targets, not latency numbers I measured and can defend, so I present them as targets. If asked how I would add caching, the honest design is a per-period response cache, because a closed period's tree is immutable and expensive to rebuild, plus composite indexes on <code>(fiscal_quarter, fiscal_year, level_id)</code>; I mark that as what I would do, not what shipped.</p>
-<p><strong>Q18. This whole thing is tens of thousands of rows. Is this even a hard engineering problem, or a spreadsheet with extra steps?</strong>
-It is deliberately not a big-data problem, and pretending otherwise is how people get caught. The raw GL extracts are up to about 95K rows per quarter across roughly 1.7K to 1.8K accounts and about 400 entities, so throughput is trivial. The hardness is correctness, hierarchy, and auditability under a hard quarterly-close deadline for a PwC-audited process. Getting the recursive tree right, keeping parent equal to the sum of children, migrating recon from Sheets to MySQL with both paths running in parallel, and fixing an identity bug that silently mapped rows to the wrong line, those are the real risks, because a wrong number here flows into an SEC filing's audit evidence. So the value is not scale, it is that the output is trustworthy and traceable, which a spreadsheet cannot guarantee.</p>
-<p><strong>Q19. If HFM does not tie to the 10-Q, what does your system do? Does it block or just display?</strong>
-The v2 recon endpoint computes and returns the per-line <code>difference</code> between the HFM amount and the filed financial-statement amount, so a nonzero difference is surfaced explicitly rather than hidden. The system displays and persists the mismatch keyed by quarter and year, and because recon lines now have stable ids, a manager can attach a comment explaining or resolving each break, which the old Sheets version could not do. It does not hard-block scoping in code; the control is procedural, a manager must review and clear differences before finalizing, and the tool makes every break visible and commentable rather than silently proceeding. That is the honest boundary: the tool enforces visibility and auditability of breaks, humans enforce the sign-off.</p>
-<p><strong>Q20. What is the single thing most likely to silently produce a wrong scoping result, and how do you defend against it?</strong>
-Aggregation identity errors, because L1 and L2 amounts are sums of children, so a single duplicated or mis-mapped leaf double-counts and quietly inflates a parent. That is exactly the failure mode the column-aliasing bug could have caused, which is why the fix and the test plan both matter. My defenses are the parent-equals-sum-of-children invariant checked in the recon test plan, explicit <code>.label()</code> on every joined column so identity can never collide, and the active-flag discipline where joins require <code>is_active = 'true'</code> and <code>is_level_active = 'true'</code> so stale rows drop out. The residual honest risk is silent data issues from the ETL, like a malformed currency string parsing to 0.0 in <code>parse_currency_display_to_float</code> or an active-flag drift making a line vanish with no error, which I would harden with validation and reconciliation alerts rather than trusting the upstream load.</p>
-<hr>
-<h2 id="confidence-audit">Confidence audit</h2>
-<p>Each resume bullet with a SOLID or NEEDS CARE verdict and the exact safer wording to fall back to if pressed. SOLID means it traces directly to code or a KT artifact. NEEDS CARE means it is a target, a framing, or partly outside my direct authorship and must be qualified.</p>
-<p><strong>Bullet 1: Owned Uber's FRM Risk Scoping backend (Spring Boot, MySQL), 30+ REST APIs powering 8 screens, automating quarterly close at $340M group materiality, targeting a 70% cut in manual reconciliation (~2 weeks → ~3–4 days).</strong>
-- Backend ownership: SOLID. Screens are product surface powered by APIs — do not claim React/UI ownership.
-- 30+ APIs: SOLID (~32 route registrations including health).
-- $340M / 70% / timeline: MEASURED materiality sample; TARGET + ESTIMATED for 70% and days.</p>
-<p><strong>Bullet 2: Owned Sheets → MySQL recon v2 (18 files), parallel /v2 APIs, L1→L2→L3 FSLI trees, HFM vs public 10-Q, durable line IDs for audit.</strong>
-- 18 files / dual-run / trees / 10-Q: SOLID (RECON_API_MIGRATION.md + code).
-- Join/identity bug: verbal depth only; not required on PDF.</p>
-<p><strong>Bullet 3: Automated in-scope decisions across ~55 line items × 14 entities via materiality, qualitative override, residual-risk, and 5% component-threshold logic against $340M / $170M.</strong>
-- 55×14 and thresholds: SOLID as Q4 2025 sample + encoded rules.
-- Schema (11 models): supporting depth for interviews, not a separate PDF bullet.</p>
-<p><strong>Bullet 4: Led 3 engineers on the FRM backend by owning API contracts and layered design reviews for Finance's quarterly scoping.</strong>
-- Led 3: SOLID headcount (EPAM pod tech lead). Do not center CI gates on the resume line.</p>
-<p><strong>Cross-cutting NEEDS CARE items that span bullets:</strong>
-- Real-time collaboration, WebSockets, Optimistic Concurrency Control, and Slack notifications: NEEDS CARE. These are TDD design intent and largely live in the separate <code>frm-collaboration-service</code> and the frontend, not in my scoping-service code. Fallback: "the scoping service uses transactional per-uuid writes; real-time sync and version-check concurrency are the collaboration service and the client, which I did not author."
-- Caching, Redis, and p95 latency: NEEDS CARE. No Redis or response cache in the shipped scoping service; only the memoized engine with <code>pool_pre_ping</code>. Fallback: "server-side, only the SQLAlchemy engine is cached; TanStack Query caching and the sub-second grid target are frontend design intent, and any p95 figure is a target, not a measurement."
-- ETL from HFM: NEEDS CARE on ownership. Fallback: "the service consumes HFM-loaded MySQL tables; I owned the scoping APIs and the recon migration, the ETL pipeline was a shared responsibility."
-- 19M GL rows: DROPPED, do not claim. Real scale is up to about 95K rows per quarter. If asked about volume, "this is a tens-of-thousands-of-rows correctness system, not big data."
-- Coverage percentage: do not quote one for FRM; quote the 1,288 test-function count instead.</p></main>
+<h2 id="21-three-minute-whiteboard-script">21. Three-minute whiteboard script</h2>
+<p><strong>First, draw the business (30 seconds).</strong> Write "Quarterly close" and three boxes: HFM, the 10-Q, PwC. Say: "Every quarter Finance decides which lines and entities PwC tests. That's scoping. It lived in Google Sheets and took about two weeks."</p>
+<p><strong>Second, draw the architecture (60 seconds).</strong> Draw HFM → ETL → MySQL on the left. Draw the service as three stacked boxes: controller, service, repository. Draw the screens and the gateway on the right, and the collaboration service off to the side. Say: "I owned the backend: 36 Spring Boot endpoints in a controller, service, repository layering over an 8-table normalized MySQL schema on SOADB. The gateway injects the user's email, and every write records it for audit. 19 million raw GL rows moved off Sheets."</p>
+<p><strong>Third, draw the tree and the rules (45 seconds).</strong> Draw a small L1 to L4 tree with numbers, and write "HFM &gt; $340M OR qualitative = significant" and "residual = HFM − in scope". Say: "The service builds this tree in Java, sums children into parents, applies materiality, the 5% component rule, residual risk and quarter-annualization. Parent must equal sum of children. That invariant is my main safety net."</p>
+<p><strong>Fourth, draw the integrity mechanisms (30 seconds).</strong> Draw two managers pointing at one row with "version = 7". Say: "Optimistic row-locking, atomic multi-table writes, SHA-256 natural keys. No locks while people think, no lost edits, no duplicate audit rows. That's what resolved the lock contention with the ETL during close."</p>
+<p><strong>Finally, the story and the result (15 seconds).</strong> Write "label-keyed map, then explicit aliases". Say: "I led 3 engineers on a Spring Data JPA / Hibernate migration that removed a silent column-aliasing bug and took module coverage to 100%, shipped as stacked Bazel PRs with SOX gates. Reconciliation went from 14 days to 3."</p></main>
 </div>
 
 <script type="module">

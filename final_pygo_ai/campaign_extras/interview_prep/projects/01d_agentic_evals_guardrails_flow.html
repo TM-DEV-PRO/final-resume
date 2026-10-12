@@ -40,33 +40,260 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/projects/01d_agentic_evals_guardrails_flow.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#agentic-assortsmart-flow-guardrails-evals-benchmarking-honesty">Agentic AssortSmart — flow, guardrails, evals, benchmarking honesty</a>
-<a class="lvl2" href="#1-end-to-end-flow-say-this-out-loud">1. End-to-end flow (say this out loud)</a>
-<a class="lvl2" href="#2-guardrails-what-stops-bad-writes">2. Guardrails (what stops bad writes)</a>
-<a class="lvl2" href="#3-evaluations-what-exists-today">3. Evaluations (what exists today)</a>
-<a class="lvl2" href="#4-how-we-will-do-benchmark-method-not-fake-results">4. How we will / do benchmark (method, not fake results)</a>
-<a class="lvl2" href="#5-whole-safety-story-in-30-seconds">5. Whole safety story in 30 seconds</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#agentic-assortsmart-flow-guardrails-evals-and-benchmarking-honesty">Agentic AssortSmart: Flow, Guardrails, Evals and Benchmarking Honesty</a>
+<a class="lvl2" href="#words-you-need">Words you need</a>
+<a class="lvl1" href="#part-a-resume-backed-keepdrop-and-ask-iris">Part A: Resume-backed (Keep/Drop and Ask Iris)</a>
+<a class="lvl2" href="#a1-end-to-end-flow-of-a-keepdrop-run">A1. End-to-end flow of a Keep/Drop run</a>
+<a class="lvl2" href="#a2-ask-iris-flow">A2. Ask Iris flow</a>
+<a class="lvl2" href="#a3-guardrails-what-stops-bad-decisions-and-runaway-runs">A3. Guardrails (what stops bad decisions and runaway runs)</a>
+<a class="lvl2" href="#a4-evaluations">A4. Evaluations</a>
+<a class="lvl2" href="#a5-how-to-say-the-whole-evaluation-story-in-45-seconds">A5. How to say the whole evaluation story in 45 seconds</a>
+<a class="lvl1" href="#part-b-verbal-only-cluster-recommendation-copilot-design">Part B: Verbal-only (Cluster Recommendation Copilot design)</a>
+<a class="lvl2" href="#b1-flow">B1. Flow</a>
+<a class="lvl2" href="#b2-guardrails-in-the-design">B2. Guardrails in the design</a>
+<a class="lvl2" href="#b3-what-is-measured-and-what-is-a-target">B3. What is measured and what is a target</a>
+<a class="lvl2" href="#b4-how-i-would-benchmark-it-method-not-results">B4. How I would benchmark it (method, not results)</a>
+<a class="lvl2" href="#b5-the-copilot-safety-story-in-30-seconds">B5. The copilot safety story in 30 seconds</a>
+<a class="lvl2" href="#practice-drill">Practice drill</a>
 <a class="lvl2" href="#related">Related</a></nav>
-<main><blockquote>
-<p><strong>PDF sync (Sep 2026):</strong> 300-case / 80% is a <strong>CI promotion gate</strong> vs 74% deterministic baseline — not all-tenants-live. Ask Iris is shipped capability.</p>
-</blockquote>
-<h1 id="agentic-assortsmart-flow-guardrails-evals-benchmarking-honesty">Agentic AssortSmart — flow, guardrails, evals, benchmarking honesty</h1>
-<p><strong>PDF sync:</strong> failures <strong>8.5% (37/437)</strong> MEASURED · under <strong>2%</strong> TARGET · <strong>14</strong> read tools + <strong>3</strong> gates · LangSmith on Tech · load test <strong>pending</strong> (say <strong>building</strong>).</p>
+<main><h1 id="agentic-assortsmart-flow-guardrails-evals-and-benchmarking-honesty">Agentic AssortSmart: Flow, Guardrails, Evals and Benchmarking Honesty</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> how the AI side of AssortSmart is kept safe and measured. <b>Part A</b> is resume-backed: the Keep/Drop decision engine and Ask Iris, their guardrails, the 300-case harness, the 80% gate and the gold-200 benchmark. <b>Part B</b> is verbal-only: the Cluster Recommendation Copilot design and its measured baselines and targets.</li>
+<li><b>When to read it:</b> before any GenAI, LLM evaluation or "how do you know your AI works?" round.</li>
+<li><b>What to memorise:</b> the 80% / 73% / 74% / 63% story and which benchmark each number belongs to, the guardrails list, and the sentence "80% is a promotion gate, not production accuracy".</li>
+</ul>
+</div>
+<div class="callout warn">
+<p><b>Never break these.</b></p>
+<ul>
+<li><b>80%</b> is a CI promotion gate on a <b>300-case</b> proxy evaluation set. It is not "all tenants live at 80%".</li>
+<li><b>73%</b> lower cost at 100% coverage and the <b>74%</b> deterministic baseline come from a separate <b>gold-200</b> benchmark. They do not come from the 300-case file. Never fuse the two.</li>
+<li><b>Ask Iris</b> is a shipped capability. No usage numbers, no SLA.</li>
+<li><b>LangSmith</b> is on Ask Iris. The Keep/Drop batch uses custom JSON telemetry.</li>
+<li><b>No human review queue (HITL)</b> in Impact Analytics code. Offline evals replaced the critic and evaluator agents in Keep/Drop.</li>
+<li><b>Part B is verbal-only.</b> The Copilot, its 14 tools, its confirm steps and its 8.5% baseline are not on the resume.</li>
+</ul>
+</div>
+<p><strong>Tags on this page.</strong> MEASURED means there is a log, a doc or code. ESTIMATED means arithmetic I can show. TARGET means a design goal (say "targeting"). HISTORICAL means from past work records. DESIGN means specified in a design document, not built or measured in production.</p>
 <hr>
-<h2 id="1-end-to-end-flow-say-this-out-loud">1. End-to-end flow (say this out loud)</h2>
-<pre><code class="language-text">Planner chat (UI)
-  → FastAPI Agent Service (LangGraph graph)
-      → MCP / audited tools (14) — READ planning data only
-      → optional LLM plan / tool selection (OpenAI / Gemini / Claude)
-  → Go (Gin) doing layer — Clustering / Hindsight / Strategy APIs
-      → ClickHouse (append-only planning store) + product write APIs
-  → 3 human confirm gates before any plan/cluster write-back
-  → Telemetry: LangSmith (agent) + Datadog (platform) + PostHog (product)
-      joined by shared OTEL trace_id
-</code></pre>
-<p><strong>One sentence:</strong> The LLM proposes and reads; the deterministic engine computes; humans approve; writes go through product APIs — never free-form model SQL.</p>
+<h2 id="words-you-need">Words you need</h2>
+<ul>
+<li><strong>Guardrail.</strong> A rule enforced by code that limits what the AI can do or how badly it can fail. Like the rails on a bowling lane for children.</li>
+<li><strong>Offline evaluation.</strong> Testing the system on a fixed labelled set before release, not on live users.</li>
+<li><strong>Gold set.</strong> A set of cases where the right answer is known (the "gold" label).</li>
+<li><strong>Proxy gold.</strong> Labels built from a stand-in for the truth. Here: what actually sold next season, instead of a merchant's judgement.</li>
+<li><strong>Promotion gate.</strong> A CI check that a new config, prompt or model must pass before it replaces the current one.</li>
+<li><strong>Accuracy.</strong> The share of cases where the system's answer matches the gold label.</li>
+<li><strong>Recall (keep recall, drop recall).</strong> Of all the true drops, how many did the system catch? Accuracy can look fine while drop recall is terrible, if most cases are keeps.</li>
+<li><strong>Over-keep.</strong> The failure where the system keeps products that should have been dropped.</li>
+<li><strong>Coverage.</strong> The share of cases that got a complete answer, without timeouts or missing pieces.</li>
+<li><strong>Deterministic baseline.</strong> The rules-only score with no LLM. Free to run and always available, so every LLM change must beat it.</li>
+<li><strong>Circularity.</strong> Grading a system against labels derived from its own inputs. The score looks good whether or not the system is any good.</li>
+<li><strong>Treatment leakage.</strong> When a label encodes a past human decision instead of real demand. For example, a product a planner already dropped sells zero next season because it was not stocked, not because nobody wanted it.</li>
+</ul>
 <hr>
-<h2 id="2-guardrails-what-stops-bad-writes">2. Guardrails (what stops bad writes)</h2>
+<h1 id="part-a-resume-backed-keepdrop-and-ask-iris">Part A: Resume-backed (Keep/Drop and Ask Iris)</h1>
+<h2 id="a1-end-to-end-flow-of-a-keepdrop-run">A1. End-to-end flow of a Keep/Drop run</h2>
+<p>In plain English: a batch job reads sales data, computes a rules-based score for every article, asks the LLM lenses for a second opinion using JSON only, blends the two, and writes versioned results. A shared registry wraps everything with timeouts, breakers and checkpoints. Before any change to prompts, weights or models is promoted, it must pass the 80% gate.</p>
+<div class="mermaid">flowchart LR
+  CH["ClickHouse: weekly rollup and 2.11B master"]
+  DET["Deterministic scorer: s_det"]
+  CK["Checkpoints: det.json, agent_progress.json"]
+  JSON["JSON payload per batch"]
+  LENS["Peer, decider, 7 gated lenses"]
+  BLEND["Blend: 0.4 s_det plus 0.6 s_agent"]
+  OUT["Versioned rows with config_hash"]
+  TEL["JSON telemetry: tokens, USD, duration, fallbacks"]
+  EVAL["Offline suite and 80% gate"]
+
+  CH --&gt; DET
+  DET --&gt; CK
+  CH --&gt; JSON
+  JSON --&gt; LENS
+  CK --&gt; BLEND
+  LENS --&gt; BLEND
+  BLEND --&gt; OUT
+  LENS -.-&gt; TEL
+  OUT --&gt; EVAL
+</div>
+<p><em>What to notice: the LLM sits in one box, fed by JSON, and its output is blended with a score that exists without it. Evaluation reads the outputs, never the other way round.</em></p>
+<p>The batch order is fixed in code: peer context, then decider, then lenses, then blend, then explanation. There is no LLM orchestrator deciding what runs next.</p>
+<h2 id="a2-ask-iris-flow">A2. Ask Iris flow</h2>
+<div class="mermaid">sequenceDiagram
+  participant P as Planner
+  participant WS as WebSocket handshake
+  participant SUP as LangGraph supervisor
+  participant EV as Evaluator
+  participant LS as LangSmith
+  P-&gt;&gt;WS: connect with JWT
+  WS-&gt;&gt;WS: verify JWT, compute plan_scope once, freeze it
+  P-&gt;&gt;SUP: question about a KPI or an AI decision
+  SUP-&gt;&gt;SUP: choose next step, reads limited to plan_scope
+  SUP-&gt;&gt;EV: draft answer
+  EV--&gt;&gt;SUP: fail, retry, attempt 2 of 3
+  SUP-&gt;&gt;EV: revised answer
+  EV--&gt;&gt;SUP: pass
+  SUP--&gt;&gt;P: answer
+  SUP--&gt;&gt;LS: trace of prompts, steps, tokens
+</div>
+<ol>
+<li>The JWT is verified when the socket opens.</li>
+<li>The user's <code>plan_scope</code> is computed once and frozen for the session. Nothing typed later can widen it.</li>
+<li>The supervisor picks steps. The evaluator checks the draft. <code>MAX_ATTEMPTS = 3</code>, then the graph stops instead of looping forever.</li>
+<li>LangSmith records the run.</li>
+</ol>
+<h2 id="a3-guardrails-what-stops-bad-decisions-and-runaway-runs">A3. Guardrails (what stops bad decisions and runaway runs)</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Mechanism</th>
+<th>Why it exists</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No SQL tool</td>
+<td>Lenses get JSON built by our code from fixed queries</td>
+<td>The LLM cannot scan billions of rows, leak a tenant, or write</td>
+</tr>
+<tr>
+<td>Read-only helpers</td>
+<td>The peer-context step may call two fixed batch read functions, at most 2 per batch. SELECT-only, allowlisted tables, 15-second timeout, writes and DDL rejected</td>
+<td>Peer context without giving the model a query language</td>
+</tr>
+<tr>
+<td>Lens gate</td>
+<td>A lens runs only if the article has the data for it (for example 2+ colours for colour cannibalization)</td>
+<td>No wasted calls, no confident answers from missing data</td>
+</tr>
+<tr>
+<td>Structured output</td>
+<td>Fixed JSON schema. Unknown lens names dropped, weights renormalised, at most 5 lenses per mix</td>
+<td>Parseable, bounded output</td>
+</tr>
+<tr>
+<td>Coverage rules</td>
+<td>A mix counts only if at least 75% of its planned weight came back. An article is marked pending if fewer than 75% of mixes are valid</td>
+<td>Missing answers cannot silently make a score look optimistic</td>
+</tr>
+<tr>
+<td>Demand over margin</td>
+<td>The margin lens can never force a Drop on its own</td>
+<td>Encodes a business rule the model might ignore</td>
+</tr>
+<tr>
+<td>Hard timeouts</td>
+<td><code>min(600, 60 + 8 × articles)</code> seconds per LLM call, so 572 seconds for 64 articles</td>
+<td>A hung provider cannot hold a batch forever</td>
+</tr>
+<tr>
+<td>Retries</td>
+<td>2 retries per call, then the row is pending</td>
+<td>Transient errors recover. Persistent ones do not loop</td>
+</tr>
+<tr>
+<td>Circuit breaker</td>
+<td>Stop a step after about 5 consecutive failures, or past a 0.25 failure fraction</td>
+<td>Stop burning money on a dead provider</td>
+</tr>
+<tr>
+<td>Signal-quality abort</td>
+<td>The deterministic step aborts if a KPI signal is broken (for example almost every article showing 100% sell-through)</td>
+<td>A broken input cannot dominate scores at full weight</td>
+</tr>
+<tr>
+<td>Deterministic fallback</td>
+<td>On LLM timeout the article keeps its rules-based score</td>
+<td>Planners always have a decision</td>
+</tr>
+<tr>
+<td>Checkpoints</td>
+<td><code>det.json</code>, <code>agent_progress.json</code>, <code>--resume</code></td>
+<td>A crash costs minutes, not a full re-run</td>
+</tr>
+<tr>
+<td>config_hash</td>
+<td>SHA-256 of guardrails, parameters, prompts and catalog on every row</td>
+<td>Every decision traceable to its exact configuration</td>
+</tr>
+<tr>
+<td>Telemetry</td>
+<td>Tokens, USD cost, step duration, batch fallbacks as JSON</td>
+<td>Cost and failure visible per run</td>
+</tr>
+<tr>
+<td>Ask Iris scope</td>
+<td><code>plan_scope</code> frozen at handshake</td>
+<td>No cross-tenant leaks through chat</td>
+</tr>
+<tr>
+<td>Ask Iris loop cap</td>
+<td><code>MAX_ATTEMPTS = 3</code></td>
+<td>No infinite LLM loops</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why no critic or evaluator agent in Keep/Drop?</strong> Earlier designs had a critic agent and a batch evaluator agent. In practice they mostly adjusted confidence and almost never changed a Keep or Drop. They cost tokens and added non-determinism. They are disabled, and offline evaluation does that job instead, before promotion, where it is cheaper and repeatable.</p>
+<h2 id="a4-evaluations">A4. Evaluations</h2>
+<h3 id="the-offline-suite">The offline suite</h3>
+<p>Every promotion runs three checks:
+- <strong>Ramp monotonic:</strong> editing a scoring ramp must never make a better KPI score lower.
+- <strong>Demand blend guard:</strong> a strong deterministic score with a weak agent score must still Keep. For example <code>s_det = 0.9</code>, <code>s_agent = 0.4</code> gives <code>s_final = 0.36 + 0.24 = 0.60</code>, which is Keep.
+- <strong>Gold outcomes:</strong> the pipeline's Keep/Drop must match the gold labels at the gate threshold.</p>
+<h3 id="the-300-case-proxy-harness-and-the-80-gate">The 300-case proxy harness and the 80% gate</h3>
+<ul>
+<li><strong>What it is:</strong> 300 labelled article-seasons, 150 keeps and 150 drops. Season 74 is scored. The labels come only from what happened in season 76.</li>
+<li><strong>How the labels avoid cheating:</strong></li>
+<li><em>Circularity:</em> rate of sale in season 74 is part of the deterministic score, so labelling on it would grade the pipeline against its own input. Labels use only season 76 sell-through and rate of sale.</li>
+<li><em>Treatment leakage:</em> an article a planner already dropped sells zero in season 76 because it was not stocked. The builder only keeps articles present in both seasons with enough store-weeks in season 76, so "zero sales" means stocked and still did not sell.</li>
+<li>Ambiguous cases between the keep and drop bands are skipped on purpose. Placeholder SKUs and negative quantities are filtered out.</li>
+<li><strong>The gate:</strong> <code>gold_min_accuracy = 0.8</code> in <code>eval.json</code>. Below 80%, the change does not promote.</li>
+<li><strong>The honest lesson:</strong> accuracy alone hides over-keep. The first real proxy run showed the pipeline caught almost every true keep but very few true drops. That is why drop recall matters, and why the config has a drop-recall gate that can be raised.</li>
+</ul>
+<h3 id="the-gold-200-benchmark-separate">The gold-200 benchmark (separate)</h3>
+<ul>
+<li><strong>What:</strong> 200 labelled cases used to compare two models. Both completed 200 of 200.</li>
+<li><strong>Result 1:</strong> the chosen model cut live execution cost by <strong>73% at 100% coverage</strong>.</li>
+<li><strong>Result 2:</strong> on the same 200 cases, the deterministic baseline (production threshold 0.65) scored <strong>74%</strong>.</li>
+<li><strong>Result 3:</strong> the blended LLM score came in at about <strong>63%</strong>, below the 74% baseline.</li>
+<li><strong>Decision:</strong> freeze the blend weights (0.4 / 0.6) instead of retuning them. Retuning on 200 cases to chase the baseline would overfit one benchmark. The 80% gate still blocks promotion, and the deterministic fallback keeps decisions available.</li>
+<li>Model names (gpt-5.6-luna and gpt-5.4-mini) are not on the PDF. Mention them only if asked.</li>
+</ul>
+<h3 id="benchmarks-that-are-not-quality-evidence">Benchmarks that are not quality evidence</h3>
+<p>A mock architecture benchmark compared aggregation methods and weights on synthetic data, and supported keeping the mean aggregation and the 0.4 / 0.6 weights as defaults. It proves the code behaves as designed. It is not production quality evidence. Say so if you mention it.</p>
+<h2 id="a5-how-to-say-the-whole-evaluation-story-in-45-seconds">A5. How to say the whole evaluation story in 45 seconds</h2>
+<p>"Every change to prompts, weights or models has to pass an offline suite before promotion. The main gate is 80% accuracy on a 300-case proxy set built from held-out next-season sales, designed so the labels do not leak the pipeline's own inputs. Separately, we benchmarked two models on a 200-case gold set: the one we picked cut execution cost 73% at full coverage. On that same set the rules-only baseline scored 74% and the blend about 63%, so we did not pretend the LLM was winning. We froze the weights rather than overfit them, kept the deterministic fallback, and left the gate to block anything that does not clear 80%."</p>
+<hr>
+<h1 id="part-b-verbal-only-cluster-recommendation-copilot-design">Part B: Verbal-only (Cluster Recommendation Copilot design)</h1>
+<div class="callout warn">
+<p><b>Not on the resume.</b> Everything in Part B is design or measured baselines for an in-progress module. Status: Phase 1 design passed internal adversarial passes and an external review. The bring-up load test is pending. Say "building", not "shipped". Shipped LangSmith use is Ask Iris only. PostHog appears in the design document but is not on my resume, so do not bring it up unprompted.</p>
+</div>
+<h2 id="b1-flow">B1. Flow</h2>
+<div class="mermaid">flowchart LR
+  PL["Planner chat"]
+  AG["FastAPI agent service, LangGraph"]
+  TOOLS["14 audited read-only tools"]
+  LLM["LLM plans and selects tools"]
+  GO["Go/Gin doing layer: clustering, Hindsight, strategy APIs"]
+  CH["ClickHouse append-only planning store"]
+  CONF["3 planner confirmation steps"]
+  OBS["Design: LangSmith, Datadog, PostHog joined by trace_id"]
+
+  PL --&gt; AG
+  AG --&gt; LLM
+  LLM --&gt; TOOLS
+  TOOLS --&gt; CH
+  AG --&gt; GO
+  GO --&gt; CH
+  AG --&gt; CONF
+  CONF --&gt;|"approved config only"| GO
+  AG -.-&gt; OBS
+</div>
+<p><em>One sentence: the LLM proposes and reads, the deterministic engine computes, the planner confirms, and writes go through product APIs, never through model-generated SQL.</em></p>
+<h2 id="b2-guardrails-in-the-design">B2. Guardrails in the design</h2>
 <table>
 <thead>
 <tr>
@@ -77,120 +304,144 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>Tool allow-list</td>
-<td><strong>14</strong> audited tools only</td>
-<td>No raw SQL shell / arbitrary code</td>
+<td>Tool allowlist</td>
+<td>14 audited tools only</td>
+<td>No raw SQL shell, no arbitrary code</td>
 </tr>
 <tr>
 <td>Read scope</td>
-<td>Tools <strong>only read</strong> planning/clustering data</td>
-<td>Separates explore from mutate</td>
+<td>Tools only read planning and clustering data</td>
+<td>Separates exploring from changing</td>
 </tr>
 <tr>
 <td>Input grounding</td>
-<td>Catalog backtrack, fiscal calendar, sample-size guards</td>
-<td>Cuts input-boundary failures (majority of the <strong>8.5%</strong>)</td>
+<td>Catalog lookup for hierarchy, fiscal calendar for seasons, sample-size guards</td>
+<td>Removes input-boundary failures, the majority of the 8.5%</td>
 </tr>
 <tr>
-<td>k / scenario caps</td>
-<td>Client min/max k, child-cluster cap (~10), UI <strong>3–5</strong> scenarios</td>
-<td>Business guardrails over pure silhouette optimum</td>
+<td>k and scenario caps</td>
+<td>Client minimum and maximum k, a child-cluster cap of about 10, 3 to 5 scenarios in the UI</td>
+<td>Business limits over pure statistical optimum</td>
 </tr>
 <tr>
-<td>Human gates</td>
-<td><strong>3</strong> confirm steps before write-back</td>
-<td>Money decisions stay human-owned</td>
+<td>Planner confirmations</td>
+<td>3 confirm steps before write-back: search plan, recommendation, governance sign-off where required</td>
+<td>Money decisions stay with the planner. These are confirm clicks, not a review queue</td>
 </tr>
 <tr>
 <td>Content-addressed config</td>
-<td>Persist recipe + data watermark / seed</td>
-<td>Moves reproducibility <strong>0% → 100%</strong> (TARGET)</td>
+<td>Save recipe, data watermark and seed, keyed by their hash</td>
+<td>Reproducibility from 0% toward 100% (TARGET)</td>
 </tr>
 <tr>
-<td>Quotas / timeouts</td>
+<td>Quotas and timeouts</td>
 <td>Per-tenant concurrency and tool budgets</td>
-<td>Protect CH and Go from agent storms</td>
+<td>Protect ClickHouse and the Go services from agent storms</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Auth / rate-limit deep dive:</strong> <a href="../tech_depth/auth_tenancy_rate_limits.html">../tech_depth/auth_tenancy_rate_limits.md</a></p>
-<p><strong>Do not say:</strong> "the agent never fails" or "we never write SQL." Say: tools are read-scoped; humans gate writes; engineers still write SQL in services.</p>
-<hr>
-<h2 id="3-evaluations-what-exists-today">3. Evaluations (what exists today)</h2>
-<h3 id="offline-design-evals-use-these">Offline / design evals (use these)</h3>
+<p>Auth and rate-limit depth: <a href="../tech_depth/auth_tenancy_rate_limits.html">../tech_depth/auth_tenancy_rate_limits.md</a>.</p>
+<p>Do not say "the agent never fails" or "we never write SQL". Say: "tools are read-scoped, the planner confirms before write-back, and engineers still write SQL in services".</p>
+<h2 id="b3-what-is-measured-and-what-is-a-target">B3. What is measured and what is a target</h2>
 <table>
 <thead>
 <tr>
-<th>Eval</th>
+<th>Item</th>
 <th>What it measures</th>
 <th>Status</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Failure taxonomy on kik</td>
-<td><strong>37/437 = 8.5%</strong> run failures; &gt;80% input-boundary</td>
+<td>8.5% (37 of 437)</td>
+<td>Clustering run failures on one live tenant. Over 80% were input-boundary mistakes</td>
 <td>MEASURED baseline</td>
 </tr>
 <tr>
-<td>Clustering job latency</td>
-<td>Median <strong>~20s</strong> over <strong>370</strong> live runs</td>
-<td>MEASURED (engine, not full agent chat)</td>
+<td>~20 seconds median over 370 runs</td>
+<td>Clustering engine job time, not the full chat flow</td>
+<td>MEASURED</td>
 </tr>
 <tr>
-<td>Reproducibility audit</td>
-<td>Winning config/seed not persisted → <strong>0%</strong></td>
+<td>0%</td>
+<td>Reproducibility, because winning config and seed were never saved</td>
 <td>MEASURED baseline</td>
 </tr>
 <tr>
-<td>Tool-contract tests</td>
-<td>Allow-list, schema validators, no write paths on tools</td>
-<td>DESIGN / CI</td>
+<td>Tool contract tests</td>
+<td>Allowlist, schema validators, no write paths on tools</td>
+<td>DESIGN, CI</td>
 </tr>
 <tr>
 <td>LangSmith run replay</td>
-<td>Prompt version, tool args, tokens/cost on agent trees</td>
-<td>DESIGN instrumentation</td>
+<td>Prompt version, tool arguments, tokens and cost per agent run</td>
+<td>DESIGN</td>
 </tr>
 <tr>
 <td>Scenario quality rubric</td>
-<td>Distinct lens / horizon / scope / k; evidence attached</td>
-<td>DESIGN (HLR)</td>
+<td>Scenarios distinct by lens, time horizon, scope and k, with evidence attached</td>
+<td>DESIGN</td>
 </tr>
 <tr>
-<td>Batch breadth</td>
-<td><strong>20–100</strong> configs explored under the hood; UI still <strong>3–5</strong></td>
-<td>TARGET / design</td>
+<td>20 to 100 configs explored per run, 3 to 5 shown</td>
+<td>Search breadth</td>
+<td>TARGET</td>
+</tr>
+<tr>
+<td>Days to under 1 hour</td>
+<td>Plan turnaround</td>
+<td>TARGET</td>
+</tr>
+<tr>
+<td>8.5% to under 2%</td>
+<td>Failure rate</td>
+<td>TARGET</td>
 </tr>
 </tbody>
 </table>
-<h3 id="production-agentic-flow-benchmark-honesty">Production agentic-flow benchmark (honesty)</h3>
-<p><strong>We have not finished a production load test that proves</strong> "days → under 1 hour" or "8.5% → under 2%" on the <strong>full chat → tools → Go → CH → gate → write</strong> path.</p>
-<p>Correct interview lines:
-- "Baselines are measured on live clustering runs (kik)."
-- "Targets are design goals we engineer against."
-- "Phase 1 design passed external review; <strong>load test pending</strong> — I say <strong>building</strong>, not shipped."
-- "LangSmith is for agent-quality evals and regression; Datadog pages platform SLOs."</p>
-<p><strong>Wrong line:</strong> "We benchmarked the agentic flow in production and hit under 2% / under 1 hour."</p>
-<hr>
-<h2 id="4-how-we-will-do-benchmark-method-not-fake-results">4. How we will / do benchmark (method, not fake results)</h2>
-<p>When asked "how do you benchmark?":</p>
+<h3 id="the-honest-status-of-production-benchmarking">The honest status of production benchmarking</h3>
+<p>We have <strong>not</strong> finished a production load test that proves "days to under 1 hour" or "8.5% to under 2%" on the full path from chat to tools to Go to ClickHouse to confirmation to write.</p>
+<p>Correct lines:
+- "The baselines are measured on live clustering runs."
+- "The targets are design goals we engineer against."
+- "The Phase 1 design passed review. The load test is pending, so I say building, not shipped."
+- "LangSmith would be for agent quality and regression. Datadog pages on platform health."</p>
+<p>Wrong line: "We benchmarked the agentic flow in production and hit under 2% and under 1 hour."</p>
+<h2 id="b4-how-i-would-benchmark-it-method-not-results">B4. How I would benchmark it (method, not results)</h2>
+<p>When asked "how do you benchmark an agent?":</p>
 <ol>
-<li><strong>Baseline freeze</strong> — failure rate, median job time, repro rate on a named tenant extract (already have kik numbers).</li>
-<li><strong>Offline agent suites</strong> — fixed planner prompts → expected tool sequences → golden evidence bundles in LangSmith datasets.</li>
-<li><strong>Tool latency SLOs</strong> — p95 per tool against CH; reject tools that scan unbounded.</li>
-<li><strong>Gate funnel metrics</strong> — % sessions that reach each of the 3 confirms; abandon rate (PostHog).</li>
-<li><strong>Load test (pending)</strong> — concurrent planners × tool fan-out × Go/CH; declare pass only when TARGET metrics hold under load.</li>
-<li><strong>Canary</strong> — one tenant first; compare failure class mix before expanding.</li>
+<li><strong>Freeze the baseline.</strong> Failure rate, median job time and reproducibility on a named tenant extract. We already have these.</li>
+<li><strong>Offline agent suites.</strong> Fixed planner prompts with expected tool sequences and expected evidence, run on every change.</li>
+<li><strong>Tool latency budgets.</strong> p95 per tool against ClickHouse. Reject any tool that can scan unbounded data.</li>
+<li><strong>Confirmation funnel.</strong> What share of sessions reach each confirmation step, and where planners abandon.</li>
+<li><strong>Load test.</strong> Concurrent planners times tool fan-out against the Go services and ClickHouse. Pass only when the targets hold under load.</li>
+<li><strong>Canary.</strong> One tenant first. Compare the failure mix before expanding.</li>
+</ol>
+<h2 id="b5-the-copilot-safety-story-in-30-seconds">B5. The copilot safety story in 30 seconds</h2>
+<p>"On live data, about 8.5% of clustering runs failed, 37 out of 437, mostly bad inputs. The design cuts that class with grounding tools and validators, explores many configurations in batch with a deterministic engine, and only writes back through the Go APIs after the planner confirms. Under 2% failures and under 1 hour turnaround are targets until the load test lands. It is not on my resume, it is what I am building next."</p>
+<hr>
+<h2 id="practice-drill">Practice drill</h2>
+<ol>
+<li><strong>Is 80% your production accuracy?</strong> No. It is the promotion gate on the 300-case proxy set.</li>
+<li><strong>Where does 73% come from?</strong> The gold-200 model benchmark: the chosen model cost 73% less at 100% coverage.</li>
+<li><strong>What scored 74%?</strong> The deterministic baseline on the gold-200 set, at production threshold 0.65.</li>
+<li><strong>What scored about 63%?</strong> The blended LLM score on the same gold-200 set.</li>
+<li><strong>So why freeze the weights?</strong> Retuning on 200 cases would overfit. The gate and fallback already protect production.</li>
+<li><strong>How were the 300 labels built?</strong> From season 76 outcomes for articles scored in season 74, with filters against circularity and treatment leakage.</li>
+<li><strong>Why is accuracy not enough?</strong> It hides over-keep. Drop recall shows it.</li>
+<li><strong>Why disable critic and evaluator agents in Keep/Drop?</strong> They rarely changed decisions, cost tokens and added noise. Offline evals do the job better.</li>
+<li><strong>What stops an infinite loop in Ask Iris?</strong> <code>MAX_ATTEMPTS = 3</code>.</li>
+<li><strong>What stops a cross-tenant leak in Ask Iris?</strong> <code>plan_scope</code> frozen at the WebSocket handshake.</li>
+<li><strong>Is the Copilot shipped?</strong> No. Design passed review, load test pending, not on my resume.</li>
+<li><strong>Is 8.5% to under 2% a result?</strong> No. 8.5% is measured. Under 2% is a target.</li>
 </ol>
 <hr>
-<h2 id="5-whole-safety-story-in-30-seconds">5. Whole safety story in 30 seconds</h2>
-<p>"Measured <strong>8.5%</strong> clustering failures on kik, mostly bad inputs. We cut that class with grounded tools and validators, explore many configs in batch, and require <strong>three human confirms</strong> before write-back through the Go APIs. Agent quality is traced in LangSmith; platform health in Datadog. Under <strong>2%</strong> and under <strong>1 hour</strong> are targets until load test lands."</p>
 <h2 id="related">Related</h2>
 <ul>
-<li><a href="01c_agent_read_tools_defense.html">01c_agent_read_tools_defense.md</a></li>
-<li><a href="01_ia_deep_dive.html">01_ia_deep_dive.md</a> § observability</li>
-<li><a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a></li>
+<li>Agent read tools (verbal-only): <a href="01c_agent_read_tools_defense.html">01c_agent_read_tools_defense.md</a></li>
+<li>Main Impact Analytics pack: <a href="01_impact_analytics.html">01_impact_analytics.md</a></li>
+<li>Full deep dive, observability section: <a href="01_ia_deep_dive.html">01_ia_deep_dive.md</a></li>
+<li>Architecture page: <a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a></li>
 </ul></main>
 </div>
 

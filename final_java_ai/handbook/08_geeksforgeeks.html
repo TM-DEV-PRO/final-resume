@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>08_geeksforgeeks — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/handbook/08_geeksforgeeks.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#08-geeksforgeeks-courses-platform-and-influencer-dashboard">08. GeeksforGeeks: Courses Platform and Influencer Dashboard</a>
+<a class="lvl2" href="#2-the-one-minute-version">2. The one-minute version</a>
+<a class="lvl2" href="#3-the-business-in-plain-english">3. The business in plain English</a>
+<a class="lvl2" href="#4-words-you-need">4. Words you need</a>
+<a class="lvl2" href="#5-architecture">5. Architecture</a>
+<a class="lvl2" href="#6-one-request-step-by-step-an-upvote-during-a-contest">6. One request, step by step: an upvote during a contest</a>
+<a class="lvl2" href="#7-each-resume-bullet-decoded">7. Each resume bullet decoded</a>
+<a class="lvl2" href="#8-tech-used-in-this-project-and-why">8. Tech used in this project and why</a>
+<a class="lvl2" href="#9-hard-problems-and-failure-stories">9. Hard problems and failure stories</a>
+<a class="lvl2" href="#10-say-this-dont-say-this">10. Say this / don't say this</a>
+<a class="lvl2" href="#11-practice-drill">11. Practice drill</a>
+<a class="lvl2" href="#12-3-minute-whiteboard-script">12. 3-minute whiteboard script</a></nav>
+<main><h1 id="08-geeksforgeeks-courses-platform-and-influencer-dashboard">08. GeeksforGeeks: Courses Platform and Influencer Dashboard</h1>
+<div class="callout note">
+<p><b>How to use this chapter</b></p>
+<ul>
+<li><b>What it covers:</b> my first role, Software Development Engineer at GeeksforGeeks (Noida, August 2021 to November 2022). The work covers the doubt-support platform migration from PHP to Django, the voting, pinning and locking APIs, why MySQL, MongoDB, Redis and Elasticsearch were each used, the influencer analytics and earnings dashboard, and the scheduled background workflows.</li>
+<li><b>When to read it:</b> before interviews that ask about early-career ownership, "a migration", "designing a voting or like system", "hot rows", "cron reliability", or "Django vs Spring Boot".</li>
+<li><b>What to memorise:</b> 10K+ daily queries, 10x spikes during live coding contests, a 20% lift in premium subscriptions (relative, attributed by the growth team), course sales up 30% (business attribution), engineering operational efficiency up 70%.</li>
+<li><b>Tags used here:</b> HISTORICAL means it comes from my past work records and resume. ESTIMATED means it is arithmetic I can show. "Illustrative" means made-up sample data to explain a mechanism, not a remembered figure.</li>
+</ul>
+</div>
+<p>Related pages: <a href="00_START_HERE.html">Start here</a> · <a href="02_numbers_explained.html">Every number explained</a> · <a href="09_tech_glossary.html">Tech glossary</a> · <a href="10_core_concepts_explained.html">Core concepts</a> · <a href="11_star_stories.html">STAR stories</a> · <a href="07_masters_india.html">Previous chapter: Masters India</a>. Older source packs: <a href="../prep/23c_masters_gfg_interview_packs.html">Masters and GFG interview packs</a>, <a href="../prep/12_masters_gfg_deep_dive.html">Masters and GFG deep dive</a>, <a href="../prep/34_er_tables_tech_why.html">tables and why each tech</a>, <a href="../prep/35_table_schemas_api_design.html">schemas and APIs</a>.</p>
+<hr>
+<h2 id="2-the-one-minute-version">2. The one-minute version</h2>
+<blockquote>
+<p>"My first job was at GeeksforGeeks, the computer-science learning platform. I worked on the courses platform. The doubt-support system, where learners post questions on courses and articles, ran on a fragile PHP backend. It struggled with 10K+ daily queries and with traffic that jumped about ten times during live coding contests. I migrated that backend to Django and built the REST APIs for voting, pinning and locking threads, using MySQL as the source of truth, Redis for hot counters, MongoDB for flexible content and Elasticsearch for search. The growth team tied those features to a 20% lift in premium subscriptions.</p>
+<p>I also built an analytics and earnings dashboard for influencers who promote our courses with affiliate coupon codes, which the business team credited with a 30% rise in course sales. And I designed scheduled background jobs for video processing, user reminders and data cleanup, which cut manual operations work by about 70%.</p>
+<p>It's where I learned the basics I used later: unique constraints for idempotency, keeping hot counters off the database, and making scheduled jobs safe to re-run."</p>
+</blockquote>
+<hr>
+<h2 id="3-the-business-in-plain-english">3. The business in plain English</h2>
+<p><strong>GeeksforGeeks (GFG)</strong> is one of the biggest computer-science learning sites in India. It has free articles, practice problems, live coding contests and paid courses. Premium subscriptions and course sales are a large part of how it makes money.</p>
+<p><strong>Who the users are:</strong></p>
+<ul>
+<li><strong>Learners</strong>, who read articles, take courses and post <strong>doubts</strong> (questions) when they're stuck.</li>
+<li><strong>People who answer doubts</strong>, plus moderators who keep threads tidy.</li>
+<li><strong>Influencers</strong>, creators who promote GFG courses to their audience with their own affiliate coupon codes and earn from the sales.</li>
+<li><strong>The ops and course teams</strong>, who handle course videos, reminders and housekeeping.</li>
+</ul>
+<p><strong>What the doubt-support platform does:</strong> a learner on a course or article page asks "Why does my DFS give a stack overflow on this input?" Others reply. Good answers get <strong>upvoted</strong> so they rise. A moderator or instructor can <strong>pin</strong> the best thread to the top, and <strong>lock</strong> a thread to stop new replies, for example once it is resolved or off-topic.</p>
+<p><strong>What hurt before:</strong></p>
+<ul>
+<li>The backend was <strong>legacy PHP</strong>. It was hard to change safely and lacked clean transactions and request validation.</li>
+<li>During <strong>live coding contests</strong> traffic jumped about <strong>10 times</strong>, and the doubt pages became slow and unreliable exactly when learners needed them most.</li>
+<li>Popular doubts got many votes at once, and updating one counter row in the database for every vote caused lock contention, the "hot row" problem explained below.</li>
+<li>Ops staff did repetitive work by hand: moving videos through processing, sending reminders, cleaning up old recordings and data.</li>
+<li>Influencers had no clear view of how their coupon codes were converting or what they had earned.</li>
+</ul>
+<p><strong>Why the company paid for this:</strong> a reliable doubt system is a selling point of premium plans, so if it breaks during a contest, learners have a reason not to pay. A good influencer dashboard keeps partners motivated to promote courses. And automating ops work frees people for higher-value tasks.</p>
+<hr>
+<h2 id="4-words-you-need">4. Words you need</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Doubt</strong></td>
+<td>GFG's word for a learner's question on a course or article. A "doubt thread" is the question plus its replies.</td>
+</tr>
+<tr>
+<td><strong>PHP</strong></td>
+<td>An older web scripting language. The legacy doubt backend was written in it.</td>
+</tr>
+<tr>
+<td><strong>Django</strong></td>
+<td>A "batteries included" Python web framework. It comes with an ORM, admin panel, authentication, forms and migrations. Like buying a furnished flat instead of an empty one.</td>
+</tr>
+<tr>
+<td><strong>DRF (Django REST Framework)</strong></td>
+<td>An add-on to Django for building REST APIs: serializers (validate input, shape output), viewsets and permissions.</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td>Object-Relational Mapper. Lets you work with database rows as Python objects (<code>Vote.objects.filter(...)</code>) instead of writing raw SQL every time.</td>
+</tr>
+<tr>
+<td><strong>REST API</strong></td>
+<td>A web API where URLs name things (<code>/api/v1/votes</code>) and HTTP verbs act on them (POST to create, DELETE to remove).</td>
+</tr>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>A popular relational database with tables, rows, joins and transactions. Used here as the source of truth.</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>A document database. It stores JSON-like documents whose fields can vary from one document to the next.</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>An in-memory key-value store. Very fast. Used for counters and caches.</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>A search engine. It builds an inverted index (word to list of documents) so full-text search is fast. Like the index at the back of a textbook.</td>
+</tr>
+<tr>
+<td><strong>Unique constraint</strong></td>
+<td>A database rule that a combination of columns can appear only once. A second insert with the same values is rejected.</td>
+</tr>
+<tr>
+<td><strong>Idempotent</strong></td>
+<td>Doing it twice has the same effect as doing it once. Pressing "upvote" twice should not count two votes.</td>
+</tr>
+<tr>
+<td><strong>Hot row</strong></td>
+<td>One database row that many requests try to update at the same moment. Each update takes a lock on the row, so they queue up. Like one checkout counter with a hundred people.</td>
+</tr>
+<tr>
+<td><strong>Reconcile</strong></td>
+<td>Periodically recompute the true value from the source of truth and fix any drift in the fast copy.</td>
+</tr>
+<tr>
+<td><strong>Cron</strong></td>
+<td>A scheduler that runs a job at fixed times, for example "every night at 2 AM".</td>
+</tr>
+<tr>
+<td><strong>Lock or lease (for jobs)</strong></td>
+<td>A short-lived "I'm running this" marker, so two servers don't run the same scheduled job at once. A lease expires on its own if the holder crashes.</td>
+</tr>
+<tr>
+<td><strong>Idempotent job key</strong></td>
+<td>A unique ID for one run of one job, such as <code>reminder:course_42:2022-06-10</code>, so a re-run can see "already done" and skip.</td>
+</tr>
+<tr>
+<td><strong>Affiliate coupon</strong></td>
+<td>A discount code tied to a specific influencer. A purchase using that code is credited to them, and they earn a share.</td>
+</tr>
+<tr>
+<td><strong>Conversion</strong></td>
+<td>A visitor actually buying. A "coupon conversion" is a purchase that used the code.</td>
+</tr>
+<tr>
+<td><strong>Attribution</strong></td>
+<td>Deciding which cause gets credit for a business result. Here the growth and business teams did the attribution, not me.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="5-architecture">5. Architecture</h2>
+<div class="mermaid">flowchart LR
+  U["Learners, moderators, influencers"] --&gt; DJ["Django and DRF APIs: doubts, votes, pins, locks, dashboard"]
+  DJ --&gt; MY["MySQL: users, threads, votes, pins, locks, subscriptions, earnings"]
+  DJ --&gt; RD["Redis: vote counters, unread badges, contest hot keys"]
+  DJ --&gt; MO["MongoDB: flexible doubt bodies and content payloads"]
+  DJ --&gt; ES["Elasticsearch: search over doubts and content"]
+  RC["Reconcile job"] --&gt; RD
+  RC --&gt; MY
+  CR["Scheduled jobs with lock and job key"] --&gt; MY
+  CR --&gt; MO
+  CR --&gt; V["Video processing, reminders, data cleanup"]
+</div>
+<p><em>What to notice:</em> MySQL is the single source of truth. Redis holds fast, possibly slightly stale copies that the reconcile job corrects. The scheduled jobs are separate from the request path.</p>
+<p><strong>Walking through it box by box:</strong></p>
+<ul>
+<li><strong>Learners, moderators, influencers.</strong> They use the website and app. All requests go to Django.</li>
+<li><strong>Django and DRF APIs.</strong> These replaced the PHP backend. Serializers validate every request. Writes run inside database transactions.</li>
+<li><strong>MySQL.</strong> Relational data where correctness matters: users, doubt threads and replies, votes with a unique <code>(user_id, content_id)</code> rule, pins, locks, subscriptions, and influencer transactions and earnings.</li>
+<li><strong>Redis.</strong> Fast counters that change constantly: vote totals for display, unread badges, and hot keys that get hammered during contests.</li>
+<li><strong>MongoDB.</strong> Content whose shape varies, such as doubt bodies with code blocks or attachments, and other semi-structured payloads.</li>
+<li><strong>Elasticsearch.</strong> Full-text search, so a learner can search "segmentation fault in recursion" and find existing doubts.</li>
+<li><strong>Reconcile job.</strong> Periodically recomputes vote totals from MySQL and corrects Redis and the stored count.</li>
+<li><strong>Scheduled jobs.</strong> Video processing handoffs, user reminders and data cleanup. Each takes a lock so only one server runs it, and records a job key so a re-run doesn't repeat work.</li>
+</ul>
+<hr>
+<h2 id="6-one-request-step-by-step-an-upvote-during-a-contest">6. One request, step by step: an upvote during a contest</h2>
+<p><strong>Sample data (illustrative):</strong> learner <code>user_id = 42</code> upvotes doubt <code>content_id = 123</code>, "Why does my DFS overflow the stack?", during a live contest. Hundreds of others are voting on the same doubt in the same few minutes.</p>
+<div class="mermaid">sequenceDiagram
+  participant L as Learner 42
+  participant D as Django vote API
+  participant M as MySQL
+  participant R as Redis
+  participant J as Reconcile job
+  L-&gt;&gt;D: POST /api/v1/votes content_id 123 value +1
+  D-&gt;&gt;M: upsert vote row for user 42 and content 123
+  M--&gt;&gt;D: old value 0, new value +1
+  D-&gt;&gt;R: INCRBY votes:123 by +1
+  D--&gt;&gt;L: 200 OK, new count read from Redis
+  L-&gt;&gt;D: same POST again after a double click
+  D-&gt;&gt;M: upsert finds existing vote with same value
+  M--&gt;&gt;D: no change
+  D--&gt;&gt;L: 200 OK, count unchanged
+  J-&gt;&gt;M: every few minutes, SUM votes for content 123
+  J-&gt;&gt;R: overwrite votes:123 with the true total
+</div>
+<p><em>What to notice:</em> each vote writes its own row (user 42's row for doubt 123), so votes don't fight over one shared row. The shared total lives in Redis. The second click is a no-op because of the unique constraint. The reconcile job is the safety net that keeps Redis honest.</p>
+<p><strong>The same flow in words:</strong></p>
+<ol>
+<li>Learner 42 clicks upvote. Django validates the request with a DRF serializer.</li>
+<li>Django writes the vote into the <code>votes</code> table. A unique constraint on <code>(user_id, content_id)</code> means user 42 can have only one vote row for doubt 123.</li>
+<li>If the vote is new or changed, Django adjusts the Redis counter by the difference: +1 for a new upvote, −2 for changing an upvote into a downvote.</li>
+<li>The page shows the new count from Redis immediately.</li>
+<li>A double click sends the same request again. The row already holds +1, so nothing changes and the count stays right.</li>
+<li>Every few minutes the reconcile job sums the real votes in MySQL and overwrites the Redis value and the stored count. Any drift (say Redis was flushed, or an increment was lost) is fixed.</li>
+</ol>
+<hr>
+<h2 id="7-each-resume-bullet-decoded">7. Each resume bullet decoded</h2>
+<h3 id="bullet-1-the-django-migration-and-the-voting-pinning-and-locking-apis">Bullet 1: the Django migration and the voting, pinning and locking APIs</h3>
+<blockquote>
+<p>"Stabilized the doubt-support platform to handle <strong>10K+</strong> daily queries and <strong>10x</strong> traffic spikes during live coding contests by migrating the backend to <strong>Django</strong>. Engineered high-throughput REST APIs for voting, pinning, and locking threads utilizing MySQL, MongoDB, Redis, and Elasticsearch, driving a <strong>20%</strong> lift in premium subscriptions."</p>
+</blockquote>
+<h4 id="in-plain-words">In plain words</h4>
+<p>I moved the doubt-support backend from old PHP code to Django, so it stayed reliable on normal days and during contest spikes. I built the APIs that let users vote on answers, let moderators pin and lock threads, and I chose which data store held what. The growth team linked these features to a 20% rise in premium subscriptions.</p>
+<h4 id="what-the-load-actually-means">What the load actually means</h4>
+<ul>
+<li><strong>10K+ daily queries.</strong> 10,000 ÷ 86,400 seconds = about <strong>0.12 per second</strong>, roughly one every 9 seconds on average. ESTIMATED arithmetic. That is well under 1 request per second.</li>
+<li><strong>10x contest spikes.</strong> Even ten times the average is only around 1 per second if spread evenly. But contest traffic is not even. It bunches into short windows, and every posted doubt brings many more reads (page views, vote counts, searches) than writes.</li>
+</ul>
+<p>So the honest story is not "massive throughput". The PHP backend was fragile under bursts: no clean transactions, little request validation, slow unindexed paths, and hot rows on popular doubts. The fix was <strong>correctness and burst safety</strong>, not raw scale.</p>
+<div class="callout note">
+<p><b>Say this carefully.</b> "Order of ten thousand daily queries, with roughly ten times that during contests." Don't call it 100K a day (an older resume said that) or 1K a day (an older, narrower metric). Don't compare it to Uber or Impact Analytics scale. The point is reliability under bursts.</p>
+</div>
+<h4 id="how-it-works-the-migration-and-what-django-bought">How it works: the migration and what Django bought</h4>
+<p>We migrated <strong>page by page behind the same URLs</strong>, so users never saw a switch-over day. The same gradual idea came back later at Masters India. Django and DRF helped in four concrete ways:</p>
+<ol>
+<li><strong>Transactions.</strong> <code>transaction.atomic()</code> wraps a write so it either fully happens or fully doesn't. For example, creating a reply and bumping the unread counter together.</li>
+<li><strong>Request validation.</strong> DRF serializers reject bad input (missing fields, wrong types, a vote value other than +1 or −1) before it reaches the database.</li>
+<li><strong>Read and write separation.</strong> Read views (list doubts, show counts) were kept apart from write endpoints, so reads could lean on cache and writes stayed simple and transactional.</li>
+<li><strong>Process discipline.</strong> Staging, code review and migrations under version control, which the PHP stack lacked.</li>
+</ol>
+<p><strong>Caching</strong> with Redis took the repeated contest reads (vote counts, unread badges, hot doubt pages) off MySQL. <strong>Database constraints</strong> made the data correct even under races. A double-submitted vote cannot create two rows.</p>
+<h4 id="how-it-works-voting-with-a-unique-constraint-and-redis-counters">How it works: voting with a unique constraint and Redis counters</h4>
+<p>Logical schema (from my notes, LOGICAL and HISTORICAL, not copied from code):</p>
+<pre><code class="language-sql">CREATE TABLE votes (
+  id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id     BIGINT NOT NULL,
+  content_id  BIGINT NOT NULL,
+  value       TINYINT NOT NULL,          -- +1 or -1
+  created_at  DATETIME NOT NULL,
+  UNIQUE KEY uq_vote (user_id, content_id)
+);
+</code></pre>
+<p>The API upserts the row:</p>
+<pre><code class="language-sql">INSERT INTO votes (user_id, content_id, value, created_at)
+VALUES (42, 123, 1, NOW())
+ON DUPLICATE KEY UPDATE value = VALUES(value);
+</code></pre>
+<p>Illustrative Django view logic:</p>
+<pre><code class="language-python">from django.db import transaction
+
+def cast_vote(user_id: int, content_id: int, value: int) -&gt; int:
+    with transaction.atomic():
+        vote = (Vote.objects.select_for_update()
+                .filter(user_id=user_id, content_id=content_id).first())
+        old = vote.value if vote else 0
+        if old == value:
+            return int(redis.get(f&quot;votes:{content_id}&quot;) or 0)   # same vote again: no-op
+        Vote.objects.update_or_create(
+            user_id=user_id, content_id=content_id, defaults={&quot;value&quot;: value})
+    return redis.incrby(f&quot;votes:{content_id}&quot;, value - old)      # apply only the change
+</code></pre>
+<p><strong>Why this avoids the hot row.</strong> The naive design runs <code>UPDATE content SET vote_count = vote_count + 1 WHERE id = 123</code> on every vote. Every one of those updates locks the same row, so 300 votes in a few minutes on a popular doubt means 300 transactions queuing on one lock. With our design, each vote touches its own <code>(user_id, content_id)</code> row, so there is no contention. The shared total is a Redis <code>INCRBY</code>, which is atomic and takes microseconds.</p>
+<p><strong>Worked example (illustrative):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Event</th>
+<th>votes row for (42, 123)</th>
+<th>Redis <code>votes:123</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10:00:01</td>
+<td>User 42 upvotes</td>
+<td>value = +1</td>
+<td>87 → 88</td>
+</tr>
+<tr>
+<td>10:00:01</td>
+<td>Double click, same upvote</td>
+<td>unchanged</td>
+<td>88</td>
+</tr>
+<tr>
+<td>10:03:10</td>
+<td>User 42 switches to downvote</td>
+<td>value = −1</td>
+<td>88 → 86 (change of −2)</td>
+</tr>
+<tr>
+<td>10:05:00</td>
+<td>Redis node restarts, key lost</td>
+<td>unchanged</td>
+<td>missing</td>
+</tr>
+<tr>
+<td>10:05:00</td>
+<td>Reconcile runs: <code>SUM(value)</code> = 86</td>
+<td>unchanged</td>
+<td>set to 86</td>
+</tr>
+</tbody>
+</table>
+<p>The reconcile query:</p>
+<pre><code class="language-sql">SELECT content_id, SUM(value) AS total
+FROM votes
+WHERE content_id IN (/* doubts with recent activity */)
+GROUP BY content_id;
+</code></pre>
+<p>The job writes each total back to <code>content.vote_count</code> in MySQL and to Redis.</p>
+<h4 id="how-it-works-pinning-and-locking">How it works: pinning and locking</h4>
+<ul>
+<li><strong>Pinning.</strong> A pin record marks a thread as pinned within its context (a course or an article), with an ordering column so pinned threads show in a set order at the top. A unique constraint means pinning the same thread twice is a no-op, which is the same idempotency idea as votes.</li>
+<li><strong>Locking.</strong> A lock record holds <code>content_id</code>, <code>locked_by</code>, <code>reason</code> and an optional <code>expires_at</code>. The "post reply" API checks for an active lock and refuses new replies on a locked thread. Moderation actions sit behind permission checks, so only moderators or instructors can pin or lock.</li>
+</ul>
+<p>Logical API surface (from my notes, illustrative):</p>
+<pre><code class="language-text">POST   /api/v1/votes               {content_id, value}   idempotent upsert
+DELETE /api/v1/votes/{content_id}                         remove my vote
+POST   /api/v1/pins                {content_id}           moderator only
+POST   /api/v1/content/{id}/lock   {reason}               moderator only
+GET    /api/v1/search?q=...                               Elasticsearch
+</code></pre>
+<h4 id="why-each-store-mysql-mongodb-redis-elasticsearch">Why each store: MySQL, MongoDB, Redis, Elasticsearch</h4>
+<table>
+<thead>
+<tr>
+<th>Store</th>
+<th>What lived there</th>
+<th>Why this store</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MySQL</strong></td>
+<td>Users, threads and replies, votes, pins, locks, subscriptions, influencer transactions</td>
+<td>Relational data that must be correct: unique constraints, joins, transactions. The source of truth.</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Flexible doubt bodies and content payloads (code blocks, attachments, varying fields)</td>
+<td>The shape varies from document to document. No schema migration for every new field.</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>Vote counters, unread badges, contest hot keys</td>
+<td>Thousands of tiny reads and increments a minute. Memory-speed and atomic <code>INCR</code>.</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>Search index over doubts and content</td>
+<td>Full-text search with relevance ranking. SQL <code>LIKE '%stack overflow%'</code> can't use a normal index and gets slow.</td>
+</tr>
+</tbody>
+</table>
+<p>One-liner: "MySQL for truth, Redis for hot counters, MongoDB where the document shape varied, Elasticsearch for search."</p>
+<h4 id="the-20-premium-lift">The 20% premium lift</h4>
+<ul>
+<li><strong>What it measures:</strong> growth in premium subscriptions after these features shipped. Some doubt-support interactions were part of the premium offering.</li>
+<li><strong>Relative, not absolute:</strong> a 20% lift means, for example, 1,000 new premium subscriptions a month becoming 1,200 (illustrative numbers). It does <strong>not</strong> mean 20% of all users became premium.</li>
+<li><strong>Who attributed it:</strong> the growth team. I owned the APIs and their reliability.</li>
+<li><strong>How to say it:</strong> "The growth team attributed about a 20% relative lift in premium subscriptions to these features. I owned the engineering behind them."</li>
+</ul>
+<div class="callout warn">
+<p><b>Number conflict to know about.</b> Older prep notes said "15 to 20%". The current resume says <b>20%</b>. Use 20%, framed as a relative lift attributed by the growth team.</p>
+</div>
+<h4 id="why-this-design">Why this design</h4>
+<ul>
+<li>A <strong>unique constraint</strong> gives correctness even under races and double clicks, enforced by the database rather than by hopeful app code.</li>
+<li><strong>Redis plus reconcile</strong> removes the hot-row problem without giving up the truth in MySQL.</li>
+<li><strong>Django</strong> fit a 2021 content-and-community product: admin panel, auth, ORM and migrations out of the box, so the team shipped features fast.</li>
+</ul>
+<h4 id="alternatives-and-why-not">Alternatives and why not</h4>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Update a counter column in MySQL on every vote</td>
+<td>Hot-row lock contention on popular doubts, worst during contests.</td>
+</tr>
+<tr>
+<td>Counters only in Redis, no vote rows</td>
+<td>Fast but not durable or auditable. You can't stop double votes per user or rebuild after a Redis flush.</td>
+</tr>
+<tr>
+<td>Check "has this user voted?" in app code, no constraint</td>
+<td>Two simultaneous requests can both pass the check. Only a database constraint is race-proof.</td>
+</tr>
+<tr>
+<td>Everything in MongoDB</td>
+<td>Votes, subscriptions and permissions are relational and need constraints and transactions.</td>
+</tr>
+<tr>
+<td>Search with SQL <code>LIKE</code></td>
+<td>Slow and no relevance ranking.</td>
+</tr>
+<tr>
+<td>Stay on PHP</td>
+<td>The reliability problems were in the code structure, not just the servers.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="trade-off">Trade-off</h4>
+<p>Displayed counts can be a few minutes stale or slightly off until the reconcile runs. That's fine for a vote badge. It would not be fine for money. Four data stores also mean more to run and keep consistent.</p>
+<h4 id="questions-they-will-ask">Questions they will ask</h4>
+<p><strong>"How do you make a vote API idempotent?"</strong>
+With a unique constraint on user ID and content ID in the votes table, so a user can only ever have one vote row per doubt. The API upserts that row. If the value hasn't changed, it's a no-op. A double click or a client retry can never count twice, and the database enforces it even when two requests race.</p>
+<p><strong>"How did you avoid hot rows on popular doubts?"</strong>
+We stopped updating a shared counter row on every vote. Each vote writes its own row, keyed by user and content, so there's no contention. The display total lives in Redis and is updated with an atomic increment. A reconcile job sums the real votes from MySQL every few minutes and corrects Redis, so MySQL stays the source of truth.
+<em>Follow-up they may ask:</em> "What if Redis loses the key?" The next reconcile rebuilds it from the vote rows, and until then the API can fall back to the stored count.</p>
+<p><strong>"10K queries a day isn't much. What was hard?"</strong>
+You're right that the average is well under one request per second. What was hard was bursts and fragility. Contest traffic jumped about tenfold in short windows, the PHP code had no clean transactions or validation, and popular doubts created hot rows. The Django migration, Redis counters and database constraints made it hold up during those bursts.</p>
+<p><strong>"Why four data stores? Isn't that over-engineering?"</strong>
+Each one did a job the others do badly. MySQL held relational truth with constraints. Redis handled very frequent tiny counters. MongoDB held content whose shape varied. Elasticsearch did full-text search. If I had to cut one today, I'd look hard at whether MongoDB's role could move into MySQL JSON columns.</p>
+<hr>
+<h3 id="bullet-2-the-influencer-dashboard-and-scheduled-workflows">Bullet 2: the influencer dashboard and scheduled workflows</h3>
+<blockquote>
+<p>"Accelerated platform course sales by <strong>30%</strong> by launching an influencer analytics and earnings dashboard to dynamically track transactions and affiliate coupon conversions. Increased engineering operational efficiency by <strong>70%</strong> by designing asynchronous scheduled workflows for automated video processing, user reminders, and data cleanup."</p>
+</blockquote>
+<p>This bullet has two separate pieces of work. Keep them apart when you talk.</p>
+<h4 id="part-a-the-influencer-analytics-and-earnings-dashboard">Part A: the influencer analytics and earnings dashboard</h4>
+<p><strong>In plain words:</strong> influencers promote GFG courses with their own coupon codes. I built a dashboard where each influencer could see their transactions, how many purchases used their code, and what they had earned.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Every course purchase that used a coupon was recorded in MySQL with the coupon code, linked to the influencer account.</li>
+<li>The dashboard showed <strong>transactions</strong>, <strong>coupon conversions</strong> and <strong>earnings</strong>, with filters and CSV export (from my older resume notes).</li>
+<li><strong>Near-real-time counters</strong> in Redis gave a fresh "today so far" view. <strong>Daily rollups</strong> by a scheduled job built the historical charts without scanning raw transactions on every page load.</li>
+</ul>
+<p>Logical tables (illustrative):</p>
+<pre><code class="language-text">influencer_account (id, name, coupon_code)
+earning_txn        (id, influencer_id, order_id, course_id, amount, earning, created_at)
+daily_rollup       (influencer_id, day, orders, revenue, earning)
+</code></pre>
+<p><strong>Worked example (illustrative):</strong> influencer Priya has coupon <code>PRIYA10</code>. On Monday, 40 course orders use <code>PRIYA10</code>. Each order writes an <code>earning_txn</code> row, and Redis bumps <code>inf:priya:today:orders</code>. Priya opens her dashboard at 3 PM and sees "40 orders today" from Redis. At night the rollup job writes Monday's totals into <code>daily_rollup</code>, and her weekly chart reads from that table. The earning per order follows whatever commission her agreement set. I don't need to quote a rate.</p>
+<p><strong>The 30% course sales number:</strong></p>
+<ul>
+<li><strong>What it measures:</strong> growth in course sales after the dashboard launched.</li>
+<li><strong>Who attributed it:</strong> the business team. The likely mechanism is that influencers who can see their conversions and earnings promote more and adjust what works.</li>
+<li><strong>How to say it:</strong> "The business team credited the dashboard with about a 30% rise in course sales. I built the dashboard. They did the attribution."</li>
+<li><strong>What not to say:</strong> "I increased sales by 30%" as if engineering alone caused it.</li>
+</ul>
+<h4 id="part-b-asynchronous-scheduled-workflows">Part B: asynchronous scheduled workflows</h4>
+<p><strong>In plain words:</strong> jobs that used to need a person, such as moving videos through processing, sending reminders before classes, or deleting old recordings and stale data, now ran automatically on a schedule, safely.</p>
+<p><strong>The jobs (from the PDF):</strong></p>
+<ol>
+<li><strong>Video processing:</strong> hand off newly uploaded course videos to processing and track their status.</li>
+<li><strong>User reminders:</strong> send reminders to learners, for example before a live class.</li>
+<li><strong>Data cleanup:</strong> remove expired cloud recordings and stale data.</li>
+</ol>
+<p><strong>The two reliability rules:</strong></p>
+<ul>
+<li><strong>A lock so only one server runs a job.</strong> If cron runs on two hosts for redundancy, both wake up at 2 AM. Without a lock, both send the same 5,000 reminder emails. A short-lived lock (a Redis <code>SET NX</code> with expiry, or a MySQL advisory lock) means the second host sees "someone has it" and exits. Because the lock expires, a crashed holder doesn't block the job forever.</li>
+<li><strong>An idempotent job key so re-runs are safe.</strong> Each unit of work gets a key like <code>reminder:{user_id}:{class_id}:{type}</code> or <code>cleanup:{date}</code>. Before doing the work, the job checks whether that key is already marked done. If a job crashes halfway and re-runs, it skips what's already finished.</li>
+</ul>
+<p>Illustrative code:</p>
+<pre><code class="language-python">import socket
+
+HOST = socket.gethostname()
+
+def run_once(job_name: str, run_key: str, work) -&gt; None:
+    lock = f&quot;cron:lock:{job_name}&quot;
+    if not redis.set(lock, HOST, nx=True, ex=3600):    # someone else is running it
+        return
+    try:
+        if JobRun.objects.filter(job_key=run_key, status=&quot;done&quot;).exists():
+            return                                      # already done, safe re-run
+        work()
+        JobRun.objects.update_or_create(job_key=run_key, defaults={&quot;status&quot;: &quot;done&quot;})
+    finally:
+        redis.delete(lock)
+
+def send_class_reminders(class_id: int) -&gt; None:
+    for user_id in enrolled_user_ids(class_id):
+        key = f&quot;reminder:{user_id}:{class_id}:1h_before&quot;
+        if not SentReminder.objects.filter(key=key).exists():
+            send_email(user_id, class_id)
+            SentReminder.objects.create(key=key)
+</code></pre>
+<p>Each job also wrote structured success and failure logs, and retried or set aside partial batches instead of failing the whole run.</p>
+<p><strong>Worked example (illustrative):</strong> the reminder job for class 77 has 2,000 enrolled learners. It crashes after 1,200 emails. On re-run, the first 1,200 keys are already in <code>SentReminder</code>, so it sends only the remaining 800. Nobody gets two emails.</p>
+<p><strong>The 70% ops efficiency number:</strong></p>
+<ul>
+<li><strong>What it measures:</strong> time saved on the manual video, reminder and cleanup workflows the team used to do by hand (HISTORICAL).</li>
+<li><strong>How to picture it (illustrative, not a remembered figure):</strong> if those tasks took 10 hours of someone's week, they now take about 3.</li>
+<li><strong>How to say it:</strong> "Automating video handoffs, reminders and cleanup cut the manual effort on those workflows by about 70%."</li>
+</ul>
+<h4 id="why-this-design_1">Why this design</h4>
+<ul>
+<li>The dashboard used <strong>Redis for "today" and rollups for history</strong>, so the page stayed fast without scanning every transaction each time.</li>
+<li>Scheduled jobs used <strong>locks plus idempotent keys</strong> because cron is simple and good enough for daily or hourly work, as long as you make it safe to run twice and impossible to run concurrently.</li>
+</ul>
+<h4 id="alternatives-and-why-not_1">Alternatives and why not</h4>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compute dashboard numbers from raw transactions on every page load</td>
+<td>Slow, and it gets slower every month as transactions grow.</td>
+</tr>
+<tr>
+<td>Plain cron with no lock</td>
+<td>Two hosts double-run jobs. Duplicate reminder emails.</td>
+</tr>
+<tr>
+<td>Plain cron with no job keys</td>
+<td>A crash halfway means a re-run repeats work or skips it inconsistently.</td>
+</tr>
+<tr>
+<td>A full workflow engine</td>
+<td>Too heavy for a handful of daily and hourly jobs at that stage.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="trade-off_1">Trade-off</h4>
+<p>Rollups mean historical charts are up to a day behind. Locks with expiry need the expiry set longer than the job's normal runtime, or a slow run could lose its lock while still working.</p>
+<h4 id="questions-they-will-ask_1">Questions they will ask</h4>
+<p><strong>"How did you stop a cron job from running twice?"</strong>
+Two layers. A short-lived lock in Redis, or a database advisory lock, so only one host runs the job at a time, with an expiry so a crashed host doesn't block it forever. Then an idempotent key per unit of work, like one key per user, class and reminder type, so a re-run after a crash skips what was already done. For example, if the reminder job died after 1,200 of 2,000 emails, the re-run only sent the remaining 800.</p>
+<p><strong>"Did your dashboard really increase sales by 30%?"</strong>
+The business team attributed a 30% rise in course sales to the influencer dashboard. I owned building it: tracking transactions and coupon conversions, near-real-time counters in Redis and daily rollups for history. The causal link is their analysis, and the likely mechanism is that influencers who can see what converts promote more and better.</p>
+<p><strong>"What made it 'asynchronous'?"</strong>
+None of this work ran inside a user's request. Video handoffs, reminders and cleanup ran as scheduled background jobs, so users never waited on them and a slow job never slowed the site.</p>
+<hr>
+<h2 id="8-tech-used-in-this-project-and-why">8. Tech used in this project and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is in one line</th>
+<th>Why here</th>
+<th>Alternative considered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>General-purpose language</td>
+<td>Team language. Django ecosystem</td>
+<td>PHP (the legacy)</td>
+</tr>
+<tr>
+<td>Django + DRF</td>
+<td>Batteries-included web framework plus REST toolkit</td>
+<td>ORM, admin, auth, migrations, serializers. Fast feature delivery for a content product</td>
+<td>Staying on PHP, Flask (more assembly needed)</td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>Relational database</td>
+<td>Source of truth. Unique constraints and transactions for votes, subscriptions and earnings</td>
+<td>MongoDB for everything</td>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>Document database</td>
+<td>Doubt bodies and content with varying shape</td>
+<td>MySQL JSON columns</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>In-memory key-value store</td>
+<td>Vote counters, unread badges, contest hot keys, dashboard "today" counters, job locks</td>
+<td>Updating MySQL counters on every event</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>Full-text search engine</td>
+<td>Search over doubts and content with relevance</td>
+<td>SQL <code>LIKE</code></td>
+</tr>
+</tbody>
+</table>
+<p>Tech line on the PDF: Python, Django, MySQL, MongoDB, Redis, Elasticsearch. Celery is <strong>not</strong> on the GFG line, so don't describe the scheduled jobs as Celery here.</p>
+<p><strong>Why Django here but Spring Boot later at Masters India?</strong> In 2021 this was a content and community product, where Django's admin, auth and ORM saved a lot of time. At Masters India the core problem was a set of long-running enterprise microservices making many calls to a slow government API. Spring Boot fit that job: mature transactions and connection pooling, Kafka integration, and a non-blocking HTTP client so threads don't sit waiting on the portal. Different job, different tool.</p>
+<hr>
+<h2 id="9-hard-problems-and-failure-stories">9. Hard problems and failure stories</h2>
+<p>GeeksforGeeks was early career, and my notes describe these as design problems the system was built around, not dated incidents. Tell them that way.</p>
+<h3 id="problem-1-hot-rows-on-popular-doubts">Problem 1: hot rows on popular doubts</h3>
+<ul>
+<li><strong>What hurt:</strong> during contests a popular doubt got many votes in minutes. Updating one counter row per vote made those writes queue on a single row lock.</li>
+<li><strong>How it was seen:</strong> vote and doubt pages slowed down during contests.</li>
+<li><strong>Fix:</strong> a vote row per user and content with a unique constraint, a Redis counter for display, and a periodic reconcile from MySQL.</li>
+<li><strong>What I learned:</strong> separate "what is true" (MySQL rows) from "what is fast to show" (Redis), and always have a job that brings them back in line.</li>
+</ul>
+<h3 id="problem-2-counter-drift">Problem 2: counter drift</h3>
+<ul>
+<li><strong>What can go wrong:</strong> Redis restarts, an increment is lost, or a bug double-applies a change. The displayed count drifts from reality.</li>
+<li><strong>Fix:</strong> the reconcile job recomputes <code>SUM(value)</code> from the vote rows and overwrites Redis and the stored count.</li>
+<li><strong>What I learned:</strong> a cache you can't rebuild from the source of truth is a liability.</li>
+</ul>
+<h3 id="problem-3-jobs-that-double-run-or-half-run">Problem 3: jobs that double-run or half-run</h3>
+<ul>
+<li><strong>What can go wrong:</strong> cron on two hosts sends duplicate reminders. A crash midway leaves cleanup half-done.</li>
+<li><strong>Fix:</strong> a lock with expiry so only one host runs a job, an idempotent key per unit of work, and structured success and failure logs.</li>
+<li><strong>What I learned:</strong> every scheduled job should be safe to run twice. I carried this straight into the idempotency design at Masters India.</li>
+</ul>
+<h3 id="what-i-would-do-differently-today">What I would do differently today</h3>
+<ul>
+<li><strong>Votes as events.</strong> Write each vote as an event to a queue and update counters from that stream. Totals become rebuildable by replay, and the reconcile job becomes a check instead of a fix. I learned this pattern later with Kafka at Masters India.</li>
+<li><strong>Idempotency by default.</strong> Give every scheduled job and every reminder an idempotent key from day one, through a shared helper, not as something remembered per job.</li>
+<li><strong>Contest-day targets.</strong> Agree explicit latency targets for contest windows and alert on them, instead of finding out from user complaints.</li>
+<li><strong>Fewer stores if possible.</strong> Re-check whether MongoDB's role could live in MySQL JSON columns, to run one less system.</li>
+</ul>
+<hr>
+<h2 id="10-say-this-dont-say-this">10. Say this / don't say this</h2>
+<div class="callout warn">
+<p><b>Say this</b></p>
+<ul>
+<li>"10K+ daily queries, with roughly 10 times that during live coding contests. That's well under one request per second on average, so the problem was bursts and fragility, not raw scale."</li>
+<li>"A 20% lift in premium subscriptions, relative, attributed by the growth team. I owned the APIs."</li>
+<li>"The business team credited the influencer dashboard with a 30% rise in course sales."</li>
+<li>"Automated video handoffs, reminders and cleanup cut manual ops effort on those workflows by about 70%."</li>
+<li>"Unique constraint for correctness, Redis for speed, reconcile for truth."</li>
+</ul>
+<p><b>Don't say this</b></p>
+<ul>
+<li>"100K daily queries" or "1K daily queries" (older resume figures). Use 10K+.</li>
+<li>"15 to 20% premium lift" (older prep). The current PDF says 20%.</li>
+<li>"I increased sales by 30%" as if engineering alone caused it.</li>
+<li>Celery, Kafka, FastAPI or Spring Boot at GeeksforGeeks. They are not on this role's tech line.</li>
+<li>Comparing GFG load to Uber or Impact Analytics scale.</li>
+<li>"SMTP email sends 50% faster" as a resume claim. That was on an older resume and is not on the current PDF. If an interviewer brings it up, explain it as connection reuse (keep one SMTP connection open across a batch instead of a new TCP and TLS handshake per email), framed as an older detail.</li>
+<li>Unread-count badges as a resume bullet. It's a prep design question (Redis counters with a durable MySQL row), not a PDF bullet.</li>
+</ul>
+</div>
+<hr>
+<h2 id="11-practice-drill">11. Practice drill</h2>
+<ol>
+<li>
+<p><strong>What was the doubt-support platform?</strong>
+The Q&amp;A layer on GeeksforGeeks courses and articles. Learners post doubts, others reply, good answers are upvoted, and moderators can pin or lock threads.</p>
+</li>
+<li>
+<p><strong>Why migrate from PHP to Django?</strong>
+The PHP backend was fragile under contest bursts. It lacked clean transactions and request validation and was hard to change safely. Django and DRF gave us transactions, serializers for validation, an ORM with migrations, and faster feature work. We migrated page by page behind the same URLs.</p>
+</li>
+<li>
+<p><strong>What does 10K+ daily queries mean in requests per second?</strong>
+10,000 divided by 86,400 is about 0.12 per second, so well under one. Contest spikes were about 10 times normal and bunched into short windows, so the challenge was bursts.</p>
+</li>
+<li>
+<p><strong>How is a vote idempotent?</strong>
+A unique constraint on user ID and content ID means one vote row per user per doubt. The API upserts that row, so a repeat with the same value changes nothing and a changed vote just updates the value.</p>
+</li>
+<li>
+<p><strong>What's a hot row and how did you avoid it?</strong>
+A single row many requests update at once, so they queue on its lock. We wrote each vote to its own row and kept the shared total in Redis with atomic increments, then reconciled to MySQL periodically.</p>
+</li>
+<li>
+<p><strong>What if Redis and MySQL disagree?</strong>
+MySQL wins. The reconcile job sums the vote rows and overwrites the Redis value and the stored count. A few minutes of staleness on a vote badge is acceptable.</p>
+</li>
+<li>
+<p><strong>What's the difference between pinning and locking?</strong>
+Pinning puts a thread at the top of its course or article, in a set order. Locking stops new replies on a thread. Both are moderator-only actions behind permission checks.</p>
+</li>
+<li>
+<p><strong>Why MongoDB and Elasticsearch as well as MySQL?</strong>
+MongoDB held content whose shape varied, like doubt bodies with code or attachments. Elasticsearch gave fast full-text search with relevance ranking, which SQL <code>LIKE</code> can't do well. MySQL stayed the source of truth.</p>
+</li>
+<li>
+<p><strong>What did the influencer dashboard show?</strong>
+Each influencer's transactions, coupon conversions and earnings. Redis counters gave a near-real-time "today" view, and daily rollups fed the history charts.</p>
+</li>
+<li>
+<p><strong>How do you talk about the 30% and 20% numbers?</strong>
+As business results attributed by the business and growth teams. The 20% is a relative lift in premium subscriptions. I owned the engineering and I don't claim the causal analysis.</p>
+</li>
+<li>
+<p><strong>How did you make scheduled jobs safe?</strong>
+A lock with expiry so only one host runs a job at a time, and an idempotent key per unit of work so a re-run skips finished work. Plus success and failure logs and retries for partial batches.</p>
+</li>
+<li>
+<p><strong>Why Django here and Spring Boot at Masters India?</strong>
+Django suited a content product that needed admin, auth and ORM quickly. Spring Boot suited Masters India's long-running enterprise microservices, with mature transactions, connection pooling and Kafka integration around calls to a slow government API.</p>
+</li>
+<li>
+<p><strong>What would you do differently today?</strong>
+I'd put vote events on a queue and build counters from that event stream, so totals are rebuildable by replay rather than by a periodic sum. I'd make idempotent job keys the default for every scheduled job instead of adding them job by job. And I'd set clear latency targets for contest days and alert on them. The Django migration and the vote model were the right call for 2021.</p>
+</li>
+</ol>
+<hr>
+<h2 id="12-3-minute-whiteboard-script">12. 3-minute whiteboard script</h2>
+<p><strong>First (about 45 seconds): the product and the problem.</strong>
+Draw "Learners" pointing to "Doubt pages". Write "10K+ a day, 10x in contests" beside it.
+Say: "At GeeksforGeeks, learners post doubts on courses and articles. The backend was legacy PHP. It was fragile under contest spikes of about ten times normal. The daily average is well under one request per second, so the problem was bursts and correctness, not raw scale. I migrated it to Django page by page behind the same URLs."</p>
+<p><strong>Second (about 75 seconds): the vote design.</strong>
+Draw "Django API" with arrows to "MySQL", "Redis", "MongoDB" and "Elasticsearch". Under MySQL write <code>votes UNIQUE(user_id, content_id)</code>. Under Redis write <code>votes:123 INCRBY</code>. Draw a "Reconcile" box with arrows from MySQL to Redis.
+Say: "Each vote is its own row with a unique constraint on user and content, so double clicks are idempotent and there's no single hot row. The display total is a Redis counter. A reconcile job sums the real votes and corrects Redis, so MySQL stays the truth. Pinning and locking follow the same pattern: constraint-backed rows behind moderator permissions. MongoDB holds content with varying shapes and Elasticsearch powers search. The growth team tied these features to a 20% relative lift in premium subscriptions."</p>
+<p><strong>Third (about 45 seconds): dashboard and jobs.</strong>
+Draw "Influencer dashboard" reading from "Redis today counters" and "Daily rollups". Separately draw "Scheduled jobs" with "lock + job key" written on the arrow to "Video, reminders, cleanup".
+Say: "I built an influencer dashboard for transactions, coupon conversions and earnings, which the business credited with 30% more course sales. And I built scheduled jobs for video processing, reminders and cleanup, each with a lock so only one host runs it and an idempotent key so re-runs are safe. That cut manual ops effort by about 70%."</p>
+<p><strong>Close (about 15 seconds): the lesson.</strong>
+Say: "This is where I learned constraints for idempotency, hot counters off the database, and safe re-runs. I used all three at a much bigger scale at Masters India."</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

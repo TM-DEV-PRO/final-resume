@@ -47,314 +47,747 @@ strong{color:#fff}
 <a class="lvl2" href="#4-uber-via-epam-document-compliance-uber-mobility-anz">4. Uber (via EPAM): Document Compliance (Uber Mobility ANZ)</a>
 <a class="lvl2" href="#5-masters-india-gst-compliance-e-invoicing-platform-sde-2-dec-2022-to-jun-2024">5. Masters India: GST Compliance &amp; E-Invoicing Platform (SDE 2), Dec 2022 to Jun 2024</a>
 <a class="lvl2" href="#6-geeksforgeeks-courses-platform-and-influencer-dashboard-sde-aug-2021-to-nov-2022">6. GeeksforGeeks: Courses Platform and Influencer Dashboard (SDE), Aug 2021 to Nov 2022</a>
-<a class="lvl2" href="#7-cross-project-answers-oci-asks">7. Cross-project answers OCI asks</a></nav>
+<a class="lvl2" href="#7-cross-project-answers-oci-asks">7. Cross-project answers OCI asks</a>
+<a class="lvl2" href="#say-this-dont-say-this">Say this, don't say this</a></nav>
 <main><h1 id="07-my-projects-deep-dive-oci-framing">07. My projects deep dive (OCI framing)</h1>
-<p>For each project: the <strong>30 second pitch</strong>, the <strong>2 minute walkthrough</strong>, <strong>architecture</strong>, <strong>key decisions and trade-offs</strong>, <strong>failure modes</strong>, <strong>OCI JD tie-ins</strong>, <strong>likely questions with answers</strong>, and <strong>honesty lines</strong>. Numbers match the PyGo PDF.</p>
+<p>For each project this page gives you the <strong>one-minute version</strong>, the <strong>business in plain English</strong>, the <strong>words you need</strong>, the <strong>architecture</strong> with a diagram, the <strong>key decisions and trade-offs</strong>, the <strong>numbers explained</strong>, <strong>failure modes</strong>, <strong>OCI JD tie-ins</strong>, <strong>likely questions with speakable answers</strong>, and <strong>honesty lines</strong>. Numbers match the PyGo PDF (Python and Go wording: FRM on FastAPI and SQLAlchemy 2.0, Masters India on FastAPI).</p>
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> every project on the resume, deep enough to survive a 45-minute "walk me through it" round: AssortSmart (core platform and agentic AI), Uber FRM, Uber Menu, Uber ANZ, Masters India, GeeksforGeeks.</li>
+<li><b>When to read it:</b> before the hiring manager, bar raiser, and system design rounds. Read the one-minute version and the architecture of each project first. Read the decision and question sections the day before.</li>
+<li><b>What to memorise:</b> each one-minute version, one diagram per project you can redraw, and the honesty box below.</li>
+<li><b>Companion pages:</b> the STAR stories built on these projects are in <a href="01_core_values_star.html">01 Core values STAR</a>. Ownership boundaries are in <a href="08c_behavioral_terraform.html">08c</a>.</li>
+</ul>
+</div>
+<div class="callout note">
+<p><b>What the tags mean.</b> <b>MEASURED</b> means there is a log, a doc, or code behind the number. <b>ESTIMATED</b> means arithmetic I can show, so I say "roughly, derived from...". <b>HISTORICAL</b> means it comes from my past work records. <b>TARGET</b> means a design goal, so I say "targeting". <b>VERBAL</b> means true and fine to say, but not printed on the PDF.</p>
+</div>
 <div class="callout warn">
-<p><b>Honesty lines to keep (say these unprompted if they fuse numbers).</b></p>
+<p><b>Honesty lines to keep (say these unprompted if anyone fuses numbers).</b></p>
 <ul>
 <li>80% is a CI promotion gate on 300 cases, not live accuracy across tenants.</li>
-<li>73% cost cut and the 74% baseline come from the gold-200 bench.</li>
-<li>15.5x is query time on a 250M-row harness. The 170 GB OOM fix is load time.</li>
-<li>344k is rows per second, not RPS. It was measured on a 4.09B-row table while the copy was in flight.</li>
-<li>Partition rollback is DROP PARTITION then recopy. It is not an atomic reader swap.</li>
-<li>Uber roles are via EPAM. ANZ numbers are historical. Menu 98% is offline eval.</li>
-<li>No Kafka, Flink, CDC, or Kubernetes cluster operations on AssortSmart. No HITL queue.</li>
+<li>The 73% cost cut and the 74% baseline come from the gold-200 bench.</li>
+<li>15.5x is query time on a 250M-row harness. The 170 GB OOM fix is load time. One did not cause the other.</li>
+<li>344k is rows per second, not requests per second. It was measured on a 4.09B-row table while the copy was in flight.</li>
+<li>Partition rollback is DROP PARTITION, then recopy. It is not an atomic reader swap.</li>
+<li>Uber roles are via EPAM. ANZ numbers are historical. Menu 98% is offline evaluation.</li>
+<li>No Kafka, Flink, CDC, or Kubernetes cluster operations on AssortSmart. No human review (HITL) queue.</li>
 </ul>
 </div>
 <hr>
 <h2 id="1-impact-analytics-assortsmart-senior-software-engineer-platform-ai-may-2026-to-present">1. Impact Analytics: AssortSmart (Senior Software Engineer, Platform &amp; AI), May 2026 to present</h2>
-<p>AssortSmart helps retail merchandise planners decide assortments: which articles to keep, drop, or add each season, per store cluster. I work on two things: the <strong>core platform</strong> (Go services, ClickHouse analytics, security) and the <strong>agentic decision layer</strong> (batch AI scoring + the Ask Iris copilot).</p>
-<h3 id="1a-core-infrastructure-pipeline">1A. Core Infrastructure &amp; Pipeline</h3>
-<p><strong>30 second pitch</strong></p>
-<blockquote>
-<p>I built the Go/Gin platform layer that scales to 10k peak RPS as a self-protecting edge. I moved planner analytics onto ClickHouse rollups, which cut a 250M-row pivot from 189 seconds to 12. I fixed a 170 GB OOM in weekly rollups by slicing work into fiscal weeks. And I wrote a Go native-TLS pump that copies partitions between ClickHouse Cloud clusters at about 344k rows/s.</p>
-</blockquote>
-<p><strong>Architecture</strong></p>
-<pre><code>planner UI / API clients
-      │  HTTPS (LB) → h2c
-      ▼
-Go/Gin platform (stateless, Wire DI, nested ctx timeouts, Datadog tracing)
-   ├─ auth waterfall: Redis cache → Firebase Admin → JWT / Google OIDC; constant-time API keys
-   ├─ role + hierarchy (UAM) resolution from Postgres roles → tenant + hierarchy scope
-   ├─ KPI configurator: tokenizer → parser → parameterized CH SQL (ifNotFinite guards)
-   └─ reads ──► ClickHouse: 6 rollup tables (season + weekly grain; product/store/attr)
-                 PARTITION BY season_code, bloom skip indexes
-      Postgres: roles, config, OLTP cells
-build path: loader (INSERT SELECT per fiscal week, caps + spill, TSV ledger)
-copy path:  Go pump (source CH Cloud → native TLS → operator host → native TLS → target CH Cloud)
-</code></pre>
-<p><strong>Walkthrough and decisions</strong></p>
-<ol>
-<li><strong>Go/Gin edge, no reverse proxy.</strong> The process owns h2c, nested context timeouts (the edge sets the budget and inner calls inherit the remaining deadline), and Datadog traces. It's one less hop and one less ops surface.
-   - <em>Trade-off:</em> no proxy-level features (WAF, connection limits) unless we add them in middleware or at the load balancer.
-   - I don't claim an SLA number.</li>
-<li><strong>Google Wire compile-time DI.</strong> Wiring errors fail the build, not a request. There's no runtime reflection.</li>
-<li><strong>Multi-tenant isolation and access control.</strong> Identity is resolved through a <strong>Redis-fronted</strong> waterfall (Firebase Admin → JWT → Google OIDC), and hot identities hit the cache. API keys are compared in <strong>constant time</strong> (no timing side channel). <strong>Postgres-backed roles</strong> give UAM-scoped hierarchy access. The tenant and hierarchy come from the verified identity, not request parameters. Isolation is enforced across both Postgres and ClickHouse.</li>
-<li><strong>KPI configurator.</strong> Operators write formulas like <code>(sales - cost) / sales</code>. A Go tokenizer and parser allowlist the functions, map logical names to physical columns, and emit <strong>parameterized</strong> SQL fragments wrapped in <code>ifNotFinite(toFloat64(expr), 0)</code> (division-by-zero protection). New KPIs don't need a release. <em>Security:</em> no string concatenation of user input into SQL; the grammar is an allowlist.</li>
-<li><strong>ClickHouse migration: 15.5x.</strong>
-   - Planner pivots on Postgres hit 189s at 250M rows.
-   - I wrote the RFC and a <strong>row-identical harness</strong>: same rows, same query, answers compared.
-   - ClickHouse ran it in 12s.
-   - We pay once at load (pre-aggregated rollups) and read cheap (partition pruning, bloom indexes).
-   - Postgres stays for OLTP.</li>
-<li><strong>Six rollup tables.</strong> Season and weekly grain × product, store, and attr.
-   - Store and attr drop SKU-level dims and <strong>re-weight</strong> so store totals equal SKU sums.
-   - Attr is an unpivot (<code>ARRAY JOIN</code> over attribute pairs), so attr weekly is ~5x product weekly.</li>
-<li><strong>170 GB OOM.</strong>
-   - Whole-season weekly <code>INSERT SELECT</code> needed ~110 <code>any()</code> states plus <code>argMax</code>/<code>argMin</code> over wide strings, around 170 GB of aggregator state. It failed at 80 GB and 200 GB caps on a ~59 core / ~236 GiB replica.
-   - Fix: the unit of work became <strong>one fiscal week</strong>, with generated settings of 8 threads, a 55 GB cap, 16 GB spill, and 4 weeks in flight.
-   - Product weeks peak at ~11 GB and attr weeks at over 40 GB.</li>
-<li><strong>Go pump, ~344k rows/s.</strong>
-   - Why it exists: cluster-to-cluster pull was blocked by Cloud IP allowlists, while the operator IP was allowed.
-   - How it's fast:<ul>
-<li>Native protocol over TLS.</li>
-<li>500k-row <strong>columnar</strong> buffers (<code>batch.Column(i).Append</code>, no per-row reflection).</li>
-<li><strong>Double buffering</strong>, so reading the next batch overlaps sending the previous one. That also cured the HTTP <code>unexpected EOF</code> when the SELECT sat idle during an INSERT.</li>
-<li>Parallelism: <code>-workers N</code> copies N seasons in parallel with their own connections. Caps are per process (about 48 threads / 180 GiB split across workers).</li>
-<li>Safety:</li>
-<li>The per-season checkpoint ledger records only finished seasons.</li>
-<li>An incomplete season means DROP PARTITION then recopy.</li>
-<li>SIGINT finishes the batch without checkpointing.</li>
-<li>A per-table flock prevents two terminals copying the same table.</li>
-<li>Secrets come from env only.</li>
+<h3 id="the-business-in-plain-english">The business in plain English</h3>
+<p>AssortSmart is software that retail merchandise planners use to decide their <strong>assortment</strong>: which products (called <strong>articles</strong>) to keep, drop, or add each season, for each group of stores. Imagine a clothing chain deciding which 500 shirts to stock in its northern stores next summer. Before tools like this, planners did it with huge spreadsheets and pivots that took minutes to load. Clients pay because a better assortment means fewer unsold items and fewer missed sales.</p>
+<p>I work on two parts. The <strong>core platform</strong> is the Go services, the ClickHouse analytics layer, and security. The <strong>agentic decision layer</strong> is the batch AI scoring engine and the Ask Iris copilot.</p>
+<h3 id="words-you-need">Words you need</h3>
+<ul>
+<li><strong>Article-season.</strong> One product in one selling season. The same shirt in Summer and in Winter is two article-seasons.</li>
+<li><strong>Pivot.</strong> A planner's table view that groups and totals data by chosen dimensions, like "units sold by store by week". The same as a spreadsheet pivot table, but over hundreds of millions of rows.</li>
+<li><strong>Multi-tenant.</strong> One system serving many client companies (tenants). Like an apartment building: shared plumbing, but every flat has its own lock.</li>
+<li><strong>UAM (User Access Management).</strong> The rules for which user may see which part of the product hierarchy, for example only the Menswear department.</li>
+<li><strong>Go and Gin.</strong> Go is a compiled language from Google with cheap concurrency. Gin is a popular Go web framework for HTTP APIs.</li>
+<li><strong>ClickHouse.</strong> A column-oriented database for large analytical queries. Each column is stored separately and compressed, so a query that needs 3 columns never reads the other 200. Think of a library where every chapter of every book is shelved by topic, so you only pull the chapters you need.</li>
+<li><strong>PostgreSQL (Postgres).</strong> A row-oriented database for many small transactional reads and writes. Here it keeps thin metadata: users, roles, config.</li>
+<li><strong>OLTP versus OLAP.</strong> OLTP (online transaction processing) is many small reads and writes, like a cash register. OLAP (online analytical processing) is a few huge scans and totals, like the year-end accounts.</li>
+<li><strong>Partition.</strong> A table split into separately stored slices, here one per season (<code>season_code</code>). A query for one season skips the rest. Like a filing cabinet with one drawer per year.</li>
+<li><strong>Rollup table.</strong> A table of pre-computed totals at a chosen grain. Like keeping a monthly total on the first page of a receipt book.</li>
+<li><strong>Grain.</strong> The level of detail of a row, for example "one product in one season" versus "one product in one week".</li>
+<li><strong>MergeTree and ReplacingMergeTree (RMT).</strong> ClickHouse table engines. MergeTree writes data in sorted chunks (called parts) that merge in the background. ReplacingMergeTree also keeps only the latest version of rows with the same key. Think of a notebook where you never erase. You write the new value below, and a cleaner later crosses out the old lines.</li>
+<li><strong>OOM (out of memory).</strong> A query killed for needing more memory than allowed.</li>
+<li><strong>LLM (large language model).</strong> A model like GPT or Gemini that reads and writes text.</li>
+<li><strong>Lens.</strong> One structured question the LLM answers about an article. AssortSmart has 7 lenses.</li>
+<li><strong>Deterministic score.</strong> A rule-based score from KPIs. Same input, same answer, every time.</li>
 </ul>
-</li>
-<li><strong>64.1M ghost rows (the loader, not the pump).</strong>
-   - A failed HTTP INSERT still commits the blocks it wrote. A half-loaded 64.1M-row partition passed "skip if the partition has rows."
-   - Fix: a TSV ledger of finished <code>(kind, season_code)</code>, with success taken from <code>system.query_log</code> <code>QueryFinish</code>, and a missing entry means drop and rebuild.</li>
+<hr>
+<h3 id="1a-core-infrastructure-pipeline">1A. Core Infrastructure &amp; Pipeline</h3>
+<p><strong>The one-minute version (say it out loud)</strong></p>
+<blockquote>
+<p>I built the Go and Gin platform layer that handles 10 thousand requests per second at peak, as an edge that protects itself without a reverse proxy. I moved planner analytics onto ClickHouse rollup tables, which cut a 250-million-row pivot from 189 seconds to 12. I fixed a memory blow-up of about 170 GB in the weekly rollup builds by slicing the work into one fiscal week at a time. And I wrote a Go copy tool that moves partitions between ClickHouse Cloud clusters at about 344 thousand rows per second.</p>
+</blockquote>
+<h4 id="architecture">Architecture</h4>
+<div class="mermaid">flowchart LR
+    UI["Planner UI and API clients"] --&gt;|"HTTPS via load balancer, then h2c"| EDGE["Go/Gin platform, stateless"]
+    EDGE --&gt; AUTH["Auth waterfall: Redis cache, Firebase Admin, JWT or Google OIDC"]
+    EDGE --&gt; UAM["Roles and hierarchy scope from Postgres"]
+    EDGE --&gt; KPI["KPI configurator: tokenizer, parser, SQL fragments"]
+    KPI --&gt; CH["ClickHouse: 6 rollup tables, PARTITION BY season_code"]
+    EDGE --&gt; PG["Postgres: roles, config, transactional cells"]
+    LOADER["Loader: INSERT SELECT per fiscal week, caps and spill, TSV ledger"] --&gt; CH
+    CH --&gt; PUMP["Go pump on operator host"]
+    PUMP --&gt;|"native TLS"| CH2["Target ClickHouse Cloud cluster"]
+</div>
+<p><em>What to notice:</em> there are three separate paths. The <strong>read path</strong> (planner to Go to ClickHouse) is what users feel. The <strong>build path</strong> (loader) fills the rollup tables. The <strong>copy path</strong> (pump) moves finished partitions between clusters.</p>
+<p><strong>Walking through it box by box</strong></p>
+<ol>
+<li><strong>Planner UI and API clients</strong> call over HTTPS. The load balancer terminates TLS and forwards to the Go service using h2c (HTTP/2 without TLS, used inside the trusted network).</li>
+<li><strong>The Go/Gin platform</strong> is stateless, so any instance can serve any request. It uses Google Wire for dependency injection, nested context timeouts, and Datadog distributed tracing.</li>
+<li><strong>The auth waterfall</strong> identifies the caller. Redis caches known identities. If there is no cache hit, it tries Firebase Admin, then JWT or Google OIDC. API keys are compared in constant time.</li>
+<li><strong>Role and hierarchy resolution</strong> reads Postgres roles and turns the verified identity into a tenant plus a UAM hierarchy scope.</li>
+<li><strong>The KPI configurator</strong> compiles operator-written formulas into parameterized ClickHouse SQL fragments.</li>
+<li><strong>ClickHouse</strong> holds the six rollup tables (product, store, attribute, each at season and weekly grain), partitioned by <code>season_code</code>, with bloom-filter skip indexes. A <strong>bloom filter skip index</strong> is a small summary per chunk that can say "this value is definitely not in here", so ClickHouse skips the chunk.</li>
+<li><strong>Postgres</strong> keeps roles, config, and transactional cells.</li>
+<li><strong>The loader</strong> builds the rollups with <code>INSERT SELECT</code>, one fiscal week at a time, with memory caps, disk spill, and a TSV ledger of finished seasons.</li>
+<li><strong>The Go pump</strong> copies partitions from the source ClickHouse Cloud cluster through the operator host to the target cluster, over native TLS on both legs.</li>
 </ol>
-<p><strong>Failure catalog (this doubles as a runbook, and OCI loves it)</strong>
-1. OOM on weekly GROUP BY: shrink to one week and measure attr weeks before adding RAM.
-2. A half-written partition looks complete: never use <code>count() &gt; 0</code> as success.
-3. An HTTP client timeout after the server committed: trust <code>system.query_log</code>.
-4. HTTP SELECT EOF during INSERT: double buffer, or use the native protocol.
-5. Retrying a spent batch: duplicates. Drop and restart the unit instead.
-6. Native TLS reset: crash, and checkpoint only finished seasons.
-7. Allowlists block cluster pull: the pump is the workaround, and the proper fix is allowlisting + server-side <code>INSERT SELECT</code> or object storage.
-8. Oversubscribing workers: caps are per process.
-9. Never commit Cloud passwords.</p>
+<h4 id="one-request-step-by-step-a-planner-pivot">One request, step by step (a planner pivot)</h4>
+<p>Sample request: a planner in a retail client's Menswear team opens a store-by-season view for season S1.</p>
+<div class="mermaid">sequenceDiagram
+    participant P as Planner UI
+    participant G as Go/Gin edge
+    participant R as Redis
+    participant PG as Postgres
+    participant K as KPI compiler
+    participant CH as ClickHouse
+    P-&gt;&gt;G: GET pivot for season S1 at store level, with token
+    G-&gt;&gt;R: Cached identity for this token?
+    R--&gt;&gt;G: Miss
+    G-&gt;&gt;G: Verify via Firebase Admin, then JWT or OIDC
+    G-&gt;&gt;PG: Resolve role and hierarchy scope
+    PG--&gt;&gt;G: Tenant A, Menswear only
+    G-&gt;&gt;K: Compile the KPI formulas in this view
+    K--&gt;&gt;G: Parameterized SQL fragments
+    G-&gt;&gt;CH: Query store season rollup, partition S1, scope filter
+    CH--&gt;&gt;G: Aggregated rows
+    G--&gt;&gt;P: Pivot JSON
+</div>
+<p><em>What to notice:</em> the tenant and hierarchy come from the verified identity, never from request parameters. The query hits one partition of a pre-aggregated table, not the 2.11B-row master.</p>
+<h4 id="decisions-one-by-one">Decisions, one by one</h4>
+<p><strong>1. Go/Gin edge with no reverse proxy</strong>
+- <em>What:</em> the Go process itself handles h2c, nested timeouts, and tracing. There is no Nginx or Envoy in front of it.
+- <em>Why:</em> one less network hop and one less thing to operate.
+- <em>How:</em> the edge sets a total time budget per request, and every inner call inherits the remaining deadline through Go's <code>context</code>. Think of a meeting that ends at 3 pm no matter which agenda item is running.
+- <em>Alternatives:</em> a reverse proxy such as Nginx or Envoy. It gives WAF (web application firewall) rules and connection limits for free, but adds a hop and an ops surface we did not need.
+- <em>Trade-off:</em> no proxy-level features unless we add them in middleware or at the load balancer.
+- <em>Say carefully:</em> I don't claim an SLA number. I don't claim Kubernetes cluster operations.</p>
+<p><strong>2. Google Wire compile-time dependency injection</strong>
+- <em>What:</em> Wire generates the code that builds every service object and its dependencies.
+- <em>Why:</em> wiring mistakes fail the build, not a live request. There is no runtime reflection.
+- <em>Analogy:</em> checking you packed every part before leaving the house, instead of discovering a missing one at the campsite.
+- <em>Alternative:</em> runtime DI containers (for example Uber's <code>fx</code>). They are more flexible but fail at startup or at request time.</p>
+<p><strong>3. Multi-tenant isolation and access control</strong>
+- <em>What:</em> identity comes from a Redis-fronted waterfall (Firebase Admin, then JWT, then Google OIDC). Hot identities hit the cache. API keys are compared in <strong>constant time</strong>, meaning the check takes the same time whether the first or the last character is wrong, so an attacker cannot guess a key by timing. <strong>Postgres-backed roles</strong> give UAM-scoped hierarchy access.
+- <em>Why:</em> the tenant and hierarchy must come from the verified identity, not from request parameters someone could edit.
+- <em>How:</em> isolation is enforced across both Postgres and ClickHouse queries.
+- <em>Say carefully:</em> isolation is access control, not encryption.</p>
+<p><strong>4. KPI configurator</strong>
+- <em>What:</em> operators write formulas like <code>(sales - cost) / sales</code>. A Go tokenizer and parser check every function against an allowlist, map logical names to physical columns, and emit <strong>parameterized</strong> SQL fragments wrapped in <code>ifNotFinite(toFloat64(expr), 0)</code> for division-by-zero protection.
+- <em>Why:</em> new KPIs no longer need a code release. Business formulas are decoupled from deploys.
+- <em>Security:</em> user input is never concatenated into SQL. The grammar is an allowlist. Unknown tokens fail closed (compile fails, nothing runs).
+- <em>Alternative:</em> hard-coding each KPI in Go, which means a release per formula.</p>
+<p>A worked example (column names illustrative):</p>
+<pre><code class="language-text">Operator writes:   (sales - cost) / sales
+Tokens:            LPAREN IDENT(sales) MINUS IDENT(cost) RPAREN DIV IDENT(sales)
+Name mapping:      sales -&gt; net_sales, cost -&gt; cost_amt   (allowlisted names only)
+Emitted fragment:  ifNotFinite(toFloat64((net_sales - cost_amt) / net_sales), 0)
+Row with sales=0:  result 0, not an error and not infinity
+Input &quot;drop()&quot;:    unknown function, compile fails closed
+</code></pre>
+<p>A tiny sketch of the allowlist check in Go (illustrative, not the real file):</p>
+<pre><code class="language-go">var allowedFuncs = map[string]bool{&quot;sum&quot;: true, &quot;avg&quot;: true, &quot;min&quot;: true, &quot;max&quot;: true}
+
+func checkFunc(name string) error {
+    if !allowedFuncs[strings.ToLower(name)] {
+        return fmt.Errorf(&quot;function %q not allowed&quot;, name) // fail closed
+    }
+    return nil
+}
+</code></pre>
+<p><strong>5. Moving pivots to ClickHouse (the 15.5x)</strong>
+- <em>What:</em> planner pivots moved from Postgres to pre-aggregated ClickHouse rollups.
+- <em>Why:</em> on Postgres, pivots hit 189 seconds at 250M rows.
+- <em>How:</em> I wrote the RFC and a <strong>row-identical harness</strong>: same rows, same query, both engines, answers compared. ClickHouse ran it in about 12 seconds. We pay once at load time (pre-aggregated rollups) and read cheaply (partition pruning, bloom indexes).
+- <em>Alternatives:</em> Postgres indexes or materialized views. See the first likely question below for why not.
+- <em>Trade-off:</em> a second database to run, and a build pipeline to keep rollups fresh.
+- <em>What I'd keep:</em> Postgres for OLTP. I did not insist on one database for everything.
+- <em>Background (VERBAL):</em> the proof-of-concept work compared Postgres and ClickHouse directly. ClickHouse won the large analytical reads.</p>
+<p><strong>6. Six rollup tables</strong>
+- <em>What:</em> season and weekly grain, times product, store, and attribute.
+- <em>How:</em> store and attribute tables drop SKU-level dimensions and <strong>re-weight</strong> so that store totals equal the SKU sums. (A SKU, stock keeping unit, is one specific sellable variant, like a shirt in size M.) The attribute table is an <strong>unpivot</strong> (<code>ARRAY JOIN</code> over attribute pairs), which turns one row with many attributes into one row per attribute. So attribute weekly is about 5x the size of product weekly.
+- <em>Why:</em> each planner view reads the smallest table that answers it.</p>
+<p><strong>7. The 170 GB OOM (load time, not query time)</strong>
+- <em>What happened:</em> a whole-season weekly <code>INSERT SELECT</code> needed about 110 <code>any()</code> states plus <code>argMax</code> and <code>argMin</code> over wide strings. That came to about 170 GB of aggregator state. It failed at 80 GB and 200 GB caps on a replica with about 59 cores and about 236 GiB.
+- <em>Fix:</em> the unit of work became <strong>one fiscal week</strong>, with generated settings: 8 threads, a 55 GB memory cap, 16 GB spill to disk, and 4 weeks in flight.
+- <em>Measured peaks:</em> product weeks about 11 GB, attribute weeks over 40 GB.
+- <em>Alternative rejected:</em> a bigger machine. It failed even at 200 GB, and bigger machines only move the cliff.
+- <em>Rule I set:</em> never raise season parallelism and week parallelism together on the same box.</p>
+<pre><code class="language-text">Before: 1 job  = season S1, all ~26 weeks, all attributes   -&gt; ~170 GB state -&gt; killed
+After:  N jobs = season S1, week 202614 only, one at a time  -&gt; under 55 GB cap, spills if needed
+        up to 4 weeks run at once, each with 8 threads
+</code></pre>
+<p>(The "26 weeks" is just an illustration of a season's size, not a project number.)</p>
+<p><strong>8. The Go pump (~344k rows/s)</strong>
+- <em>Why it exists:</em> the direct cluster-to-cluster copy was blocked by Cloud IP allowlists, while the operator machine's IP was allowed on both. An <strong>IP allowlist</strong> is a guest list at the door.
+- <em>How it is fast:</em>
+  - Native ClickHouse protocol over TLS (port 9440).
+  - 500k-row <strong>columnar</strong> buffers (<code>batch.Column(i).Append</code>), with no per-row reflection. Reflection is Go inspecting types at runtime, which is slow for billions of rows.
+  - <strong>Double buffering</strong>, so reading the next batch overlaps sending the previous one. That also cured the HTTP <code>unexpected EOF</code> error that happened when the SELECT stream sat idle during an INSERT. Picture two waiters: one carries plates while the other loads the next tray.
+- <em>Parallelism:</em> <code>-workers N</code> copies N seasons in parallel, each with its own connections. Caps are per process (about 48 threads and 180 GiB split across workers).
+- <em>Safety:</em>
+  - The per-season checkpoint ledger (<code>migrate-checkpoints/&lt;table&gt;.done</code>) records only finished seasons.
+  - An incomplete season means DROP PARTITION, then recopy.
+  - SIGINT (Ctrl+C) finishes the in-flight batch without checkpointing that season.
+  - A per-table <code>flock</code> (file lock) stops two terminals copying the same table.
+  - Secrets come from environment variables only.
+- <em>Alternatives:</em> server-side <code>INSERT SELECT</code> across clusters (blocked by the allowlist), or export to object storage and re-import (slower to set up, but the right long-term path).
+- <em>What I'd do differently:</em> build into a scratch table and use <code>REPLACE PARTITION</code>, so readers never see a partial season. I wrote that design. It was not executed.</p>
+<div class="mermaid">sequenceDiagram
+    participant S as Source ClickHouse
+    participant R as Pump reader
+    participant W as Pump writer
+    participant T as Target ClickHouse
+    R-&gt;&gt;S: Read batch 1, 500k rows
+    R-&gt;&gt;W: Hand over buffer A
+    W-&gt;&gt;T: Send batch 1 from buffer A
+    R-&gt;&gt;S: Read batch 2 into buffer B while batch 1 sends
+    T--&gt;&gt;W: Batch 1 done
+    R-&gt;&gt;W: Hand over buffer B
+    W-&gt;&gt;T: Send batch 2 from buffer B
+</div>
+<p><em>What to notice:</em> the read stream is never idle while a write is running. That is what removed the EOF error and raised throughput.</p>
+<p><strong>9. 64.1M ghost rows (the loader, not the pump)</strong>
+- <em>What happened:</em> a failed HTTP INSERT still commits the blocks it already wrote. A half-loaded partition of 64.1M rows passed the check "skip if the partition has rows".
+- <em>Fix:</em> a TSV ledger of finished <code>(kind, season_code)</code> pairs. Success is read from <code>system.query_log</code> (<code>QueryFinish</code>), not from the HTTP client. A missing entry means drop and rebuild.
+- <em>Lesson:</em> never use <code>count() &gt; 0</code> as a success signal.</p>
+<h4 id="the-numbers-explained">The numbers, explained</h4>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10k peak RPS</td>
+<td>Requests per second at peak on the Go/Gin platform</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>189 s to 12 s, 15.5x</td>
+<td>One planner pivot query on the 250M-row harness, Postgres versus ClickHouse</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>170 GB</td>
+<td>Estimated aggregator memory for one whole-season weekly build</td>
+<td>ESTIMATED from the failed builds</td>
+</tr>
+<tr>
+<td>~344k rows/s</td>
+<td>Combined copy rate of two season workers at a live snapshot</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>4.09B rows</td>
+<td>Size of the attribute weekly table being copied (two seasons)</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>2.11B rows</td>
+<td>Size of the ClickHouse master table</td>
+<td>MEASURED</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>15.5x.</strong> It is the ratio of the two measured query times. The 12 seconds is the rounded figure (about 12.3 s). It mattered because a planner will wait 12 seconds for a pivot, but not over 3 minutes. Say: "from 189 seconds to 12 seconds on the same 250 million rows". Don't say: "ClickHouse is 15x faster in general", or that the OOM fix caused it.</li>
+<li><strong>344k rows/s.</strong> Two season streams of about 150 to 190 thousand rows per second each, added together at one snapshot. It is an ingest rate, not requests per second. It was measured while the 4.09B copy (2,779,317,472 plus 1,311,108,195 rows) was still running. Say: "about 344 thousand rows per second, measured on a 4-billion-row table". Don't say: "we migrated 4 billion rows at 344k TPS".</li>
+<li><strong>170 GB.</strong> It is load time on weekly builds. It failed even at 80 GB and 200 GB caps. Say: "the aggregation state was around 170 GB, so I shrank the unit of work". Don't connect it to the 15.5x.</li>
+<li><strong>10k peak RPS.</strong> Say "scales to 10 thousand requests per second at peak". Don't attach an SLA or uptime figure.</li>
+</ul>
+<h4 id="failure-catalog-this-doubles-as-a-runbook-and-oci-loves-it">Failure catalog (this doubles as a runbook, and OCI loves it)</h4>
+<p>A <strong>runbook</strong> is a step-by-step guide for an operator handling a known problem.</p>
+<ol>
+<li>OOM on a weekly GROUP BY: shrink to one week, and measure attribute weeks before adding RAM.</li>
+<li>A half-written partition looks complete: never use <code>count() &gt; 0</code> as success.</li>
+<li>An HTTP client timeout after the server committed: trust <code>system.query_log</code>.</li>
+<li>HTTP SELECT EOF during an INSERT: double buffer, or use the native protocol.</li>
+<li>Retrying a batch that was already partly sent creates duplicates: drop and restart the unit instead.</li>
+<li>Native TLS reset: crash, and checkpoint only finished seasons.</li>
+<li>Allowlists block cluster pull: the pump is the workaround. The proper fix is allowlisting plus server-side <code>INSERT SELECT</code>, or object storage.</li>
+<li>Oversubscribing workers: caps are per process, so N workers share them.</li>
+<li>Never commit Cloud passwords.</li>
+</ol>
 <p><strong>OCI JD tie-ins:</strong> large-scale data processing, data plane reads, performance testing (the row-identical harness), recovery-oriented design (ledgers, restartable units), automation tooling, multi-tenant access control, and correctness checks (parity sums).</p>
-<p><strong>Likely questions</strong></p>
+<h4 id="likely-questions">Likely questions</h4>
 <ul>
 <li><strong>Why not just add Postgres indexes or materialized views?</strong>
-  Pivots aggregate across huge slices with many dimensions. Row stores read whole rows. Columnar storage + compression + vectorized execution wins by an order of magnitude for this access pattern. We measured it instead of guessing, and Postgres stays for OLTP.</li>
+  "Because the access pattern is wrong for a row store. Pivots aggregate across huge slices with many dimensions, and a row store reads whole rows even when the query needs three columns. Columnar storage, compression, and vectorized execution win by an order of magnitude for that pattern. We measured it on the same rows instead of guessing, and Postgres stays for OLTP."</li>
 <li><strong>How do you keep rollups consistent with source data?</strong>
-  Rebuild per partition at a captured watermark. Parity checks: <code>sum(product) = sum(store) = sum(attr)</code> at the same filters. Earlier season-grain parity was 0% difference across seasons 1 to 7. ReplacingMergeTree handles corrections by version.</li>
+  "I rebuild per partition at a captured watermark, which is a fixed point in the source data. Then I run parity checks: the sum over product equals the sum over store equals the sum over attribute, at the same filters. Earlier season-grain parity was 0% difference across seasons 1 to 7. ReplacingMergeTree handles corrections by version."</li>
 <li><strong>What's the biggest risk in the pump?</strong>
-  No atomic swap. A crash leaves a truncated season until DROP + retry, and readers can see it partially. The better design is building into a scratch table and <code>REPLACE PARTITION</code>. I wrote it, but it wasn't executed. I'd do that before calling it production-grade.</li>
-<li><strong>How would you make this OCI-grade?</strong></li>
-<li>Move the copy server-side (no operator host) and use atomic partition swaps.</li>
-<li>Add a completeness check before publish.</li>
-<li>Emit metrics per season (rows/s, lag, failures) with alarms.</li>
-<li>Run it as a scheduled, idempotent job with the ledger in a durable store instead of local files.</li>
+  "There is no atomic swap. A crash leaves a truncated season until I drop and retry, and readers can see it partially. The better design is building into a scratch table and using REPLACE PARTITION. I wrote that, but it wasn't executed. I'd do it before calling the tool production-grade."</li>
+<li><strong>How would you make this OCI-grade?</strong>
+  "Four things. Move the copy server-side so there is no operator host, and use atomic partition swaps. Add a completeness check before publishing a season. Emit per-season metrics like rows per second, lag, and failures, with alarms. And run it as a scheduled, idempotent job with the ledger in a durable store instead of local files."</li>
 <li><strong>How did you test the 10k RPS?</strong>
-  Load tests against the Gin edge and Datadog under peak traffic. I talk about p95/p99 and saturation, and I don't quote an SLA.</li>
+  "With load tests against the Gin edge, and with Datadog under real peak traffic. I talk about p95, p99, and saturation, and I don't quote an SLA."
+  <em>Follow-up they may ask:</em> "What is p99?" "The latency that 99 out of 100 requests beat. It shows the worst tail."</li>
 </ul>
 <hr>
 <h3 id="1b-agentic-flows-orchestration">1B. Agentic Flows &amp; Orchestration</h3>
-<p><strong>30 second pitch</strong></p>
+<p><strong>The one-minute version (say it out loud)</strong></p>
 <blockquote>
-<p>I built a batch AI decision engine for merchandise planning: Keep/Drop, Missed Opportunities, and Top Style. It scores 348k article-seasons, 88k items per pass, by blending deterministic KPI math with structured LLM calls across 7 AI lenses. It's built to survive provider failures, with hard timeouts, circuit breakers, and durable checkpoints. I also shipped Ask Iris, a JWT-secured WebSocket copilot with tenant scope frozen at the handshake, and an eval gate so no model change ships without passing 80% on 300 cases.</p>
+<p>I built a batch AI decision engine for merchandise planning. It runs three pipelines: Keep/Drop, Missed Opportunities, and Top Style. It scores 348 thousand article-seasons, 88 thousand per pass, by blending rule-based KPI math with structured LLM calls across 7 AI lenses. It is built to survive provider failures, with hard timeouts, circuit breakers, and checkpoints. I also shipped Ask Iris, a secure chat copilot for planners where the tenant scope is frozen when the connection opens. And no model change ships without passing an 80% gate on 300 test cases.</p>
 </blockquote>
-<p><strong>Architecture</strong></p>
-<pre><code>start (CLI / HTTP) → freeze config (guardrails, params, prompts, catalog) → config_hash (SHA-256)
-   → deterministic KPI phase (Python) ──► det.json checkpoint
-   → claim ledger → batch mapper (88k per pass, bounded parallel batches)
-        packed JSON context (no DB access) → LLM (hard timeout) → schema-validated lens scores (7 lenses)
-        circuit breaker per provider; on timeout/open → deterministic baseline score
-        agent_progress.json appended per article
-   → blend (frozen weights) → engine insert → ClickHouse ReplacingMergeTree (versioned; retries don't duplicate)
-   → telemetry JSON per run: tokens, USD, step duration, batch fallbacks; config_hash on every row
-Ask Iris: WebSocket (JWT on handshake) → plan_scope frozen → LangGraph supervisor → worker tools (scoped)
-          → evaluator (MAX_ATTEMPTS = 3) → answer; LangSmith traces
-Eval: 300-case proxy harness, 80% CI gate; gold-200 bench for model choice (74% det baseline)
+<h4 id="words-you-need_1">Words you need</h4>
+<ul>
+<li><strong>Batch job.</strong> A program that processes a big list of items in one run, like a payroll run, as opposed to answering one user request.</li>
+<li><strong>Pass.</strong> One run over a chunk of the catalog. 88k items per pass.</li>
+<li><strong>Hard timeout.</strong> A strict time limit on one call. If the LLM has not answered by then, we stop waiting.</li>
+<li><strong>Circuit breaker.</strong> After repeated failures (here about 5 consecutive failures, or a high failure fraction), the code stops calling that provider for a while and uses a fallback. Like the breaker in your house tripping to prevent a fire.</li>
+<li><strong>Checkpoint.</strong> A saved record of finished work (<code>det.json</code> for deterministic scores, <code>agent_progress.json</code> for LLM progress), so <code>--resume</code> skips what is done. A bookmark.</li>
+<li><strong>config_hash.</strong> A SHA-256 fingerprint of the guardrails, parameters, prompts, and catalog for a run, stamped on every output row. Like the batch number printed on a medicine box.</li>
+<li><strong>Telemetry.</strong> Numbers a program reports about itself: tokens used, cost in USD, step duration, how many batches fell back.</li>
+<li><strong>JWT and WebSocket.</strong> A JWT is a signed token that proves who you are, a tamper-proof badge. A WebSocket is a connection that stays open for a back-and-forth chat. The <strong>handshake</strong> is the moment it opens.</li>
+<li><strong>LangGraph, supervisor, evaluator.</strong> LangGraph is a Python library for building AI agents as a graph of steps. The supervisor decides which worker step runs next. The evaluator checks the draft answer and can send it back for another try.</li>
+<li><strong>LangSmith.</strong> A tracing tool that records each step of an agent run for debugging. Used on Ask Iris only.</li>
+<li><strong>Proxy evaluation harness and gold-200.</strong> The harness is 300 test cases with expected answers, run in CI. Gold-200 is a separate, carefully labelled 200-case benchmark used to choose models.</li>
+</ul>
+<h4 id="architecture-the-keepdrop-batch-run">Architecture: the Keep/Drop batch run</h4>
+<div class="mermaid">flowchart TD
+    START["Start run from CLI or HTTP"] --&gt; FREEZE["Freeze guardrails, params, prompts, catalog"]
+    FREEZE --&gt; HASH["config_hash = SHA-256 of the frozen config"]
+    HASH --&gt; DET["Deterministic KPI phase in Python, saves det.json"]
+    DET --&gt; MAP["Claim ledger and batch mapper, 88k items per pass"]
+    MAP --&gt; CTX["Packed JSON context, no database access"]
+    CTX --&gt; LLM["LLM call with hard timeout, 7 lenses"]
+    LLM --&gt; VALID{"Schema-valid lens scores?"}
+    VALID --&gt;|"Yes"| BLEND["Blend with frozen weights"]
+    VALID --&gt;|"Timeout or breaker open"| FB["Use deterministic baseline score"]
+    FB --&gt; BLEND
+    LLM --&gt; PROG["agent_progress.json appended per article"]
+    BLEND --&gt; INS["Engine insert into ClickHouse ReplacingMergeTree"]
+    INS --&gt; TEL["Telemetry JSON: tokens, USD, step time, fallbacks"]
+</div>
+<p><em>What to notice:</em> every path ends in a written score. A failed LLM call degrades to the rule score instead of failing the run.</p>
+<p><strong>Box by box.</strong> A run starts from the command line or an HTTP call. The config (guardrails, parameters, prompts, catalog) is frozen and hashed, and that hash goes on every output row. The deterministic KPI phase runs first in Python and saves <code>det.json</code>. A claim ledger and batch mapper split the work into bounded parallel batches. Each batch gets a packed JSON context. The LLM never queries the database. Each LLM call has a hard timeout, and the output must pass a schema check. A circuit breaker per provider trips on repeated failures. On a timeout or an open breaker, the article keeps its deterministic score. Scores are blended with frozen weights and inserted through the engine into a ReplacingMergeTree table, so retries do not duplicate. A telemetry JSON per run records tokens, USD cost, step durations, and batch fallbacks.</p>
+<p><strong>The step order is fixed in code.</strong> Keep/Drop has no LLM orchestrator deciding what runs next. The order is always: peer comparison, decider, lenses, blend, explain. The agent score comes from the lenses combined by the decider.</p>
+<p><strong>A worked blend example (VERBAL depth, not on the PDF).</strong> The final score is <code>s_final = 0.4 × s_det + 0.6 × s_agent</code>. The article is kept if <code>s_final</code> is 0.55 or more.</p>
+<pre><code class="language-text">Article A, season S1:  s_det = 0.70, s_agent = 0.45
+s_final = 0.4 * 0.70 + 0.6 * 0.45 = 0.28 + 0.27 = 0.55   -&gt; keep (just)
+
+Article B, season S1:  s_det = 0.40, s_agent = 0.50
+s_final = 0.4 * 0.40 + 0.6 * 0.50 = 0.16 + 0.30 = 0.46   -&gt; drop
+
+Article C, LLM timed out:  falls back to its deterministic score, run continues
 </code></pre>
-<p><strong>Decisions and trade-offs</strong>
-- <strong>Deterministic math, LLM for judgment.</strong> LLMs are bad at arithmetic, so KPIs are computed in code and the LLM sees them as JSON.
-- <strong>No SQL tool for the LLM.</strong> At 88k items a SQL tool would be runaway queries, pool exhaustion, and injection risk against a 2.11B-row master.
-- <strong>ReplacingMergeTree</strong> writes. Retries and overlapping waves can land twice, and RMT keeps the latest version per key. Reads use <code>argMax</code> / <code>LIMIT 1 BY</code>, not <code>FINAL</code>, as a runtime requirement.
-- <strong>Fallback to baseline</strong> on timeout. The run always completes, and telemetry shows how much fell back.
-- <strong>Checkpoints.</strong> A provider outage at item 70k doesn't redo the det phase or finished articles.
-- <strong>App-native orchestration, not Airflow/Temporal.</strong> It needed tight coupling to CH inserts, config hashing, and per-run cost telemetry. I'd pick Temporal for cross-team, cross-service workflows with human steps.
-- <strong>Frozen weights.</strong> On gold-200 the blended LLM scored ~63%, below the 74% deterministic baseline. I refused to retune weights on a small proxy set.
-- <strong>Model choice.</strong> The chosen model completed 200/200 at 73% lower cost with 100% lens coverage. A cheaper option returned pending rows, so completion reliability won.
-- <strong>Ask Iris safety.</strong>
-  - JWT is checked on the handshake, via <code>Authorization: Bearer</code> or <code>?token=</code>.
-  - <code>plan_scope</code> is frozen once, and tools inherit it.
-  - The evaluator is capped at 3 attempts, with a recursion limit on the supervisor graph. It fails closed with a graceful response.</p>
-<p><strong>Failure modes and handling</strong>
-| Failure | Handling |
-|---|---|
-| Provider 502/504 storm | Breaker opens; det fallback; run completes; fallback count in telemetry |
-| Process crash mid-run | <code>--resume</code> reloads det.json and progress, and skips finished items |
-| Duplicate writes on retry | RMT versioning + argMax reads |
-| Prompt/config drift | config_hash on every row; eval gate on change |
-| LLM loops in chat | 3-attempt evaluator cap + recursion limit |
-| Cross-tenant question in chat | Scope frozen at handshake; tools can't widen it |
-| Cost runaway | Per-run USD telemetry; model chosen by cost at 100% coverage |</p>
-<p><strong>OCI JD tie-ins:</strong> retries, circuit breakers, and timeouts; recovery-oriented design (checkpoints); telemetry (tokens, cost, fallbacks); tests as deployment guardrails (the eval gate); multi-tenant access control; change management for models (a promotion gate + config hash).</p>
-<p><strong>Likely questions</strong>
-- <strong>How do checkpoints work?</strong>
-  Det results land first. As LLM chunks complete, per-article progress is appended. On restart, det is reloaded, finished articles are skipped, and the LLM map continues.
-- <strong>How do you handle rate limits at 88k?</strong>
-  Bounded parallel batches, hard per-batch timeouts, backoff, and the breaker. A throttle doesn't wipe the run.
-- <strong>Is 80% your production accuracy?</strong>
-  No, it's the CI promotion gate on the 300-case file. The model comparison is gold-200.
-- <strong>Why 3 attempts?</strong>
-  It bounds cost and latency. Beyond 3 attempts, quality gains were not worth a stuck chat, so it fails closed with a helpful message.
-- <strong>What would you add for OCI scale?</strong>
-  - A durable job store instead of local JSON checkpoints.
-  - Per-tenant quotas.
-  - SLO alarms on fallback rate and run duration.
-  - Canary rollout of prompt changes to one tenant before all.</p>
-<p><strong>Do not say:</strong> HITL review queue, LangSmith on the batch engine (LangSmith is Ask Iris), questions/week or tenant SLAs for Ask Iris, "all tenants live at 80%."</p>
+<p>(The article scores are made-up sample values. The weights and the 0.55 threshold are the real frozen config.)</p>
+<h4 id="architecture-ask-iris-the-planner-copilot">Architecture: Ask Iris (the planner copilot)</h4>
+<div class="mermaid">sequenceDiagram
+    participant P as Planner
+    participant WS as WebSocket server
+    participant SUP as LangGraph supervisor
+    participant T as Worker tools
+    participant EV as Evaluator
+    P-&gt;&gt;WS: Open socket with JWT as Bearer header or token param
+    WS-&gt;&gt;WS: Verify JWT, freeze plan_scope once
+    P-&gt;&gt;WS: Why was article 123 dropped?
+    WS-&gt;&gt;SUP: Question plus frozen scope
+    SUP-&gt;&gt;T: Call tool with inherited scope
+    T--&gt;&gt;SUP: KPIs and stored decision for article 123
+    SUP-&gt;&gt;EV: Draft answer
+    EV--&gt;&gt;SUP: Needs more detail, attempt 1 of 3
+    SUP-&gt;&gt;EV: Revised answer
+    EV--&gt;&gt;SUP: OK
+    SUP--&gt;&gt;P: Answer, traced in LangSmith
+</div>
+<p><em>What to notice:</em> <code>plan_scope</code> is set once at the handshake. No later message can widen it. The evaluator loop stops at 3 attempts (<code>MAX_ATTEMPTS = 3</code>).</p>
+<h4 id="decisions-and-trade-offs">Decisions and trade-offs</h4>
+<p><strong>Deterministic math, LLM for judgment.</strong> LLMs are unreliable at arithmetic, so KPIs are computed in code and the LLM sees them as JSON. <em>Alternative:</em> let the LLM compute from raw rows. <em>Why not:</em> wrong numbers, and much higher token cost.</p>
+<p><strong>No SQL tool for the LLM.</strong>
+- <em>What:</em> context is served as JSON payloads. The model never gets a SQL tool.
+- <em>Why:</em> at 88k items a SQL tool means runaway queries, connection-pool exhaustion, and prompt-injection risk against a 2.11B-row master. <strong>Prompt injection</strong> is text in the input that tricks the model into doing something it shouldn't.
+- <em>Trade-off:</em> the model can only reason about what we pack. We have to choose the context carefully.
+- <em>Say carefully:</em> "async" describes how batches run. It does not mean the LLM queries anything.</p>
+<p><strong>ReplacingMergeTree writes.</strong>
+- <em>Why:</em> retries and overlapping waves can land twice. RMT keeps the latest version per key, so writes are eventually consistent.
+- <em>How:</em> reads use <code>argMax</code> or <code>LIMIT 1 BY</code>, not <code>FINAL</code>, as a runtime rule. <code>FINAL</code> forces the merge at query time and is slow on big tables.</p>
+<pre><code class="language-sql">-- latest score per article-season without FINAL (illustrative names)
+SELECT article_id, season_code, argMax(s_final, version) AS s_final
+FROM keep_drop_scores
+WHERE season_code = 'S1'
+GROUP BY article_id, season_code;
+</code></pre>
+<p><strong>Fallback to baseline on timeout.</strong> The run always completes, and telemetry shows how much fell back. <em>Trade-off:</em> a run with many fallbacks is mostly rule-based. That is why the fallback count is in telemetry.</p>
+<p><strong>Checkpoints.</strong> A provider outage at item 70k does not redo the deterministic phase or finished articles. <em>Alternative:</em> restart from scratch. <em>Why not:</em> wasted cost and time on a big run.</p>
+<p><strong>App-native orchestration, not Airflow or Temporal.</strong>
+- <em>What:</em> the timeouts, breakers, checkpoints, config hashing, and telemetry live in a shared orchestration registry inside the application.
+- <em>Why:</em> it needed tight coupling to ClickHouse inserts, config hashing, and per-run cost telemetry. Extra infrastructure was not justified.
+- <em>Alternatives:</em> <strong>Airflow</strong> (a scheduler for data pipelines) and <strong>Temporal</strong> (a durable workflow engine).
+- <em>When I'd pick Temporal:</em> for cross-team, cross-service workflows with human steps.</p>
+<p><strong>Frozen weights.</strong> On gold-200 the blended LLM scored about 63%, below the 74% deterministic baseline. I refused to retune weights on a small proxy set, because that would overfit.</p>
+<p><strong>Model choice.</strong> The chosen model completed 200 out of 200 cases at 73% lower cost, with 100% lens coverage. A cheaper option left rows pending, so completion reliability won. Model names are not on the PDF.</p>
+<p><strong>Ask Iris safety.</strong>
+- The JWT is checked on the handshake, via <code>Authorization: Bearer</code> or <code>?token=</code>.
+- <code>plan_scope</code> is frozen once, and every tool inherits it. That prevents cross-tenant leaks.
+- The evaluator is capped at 3 attempts, with a recursion limit on the supervisor graph. It fails closed with a graceful response.
+- LangSmith traces every run.</p>
+<h4 id="the-numbers-explained_1">The numbers, explained</h4>
+<ul>
+<li><strong>348k article-seasons.</strong> How many product-season pairs the engine evaluates. Don't confuse it with the 1.6M article-season catalog (VERBAL, off the PDF), which is the whole catalog, not what was scored.</li>
+<li><strong>88k items per pass.</strong> The batch size of one run.</li>
+<li><strong>7 AI lenses.</strong> The number of structured LLM questions per article.</li>
+<li><strong>300 cases, 80% gate.</strong> The CI promotion gate (<code>gold_min_accuracy 0.8</code>). Say: "no model or prompt change ships unless it passes 80% on our 300-case harness". Don't say: "the system is 80% accurate in production".</li>
+<li><strong>74%, about 63%, 73%.</strong> All from the gold-200 benchmark. 74% is the deterministic baseline (production deterministic threshold 0.65 on that set). About 63% is the blended LLM. 73% is the live execution cost cut of the chosen model at 100% coverage. Say: "on our gold set, the rule scored 74% and the blend about 63%, so I froze the weights". Don't fuse these with the 80% gate.</li>
+<li><strong>3 attempts.</strong> The evaluator cap in Ask Iris.</li>
+<li><strong>Token spend</strong> of about $100 per pass is true but off the PDF (VERBAL). Only use it if asked about cost.</li>
+</ul>
+<h4 id="failure-modes-and-handling">Failure modes and handling</h4>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Provider 502/504 storm</td>
+<td>Breaker opens, deterministic fallback, run completes, fallback count in telemetry</td>
+</tr>
+<tr>
+<td>Process crash mid-run</td>
+<td><code>--resume</code> reloads <code>det.json</code> and progress, and skips finished items</td>
+</tr>
+<tr>
+<td>Duplicate writes on retry</td>
+<td>RMT versioning plus <code>argMax</code> reads</td>
+</tr>
+<tr>
+<td>Prompt or config drift</td>
+<td><code>config_hash</code> on every row, eval gate on change</td>
+</tr>
+<tr>
+<td>LLM loops in chat</td>
+<td>3-attempt evaluator cap plus recursion limit</td>
+</tr>
+<tr>
+<td>Cross-tenant question in chat</td>
+<td>Scope frozen at handshake, tools can't widen it</td>
+</tr>
+<tr>
+<td>Cost runaway</td>
+<td>Per-run USD telemetry, model chosen by cost at 100% coverage</td>
+</tr>
+</tbody>
+</table>
+<p>A 502 or 504 is an HTTP error meaning the provider's gateway failed or timed out.</p>
+<p><strong>OCI JD tie-ins:</strong> retries, circuit breakers, and timeouts. Recovery-oriented design (checkpoints). Telemetry (tokens, cost, fallbacks). Tests as deployment guardrails (the eval gate). Multi-tenant access control. Change management for models (a promotion gate plus the config hash).</p>
+<h4 id="likely-questions_1">Likely questions</h4>
+<ul>
+<li><strong>How do checkpoints work?</strong>
+  "The deterministic results land first, in <code>det.json</code>. As LLM chunks complete, per-article progress is appended to <code>agent_progress.json</code>. On restart with <code>--resume</code>, the deterministic results are reloaded, finished articles are skipped, and the LLM map continues from where it stopped."</li>
+<li><strong>How do you handle rate limits at 88k items?</strong>
+  "Bounded parallel batches, a hard timeout per batch, backoff, and the circuit breaker. A throttle from the provider slows us down, but it doesn't wipe the run."</li>
+<li><strong>Is 80% your production accuracy?</strong>
+  "No. It's the CI promotion gate on the 300-case file. The model comparison was on gold-200, where the rule baseline was 74%."</li>
+<li><strong>Why 3 attempts?</strong>
+  "It bounds cost and latency. Beyond three attempts, the quality gain wasn't worth a stuck chat, so it fails closed with a helpful message."</li>
+<li><strong>Why not let an LLM orchestrate the Keep/Drop steps?</strong>
+  "The order is the same every time: peer comparison, decider, lenses, blend, explain. A fixed order is cheaper, testable, and can't loop. I'd only add an orchestrator if the steps genuinely varied per item."</li>
+<li><strong>What would you add for OCI scale?</strong>
+  "A durable job store instead of local JSON checkpoints. Per-tenant quotas. SLO alarms on fallback rate and run duration. And canary rollout of prompt changes to one tenant before all."</li>
+</ul>
+<p><strong>Do not say:</strong> HITL review queue. LangSmith on the batch engine (LangSmith is Ask Iris only). Questions per week or tenant SLAs for Ask Iris. "All tenants live at 80%." Kafka, Flink, or CDC on AssortSmart. Cluster Recommendation Copilot and Hindsight are verbal-only topics, not resume bullets.</p>
 <hr>
 <h2 id="2-uber-via-epam-systems-frm-scoping-platform-sde-2-jul-2024-to-may-2026">2. Uber (via EPAM Systems): FRM Scoping Platform (SDE 2), Jul 2024 to May 2026</h2>
-<p><strong>30 second pitch</strong></p>
+<h3 id="the-business-in-plain-english_1">The business in plain English</h3>
+<p>Every quarter, Uber's Finance team has to decide which financial line items are large or risky enough to be in audit scope. The external auditor relies on that decision. Before this platform, it all lived in a Google Sheets workbook: people mapped parent and child line items by hand, there was no history, and nobody could prove who changed what. A quarterly reconciliation took 14 days. Uber paid for this because a slow, untraceable process is a SOX compliance risk and burns finance staff time every close.</p>
+<h3 id="words-you-need_2">Words you need</h3>
+<ul>
+<li><strong>FRM (Financial Risk Management) scoping.</strong> Deciding which financial line items go into audit scope each quarter.</li>
+<li><strong>GL (general ledger).</strong> The master record of every account balance.</li>
+<li><strong>FSLI (Financial Statement Line Item).</strong> A line on the financial statements, such as "Cash". Here they nest four levels (L1 to L4), like folders inside folders.</li>
+<li><strong>Materiality threshold.</strong> The size above which an error would matter to someone reading the statements. Here $340M.</li>
+<li><strong>Quarter annualization.</strong> Turning a quarter's figure into a yearly equivalent so it can be compared with annual thresholds.</li>
+<li><strong>HFM (Oracle Hyperion Financial Management).</strong> The finance system the GL balances come from. Reconciliation compares HFM with the filed 10-Q (the quarterly report to the US regulator).</li>
+<li><strong>SOX (Sarbanes-Oxley).</strong> A US law requiring controls and audit trails on financial reporting.</li>
+<li><strong>SOADB.</strong> Uber's standard service-owned MySQL setup.</li>
+<li><strong>ORM and SQLAlchemy 2.0.</strong> An ORM lets Python code use database rows as typed objects. SQLAlchemy 2.0 is the modern version, with typed <code>Mapped[]</code> columns.</li>
+<li><strong>Optimistic locking.</strong> Each row carries a version number, and an update only succeeds if the version is unchanged since you read it. Like a shared doc that warns "someone edited this since you opened it".</li>
+<li><strong>FSM (finite state machine).</strong> A fixed set of states and allowed moves, here Draft, Review, ReOpen, Closed.</li>
+<li><strong>Bazel and stacked PRs.</strong> Bazel is Uber's build system. Stacked PRs are a chain of small pull requests, each reviewable and revertible on its own.</li>
+</ul>
+<h3 id="the-one-minute-version-say-it-out-loud">The one-minute version (say it out loud)</h3>
 <blockquote>
-<p>At Uber Finance via EPAM, I owned the backend for Financial Risk Management scoping, the quarterly process that decides which financial line items are in audit scope. We moved it from a Google Sheets workbook to FastAPI and MySQL across 19M GL rows, with 36 endpoints and a nested L1 to L4 hierarchy. Reconciliation went from 14 days to 3 against a $340M materiality threshold. I also led 3 engineers on a SQLAlchemy 2.0 migration to 100% coverage with SOX gates.</p>
+<p>At Uber Finance, via EPAM, I owned the backend for Financial Risk Management scoping. That's the quarterly process that decides which financial line items are in audit scope. We moved it from a Google Sheets workbook to FastAPI and MySQL, with a nested four-level hierarchy of line items. Reconciliation went from 14 days to 3 days against a $340 million materiality threshold. I also led three engineers on a SQLAlchemy 2.0 migration that took the module to 100% coverage, with SOX gates.</p>
 </blockquote>
-<p><strong>Architecture</strong></p>
-<pre><code>Fusion.js UI → FastAPI scoping service (Uber langfx, Bazel monorepo)
-   router → service → repository / ORM classmethods (SQLAlchemy 2.0, typed Mapped[])
-   → MySQL on SOADB: 8-table normalized schema
-        level_mapping (L1–L4 FSLI spine) ← balance_sheet / income_statement / component_entity
-        scoping_questions + scoping_assessments (qualitative answers)
-        metrics (materiality, benchmarks), threshold setup, EMI data, recon tables
-ETL (pipeline team) loads HFM GL balances → MySQL
+<p>Details for follow-ups: 19M raw GL rows migrated off Sheets, and 36 FastAPI endpoints.</p>
+<h3 id="architecture_1">Architecture</h3>
+<div class="mermaid">flowchart LR
+    UI["Fusion.js UI"] --&gt; API["FastAPI scoping service, Uber langfx, Bazel monorepo"]
+    API --&gt; LAYERS["Router, service, repository and ORM classmethods"]
+    LAYERS --&gt; DB["MySQL on SOADB, 8-table normalized schema"]
+    ETL["HFM GL extract, owned by the pipeline team"] --&gt; DB
+    COLLAB["Collaboration service: comments, notifications, separate"] -.-&gt; UI
+</div>
+<p><em>What to notice:</em> the ETL feed and the collaboration service are not mine. I own the scoping service and its schema.</p>
+<p><strong>Box by box.</strong> The Fusion.js front end (Uber's web framework) calls the FastAPI scoping service, built in Uber's <code>langfx</code> Python setup inside the Bazel monorepo. Inside the service, routers handle HTTP, services hold business logic, and repositories plus ORM classmethods (SQLAlchemy 2.0 with typed <code>Mapped[]</code> columns) talk to the database. The MySQL schema on SOADB has 8 normalized tables:
+- <code>level_mapping</code> is the spine: the L1 to L4 FSLI hierarchy.
+- <code>balance_sheet</code>, <code>income_statement</code>, and <code>component_entity</code> hang off that spine.
+- <code>scoping_questions</code> and <code>scoping_assessments</code> hold qualitative answers.
+- Metrics (materiality, benchmarks), threshold setup, EMI data, and reconciliation tables complete it.</p>
+<p>The pipeline team's ETL loads HFM GL balances into MySQL. I consume that data. I don't operate the extract.</p>
+<p><strong>Verbal depth, if they want more:</strong> there are 11 ORM models in the service code, and 8 screens (Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary). On the Q4 2025 close, materiality was $340M and residual was $170M, with 5% significance thresholds.</p>
+<h3 id="key-decisions">Key decisions</h3>
+<p><strong>Normalized 8-table schema with <code>level_mapping</code> as the spine.</strong>
+- <em>Why:</em> every line item hangs off one hierarchy, so totals roll up correctly.
+- <em>How:</em> joins are always ANDed with the fiscal period and active flags, so a query never mixes quarters.
+- <em>Alternative:</em> one wide table per screen, the way the Sheets worked. <em>Why not:</em> duplication, and it is how the old mapping errors happened.</p>
+<p><strong>Polymorphic review status.</strong> One status model (Draft, Review, ReOpen, Closed) is reused across screens on the fact rows, and it drives the FSM transitions. <em>Why:</em> one set of rules and one audit trail instead of eight.</p>
+<p><strong>Optimistic row locking.</strong>
+- <em>What:</em> a version column on each row, so two reviewers editing the same line can't silently overwrite each other. One gets a conflict.
+- <em>Alternative:</em> pessimistic locking (<code>SELECT ... FOR UPDATE</code>). <em>Why not:</em> reviewers keep rows open for minutes, so locks would block everyone.</p>
+<pre><code class="language-sql">-- read: version = 7
+UPDATE scoping_assessments
+SET answer = 'In scope', status = 'Review', version = version + 1
+WHERE uuid = 'a3f9...' AND version = 7;
+-- 1 row affected: saved.  0 rows affected: someone else saved first, return 409 Conflict.
 </code></pre>
-<p><strong>Key decisions</strong>
-- <strong>Normalized 8-table schema</strong> with <code>level_mapping</code> as the spine. Joins are always ANDed with the fiscal period and active flags.
-- <strong>Polymorphic review status</strong> (Draft, Review, ReOpen, Closed) on the fact rows, driving FSM transitions.
-- <strong>Optimistic row locking:</strong> a version column, so two reviewers editing the same line can't silently overwrite. One gets a conflict.
-- <strong>Atomic cross-table syncs:</strong> updates to a line and its dependent rows happen in one transaction.
-- <strong>SHA-256 natural keys</strong> (e.g. hashing the question text + normalized page name). Reloading the same data produces the same keys, so reloads are idempotent and there are no duplicates across quarters.
-- <strong>SQLAlchemy 2.0 migration</strong> (I led 3 engineers):
-  - The motivating bug was raw SQL reading income-statement rows with balance-sheet column lists (column aliasing). Typed ORM models make that impossible.
-  - We shipped via <strong>stacked Bazel PRs</strong> (small, reviewable, reversible) with zero-downtime releases.
-- <strong>SOX controls:</strong>
-  - <strong>Reporting SQL allowlists.</strong>
-  - <strong>FSM gates with 50% delta-variance checks:</strong> a quarter-over-quarter swing above 50% blocks the state transition until it's reviewed.
-  - 100% statement coverage on the migrated module.</p>
-<p><strong>Stories here:</strong> the "pure refactor that wasn't" (my mistake, caught, and a process fix), "coverage that lied" (34.6% to 100%), and the rulebook disagreement (classmethods on models).</p>
+<p><strong>Atomic cross-table syncs.</strong> An update to a line and its dependent rows happens in one transaction. Either all of it lands, or none of it.</p>
+<p><strong>SHA-256 natural keys.</strong>
+- <em>What:</em> the id is a hash of meaningful fields, for example SHA-256 of the question text plus the normalized page name.
+- <em>Why:</em> reloading the same data produces the same keys, so reloads are idempotent and there are no duplicates across quarterly audit trails. A fingerprint, not a ticket number.
+- <em>Alternative:</em> auto-increment ids. <em>Why not:</em> a reload creates new ids for the same rows, and history across quarters stops lining up.</p>
+<pre><code class="language-python">import hashlib
+
+def question_uuid(question_text: str, page_name: str) -&gt; str:
+    normalized = page_name.strip().lower()
+    return hashlib.sha256(f&quot;{question_text}{normalized}&quot;.encode()).hexdigest()
+</code></pre>
+<p>(Illustrative. The real code may join the fields differently.)</p>
+<p><strong>SQLAlchemy 2.0 migration (I led 3 engineers).</strong>
+- <em>Why:</em> the motivating bug was raw SQL reading income-statement rows with balance-sheet column lists. Duplicate column names in joined raw SQL silently mapped rows to the wrong uuid. That is the <strong>column-aliasing bug</strong>. Typed ORM models with aliased selects and explicit labels make it impossible.
+- <em>How:</em> we shipped via <strong>stacked Bazel PRs</strong> (small, reviewable, reversible) with zero-downtime releases.
+- <em>Leadership:</em> I was the tech lead of an EPAM pod, not a people manager. They owned pieces. I owned the approach, the review bar, and the rollout. The team wrote 1,100+ tests (VERBAL).</p>
+<p><strong>SOX controls.</strong>
+- <strong>Reporting SQL allowlists:</strong> only approved reporting queries can run.
+- <strong>FSM gates with 50% delta-variance checks:</strong> a quarter-over-quarter swing above 50% blocks the state transition until it is reviewed.
+- 100% statement coverage on the migrated module.</p>
+<p><strong>Reconciliation v1 to v2 (VERBAL depth).</strong> Reconciliation v1 ran on Sheets. v2 runs on MySQL. They ran in parallel during cutover. The v2 change touched 18 files, about 1,268 lines added.</p>
+<h3 id="the-numbers-explained_2">The numbers, explained</h3>
+<ul>
+<li><strong>14 days to 3 days (70%).</strong> The time for a quarterly reconciliation, before and after. It mattered because the close has a hard deadline and the auditor waits on it. Say: "from 14 days to 3 days". If pressed on where it comes from: "the technical design doc framed that cut, and that's what the platform delivered for the close." Say this carefully: if someone does the arithmetic, 14 to 3 is closer to a 79% cut. The PDF states 70%, which is the smaller claim. Do not walk it back unprompted.</li>
+<li><strong>$340M materiality.</strong> The threshold the scoping is measured against. It shows the stakes, not a saving.</li>
+<li><strong>19M raw GL rows.</strong> The raw general ledger rows moved off Sheets into MySQL. If they ask about volume: individual quarterly GL extracts were about 38K to 95K rows, about 1.7K to 1.8K accounts, and about 400 entities. The value was correctness, hierarchy, and auditability, not big-data throughput. Don't invent where 19M comes from beyond "raw GL rows migrated off Sheets".</li>
+<li><strong>36 endpoints.</strong> If they ask for the breakdown: about 31 functional routes in the scoping service handler, plus the collaboration-service APIs (comments and notifications) from the design doc, make 36. I did not build the collaboration service itself.</li>
+<li><strong>3 engineers, 100% coverage.</strong> Led 3 on the ORM migration. 100% statement coverage on that module.</li>
+</ul>
+<p><strong>Stories here:</strong> the "pure refactor that wasn't" (my mistake, caught, and a process fix), "coverage that lied" (34.6% to 100%), and the rulebook disagreement (classmethods on models). Full STAR versions are in <a href="01_core_values_star.html">01</a>.</p>
 <p><strong>OCI JD tie-ins:</strong> compliance (SOX), change management (stacked PRs, gates), data integrity (optimistic locking, natural keys), code review for correctness, and leading a small team.</p>
-<p><strong>Likely questions</strong>
-- <strong>How does optimistic locking work here?</strong>
-  Read the row with its version. Then <code>UPDATE ... SET ..., version = version + 1 WHERE uuid = ? AND version = ?</code>. If 0 rows are affected, someone else changed it: return a conflict so the UI can refresh.
-  - Why not pessimistic: reviewers hold rows open for minutes, so locks would block everyone.
-- <strong>What does 14 to 3 days actually come from?</strong>
-  Removing manual Sheets mapping and reconciliation steps: automated HFM vs 10-Q recon, computed materiality and thresholds, and collaboration with status history in one tool. It's framed in the design doc, and I defend the PDF number.
-- <strong>Why SHA-256 natural keys instead of auto-increment?</strong>
-  Deterministic identity across reloads. The same source row always maps to the same key, so reloads are upserts, and audit history across quarters lines up.
-- <strong>Zero-downtime releases?</strong>
-  Stacked PRs where each step is backwards compatible. Schema changes are additive first, and v1 endpoints stayed live while the v2 MySQL-backed endpoints rolled out.</p>
-<p><strong>Honesty:</strong> via EPAM, and the ETL from HFM is owned by the data pipeline team.</p>
+<h3 id="likely-questions_2">Likely questions</h3>
+<ul>
+<li><strong>How does optimistic locking work here?</strong>
+  "I read the row with its version. Then the update says <code>SET ..., version = version + 1 WHERE uuid = ? AND version = ?</code>. If zero rows are affected, someone else changed it first, so I return a conflict and the UI refreshes. I didn't use pessimistic locks because reviewers hold rows open for minutes, and locks would block everyone."</li>
+<li><strong>What does 14 to 3 days actually come from?</strong>
+  "Removing the manual Sheets mapping and reconciliation steps. The HFM versus 10-Q reconciliation became automated, materiality and thresholds were computed, and collaboration with status history lived in one tool. The design doc framed the cut, and that's what the platform delivered for the close."</li>
+<li><strong>Why SHA-256 natural keys instead of auto-increment?</strong>
+  "Deterministic identity across reloads. The same source row always maps to the same key, so a reload is an upsert, and audit history across quarters lines up."</li>
+<li><strong>How did you do zero-downtime releases?</strong>
+  "Stacked PRs where each step is backwards compatible. Schema changes were additive first. The v1 endpoints stayed live while the v2 MySQL-backed endpoints rolled out."</li>
+<li><strong>What was the hardest bug?</strong>
+  "The column-aliasing bug. A joined raw SQL query returned two columns with the same name, and rows got attached to the wrong uuid with no error. I fixed it with aliased selects and explicit labels, and the ORM migration made that whole class of bug impossible."</li>
+</ul>
+<p><strong>Honesty:</strong> via EPAM. The ETL from HFM was a shared pipeline responsibility. The real-time collaboration and Slack notification service was separate. Do not claim building it.</p>
 <hr>
 <h2 id="3-uber-via-epam-menu-ingestion-automation-uber-eats">3. Uber (via EPAM): Menu Ingestion &amp; Automation (Uber Eats)</h2>
-<p><strong>30 second pitch</strong></p>
+<h3 id="the-business-in-plain-english_2">The business in plain English</h3>
+<p>When a restaurant joins Uber Eats, its menu has to be turned into Uber's catalog format: item names, prices, sizes, options. Menus arrive as PDFs, images, and partner websites, often in several languages. Doing that by hand or through a third party was slow (about a day per restaurant) and cost money per menu. Uber paid for automation because faster onboarding means restaurants start selling sooner, and every menu processed in-house saves the manual cost.</p>
+<h3 id="words-you-need_3">Words you need</h3>
+<ul>
+<li><strong>Selenium.</strong> A tool that drives a real web browser from code, used here to scrape partner sites.</li>
+<li><strong>Proxy pool.</strong> A set of different network exits, so requests look like they come from many places. <strong>Retry budget</strong> is a cap on how many retries one source may use.</li>
+<li><strong>Kafka.</strong> A durable log of messages that many consumers can read and replay. Like a conveyor belt that also records every package that passed.</li>
+<li><strong>Flink (Apache Flink).</strong> A stream-processing engine that keeps per-key state and checkpoints it. Like a sorting office that remembers which parcels it has already seen.</li>
+<li><strong>Event time and watermarks.</strong> Event time is when something happened, not when it arrived. A watermark is Flink's marker for "I've probably seen everything up to this time".</li>
+<li><strong>RAG (retrieval-augmented generation).</strong> Before asking the LLM, fetch similar examples and include them in the prompt. Like showing a new employee three filled-in forms before handing them a blank one.</li>
+<li><strong>Milvus.</strong> A vector database. It stores embeddings (lists of numbers that represent meaning) and finds the closest ones fast.</li>
+<li><strong>Gemini 2.5 Pro and LangChain.</strong> Gemini is Google's LLM. LangChain is a Python library for building LLM pipelines.</li>
+<li><strong>Field fidelity.</strong> The share of extracted fields that match the correct value.</li>
+</ul>
+<h3 id="the-one-minute-version-say-it-out-loud_1">The one-minute version (say it out loud)</h3>
 <blockquote>
-<p>I built an automated menu ingestion pipeline processing 30K+ menus a month. It cut restaurant onboarding from 24 hours to 2 and saved about $600K a year. Unstructured, multilingual PDFs are converted into a strict catalog schema at 98% field fidelity in offline eval, using Gemini 2.5 Pro with LangChain RAG over Milvus. Selenium scrapers were hardened to 95%+ success, and a Kafka + Flink pipeline does keyed dedup and schema normalization for exactly-once catalog upserts.</p>
+<p>I built an automated menu ingestion pipeline that processes over 30 thousand menus a month. It cut restaurant onboarding from 24 hours to 2 hours and saved about $600K a year. Unstructured, multilingual PDFs are turned into a strict catalog schema with Gemini 2.5 Pro and LangChain RAG over Milvus, at 98% field fidelity in offline evaluation. I also hardened the Selenium scrapers to over 95% success, and built a Kafka and Flink pipeline with keyed dedup and schema normalization for exactly-once catalog upserts.</p>
 </blockquote>
-<p><strong>Architecture</strong></p>
-<pre><code>partner sites / PDFs / images
-  → Selenium fleet (GCP) + dynamic proxy pools + adaptive retries (per-source budgets)
-  → Kafka (keyed by vendor_id: per-vendor ordering, replay, fan-out)
-  → Flink (event time, watermarks, keyed dedup state by content hash / menu version, schema normalize)
-       ├→ structured items → idempotent catalog upsert
-       └→ unstructured → RAG path: retrieve similar labeled menus (Milvus) → Gemini 2.5 Pro → schema validate
+<h3 id="architecture_2">Architecture</h3>
+<div class="mermaid">flowchart LR
+    SRC["Partner sites, PDFs, images"] --&gt; SEL["Selenium fleet on GCP, proxy pools, adaptive retries"]
+    SEL --&gt; KAFKA["Kafka, keyed by vendor_id"]
+    KAFKA --&gt; FLINK["Flink: event time, watermarks, keyed dedup, normalize"]
+    FLINK --&gt;|"structured items"| UPS["Idempotent catalog upsert"]
+    FLINK --&gt;|"unstructured"| RAG["Retrieve similar labeled menus from Milvus"]
+    RAG --&gt; GEM["Gemini 2.5 Pro"]
+    GEM --&gt; VAL["Schema validation"]
+    VAL --&gt; UPS
+</div>
+<p><em>What to notice:</em> structured items take the short path straight to the upsert. Only messy content goes through the LLM.</p>
+<p><strong>Box by box.</strong> The Selenium fleet runs on GCP with dynamic proxy pools and adaptive retries, with a budget per source. Scraped content goes onto Kafka, keyed by <code>vendor_id</code>, which gives per-vendor ordering, replay, and fan-out to several consumers. Flink reads it with event-time handling and watermarks, keeps dedup state keyed by vendor and menu with a content hash, and normalizes the schema. Structured items go straight to an idempotent catalog upsert. Unstructured menus go to the RAG path: retrieve similar labeled menus from Milvus as examples, call Gemini 2.5 Pro, validate the output against the schema, then upsert.</p>
+<p>A tiny example of keyed dedup:</p>
+<pre><code class="language-text">Event 1: vendor=V42, menu=lunch, content_hash=9ab1  -&gt; new, process
+Event 2: vendor=V42, menu=lunch, content_hash=9ab1  -&gt; same hash in state, drop
+Event 3: vendor=V42, menu=lunch, content_hash=c7d0  -&gt; menu changed, process
 </code></pre>
-<p><strong>Decisions</strong>
-- <strong>Kafka</strong> decouples the bursty scrapers from slow catalog writes, gives replay after a bad parser deploy, and supports multiple consumers.
-- <strong>Flink</strong> gives keyed state for per-vendor dedup, event-time handling for late pages, and checkpoints.
-- <strong>"Exactly-once" honestly:</strong> end to end, it's at-least-once + idempotent upserts. Flink checkpoints + an idempotent sink make the effect exactly once. I never claim 2PC across third-party sites or the LLM.
-- <strong>RAG:</strong> retrieving similar labeled menus as few-shot context + strict schema validation. 98% is field fidelity on offline eval.
-- <strong>Anti-bot:</strong>
-  - Per-source block signatures, then IP rotation, fingerprints, proxy pools, and retry budgets.
-  - Block rate goes on the same dashboard as parse failures.
-  - Success went from ~60% to 95%+.</p>
+<h3 id="decisions">Decisions</h3>
+<p><strong>Kafka between scrapers and the catalog.</strong> <em>Why:</em> it decouples bursty scrapers from slow catalog writes, gives replay after a bad parser deploy, and supports multiple consumers. <em>Alternative:</em> scrapers writing directly to the catalog. <em>Why not:</em> one slow catalog write would stall scraping, and there is no replay.</p>
+<p><strong>Flink for processing.</strong> <em>Why:</em> keyed state for per-vendor dedup, event-time handling for late pages, and checkpoints. <em>Alternative:</em> plain consumer services. <em>Why not:</em> we would have rebuilt state and checkpointing by hand. Spark is not on the PDF. It is only a verbal option for backfills.</p>
+<p><strong>"Exactly-once", said honestly.</strong> End to end it is at-least-once delivery plus idempotent upserts. Flink checkpoints plus an idempotent sink make the <em>effect</em> exactly once. I never claim 2PC (two-phase commit, a protocol where every party agrees before anything commits) across third-party sites or the LLM. I don't claim zero message loss.</p>
+<p><strong>RAG for extraction.</strong> Retrieving similar labeled menus as few-shot examples, plus strict schema validation. 98% is field fidelity in offline evaluation. <em>Alternative:</em> a plain prompt with no examples. <em>Why not:</em> lower fidelity on unusual layouts and languages.</p>
+<p><strong>Anti-bot hardening.</strong>
+- Per-source block signatures, then IP rotation, browser fingerprints, proxy pools, and retry budgets.
+- Block rate goes on the same dashboard as parse failures.
+- Success went from roughly 60% (ESTIMATED, about 60 to 65%) to over 95%.</p>
+<h3 id="the-numbers-explained_3">The numbers, explained</h3>
+<ul>
+<li><strong>24 hours to 2 hours.</strong> Time to onboard one restaurant's menu. Say: "from 24 hours to 2 hours".</li>
+<li><strong>$600K a year.</strong> Derived: about $2 per menu in third-party or manual cost, times 30K menus, times 12 months, is $720K. I floor it to $600K to stay conservative. ESTIMATED.</li>
+<li><strong>30K+ menus a month.</strong> Volume through the pipeline.</li>
+<li><strong>98% field fidelity.</strong> Offline evaluation only. Say "in offline evaluation" every time.</li>
+<li><strong>95%+ extraction success.</strong> From an estimated 60 to 65%.</li>
+<li><strong>Peak load (prep-only ESTIMATE):</strong> about 200 to 500 events per second. Only use it if they ask you to size the system, and say it's an estimate.</li>
+</ul>
 <p><strong>OCI JD tie-ins:</strong> retries and backoff, streaming data processing, dedup and synchronization, and metrics dashboards.</p>
-<p><strong>Likely questions</strong>
-- <strong>What's your SLO?</strong>
-  Consumer lag and freshness (menu available within minutes of a scrape), plus parse success rate.
-- <strong>Bad parser deploy?</strong>
-  Roll back the parser, rewind Kafka offsets to before the bad window, and reprocess. Idempotent upserts make the replay safe.
-- <strong>Backpressure?</strong>
-  A slow catalog backs up Flink's network buffers, and Kafka consumer lag rises. That's the alert.</p>
-<p><strong>Honesty:</strong> Spark isn't on the PDF. ClickHouse is not in this pipeline.</p>
+<h3 id="likely-questions_3">Likely questions</h3>
+<ul>
+<li><strong>What's your SLO?</strong>
+  "Consumer lag and freshness, meaning a menu is available within minutes of a scrape, plus parse success rate." (An <strong>SLO</strong>, service level objective, is the internal reliability target.)</li>
+<li><strong>What happens after a bad parser deploy?</strong>
+  "I roll back the parser, rewind the Kafka offsets to before the bad window, and reprocess. The idempotent upserts make the replay safe."</li>
+<li><strong>How does backpressure show up?</strong>
+  "A slow catalog backs up Flink's network buffers, and Kafka consumer lag rises. That lag is the alert." (<strong>Backpressure</strong> is a slow downstream step pushing the slowdown back upstream, like a traffic jam backing up onto the on-ramp.)</li>
+<li><strong>Is it really exactly-once?</strong>
+  "The effect is exactly once. Delivery is at-least-once, and the catalog upsert is idempotent, so a duplicate does no harm."</li>
+</ul>
+<p><strong>Honesty:</strong> Spark isn't on the PDF. ClickHouse is not in this pipeline. Milvus belongs to this project only.</p>
 <hr>
 <h2 id="4-uber-via-epam-document-compliance-uber-mobility-anz">4. Uber (via EPAM): Document Compliance (Uber Mobility ANZ)</h2>
-<p><strong>Pitch:</strong> automated driver and vehicle document verification for Uber Mobility in Australia/New Zealand against local authority requirements. 99.9% regulatory compliance, and it removed about 20 hours a week of manual review by replacing manual queues with a deterministic validation backend.</p>
-<p><strong>Talking points:</strong> deterministic rules (document type, expiry, jurisdiction-specific requirements), audit trails, and exception routing for what rules can't decide. The numbers are historical. Don't add Selenium or RAG here.</p>
+<p><strong>In plain English.</strong> Drivers and vehicles in Australia and New Zealand must carry valid documents (licences, registrations, inspections) that meet local authority rules. Reviewing them by hand is slow and error-prone. This is Uber Mobility (rides), not Uber Eats.</p>
+<p><strong>The one-minute version.</strong> "I automated driver and vehicle document verification for Uber Mobility in Australia and New Zealand against local authority requirements. It reached 99.9% regulatory compliance and removed about 20 hours a week of manual review, by replacing manual queues with a deterministic validation backend."</p>
+<p><strong>Talking points:</strong> deterministic rules (document type, expiry, jurisdiction-specific requirements), audit trails, and exception routing for what rules can't decide. <strong>Deterministic</strong> means the same document always gets the same verdict, with no model guessing.</p>
+<p><strong>Numbers:</strong> 99.9% and 20 hours a week are HISTORICAL. Don't add Selenium or RAG here.</p>
 <p><strong>OCI tie-in:</strong> compliance, automation replacing manual toil, and deterministic guardrails.</p>
 <hr>
 <h2 id="5-masters-india-gst-compliance-e-invoicing-platform-sde-2-dec-2022-to-jun-2024">5. Masters India: GST Compliance &amp; E-Invoicing Platform (SDE 2), Dec 2022 to Jun 2024</h2>
-<p><strong>30 second pitch</strong></p>
+<h3 id="the-business-in-plain-english_3">The business in plain English</h3>
+<p>In India, larger businesses must register every invoice with the government's <strong>IRP (Invoice Registration Portal)</strong> under GST (Goods and Services Tax). The IRP returns an <strong>IRN</strong> (Invoice Reference Number) and a signed QR code, and only then is the invoice valid. Masters India sells software that does this for enterprises: clients send invoices, we validate them and register them with the IRP, and we return the signed e-invoice. The pain was a slow PHP monolith and a flaky government portal, especially around filing deadlines when everyone submits at once.</p>
+<h3 id="words-you-need_4">Words you need</h3>
+<ul>
+<li><strong>Strangler pattern.</strong> Replacing an old system one endpoint at a time while it keeps running, like a vine growing around a tree.</li>
+<li><strong>Canary per route.</strong> Sending a small percentage of one endpoint's traffic to the new service first.</li>
+<li><strong>GSTIN.</strong> A taxpayer's GST identification number.</li>
+<li><strong>Cache-aside.</strong> The app checks Redis first. On a miss it reads the database and stores the result in Redis for next time. Like checking your desk drawer before walking to the storeroom.</li>
+<li><strong>TTL jitter and SETNX.</strong> TTL is how long a cache entry lives. Jitter adds a small random amount so entries don't all expire at once. <code>SETNX</code> (set if not exists) lets one worker take a lock to recompute, so others don't stampede the database.</li>
+<li><strong>Sharding by tax quarter.</strong> Splitting data across databases by quarter, so each holds a smaller, mostly-current slice.</li>
+<li><strong>DLQ (dead-letter queue).</strong> A parking area for messages that keep failing, for an operator to replay.</li>
+<li><strong>Exponential backoff with jitter.</strong> Waiting longer after each failure (1 s, 2 s, 4 s...) plus a bit of randomness, so retries don't all hit at once.</li>
+<li><strong>Celery.</strong> A Python task queue that runs background jobs on worker processes.</li>
+<li><strong>ELK and New Relic.</strong> ELK centralizes and searches logs. New Relic traces requests (APM).</li>
+</ul>
+<h3 id="the-one-minute-version-say-it-out-loud_2">The one-minute version (say it out loud)</h3>
 <blockquote>
-<p>Masters India is GST compliance and e-invoicing SaaS. Clients push invoices, we validate and register them with the government Invoice Registration Portal, and return signed e-invoices. I led the migration from a PHP monolith to FastAPI microservices, taking p95 from 1.2s to 300ms for 1,500+ clients and throughput from 700 to 4,000 requests per minute. I also built the bulk pipeline on Kafka and Postgres sharded by tax quarter: 1M+ submissions a day, idempotent 100K+ imports, dead-letter queues, and bounded retries against the flaky government portal. And I rolled out ELK + New Relic, which made triage 70% faster.</p>
+<p>Masters India is GST compliance and e-invoicing software. Clients push invoices, we validate and register them with the government portal, and we return signed e-invoices. I led the migration from a PHP monolith to FastAPI microservices, which took p95 latency from 1.2 seconds to 300 milliseconds for over 1,500 clients. I also built the bulk pipeline on Kafka and Postgres, handling over a million government submissions a day with idempotent imports, dead-letter queues, and bounded retries. And I rolled out ELK and New Relic, which made incident triage about 70% faster.</p>
 </blockquote>
-<p><strong>Architecture</strong></p>
-<pre><code>clients → gateway (Nginx: per-endpoint canary routing, config rollback)
-   ├→ legacy PHP (shrinking)
-   └→ FastAPI services (auth, e-invoice submit, bulk import, reconciliation)
-        → Redis cache-aside (client config, tax masters, auth context; TTL jitter; SETNX singleflight)
-        → Postgres sharded by tax quarter
-        → Kafka (partition key = client GSTIN: per-taxpayer ordering, replay)
-             → Celery / consumer workers (bounded concurrency to IRP, exp backoff + jitter)
-                  → IRP (government portal)
-                  → DLQ for poison batches → operator replay
-   observability: JSON logs + request_id → ELK; New Relic APM; alert rules on error rate / latency
-</code></pre>
-<p><strong>Walkthrough</strong>
-1. <strong>Strangler, not big bang.</strong> One domain at a time behind the gateway.
-   - A canary percentage per endpoint, watching dashboards, with rollback as a config change.
-   - A shared DB during cutover (no dual writes), and service-owned tables split out after traffic moved.
-   - Contract tests pinned the PHP responses field by field.
-   - Cutovers were frozen during GST deadline weeks.
-2. <strong>Latency win.</strong> Async IO for IRP calls (no worker held hostage), connection pooling, composite index <code>(client_id, invoice_date)</code>, N+1 removal, pagination, and Redis for hot reads (−30% DB reads). Caching moved the median; async + query fixes moved the tail.
-3. <strong>Bulk pipeline.</strong>
-   - A file lands, validation runs in chunks (schema, GSTIN, duplicates).
-   - Batches register with the IRP under bounded concurrency with backoff and jitter.
-   - Progress streams to the client dashboard.
-   - Idempotency key = <code>client + fileHash + batchIndex</code> + client invoice refs.
-   - Poison batches go to a DLQ for replay.
-   - Sharding by tax quarter matches the access pattern (filings are per quarter) and keeps hot data small.
-4. <strong>Observability and quality.</strong>
-   - Request IDs across services and workers.
-   - ELK + New Relic APM with alerts on error rate and latency SLOs. Triage went from ~30 min to under 10 (the 70% is historical).
-   - Coverage 35% → 82% as a CI gate, money paths first. 98% deploy success.
-5. <strong>Mentored 2 engineers</strong> who each owned a service extraction.</p>
-<p><strong>Stories:</strong> the timeout canary (10s vs 60s, rolled back by config, moved to async 202), the double-filing near-miss (idempotency everywhere + DLQ + an incident template), and the migration under deadlines.</p>
+<p>Details for follow-ups: throughput from 700 to 4,000 requests per minute, Postgres sharded by tax quarter, 100K+ concurrent imports, mentored 2 engineers.</p>
+<h3 id="architecture_3">Architecture</h3>
+<div class="mermaid">flowchart LR
+    C["Clients"] --&gt; GW["Nginx gateway: per-endpoint canary, config rollback"]
+    GW --&gt; PHP["Legacy PHP, shrinking"]
+    GW --&gt; FA["FastAPI services: auth, submit, bulk import, reconciliation"]
+    FA --&gt; RED["Redis cache-aside: client config, tax masters, auth context"]
+    FA --&gt; PGS["Postgres sharded by tax quarter"]
+    FA --&gt; KF["Kafka, partition key = client GSTIN"]
+    KF --&gt; WK["Celery and consumer workers, bounded concurrency"]
+    WK --&gt;|"backoff and jitter"| IRP["Government IRP"]
+    WK --&gt; DLQ["DLQ for poison batches, operator replay"]
+</div>
+<p><em>What to notice:</em> the gateway lets old and new code serve side by side. The government portal sits behind a queue and bounded workers, so its slowness never holds an API request hostage.</p>
+<p><strong>Observability across all boxes:</strong> JSON logs with a <code>request_id</code> go to ELK. New Relic APM traces requests. Alert rules fire on error rate and latency.</p>
+<h3 id="walkthrough">Walkthrough</h3>
+<p><strong>1. Strangler, not big bang.</strong>
+- <em>What:</em> one domain at a time behind the gateway.
+- <em>How:</em> a canary percentage per endpoint, watching dashboards, with rollback as a config change. A shared database during cutover (no dual writes). Service-owned tables were split out after traffic moved. Contract tests pinned the PHP responses field by field. Cutovers were frozen during GST deadline weeks.
+- <em>Alternative:</em> a full rewrite and one big switch. <em>Why not:</em> one bad day near a filing deadline would hit every client at once.
+- <em>Trade-off:</em> for months we ran two stacks.</p>
+<p><strong>2. The latency win.</strong> Async IO for IRP calls (no worker held hostage), connection pooling, the composite index <code>(client_id, invoice_date)</code>, removing N+1 queries, pagination, and Redis for hot reads (30% fewer DB reads). Caching moved the median. Async plus query fixes moved the tail.</p>
+<p><strong>3. Bulk pipeline.</strong> One bulk file, step by step:</p>
+<div class="mermaid">sequenceDiagram
+    participant CL as Client
+    participant API as FastAPI bulk import
+    participant K as Kafka
+    participant W as Worker
+    participant IRP as Government IRP
+    participant D as DLQ
+    CL-&gt;&gt;API: Upload file with 5,000 invoices
+    API-&gt;&gt;API: Validate in chunks, schema, GSTIN, duplicates
+    API-&gt;&gt;K: Publish batches, key = client GSTIN
+    API--&gt;&gt;CL: 202 Accepted with status URL
+    K-&gt;&gt;W: Batch 3
+    W-&gt;&gt;W: Check idempotency key client + fileHash + batchIndex
+    W-&gt;&gt;IRP: Register batch 3 with bounded concurrency
+    IRP--&gt;&gt;W: IRN and signed QR
+    W-&gt;&gt;D: Batch 7 failed after bounded retries, park it
+    W--&gt;&gt;CL: Progress on dashboard
+</div>
+<p>(The 5,000-invoice file and batch numbers are sample values.)</p>
+<ul>
+<li>The idempotency key is <code>client + fileHash + batchIndex</code>, plus client invoice references.</li>
+<li>Poison batches (ones that fail every time) go to the DLQ for replay.</li>
+<li>Sharding by tax quarter matches the access pattern, since filings are per quarter, and keeps hot data small.</li>
+</ul>
+<p><strong>4. Observability and quality.</strong>
+- Request IDs across services and workers.
+- ELK plus New Relic APM, with alerts on error rate and latency SLOs. Triage went from roughly 30 minutes to under 10 (ESTIMATED, which is the 70%).
+- Coverage from 35% to 82% as a CI gate, money paths first. 98% deploy success.</p>
+<p><strong>5. Mentored 2 engineers,</strong> who each owned a service extraction.</p>
+<p><strong>Stories:</strong> the timeout canary (10 s versus 60 s, rolled back by config, moved to async 202), the double-filing near-miss (idempotency everywhere, a DLQ, and an incident template), and the migration under deadlines. Full STAR versions are in <a href="01_core_values_star.html">01</a>.</p>
+<h3 id="the-numbers-explained_4">The numbers, explained</h3>
+<ul>
+<li><strong>p95 from 1.2 s to 300 ms (75% lower).</strong> The API response time that 95% of requests beat. 1.2 s to 0.3 s is exactly a 75% cut. Say: "from 1.2 seconds to 300 milliseconds".</li>
+<li><strong>700 to 4,000 requests per minute.</strong> Divide by 60: about 12 to about 67 requests per second at the API.</li>
+<li><strong>1M+ daily submissions.</strong> 1,000,000 divided by 86,400 seconds is about 12 per second on average. Peaks around filing deadlines are ESTIMATED at 8 to 10 times that, so roughly 100 per second.</li>
+<li><strong>100K+ concurrent imports.</strong> Handled idempotently.</li>
+<li><strong>1,500+ enterprise clients.</strong></li>
+<li><strong>Triage 70% faster (ESTIMATED), DB reads 30% lower, coverage 35% to 82%, 98% deploy success.</strong></li>
+</ul>
 <p><strong>OCI JD tie-ins:</strong> almost every line.
 - Zero-downtime migration (no maintenance windows).
 - Retries, backoff, and a breaker against a flaky dependency.
 - Idempotency and a DLQ (recovery).
 - Alarms and dashboards.
 - Incident reviews.
-- Change management (canary + rollback + freezes).
+- Change management (canary, rollback, freezes).
 - Scaling (sharding, queue-based load leveling, autoscaling workers on queue depth).
 - Compliance (GST).</p>
-<p><strong>Likely questions</strong>
-- <strong>Derive TPS from your numbers.</strong>
-  1M/day ≈ 12 TPS average; peaks around 8 to 10x on filing deadlines, so ~100+ TPS (estimated). 700 → 4,000 rpm is ≈ 12 → 67 RPS at the API.
-- <strong>Why Kafka over SQS/RabbitMQ?</strong>
-  Per-client ordering (partition by GSTIN), replay for compliance disputes, and multiple consumer groups. The ops cost was the trade-off. RabbitMQ would have worked for task dispatch at our scale.
-- <strong>How do you protect against a cache stampede?</strong>
-  TTL jitter + a SETNX lock so one worker recomputes while the others wait or serve stale.
-- <strong>Circuit breaker on the IRP?</strong>
-  Open when the IRP error rate spikes. Clients see a degraded "queued" status instead of errors, and work resumes when it closes.</p>
-<p><strong>Honesty:</strong> say "on-call alerting and faster triage." Don't invent a formal pager rotation title.</p>
+<h3 id="likely-questions_4">Likely questions</h3>
+<ul>
+<li><strong>Derive TPS from your numbers.</strong>
+  "A million a day is about 12 per second on average. Peaks around filing deadlines were roughly 8 to 10 times that, so around 100 per second, and I'd call that an estimate. At the API, 700 to 4,000 requests per minute is about 12 to 67 requests per second."</li>
+<li><strong>Why Kafka over SQS or RabbitMQ?</strong>
+  "Per-client ordering by partitioning on GSTIN, replay for compliance disputes, and multiple consumer groups. The ops cost was the trade-off. Honestly, RabbitMQ would have worked for plain task dispatch at our scale."</li>
+<li><strong>How do you protect against a cache stampede?</strong>
+  "TTL jitter, so keys don't all expire together, plus a SETNX lock so one worker recomputes while the others wait or serve the stale value."</li>
+<li><strong>Circuit breaker on the IRP?</strong>
+  "It opens when the IRP error rate spikes. Clients see a degraded 'queued' status instead of errors, and work resumes when it closes."</li>
+<li><strong>Why shard by tax quarter?</strong>
+  "Filings are per quarter, so almost every query hits one quarter. That matches the access pattern and keeps the hot data small."</li>
+</ul>
+<p><strong>Honesty:</strong> say "on-call alerting and faster triage". Don't invent a formal pager rotation title. Kafka here is a different product from the Uber Menu Kafka. There was no Flink at Masters.</p>
 <hr>
 <h2 id="6-geeksforgeeks-courses-platform-and-influencer-dashboard-sde-aug-2021-to-nov-2022">6. GeeksforGeeks: Courses Platform and Influencer Dashboard (SDE), Aug 2021 to Nov 2022</h2>
-<p><strong>Pitch:</strong> migrated the doubt-support platform from PHP to Django. It handles 10K+ daily queries and 10x spikes during live coding contests. I built REST APIs for voting, pinning, and locking threads on MySQL, MongoDB, Redis, and Elasticsearch, and the business attributes a 20% lift in premium subscriptions to it. I also built an influencer analytics and earnings dashboard (30% course-sales lift, by the business team's attribution), plus async scheduled workflows for video processing, reminders, and cleanup (70% ops efficiency).</p>
+<p><strong>In plain English.</strong> GeeksforGeeks is a large programming education site. Students ask doubts (questions) on course material, and traffic spikes about 10 times during live coding contests. Influencers sell courses with affiliate coupons and need to see their earnings.</p>
+<p><strong>Words you need:</strong> <strong>Django</strong> is a Python web framework with a built-in ORM and admin. <strong>Elasticsearch</strong> is a search engine for full-text search. <strong>MongoDB</strong> is a document database. <strong>Hot-row contention</strong> is many writers fighting over the same database row, like everyone queueing at one cashier.</p>
+<p><strong>The one-minute version.</strong> "I migrated the doubt-support platform from PHP to Django. It handles over 10 thousand daily queries and 10x spikes during live coding contests. I built REST APIs for voting, pinning, and locking threads on MySQL, MongoDB, Redis, and Elasticsearch, and the growth team attributes a 20% lift in premium subscriptions to it. I also built an influencer analytics and earnings dashboard, which the business credits with a 30% lift in course sales, plus async scheduled workflows for video processing, reminders, and cleanup, which improved engineering ops efficiency by 70%."</p>
 <p><strong>Talking points:</strong>
 - <strong>Votes:</strong> a unique <code>(user, content)</code> constraint for correctness, Redis counters for display, and async reconciliation to MySQL to avoid hot-row contention on popular posts.
-- <strong>Contest spikes:</strong> caching, read/write separation, and pagination.
-- <strong>SMTP connection reuse:</strong> it cut send time roughly in half, because TLS handshakes aren't repeated.
-- <strong>What I'd change today:</strong> vote events on a queue and idempotent crons.</p>
+- <strong>Contest spikes:</strong> caching, read and write separation, and pagination.
+- <strong>SMTP connection reuse:</strong> it cut email send time roughly in half, because TLS handshakes aren't repeated for every message.
+- <strong>What I'd change today:</strong> vote events on a queue, and idempotent cron jobs.</p>
+<p><strong>Numbers:</strong> the 20% and 30% are relative lifts attributed by the business. Say: "I owned the engineering. The business team attributed the lift."</p>
 <p><strong>OCI tie-in:</strong> handling spikes, hot-row contention (distributed state), and automating toil.</p>
 <hr>
 <h2 id="7-cross-project-answers-oci-asks">7. Cross-project answers OCI asks</h2>
+<p><strong>In plain words.</strong> Some questions ask for "a time when..." without naming a project. This table gives you the best project and a one-line hook for each. Expand the hook using the sections above.</p>
 <table>
 <thead>
 <tr>
@@ -366,66 +799,84 @@ ETL (pipeline team) loads HFM GL balances → MySQL
 <tbody>
 <tr>
 <td>Most complex system you built</td>
-<td>AssortSmart core + agentic</td>
-<td>Go edge + ClickHouse rollups + batch AI with recovery built in</td>
+<td>AssortSmart core plus agentic</td>
+<td>Go edge, ClickHouse rollups, and batch AI with recovery built in</td>
 </tr>
 <tr>
 <td>Hardest bug</td>
 <td>64.1M ghost rows or 170 GB OOM</td>
-<td>The success signal came from the wrong place; shrink the unit of work</td>
+<td>The success signal came from the wrong place. Shrink the unit of work.</td>
 </tr>
 <tr>
 <td>Scaling story</td>
-<td>ClickHouse 15.5x / Masters 700 → 4,000 rpm</td>
+<td>ClickHouse 15.5x, or Masters 700 to 4,000 requests per minute</td>
 <td>Measure, find the bottleneck, change the access pattern</td>
 </tr>
 <tr>
 <td>Reliability story</td>
-<td>Registry (timeouts, breakers, checkpoints)</td>
+<td>Orchestration registry (timeouts, breakers, checkpoints)</td>
 <td>Provider failures degrade, runs finish</td>
 </tr>
 <tr>
 <td>Data integrity</td>
-<td>FRM optimistic locking + SHA-256 keys; RMT</td>
-<td>Concurrent reviewers and retries can't corrupt</td>
+<td>FRM optimistic locking and SHA-256 keys, RMT</td>
+<td>Concurrent reviewers and retries can't corrupt data</td>
 </tr>
 <tr>
 <td>Security</td>
-<td>Ask Iris frozen scope; auth waterfall; KPI compiler allowlist</td>
+<td>Ask Iris frozen scope, auth waterfall, KPI compiler allowlist</td>
 <td>Structure beats instructions</td>
 </tr>
 <tr>
 <td>Zero-downtime change</td>
-<td>Masters strangler; FRM stacked PRs</td>
-<td>Canary, config rollback, backwards compatible steps</td>
+<td>Masters strangler, FRM stacked PRs</td>
+<td>Canary, config rollback, backwards-compatible steps</td>
 </tr>
 <tr>
-<td>Incident / RCA</td>
-<td>Double-filing near-miss; ghost rows</td>
+<td>Incident or RCA</td>
+<td>Double-filing near-miss, ghost rows</td>
 <td>Blameless review, systemic fix, template</td>
 </tr>
 <tr>
 <td>Observability</td>
-<td>Masters ELK + New Relic; IA Datadog + run telemetry</td>
-<td>Request IDs; alert on symptoms</td>
+<td>Masters ELK and New Relic, IA Datadog and run telemetry</td>
+<td>Request IDs, alert on symptoms</td>
 </tr>
 <tr>
 <td>Leading people</td>
-<td>FRM (3 engineers), Masters (mentored 2)</td>
-<td>Conventions, ownership, reviews</td>
+<td>FRM (led 3 engineers), Masters (mentored 2)</td>
+<td>Conventions, ownership, reviews. Never merge the two numbers.</td>
 </tr>
 <tr>
-<td>Automation / tooling</td>
-<td>Go pump + ledger; generated rollup settings</td>
+<td>Automation or tooling</td>
+<td>Go pump and ledger, generated rollup settings</td>
 <td>Idempotent, restartable, safe by default</td>
 </tr>
 <tr>
 <td>Compliance</td>
-<td>FRM SOX gates; GST</td>
+<td>FRM SOX gates, GST</td>
 <td>Allowlists, FSM gates, audit trails</td>
 </tr>
 </tbody>
-</table></main>
+</table>
+<p><strong>RCA</strong> means root cause analysis.</p>
+<hr>
+<h2 id="say-this-dont-say-this">Say this, don't say this</h2>
+<div class="callout warn">
+<p><b>Say this carefully</b></p>
+<ul>
+<li>"80% is our CI promotion gate on 300 cases." Not "the model is 80% accurate in production."</li>
+<li>"On the gold-200 set the rule scored 74% and the blend about 63%, and the chosen model cut live cost 73% at full coverage."</li>
+<li>"189 seconds to 12 seconds on the same 250 million rows." Not "the OOM fix made queries faster."</li>
+<li>"About 344 thousand rows per second, measured on a 4-billion-row table while it was copying." Not "we migrated 4 billion rows" and not "344k TPS".</li>
+<li>"Rollback is drop the partition and recopy it." Not "atomic swap". The REPLACE PARTITION design was written, not executed.</li>
+<li>"Uber, via EPAM." ANZ numbers are historical. Menu 98% is offline evaluation.</li>
+<li>"From 14 days to 3 days." Defend the PDF's 70%. Don't walk it back unprompted.</li>
+<li>Don't claim the HFM ETL or the collaboration and Slack notification service at Uber FRM.</li>
+<li>Don't put Kafka, Flink, CDC, Kubernetes operations, Milvus, or a human review queue on AssortSmart. LangSmith is Ask Iris only.</li>
+<li>Don't quote an SLA for the Go platform or usage numbers for Ask Iris.</li>
+</ul>
+</div></main>
 </div>
 
 <script type="module">

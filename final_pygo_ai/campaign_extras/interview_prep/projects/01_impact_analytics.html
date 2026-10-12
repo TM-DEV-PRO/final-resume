@@ -40,109 +40,358 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/projects/01_impact_analytics.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-interview-pack">Impact Analytics — Interview Pack</a>
-<a class="lvl2" href="#1-30s-2min-project-explain">1. 30s / 2min project explain</a>
-<a class="lvl2" href="#2-design-decisions-pdf-first">2. Design decisions (PDF-first)</a>
-<a class="lvl2" href="#3-bullet-by-bullet-defense">3. Bullet-by-bullet defense</a>
-<a class="lvl2" href="#4-mock-notes">4. Mock notes</a>
-<a class="lvl2" href="#5-do-not-say">5. Do NOT say</a></nav>
-<main><blockquote>
-<p><strong>PDF sync (Sep 2026):</strong> AssortSmart has TWO PDF subsections — Core Infrastructure &amp; Pipeline, and Agentic Flows &amp; Orchestration. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>. <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight · 8.5%/14 tools/3 gates · 63/8 DDL · line-plan 12B. Hindsight defense: <code>01b_hindsight_defense.md</code>.</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#impact-analytics-interview-pack-assortsmart-platform-and-ai">Impact Analytics: Interview Pack (AssortSmart, Platform and AI)</a>
+<a class="lvl2" href="#1-the-business-in-plain-english">1. The business in plain English</a>
+<a class="lvl2" href="#2-say-it-out-loud">2. Say it out loud</a>
+<a class="lvl2" href="#3-the-architecture-in-one-picture">3. The architecture in one picture</a>
+<a class="lvl2" href="#4-each-resume-bullet-decoded">4. Each resume bullet decoded</a>
+<a class="lvl2" href="#5-all-the-numbers-in-one-table">5. All the numbers in one table</a>
+<a class="lvl2" href="#6-design-decisions-short-form">6. Design decisions, short form</a>
+<a class="lvl2" href="#7-mock-interview-notes">7. Mock-interview notes</a>
+<a class="lvl2" href="#8-practice-drill">8. Practice drill</a>
+<a class="lvl2" href="#9-do-not-say">9. Do not say</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="impact-analytics-interview-pack-assortsmart-platform-and-ai">Impact Analytics: Interview Pack (AssortSmart, Platform and AI)</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> my current role, explained so you can talk about it for 30 seconds, 2 minutes or 45 minutes. It decodes all ten resume bullets, the design decisions, and the questions interviewers ask.</li>
+<li><b>When to read it:</b> before every interview. This is the project most interviewers will spend the most time on.</li>
+<li><b>What to memorise:</b> the 30-second pitch, the numbers table in section 5, and the "do not say" list at the end.</li>
+</ul>
+</div>
+<div class="callout warn">
+<p><b>What is on the resume and what is not.</b></p>
+<ul>
+<li>The resume has two Impact Analytics subsections: <b>Agentic Flows and Orchestration</b> (5 bullets) and <b>Core Infrastructure and Pipeline</b> (5 bullets). The canonical wording is in <code>docs/ASSORTSMART_TAB_RESUME.md</code> at the repo root.</li>
+<li><b>Verbal-only, not on the PDF:</b> the Cluster Recommendation Copilot (14 tools, the 8.5% failure baseline, its confirm steps), Hindsight, the 63-table / 8-layer ClickHouse DDL design, and the line-plan 12B work. Only bring these up if asked what else you are working on. Hindsight defense: <a href="01b_hindsight_defense.html">01b_hindsight_defense.md</a>.</li>
+<li><b>True but off the PDF:</b> $100 token spend per pass, the 1.6M article-season catalog, 100% Go statement coverage over 1,200+ tests, the 55GB / 16GB weekly insert caps.</li>
+<li><b>Never on Impact Analytics:</b> Kafka, Flink, CDC, Kubernetes operations, Milvus, sub-second ClickHouse, human review queues (HITL).</li>
+</ul>
+</div>
+<p><strong>Tags on this page.</strong> MEASURED means there is a log, a doc or code. ESTIMATED means arithmetic I can show. TARGET means a design goal (say "targeting"). HISTORICAL means from past work records.</p>
+<p><strong>Role:</strong> Senior Software Engineer, Impact Analytics, May 2026 to present. Individual contributor.
+<strong>Project title on the resume:</strong> "AssortSmart — Senior Software Engineer (Platform &amp; AI)".
+<strong>Tech line:</strong> Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.</p>
+<hr>
+<h2 id="1-the-business-in-plain-english">1. The business in plain English</h2>
+<p>AssortSmart is assortment planning software for retailers. A merchandise planner at a fashion or home retailer has to decide, every season, which products to keep in the range, which to drop and which to add, and how much to buy for which stores. Those decisions are worth a lot of money: keeping a dead product ties up stock and shelf space, and dropping a good one loses sales.</p>
+<p>Planners use AssortSmart in two ways. They explore big pivot tables of sales and inventory, sliced by product, store, attribute and week. And they get AI recommendations: should this article be kept or dropped next season, which opportunities did we miss, which styles are top performers. They can also chat with an assistant called Ask Iris to ask about KPIs and about why the AI decided something.</p>
+<p>Before my work, pivots on PostgreSQL were slow, KPI changes needed code releases, and AI decisions had no strict guardrails or evaluation. My work sits on both halves: the core platform (Go/Gin on ClickHouse and PostgreSQL) and the agent plane (Python, FastAPI, LangGraph).</p>
+<hr>
+<h2 id="2-say-it-out-loud">2. Say it out loud</h2>
+<h3 id="30-seconds">30 seconds</h3>
+<p>"At Impact Analytics I work on AssortSmart, a retail assortment planning SaaS. On the platform side, I own a multi-tenant Go/Gin edge at 10k peak RPS on top of ClickHouse and Postgres. I built the pre-aggregation layer that took a planner pivot from 189 seconds to 12 seconds, a KPI formula compiler, and tenant and hierarchy isolation. On the AI side, I architected a decision engine that scores 348 thousand article-seasons as Keep or Drop by blending deterministic KPI math with seven LLM lenses, with the LLM fed JSON rather than database access. I also shipped Ask Iris, a LangGraph copilot for planners, and an 80% CI gate that every model or prompt change must pass."</p>
+<h3 id="2-minutes">2 minutes</h3>
+<p>"AssortSmart helps retail planners decide what to keep, drop and add each season. I work on both halves of the system.</p>
+<p>The platform is a multi-tenant Go/Gin API at 10k peak RPS. It uses Google Wire for compile-time dependency injection, and runs as its own HTTP edge with no reverse proxy, so it handles h2c, nested timeouts and Datadog tracing itself. Auth is a Redis-fronted waterfall of Firebase, JWT and Google OIDC, roles come from Postgres, and every query is scoped by tenant and by the user's hierarchy access. Planner pivots used to be slow, so I built six ClickHouse rollup tables. A 250 million row pivot went from 189 seconds to 12 seconds. Separately, weekly rollup builds were crashing out of memory at around 170 GB, so I sliced inserts into one-week chunks with memory and spill caps. I also wrote a Go pump that copied rollups between ClickHouse Cloud clusters at about 344 thousand rows a second.</p>
+<p>The AI side is a batch decision engine: Keep/Drop, Missed Opportunities and Top Style, over 348 thousand article-seasons, 88 thousand items per pass. Each article gets a deterministic score and an LLM score from seven lenses, blended 40/60. The LLM never queries the 2.11 billion row ClickHouse master. It gets JSON. If it times out, we fall back to the deterministic score. A shared registry gives every pipeline timeouts, circuit breakers, checkpoints and a config hash on every row. Planners chat through Ask Iris, which I shipped: a JWT WebSocket with a LangGraph supervisor and a 3-attempt evaluator. Nothing gets promoted unless it passes an 80% accuracy gate on a 300-case evaluation set."</p>
+<hr>
+<h2 id="3-the-architecture-in-one-picture">3. The architecture in one picture</h2>
+<div class="mermaid">flowchart LR
+  UI["Planner UI"] --&gt; EDGE["Go/Gin edge, 10k peak RPS"]
+  EDGE --&gt; PG["PostgreSQL: roles, UAM"]
+  EDGE --&gt; CH["ClickHouse: 2.11B master, six rollups"]
+  CH --&gt;|"JSON context"| AG["Python agent plane: 7 lenses"]
+  AG --&gt; LLM["LLM, no SQL tool"]
+  AG --&gt;|"versioned rows"| CH
+  UI --&gt;|"WebSocket"| IRIS["Ask Iris: LangGraph"]
+  IRIS --&gt; CH
+</div>
+<p><em>What to notice: the LLM sits behind Python code and only sees JSON. Full box-by-box walkthrough, sample request and failure modes are on the architecture page: <a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a>.</em></p>
+<hr>
+<h2 id="4-each-resume-bullet-decoded">4. Each resume bullet decoded</h2>
+<p>For each bullet: the exact resume line, what it means in plain words, how it works, the numbers, and the question you will get.</p>
+<h3 id="a1-the-decision-engine">A1. The decision engine</h3>
+<blockquote>
+<p>Architected a multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style) evaluating 348k article-seasons. Optimized inference at scale—processing 88k items per pass—by blending deterministic KPI math with structured LLM invokes across 7 AI lenses.</p>
 </blockquote>
-<h1 id="impact-analytics-interview-pack">Impact Analytics — Interview Pack</h1>
-<p><strong>Role:</strong> Senior Software Engineer · Impact Analytics, Bangalore · May 2026 – Present (IC)
-<strong>Product:</strong> AssortSmart — retail merchandise planning (Platform &amp; AI)
-<strong>Honesty:</strong> 300-case / 80% = promotion gate. Ask Iris = shipped capability. 10k RPS / 2.11B / 2.4B / $100 = on PDF. No IA Kafka/Flink/K8s-ops ownership.</p>
-<hr>
-<h2 id="1-30s-2min-project-explain">1. 30s / 2min project explain</h2>
-<h3 id="30-seconds-pdf-first">30 seconds (PDF first)</h3>
-<p>AssortSmart helps retailers decide what to buy, how much, and for which stores. I own two PDF surfaces. Platform: Go/Gin at 10k peak RPS (Wire, h2c, Datadog), ClickHouse 189s to 12s on 250M with six ClickHouse rollup tables (product, store, attr at season and weekly grains), KPI ifNotFinite parser, multi-tenant data isolation on PostgreSQL and ClickHouse (Firebase/JWT/OIDC), 100% coverage over 1,200+ Go tests. Agentic: Keep/Drop + Missed Opportunities + Top Style on 348k article-seasons, 88k items/pass, 7 lenses; JSON payloads vs a 2.11B-row ClickHouse master; shipped Ask Iris (LangGraph Supervisor+Evaluator, frozen scopes); 300-case / 80% CI promotion gate vs 74% deterministic baseline.</p>
-<h3 id="2-minutes-architecture-evidence">2 minutes (architecture + evidence)</h3>
-<pre><code>Planner UI / Ask Iris WebSocket
-        │
-Go/Gin HTTP edge (Wire DI, h2c, 10k peak RPS, Datadog tracing)
-        │
-   ┌────┼──────────────┬─────────────────────────┐
-Redis  Postgres      ClickHouse                 Python agent plane
-auth   roles/UAM     2.11B fact, 2.4B rollups   Keep/Drop + Missed Opp + Top Style
-cache                ReplacingMergeTree         7 lenses, 88k/pass &lt;$100
-                     ifNotFinite KPI SQL        JSON payloads vs CH master
-                                                registry / breakers / checkpoints
-                                                LangSmith + JSON telemetry
-                                                Ask Iris Supervisor+Evaluator
-                                                300-case / 80% gate vs 74% baseline
+<p><strong>In plain words.</strong> Three batch pipelines decide things about products. Keep/Drop is the main one. Each article gets a rules-based score and an AI score, and the two are blended.</p>
+<p><strong>How it works.</strong>
+- Deterministic score <code>s_det</code> from sell-through and rate of sale, each mapped onto a 0-to-1 ramp.
+- Agent score <code>s_agent</code> from 7 lenses (trend velocity, size curve, colour cannibalization, channel divergence, multi-season consistency, discount dependency, margin resilience), combined by a decider.
+- <code>s_final = 0.4 × s_det + 0.6 × s_agent</code>. Keep if <code>s_final ≥ 0.55</code>.
+- Worked example: <code>s_det = 0.737</code>, <code>s_agent = 0.711</code>, so <code>s_final = 0.295 + 0.427 = 0.721</code>, which is Keep.
+- "Structured invoke" means the LLM must answer in a fixed JSON schema.
+- There is no LLM orchestrator. The batch order is fixed: peer context, decider, lenses, blend, explanation.</p>
+<p><strong>The numbers.</strong> 348k is the number of article-seasons scored. 88k is the number of items in one pass. 1.6M (off PDF) is the whole catalog, a different number. Do not mix them.</p>
+<p><strong>Question they will ask:</strong> "Why not let the LLM decide everything?"
+"Because rules are cheap, explainable and always available, and the LLM is none of those things all the time. The deterministic score anchors the decision and gives reason codes a planner can read. The lenses add judgement on things rules handle badly, like colour cannibalization or discount dependency. Blending them, with the deterministic score as fallback, means a provider outage never leaves a planner without a decision."</p>
+<h3 id="a2-decoupling-inference-from-the-database">A2. Decoupling inference from the database</h3>
+<blockquote>
+<p>Decoupled AI inference from a 2.11B-row ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via ReplacingMergeTree that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.</p>
+</blockquote>
+<p><strong>In plain words.</strong> The AI never touches the big database. Code fetches what the AI needs, packs it as JSON and hands it over. Results are written as new versions of rows, and if the AI is slow, the rules-based score stands in.</p>
+<p><strong>How it works.</strong>
+- Python runs fixed, reviewed queries and builds one compact JSON row per article. The LLM gets no SQL tool.
+- "Asynchronously" describes how batches run in parallel. It does not mean the LLM queries anything.
+- ReplacingMergeTree keeps the newest version of rows with the same key, here <code>(season_code, article)</code>, versioned by <code>computed_at</code>. Until background merges run, readers pick the latest row per key.
+- On an LLM timeout, the article keeps its deterministic baseline. When the agent score arrives later (for example on resume), a newer row replaces it. That is "eventually consistent".</p>
+<p><strong>Question they will ask:</strong> "What stops the LLM from leaking another tenant's data?"
+"It never has a query tool. The only data it sees is the JSON our code built for that batch, and that code applies the tenant and season scope. There is no prompt that can make it read something we did not send."</p>
+<h3 id="a3-the-orchestration-registry">A3. The orchestration registry</h3>
+<blockquote>
+<p>Engineered a shared orchestration registry to guarantee 88k-article batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.</p>
+</blockquote>
+<p><strong>In plain words.</strong> One shared runner makes every AI pipeline crash-safe, cost-visible and traceable.</p>
+<p><strong>How it works.</strong>
+- <strong>Hard timeouts</strong> on every LLM call. In the current config: <code>min(600, 60 + 8 × articles)</code> seconds, so a 64-article batch gets 572 seconds.
+- <strong>Circuit breakers</strong> stop a step after about 5 consecutive failures, or when the failure fraction passes a limit (0.25 in the current config).
+- <strong>Durable checkpoints:</strong> <code>det.json</code> holds deterministic scores, <code>agent_progress.json</code> holds which articles the LLM finished. <code>--resume</code> reloads both, so a restart never re-runs deterministic scoring.
+- <strong>config_hash:</strong> SHA-256 of guardrails, parameters, prompts and catalog. Change one word in a prompt and the hash changes, so every decision can be traced to its exact configuration.
+- <strong>JSON telemetry:</strong> tokens, USD cost, step duration, batch fallbacks.</p>
+<p><strong>Why not Airflow or Temporal:</strong> "I needed resume logic tied directly to our ClickHouse inserts and to the config hash, inside the app. A separate orchestration platform would not have removed that need, and it was extra infrastructure one team's batch jobs did not justify."</p>
+<h3 id="a4-ask-iris">A4. Ask Iris</h3>
+<blockquote>
+<p>Shipped "Ask Iris," a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a LangGraph supervisor with a 3-attempt evaluator loop, utilizing LangSmith for observability, and strictly freezing hierarchy access on the initial socket handshake.</p>
+</blockquote>
+<p><strong>In plain words.</strong> A chat assistant for planners. It is secure by design: who you are and what you may see is fixed the moment you connect, and the AI cannot loop forever.</p>
+<p><strong>How it works.</strong>
+- JWT checked at the WebSocket handshake.
+- The user's <code>plan_scope</code> (their allowed hierarchy) is computed once at the handshake and frozen for the session. Later messages cannot widen it.
+- A LangGraph supervisor picks the next step. An evaluator checks the draft answer. <code>MAX_ATTEMPTS = 3</code>, then it stops.
+- LangSmith traces every run (prompts, tool calls, tokens, cost).</p>
+<p><strong>Say this carefully:</strong> Ask Iris is a shipped capability. There are no usage numbers or SLA to quote. Do not invent any.</p>
+<p><strong>Question they will ask:</strong> "Why freeze scope at the handshake instead of checking per message?"
+"Because per-message checks depend on every code path remembering to do them, and a chat prompt is exactly where someone will try 'show me the other region too'. Freezing scope once, at authentication time, means the session physically carries only that scope. It is simpler to reason about and simpler to test."</p>
+<h3 id="a5-evaluation-harness-and-ci-gate">A5. Evaluation harness and CI gate</h3>
+<blockquote>
+<p>Built a 300-case proxy evaluation harness and an 80% accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by 73% at 100% coverage by benchmarking models against a 74% deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Two separate evaluation pieces. A 300-case test set with an 80% pass mark guards every change. A separate 200-case benchmark was used to pick a cheaper model and decide not to retune the blend.</p>
+<p><strong>How it works.</strong>
+- <strong>The 300-case harness:</strong> a "proxy gold" set built from what actually happened next season (150 keeps, 150 drops). The CI gate (<code>gold_min_accuracy = 0.8</code> in <code>eval.json</code>) blocks promotion below 80%.
+- <strong>The gold-200 benchmark (separate):</strong> two models compared on 200 labelled cases, both completing 200 of 200. The chosen one cost 73% less to run at 100% coverage. On the same set, the deterministic baseline (production threshold 0.65) scored 74%.
+- The blended LLM scored about 63%, below the 74% deterministic baseline. So we froze the blend weights instead of retuning them to chase that one benchmark.</p>
+<p><strong>The numbers.</strong> 80% is a gate, not live accuracy. 73% and 74% come from the gold-200 benchmark, not the 300-case file. Model names are not on the PDF. Full detail: <a href="01d_agentic_evals_guardrails_flow.html">01d_agentic_evals_guardrails_flow.md</a>.</p>
+<p><strong>Question they will ask:</strong> "Your LLM scored worse than the rules. Why ship it?"
+"Because the gate did its job. The benchmark told us the blend did not beat the deterministic baseline on that set, so we did not pretend it did. We froze the weights rather than overfit them to 200 cases, kept the deterministic fallback, and any future change must pass the 80% gate before promotion. The cost work still stood: the model we picked ran 73% cheaper at full coverage."</p>
+<h3 id="c1-the-gogin-platform">C1. The Go/Gin platform</h3>
+<blockquote>
+<p>Architected a multi-tenant Go/Gin platform scaling to 10k peak RPS, utilizing Google Wire for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native h2c, nested timeouts, and Datadog distributed tracing.</p>
+</blockquote>
+<p><strong>In plain words.</strong> The main API is written in Go. It protects itself instead of relying on nginx, and every request is traced.</p>
+<p><strong>How it works.</strong> Wire generates dependency wiring at build time, so a missing dependency is a compile error. The process enforces request deadlines with smaller deadlines inside for each downstream call, caps request bodies, speaks h2c (HTTP/2 without TLS at the process, typically behind a TLS-terminating load balancer) and emits Datadog traces.</p>
+<p><strong>Say this carefully:</strong> no SLA numbers, no Kubernetes cluster operations claim.</p>
+<h3 id="c2-kpi-configurator-and-formula-parser">C2. KPI configurator and formula parser</h3>
+<blockquote>
+<p>Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into parameterized ClickHouse SQL fragments with native division-by-zero protection, decoupling business logic from code releases.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Business users type KPI formulas. A Go compiler turns them into safe SQL. New KPIs no longer need a release.</p>
+<p><strong>How it works.</strong> Tokenizer, then parser, then an allowlist of functions. Logical names map to physical columns. Divisions are wrapped in <code>ifNotFinite(toFloat64(expr), 0)</code>. Unknown tokens fail closed. Values are bound parameters, never pasted into SQL.</p>
+<pre><code class="language-text">operator types:  margin_pct = margin / revenue * 100
+compiles to:     ifNotFinite(toFloat64(sum(margin) / sum(revenue) * 100), 0)
 </code></pre>
-<p><strong>Evidence:</strong> pivot POC 250M <strong>189s → 12s</strong> (~15.5×, MEASURED). Catalog/fact numbers are <strong>PDF / AssortSmart tab</strong>.</p>
-<p><strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot (days → under 1h TARGET, 8.5% baseline, 14 tools, 3 gates) and Hindsight.</p>
-<p><strong>Status:</strong> Keep/Drop + Ask Iris are real assort_kd_flow / shipped-capability work. Gold / ≥80% is a <strong>promotion gate</strong> — not “all tenants live.”</p>
+<h3 id="c3-multi-tenant-isolation-and-auth">C3. Multi-tenant isolation and auth</h3>
+<blockquote>
+<p>Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Every request is tied to a tenant and a slice of the product hierarchy, and every query is filtered by both.</p>
+<p><strong>How it works.</strong> Redis caches token verdicts. On a miss: Firebase Admin, then JWT or Google OIDC. API keys compared in constant time. Roles from Postgres. UAM scope applied to queries in both databases.</p>
+<p><strong>Say this carefully:</strong> isolation is scoping, not encryption.</p>
+<h3 id="c4-pre-aggregation-and-the-oom-fix">C4. Pre-aggregation and the OOM fix</h3>
+<blockquote>
+<p>Reduced planner pivot latency by 15.5× (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Two separate wins. Pivots got fast because they read pre-summed tables. Weekly table builds stopped crashing because they were built one week at a time.</p>
+<p><strong>How it works.</strong> Six MergeTree rollups (product, store, attribute, each at season and weekly grain), all <code>PARTITION BY season_code</code>. Weekly builds use one fiscal week per INSERT SELECT, with verbal knobs of 55GB memory cap, 16GB spill, 8 threads, 4 weeks in flight. A whole-season weekly build needed about 170GB and failed even at 80GB and 200GB caps.</p>
+<p><strong>Say this carefully:</strong> 15.5× is query time. 170GB is load time. They are not cause and effect. The PDF rounds 12.3 seconds to 12.</p>
+<h3 id="c5-cross-cluster-copy-with-a-go-pump">C5. Cross-cluster copy with a Go pump</h3>
+<blockquote>
+<p>Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Two ClickHouse clusters could not talk to each other directly, so I wrote a Go program that read from one and wrote to the other, fast and safely.</p>
+<p><strong>How it works.</strong>
+- Native ClickHouse protocol over TLS (port 9440) from an allowlisted machine.
+- 500k-row columnar batches, double-buffered: read the next batch while the previous one is being sent.
+- Two season streams of about 150k to 190k rows per second each, about 344k combined.
+- Ghost rows (rows from a half-finished insert) prevented by a TSV ledger (the weekly loader's skip file) and copier checkpoint files <code>migrate-checkpoints/&lt;table&gt;.done</code>.
+- "Atomic partition rollback" means DROP PARTITION then recopy that season. It is not an atomic swap with live readers.</p>
+<p><strong>Say this carefully:</strong> 344k is rows per second, not requests. The 4.09B copy (2,779,317,472 + 1,311,108,195 rows of attr weekly) was measured in flight. Do not say the cutover finished. Never offer to open-source the copier.</p>
 <hr>
-<h2 id="2-design-decisions-pdf-first">2. Design decisions (PDF-first)</h2>
+<h2 id="5-all-the-numbers-in-one-table">5. All the numbers in one table</h2>
 <table>
 <thead>
 <tr>
-<th>Decision</th>
-<th>Why</th>
-<th>Tradeoff</th>
-<th>Do not say</th>
+<th>Number</th>
+<th>Meaning</th>
+<th>Where</th>
+<th>Tag</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Go/Gin as HTTP edge, no reverse proxy</td>
-<td>Compile-time Wire DI, h2c, nested timeouts, Datadog at the process that serves 10k peak RPS</td>
-<td>You own timeouts/body caps/SIGTERM drain instead of inheriting nginx</td>
-<td>Invented SLA / multi-region</td>
+<td>348k</td>
+<td>Article-seasons scored</td>
+<td>A1</td>
+<td>On PDF</td>
 </tr>
 <tr>
-<td>ClickHouse vs Postgres vs Snowflake</td>
-<td>Columnar + SIMD for planner pivots; self-hosted latency vs Snowflake/BQ slot variance and cost</td>
-<td>CH is weak at keyed UPDATEs — insert-only / RMT, not OLTP cells</td>
-<td>“I chose Snowflake” / “CH replaces PG for edits”</td>
+<td>88k</td>
+<td>Items per pass</td>
+<td>A1, A3</td>
+<td>On PDF</td>
 </tr>
 <tr>
-<td>Air-gap LLM vs 2.11B fact</td>
-<td>Hallucinated SQL must never write the warehouse; JSON payloads in, two-phase RMT out</td>
-<td>Extra hop; fallback to deterministic scores when LLM fails</td>
-<td>Agents have a SQL shell</td>
+<td>7</td>
+<td>AI lenses</td>
+<td>A1</td>
+<td>On PDF</td>
 </tr>
 <tr>
-<td>LangGraph Supervisor+Evaluator on Ask Iris</td>
-<td>Frozen socket scopes + eval loop stop infinite LLM loops and tenant bleed</td>
-<td>Framework surface</td>
-<td>Tenant-wide Ask Iris SLA</td>
+<td>2.11B</td>
+<td>Rows in the ClickHouse master</td>
+<td>A2</td>
+<td>On PDF</td>
 </tr>
 <tr>
-<td>300-case / 80% CI gate vs 74% baseline</td>
-<td>Promotion requires beating a free deterministic rule, not vibes</td>
-<td>Gate can fail models (that is the point)</td>
-<td>“We hit 80% in production for all tenants”</td>
+<td>3</td>
+<td>Max evaluator attempts in Ask Iris</td>
+<td>A4</td>
+<td>On PDF</td>
 </tr>
 <tr>
-<td>Kafka/Flink</td>
-<td><strong>Menu</strong>, not IA</td>
-<td>—</td>
-<td>Flink/CDC/K8s-ops on AssortSmart</td>
+<td>300</td>
+<td>Cases in the proxy evaluation harness</td>
+<td>A5</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>80%</td>
+<td>CI promotion gate</td>
+<td>A5</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>73%</td>
+<td>Lower execution cost at 100% coverage, gold-200</td>
+<td>A5</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>74%</td>
+<td>Deterministic baseline on gold-200</td>
+<td>A5</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>10k</td>
+<td>Peak RPS on the Go/Gin edge</td>
+<td>C1</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>15.5×, 189s to 12s, 250M</td>
+<td>Pivot query speed-up</td>
+<td>C4</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>170GB</td>
+<td>Memory a whole-season weekly build needed</td>
+<td>C4</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>~344k rows/s</td>
+<td>Copy rate</td>
+<td>C5</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>4.09B</td>
+<td>Largest partition set copied</td>
+<td>C5</td>
+<td>MEASURED, in flight</td>
+</tr>
+<tr>
+<td>500k</td>
+<td>Rows per pump batch</td>
+<td>C5</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>$100</td>
+<td>Token spend per pass, about a tenth of a cent per item</td>
+<td>Off PDF</td>
+<td>ESTIMATED per-item</td>
+</tr>
+<tr>
+<td>1.6M</td>
+<td>Catalog article-seasons</td>
+<td>Off PDF</td>
+<td>Verbal</td>
+</tr>
+<tr>
+<td>100%, 1,200+</td>
+<td>Go statement coverage and test count</td>
+<td>Off PDF</td>
+<td>Verbal</td>
 </tr>
 </tbody>
 </table>
-<p>Packet CH vs PG vs Snowflake one-liner: Postgres is row-store OLTP — multi-column planner pivots scan whole rows and lock. ClickHouse reads only needed columns and vectorizes. Snowflake/BQ lose when the UI needs interactive, self-hosted, sub-20s pivots you already pay to operate.</p>
 <hr>
-<h2 id="3-bullet-by-bullet-defense">3. Bullet-by-bullet defense</h2>
-<p>See <code>../../prep/23a_ia_interview_pack.md</code> for the full P1–P5 / A1–A5 tables.</p>
-<h2 id="4-mock-notes">4. Mock notes</h2>
+<h2 id="6-design-decisions-short-form">6. Design decisions, short form</h2>
+<p>Each of these has a full What / Why / Alternatives / Trade-off / What I'd do differently write-up on the <a href="../architecture/01_ia_assortsmart_hindsight.html">architecture page</a>.</p>
 <ul>
-<li><strong>Ask Iris shipped?</strong> Yes, as a capability with frozen scopes. No invented QPS/SLA.</li>
-<li><strong>pg2ch_cdc?</strong> Ashvin Sharma. DESIGN against patterns; you did not author CDC.</li>
-<li><strong>OOM leak?</strong> Packet STAR, Python/FastAPI — not a PDF bullet; do not claim K8s cluster operations.</li>
-<li><strong>Cluster Copilot?</strong> Verbal only.</li>
+<li><strong>Go/Gin edge without a reverse proxy.</strong> Fewer hops, one place for timeouts, tracing at the serving process. Trade-off: I own every protection nginx would give for free.</li>
+<li><strong>ClickHouse versus PostgreSQL versus Snowflake.</strong> Postgres is a row store built for transactions: multi-column pivots read whole rows. ClickHouse reads only the needed columns and processes them in vectorised batches. Snowflake and BigQuery are strong warehouses, but interactive pivots wanted predictable latency and cost on a store we control. Trade-off: ClickHouse is weak at single-row updates, so writes become new versions.</li>
+<li><strong>JSON context instead of an LLM SQL tool.</strong> Safer, cheaper, testable. Trade-off: a lens needing a new field needs a code change.</li>
+<li><strong>LangGraph supervisor with a 3-attempt evaluator for Ask Iris.</strong> Explicit control flow, a hard cap on loops, and a frozen scope. Trade-off: one more framework to learn and maintain.</li>
+<li><strong>80% CI gate against a deterministic baseline.</strong> A change must beat a free rule, not just "look better". Trade-off: the gate will sometimes block a model. That is the point.</li>
+<li><strong>Kafka and Flink.</strong> These are Uber Menu. Not used on AssortSmart.</li>
 </ul>
-<h2 id="5-do-not-say">5. Do NOT say</h2>
+<hr>
+<h2 id="7-mock-interview-notes">7. Mock-interview notes</h2>
+<p><strong>"Is Ask Iris actually shipped?"</strong>
+"Yes, as a capability: a JWT WebSocket copilot with scope frozen at the handshake and a 3-attempt evaluator loop. I do not have usage or SLA numbers to quote, so I will not make any up."</p>
+<p><strong>"Did you build the Postgres-to-ClickHouse CDC pipeline?"</strong>
+"No. That was a colleague, Ashvin Sharma. I can discuss the design pattern, but I did not author it."</p>
+<p><strong>"Tell me about an out-of-memory incident."</strong>
+"The one on my resume is the weekly ClickHouse rollup build at around 170 GB, fixed with one-week slices and memory and spill caps." There is also a Python/FastAPI connection-leak OOM story in older prep. That one is a packet story, not a resume bullet. If you tell it, say so, and do not attach Kubernetes cluster operations to it.</p>
+<p><strong>"What about the Cluster Recommendation Copilot?"</strong>
+"That is in progress and not on my resume. Happy to talk about its design." Details: <a href="01c_agent_read_tools_defense.html">01c_agent_read_tools_defense.md</a> and <a href="01d_agentic_evals_guardrails_flow.html">01d_agentic_evals_guardrails_flow.md</a>.</p>
+<p><strong>"Is 80% your production accuracy?"</strong>
+"No. 80% is the promotion gate on a 300-case proxy set. A change cannot ship unless it clears that bar."</p>
+<hr>
+<h2 id="8-practice-drill">8. Practice drill</h2>
+<ol>
+<li><strong>What is an article-season?</strong> One product in one selling season. We score 348 thousand of them.</li>
+<li><strong>What is the blend formula?</strong> <code>s_final = 0.4 × s_det + 0.6 × s_agent</code>, keep at 0.55 or above.</li>
+<li><strong>Name the seven lenses.</strong> Trend velocity, size curve, colour cannibalization, channel divergence, multi-season consistency, discount dependency, margin resilience.</li>
+<li><strong>What happens when the LLM times out?</strong> The article keeps its deterministic score, and a newer row replaces it when the agent score arrives. ReplacingMergeTree keeps the newest.</li>
+<li><strong>What is config_hash?</strong> A SHA-256 fingerprint of guardrails, parameters, prompts and catalog, stamped on every output row so every decision is traceable.</li>
+<li><strong>How does resume work?</strong> <code>det.json</code> and <code>agent_progress.json</code> checkpoints with <code>--resume</code>. Deterministic scoring is never redone.</li>
+<li><strong>Why freeze scope at the WebSocket handshake?</strong> So nothing typed later can widen access, which prevents cross-tenant leaks.</li>
+<li><strong>Is 80% production accuracy?</strong> No. It is the CI promotion gate on a 300-case proxy set.</li>
+<li><strong>Where do 73% and 74% come from?</strong> A separate gold-200 benchmark, not the 300-case file.</li>
+<li><strong>Does 15.5× come from the OOM fix?</strong> No. 15.5× is query time on rollups. The 170GB OOM fix is load time.</li>
+<li><strong>Is 344k requests per second?</strong> No. It is rows per second during the copy.</li>
+<li><strong>Did the 4.09B cutover finish?</strong> I measured the copy in flight. I do not claim the cutover finished.</li>
+<li><strong>What does partition rollback mean?</strong> DROP PARTITION then recopy that season. Not an atomic swap.</li>
+<li><strong>Why no reverse proxy?</strong> Fewer hops and one place for timeouts. I own the protections myself.</li>
+<li><strong>Did you use Kafka at Impact Analytics?</strong> No. Kafka and Flink were Uber Menu.</li>
+</ol>
+<hr>
+<h2 id="9-do-not-say">9. Do not say</h2>
 <ul>
-<li>All tenants live on the ≥80% gate</li>
-<li>IA TPS beyond the PDF <strong>10k peak RPS</strong></li>
-<li>Spark / Pinot / K8s ops / Terraform / Flink-on-IA</li>
-<li>MCP as a PDF skill</li>
-<li>Cluster Copilot / Hindsight as resume bullets\n</li>
+<li>"All tenants are live at 80% accuracy."</li>
+<li>Any throughput beyond the PDF's 10k peak RPS, or any SLA.</li>
+<li>Spark, Pinot, Kubernetes operations, Terraform, Flink, Kafka or CDC on Impact Analytics.</li>
+<li>MCP as an Impact Analytics resume skill. It is skills-level.</li>
+<li>Cluster Copilot or Hindsight as resume bullets.</li>
+<li>"Sub-second ClickHouse pivots."</li>
+<li>"LangSmith on the Keep/Drop batch." LangSmith is on Ask Iris.</li>
+<li>"Human review queue" or "HITL" on Impact Analytics.</li>
+</ul>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li>Architecture page: <a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a></li>
+<li>Evals, guardrails and flow: <a href="01d_agentic_evals_guardrails_flow.html">01d_agentic_evals_guardrails_flow.md</a></li>
+<li>Full deep dive: <a href="01_ia_deep_dive.html">01_ia_deep_dive.md</a></li>
+<li>Full bullet tables (A1 to A5, P1 to P5): <a href="../../../prep/23a_ia_interview_pack.html">../../../prep/23a_ia_interview_pack.md</a></li>
+<li>Rollups and copier detail: <a href="../../../prep/42_clickhouse_rollup_migration.html">../../../prep/42_clickhouse_rollup_migration.md</a></li>
 </ul></main>
 </div>
 

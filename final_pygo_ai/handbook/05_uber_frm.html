@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>05_uber_frm — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_pygo_ai/handbook/05_uber_frm.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#chapter-5-uber-frm-scoping-platform-uber-via-epam">Chapter 5. Uber FRM Scoping Platform (Uber via EPAM)</a>
+<a class="lvl2" href="#1-how-to-use-this-chapter">1. How to use this chapter</a>
+<a class="lvl2" href="#2-the-one-minute-version">2. The one-minute version</a>
+<a class="lvl2" href="#3-the-business-in-plain-english">3. The business in plain English</a>
+<a class="lvl2" href="#4-words-you-need">4. Words you need</a>
+<a class="lvl2" href="#5-architecture">5. Architecture</a>
+<a class="lvl2" href="#6-one-job-step-by-step-a-manager-closes-a-balance-sheet-line">6. One job, step by step: a manager closes a balance-sheet line</a>
+<a class="lvl2" href="#7-each-resume-bullet-decoded">7. Each resume bullet decoded</a>
+<a class="lvl2" href="#8-tech-used-in-this-project-and-why">8. Tech used in this project and why</a>
+<a class="lvl2" href="#9-hard-problems-and-failure-stories">9. Hard problems and failure stories</a>
+<a class="lvl2" href="#10-say-this-dont-say-this">10. Say this / don't say this</a>
+<a class="lvl2" href="#11-practice-drill">11. Practice drill</a>
+<a class="lvl2" href="#12-3-minute-whiteboard-script">12. 3-minute whiteboard script</a></nav>
+<main><h1 id="chapter-5-uber-frm-scoping-platform-uber-via-epam">Chapter 5. Uber FRM Scoping Platform (Uber via EPAM)</h1>
+<h2 id="1-how-to-use-this-chapter">1. How to use this chapter</h2>
+<div class="callout note">
+<p><strong>How to use this chapter</strong></p>
+<ul>
+<li><strong>What it covers:</strong> the Financial Risk Management (FRM) Scoping Platform I built for Uber Finance while employed by EPAM Systems (always say "Uber via EPAM"). It teaches the finance ideas from zero, then the engineering, then every number on the resume.</li>
+<li><strong>When to read it:</strong> before any interview where Uber, fintech, Python backends, MySQL, data modelling, migrations or "tell me about a hard bug" might come up.</li>
+<li><strong>What to memorise:</strong> the one-minute version (section 2), the five numbers 70%, $340M, 19M, 36 and 100% with their derivations (section 7), the column-aliasing bug story (sections 7 and 9), and the whiteboard script (section 12).</li>
+</ul>
+</div>
+<p><strong>Tags used in this chapter.</strong> MEASURED means there is a log, document or code behind it. TARGET means it was a design goal, so you say "targeting". ESTIMATED means arithmetic I can show. HISTORICAL means it comes from my past work records. Numbers printed on the resume are the resume's claims and you defend them as written.</p>
+<p>Related chapters: <a href="00_START_HERE.html">Start here</a> · <a href="02_numbers_explained.html">Numbers explained</a> · <a href="06_uber_menu_and_anz.html">Menu and ANZ</a> · <a href="09_tech_glossary.html">Tech glossary</a> · <a href="10_core_concepts_explained.html">Core concepts</a> · <a href="11_star_stories.html">STAR stories</a>. Older, denser source material lives in <a href="../prep/11_uber_frm_deep_dive.html">the FRM deep dive</a> and <a href="../prep/23b_uber_interview_packs.html">the Uber interview packs</a>. Where those older pages say "30+ endpoints, do not say 36" or "do not say 19M", this chapter wins, because the current resume prints 36 and 19M.</p>
+<hr>
+<h2 id="2-the-one-minute-version">2. The one-minute version</h2>
+<p>Say this out loud, in your own rhythm:</p>
+<blockquote>
+<p>"At Uber, through EPAM, I owned the backend of the FRM Scoping Platform for Uber Finance. Every quarter, Finance has to decide which line items and which legal entities are important enough to be tested by the auditors, PwC. That process used to live in a big Google Sheets workbook, and the reconciliation part alone took about 14 days. I moved it onto a Python, FastAPI and MySQL service: I migrated 19 million raw general-ledger rows off Sheets into an 8-table normalized schema on Uber's service-owned MySQL standard, and shipped 36 endpoints that do the financial math, a four-level line-item hierarchy and quarter-annualization. The quarterly reconciliation came down from 14 days to 3 days, a 70% cut, measured against a $340M materiality threshold. Because several managers edit the same close at once, I designed optimistic row-locking, atomic cross-table writes and SHA-256 natural keys so we never got duplicates in the audit trail. I also led 3 engineers on a SQLAlchemy 2.0 ORM migration that removed a nasty column-aliasing bug and brought the module to 100% statement coverage, shipped through stacked Bazel PRs with SQL allowlists and state-machine gates for SOX."</p>
+</blockquote>
+<p>If you only get 20 seconds: "I owned Uber Finance's quarterly audit-scoping backend through EPAM. Sheets to MySQL, 36 FastAPI endpoints, reconciliation from 14 days to 3 days, and I led 3 engineers on the SQLAlchemy 2.0 migration that got the module to 100% statement coverage."</p>
+<hr>
+<h2 id="3-the-business-in-plain-english">3. The business in plain English</h2>
+<h3 id="what-a-quarterly-close-is">What a quarterly close is</h3>
+<p>A public company like Uber must publish its financial results every quarter. Before it can publish, Finance runs the <strong>quarterly close</strong>: a few intense weeks where every team finalises its numbers, books the last adjustments, checks that the numbers add up across systems, and produces the official financial statements. Think of it like closing a shop's till at the end of the day, but for a company with hundreds of legal entities in dozens of countries, and with outside auditors checking your work.</p>
+<p>Uber files those results with the US Securities and Exchange Commission (SEC) in a quarterly report called the <strong>10-Q</strong> (the annual version is the 10-K). Once filed, the numbers are public and legally binding.</p>
+<h3 id="who-the-users-are">Who the users are</h3>
+<ul>
+<li><strong>The FRM team (Financial Risk Management) inside Uber Finance.</strong> Once a quarter they run the <strong>scoping process</strong>. Scoping means deciding which financial line items and which entities are "in scope" for risk assessment and audit testing.</li>
+<li><strong>Finance managers</strong> who own specific lines or entities. They review numbers, answer qualitative questions ("Is there a new risk on this line?"), and move each line through review statuses.</li>
+<li><strong>PwC, Uber's external auditor.</strong> PwC uses the scoping output as evidence in its <strong>audit work papers</strong>, the documented record of what the auditor tested and why.</li>
+</ul>
+<h3 id="what-hurt-before">What hurt before</h3>
+<p>Before this platform, scoping lived in a large Google Sheets workbook. It had formulas, manual parent-child mapping of line items, and copy-pasted data from the finance systems. The technical design document described the core problem as flat-file storage that could not handle recursive financial hierarchies, which led to manual mapping errors and no real-time visibility.</p>
+<p>In practical terms:</p>
+<ul>
+<li><strong>No stable IDs.</strong> A row in a sheet has no permanent identity. You cannot attach a comment or an audit history to "row 412", because row 412 moves when someone inserts a row.</li>
+<li><strong>No concurrency control.</strong> Two managers editing the same sheet overwrite each other.</li>
+<li><strong>No single source of truth.</strong> Copies of the workbook drift apart.</li>
+<li><strong>Slow reconciliation.</strong> Checking the internal numbers against the filed numbers was manual and took about 14 days.</li>
+</ul>
+<h3 id="why-uber-paid-for-this">Why Uber paid for this</h3>
+<p>Scoping is a SOX control (explained in section 4). If scoping is too narrow, a real risk goes untested and the auditors may flag a control deficiency. If it is too broad, the company wastes expensive audit hours. A wrong number here does not stay internal: it flows into audit evidence for an SEC filing. Uber needed the process to be faster, repeatable, auditable and safe for several people to edit at once. That is what the platform gave them.</p>
+<hr>
+<h2 id="4-words-you-need">4. Words you need</h2>
+<p>This chapter has two vocabularies. Learn the finance words first, because interviewers will test whether you understand the domain you built for.</p>
+<h3 id="finance-words">Finance words</h3>
+<p><strong>General ledger (GL).</strong> The master record of every account and every balance a company keeps. Think of it as the company's complete bank statement for every account at once: cash, receivables, revenue, payroll and so on. A "raw GL row" is one balance for one account, one entity, one period. The resume says I migrated <strong>19M raw GL rows</strong> off Sheets.</p>
+<p><strong>Oracle HFM (Hyperion Financial Management).</strong> The consolidation system Uber uses. Each entity's ledger is loaded into HFM, converted to one currency, and intercompany transactions are removed so the group's numbers are not double-counted. HFM produces Uber's internal source-of-truth group numbers. Analogy: HFM is the kitchen where each branch's ingredients are combined into one meal.</p>
+<p><strong>10-Q reconciliation (HFM vs filed 10-Q).</strong> A line-by-line check that the HFM amount for each line equals the amount in the publicly filed 10-Q. The code computes <code>difference = hfm_amount_in_millions - financial_statement_amount_in_millions</code>. A non-zero difference is a "break" that someone must explain before scoping proceeds. Analogy: checking that the receipt in your hand matches the amount on your card statement.</p>
+<p><strong>FSLI (Financial Statement Line Item).</strong> One line on the balance sheet or income statement, for example Cash, Accounts Receivable, or Revenue.</p>
+<p><strong>The L1 to L4 FSLI hierarchy.</strong> Line items nest inside each other, like folders. Level 1 is the broadest heading, level 4 the most detailed. Parents are the sum of their children. Here is an illustrative tree (labels are generic examples, not a copy of Uber's chart of accounts):</p>
+<pre><code class="language-text">L1  Assets
+├── L2  Current assets
+│   ├── L3  Cash and cash equivalents
+│   │   ├── L4  Cash in bank
+│   │   └── L4  Short-term deposits
+│   └── L3  Accounts receivable
+│       ├── L4  Trade receivables
+│       └── L4  Allowance for doubtful accounts
+└── L2  Non-current assets
+    └── L3  Property and equipment
+        └── L4  Equipment, net
+</code></pre>
+<p>What to notice: every L3 amount must equal the sum of its L4 children, and every L2 must equal the sum of its L3 children. If one leaf is duplicated, every parent above it is wrong. That invariant shows up again in the bug story.</p>
+<p><strong>Materiality.</strong> The dollar size of a mistake that would change the decision of a reasonable reader of the financial statements. Auditors usually set it as a percentage of a key figure such as pre-tax income, revenue or total assets. Anything smaller than materiality is "not big enough to matter on its own". On the Q4 2025 close, group materiality was <strong>$340M</strong> (MEASURED, stored as a row in the metrics table with <code>metric_key = "materiality"</code>).</p>
+<p>A worked example with $340M (line amounts are illustrative):</p>
+<table>
+<thead>
+<tr>
+<th>Line item</th>
+<th>HFM amount</th>
+<th>Bigger than $340M?</th>
+<th>Quantitative material?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Accounts receivable</td>
+<td>$1,200M</td>
+<td>Yes</td>
+<td>YES</td>
+</tr>
+<tr>
+<td>Prepaid expenses</td>
+<td>$90M</td>
+<td>No</td>
+<td>NO</td>
+</tr>
+<tr>
+<td>Short-term investments</td>
+<td>$410M</td>
+<td>Yes</td>
+<td>YES</td>
+</tr>
+</tbody>
+</table>
+<p>Prepaid expenses is not quantitatively material. It can still become significant if a manager answers a qualitative question with yes, for example "there was a new type of transaction this quarter". The platform's rule, which is in the code, is: <strong>Overall significance is Significant if quantitative OR qualitative is YES.</strong></p>
+<p><strong>Group scoping.</strong> Looking at the consolidated Uber balance sheet and income statement line by line and asking "is this FSLI significant to the group?" This is the top of the tree.</p>
+<p><strong>Component scoping.</strong> Drilling down under each significant FSLI to the individual entities or components and deciding which ones get tested. This is the leaves.</p>
+<p><strong>The 5% significance rule.</strong> A component (a legal entity) is a <strong>Financially Significant Component</strong> if its revenue is more than 5% of group revenue, or the absolute value of its assets is more than 5% of group assets. Illustrative example: if group revenue were $10,000M and Entity A had $600M of revenue, Entity A is at 6%, which is above 5%, so it is financially significant and lands in scope. The 5% values are not hard-coded. They are configurable benchmarks (<code>assets_benchmark</code>, <code>revenue_benchmark</code>), and changing them triggers a recompute through <code>PUT /update_benchmark_thresholds</code>.</p>
+<p><strong>Residual risk.</strong> After you put the big components in scope, some balance is still left uncovered. Residual risk asks: "is what's left over still big enough to worry about?" Per leaf line: <code>Residual balance = HFM amount - total in scope</code> and <code>Residual multiple = residual balance / materiality</code>. On Q4 2025 the residual threshold was <strong>$170M</strong>, which is exactly half of $340M. Example: a line has $1,200M in HFM and $1,000M covered by in-scope components. Residual is $200M. The multiple is 200 / 340 ≈ 0.59, which is above 50% of materiality, so the line is flagged and a manager must look again.</p>
+<p><strong>EMI (Equity Method Investments).</strong> Stakes Uber holds in other companies where it owns a share but does not consolidate them. They are scoped on their own screen, one column per investee, with fields like ownership percentage, asset balance and auditor.</p>
+<p><strong>SOX (Sarbanes-Oxley Act, 2002).</strong> A US law passed after accounting scandals like Enron. Section 404 requires public companies to maintain and test <strong>internal controls over financial reporting</strong>, and the external auditor must attest to them. In plain words: it is not enough for the numbers to be right, you must prove you have a reliable, repeatable process that makes them right. That is why auditors like PwC care about who changed what, when, and whether a change was reviewed. An audit trail, stable IDs and enforced review steps are exactly what SOX evidence looks like.</p>
+<p><strong>Quarter-annualization.</strong> Income statement lines (revenue, expenses) are flows that build up during the year. Balance sheet lines are snapshots at a point in time. To compare a partial-year flow with annual benchmarks, you scale it up to a full-year estimate. Two common generic forms:</p>
+<ul>
+<li>From a single quarter: <code>annualized = quarter amount × 4</code>. If Q1 revenue is $90M, the annualized estimate is $360M.</li>
+<li>From year-to-date (YTD) after <code>n</code> quarters: <code>annualized = YTD × 4 / n</code>. If YTD revenue after Q3 is $270M, the estimate is 270 × 4 / 3 = $360M.</li>
+</ul>
+<p>The resume calls it "dynamic" because the factor depends on which quarter you are in. In the code, the income-statement component endpoint carries YTD annualization rules. <strong>If asked for the exact formula, say it is applied per FSLI according to Finance's rules, and describe the generic YTD × 4 / n idea.</strong> Do not invent a specific rule per line.</p>
+<h3 id="engineering-words">Engineering words</h3>
+<p><strong>SOADB.</strong> Uber's standard for service-owned MySQL databases (MySQL on the InnoDB engine). Each service owns its own database under a shared operating model. Analogy: every team gets its own locker in a building that the facilities team maintains.</p>
+<p><strong>ORM (Object-Relational Mapper).</strong> A library that lets you work with database rows as Python objects. SQLAlchemy is Python's most widely used ORM. <strong>SQLAlchemy 2.0</strong> is the modern style: typed models with <code>Mapped[...]</code> and <code>mapped_column(...)</code>, and queries written with <code>select()</code>.</p>
+<p><strong>Normalized schema.</strong> A database design where each fact is stored once, in one place, and other tables point to it by key. The opposite of a spreadsheet where the same label is typed in a thousand rows.</p>
+<p><strong>Natural key.</strong> An ID derived from the data itself rather than a random number. If the same data arrives twice, it gets the same ID, so you can detect the duplicate. Analogy: identifying a book by its ISBN instead of by a sticker number the library made up.</p>
+<p><strong>SHA-256.</strong> A cryptographic hash function. It turns any input into a fixed-length fingerprint. Same input always gives the same fingerprint, and different inputs almost never collide.</p>
+<p><strong>Optimistic locking.</strong> A way to stop two people from silently overwriting each other without holding a database lock while they think. Each row has a version number. You may only save if the version is still the one you read. Analogy: a shared document that says "someone else edited this since you opened it, please reload" instead of locking everyone else out.</p>
+<p><strong>Lock contention.</strong> When many writers wait on the same database locks, everything slows down or times out. During a close, the data load jobs (ETL, Extract-Transform-Load) and the managers' edits were competing for the same data.</p>
+<p><strong>Atomic transaction.</strong> A group of writes that either all succeed or all fail. No half-done state is ever visible.</p>
+<p><strong>FSM (finite state machine).</strong> A model where an item is always in exactly one named state, and only certain moves between states are allowed. Here the states are the review statuses: Draft, Review, ReOpen, Closed. A <strong>gate</strong> is a check that can block a move.</p>
+<p><strong>Delta-variance.</strong> The percentage change of a line between periods. A 50% delta-variance check flags a line whose amount moved by more than half since the prior period.</p>
+<p><strong>Bazel.</strong> Google's open-source build system, used for Uber's monorepo. It builds and tests only what changed, and every target is declared explicitly.</p>
+<p><strong>Stacked PRs.</strong> A chain of small pull requests where each builds on the previous one. Reviewers read one small step at a time, and each step can merge and deploy on its own.</p>
+<p><strong>SQL allowlist.</strong> A fixed list of permitted values (columns, filters, page names, statuses or query shapes). Anything not on the list is rejected. It keeps user input from ever turning into arbitrary SQL.</p>
+<p><strong>Statement coverage.</strong> The percentage of code lines (statements) that run at least once during the test suite. 100% means no line in that module is untested.</p>
+<hr>
+<h2 id="5-architecture">5. Architecture</h2>
+<div class="mermaid">flowchart LR
+  HFM["Oracle HFM consolidation"] --&gt; ETL["Shared ETL pipeline"]
+  ETL --&gt; DB["MySQL on SOADB"]
+  UI["React screens used by Finance"] --&gt; H["FastAPI handlers"]
+  H --&gt; S["Services: rules, trees, annualization"]
+  S --&gt; R["Repositories: SQLAlchemy 2.0 sessions"]
+  R --&gt; DB
+  UI --&gt; COLLAB["Collaboration service: comments and notifications"]
+  DB --&gt; PWC["Scoping evidence for PwC work papers"]
+</div>
+<p><em>What to notice: the service is strictly layered. Requests only flow handler, then service, then repository, then MySQL. The ETL and the collaboration service are neighbours I integrate with, not systems I claim to have built.</em></p>
+<p>Walking through it box by box:</p>
+<ol>
+<li><strong>Oracle HFM</strong> holds Uber's consolidated numbers for each quarter.</li>
+<li><strong>The shared ETL pipeline</strong> extracts raw GL balances and entity data from HFM, resolves the parent-child hierarchy into stable IDs, and loads the rows into MySQL. This was a shared pipeline responsibility. I say "the service consumes HFM-loaded tables".</li>
+<li><strong>MySQL on SOADB</strong> is the system of record. Every row carries the fiscal period (<code>fiscal_quarter</code>, <code>fiscal_year</code>) and audit columns (<code>created_by</code>, <code>updated_by</code>, timestamps).</li>
+<li><strong>FastAPI handlers</strong> are thin. They only do HTTP work: read the caller's identity from the <code>x-auth-params-email</code> header that Uber's gateway injects after login (401 if missing), validate inputs with Pydantic, and map errors to status codes. A "not found" error becomes 404, validation becomes 400 or 422, a Sheets outage on the legacy path becomes 503, anything else 500.</li>
+<li><strong>Services</strong> own the business logic: materiality and significance rules, the 5% component rule, residual risk, building the nested L1 to L4 tree and summing children into parents, and quarter-annualization.</li>
+<li><strong>Repositories</strong> own every database session and every query. Each one opens a session, commits on success, rolls back on any exception, and closes in a <code>finally</code> block. The SQLAlchemy calls are synchronous, so handlers push them off the event loop with <code>await asyncio.to_thread(...)</code>.</li>
+<li><strong>The React screens</strong> (built by others) call the 36 endpoints. There are eight screens: Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk and Summary.</li>
+<li><strong>The collaboration service</strong> handles comments and Slack-style notifications. It was a separate service. I did not build it.</li>
+<li><strong>PwC</strong> receives the scoping output as audit evidence.</li>
+</ol>
+<p><strong>Why layering matters here.</strong> Each layer can be tested with the layer below mocked out. A handler test uses a fake service. A service test uses a fake repository. No database is needed. It also let three engineers work on one feature at the same time without stepping on each other.</p>
+<hr>
+<h2 id="6-one-job-step-by-step-a-manager-closes-a-balance-sheet-line">6. One job, step by step: a manager closes a balance-sheet line</h2>
+<p>Sample situation (illustrative data): it is the Q4 2025 close. Priya, a Finance manager, is on the Group Scoping screen looking at "Accounts receivable", which has an HFM amount of $1,200M. Materiality is $340M. Last quarter the line was $1,000M.</p>
+<div class="mermaid">sequenceDiagram
+  participant UI as React Group Scoping screen
+  participant H as FastAPI handler
+  participant S as Group scoping service
+  participant R as Repository
+  participant DB as MySQL
+  UI-&gt;&gt;H: GET group_balance_sheet for Q4 2025
+  H-&gt;&gt;S: build tree for the period
+  S-&gt;&gt;R: fetch lines joined to level_mapping
+  R-&gt;&gt;DB: SELECT with labelled columns
+  DB--&gt;&gt;R: rows with uuid, level ids, amounts, version
+  R--&gt;&gt;S: row dicts
+  S--&gt;&gt;H: nested L1 to L4 tree with significance
+  H--&gt;&gt;UI: JSON tree
+  UI-&gt;&gt;H: PATCH line to Closed with version 7
+  H-&gt;&gt;S: validate status and run the gates
+  S-&gt;&gt;R: update where uuid and version match
+  R-&gt;&gt;DB: UPDATE in one transaction
+  DB--&gt;&gt;R: 1 row affected
+  R--&gt;&gt;H: success, version is now 8
+  H--&gt;&gt;UI: 200 OK
+</div>
+<p><em>What to notice: the read path builds the whole tree on the server, and the write path is a single guarded UPDATE that checks both the version and the state-machine gate.</em></p>
+<p>The same flow in numbered steps:</p>
+<ol>
+<li>The screen calls <code>GET /frm-scoping/group_balance_sheet?fiscal_quarter=Q4&amp;fiscal_year=2025</code>.</li>
+<li>The handler validates the query parameters with Pydantic. If <code>fiscal_quarter</code> is missing, the caller gets a 422.</li>
+<li>The service asks the repository for all balance-sheet lines for that period, joined to the <code>level_mapping</code> table that holds the L1 to L4 labels.</li>
+<li>The repository runs a SQLAlchemy 2.0 <code>select()</code> where every column has an explicit label, so a fact row's <code>uuid</code> can never be confused with the mapping row's <code>uuid</code>.</li>
+<li>The service applies the rules. $1,200M is above $340M, so <code>quantitative_material = YES</code> and the line is Significant. It also builds the tree and sums children into parents.</li>
+<li>Priya marks the line "In scope" and moves it to Closed. The screen sends <code>PATCH /frm-scoping/group_balance_sheet/{uuid}</code> with <code>{"conclusion_scope": "In Scope", "group_status": "Closed"}</code> plus the version it read.</li>
+<li>The handler reads <code>x-auth-params-email</code> (Priya's email) for the audit trail.</li>
+<li>The service checks the status is one of the allowed values (Draft, Review, ReOpen, Closed). It then runs the delta-variance gate: the line moved from $1,000M to $1,200M, a 20% change, which is under 50%, so the move to Closed is allowed.</li>
+<li>The repository runs <code>UPDATE ... WHERE uuid = ? AND version = 7</code>, sets <code>updated_by</code> to Priya's email, increments the version and commits. One row is affected, so the write succeeded.</li>
+<li>If another manager had saved first, zero rows would be affected and the service would tell Priya to reload instead of silently overwriting.</li>
+</ol>
+<hr>
+<h2 id="7-each-resume-bullet-decoded">7. Each resume bullet decoded</h2>
+<h3 id="bullet-1-ownership-70-340m-19m-rows-36-endpoints-l1-to-l4-quarter-annualization">Bullet 1: ownership, 70%, $340M, 19M rows, 36 endpoints, L1 to L4, quarter-annualization</h3>
+<blockquote>
+<p>"Owned the Financial Risk Management scoping backend, reducing quarterly reconciliation time by 70% (from 14 days to 3 days) against a $340M materiality threshold. Engineered the Sheets-to-MySQL migration across 19M raw GL rows, shipping 36 FastAPI endpoints to automate custom financial math and a nested 4-level FSLI (L1–L4) hierarchy with dynamic quarter-annualization."</p>
+</blockquote>
+<h4 id="in-plain-words">In plain words</h4>
+<p>I owned the backend that Finance uses to scope the quarterly audit. I moved the data out of Google Sheets into MySQL, built the API that does the finance calculations and the four-level line-item tree, and that cut the reconciliation part of the close from about two weeks to three days.</p>
+<h4 id="how-it-works">How it works</h4>
+<p><strong>Sheets to MySQL.</strong> The ETL loads HFM data into MySQL tables keyed by fiscal period. Every line gets a permanent <code>uuid</code>. The text hierarchy (L1 to L4 labels) lives once in <code>level_mapping</code>, and fact rows store only a <code>level_id</code> that points to it. A rename of a parent heading therefore does not rewrite thousands of fact rows.</p>
+<p><strong>The recon v1 to v2 parallel run (the migration I personally owned).</strong> The old reconciliation endpoints read from Google Sheets. I added new MySQL-backed endpoints next to them instead of replacing them:</p>
+<ul>
+<li>v1, Sheets-backed: <code>GET /recon_balance_sheet</code>, <code>GET /recon_income_statement</code></li>
+<li>v2, MySQL-backed: <code>GET /v2/recon_balance_sheet</code>, <code>GET /v2/recon_income_statement</code></li>
+</ul>
+<p>The change touched 18 files with about 1,268 lines added (MEASURED from the migration write-up). It added two ORM models, Pydantic response schemas for each tree level, repository readers, and a service that builds the L1 to L3 recon tree and sums children into parents. QA compared v1 and v2 responses for the same period side by side. The test plan covered happy paths, an empty period returning an empty list, missing parameters returning 422, a check that the v1 response shape was unchanged, and a check that each parent equals the sum of its children. The UI was pointed at v2 once it matched on staging. v1 stayed in place as a fallback.</p>
+<p><strong>Building the tree.</strong> The service reads flat rows, groups them by L1, then L2, then L3 (and L4 where the screen needs it), and sums amounts upward. The display order of FSLIs follows the order of the financial statements, defined in a lookup keyed by parent path. Unknown FSLIs are appended at the end rather than dropped, so new source data cannot crash the API.</p>
+<pre><code class="language-python">def build_tree(rows):
+    tree = {}
+    for r in rows:
+        l1 = tree.setdefault(r[&quot;level_1&quot;], {&quot;amount&quot;: 0, &quot;children&quot;: {}})
+        l2 = l1[&quot;children&quot;].setdefault(r[&quot;level_2&quot;], {&quot;amount&quot;: 0, &quot;children&quot;: {}})
+        l2[&quot;children&quot;][r[&quot;level_3&quot;]] = {&quot;amount&quot;: r[&quot;hfm_amount&quot;], &quot;uuid&quot;: r[&quot;uuid&quot;]}
+        l2[&quot;amount&quot;] += r[&quot;hfm_amount&quot;]
+        l1[&quot;amount&quot;] += r[&quot;hfm_amount&quot;]
+    return tree
+</code></pre>
+<p><em>Simplified sketch to explain the idea. The real service also handles ordering, display formatting such as <code>($8)</code> for negatives, and the difference column.</em></p>
+<p><strong>The materiality rule.</strong> Two independent tests and an OR:</p>
+<pre><code class="language-python">def overall_significance(hfm_amount, materiality, qualitative_answer):
+    quantitative = &quot;YES&quot; if hfm_amount &gt; materiality else &quot;NO&quot;
+    if quantitative == &quot;YES&quot; or qualitative_answer == &quot;YES&quot;:
+        return &quot;Significant&quot;
+    return &quot;Not Significant&quot;
+</code></pre>
+<p><strong>Quarter-annualization.</strong> For income-statement component views, YTD amounts are scaled to a full-year estimate using the quarter number, so a Q1 figure is not compared with an annual benchmark as if it were a full year. Generic form: <code>YTD × 4 / n</code>.</p>
+<p><strong>The 36 endpoints.</strong> All live under one router prefix, <code>/frm-scoping</code>. The main groups are:</p>
+<table>
+<thead>
+<tr>
+<th>Group</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Health and smoke</td>
+<td><code>GET /health</code>, <code>POST /scoping</code></td>
+</tr>
+<tr>
+<td>Reconciliation v1 and v2</td>
+<td><code>GET /recon_balance_sheet</code>, <code>GET /v2/recon_balance_sheet</code> and the income-statement pair</td>
+</tr>
+<tr>
+<td>Group scoping</td>
+<td><code>GET</code> and <code>PATCH /group_balance_sheet/{uuid}</code>, same for income statement</td>
+</tr>
+<tr>
+<td>Component scoping</td>
+<td><code>GET /bs_components</code>, <code>GET /is_components</code>, cascading filter endpoints</td>
+</tr>
+<tr>
+<td>Residual risk</td>
+<td><code>GET /residual_risk?fsli_type=bs</code> or <code>is</code></td>
+</tr>
+<tr>
+<td>EMI</td>
+<td><code>GET /emi_scoping</code>, <code>GET /emi_data</code>, <code>PATCH /emi_data/{uuid}</code></td>
+</tr>
+<tr>
+<td>Metrics, materiality, thresholds</td>
+<td><code>GET</code> and <code>PUT /materiality</code>, <code>PUT /update_benchmark_thresholds</code>, <code>GET</code> and <code>PATCH /threshold-setup/{uuid}</code></td>
+</tr>
+<tr>
+<td>Questions and assessments</td>
+<td><code>POST /scoping_questions/bulk</code>, <code>GET</code>, <code>POST</code> and <code>PATCH /scoping_assessments</code></td>
+</tr>
+</tbody>
+</table>
+<h4 id="why-this-design">Why this design</h4>
+<ul>
+<li><strong>MySQL over Sheets</strong> because Sheets has no stable row identity, no concurrency control and no audit trail, which are exactly what a SOX control needs.</li>
+<li><strong>A parallel run instead of a big-bang switch</strong> because the close has a hard deadline. If v2 had a bug, Finance could keep using v1 that same day.</li>
+<li><strong>Hierarchy flattened into <code>level_id</code> by the ETL, tree built in Python</strong> because the data per quarter is small, and building the tree in application code is simpler to test than recursive SQL.</li>
+</ul>
+<h4 id="alternatives-and-why-not">Alternatives and why not</h4>
+<ul>
+<li><strong>Keep Sheets and add scripts.</strong> Still no stable IDs, no concurrency control. Rejected.</li>
+<li><strong>A data warehouse (columnar store).</strong> Good for big analytical scans, poor at many small transactional edits by managers. The workload is transactional. Rejected.</li>
+<li><strong>PostgreSQL with recursive queries.</strong> A fine database, but Uber's service standard is MySQL on SOADB, and we did not need recursive SQL because the ETL flattens the hierarchy. Fighting the platform would have bought nothing.</li>
+<li><strong>Replace v1 in place.</strong> Faster to write, but no fallback during a live close. Rejected.</li>
+</ul>
+<p><strong>Trade-off.</strong> Two code paths existed for a while, so a fix sometimes had to be checked in both. <strong>What I'd do differently:</strong> add an automated parity job that diffs v1 and v2 for every period nightly, instead of relying on QA side-by-side checks.</p>
+<h4 id="the-numbers">The numbers</h4>
+<p><strong>70% (from 14 days to 3 days).</strong>
+- <em>What it measures:</em> the time Finance spent on quarterly reconciliation, before and after the platform.
+- <em>How derived:</em> (14 − 3) / 14 = 78.6%, which the resume states conservatively as 70%. The technical design document framed a 70% cut in manual ingestion and reconciliation time as the goal, and that is what the platform delivered for the close.
+- <em>Why it mattered:</em> reconciliation sits at the front of scoping. Every day saved there gives managers and PwC more time for real review before the filing deadline.
+- <em>How to say it:</em> "Quarterly reconciliation went from 14 days to 3 days, about a 70% cut."
+- <em>What not to say:</em> do not walk it back unprompted. If pressed on measurement, say: "The technical design doc framed that cut, and that's what the platform delivered for the close." Do not claim a precise hour-by-hour time study.</p>
+<p><strong>$340M materiality threshold.</strong>
+- <em>What it measures:</em> the group materiality on the Q4 2025 close, stored as a metric row (MEASURED).
+- <em>How derived:</em> set by Finance and the auditors, not by me. The residual threshold on the same close was $170M, half of it.
+- <em>Why it mattered:</em> it is the bar every line is measured against. Any line above $340M is quantitatively material.
+- <em>How to say it:</em> "Against a $340M materiality threshold on the Q4 2025 close."
+- <em>What not to say:</em> do not present it as a permanent constant. It is configurable and changes by period.</p>
+<p><strong>19M raw GL rows.</strong>
+- <em>What it measures:</em> the raw general-ledger rows migrated off Sheets into MySQL.
+- <em>How derived:</em> this is the resume figure for the migration. Individual quarterly GL extracts were roughly 38K to 95K rows, covering about 1.7K to 1.8K accounts and about 400 entities.
+- <em>Why it mattered:</em> moving that history into a relational store gave every line a stable ID and a period key.
+- <em>How to say it:</em> "I migrated 19 million raw GL rows off Sheets into MySQL."
+- <em>What not to say:</em> do not invent where the 19M breaks down beyond "raw GL rows migrated off Sheets". If someone asks about data volume per quarter, say: "Each quarterly extract was tens of thousands of rows. The value was correctness, the hierarchy and auditability, not big-data throughput." Never call this a big-data system.</p>
+<p><strong>36 FastAPI endpoints.</strong>
+- <em>What it measures:</em> the platform's API surface.
+- <em>How derived:</em> about 31 functional routes in the scoping service handler, plus the collaboration-service comment and notification APIs defined in the technical design doc, make 36.
+- <em>Why it mattered:</em> each endpoint replaced a manual spreadsheet step: a calculation, a status move, a filter.
+- <em>How to say it:</em> "36 endpoints automating the financial math and the hierarchy."
+- <em>What not to say:</em> do not say you personally built the collaboration service. If asked for the breakdown, give it calmly as above.</p>
+<h4 id="questions-they-will-ask">Questions they will ask</h4>
+<p><strong>"What exactly did you own?"</strong>
+I owned the scoping service backend: the FastAPI handlers, the services that hold the finance rules, the repositories and the SQLAlchemy models. I personally drove the reconciliation migration from Sheets to MySQL. The ETL from HFM was a shared pipeline responsibility, and the comments and notifications service was a separate team's service. The React screens were built by front-end engineers on top of my APIs.</p>
+<p><strong>"Explain materiality to me like I'm not in finance."</strong>
+Materiality is the size of mistake that would actually change someone's decision when reading the financial statements. On our Q4 2025 close it was $340M. So a $1.2 billion receivables line is material on its own, and a $90M prepaid line is not, unless a manager flags a qualitative risk. In the platform it is just a configurable metric row, and the rule is "significant if over materiality or qualitatively flagged".</p>
+<p><strong>"How did you make sure v2 gave the same numbers as v1?"</strong>
+I ran them side by side. Both endpoints were live at the same time for the same period, and QA compared the responses. I also checked invariants like "every parent equals the sum of its children" and "the v1 response shape is unchanged". The UI only switched to v2 once staging matched, and v1 stayed as a fallback.</p>
+<p><strong>"19 million rows in MySQL is not much. Why is this hard?"</strong>
+Agreed, it is not a scale problem. The hard part is correctness: a recursive hierarchy where one duplicated leaf silently inflates every parent, several managers editing at once, and the output becoming audit evidence for an SEC filing. I'd rather be honest that this is a correctness and auditability system than dress it up as big data.</p>
+<p><em>Follow-up they may ask:</em> "Then why the 70%?" Because the slow part was never compute. It was manual mapping, copy-paste and chasing differences, and the platform automated those.</p>
+<hr>
+<h3 id="bullet-2-8-table-schema-soadb-polymorphic-review-status-optimistic-locking-atomic-syncs-sha-256-keys">Bullet 2: 8-table schema, SOADB, polymorphic review-status, optimistic locking, atomic syncs, SHA-256 keys</h3>
+<blockquote>
+<p>"Resolved ETL pipeline lock contention during financial close by designing an 8-table normalized MySQL schema on Uber's SOADB featuring a polymorphic review-status model. Guaranteed real-time, multi-user collaboration integrity by implementing optimistic row-locking, atomic cross-table syncs, and deterministic SHA-256 natural-key hashing to eliminate data duplication across quarterly audit trails."</p>
+</blockquote>
+<h4 id="in-plain-words_1">In plain words</h4>
+<p>During close, data loads and managers' edits were fighting over the same data. I designed a clean MySQL schema where each fact lives once, gave every reviewable item the same status model, and added three safety mechanisms: version checks so nobody overwrites someone else, all-or-nothing writes across tables, and IDs computed from the content so the same item can never be inserted twice.</p>
+<h4 id="how-it-works_1">How it works</h4>
+<p><strong>The schema.</strong> The spine is <code>level_mapping</code>, which holds the L1 to L4 labels and a stable <code>uuid</code>. Fact tables (<code>balance_sheet</code>, <code>income_statement</code>, <code>component_entity</code>) store a <code>level_id</code> pointing at it. Joins always also match <code>fiscal_quarter</code>, <code>fiscal_year</code> and active flags, because the same line exists once per period. Supporting tables hold metrics such as materiality, legal-entity thresholds, EMI data, scoping questions and the answers to them.</p>
+<div class="mermaid">flowchart TB
+  LM["level_mapping: uuid, level1 to level4"]
+  BS["balance_sheet: uuid, level_id, amounts, statuses, version"]
+  IS["income_statement: same shape"]
+  CE["component_entity: level_id, component, amount"]
+  SA["scoping_assessments: line_id, question_id, answer"]
+  SQ["scoping_questions: SHA-256 uuid, text, page"]
+  BS --&gt; LM
+  IS --&gt; LM
+  CE --&gt; LM
+  SA --&gt; BS
+  SA --&gt; SQ
+</div>
+<p><em>What to notice: <code>level_mapping</code> is the spine, and nothing stores the hierarchy text twice. The version check on reviewable rows is how optimistic locking works. Column lists are simplified for the whiteboard.</em></p>
+<p>The PDF says 8 tables, which is the normalized core design. The scoping service code ends up with 11 SQLAlchemy models in total (verbal depth), because supporting tables were added as screens landed, for example the two recon v2 tables from the reconciliation migration. Say "an 8-table normalized core, 11 ORM models in the service code". Do not try to map 8 to 11 one by one unless asked, and if asked, name the spine tables above.</p>
+<p><strong>Polymorphic review-status.</strong> "Polymorphic" means one status model reused across different kinds of items. Group lines, component lines, residual lines and legal-entity threshold rows each carry a status column (<code>group_status</code>, <code>component_status</code>, <code>residual_status</code>, <code>review_status</code>), and all use the same vocabulary: <strong>Draft, Review, ReOpen, Closed</strong>. One validation rule, one set of transitions and one UI component serve every screen.</p>
+<pre><code class="language-python">ALLOWED_STATUSES = {&quot;Draft&quot;, &quot;Review&quot;, &quot;ReOpen&quot;, &quot;Closed&quot;}
+
+def validate_status(value: str) -&gt; str:
+    if value not in ALLOWED_STATUSES:
+        raise ValueError(f&quot;invalid status {value}&quot;)
+    return value
+</code></pre>
+<p><strong>Optimistic row-locking, a worked SQL example.</strong> Two managers open the same line at the same time:</p>
+<pre><code class="language-sql">-- Both managers read the line. Each sees version = 7.
+SELECT uuid, conclusion_scope, group_status, version
+FROM balance_sheet
+WHERE uuid = 'a1f3c9...';
+
+-- Manager A saves first.
+UPDATE balance_sheet
+SET conclusion_scope = 'In Scope',
+    group_status     = 'Review',
+    version          = version + 1,
+    updated_by       = 'manager.a@uber.com'
+WHERE uuid = 'a1f3c9...' AND version = 7;
+-- 1 row affected. The row is now at version 8.
+
+-- Manager B saves using the version B read earlier.
+UPDATE balance_sheet
+SET conclusion_scope = 'Out of Scope',
+    version          = version + 1,
+    updated_by       = 'manager.b@uber.com'
+WHERE uuid = 'a1f3c9...' AND version = 7;
+-- 0 rows affected. B's view is stale.
+</code></pre>
+<p><em>Illustrative SQL with simplified columns.</em> When the update affects zero rows, the service rejects the write (for example with an HTTP 409 Conflict) and the screen asks Manager B to reload and reapply. Nobody waited on a lock while thinking, and nobody's work was silently lost. In SQLAlchemy you can get the same behaviour from the ORM with a version column configured in the mapper (<code>version_id_col</code>), which raises an error when the version no longer matches.</p>
+<p><strong>Atomic cross-table syncs.</strong> Some edits must change two tables together. For example, when a manager answers a qualitative scoping question, the answer row is saved and the mapped balance-sheet line's qualitative field is updated in the same transaction. If the line update hits zero rows, the whole thing rolls back. Another example: updating the asset and revenue benchmarks writes both metric rows and commits once.</p>
+<pre><code class="language-python">def save_answer_and_sync(session, assessment_uuid, answer, line_uuid, user):
+    try:
+        session.execute(
+            update(ScopingAssessment)
+            .where(ScopingAssessment.uuid == assessment_uuid)
+            .values(answer_text=answer, updated_by=user)
+        )
+        result = session.execute(
+            update(BalanceSheet)
+            .where(BalanceSheet.uuid == line_uuid)
+            .values(qualitative_material=&quot;YES&quot; if answer == &quot;Yes&quot; else &quot;NO&quot;,
+                    updated_by=user)
+        )
+        if result.rowcount == 0:
+            raise ValueError(&quot;mapped line not found&quot;)
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+</code></pre>
+<p><em>Simplified sketch of the pattern. The key idea is one session, one commit, rollback on anything unexpected.</em></p>
+<p><strong>SHA-256 natural keys.</strong> Scoping questions are re-loaded every quarter. Without care, each reload would insert duplicates. The ID is computed from the content: the SHA-256 of the question text plus the normalized page name.</p>
+<pre><code class="language-python">import hashlib
+
+def question_uuid(question_text: str, page_name: str) -&gt; str:
+    normalized_page = page_name.strip().lower()
+    digest = hashlib.sha256(f&quot;{question_text}{normalized_page}&quot;.encode(&quot;utf-8&quot;))
+    return digest.hexdigest()[:32]
+</code></pre>
+<pre><code class="language-sql">INSERT INTO scoping_questions (uuid, question_text, page_name, is_active)
+VALUES ('5e1b...', 'Any new revenue streams this quarter?', 'group_scoping', 'true')
+ON DUPLICATE KEY UPDATE is_active = VALUES(is_active);
+</code></pre>
+<p><em>The normalization shown is illustrative. Check the code for the exact rule.</em> The same question on the same page always produces the same ID, so re-sending the bulk payload updates rows in place. The bulk endpoint returns the IDs in input order.</p>
+<p><strong>Lock contention, explained.</strong> During close, the ETL was loading data while managers were editing. Long transactions and wide, spreadsheet-shaped data mean writers queue on the same locks. The design reduces that in three ways: short single-purpose transactions in the repositories, optimistic version checks instead of holding locks while a user thinks, and a normalized layout where a load and an edit are less likely to fight over the same rows.</p>
+<h4 id="why-this-design_1">Why this design</h4>
+<ul>
+<li><strong>Optimistic over pessimistic locking</strong> because conflicts are rare (managers usually own different lines), and holding a lock for the minutes a human takes to edit would block everyone else and the ETL.</li>
+<li><strong>Natural keys over random IDs</strong> for re-loaded reference data, because the same content must map to the same row every quarter.</li>
+<li><strong>One status model</strong> because eight screens with eight slightly different status rules would be eight places for a SOX bug.</li>
+</ul>
+<h4 id="alternatives-and-why-not_1">Alternatives and why not</h4>
+<ul>
+<li><strong>Pessimistic locks (<code>SELECT ... FOR UPDATE</code>) everywhere.</strong> Safe, but it serialises everyone during the busiest weeks and makes lock contention worse.</li>
+<li><strong>Last write wins.</strong> Simple, but silently loses a manager's work. Unacceptable for audit evidence.</li>
+<li><strong>Auto-increment IDs plus a "check if exists" query.</strong> Racy under concurrent loads, and the ID changes between environments.</li>
+<li><strong>Separate status tables per screen.</strong> More flexible, but duplicates logic.</li>
+</ul>
+<p><strong>Trade-off.</strong> Optimistic locking pushes conflict handling to the user, who sometimes has to reload. <strong>What I'd do differently:</strong> show who changed the row in the conflict message, so the second manager knows whom to talk to.</p>
+<h4 id="the-numbers_1">The numbers</h4>
+<p><strong>8 tables.</strong>
+- <em>What it measures:</em> the normalized core MySQL schema on the PDF.
+- <em>How derived:</em> from the schema design. Verbal depth: 11 SQLAlchemy models in the service code.
+- <em>How to say it:</em> "An 8-table normalized MySQL schema on SOADB."
+- <em>What not to say:</em> do not say "the whole database is 11 tables". The comments and notifications tables live in the separate collaboration service.</p>
+<h4 id="questions-they-will-ask_1">Questions they will ask</h4>
+<p><strong>"Why optimistic locking and not row locks?"</strong>
+Because conflicts are rare and humans are slow. Managers mostly own different lines, so blocking everyone for the minutes it takes someone to type a conclusion would hurt far more than the occasional reload. With a version check, the second writer gets a clear "this changed, please reload" instead of silently overwriting. It also keeps database locks short, which was the lock-contention problem we were solving during close.</p>
+<p><strong>"Why SHA-256 for a key? Isn't that overkill?"</strong>
+I needed a deterministic ID, meaning the same question on the same page always gets the same ID, in every environment and every quarter. A hash of the content gives exactly that and makes the bulk load idempotent. SHA-256 is standard, collisions are not a practical concern, and the cost is trivial at this volume.</p>
+<p><em>Follow-up they may ask:</em> "What if the question text has a typo fixed?" Then it is a new question with a new ID, which is actually correct for an audit trail. The old one can be deactivated.</p>
+<p><strong>"What does polymorphic mean here?"</strong>
+One status model used by different kinds of rows. Group lines, component lines, residual lines and threshold rows all move through Draft, Review, ReOpen and Closed. One validator, one state machine, one UI pattern.</p>
+<hr>
+<h3 id="bullet-3-led-3-engineers-sqlalchemy-20-migration-column-aliasing-bug-100-coverage-stacked-bazel-prs-sql-allowlists-fsm-gates-50">Bullet 3: led 3 engineers, SQLAlchemy 2.0 migration, column-aliasing bug, 100% coverage, stacked Bazel PRs, SQL allowlists, FSM gates, 50%</h3>
+<blockquote>
+<p>"Led 3 engineers in a core SQLAlchemy 2.0 ORM migration that eliminated latent column-aliasing bugs and raised module statement coverage to 100%. Orchestrated zero-downtime releases via stacked Bazel PRs, embedding reporting SQL allowlists and automated FSM gates with 50% delta-variance checks to enforce SOX compliance."</p>
+</blockquote>
+<h4 id="in-plain-words_2">In plain words</h4>
+<p>I was tech lead of a three-person EPAM pod. We moved the data layer from hand-written raw SQL to modern SQLAlchemy 2.0, which killed a class of bugs where joined columns with the same name silently overwrote each other. We tested every line of that module. We shipped it in small chained pull requests with no downtime, locked reporting queries to an approved list, and added a state-machine check that stops a line being closed if its amount jumped by more than half without review.</p>
+<h4 id="how-it-works_2">How it works</h4>
+<p><strong>The column-aliasing bug, told precisely.</strong> The legacy read path turned raw SQL results into dictionaries like this:</p>
+<pre><code class="language-python">result = session.execute(text(sql), bind)
+keys = list(result.keys())
+rows = [dict(zip(keys, tuple(r))) for r in result.fetchall()]
+</code></pre>
+<p>That is only safe if every column name in the result is unique. The component query joined a fact table (aliased <code>i</code>) to <code>level_mapping</code> (aliased <code>lm</code>), and both tables have columns called <code>uuid</code>, <code>level_id</code>, <code>fiscal_quarter</code> and <code>fiscal_year</code>. When the query selected both <code>i.uuid</code> and <code>lm.uuid</code> without distinct names, the result had two columns literally named <code>uuid</code>. <code>zip</code> pairs keys and values by position, and a Python <code>dict</code> keeps the <strong>last</strong> value for a repeated key. So each row dictionary silently held the <code>level_mapping</code> uuid instead of the fact row's uuid.</p>
+<p>A tiny demonstration:</p>
+<pre><code class="language-python">keys = [&quot;uuid&quot;, &quot;amount&quot;, &quot;uuid&quot;]          # fact uuid, amount, mapping uuid
+row  = (&quot;fact-111&quot;, 1200, &quot;map-999&quot;)
+dict(zip(keys, row))
+# {'uuid': 'map-999', 'amount': 1200}     the fact uuid is gone
+</code></pre>
+<p><em>Symptom:</em> rows looked correct on screen, but they carried the wrong identifier. A PATCH by uuid or a comment attached to a line pointed at a different line. It surfaced when an edit to one recon line appeared to affect another.</p>
+<p><em>The fix:</em> move to SQLAlchemy 2.0 <code>select()</code> on <code>aliased()</code> models and give every projected column an explicit <code>.label()</code>:</p>
+<pre><code class="language-python">i = aliased(fact_model, name=&quot;i&quot;)
+lm = aliased(LevelMapping, name=&quot;lm&quot;)
+stmt = select(
+    func.min(i.uuid).label(&quot;fsli_id&quot;),
+    func.min(i.level_id).label(&quot;level_id&quot;),
+    func.max(lm.uuid).label(&quot;level_mapping_uuid&quot;),
+    lm.level1.label(&quot;level_1&quot;),
+    func.max(lm.fiscal_quarter).label(&quot;level_mapping_fiscal_quarter&quot;),
+)
+</code></pre>
+<p>Now no two keys can collide, and a finalising step maps <code>fsli_id</code> back onto <code>uuid</code> deterministically. The general lesson: when you build row dictionaries from result keys, duplicate column names across joined tables cause silent last-write-wins overwrites. Label every column, or use ORM entity rows.</p>
+<p><strong>What else SQLAlchemy 2.0 brought.</strong> Every model is declared with typed <code>Mapped[...]</code> and <code>mapped_column(...)</code> on a shared declarative base, so the type checker sees real attribute types. Queries use <code>select()</code> instead of the legacy <code>Query</code> API. Session handling became one consistent pattern: open, commit on success, roll back on exception, close in <code>finally</code>.</p>
+<p><strong>100% statement coverage.</strong> Every statement in the migrated module runs in at least one test. The suite uses FastAPI's <code>TestClient</code> with mocks (<code>AsyncMock</code>, <code>MagicMock</code>, <code>patch</code>) to inject fake services into handlers and fake repositories into services, so tests need no database. They check status codes, response shapes, the 401 path when the identity header is missing, and error-to-status mapping. Across the service there are 1,100+ tests (verbal depth).</p>
+<p><strong>Stacked Bazel PRs and zero downtime.</strong> Each package has a Bazel test target, and CI runs the targets layer by layer: database models, schemas, repository, service, handler. All must pass before merge. Work was split into a chain of small PRs in that same order, so a reviewer read one layer at a time and each PR was safe to deploy on its own. Changes were additive: new code paths appeared next to old ones (as with recon v2 next to v1), and the switch happened only after verification. Nothing had to go down.</p>
+<p><strong>Reporting SQL allowlists.</strong> User input never becomes raw SQL. Only approved values are accepted for things like page names, statuses, filter levels and statement types (<code>fsli_type</code> is <code>bs</code> or <code>is</code>), and reporting queries are built from approved, parameterized shapes. Two concrete examples in the code: <code>GET /scoping_questions</code> only accepts allowlisted page names, and status updates only accept Draft, Review, ReOpen or Closed.</p>
+<pre><code class="language-python">ALLOWED_PAGES = {&quot;group_scoping&quot;, &quot;component_scoping&quot;, &quot;residual_risk&quot;}  # illustrative names
+
+def get_questions(page_name: str):
+    if page_name not in ALLOWED_PAGES:
+        raise HTTPException(status_code=400, detail=&quot;unknown page&quot;)
+    return repo.fetch_questions(page_name)   # bound parameter, never string concat
+</code></pre>
+<p><strong>FSM gates with 50% delta-variance.</strong> Each reviewable line is in one state: Draft, Review, ReOpen or Closed. The gate is a check that blocks moving a scoping item forward, for example to Closed, when the line's quarter-over-quarter change is more than 50% and it has not been reviewed.</p>
+<pre><code class="language-python">def delta_variance(current: float, prior: float) -&gt; float:
+    if prior == 0:
+        return float(&quot;inf&quot;)
+    return abs(current - prior) / abs(prior)
+
+def check_can_close(line, reviewed: bool):
+    if delta_variance(line.current_amount, line.prior_amount) &gt; 0.50 and not reviewed:
+        raise ValueError(&quot;variance above 50 percent needs review before Closed&quot;)
+</code></pre>
+<p><em>Sketch with illustrative names, to explain the mechanism.</em> Worked example: a line was $400M last quarter and is $650M now. The change is 250 / 400 = 62.5%, above 50%, so the move to Closed is blocked until the line has been reviewed. A line that went from $1,000M to $1,200M (20%) passes. Keep it at this mechanism level. Do not invent extra rules.</p>
+<p>Do not confuse this 50% with the residual-risk flag, which checks whether residual balance is above 50% of materiality ($170M on Q4 2025). They are separate checks.</p>
+<p><strong>Leading 3 engineers.</strong> I was tech lead of the EPAM pod, not a people manager. Concretely:
+- <strong>Task split by layer.</strong> Work was cut along the handler, service, repository and model boundary, so two people could build the same feature without merge collisions. One person took the Pydantic schemas and handler, another took the repository and ORM.
+- <strong>Conventions.</strong> Thin handlers. Services own the logic and tree building. Repositories own every session. Every write records <code>updated_by</code> from the identity header. No bare <code>except</code> that swallows errors. Blocking database work goes through <code>asyncio.to_thread</code>. These came out of our backend team syncs, and the uniformity across the codebase is the evidence they were enforced.
+- <strong>Review gate.</strong> Every PR had to add or update tests in the matching test folder and pass the Bazel targets.</p>
+<h4 id="why-this-design_2">Why this design</h4>
+<ul>
+<li><strong>Labels on every column</strong> because the bug was silent. A crash you notice. A wrong ID you do not.</li>
+<li><strong>100% on the module</strong> because this code produces audit evidence. Untested lines in a SOX-relevant path are a liability.</li>
+<li><strong>Stacked PRs</strong> because a 1,000-line PR in a finance service is unreviewable, and reviewers miss bugs in big diffs.</li>
+<li><strong>Allowlists</strong> because reporting endpoints take user-chosen filters. An allowlist is the simplest way to guarantee no SQL injection and no surprise query shapes.</li>
+<li><strong>A state-machine gate</strong> because SOX is about enforced process. A big unexplained movement must not slip through to Closed.</li>
+</ul>
+<h4 id="alternatives-and-why-not_2">Alternatives and why not</h4>
+<ul>
+<li><strong>Patch each raw query by hand.</strong> Fixes today's bug, leaves the pattern for the next person. Rejected in favour of the ORM migration.</li>
+<li><strong>Lower coverage target with integration tests only.</strong> Slower, flakier, and leaves branches unexercised.</li>
+<li><strong>One big migration PR with a feature flag.</strong> Possible, but review quality drops and rollback is all-or-nothing.</li>
+<li><strong>Free-form SQL for reporting with escaping.</strong> Escaping is easy to get wrong. Rejected.</li>
+<li><strong>A purely manual variance review.</strong> Humans forget under deadline pressure. The gate makes it impossible to forget.</li>
+</ul>
+<p><strong>Trade-off.</strong> Strict labelling and allowlists add boilerplate to every new query and filter. <strong>What I'd do differently:</strong> add a lint rule that fails CI when a raw <code>text()</code> query is used in a repository, so the old pattern cannot creep back in.</p>
+<h4 id="the-numbers_2">The numbers</h4>
+<p><strong>3 engineers.</strong>
+- <em>What it measures:</em> the size of the EPAM pod I led as tech lead.
+- <em>How to say it:</em> "I led a pod of 3 engineers."
+- <em>What not to say:</em> do not call it people management, and do not merge it with "mentored 2 engineers" at Masters India. Those are different jobs.</p>
+<p><strong>100% statement coverage.</strong>
+- <em>What it measures:</em> statement coverage of the module touched by the ORM migration.
+- <em>How to say it:</em> "We raised module statement coverage to 100%."
+- <em>What not to say:</em> do not claim 100% of the whole monorepo or the whole service. Do not borrow the 82% coverage number from Masters India.</p>
+<p><strong>50% delta-variance.</strong>
+- <em>What it measures:</em> the threshold for period-over-period change that triggers the gate.
+- <em>How derived:</em> <code>|current − prior| / |prior| &gt; 0.5</code>.
+- <em>How to say it:</em> "A state-machine gate blocks closing a line if it moved more than 50% quarter over quarter without review."</p>
+<h4 id="questions-they-will-ask_2">Questions they will ask</h4>
+<p><strong>"Tell me about the column-aliasing bug."</strong>
+The legacy code built row dictionaries with <code>dict(zip(result.keys(), row))</code>. We joined a fact table to the hierarchy table, and both had a column called <code>uuid</code>. The result had two <code>uuid</code> keys, and a Python dict keeps the last one, so every row silently carried the hierarchy's uuid instead of the line's own uuid. Edits and comments landed on the wrong line. I fixed it by moving to SQLAlchemy 2.0 <code>select()</code> with <code>aliased()</code> tables and an explicit label on every column, like <code>fsli_id</code> versus <code>level_mapping_uuid</code>. Then we made that pattern the standard in the migration so it could not come back.</p>
+<p><em>Follow-up they may ask:</em> "How would you catch that class of bug earlier?" A test that asserts the uuid on each returned row exists in the fact table, and a lint that forbids raw <code>text()</code> queries in repositories.</p>
+<p><strong>"What does leading 3 engineers actually mean for you?"</strong>
+I was the tech lead of the pod, not their manager. I sliced work by layer so people could work in parallel, set the conventions everyone followed, reviewed PRs, and held the gate that every PR comes with tests and passes Bazel. The recon migration is a good example: 18 files cleanly split across layers.</p>
+<p><strong>"How do stacked PRs give you zero downtime?"</strong>
+Each PR is small and additive, and deployable on its own. New code lives alongside old code until it is verified. For the recon migration, the v2 endpoints existed next to v1, and the UI switched only after staging matched. At no point did we have to take the service down or break the old path.</p>
+<p><strong>"What is the 50% check for?"</strong>
+SOX wants evidence that big movements were looked at. If a line moved more than 50% since the prior quarter, the state machine refuses to move it to Closed until someone has reviewed it. It turns a "please remember to check" into a rule the system enforces.</p>
+<hr>
+<h2 id="8-tech-used-in-this-project-and-why">8. Tech used in this project and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is</th>
+<th>Why here</th>
+<th>Alternative considered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>General-purpose language</td>
+<td>Uber's internal Python service framework and team skills</td>
+<td>Java with Spring Boot, a fine fit but not this team's standard</td>
+</tr>
+<tr>
+<td>FastAPI</td>
+<td>Async Python web framework with type-driven validation</td>
+<td>Typed requests, automatic 422s, free OpenAPI docs that QA and Finance users used</td>
+<td>Flask, which needs more manual validation</td>
+</tr>
+<tr>
+<td>Pydantic</td>
+<td>Data validation via Python type hints</td>
+<td>Request and response schemas for the nested trees</td>
+<td>Hand-written validators</td>
+</tr>
+<tr>
+<td>SQLAlchemy 2.0</td>
+<td>Python ORM with typed models and <code>select()</code></td>
+<td>Typed models, explicit labels, one session pattern, killed the aliasing bug</td>
+<td>Raw SQL strings, which caused the bug</td>
+</tr>
+<tr>
+<td>MySQL on SOADB</td>
+<td>Relational database under Uber's service-owned standard</td>
+<td>ACID transactions for concurrent edits, platform standard</td>
+<td>PostgreSQL, a columnar warehouse</td>
+</tr>
+<tr>
+<td>Bazel</td>
+<td>Monorepo build and test system</td>
+<td>Uber's monorepo, per-layer test targets gate every merge</td>
+<td>None, it is the environment</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>Container packaging</td>
+<td>Reproducible local and CI runs</td>
+<td>Bare virtualenvs</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9-hard-problems-and-failure-stories">9. Hard problems and failure stories</h2>
+<p><strong>1. The column-aliasing bug.</strong>
+- <em>What broke:</em> joined queries returned duplicate column names, and the row dictionary kept the last one. Rows carried the wrong uuid.
+- <em>How found:</em> an edit to one recon line appeared to change a different line.
+- <em>How fixed:</em> SQLAlchemy 2.0 <code>select()</code> on aliased models with an explicit label on every column, then made it the standard in the ORM migration.
+- <em>What I learned:</em> silent bugs are worse than crashes. Any code that maps rows by column name must guarantee unique names.</p>
+<p><strong>2. Keeping v1 and v2 reconciliation identical during a live close.</strong>
+- <em>What broke (risk):</em> any difference between the Sheets and MySQL paths would put wrong numbers in front of Finance.
+- <em>How handled:</em> parallel endpoints, side-by-side QA for the same period, invariant checks (parent equals sum of children, empty period returns an empty list, v1 shape unchanged), and v1 kept as fallback.
+- <em>What I learned:</em> during a deadline, the ability to fall back is worth more than a clean cutover.</p>
+<p><strong>3. Lines silently disappearing (active-flag drift).</strong>
+- <em>What can break:</em> joins require both <code>is_active</code> and <code>is_level_active</code> to be true. If the ETL loads a row with the wrong flag, the line vanishes from the tree with no error.
+- <em>How handled:</em> I call it out as a known risk and check totals against expected parents.
+- <em>What I'd add:</em> a reconciliation alert that compares row counts and totals per period after each load.</p>
+<p><strong>4. Malformed currency strings.</strong>
+- <em>What can break:</em> some amounts arrive as display strings. A malformed string can parse to 0.0 silently.
+- <em>What I'd add:</em> strict parsing that fails loudly, plus validation on load.</p>
+<p><strong>5. Hardcoded FSLI order.</strong>
+- <em>Risk:</em> if Finance renames a line, it falls to the bottom instead of its proper place.
+- <em>Why acceptable:</em> it degrades safely (nothing is dropped), but it can look out of order. A config table would fix it.</p>
+<hr>
+<h2 id="10-say-this-dont-say-this">10. Say this / don't say this</h2>
+<div class="callout warn">
+<p><strong>Say this carefully</strong></p>
+<ul>
+<li><strong>Always say "Uber via EPAM".</strong> I was an EPAM employee working on Uber's platform.</li>
+<li><strong>70%:</strong> state it as the outcome, "from 14 days to 3 days". If pressed: "The technical design doc framed that cut, and that's what the platform delivered for the close." Do not walk it back unprompted.</li>
+<li><strong>36 endpoints:</strong> if asked for the breakdown, about 31 functional routes in the scoping service plus the collaboration-service comment and notification APIs. I did not build the collaboration service.</li>
+<li><strong>19M:</strong> "raw GL rows migrated off Sheets." Per-quarter extracts were tens of thousands of rows. The value was correctness, hierarchy and auditability, not throughput. Do not invent a further breakdown.</li>
+<li><strong>$340M:</strong> materiality on the Q4 2025 close. Residual threshold $170M. Not permanent constants.</li>
+<li><strong>8 tables vs 11 models:</strong> 8 is the normalized core on the PDF. 11 SQLAlchemy models in the service code is verbal depth.</li>
+<li><strong>ETL:</strong> shared pipeline. "The service consumes HFM-loaded tables."</li>
+<li><strong>Real-time collaboration and Slack-style notifications:</strong> a separate service I did not build.</li>
+<li><strong>Led 3:</strong> tech lead of an EPAM pod, not a people manager. Never merge with "mentored 2" at Masters India.</li>
+<li><strong>100%:</strong> module statement coverage, not the whole codebase. 1,100+ tests is verbal depth.</li>
+<li><strong>50% gate:</strong> describe the mechanism only. Do not invent extra rules or transitions.</li>
+<li><strong>Quarter-annualization:</strong> describe the generic <code>YTD × 4 / n</code> idea. The exact formula is per FSLI.</li>
+</ul>
+</div>
+<p><strong>Don't say:</strong> "I built the HFM ETL." "I built the comments and notifications service." "This is a big-data system." "We had Redis caching" (there was no server-side response cache, only a memoized database engine). Any latency number for this platform (none was measured). "I was an Uber employee."</p>
+<hr>
+<h2 id="11-practice-drill">11. Practice drill</h2>
+<p><strong>1. What is a quarterly close?</strong>
+It is the few weeks after each quarter where Finance finalises the books, reconciles numbers across systems and produces the financial statements that get filed with the SEC in the 10-Q. My platform supported the scoping step inside that close.</p>
+<p><strong>2. What is scoping?</strong>
+Deciding which line items and which entities are significant enough to be tested by the auditors. Too narrow misses risk, too broad wastes audit hours.</p>
+<p><strong>3. Explain FSLI and the L1 to L4 hierarchy.</strong>
+An FSLI is one line on the financial statements, like Accounts Receivable. They nest four levels deep, from broad headings like Assets down to detailed lines. Parents are the sum of their children, so one duplicated leaf corrupts every parent above it.</p>
+<p><strong>4. What does the $340M mean?</strong>
+It was group materiality on the Q4 2025 close, the size of error that would matter to a reader of the financials. Any line above it is quantitatively material.</p>
+<p><strong>5. Group vs component scoping?</strong>
+Group scoping asks whether an FSLI matters for Uber as a whole. Component scoping then decides which entities under that FSLI get tested, using the 5% revenue or assets rule.</p>
+<p><strong>6. What is residual risk?</strong>
+What is left uncovered after the in-scope components. Residual balance divided by materiality gives a multiple. If the residual is above half of materiality, $170M on that close, the line is flagged.</p>
+<p><strong>7. Why does PwC care about this platform?</strong>
+Scoping is a SOX control, and PwC uses the output in its work papers. They need evidence that the process is reliable: stable IDs, who changed what, enforced reviews. Sheets could not provide that.</p>
+<p><strong>8. How did you prevent two managers overwriting each other?</strong>
+Optimistic locking. Each row has a version. The update only succeeds if the version still matches what the user read. Otherwise zero rows change and the user reloads.</p>
+<p><strong>9. How did you stop duplicates across quarterly reloads?</strong>
+Deterministic SHA-256 natural keys. The question's ID is a hash of its text and normalized page, so re-sending the same question updates the existing row instead of inserting a new one.</p>
+<p><strong>10. What does atomic cross-table sync mean in your system?</strong>
+Writes that span two tables happen in one transaction. Saving an assessment answer and updating the line's qualitative flag either both commit or both roll back.</p>
+<p><strong>11. Tell me the column-aliasing bug in 30 seconds.</strong>
+Raw SQL joined two tables that both had a <code>uuid</code> column. We built dicts with <code>dict(zip(keys, row))</code>, which keeps the last duplicate key, so rows carried the wrong uuid and edits hit the wrong line. I fixed it with SQLAlchemy 2.0 <code>select()</code> and an explicit label on every column.</p>
+<p><strong>12. How did you release without downtime?</strong>
+Small stacked Bazel PRs, each additive and safe to deploy on its own, with new paths running next to old ones until verified, like recon v2 next to v1.</p>
+<p><strong>13. What is the 50% delta-variance gate?</strong>
+A state-machine rule that refuses to move a line to Closed if its amount changed more than 50% quarter over quarter without review. Example: $400M to $650M is 62.5%, so it is blocked.</p>
+<p><strong>14. Why MySQL and not Postgres?</strong>
+Uber's service standard is MySQL on SOADB, and it gives the transactional guarantees concurrent edits need. We did not need recursive SQL because the ETL flattens the hierarchy into stable IDs.</p>
+<p><strong>15. What would you do differently?</strong>
+An automated nightly parity diff between old and new paths during migrations, a lint rule banning raw <code>text()</code> queries in repositories, and loud validation on currency parsing instead of silent zeros.</p>
+<hr>
+<h2 id="12-3-minute-whiteboard-script">12. 3-minute whiteboard script</h2>
+<p><strong>First, draw the business (30 seconds).</strong> Draw a box "HFM" on the left, an arrow to "MySQL", and a box "PwC" on the right. Say: "Every quarter Uber Finance decides which line items and entities the auditors test. That used to be a Google Sheets workbook. I owned the backend that replaced it, through EPAM."</p>
+<p><strong>Second, draw the service layers (60 seconds).</strong> Draw a vertical stack between the screens and MySQL: "Handler", "Service", "Repository". Say: "FastAPI handlers only do HTTP, identity and validation. Services hold the finance rules: materiality at $340M, the 5% component rule, residual risk, the L1 to L4 tree and quarter-annualization. Repositories own every SQLAlchemy 2.0 session. 36 endpoints in total. That layering let my pod of 3 engineers work in parallel and test every layer without a database."</p>
+<p><strong>Third, draw the schema spine (45 seconds).</strong> Draw <code>level_mapping</code> in the middle with <code>balance_sheet</code>, <code>income_statement</code> and <code>component_entity</code> pointing at it. Write <code>uuid</code>, <code>level_id</code>, <code>version</code>. Say: "An 8-table normalized schema on SOADB. The hierarchy lives once. Every reviewable row uses the same Draft, Review, ReOpen, Closed status model. Writes use optimistic locking with a version check, cross-table writes are one transaction, and reference data uses SHA-256 natural keys so quarterly reloads never duplicate."</p>
+<p><strong>Fourth, tell the migration and the bug (45 seconds).</strong> Draw "v1 Sheets" and "v2 MySQL" side by side under reconciliation. Say: "I ran v1 and v2 in parallel and compared them before switching. Along the way we found that joined raw SQL had two columns named <code>uuid</code>, and building dicts kept the wrong one. The SQLAlchemy 2.0 migration with explicit labels removed that class of bug, and we got the module to 100% statement coverage. We shipped in stacked Bazel PRs with SQL allowlists and a state-machine gate that blocks closing a line that moved more than 50% without review."</p>
+<p><strong>Close with the outcome (15 seconds).</strong> Write "14 days → 3 days" and "19M GL rows". Say: "Reconciliation went from 14 days to 3 days, about 70%, and 19 million raw GL rows now live in a system with stable IDs and an audit trail instead of a spreadsheet."</p></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

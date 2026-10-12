@@ -181,7 +181,8 @@ def build(order, out_path, title, brand, track_dir=None):
 FJ = os.path.join(BASE, "final_java_ai")
 FJ_PREP = os.path.join(FJ, "prep")
 build(
-    [os.path.join(FJ_PREP, "00_final_resume_map.md"), os.path.join(FJ_PREP, "00_index.md"),
+    sorted(glob.glob(os.path.join(FJ, "handbook", "*.md")))
+    + [os.path.join(FJ_PREP, "00_final_resume_map.md"), os.path.join(FJ_PREP, "00_index.md"),
      os.path.join(FJ_PREP, "GROUND_TRUTH.md")]
     + sorted(glob.glob(os.path.join(FJ_PREP, "projects", "*.md")))
     + [
@@ -230,7 +231,8 @@ build(
 FJPI = os.path.join(BASE, "final_java_pygo_ia")
 FJPI_PREP = os.path.join(FJPI, "prep")
 build(
-    [os.path.join(FJPI_PREP, "00_final_resume_map.md"), os.path.join(FJPI_PREP, "00_index.md"),
+    sorted(glob.glob(os.path.join(FJPI, "handbook", "*.md")))
+    + [os.path.join(FJPI_PREP, "00_final_resume_map.md"), os.path.join(FJPI_PREP, "00_index.md"),
      os.path.join(FJPI_PREP, "GROUND_TRUTH.md")]
     + sorted(glob.glob(os.path.join(FJPI_PREP, "projects", "*.md")))
     + [
@@ -280,7 +282,8 @@ FP = os.path.join(BASE, "final_pygo_ai")
 FP_PREP = os.path.join(FP, "prep")
 FP_EX = os.path.join(FP, "campaign_extras")
 build(
-    [
+    sorted(glob.glob(os.path.join(FP, "handbook", "*.md")))
+    + [
         os.path.join(FP_PREP, "00_final_resume_map.md"),
         os.path.join(FP_PREP, "00_index.md"),
         os.path.join(FP_PREP, "GROUND_TRUTH.md"),

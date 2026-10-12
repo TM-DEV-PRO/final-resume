@@ -41,173 +41,1467 @@ strong{color:#fff}
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/projects/04_masters_gfg_deep_dive.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#masters-india-and-geeksforgeeks-deep-dive-v2-resume-defense">Masters India and GeeksforGeeks Deep Dive (v2 resume defense)</a>
-<a class="lvl2" href="#masters-india-dec-2022-to-jun-2024-sde-2">Masters India (Dec 2022 to Jun 2024), SDE 2</a>
-<a class="lvl2" href="#geeksforgeeks-aug-2021-to-nov-2022-sde">GeeksforGeeks (Aug 2021 to Nov 2022), SDE</a>
-<a class="lvl2" href="#mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</a>
-<a class="lvl2" href="#confidence-audit">Confidence audit</a></nav>
+<a class="lvl1" href="#part-a-masters-india">Part A. Masters India</a>
+<a class="lvl2" href="#a1-the-one-minute-version-say-this-out-loud">A1. The one-minute version (say this out loud)</a>
+<a class="lvl2" href="#a2-the-business-in-plain-english">A2. The business in plain English</a>
+<a class="lvl2" href="#a3-words-you-need">A3. Words you need</a>
+<a class="lvl2" href="#a4-architecture">A4. Architecture</a>
+<a class="lvl2" href="#a5-one-invoice-and-one-bulk-import-step-by-step">A5. One invoice and one bulk import, step by step</a>
+<a class="lvl2" href="#a6-bullet-mi1-decoded-php-to-spring-boot-latency-throughput-mentoring">A6. Bullet MI1 decoded: PHP to Spring Boot, latency, throughput, mentoring</a>
+<a class="lvl2" href="#a7-bullet-mi2-decoded-kafka-bulk-pipeline-quarter-sharding-idempotency">A7. Bullet MI2 decoded: Kafka bulk pipeline, quarter sharding, idempotency</a>
+<a class="lvl2" href="#a8-bullet-mi3-decoded-observability-redis-coverage-deploy-success">A8. Bullet MI3 decoded: observability, Redis, coverage, deploy success</a>
+<a class="lvl2" href="#a9-design-decisions-at-a-glance">A9. Design decisions at a glance</a>
+<a class="lvl2" href="#a10-tech-used-and-why">A10. Tech used and why</a>
+<a class="lvl2" href="#a11-hard-problems-and-failure-stories">A11. Hard problems and failure stories</a>
+<a class="lvl2" href="#a12-say-this-carefully-masters">A12. Say this carefully (Masters)</a>
+<a class="lvl1" href="#part-b-geeksforgeeks">Part B. GeeksforGeeks</a>
+<a class="lvl2" href="#b1-the-one-minute-version-say-this-out-loud">B1. The one-minute version (say this out loud)</a>
+<a class="lvl2" href="#b2-the-business-in-plain-english">B2. The business in plain English</a>
+<a class="lvl2" href="#b3-words-you-need-gfg">B3. Words you need (GFG)</a>
+<a class="lvl2" href="#b4-architecture-gfg">B4. Architecture (GFG)</a>
+<a class="lvl2" href="#b5-one-vote-step-by-step-illustrative">B5. One vote, step by step (illustrative)</a>
+<a class="lvl2" href="#b6-bullet-g1-decoded-django-migration-doubt-apis-20-premium-lift">B6. Bullet G1 decoded: Django migration, doubt APIs, 20% premium lift</a>
+<a class="lvl2" href="#b7-bullet-g2-decoded-influencer-dashboard-and-scheduled-workflows">B7. Bullet G2 decoded: influencer dashboard and scheduled workflows</a>
+<a class="lvl2" href="#b8-hard-problems-and-lessons-gfg">B8. Hard problems and lessons (GFG)</a>
+<a class="lvl2" href="#b9-say-this-carefully-gfg">B9. Say this carefully (GFG)</a>
+<a class="lvl1" href="#part-c-mock-interview-hardest-questions">Part C. Mock interview: hardest questions</a>
+<a class="lvl1" href="#part-d-confidence-audit">Part D. Confidence audit</a>
+<a class="lvl1" href="#part-e-practice-drill">Part E. Practice drill</a>
+<a class="lvl1" href="#part-f-3-minute-whiteboard-script-masters-india">Part F. 3-minute whiteboard script (Masters India)</a></nav>
 <main><h1 id="masters-india-and-geeksforgeeks-deep-dive-v2-resume-defense">Masters India and GeeksforGeeks Deep Dive (v2 resume defense)</h1>
-<blockquote>
-<p><strong>Start here for interviews:</strong> <a href="../../../prep/23c_masters_gfg_interview_packs.html"><code>23c_masters_gfg_interview_packs.md</code></a>.</p>
-</blockquote>
-<p>Every number here traces to <code>GROUND_TRUTH.md</code>. Tags: HISTORICAL (from past resume claims, own experience), ESTIMATED (derived, say "estimated").</p>
+<div class="callout highlight">
+<p><strong>How to use this page</strong></p>
+<ul>
+<li><strong>What it covers:</strong> the full depth behind the Masters India bullets (GST e-invoicing, PHP to Spring Boot migration, Kafka bulk pipeline, observability and caching) and the GeeksforGeeks bullets (Django migration, doubt-support APIs, influencer dashboard, scheduled workflows). Every term is defined, every number is derived, and every design choice has alternatives.</li>
+<li><strong>When to read it:</strong> the week before a backend or system-design loop where interviewers will go deep on migrations, queues, idempotency, sharding or caching. For a quick refresher the morning of an interview, use the shorter pack: <a href="04_05_masters_gfg.html"><code>04_05_masters_gfg.md</code></a> or <a href="../../../prep/23c_masters_gfg_interview_packs.html"><code>23c_masters_gfg_interview_packs.md</code></a>.</li>
+<li><strong>What to memorise:</strong> the two one-minute versions, the Masters numbers (from 1.2 seconds to 300 milliseconds p95, 1,500+ clients, 700 to 4,000 requests per minute, 1M+ submissions a day, 100K+ per import, triage down 70%, DB reads down 30%, coverage from 35% to 82%, 98% deploy success), the GFG numbers (10K+ daily queries, 10x spikes, 20% premium lift, 30% course sales, 70% ops efficiency), and the "say this carefully" boxes.</li>
+</ul>
+</div>
+<p><strong>What the tags mean.</strong> <strong>HISTORICAL</strong> means the number comes from my past work records and earlier resumes. <strong>ESTIMATED</strong> means arithmetic I can show, so I say "roughly" and give the derivation. <strong>MEASURED</strong> means a log, doc or code exists. <strong>TARGET</strong> means a design goal. Every number here traces to <code>GROUND_TRUTH.md</code> in the track's <code>prep/</code> folder.</p>
+<div class="callout note">
+<p><strong>Current resume bullets</strong></p>
+<p><em>Masters India, SDE 2, Noida, Dec 2022 to Jun 2024. GST Compliance and E-Invoicing Platform.</em></p>
+<ul>
+<li><strong>MI1.</strong> Reduced p95 API latency by <strong>75%</strong> (from <strong>1.2s to 300ms</strong>) across <strong>1,500+</strong> enterprise clients by spearheading the migration of a legacy PHP monolith to a <strong>Spring Boot</strong> microservices architecture. Mentored two engineers through the transition, optimizing backend design to drive overall system throughput from <strong>700 to 4,000 requests per minute</strong>.</li>
+<li><strong>MI2.</strong> Architected a high-concurrency bulk e-invoicing pipeline processing <strong>1M+</strong> daily government submissions by orchestrating a <strong>Kafka</strong> event bus and a <strong>PostgreSQL</strong> database horizontally sharded by tax quarter. Enforced exactly-once, idempotent processing for <strong>100K+</strong> concurrent imports with fault-tolerant state management via dead-letter queues and bounded retries against volatile IRP portals.</li>
+<li><strong>MI3.</strong> Decreased incident triage time by <strong>70%</strong> and lowered database read load by <strong>30%</strong> by instrumenting <strong>ELK</strong> and <strong>New Relic</strong> distributed tracing alongside a Redis caching layer. Hardened the CI/CD release cycle by driving test coverage from <strong>35% to 82%</strong>, achieving a <strong>98%</strong> deployment success rate across the microservices ecosystem.</li>
+<li><strong>Tech:</strong> Java, Spring Boot, Hibernate, Kafka, PostgreSQL, MongoDB, Redis, Elasticsearch, Docker, ELK, New Relic, AWS.</li>
+</ul>
+<p><em>GeeksforGeeks, SDE, Noida, Aug 2021 to Nov 2022. Courses Platform and Influencer Dashboard.</em></p>
+<ul>
+<li><strong>G1.</strong> Stabilized the doubt-support platform to handle <strong>10K+</strong> daily queries and <strong>10x</strong> traffic spikes during live coding contests by migrating the backend to <strong>Django</strong>. Engineered high-throughput REST APIs for voting, pinning, and locking threads using MySQL, MongoDB, Redis, and Elasticsearch, driving a <strong>20%</strong> lift in premium subscriptions.</li>
+<li><strong>G2.</strong> Accelerated course sales by <strong>30%</strong> by launching an influencer analytics and earnings dashboard to track transactions and affiliate coupon conversions. Increased engineering operational efficiency by <strong>70%</strong> by designing asynchronous scheduled workflows for video processing, user reminders, and data cleanup.</li>
+<li><strong>Tech:</strong> Python, Django, MySQL, MongoDB, Redis, Elasticsearch.</li>
+</ul>
+</div>
+<div class="callout warn">
+<p><strong>Older-resume details that are NOT on the current PDF</strong></p>
+<ul>
+<li><strong>Support tickets down 35%</strong> (from a client usage dashboard and log downloads), <strong>audit-log churn down 15%</strong>, and <strong>2,500+ clients</strong> come from older resumes. None are on the current PDF. Never say 2,500+ clients. Do not volunteer tickets or audit churn.</li>
+<li><strong>"Premium up 15 to 20%"</strong> is older wording. The current PDF says <strong>20%</strong>.</li>
+<li><strong>SMTP email sends 50% faster</strong> (GFG) comes from the 1-year and 2.5-year resumes. Prep depth only.</li>
+<li><strong>p95 "1000 to 1200ms down to 300 to 400ms"</strong> is the older-resume band. The PDF says from 1.2 seconds to 300 milliseconds.</li>
+<li><strong>Peak TPS and RPS</strong> are not on the PDF. Verbal only, ESTIMATED.</li>
+<li>The older layout had four Masters bullets. The current PDF has three. Throughput (700 to 4,000 requests per minute) now sits in MI1, and Redis caching now sits in MI3.</li>
+<li>Do not merge "mentored 2" (Masters) with "led 3" (Uber FRM). Do not put Flink at Masters. Masters Kafka is a different product from Uber Menu Kafka.</li>
+</ul>
+</div>
 <hr>
-<h2 id="masters-india-dec-2022-to-jun-2024-sde-2">Masters India (Dec 2022 to Jun 2024), SDE 2</h2>
-<h3 id="what-the-product-is">What the product is</h3>
-<p>GST compliance and e-invoicing SaaS for Indian enterprises. Clients push invoices through our APIs, we validate, register them with the government Invoice Registration Portal (IRP), and return signed e-invoices with IRN and QR codes. Bulk imports, reconciliation against GST returns, and audit trails on top. Compliance means correctness and traceability matter more than raw speed, but filing deadline days bring heavy spikes.</p>
-<h3 id="bullet-1-owned-php-monolith-to-fastapi-microservices-strangler-mentored-2-engineers-p95-12s-to-300ms-1500-clients">Bullet 1. Owned PHP monolith to FastAPI microservices strangler, mentored 2 engineers, p95 1.2s to 300ms, 1,500+ clients</h3>
-<p><strong>Resume XYZ:</strong> Owned the strangler migration (X) by cutting over services behind a gateway with canaries and mentoring 2 engineers (Y), cutting p95 from 1.2s to 300ms for 1,500+ clients (Z).</p>
-<p><strong>Why migrate.</strong> The Laravel monolith was synchronous, one slow IRP callout blocked a worker per request, deployments were all-or-nothing, and scaling meant scaling everything. Filing deadline spikes caused queue pileups and timeouts.</p>
-<p><strong>How we did it (this is the migration playbook to narrate).</strong></p>
-<ol>
-<li>Strangler pattern, not big bang. New FastAPI services were put behind the existing gateway one domain at a time (auth, e-invoice submit, bulk import, reconciliation). The monolith kept serving whatever was not yet migrated.</li>
-<li>Route-level cutover with fallback. Nginx routed a small percentage of traffic per endpoint to the new service first (canary), watching error rate and latency dashboards, then ramped to 100. Rollback was a config change, not a deploy.</li>
-<li>Shared database first, then split. Services initially read the same MySQL/PostgreSQL data to avoid a risky data migration during the traffic cutover. Only after traffic was fully moved did we carve out service-owned tables.</li>
-<li>Contract tests pinned the old PHP responses. We recorded monolith responses for the top endpoints and asserted the FastAPI replacements matched field for field, so clients never saw a payload change.</li>
-<li>Async by default. IRP calls, PDF generation, webhooks and email went through Celery workers with retries and idempotency keys so request threads never blocked on third parties.</li>
-</ol>
-<p><strong>Where the latency win came from (1.2s to 300ms p95, HISTORICAL).</strong>
-- Async IO for IRP and internal fan-out calls instead of blocking PHP workers.
-- Redis caching of hot reads (client config, tax rates, auth context), which also cut redundant DB reads about 30 percent (HISTORICAL).
-- Query fixes surfaced during the rewrite: missing composite indexes on (client_id, invoice_date), N+1 removal, pagination on list endpoints.
-- Connection pooling per service instead of PHP-FPM per-request connections.</p>
-<p><strong>Mentoring 2 engineers.</strong> Two juniors owned individual service extractions. I set the conventions (router, service, repository layering, Pydantic schemas at the boundary, retry and idempotency helpers), reviewed every PR for the first months, and paired on the first canary cutover. Both were independently shipping services by the end.</p>
-<h3 id="bullet-2-100k-per-import-1m-daily-transactions-700-to-4000-rpm-12-tps-67-rps">Bullet 2. 100K per import, 1M+ daily transactions, 700 to 4,000 RPM (~12 TPS / ~67 RPS)</h3>
-<p><strong>Resume XYZ:</strong> Architected a high-concurrency bulk e-invoicing pipeline on Kafka + PostgreSQL quarter sharding (X/Y) with exactly-once/idempotent processing for 100K+ concurrent imports and 1M+ daily (~12 TPS avg, 100+ peak) and 700 to 4,000 requests/min (~67 RPS) (Z).</p>
-<ul>
-<li>Bulk import path: file lands in S3, a Celery chain validates in chunks (schema, GSTIN checks, duplicates via idempotency keys), then batch-registers with the IRP with bounded concurrency and exponential backoff, streaming progress back to the client dashboard.</li>
-<li>1M+ daily transactions averages about 12 TPS (ESTIMATED arithmetic, 1M / 86,400). Filing deadline peaks are the real sizing problem, 100+ TPS bursts (ESTIMATED, roughly 8 to 10x average). Queue-based load leveling is what absorbed them.</li>
-<li>Sustained throughput went from 700 to 4,000 requests per minute (HISTORICAL) after the async rewrite plus worker autoscaling on queue depth.</li>
-</ul>
-<h3 id="bullet-3-fault-tolerant-bulk-paths-idempotency-retries-dlq-redis-30-reads">Bullet 3. Fault tolerant bulk paths (idempotency, retries, DLQ) + Redis -30% reads</h3>
-<p><strong>Resume XYZ:</strong> Built fault tolerant bulk paths with idempotency keys, retries, and DLQ replay (X/Y), and Redis caching that cut redundant DB reads 30% (Z). Audit-log churn -15% remains HISTORICAL prep depth, not required on the hardened one-pager.</p>
-<ul>
-<li>Idempotency: <code>client + fileHash + batchIndex</code> (and client-supplied invoice references) so retries never double-register with IRP.</li>
-<li>Retries: exponential backoff with jitter and bounded concurrency against the flaky government portal.</li>
-<li>DLQ / dead-letter state: poison batches park for operator replay instead of blocking the whole import.</li>
-<li>Circuit breaker (verbal): open when IRP error rate spikes; serve degraded status to clients.</li>
-<li>Cache-aside: miss to read DB to SET with TTL jitter; SETNX singleflight against stampedes. Hot keys: client config, rate/tax masters, session and auth lookups, GSTIN masters.</li>
-<li>Invalidation on write for config data; TTL-only for slowly changing masters.</li>
-<li>Caching mostly helped p50 and read-heavy endpoints; async IO and query fixes drove the p95 tail.</li>
-</ul>
-<h3 id="bullet-4-elk-new-relic-on-call-alerting-triage-70-percent-faster-support-tickets-35-coverage-35-to-82-98-percent-deploy-success">Bullet 4. ELK + New Relic on-call alerting, triage 70 percent faster, support tickets −35%, coverage 35 to 82, 98 percent deploy success</h3>
-<p><strong>Resume XYZ:</strong> Cut incident triage <strong>70%</strong> and support tickets <strong>35%</strong> (X) by shipping ELK/New Relic on-call alerting plus a client usage dashboard (Y), raising coverage 35%→82% at 98% deploy success (Z).</p>
-<ul>
-<li>Before: SSH into boxes and grep. After: structured JSON logs with request IDs shipped to ELK, New Relic APM traces, alert rules on error rate and latency SLOs.</li>
-<li>Triage went from about 30 minutes to under 10 (baseline ESTIMATED, the 70 percent cut is HISTORICAL). The win is correlation: one request ID follows a transaction across services and workers.</li>
-<li>Support tickets −35%: client usage tracking + log downloads (4yr resume) — HISTORICAL ops attribution; own the dashboard engineering, not a causal monopoly over all tickets.</li>
-<li>Honesty: claim on-call <strong>alerting</strong> and faster triage. Do not invent a formal pager rotation or SEV commander title without proof.</li>
-<li>Coverage 35 to 82 percent with pytest, enforced as a CI gate. Focus was on money paths first (registration, reconciliation, imports). Deployment success rate reached 98 percent (HISTORICAL).</li>
-</ul>
-<h3 id="rapid-fire">Rapid fire</h3>
-<ul>
-<li>Why FastAPI over Django or Flask? Async-native for IRP fan-out, Pydantic validation at the boundary, OpenAPI for enterprise client docs, small per-service footprint.</li>
-<li>Why strangler over rewrite? Compliance product, zero tolerance for a broken filing day. Strangler let us cut over per endpoint with instant rollback.</li>
-<li>Dual writes during migration? Avoided. We kept a shared database during traffic cutover precisely so we never had two sources of truth; the data split came after.</li>
-<li>What broke? Early canary showed timeout mismatches (PHP had 60s, we set 10s); some IRP calls legitimately took longer, so we moved them fully async and returned 202 with polling.</li>
-<li>How do you protect against cache stampede? TTL jitter plus a simple lock (setnx) so one worker recomputes and the rest wait or serve stale.</li>
-<li>Why both MongoDB and Elasticsearch on the tech line? Mongo held flexible invoice payload snapshots and vendor responses; Elasticsearch powered invoice search and the ELK stack.</li>
-</ul>
+<h1 id="part-a-masters-india">Part A. Masters India</h1>
+<h2 id="a1-the-one-minute-version-say-this-out-loud">A1. The one-minute version (say this out loud)</h2>
+<p>"At Masters India I worked on a GST compliance and e-invoicing platform used by more than 1,500 enterprise clients. Businesses send us their invoices, we validate them and register them with the government's Invoice Registration Portal, and we hand back a signed invoice number and QR code.</p>
+<p>I spearheaded the migration from a legacy PHP monolith to Spring Boot microservices in Java, using a strangler approach with per-route canaries, and mentored two engineers through it. That took p95 latency from 1.2 seconds to 300 milliseconds and throughput from 700 to 4,000 requests per minute.</p>
+<p>I also architected the bulk pipeline: a Kafka event bus with PostgreSQL sharded by tax quarter, processing more than a million government submissions a day, with idempotency keys so 100K-plus-row imports never double-register an invoice, plus dead-letter queues and bounded retries against the flaky government portal. On the ops side, ELK and New Relic tracing cut incident triage by 70%, Redis caching cut database reads by 30%, and test coverage went from 35% to 82% with a 98% deployment success rate."</p>
+<p><strong>Follow-up they may ask:</strong> "What was hardest?" Answer: "Never registering the same invoice twice with the government. That's not recoverable, so idempotency was designed in from the start."</p>
 <hr>
-<h2 id="geeksforgeeks-aug-2021-to-nov-2022-sde">GeeksforGeeks (Aug 2021 to Nov 2022), SDE</h2>
-<h3 id="bullet-1-php-to-django-migration-10000-daily-queries">Bullet 1. PHP to Django migration, 10,000+ daily queries</h3>
-<ul>
-<li>The doubt/query platform (users post questions on articles and courses) ran on legacy PHP. We rebuilt it in Django with DRF, migrating incrementally page by page behind the same URLs.</li>
-<li>10,000+ daily queries (user-standardized scale; say "order of ten thousand daily interactions" if pressed, it averages well under 1 RPS with contest-day spikes roughly 10x, ESTIMATED).</li>
-<li>Reliability wins came from ORM-managed transactions, request validation, and separating read views from write endpoints, plus staging and code review discipline the PHP stack lacked.</li>
-</ul>
-<h3 id="bullet-2-voting-and-pinning-apis-premium-subscriptions-up-15-to-20-percent">Bullet 2. Voting and pinning APIs, premium subscriptions up 15 to 20 percent</h3>
-<ul>
-<li>Designed data models for votes (unique user-content constraint, denormalized counters updated atomically) and pinned content (per-context ordering).</li>
-<li>Vote counts were cached in Redis and reconciled to MySQL asynchronously, avoiding hot-row contention on popular posts.</li>
-<li>The features gated some interactions behind premium, lifting premium subscription sales 15 to 20 percent relative (HISTORICAL; say "relative lift attributed by the growth team").</li>
-</ul>
-<h3 id="bullet-3-influencer-dashboard-and-cron-pipelines-course-sales-up-30-percent-ops-efficiency-up-70-percent">Bullet 3. Influencer dashboard and cron pipelines, course sales up 30 percent, ops efficiency up 70 percent</h3>
-<ul>
-<li>Dashboard aggregated video and course analytics for influencer partners with near-real-time counters (Redis) and daily rollups (cron).</li>
-<li>Cron pipelines handled video processing handoffs, automated reminders, and cloud recording cleanup, removing manual steps the ops team did by hand (the 70 percent efficiency figure is HISTORICAL, framed as time saved on those workflows).</li>
-<li>Course sales rose 30 percent (HISTORICAL, attribution by the business team; own the engineering, attribute the causality).</li>
-</ul>
-<h3 id="rapid-fire_1">Rapid fire</h3>
-<ul>
-<li>Why Django here but FastAPI at Masters India? 2021 CMS-style product with admin, auth, ORM batteries included; Masters India needed async IO for third-party government APIs.</li>
-<li>Hot-row problem on votes? Unique constraint for correctness, Redis counter for display, periodic reconciliation for truth.</li>
-<li>What would you change today? Move vote events onto a queue and make counters event-sourced; add idempotency on the reminder cron.</li>
-<li>SMTP 50% faster? Keep the SMTP connection open and reuse it across sends (1yr/2.5yr resume). TCP+TLS handshake is often 100-400ms per new connection; amortizing that across a batch cuts wall-clock send time roughly in half for reminder and promo traffic.</li>
-</ul>
-<h2 id="mock-interview-hardest-questions-with-answers">Mock interview: hardest questions with answers</h2>
-<h3 id="masters-india">Masters India</h3>
-<p><strong>Interviewer:</strong> You were on AWS. Why Kafka instead of RabbitMQ or SQS for e-invoicing?</p>
-<p><strong>Candidate:</strong> We needed three things together: per-client ordering, durable replay for compliance, and independent consumer groups. Partition key was client GSTIN (or GSTIN plus document type), so invoice submit, IRN callback, and webhook fan-out for one taxpayer stayed ordered on one partition. Kafka's log lets us reset offsets and reprocess a bad consumer window after a parser bug; SQS deletes on ack and does not give cheap multi-consumer replay, and SQS FIFO caps throughput per message group. RabbitMQ could have worked at our scale for task dispatch; I am honest about that. We still picked Kafka because (1) replay and audit reprocessing were first-class for GST disputes, (2) multiple groups could read the same topic (IRP workers, audit projector, metrics) without fanout-exchange plumbing, and (3) the team already had AsyncIOKafka in the FastAPI stack (2.5yr resume). Ops cost of Kafka was the trade-off; correctness and replay won.</p>
-<p><strong>Interviewer:</strong> Derive TPS and RPS from your resume numbers. Do they even hang together?</p>
-<p><strong>Candidate:</strong> 1M+ daily transactions is 1,000,000 / 86,400 ≈ 11.6 TPS average, call it ~12 TPS (ESTIMATED). Filing deadline spikes are the sizing problem; we sized for 100+ TPS peak, roughly 8 to 10x average (ESTIMATED). Sustained API throughput went from 700 to 4,000 requests per minute (HISTORICAL), which is 700/60 ≈ 12 RPS to 4,000/60 ≈ 67 RPS. Those are complementary: RPM is gateway and service capacity under load tests and peaks; daily transactions are IRP-registered documents. p95 latency moved from about 1.2s (resumes also say 1000-1200ms) to about 300ms (300-400ms band) for 1,500+ clients.</p>
-<p><strong>Interviewer:</strong> What actually drove p95 from 1.2s to 300ms? Caching alone cannot do that.</p>
-<p><strong>Candidate:</strong> Caching helped p50 and read-heavy endpoints; the p95 tail was async IO and removing PHP synchronous bottlenecks. IRP calls no longer blocked a PHP-FPM worker for the full round trip; FastAPI plus workers returned 202 or awaited without holding a process hostage. Connection pooling replaced per-request connect storms. We killed N+1 list queries and added composite indexes on (client_id, invoice_date). Redis cut redundant DB reads about 30% (HISTORICAL), which shortened the middle of the distribution. Net: async + pooling + query fixes moved the tail; cache moved the body.</p>
-<p><strong>Interviewer:</strong> Cache-aside specifics: keys, TTLs, invalidation, thundering herd. Make the 30% read cut plausible.</p>
-<p><strong>Candidate:</strong> Pattern was classic cache-aside: miss → read DB → SET with TTL. Hot keys: e-invoice IRP auth tokens (short TTL, under the IRP token lifetime, typically a few hours with safety margin), client config and feature flags, GSTIN master lookups, and tax-rate masters. Config and GSTIN keys invalidated on write (DELETE inside the update path) so admins never served stale credentials. Masters used TTL-only with jitter so expiries did not align. Thundering herd: TTL jitter plus a SETNX lock so one worker recomputes while others wait or serve slightly stale. 30% fewer redundant reads is plausible because the same client config and GSTIN validation ran on every invoice in a bulk import; caching those across 100K-row imports removes a huge duplicate read fan-out.</p>
-<p><strong>Interviewer:</strong> Quarter-based sharding: why shard GST data by financial quarter instead of plain partitioning?</p>
-<p><strong>Candidate:</strong> Indian GST reporting and returns are quarter-scoped and filing-deadline driven. Writes concentrate in the current quarter; older quarters are mostly read for reconciliation and audits. Separate quarter tables (or quarter schemas) let us prune or archive cold quarters without touching the hot write set, and keep indexes smaller where inserts land. Trade-off versus native RANGE partitioning: we owned routing in application code (AsyncMotorIO / SQL layer picked the quarter), which is more moving parts than DB-native partitions, but gave us explicit drop/archive of an entire quarter and clearer operational runbooks. Wrong-quarter writes are the footgun; we derived quarter from invoice date at the API boundary and rejected mismatches.</p>
-<p><strong>Interviewer:</strong> Sketch the IRP e-invoicing path and where Kafka sits.</p>
-<p><strong>Candidate:</strong> Client creates the invoice in their ERP, posts JSON to our API, we validate schema and GSTIN, then report to a government Invoice Registration Portal. IRP returns a signed e-invoice with IRN and QR; that is what makes a B2B GST invoice valid. Kafka carried async stages: accepted import chunks, IRP submit jobs, signed-response persistence to Mongo snapshots, and client webhooks. Idempotency keys plus unique client references stopped double registration, which is not recoverable with the government. Bulk path: file to object storage, chunk validate, bounded concurrency to IRP, progress on the dashboard. 100K+ transactions per import and 1M+ daily (HISTORICAL).</p>
-<p><strong>Interviewer:</strong> You mentored 2 engineers on a monolith-to-microservices migration. What did "led" mean day to day?</p>
-<p><strong>Candidate:</strong> Strangler pattern behind the gateway, not a big bang. I owned conventions: router / service / repository, Pydantic at the boundary, retry and idempotency helpers. Two juniors each extracted a service; I reviewed early PRs closely and paired on the first canary cutover (Nginx percentage route, watch errors and latency, ramp or roll back by config). Shared DB during traffic cutover avoided dual writes; table splits came after. Mentorship claim is user-confirmed: 2 engineers at Masters India.</p>
-<p><strong>Interviewer:</strong> ELK + New Relic cut triage 70%. Prove that is not vanity metrics.</p>
-<p><strong>Candidate:</strong> Before: SSH and grep across boxes with no request correlation. After: structured JSON logs with request IDs into Elasticsearch/Kibana, New Relic APM traces, alerts on error rate and latency. Triage from roughly 30 minutes to under 10 is ESTIMATED baseline math behind a HISTORICAL 70% cut. The real win is one request ID across API, Kafka consumer, and IRP worker. Coverage 35% to 82% with pytest as a CI gate on money paths; deployment success 98% (HISTORICAL).</p>
-<h3 id="geeksforgeeks">GeeksforGeeks</h3>
-<p><strong>Interviewer:</strong> Doubt support at 10K+ daily queries. Design unread counts without melting MySQL.</p>
-<p><strong>Candidate:</strong> Scale is user-standardized at 10K+ daily interactions (older resumes said 1000+ doubts/day; 4yr said 100K; we standardize 10K+). Average is well under 1 RPS with contest-day spikes maybe 10x (ESTIMATED). Unread counts lived behind a REST API: per-user counters in Redis for the badge path, durable rows in MySQL for threads and messages. Increment on new reply, decrement or clear on read receipts. Periodic reconcile from MySQL fixed drift. PHP to Django migration bought transactions, validation, and cleaner read/write separation for reliability.</p>
-<p><strong>Interviewer:</strong> Voting API idempotency and hot rows. How did MySQL, Redis, MongoDB, and Elasticsearch split?</p>
-<p><strong>Candidate:</strong> Vote table had a unique (user_id, content_id) constraint so double-submit is idempotent at the DB. Display counters sat in Redis and reconciled asynchronously to MySQL to avoid hot-row contention on popular doubts. MySQL remained source of truth for relational threads and permissions. Mongo held flexible payloads where the doubt body or attachments varied. Elasticsearch powered search across doubts and content. Pinning was per-context ordering columns, not a free-for-all sort. Premium lift 15 to 20% is HISTORICAL relative attribution by growth.</p>
-<p><strong>Interviewer:</strong> Cron pipelines for video processing claimed +70% ops efficiency. How do you keep crons reliable?</p>
-<p><strong>Candidate:</strong> Jobs covered video processing handoffs, automated reminders, payment processing, and cloud recording deletion. Reliability pattern: lock or DB advisory lease so two cron hosts do not double-run, idempotent job keys, structured success/fail logs, and dead-letter or retry for partial batches. The 70% efficiency figure is HISTORICAL time saved on those manual ops workflows. Course sales +30% is business attribution on the influencer dashboard; I own the engineering, attribute causality carefully.</p>
-<p><strong>Interviewer:</strong> You also cut email send time 50% with SMTP changes. Is that real?</p>
-<p><strong>Candidate:</strong> Yes, on the 1yr and 2.5yr resumes: keep the SMTP connection open and reuse it across sends instead of TCP+TLS handshaking every message. Handshake overhead is often 100-400ms per new connection; pooling amortizes it across reminder and promo batches. That matches what large mail senders document with SMTP connection reuse. It is a GFG optimization detail, not a Masters India claim.</p>
-<h2 id="confidence-audit">Confidence audit</h2>
+<h2 id="a2-the-business-in-plain-english">A2. The business in plain English</h2>
+<p><strong>What GST e-invoicing is.</strong> In India, businesses selling to other businesses (B2B) above a turnover threshold must register each invoice with a government portal before it is legally valid. The portal is the <strong>IRP (Invoice Registration Portal)</strong>. It checks the invoice and returns an <strong>IRN (Invoice Reference Number)</strong> and a <strong>digitally signed QR code</strong>. Without these, the buyer cannot claim tax credit.</p>
+<p><strong>Who the users are.</strong> Finance and accounts teams at large Indian enterprises. Their ERP systems (the software they run their business on) push invoices to our APIs, one at a time or in big bulk files.</p>
+<p><strong>What they do with us.</strong> Submit invoices, get IRNs and QR codes back, upload bulk files of tens of thousands of invoices, reconcile against their GST returns, and keep an audit trail.</p>
+<p><strong>What hurt before.</strong> The PHP monolith was synchronous. One slow call to the government portal held a server worker hostage for the whole round trip. Deploys were all-or-nothing, and scaling meant scaling everything. On filing-deadline days, traffic spikes caused queue pile-ups and timeouts. In a compliance product, a timeout on deadline day is the worst possible failure.</p>
+<p><strong>Why the company paid for this.</strong> Correctness and traceability matter more than raw speed, but slow or failed submissions lose clients. Faster, reliable, never-double-registered submissions are the product.</p>
+<hr>
+<h2 id="a3-words-you-need">A3. Words you need</h2>
 <table>
 <thead>
 <tr>
-<th>Resume bullet</th>
+<th>Term</th>
+<th>Plain meaning</th>
+<th>Analogy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GST</strong></td>
+<td>Goods and Services Tax, India's indirect tax.</td>
+<td>VAT in Europe.</td>
+</tr>
+<tr>
+<td><strong>GSTIN</strong></td>
+<td>A business's 15-character GST identification number.</td>
+<td>A tax passport number for a company.</td>
+</tr>
+<tr>
+<td><strong>IRP</strong></td>
+<td>Invoice Registration Portal, the government system that registers e-invoices.</td>
+<td>The passport office that stamps your document as official.</td>
+</tr>
+<tr>
+<td><strong>IRN and signed QR</strong></td>
+<td>The unique reference number and digitally signed QR code the IRP returns. This is what makes the invoice valid.</td>
+<td>The official stamp and hologram on the passport.</td>
+</tr>
+<tr>
+<td><strong>Filing deadline spike</strong></td>
+<td>Traffic jumps as everyone submits before the GST deadline.</td>
+<td>Tax-day queues at the post office.</td>
+</tr>
+<tr>
+<td><strong>Monolith</strong></td>
+<td>One big application where every feature is deployed together.</td>
+<td>One huge kitchen where a broken oven stops every dish.</td>
+</tr>
+<tr>
+<td><strong>PHP, Laravel, PHP-FPM</strong></td>
+<td>PHP is the language, Laravel the framework, PHP-FPM the process pool serving requests. Each worker handles one request at a time.</td>
+<td>A row of cashiers who each must wait at their till until the card machine answers.</td>
+</tr>
+<tr>
+<td><strong>Microservices</strong></td>
+<td>Small services, each owning one domain, deployed independently.</td>
+<td>Separate food stalls: one breaks, the others keep serving.</td>
+</tr>
+<tr>
+<td><strong>Strangler pattern</strong></td>
+<td>Replace a legacy system piece by piece behind the same front door until the old one can be switched off.</td>
+<td>A strangler fig tree that grows around an old tree until it stands on its own.</td>
+</tr>
+<tr>
+<td><strong>API gateway (Nginx)</strong></td>
+<td>The front door that routes each request to the old or new service.</td>
+<td>A receptionist directing visitors to the old wing or the new wing.</td>
+</tr>
+<tr>
+<td><strong>Canary release</strong></td>
+<td>Send a small percentage of traffic to the new version, watch it, then ramp up.</td>
+<td>Miners sending a canary in first to check the air.</td>
+</tr>
+<tr>
+<td><strong>Contract test</strong></td>
+<td>A test that pins the exact response shape of an API, so a rewrite cannot silently change it.</td>
+<td>Tracing paper over the old drawing to check the new one matches line for line.</td>
+</tr>
+<tr>
+<td><strong>Java and the JVM</strong></td>
+<td>Java is a statically typed language. The JVM (Java Virtual Machine) runs it and gives real operating-system threads, so one process can do many things at once.</td>
+<td>One big kitchen with many cooks working in parallel, instead of one cook per kitchen.</td>
+</tr>
+<tr>
+<td><strong>Spring Boot</strong></td>
+<td>A Java framework that bundles an embedded web server (Tomcat), configuration and sensible defaults, so a service starts from one <code>main</code> method with almost no setup.</td>
+<td>A pre-fitted kitchen module: plug it in and the oven, sink and wiring already work.</td>
+</tr>
+<tr>
+<td><strong>Bean and dependency injection</strong></td>
+<td>Spring creates your objects (called beans) at startup and hands each class the objects it needs through its constructor. You never call <code>new</code> on a service yourself.</td>
+<td>A stage manager who puts the right props in each actor's hands before the scene starts.</td>
+</tr>
+<tr>
+<td><strong>Annotation</strong></td>
+<td>A tag in Java code starting with <code>@</code>, such as <code>@RestController</code>, that tells Spring how to treat a class or method.</td>
+<td>A sticky label on a box saying "fragile" or "this side up".</td>
+</tr>
+<tr>
+<td><strong>Spring MVC and <code>@RestController</code></strong></td>
+<td>The web layer of Spring. A class marked <code>@RestController</code> with methods marked <code>@PostMapping</code> or <code>@GetMapping</code> becomes an HTTP API.</td>
+<td>The front counter where each window serves one type of request.</td>
+</tr>
+<tr>
+<td><strong>Thread-per-request</strong></td>
+<td>In Spring MVC each incoming request is served by one thread from the web server's pool (Tomcat's default maximum is 200). If that thread waits on a slow call, it is held for the whole wait.</td>
+<td>A fixed number of cashiers. A cashier stuck on the phone serves no one else.</td>
+</tr>
+<tr>
+<td><strong>Non-blocking HTTP client (WebClient)</strong></td>
+<td>Spring's WebClient sends an HTTP call and frees the thread while it waits for the answer, with built-in timeouts and retry helpers.</td>
+<td>Putting the kettle on and making toast while it boils.</td>
+</tr>
+<tr>
+<td><strong>Bounded thread pool</strong></td>
+<td>A fixed-size group of worker threads with a capped queue, so concurrency against a dependency never grows without limit.</td>
+<td>A restaurant with ten tables: the eleventh party waits at the door instead of crowding the kitchen.</td>
+</tr>
+<tr>
+<td><strong>Bean Validation (<code>@Valid</code>, <code>@NotNull</code>)</strong></td>
+<td>A Java standard for declaring rules on request objects (DTOs, data transfer objects). Spring checks them before your code runs and returns 400 on failure.</td>
+<td>A bouncer checking every ID at the door.</td>
+</tr>
+<tr>
+<td><strong>Hibernate and Spring Data JPA</strong></td>
+<td>Hibernate is an ORM (object-relational mapper): Java objects map to database rows. Spring Data JPA sits on top and writes simple queries for you from method names.</td>
+<td>A translator between Java and SQL.</td>
+</tr>
+<tr>
+<td><strong>Connection pooling (HikariCP)</strong></td>
+<td>Reuse a fixed set of open database connections instead of opening one per request. HikariCP is the default pool in Spring Boot.</td>
+<td>A taxi rank of waiting cabs instead of calling a new cab for every trip.</td>
+</tr>
+<tr>
+<td><strong>N+1 query</strong></td>
+<td>Fetching a list with one query, then one more query per item.</td>
+<td>Going to the shop once for the list, then once per item on it.</td>
+</tr>
+<tr>
+<td><strong>Composite index</strong></td>
+<td>A database index on several columns together, such as <code>(client_id, invoice_date)</code>.</td>
+<td>A phone book sorted by surname, then first name.</td>
+</tr>
+<tr>
+<td><strong>p95 latency</strong></td>
+<td>95% of requests are faster than this. It measures the slow tail users actually feel.</td>
+<td>The time by which 95 of 100 buses have arrived.</td>
+</tr>
+<tr>
+<td><strong>RPM, RPS, TPS</strong></td>
+<td>Requests per minute, requests per second, transactions per second. Divide RPM by 60 for RPS.</td>
+<td>Cars per minute versus cars per second at a toll booth.</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>A durable, ordered, replayable event log.</td>
+<td>A conveyor belt with a recording you can rewind.</td>
+</tr>
+<tr>
+<td><strong>Partition key</strong></td>
+<td>The value that decides which Kafka partition a message goes to. Same key, same partition, same order.</td>
+<td>Same surname always queues at the same counter.</td>
+</tr>
+<tr>
+<td><strong>Consumer group</strong></td>
+<td>A set of workers sharing a topic. Different groups each get their own full copy of the stream.</td>
+<td>Several departments each reading the same newspaper at their own pace.</td>
+</tr>
+<tr>
+<td><strong>Spring Kafka (<code>@KafkaListener</code>, <code>KafkaTemplate</code>)</strong></td>
+<td>Spring's Kafka integration. A method marked <code>@KafkaListener</code> is called for each message on a topic. <code>KafkaTemplate</code> is the object you use to publish messages.</td>
+<td>A mail room: the template drops letters in the chute, the listener is the clerk who opens each one.</td>
+</tr>
+<tr>
+<td><strong><code>DefaultErrorHandler</code>, <code>DeadLetterPublishingRecoverer</code>, <code>ExponentialBackOff</code></strong></td>
+<td>Spring Kafka's retry machinery. The error handler retries a failed message with a growing wait (the backoff), and after the last attempt the recoverer publishes it to a dead-letter topic.</td>
+<td>Try the delivery three times, waiting longer each time, then leave the parcel at the depot.</td>
+</tr>
+<tr>
+<td><strong>Spring Batch</strong></td>
+<td>A Spring framework for chunked batch jobs: read N items, process them, write them, commit, and record progress in a job repository table, so a restart resumes from the last committed chunk.</td>
+<td>Reading a long book and moving the bookmark after every chapter.</td>
+</tr>
+<tr>
+<td><strong><code>@Async</code> and <code>@Scheduled</code></strong></td>
+<td><code>@Async</code> runs a method on a background thread pool and returns immediately. <code>@Scheduled</code> runs a method on a timer, like cron.</td>
+<td>Handing a task to an assistant, versus setting an alarm clock.</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL</strong></td>
+<td>An open-source relational database.</td>
+<td>A very organised filing cabinet with strict rules.</td>
+</tr>
+<tr>
+<td><strong>Sharding</strong></td>
+<td>Splitting data across separate tables, schemas or databases by a key, with the application routing to the right one.</td>
+<td>Filing invoices into a separate cabinet for each quarter of the year.</td>
+</tr>
+<tr>
+<td><strong>Idempotency key</strong></td>
+<td>A unique key per operation, so repeating it has no extra effect.</td>
+<td>A raffle ticket number: you cannot win twice with the same ticket.</td>
+</tr>
+<tr>
+<td><strong>Exactly-once processing</strong></td>
+<td>The effect happens once even if the message is delivered more than once. In practice: at-least-once delivery plus idempotent writes.</td>
+<td>The courier may ring twice, you sign once.</td>
+</tr>
+<tr>
+<td><strong>DLQ (dead-letter queue)</strong></td>
+<td>A side queue where messages that keep failing are parked for later inspection and replay.</td>
+<td>A "problem parcels" shelf at the depot.</td>
+</tr>
+<tr>
+<td><strong>Bounded retries and exponential backoff with jitter</strong></td>
+<td>Retry a failed call a limited number of times, waiting longer each time, with randomness so clients don't all retry together.</td>
+<td>If a line is busy, call back after 1, 2, then 4 minutes, at slightly random times.</td>
+</tr>
+<tr>
+<td><strong>Circuit breaker (verbal only)</strong></td>
+<td>Stop calling a failing dependency for a while once errors spike.</td>
+<td>A fuse that trips so the whole house doesn't burn.</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>A document database storing flexible JSON-like documents.</td>
+<td>A folder where each sheet can have a different layout.</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>An in-memory key-value store, very fast, used for caching.</td>
+<td>A sticky note on your monitor instead of walking to the filing room.</td>
+</tr>
+<tr>
+<td><strong>Cache-aside</strong></td>
+<td>The app checks the cache first. On a miss it reads the database and puts the result in the cache with an expiry.</td>
+<td>Check your sticky note first. If it's missing, look it up and write a new note.</td>
+</tr>
+<tr>
+<td><strong>TTL and TTL jitter</strong></td>
+<td>Time to live, how long a cached value lasts. Jitter adds randomness so many keys don't expire at the same moment.</td>
+<td>Milk with slightly different expiry dates so you don't run out all at once.</td>
+</tr>
+<tr>
+<td><strong>Cache stampede (thundering herd)</strong></td>
+<td>Many requests miss the same key at once and all hit the database.</td>
+<td>Everyone rushing the fridge the moment the milk runs out.</td>
+</tr>
+<tr>
+<td><strong>SETNX and <code>setIfAbsent</code></strong></td>
+<td>Redis "set if not exists", used as a simple lock so only one worker rebuilds a cache entry. In Spring Data Redis the call is <code>opsForValue().setIfAbsent(key, value, ttl)</code>.</td>
+<td>Grabbing the single talking stick. Whoever has it speaks.</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>A search engine for fast full-text search and log analytics.</td>
+<td>A book's index, for every book at once.</td>
+</tr>
+<tr>
+<td><strong>ELK</strong></td>
+<td>Elasticsearch, Logstash and Kibana: collect, store, search and visualise logs.</td>
+<td>A CCTV system for your servers, with a search bar.</td>
+</tr>
+<tr>
+<td><strong>New Relic APM and distributed tracing</strong></td>
+<td>Application performance monitoring. A trace follows one request across every service it touches.</td>
+<td>A parcel tracking number you can follow through every depot.</td>
+</tr>
+<tr>
+<td><strong>Request ID (correlation ID)</strong></td>
+<td>A unique ID attached to a request and logged by every service it passes through.</td>
+<td>A case number on every form in a file.</td>
+</tr>
+<tr>
+<td><strong>Servlet filter and MDC</strong></td>
+<td>A servlet filter is code that runs around every HTTP request before the controller. MDC (Mapped Diagnostic Context) is a per-thread map in the Java logging library; every log line written on that thread automatically includes its fields.</td>
+<td>A receptionist who stamps a case number on the visitor's badge, and every office they visit copies it into its notes.</td>
+</tr>
+<tr>
+<td><strong>Test coverage</strong></td>
+<td>The share of code lines executed by automated tests.</td>
+<td>The share of rooms a safety inspector actually walked into.</td>
+</tr>
+<tr>
+<td><strong>JUnit 5, Mockito, JaCoCo</strong></td>
+<td>JUnit 5 runs Java tests. Mockito creates fake versions of dependencies (mocks) so a class can be tested alone. JaCoCo measures coverage and can fail the build below a threshold.</td>
+<td>The exam, the stand-in actors for a rehearsal, and the inspector's checklist.</td>
+</tr>
+<tr>
+<td><strong>Deployment success rate</strong></td>
+<td>The share of deploys that go out without rollback or failure.</td>
+<td>The share of flights that land on schedule.</td>
+</tr>
+<tr>
+<td><strong>Amazon S3</strong></td>
+<td>Amazon's object storage for files.</td>
+<td>A giant, cheap warehouse for boxes.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="a4-architecture">A4. Architecture</h2>
+<div class="mermaid">flowchart LR
+    ERP["Client ERP or dashboard"] --&gt; GW["Nginx gateway: canary percent per route"]
+    GW --&gt;|"migrated routes"| API["Spring Boot services: auth, submit, bulk import, recon"]
+    GW -.-&gt;|"fallback, not yet migrated"| PHP["Legacy PHP monolith"]
+    API --&gt; RD["Redis cache: config, GSTIN, tokens"]
+    API --&gt; PG["PostgreSQL sharded by tax quarter"]
+    API --&gt; S3["Amazon S3: bulk import files"]
+    API --&gt; K["Kafka topics: chunks, IRP jobs, responses, webhooks, audit"]
+    K --&gt; W["Workers: Kafka consumers and Spring Batch jobs"]
+    W --&gt;|"bounded concurrency"| IRP["Government IRP"]
+    W --&gt; MG["MongoDB: payload and IRP response snapshots"]
+    W --&gt; PG
+    W --&gt; DLQ["Dead-letter queue"]
+    API --&gt; OBS["ELK logs with request ID, New Relic APM"]
+    W --&gt; OBS
+</div>
+<p><em>What to notice: the gateway lets old and new code serve traffic side by side, and the only path to the government portal goes through workers with bounded concurrency, never straight from a request thread.</em></p>
+<p><strong>Box by box.</strong></p>
+<ol>
+<li><strong>Client ERP or dashboard.</strong> Enterprises send single invoices or upload bulk files.</li>
+<li><strong>Nginx gateway.</strong> During the migration, each route is either still on PHP or sent, by percentage, to a Spring Boot service. Rollback is a config change, not a deploy.</li>
+<li><strong>Spring Boot services.</strong> Separate Java services for auth, e-invoice submit, bulk import and reconciliation. Each one is a Spring MVC app with <code>@RestController</code> classes, Bean Validation on the request DTOs, and Hibernate for PostgreSQL access. Request threads validate, record and publish. They never wait on the government portal.</li>
+<li><strong>Redis.</strong> Cache-aside for hot reads through Spring Data Redis: client config and feature flags, GSTIN masters, tax rates, IRP auth tokens.</li>
+<li><strong>PostgreSQL sharded by tax quarter.</strong> Hot writes land in the current quarter. Older quarters are mostly read for reconciliation and audit. Each service reaches it through a HikariCP connection pool.</li>
+<li><strong>Amazon S3.</strong> Bulk import files land here first.</li>
+<li><strong>Kafka.</strong> The event bus between stages: accepted import chunks, IRP submit jobs, signed-response persistence, client webhooks, and an audit projector. Partition key is the client GSTIN, so one taxpayer's events stay in order.</li>
+<li><strong>Workers.</strong> Spring Kafka <code>@KafkaListener</code> consumers call the IRP with bounded concurrency, exponential backoff and idempotency keys. Spring Batch jobs read and chunk bulk import files. Smaller background work (PDF generation, webhooks, email) runs as <code>@Async</code> tasks or <code>@Scheduled</code> jobs on bounded thread pools.</li>
+<li><strong>MongoDB.</strong> Stores flexible invoice payload snapshots and raw IRP responses.</li>
+<li><strong>DLQ.</strong> Batches that keep failing park here for operator replay, so the rest of the import continues. Spring Kafka's <code>DeadLetterPublishingRecoverer</code> does the parking.</li>
+<li><strong>ELK and New Relic.</strong> Structured JSON logs with a request ID, APM traces across API, consumer and worker.</li>
+</ol>
+<p><strong>How Kafka and Spring Batch fit together.</strong> Kafka is the durable event bus between stages, which is what the PDF claims. Spring Batch runs the chunked import step: it reads the uploaded file a chunk at a time, validates each row, and publishes one Kafka event per chunk, recording its progress so a crashed import restarts from the last committed chunk instead of from row one. Kafka consumers then do the IRP calls. If asked, say: "Kafka carried the events between stages. Kafka consumers and Spring Batch jobs did the work."</p>
+<p><strong>Migration rule.</strong> Shared database until 100% of a route's traffic is on Spring Boot. Only then carve out service-owned tables.</p>
+<hr>
+<h2 id="a5-one-invoice-and-one-bulk-import-step-by-step">A5. One invoice and one bulk import, step by step</h2>
+<h3 id="a-single-invoice-illustrative-data">A single invoice (illustrative data)</h3>
+<p>Client "Acme Steel Pvt Ltd", GSTIN <code>27AAACA1234F1Z5</code>, invoice <code>INV-2024-00871</code>, dated 14 March 2024 (quarter Jan to Mar 2024).</p>
+<ol>
+<li>Their ERP posts JSON to <code>POST /v1/einvoice</code>, with header <code>X-Request-ID: 7f3c…</code>.</li>
+<li>Gateway routes this path to the Spring Boot e-invoice service (route fully migrated).</li>
+<li>Spring validates the body with Bean Validation before the controller method runs: GSTIN format, required fields present. A custom validator checks that line amounts add up to the total. A failure returns <code>400</code> with the field errors.</li>
+<li>The service looks up client config and the GSTIN master. Redis hit, so no database read.</li>
+<li>It computes the idempotency key from the client and the client's invoice reference, and writes an "accepted" row in the Jan to Mar 2024 quarter shard. If the same invoice was already accepted, it returns the existing status instead.</li>
+<li>It publishes an IRP submit job to Kafka through <code>KafkaTemplate</code> with key <code>27AAACA1234F1Z5</code>, and returns <code>202 Accepted</code> with a status URL (or waits briefly and returns the IRN if the IRP is fast).</li>
+<li>A <code>@KafkaListener</code> consumer picks up the job and calls the IRP through WebClient with a timeout and backoff. The IRP returns IRN and signed QR.</li>
+<li>The consumer stores the raw response in MongoDB, updates the PostgreSQL row to "registered", and publishes a webhook event.</li>
+<li>The client gets the IRN and QR by webhook or by polling. Every log line from step 1 to 9 carries the same request ID.</li>
+</ol>
+<p>Illustrative controller and request DTO for steps 1 to 6 (teaching sketch, not production code):</p>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/v1/einvoice&quot;)
+class EInvoiceController {
+    private final EInvoiceService service;
+
+    EInvoiceController(EInvoiceService service) {   // Spring injects the service bean
+        this.service = service;
+    }
+
+    @PostMapping
+    ResponseEntity&lt;SubmitStatus&gt; submit(@Valid @RequestBody EInvoiceRequest req) {
+        SubmitStatus status = service.accept(req);  // idempotent accept, then publish to Kafka
+        return ResponseEntity.accepted().body(status);
+    }
+}
+
+record EInvoiceRequest(
+        @NotBlank @Pattern(regexp = &quot;[0-9]{2}[A-Z0-9]{13}&quot;) String sellerGstin,
+        @NotBlank String invoiceNo,
+        @NotNull LocalDate invoiceDate,
+        @NotEmpty List&lt;@Valid LineItem&gt; items) {}
+</code></pre>
+<p><em>What to notice: <code>@Valid</code> makes Spring reject a bad body before <code>submit</code> runs, and the method returns 202 without ever calling the government portal.</em></p>
+<h3 id="a-bulk-import">A bulk import</h3>
+<div class="mermaid">sequenceDiagram
+    participant C as Client
+    participant A as Spring Boot bulk service
+    participant S as Amazon S3
+    participant K as Kafka
+    participant W as Kafka consumer
+    participant I as IRP
+    participant P as PostgreSQL quarter shard
+    C-&gt;&gt;A: upload 100,000-invoice file
+    A-&gt;&gt;S: store file, compute fileHash
+    A-&gt;&gt;K: Spring Batch step publishes chunk events, key = client GSTIN
+    K-&gt;&gt;W: chunk batchIndex 37
+    W-&gt;&gt;P: check idempotency key client + fileHash + 37
+    W-&gt;&gt;I: submit with bounded concurrency
+    I--&gt;&gt;W: IRNs and signed QRs
+    W-&gt;&gt;P: mark registered
+    W--&gt;&gt;C: progress update on dashboard
+    Note over W,K: after max retries, the batch goes to the DLQ
+</div>
+<p><em>What to notice: the idempotency check happens before the IRP call, so a retried batch never registers twice.</em></p>
+<p><strong>Worked example.</strong> A client uploads a 100,000-row file. We store it in S3 and compute <code>fileHash = sha256(file)</code>. A Spring Batch step reads it in chunks (say 1,000 rows each, purely illustrative), giving batch indexes 0 to 99. Each batch's key is <code>client_id + fileHash + batchIndex</code>. If the worker handling batch 37 crashes after submitting but before acknowledging, Kafka redelivers batch 37. The worker sees key <code>acme + 9b1e… + 37</code> already marked done and skips the IRP call. If batch 37 keeps failing because of a malformed row, it goes to the DLQ after the retry budget, and batches 38 to 99 carry on. An operator fixes and replays batch 37 later.</p>
+<hr>
+<h2 id="a6-bullet-mi1-decoded-php-to-spring-boot-latency-throughput-mentoring">A6. Bullet MI1 decoded: PHP to Spring Boot, latency, throughput, mentoring</h2>
+<blockquote>
+<p>Reduced p95 API latency by 75% (from 1.2s to 300ms) across 1,500+ enterprise clients by spearheading the migration of a legacy PHP monolith to a Spring Boot microservices architecture. Mentored two engineers through the transition, optimizing backend design to drive overall system throughput from 700 to 4,000 requests per minute.</p>
+</blockquote>
+<h3 id="in-plain-words">In plain words</h3>
+<p>I led moving the product off an old PHP application onto Java services built with Spring Boot, one route at a time, without breaking anything for clients. The slowest 5% of requests got four times faster, the system handled almost six times more traffic, and I coached two engineers to ship services on their own.</p>
+<h3 id="how-it-works-the-migration-playbook">How it works: the migration playbook</h3>
+<ol>
+<li><strong>Strangler, not big bang.</strong> New Spring Boot services went behind the existing gateway one domain at a time: auth, e-invoice submit, bulk import, reconciliation. The monolith kept serving everything not yet migrated.</li>
+<li><strong>Route-level canary with fallback.</strong> Nginx sent a small percentage of traffic per endpoint to the new service. We watched error rate and latency dashboards, then ramped to 100%. Rollback was a config change.</li>
+<li><strong>Shared database first, then split.</strong> New services read the same MySQL or PostgreSQL data as the monolith during the traffic cutover, to avoid a risky data migration at the same time. Only after traffic fully moved did we carve out service-owned tables.</li>
+<li><strong>Contract tests pinned old PHP responses.</strong> We recorded monolith responses for the top endpoints and asserted the Spring Boot replacements matched field for field, so clients never saw a payload change.</li>
+<li><strong>Request threads never wait on third parties.</strong> IRP calls went to Kafka consumers. PDF generation, webhooks and email went to <code>@Async</code> tasks and scheduled jobs on bounded thread pools. All of them used retries and idempotency keys.</li>
+</ol>
+<p>A contract test in Spring is a MockMvc test. MockMvc calls the controller in-process, without a real network, and compares the JSON to the recorded PHP response (illustrative):</p>
+<pre><code class="language-java">@WebMvcTest(EInvoiceController.class)
+class EInvoiceContractTest {
+    @Autowired MockMvc mvc;
+    @MockBean EInvoiceService service;
+
+    @Test
+    void statusResponseMatchesRecordedPhpPayload() throws Exception {
+        when(service.status(&quot;INV-2024-00871&quot;)).thenReturn(Fixtures.registeredStatus());
+        mvc.perform(get(&quot;/v1/einvoice/{ref}/status&quot;, &quot;INV-2024-00871&quot;))
+           .andExpect(status().isOk())
+           .andExpect(content().json(Fixtures.read(&quot;php/status_00871.json&quot;), true)); // strict match
+    }
+}
+</code></pre>
+<p><em>What to notice: <code>true</code> means strict comparison, so a missing or extra field fails the build before a client ever sees it.</em></p>
+<p>Illustrative Nginx canary split (teaching sketch, not the production config):</p>
+<pre><code class="language-nginx">split_clients &quot;${request_id}&quot; $einvoice_backend {
+    10%   spring_einvoice;
+    *     php_monolith;
+}
+location /v1/einvoice {
+    proxy_pass http://$einvoice_backend;
+}
+</code></pre>
+<p>Ramp from 10% to 50% to 100% by editing one number. Roll back by setting it to 0%.</p>
+<h3 id="how-it-works-where-the-latency-win-came-from">How it works: where the latency win came from</h3>
+<ul>
+<li><strong>IRP calls taken off the request thread.</strong> A PHP-FPM worker used to sit blocked for the whole IRP round trip. In Spring MVC a waiting request thread is just as stuck (thread-per-request), so the request path validates, records, publishes to Kafka and returns 202. Kafka consumers make the IRP call through WebClient with a timeout, and the listener's concurrency setting bounds how many calls are in flight.</li>
+<li><strong>Connection pooling with HikariCP</strong> per service, instead of PHP-FPM's per-request connections, which caused connect storms under load.</li>
+<li><strong>Query fixes found during the rewrite:</strong> composite indexes on <code>(client_id, invoice_date)</code>, N+1 removal in Hibernate, and pagination on list endpoints.</li>
+<li><strong>Redis caching of hot reads</strong> (client config, tax rates, auth context). This mostly helped the median and read-heavy endpoints.</li>
+</ul>
+<p>The honest split: <strong>taking IRP calls off request threads, pooling and query fixes moved the p95 tail. Redis moved the body of the distribution.</strong></p>
+<p><strong>The N+1 problem in Hibernate.</strong> By default a <code>@ManyToOne</code> relation can be loaded lazily, which means Hibernate fires a separate SELECT the first time you touch it. Loop over 50 invoices and read each buyer, and you get 51 queries. The fix is to tell Spring Data JPA to fetch the buyer in the same query with an entity graph (illustrative):</p>
+<pre><code class="language-java">// Before: 1 query for invoices + 1 lazy SELECT per invoice for its buyer
+List&lt;Invoice&gt; invoices = invoiceRepo.findByClientId(clientId);
+invoices.forEach(inv -&gt; inv.getBuyer().getName());
+
+// After: one query with a join, using the (client_id, invoice_date) index, paginated
+interface InvoiceRepository extends JpaRepository&lt;Invoice, Long&gt; {
+    @EntityGraph(attributePaths = &quot;buyer&quot;)
+    Page&lt;Invoice&gt; findByClientIdOrderByInvoiceDateDesc(Long clientId, Pageable page);
+}
+Page&lt;Invoice&gt; page = invoiceRepo.findByClientIdOrderByInvoiceDateDesc(
+        clientId, PageRequest.of(pageNo, 50));
+</code></pre>
+<p><em>What to notice: Spring Data JPA writes the query from the method name, and <code>@EntityGraph</code> turns 51 round trips into one.</em></p>
+<p><strong>Connection pool sizing.</strong> HikariCP is configured in <code>application.yml</code>. The numbers below are a teaching sketch, not the production values:</p>
+<pre><code class="language-yaml">spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20     # connections this instance may hold
+      connection-timeout: 2000  # ms to wait for a free connection before failing fast
+</code></pre>
+<p>A small, fixed pool per instance protects PostgreSQL from connect storms. Failing fast when the pool is exhausted is better than letting requests queue until they time out.</p>
+<h3 id="how-it-works-mentoring-two-engineers">How it works: mentoring two engineers</h3>
+<p>Two junior engineers each owned individual service extractions. I set the conventions: controller, service and repository layering, Bean Validation on request DTOs at the boundary, shared retry and idempotency helpers. I reviewed every PR closely for the first months and paired with them on the first canary cutover (Nginx percentage route, watch errors and latency, ramp or roll back by config). By the end both were shipping services independently. The headcount of two is user-confirmed.</p>
+<h3 id="why-this-design">Why this design</h3>
+<ul>
+<li><strong>Why strangler over rewrite?</strong> It is a compliance product with zero tolerance for a broken filing day. Strangler let us cut over per endpoint with instant rollback.</li>
+<li><strong>Why Spring Boot?</strong> Four honest reasons. First, static typing for money and tax payloads: invoice DTOs are checked at compile time, and amounts use <code>BigDecimal</code> instead of floating point. Second, real threads on the JVM: bounded thread pools and a non-blocking WebClient let one instance keep many IRP calls in flight, where PHP-FPM needed one heavyweight process per waiting request. Third, the ecosystem for this exact pipeline lives in one place: Spring Kafka for listeners, retries and dead-letter publishing, Spring Batch for restartable chunked imports, Hibernate for PostgreSQL, Spring Data Redis for the cache, and Bean Validation at the boundary. Fourth, operability: the New Relic Java agent instruments Spring apps without code changes, and Spring Boot exposes health endpoints for the load balancer.</li>
+<li><strong>Why shared DB during cutover?</strong> One source of truth. Dual writes create reconciliation nightmares.</li>
+</ul>
+<h3 id="alternatives-and-why-not">Alternatives and why not</h3>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Big-bang rewrite</td>
+<td>One bad cutover on a filing day is unacceptable. No gradual rollback.</td>
+</tr>
+<tr>
+<td>Keep PHP and scale horizontally</td>
+<td>Each worker still blocks on IRP. You just buy more hostages.</td>
+</tr>
+<tr>
+<td>A Python framework (Django or Flask)</td>
+<td>Fast to build with, but a sync request model has the same blocking problem against a slow government API, and there is no Spring Batch or Spring Kafka equivalent in one place.</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>Excellent for a lean, high-throughput edge. For a domain-heavy compliance backend we wanted the mature ORM, batch and Kafka integrations that Spring gives.</td>
+</tr>
+<tr>
+<td>Dual writes during migration</td>
+<td>Two sources of truth and reconciliation pain.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Trade-off of Spring Boot itself.</strong> A Spring Boot service uses more memory and starts slower than a Go binary, and Java is more verbose. For long-running backend services that start rarely and stay up, that cost was acceptable. Say it plainly: "Python or Go could have hit the latency target too. The ecosystem for the bulk pipeline and typed contracts are what made Spring Boot the better fit."</p>
+<h3 id="trade-off-and-what-id-do-differently">Trade-off and what I'd do differently</h3>
+<p>The strangler period means running two stacks and a shared database for a while, which is operational overhead. If I did it again, I would add the request-ID logging (from MI3) before the first canary, not after, so comparing old and new paths is easier from day one. <em>(A reflection, not a claim about what happened.)</em></p>
+<h3 id="the-numbers">The numbers</h3>
+<p><strong>p95 from 1.2 seconds to 300 milliseconds, a 75% cut (HISTORICAL).</strong>
+- <em>Measures:</em> the 95th-percentile API response time.
+- <em>Derivation:</em> (1,200 − 300) ÷ 1,200 = 900 ÷ 1,200 = 75%.
+- <em>Why it mattered:</em> the slow tail is what times out on deadline day.
+- <em>Say it:</em> "p95 went from 1.2 seconds to 300 milliseconds, a 75% cut."
+- <em>Don't say:</em> "average latency" (it's p95), or "caching did it".
+- <em>Older band:</em> earlier resumes said 1,000 to 1,200 ms down to 300 to 400 ms. Use that only if an interviewer cites an older resume.</p>
+<p><strong>1,500+ enterprise clients (HISTORICAL).</strong> Always 1,500+. Never 2,500+ (older, dropped).</p>
+<p><strong>700 to 4,000 requests per minute (HISTORICAL).</strong>
+- <em>Measures:</em> sustained gateway and service throughput under load and peaks.
+- <em>Derivation:</em> 700 ÷ 60 ≈ 12 requests per second. 4,000 ÷ 60 ≈ 67 requests per second. That is about 5.7 times more.
+- <em>Why it moved:</em> the Spring Boot rewrite freed request threads from IRP waits, plus worker autoscaling on queue depth.
+- <em>Say it:</em> "From 700 to 4,000 requests per minute, so roughly 12 to 67 requests a second."</p>
+<p><strong>Mentored 2 engineers.</strong> Masters only. Never merge with "led 3 engineers" at Uber FRM.</p>
+<h3 id="questions-they-will-ask">Questions they will ask</h3>
+<p><strong>Q: Caching alone can't take p95 from 1.2 seconds to 300 milliseconds. What did?</strong>
+"Right, caching wasn't the tail story. The tail came from PHP workers blocking on the government portal. In the Spring Boot services, request threads stopped waiting on the IRP: they published to Kafka and returned 202, and Kafka consumers made the call through WebClient with a timeout. Add HikariCP connection pooling, N+1 fixes in Hibernate and missing composite indexes, and that's what moved the p95. Redis cut redundant reads by about 30%, which helped the median."</p>
+<p><strong>Q: How did you avoid dual writes during the migration?</strong>
+"We kept a shared database through the traffic cutover, so there was only ever one source of truth. Table ownership was split only after a route was 100% on Spring Boot. MockMvc contract tests pinned the PHP response shapes field for field."</p>
+<p><strong>Q: Why Spring Boot and not something lighter?</strong>
+"Mostly the ecosystem for this pipeline. Spring Kafka gave us listeners, bounded retries and dead-letter publishing built in. Spring Batch gave restartable chunked imports. Hibernate and Bean Validation covered the database and the request boundary, and Java's static typing suits money and tax payloads. The cost is more memory and slower startup than Go, which didn't matter much for long-running services. Python or Go could have hit the latency target too."</p>
+<p><strong>Q: What did mentoring look like day to day?</strong>
+"I set the conventions: controller, service, repository layering, Bean Validation DTOs at the boundary, shared retry and idempotency helpers. Each of the two engineers owned a service extraction. I reviewed their PRs heavily early on and paired on the first canary. By the end both were shipping independently."</p>
+<p><strong>Q: What broke in an early canary?</strong>
+"A timeout mismatch. PHP allowed 60 seconds and we'd set 10 seconds on the new service. Some IRP calls legitimately took longer, so they failed on the new path. We moved those calls fully off the request thread onto Kafka consumers and returned 202 with polling. The canary caught it at a small percentage, before full ramp."</p>
+<hr>
+<h2 id="a7-bullet-mi2-decoded-kafka-bulk-pipeline-quarter-sharding-idempotency">A7. Bullet MI2 decoded: Kafka bulk pipeline, quarter sharding, idempotency</h2>
+<blockquote>
+<p>Architected a high-concurrency bulk e-invoicing pipeline processing 1M+ daily government submissions by orchestrating a Kafka event bus and a PostgreSQL database horizontally sharded by tax quarter. Enforced exactly-once, idempotent processing for 100K+ concurrent imports with fault-tolerant state management via dead-letter queues and bounded retries against volatile IRP portals.</p>
+</blockquote>
+<h3 id="in-plain-words_1">In plain words</h3>
+<p>I designed the system that takes huge invoice files and registers every invoice with the government, more than a million a day, without ever registering one twice and without one bad batch blocking the rest. Data is split by tax quarter so the busy current quarter stays fast.</p>
+<h3 id="how-it-works">How it works</h3>
+<p><strong>Kafka.</strong> Topics for accepted import chunks, IRP submit jobs, signed-response persistence, client webhooks, and an audit projector. Partition key is the client GSTIN (sometimes GSTIN plus document type), so submit, IRN callback and webhook for one taxpayer stay ordered on one partition. Different consumer groups (IRP workers, audit projector, metrics) read the same topic independently.</p>
+<p><strong>Publishing and consuming in Spring Kafka.</strong> The producer side is one call on <code>KafkaTemplate</code>. The consumer side is a method marked <code>@KafkaListener</code>. Spring runs the listener on its own threads, and the <code>concurrency</code> attribute sets how many threads consume in parallel, which is also how many IRP calls one instance can have in flight (illustrative):</p>
+<pre><code class="language-java">// Producer, inside the bulk service: key = GSTIN keeps one taxpayer's events in order
+kafka.send(&quot;irp-submit-jobs&quot;, job.gstin(), job);
+
+// Consumer, inside the IRP worker service
+@Component
+class IrpSubmitListener {
+    private final BatchClaims claims;
+    private final IrpClient irp;
+    private final KafkaTemplate&lt;String, Object&gt; kafka;
+
+    IrpSubmitListener(BatchClaims claims, IrpClient irp, KafkaTemplate&lt;String, Object&gt; kafka) {
+        this.claims = claims;
+        this.irp = irp;
+        this.kafka = kafka;
+    }
+
+    @KafkaListener(topics = &quot;irp-submit-jobs&quot;, groupId = &quot;irp-workers&quot;, concurrency = &quot;4&quot;)
+    void onJob(IrpSubmitJob job) {
+        if (!claims.tryClaim(job)) return;           // already claimed or done: skip the IRP call
+        IrpResult result = irp.submit(job);          // timeout + jittered backoff inside
+        claims.markRegistered(job, result);
+        kafka.send(&quot;irp-responses&quot;, job.gstin(), result);
+    }
+}
+</code></pre>
+<p><em>What to notice: the claim happens before the IRP call, and if <code>onJob</code> throws, Spring Kafka's error handler (below) decides whether to retry or dead-letter it.</em></p>
+<p><strong>Quarter sharding in PostgreSQL.</strong> Separate tables or schemas per tax quarter. The application derives the quarter from the invoice date at the API boundary and routes to that shard.</p>
+<pre><code class="language-java">// Illustrative quarter routing
+static String quarterOf(LocalDate d) {
+    int q = (d.getMonthValue() - 1) / 3 + 1;
+    return &quot;y&quot; + d.getYear() + &quot;_q&quot; + q;          // 2024-03-14 -&gt; &quot;y2024_q1&quot;
+}
+
+static String invoiceTable(LocalDate invoiceDate) {
+    return &quot;invoices_&quot; + quarterOf(invoiceDate);
+}
+</code></pre>
+<p>The routing lived in the data-access layer, and mismatched quarters were rejected at the boundary. A practical note if asked how this works with Hibernate: a JPA entity maps to one fixed table, so per-quarter routing is usually done with Spring's <code>JdbcTemplate</code> and a table name built only from the invoice date (never from user input), or with one schema per quarter. Keep the exact mechanism qualitative unless pressed.</p>
+<p><strong>Idempotency.</strong> The key is <code>client + fileHash + batchIndex</code>, plus the client's own invoice references for single invoices. A unique constraint makes the second attempt a no-op.</p>
+<pre><code class="language-sql">-- Illustrative: claim a batch exactly once
+INSERT INTO import_batches (idem_key, client_id, file_hash, batch_index, status)
+VALUES (:k, :client, :hash, :idx, 'processing')
+ON CONFLICT (idem_key) DO NOTHING
+RETURNING idem_key;
+-- No row returned means another attempt already owns or finished this batch: skip the IRP call.
+</code></pre>
+<p>The same claim from Java, inside <code>BatchClaims.tryClaim</code>:</p>
+<pre><code class="language-java">int inserted = jdbc.update(&quot;&quot;&quot;
+        INSERT INTO import_batches (idem_key, client_id, file_hash, batch_index, status)
+        VALUES (?, ?, ?, ?, 'processing')
+        ON CONFLICT (idem_key) DO NOTHING
+        &quot;&quot;&quot;, job.idemKey(), job.clientId(), job.fileHash(), job.batchIndex());
+if (inserted == 1) return true;                      // first time we have seen this batch
+String status = jdbc.queryForObject(
+        &quot;SELECT status FROM import_batches WHERE idem_key = ?&quot;, String.class, job.idemKey());
+return !&quot;registered&quot;.equals(status);                 // skip only if already registered
+</code></pre>
+<p>On a conflict the worker looks up the existing row's status. It skips the IRP call only if the batch is already <code>registered</code>. A <code>processing</code> or failed batch (including a DLQ replay) retries through the same key, so the key prevents a double registration without blocking a legitimate retry.</p>
+<p><strong>Bounded retries and the DLQ in Spring Kafka.</strong> When a listener throws, Spring Kafka's <code>DefaultErrorHandler</code> retries the same message with an <code>ExponentialBackOff</code> (wait, then wait twice as long, up to a cap and a maximum attempt count). After the last attempt, a <code>DeadLetterPublishingRecoverer</code> publishes the message to a dead-letter topic, by default the original topic name plus <code>.DLT</code>. Exceptions that will never succeed on retry, such as a malformed invoice, skip the retries and go straight to the DLQ (illustrative values):</p>
+<pre><code class="language-java">@Bean
+DefaultErrorHandler kafkaErrorHandler(KafkaTemplate&lt;String, Object&gt; template) {
+    var recoverer = new DeadLetterPublishingRecoverer(template);   // -&gt; irp-submit-jobs.DLT
+    var backOff = new ExponentialBackOffWithMaxRetries(4);         // a subclass of ExponentialBackOff
+    backOff.setInitialInterval(500);                               // ms
+    backOff.setMultiplier(2.0);
+    backOff.setMaxInterval(30_000);
+    var handler = new DefaultErrorHandler(recoverer, backOff);
+    handler.addNotRetryableExceptions(InvalidInvoiceException.class);
+    return handler;
+}
+</code></pre>
+<p>Spring Boot wires a single error-handler bean like this into its auto-configured Kafka listeners.</p>
+<p><strong>Jitter on the IRP HTTP call.</strong> Spring's <code>ExponentialBackOff</code> has no randomness, so the HTTP call to the IRP adds jitter itself. With WebClient, Reactor's retry spec has it built in (illustrative):</p>
+<pre><code class="language-java">IrpResult submit(IrpSubmitJob job) {
+    return webClient.post().uri(&quot;/irp/submit&quot;)
+            .bodyValue(job.payload())
+            .retrieve()
+            .bodyToMono(IrpResult.class)
+            .timeout(Duration.ofSeconds(10))
+            .retryWhen(Retry.backoff(3, Duration.ofMillis(500))
+                    .maxBackoff(Duration.ofSeconds(30))
+                    .jitter(0.5)                         // randomise waits so clients don't retry together
+                    .filter(IrpErrors::isTransient))
+            .block();                                    // fine here: the listener thread is the bound
+}
+</code></pre>
+<p>Keep the retry budget small at each layer so the HTTP retries and the Kafka retries don't multiply into a retry storm against the portal.</p>
+<p><strong>Dead-letter queue.</strong> Poison batches (bad data, or repeated IRP rejections) park after the retry budget, so the rest of the import continues. Operators replay them after a fix by re-publishing from the <code>.DLT</code> topic.</p>
+<p><strong>Spring Batch for the chunked import.</strong> The bulk service reads the uploaded file with a Spring Batch step. A step is "read N rows, process them, write them, commit". Spring Batch records each committed chunk in its job repository tables, so if the service dies on chunk 37, a restart resumes at chunk 37 instead of row one (illustrative):</p>
+<pre><code class="language-java">@Bean
+Step splitImport(JobRepository jobs, PlatformTransactionManager tx,
+                 ItemReader&lt;InvoiceRow&gt; s3RowReader,
+                 ItemProcessor&lt;InvoiceRow, InvoiceRow&gt; rowValidator,
+                 ItemWriter&lt;InvoiceRow&gt; chunkPublisher) {
+    return new StepBuilder(&quot;splitImport&quot;, jobs)
+            .&lt;InvoiceRow, InvoiceRow&gt;chunk(1_000, tx)   // illustrative chunk size
+            .reader(s3RowReader)                        // streams rows from the S3 file
+            .processor(rowValidator)                    // Bean Validation per row
+            .writer(chunkPublisher)                     // one Kafka event per chunk, with its batchIndex
+            .build();
+}
+</code></pre>
+<p><em>What to notice: Spring Batch gives restartable progress for reading the file, and Kafka plus the idempotency key gives safe processing after that. They solve different halves of the problem.</em></p>
+<p><strong>Circuit breaker (verbal only).</strong> Open when the IRP error rate spikes, serve a degraded "pending" status to clients. This is prep depth, not a resume metric.</p>
+<p><strong>Why "exactly-once" holds.</strong> Say this carefully: Kafka delivers at-least-once. The idempotency key and unique constraint make the effect exactly-once. Double registration with the government is not recoverable, which is why this was non-negotiable.</p>
+<h3 id="why-this-design_1">Why this design</h3>
+<ul>
+<li><strong>Why Kafka?</strong> We needed per-client ordering, durable replay for GST disputes and audit reprocessing, and independent consumer groups on one log. Spring Kafka also gave us listeners, bounded retries and dead-letter publishing without writing that plumbing ourselves.</li>
+<li><strong>Why shard by quarter?</strong> GST returns and filing spikes are quarter-scoped. Writes land in the current quarter. Older quarters are reconciliation and audit reads. Quarter tables keep hot indexes small and make archiving a cold quarter clean.</li>
+<li><strong>Why idempotency plus DLQ, not fire-and-forget retries?</strong> A double IRP registration cannot be undone, and one poison batch must not block a 100K-row import.</li>
+</ul>
+<h3 id="alternatives-and-why-not_1">Alternatives and why not</h3>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SQS</td>
+<td>Deletes on acknowledgement, so no cheap multi-consumer replay. SQS FIFO caps throughput per message group.</td>
+</tr>
+<tr>
+<td>RabbitMQ</td>
+<td>Honestly, it could have dispatched tasks at our scale. Kafka won on replay, audit reprocessing and multiple consumer groups without fan-out exchange plumbing.</td>
+</tr>
+<tr>
+<td>One big table</td>
+<td>Hot indexes grow forever. Archiving a quarter means huge deletes.</td>
+</tr>
+<tr>
+<td>Hash-only sharding</td>
+<td>Spreads load, but a quarter's data is scattered, so archive and reconciliation by quarter get harder.</td>
+</tr>
+<tr>
+<td>Native PostgreSQL RANGE partitioning</td>
+<td>A fair option. We owned routing in application code, which is more moving parts, but gave explicit drop and archive of a whole quarter and clearer runbooks.</td>
+</tr>
+<tr>
+<td>Partition key = random or invoice id</td>
+<td>Loses per-taxpayer ordering for submit, callback and webhook.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="trade-off-and-what-id-do-differently_1">Trade-off and what I'd do differently</h3>
+<p>Kafka costs operational effort, and application-level shard routing has a footgun: writing to the wrong quarter. We mitigated it by deriving the quarter at the boundary and rejecting mismatches. Today I would evaluate native declarative partitioning first, since it removes the routing code.</p>
+<h3 id="the-numbers_1">The numbers</h3>
+<p><strong>1M+ daily government submissions (HISTORICAL).</strong>
+- <em>Derivation of the rate:</em> 1,000,000 ÷ 86,400 seconds ≈ 11.6, so about 12 per second on average (ESTIMATED).
+- <em>Peaks:</em> filing deadlines are the real sizing problem. Peaks were roughly 8 to 10 times the average, so about 100+ per second (ESTIMATED). Queue-based load leveling absorbed them.
+- <em>Say it:</em> "More than a million submissions a day. That averages around 12 a second, but deadline peaks were 8 to 10 times that."
+- <em>Don't put TPS on the resume.</em> It's verbal only.</p>
+<p><strong>100K+ concurrent imports (HISTORICAL).</strong> Imports of 100K+ invoices, processed concurrently, with idempotent batches.</p>
+<p><strong>How 1M a day and 4,000 a minute fit together.</strong> They measure different things. Requests per minute is gateway and service capacity (MI1). Daily submissions are IRP-registered documents. They're complementary, not the same meter.</p>
+<h3 id="questions-they-will-ask_1">Questions they will ask</h3>
+<p><strong>Q: Why Kafka over SQS or RabbitMQ?</strong>
+"We needed three things together: per-client ordering, durable replay for compliance, and several independent consumers on the same stream. Partitioning by GSTIN kept one taxpayer's submit, callback and webhook in order. SQS deletes on ack and FIFO caps throughput per group. RabbitMQ could honestly have handled the task dispatch at our scale, but replay and multi-reader audit were first-class for GST disputes, and Spring Kafka gave us retries and dead-letter publishing out of the box. Kafka's ops cost was the trade-off."</p>
+<p><strong>Q: Why shard by quarter instead of plain partitioning?</strong>
+"GST is quarter-scoped and deadline-driven. Writes concentrate in the current quarter, older quarters are mostly reconciliation reads. Quarter tables keep hot indexes small and let us archive a whole quarter cleanly. The cost is routing in application code, and the risk is a wrong-quarter write, which we blocked by deriving the quarter from the invoice date at the API boundary."</p>
+<p><strong>Q: What's your idempotency key and why?</strong>
+"Client plus file hash plus batch index. The file hash means re-uploading the same file maps to the same keys, and the batch index pins each chunk. A unique constraint makes a second attempt a no-op, so a retry after a crash can't register twice with the government."</p>
+<hr>
+<h2 id="a8-bullet-mi3-decoded-observability-redis-coverage-deploy-success">A8. Bullet MI3 decoded: observability, Redis, coverage, deploy success</h2>
+<blockquote>
+<p>Decreased incident triage time by 70% and lowered database read load by 30% by instrumenting ELK and New Relic distributed tracing alongside a Redis caching layer. Hardened the CI/CD release cycle by driving test coverage from 35% to 82%, achieving a 98% deployment success rate.</p>
+</blockquote>
+<h3 id="in-plain-words_2">In plain words</h3>
+<p>When something broke, we used to SSH into servers and grep logs. I made every request carry an ID through every service and worker, shipped structured logs to ELK, and added New Relic tracing, so finding the cause got much faster. A Redis cache removed a lot of repeated database reads. And I raised automated test coverage so deploys almost never failed.</p>
+<h3 id="how-it-works-observability">How it works: observability</h3>
+<ul>
+<li><strong>Before:</strong> SSH into boxes and grep, with no correlation between services.</li>
+<li><strong>After:</strong> structured JSON logs with a request ID, shipped to ELK. New Relic APM traces. Alert rules on error rate and latency.</li>
+<li><strong>The real win is correlation.</strong> One request ID follows a transaction across API, Kafka consumer and IRP worker.</li>
+</ul>
+<p><strong>How the request ID gets onto every log line.</strong> A servlet filter runs before every controller. It reads the incoming <code>X-Request-ID</code> header or makes a new one, and puts it into the MDC. Because the MDC is attached to the thread, every log statement made while serving that request includes the ID without anyone passing it around. A JSON log encoder (for example logstash-logback-encoder) writes MDC fields into each line that ships to ELK (illustrative):</p>
+<pre><code class="language-java">@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+class RequestIdFilter extends OncePerRequestFilter {
+    @Override
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res,
+                                    FilterChain chain) throws ServletException, IOException {
+        String rid = Optional.ofNullable(req.getHeader(&quot;X-Request-ID&quot;))
+                             .orElseGet(() -&gt; UUID.randomUUID().toString());
+        MDC.put(&quot;request_id&quot;, rid);
+        res.setHeader(&quot;X-Request-ID&quot;, rid);
+        try {
+            chain.doFilter(req, res);
+        } finally {
+            MDC.remove(&quot;request_id&quot;);    // threads are pooled, so always clean up
+        }
+    }
+}
+</code></pre>
+<p><strong>Carrying it across Kafka.</strong> The MDC lives on one thread, so it does not cross a Kafka hop by itself. The producer copies it into a message header, and the consumer puts it back into its own MDC (illustrative):</p>
+<pre><code class="language-java">// Producer
+var record = new ProducerRecord&lt;String, Object&gt;(&quot;irp-submit-jobs&quot;, job.gstin(), job);
+record.headers().add(&quot;X-Request-ID&quot;, MDC.get(&quot;request_id&quot;).getBytes(StandardCharsets.UTF_8));
+kafka.send(record);
+
+// Consumer: the listener method takes the header as an extra parameter
+@KafkaListener(topics = &quot;irp-submit-jobs&quot;, groupId = &quot;irp-workers&quot;)
+void onJob(IrpSubmitJob job, @Header(&quot;X-Request-ID&quot;) byte[] rid) {
+    MDC.put(&quot;request_id&quot;, new String(rid, StandardCharsets.UTF_8));
+    try { /* claim, call IRP, record */ } finally { MDC.remove(&quot;request_id&quot;); }
+}
+</code></pre>
+<p><em>What to notice: one ID goes from the HTTP filter, through the Kafka header, into the worker's logs, so one Kibana search shows the whole journey.</em></p>
+<h3 id="how-it-works-redis-cache-aside">How it works: Redis cache-aside</h3>
+<p>Classic cache-aside: on a miss, read the database, then SET with a TTL.</p>
+<ul>
+<li><strong>Hot keys:</strong> IRP auth tokens (TTL set below the token's lifetime, with a safety margin), client config and feature flags, GSTIN master lookups, tax-rate masters, session and auth lookups.</li>
+<li><strong>Invalidation:</strong> config and GSTIN keys are deleted inside the update path, so admins never see stale credentials. Slow-changing masters use TTL only, with jitter so expiries don't line up.</li>
+<li><strong>Stampede control:</strong> TTL jitter plus a SETNX lock (<code>setIfAbsent</code> in Spring Data Redis), so one worker recomputes while others wait briefly or serve slightly stale data.</li>
+</ul>
+<pre><code class="language-java">// Illustrative cache-aside with a setIfAbsent single-flight lock
+ClientConfig getClientConfig(long clientId) throws JsonProcessingException {
+    String key = &quot;cfg:&quot; + clientId;
+    String hit = redis.opsForValue().get(key);                  // redis is a StringRedisTemplate
+    if (hit != null) return json.readValue(hit, ClientConfig.class);
+
+    String lock = &quot;lock:&quot; + key;
+    if (Boolean.TRUE.equals(redis.opsForValue().setIfAbsent(lock, &quot;1&quot;, Duration.ofSeconds(5)))) {
+        try {
+            ClientConfig cfg = configRepo.load(clientId);
+            Duration ttl = Duration.ofSeconds(3600 + ThreadLocalRandom.current().nextInt(301));
+            redis.opsForValue().set(key, json.writeValueAsString(cfg), ttl);   // TTL with jitter
+            return cfg;
+        } finally {
+            redis.delete(lock);
+        }
+    }
+    sleepQuietly(Duration.ofMillis(50));                        // someone else is rebuilding
+    String after = redis.opsForValue().get(key);
+    return after != null ? json.readValue(after, ClientConfig.class) : configRepo.load(clientId);
+}
+</code></pre>
+<p><em>What to notice: <code>setIfAbsent</code> with a 5-second expiry is Redis <code>SET NX EX</code>, so only one caller across all instances rebuilds the key, and a crashed holder can't keep the lock forever.</em></p>
+<p><strong>Why not just <code>@Cacheable</code>?</strong> Spring's <code>@Cacheable</code> annotation does cache-aside in one line, and <code>@Cacheable(sync = true)</code> stops a stampede inside one JVM. It does not coordinate across instances, so with many worker instances hitting the same key during a bulk import, the explicit cross-instance lock is the safer pattern for the hottest keys.</p>
+<p><strong>Why 30% fewer reads is plausible.</strong> The same client config and GSTIN validation ran on every invoice in a bulk import. Across 100K-row imports, caching those lookups removes a huge duplicate read fan-out.</p>
+<h3 id="how-it-works-coverage-and-deploy-success">How it works: coverage and deploy success</h3>
+<p>Coverage went from 35% to 82% with JUnit 5 and Mockito, measured by JaCoCo and enforced as a CI gate: the JaCoCo check fails the build if coverage drops below the agreed threshold. Focus was money paths first: registration, reconciliation, imports. Deployment success reached 98%.</p>
+<p>A typical unit test mocks every dependency and checks one rule. This one proves a duplicate batch never reaches the government portal (illustrative):</p>
+<pre><code class="language-java">@ExtendWith(MockitoExtension.class)
+class IrpSubmitListenerTest {
+    @Mock BatchClaims claims;
+    @Mock IrpClient irp;
+    @Mock KafkaTemplate&lt;String, Object&gt; kafka;
+    @InjectMocks IrpSubmitListener listener;
+
+    @Test
+    void skipsIrpWhenBatchAlreadyClaimed() {
+        IrpSubmitJob job = Fixtures.job(&quot;acme&quot;, &quot;9b1e&quot;, 37);
+        when(claims.tryClaim(job)).thenReturn(false);
+
+        listener.onJob(job);
+
+        verifyNoInteractions(irp);           // no second registration
+    }
+}
+</code></pre>
+<p>Database-heavy paths, such as the idempotent claim and quarter routing, are better tested against a real PostgreSQL started in Docker by Testcontainers, because a mock cannot prove that <code>ON CONFLICT</code> behaves as expected. That is general good practice; keep it qualitative if asked how many such tests existed.</p>
+<h3 id="why-this-design_2">Why this design</h3>
+<ul>
+<li><strong>Why ELK plus New Relic?</strong> ELK gives searchable logs. New Relic gives traces and APM. Together, an alert in New Relic leads straight to the request ID's logs in Kibana.</li>
+<li><strong>Why cache-aside and not write-through everywhere?</strong> Most hot data is read far more than written. Cache-aside only caches what's actually requested and is simple to reason about.</li>
+<li><strong>Why a coverage gate on money paths first?</strong> Bugs there are the expensive ones in a compliance product.</li>
+</ul>
+<h3 id="alternatives-and-why-not_2">Alternatives and why not</h3>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Keep SSH and grep</td>
+<td>No correlation across services, slow triage.</td>
+</tr>
+<tr>
+<td>Write-through cache everywhere</td>
+<td>More write-path complexity for data that's rarely written.</td>
+</tr>
+<tr>
+<td>No stampede control</td>
+<td>A popular key expiring during a 100K import sends every worker to the database at once.</td>
+</tr>
+<tr>
+<td>Chasing 100% coverage</td>
+<td>Diminishing returns. Covering the money paths was the high-value target.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-numbers_2">The numbers</h3>
+<p><strong>Triage down 70% (HISTORICAL cut, ESTIMATED baseline).</strong>
+- <em>Measures:</em> time from an alert to finding the cause.
+- <em>Derivation:</em> roughly 30 minutes before to under 10 minutes after. 30 to 9 minutes is a 70% cut. The 30-minute baseline is an estimate.
+- <em>Say it:</em> "Triage got about 70% faster, roughly from half an hour to under ten minutes."
+- <em>Don't say:</em> that I was an incident commander or owned a formal pager rotation. Claim alerting and faster triage.</p>
+<p><strong>Database read load down 30% (HISTORICAL).</strong> From Redis cache-aside on hot lookups.</p>
+<p><strong>Coverage from 35% to 82% (HISTORICAL).</strong> JUnit 5 and Mockito, measured by JaCoCo, CI gate, money paths first.</p>
+<p><strong>98% deployment success (HISTORICAL).</strong> Under the CI gates.</p>
+<p><strong>Not on the PDF:</strong> support tickets down 35% (older resume, client usage dashboard and log downloads) and audit-log churn down 15%. Don't volunteer them. If an interviewer brings up tickets from an older resume, say it was ops attribution from that time, and I owned the dashboard engineering, not every ticket outcome.</p>
+<h3 id="questions-they-will-ask_2">Questions they will ask</h3>
+<p><strong>Q: Prove the 70% triage cut isn't a vanity metric.</strong>
+"Before, we SSH'd into boxes and grepped, with no way to connect logs across services. After, a servlet filter put a request ID into the logging MDC, Kafka headers carried it to the consumers, and it followed each request through the API, the Kafka consumer and the IRP worker, with structured logs in ELK, New Relic traces and alerts on error rate and latency. Going from roughly half an hour to under ten minutes is my estimate of the baseline behind the 70% figure. The real change was correlation."</p>
+<p><strong>Q: Cache-aside: keys, TTLs, invalidation, thundering herd?</strong>
+"Hot keys were IRP auth tokens, client config and flags, GSTIN masters and tax rates. Config and GSTIN were deleted on write. Masters used TTL with jitter. For stampedes, jitter plus a SETNX lock, <code>setIfAbsent</code> in Spring Data Redis, so one worker rebuilds and the rest wait or serve slightly stale. The 30% read cut makes sense because every row of a 100K import hit the same lookups."</p>
+<hr>
+<h2 id="a9-design-decisions-at-a-glance">A9. Design decisions at a glance</h2>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Chose</th>
+<th>Rejected</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Migration shape</td>
+<td>Strangler plus gateway canaries</td>
+<td>Big-bang rewrite</td>
+<td>Zero tolerance on filing days. Rollback is a config flip.</td>
+</tr>
+<tr>
+<td>Service framework</td>
+<td>Spring Boot services plus Kafka consumers</td>
+<td>A Python framework, or keep PHP</td>
+<td>IRP calls must never pin request threads. Spring Kafka and Spring Batch cover the pipeline.</td>
+</tr>
+<tr>
+<td>Event bus</td>
+<td>Kafka</td>
+<td>SQS or RabbitMQ alone</td>
+<td>Per-GSTIN ordering, durable replay, multiple consumer groups.</td>
+</tr>
+<tr>
+<td>Partition key</td>
+<td>Client GSTIN (optionally plus doc type)</td>
+<td>Random or invoice id</td>
+<td>Per-taxpayer order for submit, callback, webhook.</td>
+</tr>
+<tr>
+<td>Data during cutover</td>
+<td>Shared DB, then split</td>
+<td>Dual writes</td>
+<td>One source of truth.</td>
+</tr>
+<tr>
+<td>Shard strategy</td>
+<td>PostgreSQL by tax quarter</td>
+<td>One big table, or hash only</td>
+<td>GST is quarter-scoped. Cold quarters archive cleanly.</td>
+</tr>
+<tr>
+<td>Fault model</td>
+<td>Idempotency, <code>DefaultErrorHandler</code> backoff, DLQ</td>
+<td>Fire-and-forget retries</td>
+<td>Double IRP registration is unrecoverable.</td>
+</tr>
+<tr>
+<td>Bulk import</td>
+<td>Spring Batch chunked step, then Kafka</td>
+<td>One long loop over the file</td>
+<td>A crash resumes at the last committed chunk.</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Cache-aside Redis plus <code>setIfAbsent</code> lock</td>
+<td>Write-through everywhere</td>
+<td>Hot config and GSTIN on every bulk row. Stampede control.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="a10-tech-used-and-why">A10. Tech used and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>One line</th>
+<th>Why here</th>
+<th>Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java</td>
+<td>Statically typed JVM language.</td>
+<td>Typed money and tax payloads, real threads, mature backend ecosystem.</td>
+<td>PHP (the legacy).</td>
+</tr>
+<tr>
+<td>Spring Boot</td>
+<td>Java service framework with an embedded web server.</td>
+<td>REST controllers, Bean Validation, Spring Kafka, Spring Batch, Spring Data Redis in one stack.</td>
+<td>A Python framework, Go.</td>
+</tr>
+<tr>
+<td>Hibernate</td>
+<td>Java ORM, used through Spring Data JPA.</td>
+<td>Entity mapping and repositories for PostgreSQL. N+1 fixes with entity graphs.</td>
+<td>Plain JDBC everywhere.</td>
+</tr>
+<tr>
+<td>Kafka</td>
+<td>Replayable event log.</td>
+<td>Ordering per GSTIN, replay, multiple consumers. Spring Kafka for listeners, retries and DLQ.</td>
+<td>SQS, RabbitMQ.</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>Relational database.</td>
+<td>Strong consistency for invoice state, quarter sharding.</td>
+<td>MySQL (the monolith's shared DB during cutover).</td>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>Document store.</td>
+<td>Flexible invoice payload snapshots and raw IRP and vendor responses.</td>
+<td>JSON columns in PostgreSQL.</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>In-memory cache.</td>
+<td>Cache-aside for hot lookups, <code>setIfAbsent</code> locks.</td>
+<td>Memcached.</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>Search engine.</td>
+<td>Invoice search and the ELK log store.</td>
+<td>PostgreSQL full-text search.</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>Containers.</td>
+<td>One image per service.</td>
+<td>Bare VMs.</td>
+</tr>
+<tr>
+<td>ELK</td>
+<td>Log pipeline and search.</td>
+<td>Structured logs with request IDs from the MDC.</td>
+<td>Grep on boxes.</td>
+</tr>
+<tr>
+<td>New Relic</td>
+<td>APM and tracing.</td>
+<td>Java agent traces and alerts across services.</td>
+<td>Datadog.</td>
+</tr>
+<tr>
+<td>AWS</td>
+<td>Cloud.</td>
+<td>Hosting, Amazon S3 for import files.</td>
+<td>Other clouds.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Supporting pieces inside the Spring Boot services</strong> (not separate items on the tech line): Spring Batch for chunked imports, <code>@Async</code> and <code>@Scheduled</code> for PDFs, email and webhooks, HikariCP for connection pooling, WebClient for the IRP, and JUnit 5, Mockito and JaCoCo for tests and coverage.</p>
+<p><strong>Why both MongoDB and Elasticsearch?</strong> Mongo held flexible invoice payload snapshots and vendor responses. Elasticsearch powered invoice search and the ELK stack.</p>
+<hr>
+<h2 id="a11-hard-problems-and-failure-stories">A11. Hard problems and failure stories</h2>
+<p><strong>The canary timeout mismatch.</strong> <em>What broke:</em> the new Spring Boot route timed out on some legitimate IRP calls. <em>How we found it:</em> the canary at a small percentage showed a higher error rate than PHP. <em>Cause:</em> PHP allowed 60 seconds, we had set 10. <em>Fix:</em> moved IRP calls fully off the request thread onto Kafka consumers and returned 202 with polling. <em>Lesson:</em> canaries exist to catch exactly this before it hits all clients, and timeouts are part of the API contract.</p>
+<p><strong>Never double-register.</strong> <em>Risk:</em> a worker crashes after the IRP accepted an invoice but before we recorded it, and the retry registers again. <em>Fix:</em> claim the batch with an idempotency key and unique constraint before calling the IRP, and skip if already claimed or done. <em>Lesson:</em> when a side effect can't be undone, idempotency is designed in, not bolted on.</p>
+<p><strong>A poison batch blocking an import.</strong> <em>Risk:</em> one malformed batch retried forever stalls a 100K import. <em>Fix:</em> bounded retries through <code>DefaultErrorHandler</code>, then the <code>DeadLetterPublishingRecoverer</code> parks it on the DLQ. Malformed data is marked not-retryable so it goes there immediately. The rest of the import continues, and operators replay after a fix.</p>
+<p><strong>Cache stampede during bulk imports.</strong> <em>Risk:</em> a hot config key expires mid-import and every worker hits the database. <em>Fix:</em> TTL jitter plus a <code>setIfAbsent</code> single-flight lock.</p>
+<p><strong>Wrong-quarter writes.</strong> <em>Risk:</em> application routing writes an invoice into the wrong quarter shard. <em>Fix:</em> derive the quarter from the invoice date at the API boundary and reject mismatches.</p>
+<hr>
+<h2 id="a12-say-this-carefully-masters">A12. Say this carefully (Masters)</h2>
+<div class="callout warn">
+<table>
+<thead>
+<tr>
+<th>Say this</th>
+<th>Don't say this</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"1,500+ enterprise clients."</td>
+<td>"2,500+ clients."</td>
+</tr>
+<tr>
+<td>"Mentored two engineers."</td>
+<td>"Led three engineers" (that's Uber FRM).</td>
+</tr>
+<tr>
+<td>"Exactly-once in effect: at-least-once delivery plus idempotency keys."</td>
+<td>"Kafka guarantees exactly-once to the government."</td>
+</tr>
+<tr>
+<td>"About 12 a second on average, 8 to 10 times that at deadline peaks, estimated."</td>
+<td>Putting TPS or RPS on the resume.</td>
+</tr>
+<tr>
+<td>"Taking IRP calls off request threads, pooling and query fixes moved p95. Redis moved the median."</td>
+<td>"Caching cut p95 by 75%."</td>
+</tr>
+<tr>
+<td>"Kafka carried the events. Kafka consumers and Spring Batch jobs did the work."</td>
+<td>"Kafka did everything" or "Spring Batch made it exactly-once" (idempotency keys did).</td>
+</tr>
+<tr>
+<td>"Claimed alerting and faster triage."</td>
+<td>"I was the incident commander" or "owned the pager rotation."</td>
+</tr>
+<tr>
+<td>"Circuit breaker is how I'd describe the degraded mode."</td>
+<td>Quoting a circuit-breaker metric.</td>
+</tr>
+<tr>
+<td>Kafka at Masters is a different product from Uber Menu.</td>
+<td>Flink at Masters.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+<h1 id="part-b-geeksforgeeks">Part B. GeeksforGeeks</h1>
+<h2 id="b1-the-one-minute-version-say-this-out-loud">B1. The one-minute version (say this out loud)</h2>
+<p>"At GeeksforGeeks, my first role, I worked on the courses platform. The doubt-support system, where learners post questions on articles and courses, ran on legacy PHP and struggled during live coding contests. I migrated its backend to Django, which stabilised it at 10K plus daily queries and 10x contest spikes. I built the REST APIs for voting, pinning and locking threads across MySQL, MongoDB, Redis and Elasticsearch, and the growth team attributed a 20% lift in premium subscriptions to that work.</p>
+<p>I also launched an influencer analytics and earnings dashboard that tracked transactions and affiliate coupon conversions, which the business tied to a 30% lift in course sales. And I designed asynchronous scheduled workflows for video processing, reminders and data cleanup, which raised engineering operational efficiency by about 70%. I owned the engineering. The business team attributed the lifts."</p>
+<hr>
+<h2 id="b2-the-business-in-plain-english">B2. The business in plain English</h2>
+<p><strong>Who the users are.</strong> Learners on GeeksforGeeks courses and articles, and influencer partners (content creators) who promote courses with affiliate coupons.</p>
+<p><strong>What they do.</strong> Learners post doubts (questions), vote on helpful answers, and read pinned answers. During live coding contests, traffic jumps about tenfold. Influencers want to see how their coupons convert and what they've earned.</p>
+<p><strong>What hurt before.</strong> The PHP doubt-support backend lacked transactions and validation discipline and buckled during contest spikes. Influencer reporting and ops chores (video handoffs, reminders, recording cleanup) were manual.</p>
+<p><strong>Why the company paid for this.</strong> A reliable doubt-support experience is a premium feature, so it drives subscriptions. Good influencer analytics keeps partners promoting, which drives course sales. Automating ops chores frees engineers.</p>
+<hr>
+<h2 id="b3-words-you-need-gfg">B3. Words you need (GFG)</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain meaning</th>
+<th>Analogy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Doubt-support platform</strong></td>
+<td>The Q&amp;A layer on articles and courses where learners ask and answer questions.</td>
+<td>A class noticeboard for questions.</td>
+</tr>
+<tr>
+<td><strong>Django and DRF</strong></td>
+<td>Django is a "batteries included" Python web framework (ORM, admin, auth). DRF (Django REST Framework) builds REST APIs on top.</td>
+<td>A fully equipped kitchen versus buying every pan separately.</td>
+</tr>
+<tr>
+<td><strong>ORM</strong></td>
+<td>Object-relational mapper: work with database rows as Python objects.</td>
+<td>A translator between Python and SQL.</td>
+</tr>
+<tr>
+<td><strong>REST API</strong></td>
+<td>Web endpoints using standard HTTP verbs on resources, such as <code>POST /doubts/42/vote</code>.</td>
+<td>A menu of standard orders a waiter understands.</td>
+</tr>
+<tr>
+<td><strong>Voting</strong></td>
+<td>Users upvote helpful answers. One vote per user per item.</td>
+<td>A show of hands where each person has one hand.</td>
+</tr>
+<tr>
+<td><strong>Pinning</strong></td>
+<td>Moderators or authors pin an answer to the top of a thread.</td>
+<td>Pinning a notice to the top of the noticeboard.</td>
+</tr>
+<tr>
+<td><strong>Locking a thread</strong></td>
+<td>Closing a thread to new replies.</td>
+<td>Putting "closed" on the noticeboard question.</td>
+</tr>
+<tr>
+<td><strong>Hot row</strong></td>
+<td>One database row updated so often it becomes a bottleneck, such as a vote counter on a viral post.</td>
+<td>One checkout lane everyone insists on using.</td>
+</tr>
+<tr>
+<td><strong>Source of truth</strong></td>
+<td>The system whose data wins if copies disagree.</td>
+<td>The original contract, not the photocopies.</td>
+</tr>
+<tr>
+<td><strong>Affiliate coupon conversion</strong></td>
+<td>A purchase made using an influencer's coupon code.</td>
+<td>A referral code at a gym.</td>
+</tr>
+<tr>
+<td><strong>Cron / scheduled workflow</strong></td>
+<td>A job that runs on a schedule.</td>
+<td>An alarm clock for code.</td>
+</tr>
+<tr>
+<td><strong>Lease or advisory lock</strong></td>
+<td>A short-lived lock so only one host runs a given job at a time.</td>
+<td>A "room booked" sign on the door.</td>
+</tr>
+</tbody>
+</table>
+<p>MySQL, MongoDB, Redis and Elasticsearch are defined in Part A.</p>
+<hr>
+<h2 id="b4-architecture-gfg">B4. Architecture (GFG)</h2>
+<div class="mermaid">flowchart LR
+    U["Learners and influencers"] --&gt; DJ["Django and DRF: doubt APIs, votes, pins, locks, dashboard"]
+    DJ --&gt; MY["MySQL: threads, permissions, votes, source of truth"]
+    DJ --&gt; RD["Redis: counters, badges, unread"]
+    DJ --&gt; MG["MongoDB: flexible bodies and attachments"]
+    DJ --&gt; ES["Elasticsearch: doubt and content search"]
+    CR["Scheduled workers with lease lock"] --&gt; VID["Video processing handoff"]
+    CR --&gt; REM["Reminders over reused SMTP connection"]
+    CR --&gt; CLN["Recording and data cleanup"]
+    CR --&gt; MY
+</div>
+<p><em>What to notice: MySQL is the truth for votes and threads, Redis only serves fast display counters, and every scheduled job takes a lease first so two hosts never run it twice.</em></p>
+<p><strong>Scale honesty.</strong> 10K+ daily queries averages well under one request a second (10,000 ÷ 86,400 ≈ 0.12, ESTIMATED). Contest days are about 10 times that, concentrated into contest windows. The story is reliability and surviving spikes, not "Uber scale".</p>
+<hr>
+<h2 id="b5-one-vote-step-by-step-illustrative">B5. One vote, step by step (illustrative)</h2>
+<ol>
+<li>Learner 9917 taps upvote on answer 5521. The app calls <code>POST /api/answers/5521/vote</code>.</li>
+<li>Django checks the thread isn't locked and the user is allowed to vote (some interactions were gated behind premium).</li>
+<li>Insert into <code>votes (user_id, content_id)</code> with a unique constraint. If the user already voted, the constraint makes it a no-op or an update, never a double count.</li>
+<li>Increment the Redis display counter <code>votes:5521</code>.</li>
+<li>A periodic job reconciles Redis counters to MySQL counts, so drift is corrected and MySQL stays the truth.</li>
+</ol>
+<pre><code class="language-sql">-- Illustrative vote table
+CREATE TABLE votes (
+  user_id    BIGINT NOT NULL,
+  content_id BIGINT NOT NULL,
+  value      TINYINT NOT NULL,
+  created_at DATETIME NOT NULL,
+  PRIMARY KEY (user_id, content_id)
+);
+INSERT INTO votes (user_id, content_id, value, created_at)
+VALUES (9917, 5521, 1, NOW())
+ON DUPLICATE KEY UPDATE value = VALUES(value);
+</code></pre>
+<hr>
+<h2 id="b6-bullet-g1-decoded-django-migration-doubt-apis-20-premium-lift">B6. Bullet G1 decoded: Django migration, doubt APIs, 20% premium lift</h2>
+<blockquote>
+<p>Stabilized the doubt-support platform to handle 10K+ daily queries and 10x traffic spikes during live coding contests by migrating the backend to Django. Engineered high-throughput REST APIs for voting, pinning, and locking threads utilizing MySQL, MongoDB, Redis, and Elasticsearch, driving a 20% lift in premium subscriptions.</p>
+</blockquote>
+<h3 id="in-plain-words_3">In plain words</h3>
+<p>I moved the doubt-support backend from PHP to Django so it stopped falling over during contests, and built the APIs that let learners vote, pin and lock threads. The growth team credited that work with a 20% relative lift in premium subscriptions.</p>
+<h3 id="how-it-works_1">How it works</h3>
+<p><strong>The migration.</strong> Incremental, page by page, behind the same URLs, to Django with DRF. Reliability came from ORM-managed transactions, request validation, separating read views from write endpoints, and staging plus code review discipline the PHP stack lacked.</p>
+<p><strong>Voting.</strong> Unique <code>(user_id, content_id)</code> so a double submit is idempotent. Display counters in Redis, reconciled asynchronously to MySQL, so viral posts don't create hot-row contention.</p>
+<p><strong>Pinning.</strong> Per-context ordering columns, so a pinned answer sorts first within its thread, not a free-for-all sort.</p>
+<p><strong>Locking threads.</strong> Locking closes a thread to new replies. The bullet names it as one of the APIs. If asked for implementation detail beyond "a locked state checked on the reply path", keep it qualitative.</p>
+<p><strong>The data split.</strong> MySQL holds relational threads, permissions and votes (source of truth). MongoDB holds flexible doubt bodies and attachments whose shape varies. Elasticsearch powers search across doubts and content. Redis serves hot reads: counters, badges, unread counts.</p>
+<p><strong>Unread counts.</strong> Per-user counters in Redis for the badge, durable rows in MySQL for threads and messages. Increment on a new reply, clear on read. A periodic reconcile from MySQL fixes drift.</p>
+<h3 id="why-this-design_3">Why this design</h3>
+<ul>
+<li><strong>Why Django?</strong> In 2021 this was a CMS-style product. Django's admin, auth and ORM came built in. (Masters later needed high-concurrency calls to government APIs and an event-driven bulk pipeline, which is why Spring Boot with Spring Kafka and Spring Batch fit there.)</li>
+<li><strong>Why a unique constraint plus Redis?</strong> The constraint guarantees correctness. Redis keeps the display fast without hammering one MySQL row.</li>
+<li><strong>Why four data stores?</strong> Each does one job: relational truth, flexible documents, search, and hot reads.</li>
+</ul>
+<h3 id="alternatives-and-why-not_3">Alternatives and why not</h3>
+<table>
+<thead>
+<tr>
+<th>Alternative</th>
+<th>Why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Big-bang rewrite or staying on PHP</td>
+<td>Outage risk, or the same instability.</td>
+</tr>
+<tr>
+<td>Counter only in Redis</td>
+<td>Fast, but can drift or be lost. Needs a source of truth.</td>
+</tr>
+<tr>
+<td>Update the MySQL counter on every vote</td>
+<td>Viral posts melt one hot row.</td>
+</tr>
+<tr>
+<td>Store everything in MySQL JSON columns</td>
+<td>Search and flexible document shapes are different jobs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-numbers_3">The numbers</h3>
+<p><strong>10K+ daily queries (standardised).</strong> Order of ten thousand daily interactions. Never 100K. Older resumes said "1,000+ doubts a day" (a narrower metric) or 100K (dropped).</p>
+<p><strong>10x traffic spikes (ESTIMATED shape).</strong> Contest days run about ten times normal traffic.</p>
+<p><strong>20% lift in premium subscriptions (HISTORICAL, relative, attributed by growth).</strong>
+- <em>Say it:</em> "A 20% relative lift in premium subscriptions, attributed by the growth team. I owned the APIs and the reliability."
+- <em>Don't say:</em> "15 to 20%" (older wording) or that I alone caused it.</p>
+<h3 id="questions-they-will-ask_3">Questions they will ask</h3>
+<p><strong>Q: Design unread counts for 10K+ daily queries without melting MySQL.</strong>
+"Per-user counters in Redis for the badge, durable threads and messages in MySQL. Increment on a new reply, clear on read. A periodic job reconciles from MySQL to fix drift. The Django migration gave us the transactional write path the PHP stack lacked."</p>
+<p><strong>Q: Voting idempotency and hot rows?</strong>
+"A unique constraint on user and content makes a double submit a no-op. Display counts live in Redis and reconcile to MySQL asynchronously, so a viral post doesn't hammer one row. MySQL stays the truth."</p>
+<hr>
+<h2 id="b7-bullet-g2-decoded-influencer-dashboard-and-scheduled-workflows">B7. Bullet G2 decoded: influencer dashboard and scheduled workflows</h2>
+<blockquote>
+<p>Accelerated platform course sales by 30% by launching an influencer analytics and earnings dashboard to dynamically track transactions and affiliate coupon conversions. Increased engineering operational efficiency by 70% by designing asynchronous scheduled workflows for automated video processing, user reminders, and data cleanup.</p>
+</blockquote>
+<h3 id="in-plain-words_4">In plain words</h3>
+<p>I built a dashboard where influencers see their coupon sales and earnings, which helped them promote courses better. The business tied it to a 30% rise in course sales. I also automated the chores the team did by hand, such as video processing handoffs, reminders and cleanup, which saved about 70% of that effort.</p>
+<h3 id="how-it-works_2">How it works</h3>
+<p><strong>Dashboard.</strong> Near-real-time counters in Redis plus daily rollups computed by scheduled jobs, showing transactions, affiliate coupon conversions and earnings per partner.</p>
+<p><strong>Scheduled workflows.</strong> Jobs covered video processing handoffs, automated reminders, payment processing, and cloud recording deletion and data cleanup. Reliability pattern:
+- a lease or database advisory lock so two hosts never double-run a job,
+- idempotent job keys,
+- structured success and failure logs,
+- retry or dead-letter for partial batches.</p>
+<pre><code class="language-python"># Illustrative lease so only one host runs a job
+def run_once(job_name, fn):
+    if not redis.set(f&quot;lease:{job_name}&quot;, host_id, nx=True, ex=900):
+        return  # another host holds the lease
+    try:
+        fn()
+    finally:
+        if redis.get(f&quot;lease:{job_name}&quot;) == host_id:
+            redis.delete(f&quot;lease:{job_name}&quot;)
+</code></pre>
+<p><strong>SMTP reuse (older-resume detail, not on the PDF).</strong> Reminder and promo batches reused one SMTP connection instead of a new TCP and TLS handshake per message. Handshakes often cost 100 to 400 ms each, so amortising them cut wall-clock send time roughly in half. The "50% faster" claim is from the 1-year and 2.5-year resumes and is prep depth only.</p>
+<h3 id="the-numbers_4">The numbers</h3>
+<p><strong>Course sales up 30% (HISTORICAL, business attribution).</strong> "The business team attributed it. I owned the engineering."</p>
+<p><strong>Engineering ops efficiency up 70% (HISTORICAL).</strong> Framed as time saved on the manual video, reminder and cleanup workflows.</p>
+<h3 id="questions-they-will-ask_4">Questions they will ask</h3>
+<p><strong>Q: How do you keep scheduled jobs reliable?</strong>
+"A lease so only one host runs each job, idempotent job keys so a rerun is safe, structured logs, and retry or dead-letter for partial batches. The 70% is time saved on those manual workflows."</p>
+<p><strong>Q: Is the 30% sales lift yours?</strong>
+"I built the dashboard. The business team measured and attributed the 30% lift. I'm careful to own the engineering and let them own the causality."</p>
+<hr>
+<h2 id="b8-hard-problems-and-lessons-gfg">B8. Hard problems and lessons (GFG)</h2>
+<ul>
+<li><strong>Hot rows on viral posts.</strong> Solved with Redis display counters plus async reconcile.</li>
+<li><strong>Contest spikes.</strong> The Django migration's transactions, validation and read/write separation are what made the 10x spikes survivable.</li>
+<li><strong>Double-running crons across hosts.</strong> Solved with leases and idempotent job keys.</li>
+</ul>
+<p><strong>What I'd change today.</strong> Put vote events on a queue with event-sourced counters, make idempotency keys the default on reminder jobs, and set clearer latency targets for contest days. The Django migration and vote and pin models were the right call in 2021. The event patterns I later owned at Masters are what I'd backport.</p>
+<h2 id="b9-say-this-carefully-gfg">B9. Say this carefully (GFG)</h2>
+<div class="callout warn">
+<ul>
+<li>Say <strong>20%</strong> premium lift, relative, attributed by growth. Not 15 to 20%.</li>
+<li>Say <strong>10K+ daily queries</strong>. Not 100K.</li>
+<li>Own the engineering. The business attributed the 30% sales and 70% efficiency figures.</li>
+<li>SMTP 50% is older-resume prep depth, not a PDF claim, and it's GFG, not Masters.</li>
+</ul>
+</div>
+<hr>
+<h1 id="part-c-mock-interview-hardest-questions">Part C. Mock interview: hardest questions</h1>
+<h3 id="masters-india">Masters India</h3>
+<p><strong>Interviewer:</strong> You were on AWS. Why Kafka instead of RabbitMQ or SQS?
+<strong>Candidate:</strong> "We needed per-client ordering, durable replay for compliance, and independent consumer groups together. The partition key was the client GSTIN, sometimes plus document type, so submit, IRN callback and webhook for one taxpayer stayed ordered. Kafka lets us reset offsets and reprocess after a parser bug. SQS deletes on ack, has no cheap multi-consumer replay, and FIFO caps throughput per group. RabbitMQ could have worked for task dispatch at our scale, and I say that honestly. Kafka won because replay was first-class for GST disputes, multiple groups could read one topic without fan-out plumbing, and Spring Kafka gave us listeners, bounded retries and dead-letter publishing out of the box. Ops cost was the trade-off."</p>
+<p><strong>Interviewer:</strong> Derive TPS and RPS from your numbers. Do they hang together?
+<strong>Candidate:</strong> "A million a day is 1,000,000 over 86,400 seconds, about 11.6, so roughly 12 a second on average. Filing deadlines were the sizing problem, roughly 8 to 10 times that, so 100-plus a second at peak. Those are estimates. Throughput went from 700 to 4,000 requests a minute, which is about 12 to 67 requests a second. They measure different things: requests per minute is gateway and service capacity, daily submissions are registered documents."</p>
+<p><strong>Interviewer:</strong> What drove p95 from 1.2 seconds to 300 milliseconds? Caching alone can't.
+<strong>Candidate:</strong> "Agreed. Caching helped the median and read-heavy endpoints. The tail was PHP workers blocking on the government portal. In the Spring Boot services, request threads publish to Kafka and return 202, and Kafka consumers call the IRP through WebClient with timeouts. HikariCP pooling ended connect storms, and N+1 fixes in Hibernate plus composite indexes on client and invoice date sped up lists. Redis cut redundant reads by about 30%. Freeing request threads, pooling and queries moved the tail. The cache moved the body."</p>
+<p><strong>Interviewer:</strong> Cache-aside specifics. Make the 30% plausible.
+<strong>Candidate:</strong> "Miss, read the database, set with a TTL. Hot keys were IRP auth tokens with a TTL below the token lifetime, client config and flags, GSTIN masters and tax rates. Config and GSTIN were deleted on write. Masters were TTL with jitter. Stampedes were handled with jitter plus a SETNX lock, which is <code>setIfAbsent</code> in Spring Data Redis. 30% is plausible because every row of a 100K import ran the same config and GSTIN lookups."</p>
+<p><strong>Interviewer:</strong> Why shard by quarter instead of plain partitioning?
+<strong>Candidate:</strong> "GST is quarter-scoped and deadline-driven. Writes concentrate in the current quarter, older quarters are reconciliation reads. Quarter tables keep hot indexes small and let us archive a whole quarter cleanly. Versus native range partitioning, we owned the routing in application code, more moving parts but explicit archive and clear runbooks. The footgun is wrong-quarter writes, so we derived the quarter from the invoice date at the API boundary and rejected mismatches."</p>
+<p><strong>Interviewer:</strong> Sketch the IRP path and where Kafka sits.
+<strong>Candidate:</strong> "The client's ERP posts invoice JSON. We validate schema and GSTIN and register with the IRP, which returns a signed IRN and QR, and that's what makes a B2B invoice valid. Kafka carries the async stages: accepted chunks, IRP submit jobs, persisting responses to Mongo snapshots, and client webhooks. Idempotency keys plus client references stop double registration, which is not recoverable. Bulk files go to S3, a Spring Batch step chunks them, Kafka consumers send them to the IRP with bounded concurrency, and progress streams to the dashboard."</p>
+<p><strong>Interviewer:</strong> What did "mentored 2" mean day to day?
+<strong>Candidate:</strong> "Strangler behind the gateway, not big bang. I owned the conventions and shared helpers. Each engineer extracted a service. I reviewed their early PRs closely and paired on the first canary: Nginx percentage route, watch errors and latency, ramp or roll back by config. Shared DB during cutover avoided dual writes."</p>
+<p><strong>Interviewer:</strong> ELK plus New Relic cut triage 70%. Prove it's not vanity.
+<strong>Candidate:</strong> "Before, SSH and grep, no correlation. After, structured logs with request IDs in Elasticsearch and Kibana, New Relic traces, alerts on error rate and latency. Roughly 30 minutes to under 10 is my estimated baseline behind the 70% figure. The real win was one request ID across the API, the Kafka consumer and the IRP worker. Coverage went from 35% to 82% on money paths and deploy success reached 98%."</p>
+<h3 id="geeksforgeeks">GeeksforGeeks</h3>
+<p><strong>Interviewer:</strong> Doubt support at 10K+ daily queries. Design unread counts without melting MySQL.
+<strong>Candidate:</strong> "10K a day is well under one request a second on average, with contest days about 10 times that. Redis per-user counters serve the badge, MySQL holds threads and messages. Increment on a reply, clear on read, and reconcile periodically from MySQL. The Django migration gave us transactions and validation the PHP stack lacked."</p>
+<p><strong>Interviewer:</strong> Voting idempotency and the four-store split?
+<strong>Candidate:</strong> "Unique user and content constraint for idempotency. Redis counters reconciled to MySQL to avoid hot rows. MySQL for threads, permissions and truth, Mongo for variable bodies and attachments, Elasticsearch for search. Pinning is per-context ordering. The 20% premium lift is the growth team's relative attribution."</p>
+<p><strong>Interviewer:</strong> Crons claimed +70% ops efficiency. How do you keep crons honest?
+<strong>Candidate:</strong> "Leases so two hosts don't double-run, idempotent job keys, structured logs, and retry or dead-letter for partial batches. The 70% is time saved on manual video, reminder and cleanup work. The 30% course sales is business attribution on the influencer dashboard."</p>
+<p><strong>Interviewer:</strong> You also cut email send time 50% with SMTP changes. Real?
+<strong>Candidate:</strong> "That's from my earlier resumes, not the current one. We reused one SMTP connection across a batch instead of a TCP and TLS handshake per message, which is often 100 to 400 milliseconds each. Amortising that roughly halves wall-clock time for reminder and promo batches. It's a GFG detail, not a Masters claim."</p>
+<hr>
+<h1 id="part-d-confidence-audit">Part D. Confidence audit</h1>
+<table>
+<thead>
+<tr>
+<th>Resume claim</th>
 <th>Rating</th>
 <th>Fallback wording if pressed</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Owned FastAPI strangler, mentored 2, p95 1.2s to 300ms, 1,500+ clients</td>
-<td>SOLID</td>
-<td>Use 1000-1200ms to 300-400ms band if they cite older resumes; never say 2,500+ clients (dropped).</td>
+<td>MI1: Spring Boot migration, mentored 2, p95 from 1.2s to 300ms, 1,500+ clients, 700 to 4,000 rpm</td>
+<td>Solid</td>
+<td>Older band 1,000 to 1,200 ms to 300 to 400 ms if they cite old resumes. Never 2,500+.</td>
 </tr>
 <tr>
-<td>100K+/import, 1M+ daily, async Kafka, quarter sharding, 700 to 4,000 req/min</td>
-<td>SOLID on throughput; NEEDS CARE on peak TPS</td>
-<td>Say ~12 TPS avg and 100+ TPS peak as ESTIMATED. Kafka justification: ordering, replay, consumer groups; admit RabbitMQ could work at that scale.</td>
+<td>MI2: Kafka, quarter sharding, 1M+ a day, 100K+ idempotent imports, DLQ, bounded retries</td>
+<td>Solid on pattern. Needs care on peak TPS</td>
+<td>About 12 a second average and 100+ peak, both ESTIMATED. Admit RabbitMQ could work at that scale.</td>
 </tr>
 <tr>
-<td>Fault tolerant bulk paths (idempotency, retries, DLQ) + Redis -30% reads</td>
-<td>SOLID on pattern; NEEDS CARE on circuit-breaker wording</td>
-<td>Defend idempotency key shape and DLQ replay. Circuit breaker is verbal prep, not a measured resume metric. Audit churn -15% is prep-only now.</td>
+<td>MI3: ELK and New Relic, triage down 70%, reads down 30%, coverage 35 to 82%, 98% deploys</td>
+<td>Solid on coverage and deploys. Needs care on triage baseline</td>
+<td>Claim alerting, not pager ownership. Baseline about 30 to under 10 minutes is ESTIMATED.</td>
 </tr>
 <tr>
-<td>ELK + New Relic on-call alerting, triage -70%; coverage 35 to 82; 98% deploy success</td>
-<td>SOLID on coverage/deploy; NEEDS CARE on triage baseline</td>
-<td>Claim alerting, not unproven pager ownership. Triage baseline ~30 min to &lt;10 min is ESTIMATED behind HISTORICAL 70%.</td>
+<td>G1: Django, 10K+ daily, 10x spikes, voting, pinning, locking, 20% premium</td>
+<td>Solid on engineering. Needs care on attribution</td>
+<td>"Relative lift attributed by growth. I owned the APIs and reliability."</td>
 </tr>
 <tr>
-<td>GFG PHP to Django, 10K+ daily queries</td>
-<td>SOLID (standardized)</td>
-<td>Say "order of ten thousand daily interactions"; do not say 100K.</td>
-</tr>
-<tr>
-<td>Voting/pinning, premium +15-20%</td>
-<td>NEEDS CARE</td>
-<td>"Relative lift attributed by growth; engineering owned APIs and reliability."</td>
-</tr>
-<tr>
-<td>Influencer dashboard + cron, course sales +30%, ops +70%</td>
-<td>NEEDS CARE</td>
-<td>Own engineering; attribute sales/efficiency as HISTORICAL business metrics.</td>
+<td>G2: dashboard, 30% sales, scheduled workflows, 70% ops</td>
+<td>Needs care on attribution</td>
+<td>Own the engineering. Sales and efficiency are business-attributed HISTORICAL figures.</td>
 </tr>
 </tbody>
-</table></main>
+</table>
+<hr>
+<h1 id="part-e-practice-drill">Part E. Practice drill</h1>
+<ol>
+<li><strong>What does Masters India do?</strong> GST e-invoicing for Indian enterprises: we validate invoices and register them with the government IRP, which returns a signed IRN and QR.</li>
+<li><strong>Why migrate off PHP?</strong> Synchronous workers blocked on slow IRP calls, deploys were all-or-nothing, and deadline spikes caused timeouts.</li>
+<li><strong>How did the migration avoid risk?</strong> Strangler with per-route Nginx canaries, shared database during cutover, contract tests pinning PHP responses, rollback by config.</li>
+<li><strong>What actually cut p95?</strong> Taking IRP calls off request threads (Kafka consumers with WebClient timeouts), HikariCP connection pooling, N+1 and index fixes. Redis helped the median.</li>
+<li><strong>Derive the 75%.</strong> From 1,200 ms to 300 ms saves 900, and 900 ÷ 1,200 is 75%.</li>
+<li><strong>Convert 700 and 4,000 requests per minute.</strong> About 12 and 67 requests a second.</li>
+<li><strong>Why Kafka?</strong> Per-GSTIN ordering, replay for disputes, and independent consumer groups on one log.</li>
+<li><strong>Why shard by tax quarter?</strong> GST is quarter-scoped. Hot writes in the current quarter, small indexes, clean archiving.</li>
+<li><strong>What's the idempotency key?</strong> Client plus file hash plus batch index, with a unique constraint, checked before calling the IRP.</li>
+<li><strong>Is it truly exactly-once?</strong> In effect: at-least-once delivery plus idempotent writes.</li>
+<li><strong>What does the DLQ do?</strong> Parks poison batches after bounded retries so the rest of the import continues, for operator replay.</li>
+<li><strong>Where does 70% triage come from?</strong> Request IDs across services, ELK and New Relic. Roughly 30 minutes to under 10, baseline estimated.</li>
+<li><strong>Why did Redis cut reads 30%?</strong> Every row of a bulk import hit the same config and GSTIN lookups.</li>
+<li><strong>GFG: why Django?</strong> In 2021 a CMS-style product benefits from Django's admin, auth and ORM.</li>
+<li><strong>GFG: how are votes idempotent?</strong> Unique user and content constraint. Redis counters reconcile to MySQL.</li>
+</ol>
+<hr>
+<h1 id="part-f-3-minute-whiteboard-script-masters-india">Part F. 3-minute whiteboard script (Masters India)</h1>
+<p><strong>First (30 seconds): the problem.</strong> Write "Invoice in, signed IRN out". Say: "Enterprises must register B2B invoices with the government IRP. We had 1,500+ clients, a synchronous PHP monolith, and deadline spikes that caused timeouts."</p>
+<p><strong>Second (90 seconds): draw the system.</strong> Client ERP, then Nginx gateway with a split arrow to "PHP (old)" and "Spring Boot (new)". From Spring Boot draw Redis, PostgreSQL by quarter, S3, and Kafka. From Kafka draw Workers (Kafka consumers and Spring Batch), then IRP. Add a DLQ box off Workers and ELK and New Relic underneath. Say: "Strangler with per-route canaries took p95 from 1.2 seconds to 300 milliseconds and throughput from 700 to 4,000 requests a minute. Bulk imports go S3, Kafka keyed by GSTIN, workers with bounded concurrency to the IRP. Idempotency key client plus file hash plus batch index means a retry never double-registers. Poison batches go to the DLQ. Over a million submissions a day."</p>
+<p><strong>Third (60 seconds): numbers and caveats.</strong> Write "12/s avg, 8–10x peak (est.)", "triage −70%", "reads −30%", "coverage 35→82%, 98% deploys". Say: "Freeing request threads from IRP waits, pooling and query fixes moved p95, Redis moved the median. Exactly-once means at-least-once plus idempotency. I mentored two engineers through the migration."</p>
+<p><strong>GFG in 30 seconds if asked:</strong> draw Django in the middle with MySQL, Redis, MongoDB and Elasticsearch around it. Say: "PHP to Django for reliability at 10K+ daily queries and 10x contest spikes. Votes idempotent by unique constraint, Redis counters reconciled to MySQL. 20% premium lift attributed by growth."</p></main>
 </div>
 
 <script type="module">

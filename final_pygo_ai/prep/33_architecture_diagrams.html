@@ -41,58 +41,274 @@ strong{color:#fff}
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_pygo_ai/prep/33_architecture_diagrams.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</a>
-<a class="lvl2" href="#1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</a>
-<a class="lvl2" href="#2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</a>
-<a class="lvl2" href="#3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</a>
+<a class="lvl2" href="#1-impact-analytics-assortsmart-platform-ai">1. Impact Analytics — AssortSmart (Platform &amp; AI)</a>
+<a class="lvl2" href="#2-uber-frm-risk-scoping-uber-via-epam">2. Uber FRM — Risk Scoping (Uber via EPAM)</a>
+<a class="lvl2" href="#3-uber-eats-menu-anz-mobility-separate-projects-uber-via-epam">3. Uber Eats Menu + ANZ Mobility (separate projects, Uber via EPAM)</a>
 <a class="lvl2" href="#4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</a>
 <a class="lvl2" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
 <a class="lvl2" href="#whiteboard-checklist">Whiteboard checklist</a></nav>
 <main><h1 id="architecture-flow-er-diagrams-v2-java-pygo-tracks">Architecture · flow · ER diagrams (v2 / Java / PyGo tracks)</h1>
-<p>Whiteboard-ready diagrams for every project on the current PDFs. Style inspired by the original prep’s ASCII box-arrow clarity, plus mermaid for Pages rendering. Facts match <code>GROUND_TRUTH.md</code> — not copied from original resume narratives.</p>
-<p><strong>How to use:</strong> Sketch the ASCII in interviews; open the HTML hub for live mermaid. Java track: swap FastAPI→Spring Boot / Gin→Spring verbally.</p>
-<hr>
-<h2 id="1-impact-analytics-assortsmart-building">1. Impact Analytics — AssortSmart (building)</h2>
-<h3 id="architecture-ascii">Architecture (ASCII)</h3>
-<pre><code> Planner (Chat UI)          Planner (Manual / Hindsight UI)
-        │                              │
-        ▼                              ▼
- ┌──────────────────────┐     ┌─────────────────────────┐
- │ FastAPI + LangGraph  │     │ Go Gin write APIs       │
- │ + MCP (agent plane)  │     │ (shared doing layer)    │
- │ 14 read-only tools   │────►│ Clustering / Hindsight  │
- │ 3 human confirm steps│     │ / Strategy              │
- └──────────┬───────────┘     └───────────┬─────────────┘
-            │ read-only                    │ INSERT / approve path
-            ▼                              ▼
- ┌──────────────────────────────────────────────────────┐
- │ Per-tenant ClickHouse  (63 tables / 8 layers)        │
- │ insert-only · refresh by swapping partitions         │
- │ agent profile: SELECT only                           │
- └──────────▲───────────────────────────────┬───────────┘
-            │ BQ → CH ingest                │
-     ┌──────┴──────┐                 ┌──────▼──────┐
-     │  BigQuery   │                 │ GCS / snaps │
-     │ (historical)│                 └─────────────┘
-     └─────────────┘
- Obs: LangSmith (agent) · Datadog (platform) · PostHog (product)
-      ── shared OTEL trace_id ──
-</code></pre>
-<h3 id="user-flow-clustering-copilot">User flow (clustering copilot)</h3>
-<pre><code>Intent → Ground scope (tools) → Confirm search plan → Batch explore configs
-      → Present 3–5 scenarios → Human approve → Write via Go APIs → Grid refresh
-</code></pre>
-<h3 id="mermaid">Mermaid</h3>
-<div class="mermaid">flowchart TB
-  Chat[Chat UI] --> FA[FastAPI LangGraph MCP]
-  Manual[Manual UI] --> Go[Go Gin doing layer]
-  FA -->|14 R/O tools| Go
-  FA -.->|SELECT only| CH[(ClickHouse 63/8)]
-  Go -->|INSERT / approve| CH
-  BQ[BigQuery] -->|ingest| CH
-  FA --> LS[LangSmith]
-  Go --> DD[Datadog]
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> whiteboard-ready architecture diagrams for every project on the current PDF: Impact Analytics (AssortSmart), Uber FRM, Uber Menu and ANZ, Masters India and GeeksforGeeks. Each diagram has a box-by-box walkthrough, what flows on each arrow, failure modes, and a "how to draw this in 3 minutes" script.</li>
+<li><b>When to read it:</b> before any system design or "walk me through your project" round. Practise the 3-minute scripts out loud with a pen.</li>
+<li><b>What to memorise:</b> the shape of each diagram (left to right), one "why this box" line per box, and the honesty notes in the warn boxes.</li>
+</ul>
 </div>
-<h3 id="why-each-box">Why each box</h3>
+<p>This is the PyGo track. Uber FRM uses FastAPI and SQLAlchemy 2.0, and Masters India uses FastAPI and Celery. On the Java tracks, swap FRM and Masters to Spring Boot verbally. <strong>Impact Analytics stays Go/Gin on every track.</strong> Facts match <a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>, not older resume narratives.</p>
+<p><strong>What the tags mean on this page.</strong> MEASURED means there is a log, doc or code behind it. ESTIMATED means arithmetic I can show, so I say "roughly, derived from...". HISTORICAL means it comes from my past work records. TARGET means a design goal. "Verbal only" means I can talk about it if asked, but it is not a PDF bullet, so I never lead with it.</p>
+<p><strong>How to read the diagrams.</strong> The ASCII versions are what I sketch in an interview. The mermaid versions render on the site. Solid arrows are the main path. Dotted arrows are fallback, optional or "not mine" paths.</p>
+<hr>
+<h2 id="1-impact-analytics-assortsmart-platform-ai">1. Impact Analytics — AssortSmart (Platform &amp; AI)</h2>
+<h3 id="the-business-in-plain-english">The business in plain English</h3>
+<p>Impact Analytics sells AssortSmart, a merchandise planning SaaS for retailers. Planners use it to decide, for each selling season, which articles (products) to keep, which to drop and which to add. An "article-season" is one product in one selling season. The data is huge, so the platform has two halves: a Go/Gin platform that serves fast analytical pivots and enforces who can see what, and an AI layer that scores Keep/Drop decisions in batches and lets planners ask questions through a chat copilot called Ask Iris.</p>
+<h3 id="words-you-need">Words you need</h3>
+<ul>
+<li><strong>Go/Gin:</strong> Go is a compiled language that is good at many concurrent requests. Gin is a lightweight Go web framework.</li>
+<li><strong>Google Wire:</strong> a compile-time dependency injection tool. It generates the wiring code, so a missing dependency breaks the build rather than a live request.</li>
+<li><strong>h2c (HTTP/2 cleartext):</strong> HTTP/2 without TLS inside a trusted network, letting one connection carry many requests at once.</li>
+<li><strong>ClickHouse:</strong> a column-oriented analytical database. It reads only the columns a query needs, which makes big aggregations fast. Think of a spreadsheet where you can grab one whole column without touching the rest.</li>
+<li><strong>MergeTree / ReplacingMergeTree:</strong> ClickHouse table types. ReplacingMergeTree keeps only the newest version of a row with the same key, eventually. It is like a notebook where you never erase, you just write the new value below, and a cleaner later crosses out the old lines.</li>
+<li><strong>Rollup table:</strong> a pre-aggregated summary table, like keeping weekly totals so you never re-add daily receipts.</li>
+<li><strong>LangGraph:</strong> a Python framework for building LLM agents as graphs of steps. A <strong>supervisor</strong> is the node that decides which worker step runs next.</li>
+<li><strong>LangSmith:</strong> a tracing tool for LLM apps. It shows every prompt, tool call and response in a run.</li>
+<li><strong>UAM (User Access Management):</strong> the rules for which user can see which part of the product hierarchy.</li>
+<li><strong>config_hash:</strong> a SHA-256 fingerprint of the guardrails, parameters, prompts and catalog used for a run, stamped on every output row so any decision can be traced to the exact setup that produced it.</li>
+</ul>
+<h3 id="1a-platform-architecture-what-the-pdf-describes">1a. Platform architecture (what the PDF describes)</h3>
+<pre><code class="language-text"> Planner (web UI)                               Planner (chat)
+       |                                              |  JWT WebSocket
+       v                                              v
+ +-------------------------------+        +-----------------------------+
+ | Go/Gin API edge               |        | Ask Iris (Python FastAPI)   |
+ | Wire DI . native h2c          |        | LangGraph supervisor        |
+ | nested timeouts . no proxy    |        | evaluator, MAX_ATTEMPTS = 3 |
+ | 10k peak RPS . Datadog traces |        | plan_scope frozen at        |
+ +---+-----------+---------------+        | handshake . LangSmith       |
+     |           |                        +--------------+--------------+
+     | auth      | KPI formulas                          | scoped KPI and
+     v           v                                       | decision reads
+ +-----------+  +--------------------+                   |
+ | Redis     |  | Formula tokenizer  |                   |
+ | auth cache|  | and parser to      |                   |
+ | Firebase  |  | parameterized SQL  |                   |
+ | then JWT /|  | ifNotFinite guard  |                   |
+ | Google    |  +---------+----------+                   |
+ | OIDC      |            |                              |
+ +-----+-----+            v                              v
+       |      +------------------------------------------------------+
+       v      | ClickHouse (per tenant)                              |
+ +----------+ | 2.11B-row master . six MergeTree rollups             |
+ | Postgres | | PARTITION BY season_code . ReplacingMergeTree writes |
+ | UAM,     | +-----------^--------------------------+---------------+
+ | roles,   |             | ingest                   | context rows
+ | metadata | +-----------+---+                      v
+ +----------+ | BigQuery      |       +-------------------------------+
+              | (historical)  |       | Keep/Drop batch engine (Py)   |
+              +---------------+       | orchestration registry:       |
+                                      | timeouts . breakers .         |
+                                      | checkpoints . config_hash     |
+                                      | JSON payloads to LLM, 7 lenses|
+                                      +-------------------------------+
+</code></pre>
+<p><em>What to notice:</em> the LLM never touches ClickHouse directly. The batch engine reads rows, turns them into JSON, and only that JSON goes to the model.</p>
+<div class="mermaid">flowchart LR
+  PL["Planner web UI"] --&gt; GO["Go/Gin API edge"]
+  GO --&gt; AUTH["Auth waterfall"]
+  AUTH --&gt; RD["Redis auth cache"]
+  AUTH --&gt; PG["PostgreSQL UAM and roles"]
+  GO --&gt; KPI["KPI formula parser"]
+  KPI --&gt; CH["ClickHouse master and rollups"]
+  BQ["BigQuery historical"] --&gt;|"ingest"| CH
+  PC["Planner chat"] --&gt;|"JWT WebSocket"| IRIS["Ask Iris LangGraph"]
+  IRIS --&gt;|"scoped reads"| CH
+  IRIS --&gt; LS["LangSmith"]
+  CH --&gt;|"context rows"| BATCH["Keep/Drop batch engine"]
+  BATCH --&gt;|"JSON payloads only"| LLM["LLM provider"]
+  BATCH --&gt;|"ReplacingMergeTree writes"| CH
+  GO --&gt; DD["Datadog"]
+</div>
+<p><em>What to notice:</em> three entry paths (web UI, chat, batch) all land on the same ClickHouse store, and each path has its own guard: UAM on the Go edge, frozen plan_scope on Ask Iris, JSON-only context on the batch.</p>
+<h4 id="box-by-box-walkthrough">Box-by-box walkthrough</h4>
+<ol>
+<li><strong>Go/Gin API edge.</strong> This is the multi-tenant platform that every web request hits, scaling to 10k peak RPS. It exists because planners need fast pivots and strict tenant isolation in one place. It runs as a self-protecting HTTP edge with no reverse proxy in front: it speaks native h2c, wraps every call in nested timeouts (the request deadline contains the database deadline), and sends Datadog distributed traces. Wire builds the dependency graph at compile time. <em>Why not a reverse proxy?</em> The process already owns timeouts, h2c and tracing, so a proxy would add one more hop and one more thing to operate.</li>
+<li><strong>Auth waterfall.</strong> Each request is authenticated by trying a Redis cache first, then Firebase Admin, then JWT or Google OIDC. API keys are compared in constant time, so an attacker cannot guess a key by timing responses. Roles come from PostgreSQL. <em>Arrow content:</em> a token or API key in, a user identity plus role and hierarchy scope out.</li>
+<li><strong>PostgreSQL.</strong> It keeps thin metadata, UAM and roles. Background worth knowing: planner pivots were slow on PostgreSQL, POCs compared PostgreSQL with ClickHouse, and ClickHouse won the large analytical reads. PostgreSQL kept the small, relational, frequently updated data.</li>
+<li>
+<p><strong>KPI formula parser.</strong> Operators type formulas like <code>sell_through = units_sold / units_received</code>. A Go tokenizer and parser turns that into a parameterized ClickHouse SQL fragment. Only allowlisted functions are accepted, logical names map to physical columns, and unknown tokens fail closed. Division is wrapped so a zero denominator returns 0 instead of infinity. This decouples business formulas from code releases.</p>
+<p><code>sql
+-- illustrative output for sell_through
+ifNotFinite(toFloat64(sum(units_sold) / sum(units_received)), 0)</code></p>
+</li>
+<li>
+<p><strong>ClickHouse.</strong> The analytical store, per tenant. It holds a 2.11B-row master and six MergeTree rollup tables (product, store and attribute, each at season and weekly grain, partitioned by <code>season_code</code>). The rollups are why planner pivots went from 189 seconds to 12 seconds on a 250M-row harness (12.3 seconds, rounded), which is 15.5 times faster.</p>
+</li>
+<li><strong>BigQuery.</strong> The historical source that is ingested into ClickHouse. <em>Arrow content:</em> historical rows, loaded in batches.</li>
+<li><strong>Keep/Drop batch engine.</strong> Python batch pipelines (Keep/Drop, Missed Opportunities, Top Style) that evaluate 348k article-seasons, about 88k items per pass, using deterministic KPI math blended with structured LLM calls across 7 AI lenses. It reads context from ClickHouse, sends only JSON payloads to the LLM, and writes results back with ReplacingMergeTree, so writes are eventually consistent. It runs through the shared orchestration registry (section 1b).</li>
+<li><strong>Ask Iris.</strong> A JWT-secured WebSocket copilot that lets planners query KPIs and inspect AI decisions. It is Python FastAPI with a LangGraph supervisor and a 3-attempt evaluator loop, traced in LangSmith (section 1c).</li>
+</ol>
+<h4 id="failure-modes-and-what-handles-them">Failure modes and what handles them</h4>
+<table>
+<thead>
+<tr>
+<th>What fails</th>
+<th>What happens</th>
+<th>Where it is handled</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM call times out</td>
+<td>The item uses its deterministic baseline score</td>
+<td>Batch engine fallback</td>
+</tr>
+<tr>
+<td>LLM provider keeps failing</td>
+<td>Circuit breaker trips after about 5 consecutive failures or a high failure fraction</td>
+<td>Orchestration registry</td>
+</tr>
+<tr>
+<td>Batch process crashes mid-run</td>
+<td>Restart with <code>--resume</code>, skipping finished deterministic scoring</td>
+<td><code>det.json</code>, <code>agent_progress.json</code></td>
+</tr>
+<tr>
+<td>Slow database call</td>
+<td>Inner timeout fires before the request deadline</td>
+<td>Go/Gin nested timeouts</td>
+</tr>
+<tr>
+<td>Bad operator formula</td>
+<td>Unknown token is rejected</td>
+<td>Parser fails closed</td>
+</tr>
+<tr>
+<td>Divide by zero in a KPI</td>
+<td>Returns 0 instead of infinity</td>
+<td><code>ifNotFinite(toFloat64(expr), 0)</code></td>
+</tr>
+<tr>
+<td>Chat tries to read another tenant</td>
+<td>Scope was frozen at the handshake, so the request stays in scope</td>
+<td>Ask Iris <code>plan_scope</code></td>
+</tr>
+<tr>
+<td>Agent keeps retrying forever</td>
+<td>Stops after 3 attempts and replies gracefully</td>
+<td>Ask Iris <code>MAX_ATTEMPTS = 3</code></td>
+</tr>
+</tbody>
+</table>
+<div class="callout warn">
+<p><b>Say this carefully on Impact Analytics.</b> No Kafka, Flink, CDC, Kubernetes operations or Milvus here. The CDC pg2ch tool was authored by a colleague (Ashvin Sharma), so I do not claim it. No "sub-second" ClickHouse claims. No HITL or human review queues: offline evals replaced the critic and evaluator agents in Keep/Drop. LangSmith is on Ask Iris, not on the Keep/Drop batch. Isolation is not encryption. No invented SLA for the Go platform or for Ask Iris.</p>
+</div>
+<h3 id="1b-one-keepdrop-pass-step-by-step">1b. One Keep/Drop pass, step by step</h3>
+<p>The batch order is fixed: peer, decider, lenses, blend, explain. There is no LLM orchestrator choosing the next step.</p>
+<div class="mermaid">sequenceDiagram
+  participant REG as Orchestration registry
+  participant CH as ClickHouse
+  participant DET as Deterministic scorer
+  participant AG as LLM steps
+  participant OUT as Writer
+  REG-&gt;&gt;CH: Read context rows for one pass of about 88k items
+  CH--&gt;&gt;REG: Rows become JSON payloads
+  REG-&gt;&gt;DET: Score sell-through and rate of sale
+  DET--&gt;&gt;REG: s_det per item, saved to det.json
+  REG-&gt;&gt;AG: Fixed steps peer, decider, 7 lenses with JSON only
+  alt LLM answers in time
+    AG--&gt;&gt;REG: s_agent per item
+  else Timeout or breaker open
+    REG--&gt;&gt;REG: Fall back to deterministic baseline
+  end
+  REG-&gt;&gt;OUT: Blend, explain, stamp config_hash
+  OUT-&gt;&gt;CH: Insert rows into ReplacingMergeTree
+</div>
+<p><em>What to notice:</em> progress is checkpointed (<code>det.json</code>, <code>agent_progress.json</code>), so a crash after the deterministic step does not redo it.</p>
+<p><strong>Worked example of the blend.</strong> The final score is <code>s_final = 0.4 × s_det + 0.6 × s_agent</code>, and an article-season is kept if <code>s_final</code> is at least 0.55. Suppose an article has <code>s_det = 0.50</code> and <code>s_agent = 0.70</code>.</p>
+<pre><code class="language-text">s_final = 0.4 x 0.50 + 0.6 x 0.70 = 0.20 + 0.42 = 0.62
+0.62 &gt;= 0.55, so the decision is KEEP
+</code></pre>
+<p>If the LLM had timed out, the item would fall back to its deterministic baseline instead of waiting.</p>
+<p><strong>Why this design.</strong> <em>What:</em> LLM context is served as JSON, writes are eventually consistent, LLM failure falls back to deterministic scores. <em>Why:</em> letting an LLM query a 2.11B-row table is slow, expensive and unsafe. <em>Alternatives:</em> give the LLM a SQL tool (rejected: unbounded queries and leakage risk), or use Airflow or Temporal for orchestration (rejected: we needed app-native resume coupled to ClickHouse inserts and config hashing, and the extra infrastructure was not justified). <em>Trade-off:</em> the registry is custom code we maintain. <em>What I'd do differently:</em> revisit a managed workflow engine if the number of pipelines grew a lot.</p>
+<p><strong>Evaluation numbers (keep them apart).</strong> The 300-case proxy evaluation harness backs an 80% accuracy CI promotion gate. That is a gate, not "every tenant is live at 80%". Separately, a gold-200 benchmark showed 73% lower live execution cost at 100% coverage, against a 74% deterministic baseline. Because the blended score was below the deterministic baseline on that set, the blend weights were frozen, not retuned.</p>
+<h3 id="1c-one-ask-iris-question-step-by-step">1c. One Ask Iris question, step by step</h3>
+<div class="mermaid">sequenceDiagram
+  participant P as Planner
+  participant WS as Ask Iris WebSocket
+  participant SUP as LangGraph supervisor
+  participant EV as Evaluator
+  participant DATA as KPI and decision data
+  participant LS as LangSmith
+  P-&gt;&gt;WS: Open socket with JWT
+  WS--&gt;&gt;WS: Verify JWT and freeze plan_scope
+  P-&gt;&gt;WS: Why was article 1234 dropped this season
+  WS-&gt;&gt;SUP: Route question with frozen plan_scope
+  loop Up to 3 attempts
+    SUP-&gt;&gt;DATA: Read KPIs and decision rows inside plan_scope
+    DATA--&gt;&gt;SUP: Rows
+    SUP-&gt;&gt;EV: Draft answer
+    EV--&gt;&gt;SUP: Accept or ask for retry
+  end
+  SUP--&gt;&gt;WS: Answer or graceful fallback message
+  WS--&gt;&gt;P: Reply
+  WS-&gt;&gt;LS: Trace of the whole run
+</div>
+<p><em>What to notice:</em> the scope is decided once, at the handshake. A later message cannot widen it.</p>
+<p><strong>Box by box.</strong> The WebSocket keeps one live connection per planner. The JWT is checked once, and the hierarchy access (<code>plan_scope</code>) is frozen for the life of the socket, which prevents cross-tenant leaks. The supervisor routes the question to worker steps. The evaluator checks the draft answer, and the loop stops after 3 attempts (<code>MAX_ATTEMPTS = 3</code>) so the agent cannot loop forever. LangSmith records every step for debugging. <strong>Ask Iris is a shipped capability. There are no SLA or usage numbers to quote.</strong></p>
+<h3 id="1d-rollups-the-170gb-oom-fix-and-the-cluster-migration-pump">1d. Rollups, the 170GB OOM fix, and the cluster migration pump</h3>
+<div class="mermaid">flowchart LR
+  BASE["ClickHouse master"] --&gt;|"one fiscal week per INSERT SELECT"| ROLL["Six rollup tables by season_code"]
+  ROLL --&gt; PIV["Planner pivots 189s to 12s"]
+  SRC["Source ClickHouse Cloud cluster"] --&gt;|"native TLS port 9440"| PUMP["Go data pump"]
+  PUMP --&gt;|"500k-row double-buffered batches"| DST["Destination ClickHouse Cloud cluster"]
+  PUMP --&gt; CK["Checkpoint files per table"]
+</div>
+<p><em>What to notice:</em> the top row is about <strong>query time</strong> and <strong>load time</strong>. The bottom row is the <strong>migration</strong>. They are three separate stories.</p>
+<p><strong>Rollups and the OOM.</strong> The six rollups made pivots 15.5 times faster, which is query time. Building the weekly rollups for a whole season in one statement ran out of memory, needing around 170GB, which is load time. These are not cause and effect. The fix was to slice each INSERT SELECT into temporal chunks (one fiscal week per insert) and enforce memory and disk-spill caps. If asked for the knobs (verbal): a 55 GB memory cap, 16 GB spill, 8 threads, 4 weeks in flight. A product week was about 11 GB and an attribute week was over 40 GB. A whole season failed even at 80 GB and 200 GB caps.</p>
+<p><strong>The migration pump.</strong> The rollups had to move between ClickHouse Cloud clusters. Cross-cluster IP allowlists blocked a direct cluster-to-cluster copy, so I wrote a Go data pump that speaks the ClickHouse native protocol over TLS (port 9440). It moves 500k-row batches and is double-buffered, meaning it reads the next batch while sending the previous one. Combined throughput was about 344k rows per second across two season streams of roughly 150k to 190k rows per second each. <strong>That is an ingest rate, not requests per second.</strong> The largest partitions reached 4.09B rows (attribute weekly, two seasons: 2,779,317,472 plus 1,311,108,195). The 4.09B copy was measured in flight. Do not say the cutover finished.</p>
+<p><strong>Ghost rows and rollback.</strong> "Ghost rows" are duplicate rows left by a half-finished retry. Two guards stop them: TSV ledgers (the weekly loader's skip file, which records finished weeks) and copier checkpoint files <code>migrate-checkpoints/&lt;table&gt;.done</code>. A "partition rollback" means DROP PARTITION, then recopy that season. <strong>It is not an atomic swap with live readers.</strong> A REPLACE PARTITION incremental design was written but not executed.</p>
+<h3 id="1e-older-design-kept-for-reference-cluster-recommendation-copilot-verbal-only">1e. Older design kept for reference: Cluster Recommendation Copilot (verbal only)</h3>
+<div class="callout warn">
+<p><b>Verbal only, not a PDF bullet.</b> The original version of this page drew the Cluster Recommendation Copilot as the main AssortSmart diagram. It is a design I can talk about in depth (14 tools), but it is not on the resume, and neither is Hindsight. MCP is skills-level for me. Lead with sections 1a to 1d. Use this only if they ask "what else did you design?". The planner approval step below is part of the product UI design. It is not a human review queue, so never call it HITL on Impact Analytics.</p>
+</div>
+<pre><code class="language-text"> Planner (Chat UI)          Planner (Manual / Hindsight UI)
+        |                              |
+        v                              v
+ +----------------------+     +-------------------------+
+ | FastAPI + LangGraph  |     | Go Gin write APIs       |
+ | + MCP (agent plane)  |     | (shared doing layer)    |
+ | 14 read-only tools   |----&gt;| Clustering / Hindsight  |
+ | planner confirms in  |     | / Strategy              |
+ | UI before any write  |     +-----------+-------------+
+ +----------+-----------+                 |
+            | read-only                   | INSERT / approve path
+            v                             v
+ +------------------------------------------------------+
+ | Per-tenant ClickHouse  (63 tables / 8 layers)        |
+ | insert-only . REPLACE PARTITION refresh designed,    |
+ | not executed . agent profile: SELECT only            |
+ +----------^-------------------------------+-----------+
+            | BQ -&gt; CH ingest               |
+     +------+------+                 +------v------+
+     |  BigQuery   |                 | GCS / snaps |
+     | (historical)|                 +-------------+
+     +-------------+
+ Obs: LangSmith (agent) . Datadog (platform) . PostHog (product)
+      -- shared OTEL trace_id (design doc) --
+</code></pre>
+<p><em>What to notice:</em> the agent can only read. Every write goes through the same Go APIs the manual UI uses, so there is one write path and one auth surface.</p>
+<div class="mermaid">flowchart TB
+  CHAT["Chat UI"] --&gt; FA["FastAPI LangGraph MCP"]
+  MAN["Manual UI"] --&gt; GOW["Go Gin doing layer"]
+  FA --&gt;|"14 read-only tools"| GOW
+  FA -.-&gt;|"SELECT only"| CHC["ClickHouse 63 tables 8 layers"]
+  GOW --&gt;|"INSERT on approve"| CHC
+  BQC["BigQuery"] --&gt;|"ingest"| CHC
+  FA --&gt; LSC["LangSmith"]
+  GOW --&gt; DDC["Datadog"]
+</div>
+<p><strong>Designed user flow, in order.</strong> (1) The planner states an intent. (2) The agent grounds the scope with read-only tools. (3) The planner confirms the search plan. (4) The agent batch-explores clustering configs. (5) It presents 3 to 5 scenarios. (6) The planner approves one in the UI. (7) The write happens through the Go APIs. (8) The grid refreshes.</p>
 <table>
 <thead>
 <tr>
@@ -102,185 +318,530 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td>LangGraph/MCP</td>
-<td>Sequence audited tools; no free-form SQL from the LLM</td>
+<td>LangGraph with read-only tools</td>
+<td>Sequences audited tools, so the LLM never writes free-form SQL</td>
 </tr>
 <tr>
 <td>Go doing layer</td>
-<td>Same write path as Manual UI — one auth surface</td>
+<td>Same write path as the manual UI, so one auth surface</td>
 </tr>
 <tr>
-<td>CH insert-only</td>
-<td>Avoid mutation queue; pivots stay fast (189s→12.3s POC)</td>
+<td>ClickHouse insert-only</td>
+<td>Avoids ClickHouse's slow mutation queue for updates. (The pivot speed-up itself came from the rollups in 1d, not from insert-only.)</td>
 </tr>
 <tr>
-<td>Human gates</td>
-<td>Agent never silently finalizes plans</td>
+<td>Planner approval in the UI</td>
+<td>The agent never silently finalizes a plan</td>
 </tr>
 </tbody>
 </table>
+<p>The table counts (63 tables, 8 layers), PostHog and the shared OTEL trace_id come from internal design docs. They are not on the PDF, so only mention them if asked about the copilot design.</p>
+<h3 id="1f-how-to-draw-assortsmart-in-3-minutes">1f. How to draw AssortSmart in 3 minutes</h3>
+<ul>
+<li><strong>Minute 1.</strong> Draw ClickHouse as a wide box in the middle and write "2.11B-row master, six rollups". Draw PostgreSQL small on the left and say "thin metadata, UAM and roles". Draw BigQuery feeding ClickHouse from below.</li>
+<li><strong>Minute 2.</strong> Draw the Go/Gin edge above, with Redis and the auth waterfall beside it. Say "10k peak RPS, Wire, h2c, nested timeouts, Datadog, no reverse proxy". Add the formula parser arrow into ClickHouse and say "operator formulas become parameterized SQL with ifNotFinite". Mention pivots from 189 seconds to 12 seconds.</li>
+<li><strong>Minute 3.</strong> Draw the Keep/Drop batch engine on the right with an arrow to the LLM labelled "JSON only". Say "348k article-seasons, 7 lenses, 0.4 deterministic plus 0.6 agent, fallback on timeout, checkpoints and config_hash". Draw Ask Iris at the top right with "JWT WebSocket, plan_scope frozen, 3 attempts, LangSmith". If time remains, sketch the migration pump at the bottom.</li>
+</ul>
 <hr>
-<h2 id="2-uber-frm-risk-scoping">2. Uber FRM — Risk Scoping</h2>
-<h3 id="architecture-ascii_1">Architecture (ASCII)</h3>
-<pre><code> React (8 screens)
-   Recon · Materiality · EMI · Group · Component · Residual · Summary · …
-        │  30+ REST
-        ▼
- ┌─────────────────────────────────────────┐
- │ FastAPI  (or Spring Boot on Java track) │
- │  handler / controller                   │
- │       ▼                                 │
- │  service  (materiality rules, trees)    │
- │       ▼                                 │
- │  repository  (SQLAlchemy 2.0 / JPA)     │
- └──────────────────┬──────────────────────┘
-                    ▼
-            ┌───────────────┐
-            │ MySQL SSOT    │  ~11 models
-            │ facts · EMI   │  55 FSLIs / 14 entities
-            │ recon leaves  │  $340M / $170M sample
-            └───────▲───────┘
-                    │
-     Oracle HFM ────┘──── public 10-Q (validate)
-                    │
-                    ▼
-              PwC work papers
+<h2 id="2-uber-frm-risk-scoping-uber-via-epam">2. Uber FRM — Risk Scoping (Uber via EPAM)</h2>
+<h3 id="the-business-in-plain-english_1">The business in plain English</h3>
+<p>FRM (Financial Risk Management) is a team inside Uber Finance. Every quarter, during the financial close, they decide which financial line items and which legal entities are "in scope" for risk assessment and audit testing. The output is evidence that PwC, the external auditor, uses in its audit work papers. Before this platform, the work ran on Google Sheets: no stable line IDs, no concurrency control, versions drifting. I owned the scoping backend, which cut quarterly reconciliation from 14 days to 3 days, a 70% cut, against a $340M materiality threshold.</p>
+<h3 id="words-you-need_1">Words you need</h3>
+<ul>
+<li><strong>GL (General Ledger):</strong> the master record of every financial transaction. 19M raw GL rows were migrated off Sheets into MySQL.</li>
+<li><strong>FSLI (Financial Statement Line Item):</strong> a line on the balance sheet or income statement, like "Cash" or "Revenue". They form a nested 4-level hierarchy, L1 to L4.</li>
+<li><strong>Materiality:</strong> the size of error that would matter to a reader of the financial statements. On the Q4 2025 close it was $340M, and the residual threshold was $170M.</li>
+<li><strong>HFM (Oracle Hyperion Financial Management):</strong> Uber's consolidation system. Its numbers are reconciled against the filed 10-Q (the quarterly report filed with the SEC).</li>
+<li><strong>SOADB:</strong> Uber's service-owned MySQL standard.</li>
+<li><strong>Optimistic locking:</strong> each row has a version number. An update succeeds only if the version has not changed since you read it. It is like editing a shared doc that refuses your save if someone else saved first.</li>
+<li><strong>FSM (finite state machine):</strong> a fixed set of statuses and allowed moves between them.</li>
+<li><strong>SOX (Sarbanes-Oxley):</strong> US law requiring controls over financial reporting.</li>
+</ul>
+<h3 id="architecture">Architecture</h3>
+<pre><code class="language-text"> React (8 screens)
+   Reconciliation . Materiality . EMI Scoping . Group Scoping .
+   Threshold Setup . Component Scoping . Residual Risk . Summary
+        |  36 FastAPI endpoints
+        v
+ +-----------------------------------------+
+ | FastAPI  (Spring Boot on Java tracks)   |
+ |  handler / controller                   |
+ |       v                                 |
+ |  service  (materiality rules, L1-L4     |
+ |            FSLI tree, FSM gates)        |
+ |       v                                 |
+ |  repository  (SQLAlchemy 2.0 / JPA)     |
+ +------------------+----------------------+
+                    v
+            +-------------------------+
+            | MySQL on SOADB          |  8-table normalized schema (PDF)
+            | facts . EMI             |  11 ORM models in code (verbal)
+            | recon leaves            |  ~55 FSLIs / 14 entities (Q4 2025 sample)
+            | review status           |  $340M / $170M on the Q4 2025 close
+            +-----------^-------------+
+                        |  shared ETL pipeline
+     Oracle HFM --------+-------- filed 10-Q (validate)
+                        |
+                        v
+                 PwC audit work papers
 </code></pre>
-<h3 id="quarterly-user-flow">Quarterly user flow</h3>
-<pre><code>Load HFM → Recon vs 10-Q → Set materiality → Group/Component scope
-  → Residual / EMI flags → Summary → Export to audit
-</code></pre>
-<h3 id="logical-er-say-this-dont-invent-extra-tables">Logical ER (say this, don’t invent extra tables)</h3>
-<pre><code>fiscal_period 1──* fslib_fact (BS/IS lines)
-entity 1──* component_assessment
-fslib_fact *──* scoping_decision (material / qualitative)
-emi_investee 1──* emi_assessment
+<p><em>What to notice:</em> the business rules live in exactly one layer, the service. Handlers stay thin and repositories own all SQL.</p>
+<div class="mermaid">flowchart LR
+  UI["React UI 8 screens"] --&gt;|"36 endpoints"| H["FastAPI handlers"]
+  H --&gt; S["Services: materiality, FSLI tree, FSM gates"]
+  S --&gt; R["Repositories SQLAlchemy 2.0"]
+  R --&gt; DB["MySQL on SOADB"]
+  HFM["Oracle HFM"] --&gt;|"shared ETL"| DB
+  TENQ["Filed 10-Q"] -.-&gt;|"reconcile"| S
+  DB --&gt; PWC["PwC audit work papers"]
+  COL["Collaboration and Slack service, not mine"] -.-&gt; UI
+</div>
+<p><em>What to notice:</em> the dotted collaboration box is a separate service I did not build.</p>
+<h4 id="box-by-box-walkthrough_1">Box-by-box walkthrough</h4>
+<ol>
+<li><strong>React UI, 8 screens.</strong> Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk and Summary. These are the steps of the quarterly close. <em>Arrow content:</em> REST calls for a quarter, an entity and an FSLI level.</li>
+<li><strong>36 endpoints.</strong> If asked for the breakdown: about 31 functional routes in the scoping service handler, plus the collaboration-service APIs (comments and notifications) from the technical design doc, make 36. I did not build the real-time collaboration and Slack notification service itself.</li>
+<li><strong>Handlers.</strong> Validate input and call one service method. No business logic here.</li>
+<li><strong>Services.</strong> Own the financial math: materiality, the 5% significance thresholds, residual risk, the nested L1 to L4 FSLI hierarchy, and dynamic quarter-annualization (turning year-to-date figures into an annual run-rate for the quarter). They also run the review-status FSM.</li>
+<li><strong>Repositories (SQLAlchemy 2.0).</strong> All SQL lives here. I led 3 engineers on the SQLAlchemy 2.0 ORM migration, which eliminated latent column-aliasing bugs and raised module statement coverage to 100%.</li>
+<li><strong>MySQL on SOADB.</strong> An 8-table normalized schema. Moving off Sheets into this schema is what resolved ETL lock contention during the close. The code has 11 ORM models (verbal detail), so say "8-table normalized schema" for the PDF and "11 models in the service code" only if asked.</li>
+<li><strong>Oracle HFM and the shared ETL.</strong> HFM extracts feed MySQL through a shared pipeline. ETL from HFM was a shared responsibility, not mine alone.</li>
+<li><strong>Filed 10-Q.</strong> The reconciliation screen compares HFM numbers against the public filing.</li>
+<li><strong>PwC work papers.</strong> The audited output. This is why correctness and audit trails matter more than throughput.</li>
+</ol>
+<h4 id="quarterly-user-flow">Quarterly user flow</h4>
+<div class="mermaid">flowchart LR
+  A["Load HFM"] --&gt; B["Recon vs 10-Q"]
+  B --&gt; C["Set materiality"]
+  C --&gt; D["Group and component scope"]
+  D --&gt; E["Residual risk and EMI flags"]
+  E --&gt; F["Summary"]
+  F --&gt; G["Export for audit"]
+</div>
+<p><em>What to notice:</em> each box is one screen, and each move between screens is gated by the review status.</p>
+<h4 id="logical-er-say-this-do-not-invent-extra-tables">Logical ER (say this, do not invent extra tables)</h4>
+<pre><code class="language-text">fiscal_period 1--* fslib_fact (BS/IS lines)
+entity 1--* component_assessment
+fslib_fact *--* scoping_decision (material / qualitative)
+emi_investee 1--* emi_assessment
 recon_leaf (HFM amt, filed amt, difference, line_id)
 metrics_table (materiality, residual threshold)
 </code></pre>
-<h3 id="mermaid_1">Mermaid</h3>
-<div class="mermaid">flowchart LR
-  UI[React 8 screens] --> API[FastAPI layered service]
-  API --> DB[(MySQL SSOT)]
-  HFM[Oracle HFM] --> API
-  API --> TQ[10-Q checks]
-  DB --> PwC[PwC papers]
-</div>
+<p><em>What to notice:</em> this is a speaking sketch of the main entities, not the exact table list. The PDF number is the 8-table normalized schema. For full table catalogs see <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a>.</p>
+<h4 id="three-mechanisms-with-tiny-examples">Three mechanisms with tiny examples</h4>
+<p><strong>Optimistic row-locking.</strong></p>
+<pre><code class="language-sql">UPDATE scoping_decision
+SET status = 'Review', version = version + 1
+WHERE id = :id AND version = :version_read;
+-- 0 rows updated means someone else saved first: reload and retry
+</code></pre>
+<p><strong>Deterministic SHA-256 natural keys.</strong> The same question on the same page always gets the same ID, so quarterly audit trails never duplicate it.</p>
+<pre><code class="language-python">uuid = sha256((question_text + normalize(page_name)).encode()).hexdigest()
+</code></pre>
+<p><strong>Polymorphic review status with FSM gates.</strong> One status model is reused across screens: Draft, Review, ReOpen, Closed. Moves between states are automated gates, including 50% delta-variance checks for SOX compliance. Cross-table syncs happen in one transaction, so a status change and its related rows commit together or not at all.</p>
+<h4 id="failure-modes">Failure modes</h4>
+<table>
+<thead>
+<tr>
+<th>What broke or could break</th>
+<th>How it was handled</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ETL lock contention during the close</td>
+<td>Normalized 8-table schema on SOADB instead of Sheets</td>
+</tr>
+<tr>
+<td>Two managers edit the same row</td>
+<td>Optimistic locking with a version check</td>
+</tr>
+<tr>
+<td>Duplicate rows across quarters</td>
+<td>SHA-256 natural keys</td>
+</tr>
+<tr>
+<td>Joined raw SQL with duplicate column names silently mapped rows to the wrong uuid</td>
+<td>SQLAlchemy 2.0 aliased selects with explicit labels</td>
+</tr>
+<tr>
+<td>A release breaks the close</td>
+<td>Zero-downtime releases via stacked Bazel PRs, reporting SQL allowlists</td>
+</tr>
+<tr>
+<td>Moving recon from Sheets to MySQL</td>
+<td>Recon v1 (Sheets) and v2 (MySQL) ran in parallel: 18 files, +1,268 lines of code</td>
+</tr>
+</tbody>
+</table>
+<h4 id="the-numbers">The numbers</h4>
+<ul>
+<li><strong>From 14 days to 3 days (70%).</strong> Quarterly reconciliation time. Stated as the outcome on the PDF. If pressed: "the technical design doc framed that cut and that's what the platform delivered for the close."</li>
+<li><strong>19M raw GL rows.</strong> Migrated off Sheets. Individual quarterly GL extracts were about 38K to 95K rows, so the value is correctness, hierarchy and auditability, not big-data throughput.</li>
+<li><strong>36 endpoints, 3 engineers led, 100% module statement coverage.</strong> Tests are 1,100+ (verbal).</li>
+</ul>
+<h4 id="how-to-draw-frm-in-3-minutes">How to draw FRM in 3 minutes</h4>
+<ul>
+<li><strong>Minute 1.</strong> Draw the 8 screens as a strip at the top. Say "the quarterly close as a workflow, replacing Google Sheets".</li>
+<li><strong>Minute 2.</strong> Draw three stacked boxes: handler, service, repository. Say "thin handlers, rules in services, SQL in repositories, SQLAlchemy 2.0". Then MySQL on SOADB below with "8-table normalized schema".</li>
+<li><strong>Minute 3.</strong> Add HFM and the 10-Q on the left, PwC work papers on the right. Say "from 14 days to 3 days, $340M materiality, optimistic locking and SHA-256 natural keys stop overwrites and duplicates". Draw the collaboration service dotted and say it was separate.</li>
+</ul>
 <hr>
-<h2 id="3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu + ANZ Mobility (separate)</h2>
-<h3 id="architecture-ascii_2">Architecture (ASCII)</h3>
-<pre><code> Third-party menu sites (HTML / PDF / image)
-        │  Selenium + IP rotate / proxies / retries
-        ▼
- ┌─────────────────┐
- │ Kafka ingest bus│  ordered per vendor key · replayable
- └────────┬────────┘
-          ▼
- ┌─────────────────┐
- │ Flink normalize │  validate · keyed dedupe · route
- └────┬────────┬───┘
-      │        │ unstructured
-      │        ▼
-      │   ┌──────────────────────────────┐
-      │   │ LangChain RAG + Gemini 2.5   │
-      │   │ Pro over Milvus              │
-      │   │ schema gate → human if low   │
-      │   └──────────────┬───────────────┘
-      │ structured       │
-      ▼                  ▼
- ┌────────────────────────────┐
- │ Uber Eats catalog upsert   │
- └────────────────────────────┘
-
- ANZ (Mobility — NOT Eats):
- Driver/vehicle docs → compliance checks → 99.9% · ~20h/week HISTORICAL
+<h2 id="3-uber-eats-menu-anz-mobility-separate-projects-uber-via-epam">3. Uber Eats Menu + ANZ Mobility (separate projects, Uber via EPAM)</h2>
+<h3 id="the-business-in-plain-english_2">The business in plain English</h3>
+<p>Uber Eats needs every restaurant's menu in its catalog. Many menus arrive as messy websites, PDFs or photos, often in several languages. Typing them in by hand was slow and costly. The Menu Ingestion pipeline scrapes, cleans and converts them into Uber's strict catalog schema. It cut restaurant onboarding from 24 hours to 2 hours, handles 30K+ menus a month, and saves about $600K a year.</p>
+<p>ANZ (Uber Mobility in Australia and New Zealand) is a <strong>different project</strong>, about rides, not food. It is shown at the end of this section.</p>
+<h3 id="words-you-need_2">Words you need</h3>
+<ul>
+<li><strong>Selenium:</strong> a tool that drives a real browser from code, used to scrape sites that need JavaScript.</li>
+<li><strong>Proxy pool:</strong> a set of IP addresses to rotate through, so a site does not block the scraper.</li>
+<li><strong>Kafka:</strong> a durable event log. Producers append events and consumers read them at their own pace. Think of a conveyor belt that remembers every parcel.</li>
+<li><strong>Flink:</strong> a stream processor that reads events continuously and keeps state per key.</li>
+<li><strong>RAG (Retrieval-Augmented Generation):</strong> before asking the LLM, fetch similar examples and give them as context.</li>
+<li><strong>Milvus:</strong> a vector database that stores embeddings (number lists that capture meaning) and finds the most similar ones quickly. Milvus is a Uber Menu technology only.</li>
+<li><strong>Field fidelity:</strong> the share of extracted fields that match the correct value.</li>
+</ul>
+<h3 id="architecture_1">Architecture</h3>
+<pre><code class="language-text"> Third-party menu sites (HTML / PDF / image)
+        |  Selenium fleet + dynamic proxy pools + adaptive retries
+        v
+ +-----------------+
+ | Kafka ingest bus|  ordered per vendor key . replayable
+ +--------+--------+
+          v
+ +--------------------------+
+ | Flink                    |  stateful keyed dedupe (vendor/menu,
+ | normalize . dedupe .     |  content hash) . schema normalization
+ | route                    |
+ +----+--------------+------+
+      |              | unstructured
+      |              v
+      |   +------------------------------+
+      |   | LangChain RAG + Gemini 2.5   |
+      |   | Pro over Milvus embeddings   |
+      |   | schema gate, low confidence  |
+      |   | goes to human review         |
+      |   +--------------+---------------+
+      | structured       |
+      v                  v
+ +--------------------------------------+
+ | Uber Eats catalog idempotent upsert  |
+ +--------------------------------------+
 </code></pre>
-<h3 id="user-ops-flow">User / ops flow</h3>
-<pre><code>Scrape → Kafka → Flink → (catalog | RAG/Milvus/Gemini) → validate → live menu
-Success target 95%+ · onboarding 24h→2h · $600K+/yr · 30K+ menus/mo
-</code></pre>
-<h3 id="mermaid_2">Mermaid</h3>
-<div class="mermaid">flowchart TB
-  Sites --> Selenium --> Kafka --> Flink
-  Flink -->|structured| Catalog
-  Flink -->|PDF/image| RAG[RAG + Gemini + Milvus] --> Catalog
+<p><em>What to notice:</em> two branches. Structured menus skip the LLM entirely. Only unstructured ones pay for RAG and Gemini.</p>
+<div class="mermaid">flowchart LR
+  SITES["Menu sites HTML PDF image"] --&gt; SEL["Selenium fleet with proxies and retries"]
+  SEL --&gt; KF["Kafka ingest bus"]
+  KF --&gt; FL["Flink keyed dedupe and normalize"]
+  FL --&gt;|"structured"| UP["Idempotent catalog upsert"]
+  FL --&gt;|"unstructured"| RAG["LangChain RAG over Milvus with Gemini 2.5 Pro"]
+  RAG --&gt; GATE["Schema gate"]
+  GATE --&gt;|"pass"| UP
+  GATE -.-&gt;|"low confidence"| HR["Human review"]
+  UP --&gt; CAT["Uber Eats catalog"]
 </div>
+<h4 id="box-by-box-walkthrough_2">Box-by-box walkthrough</h4>
+<ol>
+<li><strong>Selenium fleet.</strong> Scrapes third-party menu pages. Hardening it with dynamic proxy pools and adaptive retries raised extraction success to 95%+, from an estimated 60 to 65%. <em>Arrow content:</em> raw HTML, PDF or image plus vendor metadata.</li>
+<li><strong>Kafka ingest bus.</strong> Decouples scraping from processing. Events are keyed by vendor, so one vendor's events stay in order, and the log can be replayed after a bug fix.</li>
+<li><strong>Flink.</strong> Reads from Kafka and does stateful keyed deduplication (keyed by vendor and menu, using a content hash), then normalizes to the schema and routes each menu to the structured or unstructured branch. Peak load of roughly 200 to 500 events per second is an ESTIMATE for prep only.</li>
+<li><strong>RAG branch.</strong> For unstructured multilingual PDFs, LangChain retrieves similar labeled menus from Milvus, and Gemini 2.5 Pro generates the structured output. A schema gate validates it. Low-confidence output goes to human review. Field fidelity is 98%, measured in offline evaluation.</li>
+<li><strong>Catalog upsert.</strong> Writes into the Uber Eats catalog. The PDF says "exactly-once catalog upserts". In practice that is at-least-once delivery plus idempotent upserts. Not ClickHouse.</li>
+</ol>
+<h4 id="one-menu-step-by-step">One menu, step by step</h4>
+<div class="mermaid">sequenceDiagram
+  participant S as Selenium
+  participant K as Kafka
+  participant F as Flink
+  participant R as RAG and Gemini
+  participant C as Catalog
+  S-&gt;&gt;K: Menu PDF for vendor 881, menu 3
+  K-&gt;&gt;F: Event keyed by vendor 881
+  F--&gt;&gt;F: Hash content and compare with last hash for vendor 881 menu 3
+  alt Same hash
+    F--&gt;&gt;F: Drop duplicate
+  else New content and unstructured
+    F-&gt;&gt;R: Route PDF to RAG branch
+    R--&gt;&gt;F: Structured items that passed the schema gate
+    F-&gt;&gt;C: Upsert keyed by vendor and menu
+  end
+</div>
+<p><em>What to notice:</em> a replay after a crash writes the same row again, which is harmless because the upsert key is stable.</p>
+<h4 id="failure-modes_1">Failure modes</h4>
+<table>
+<thead>
+<tr>
+<th>What fails</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Site blocks the scraper</td>
+<td>Proxy pool rotates IPs, adaptive retries back off</td>
+</tr>
+<tr>
+<td>Same menu scraped twice</td>
+<td>Flink drops it on matching content hash</td>
+</tr>
+<tr>
+<td>Flink restarts mid-stream</td>
+<td>Resumes from checkpoint, replays events, idempotent upserts absorb duplicates</td>
+</tr>
+<tr>
+<td>LLM output breaks the schema</td>
+<td>Schema gate rejects it, low confidence goes to human review</td>
+</tr>
+<tr>
+<td>Need to reprocess history</td>
+<td>Kafka replay. Spark is a verbal backfill option only, not on the PDF</td>
+</tr>
+</tbody>
+</table>
+<h4 id="the-numbers_1">The numbers</h4>
+<ul>
+<li><strong>From 24 hours to 2 hours</strong> for restaurant onboarding.</li>
+<li><strong>$600K a year saved.</strong> Derived from about $2 per menu in third-party or manual cost × 30K menus × 12 months = $720K, floored to $600K to be conservative. Say "$600K a year", not "$600K-plus".</li>
+<li><strong>98% field fidelity</strong> is offline evaluation. Always say "offline".</li>
+<li><strong>95%+ extraction success</strong>, from an estimated 60 to 65%.</li>
+</ul>
+<h3 id="anz-document-compliance-uber-mobility-not-eats">ANZ Document Compliance (Uber Mobility, not Eats)</h3>
+<div class="mermaid">flowchart LR
+  DOC["Driver and vehicle documents"] --&gt; VAL["Deterministic validation backend"]
+  RULES["Local authority rules"] --&gt; VAL
+  VAL --&gt; RES["Pass or fail with reason"]
+</div>
+<p><em>What to notice:</em> no LLM, no Selenium, no RAG. It is rules applied deterministically.</p>
+<p>The backend checks driver and vehicle documents against local authority rules. It reached 99.9% regulatory compliance and eliminated about 20 hours a week of manual effort. Both numbers are HISTORICAL. This is Mobility, not Eats, so never mix it into the Menu story.</p>
+<h3 id="how-to-draw-menu-in-3-minutes">How to draw Menu in 3 minutes</h3>
+<ul>
+<li><strong>Minute 1.</strong> Draw sites on the left, then Selenium, then Kafka. Say "95%+ extraction success with proxy pools and adaptive retries, Kafka keyed by vendor and replayable".</li>
+<li><strong>Minute 2.</strong> Draw Flink and split into two branches. Say "keyed dedupe by vendor and menu with a content hash, structured goes straight through, unstructured goes to RAG over Milvus with Gemini 2.5 Pro".</li>
+<li><strong>Minute 3.</strong> Draw the schema gate and the catalog. Say "exactly-once upserts means at-least-once plus idempotent writes, 98% field fidelity offline, from 24 hours to 2 hours, $600K a year". Draw ANZ as a separate small box and say "different project, Mobility".</li>
+</ul>
 <hr>
 <h2 id="4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</h2>
-<h3 id="architecture-ascii_3">Architecture (ASCII)</h3>
-<pre><code> Client ERP / Dashboard
-        │
- ┌──────▼──────────────────────────────┐
- │ API Gateway  (canary % → FastAPI)   │
- │              (fallback → PHP)       │
- └──────┬──────────────────────────────┘
-        ▼
- FastAPI microservices (auth · submit · bulk · recon)
-        │
-   ┌────┼────────────┬──────────────┐
-   ▼    ▼            ▼              ▼
-  PG   Redis      Kafka topics    MongoDB
-  (by  (hot       (chunks · IRP   (IRN/QR
-  tax  config)     jobs · hooks)   snapshots)
-  qtr)
-        │
-        ▼
-  Workers ──idempotency + retries + DLQ──► Government IRP
-        │
+<h3 id="the-business-in-plain-english_3">The business in plain English</h3>
+<p>Masters India sells GST compliance and e-invoicing SaaS to Indian enterprises. Clients send invoices, and the platform validates them and registers them with the government IRP (Invoice Registration Portal), which returns an IRN (Invoice Reference Number) and a signed QR code. I led the migration of a legacy PHP monolith to FastAPI microservices, mentored 2 engineers, and owned the bulk pipeline that handles over 1 million government submissions a day.</p>
+<h3 id="words-you-need_3">Words you need</h3>
+<ul>
+<li><strong>Strangler pattern:</strong> replace an old system one route at a time, like a vine slowly replacing a tree, so you never do a risky big-bang cutover.</li>
+<li><strong>Canary:</strong> send a small share of traffic to the new version first and watch it.</li>
+<li><strong>Sharding:</strong> splitting one big database into pieces by a key. Here the key is the tax quarter.</li>
+<li><strong>Idempotency key:</strong> a unique label for an operation so retrying it does not repeat its effect.</li>
+<li><strong>Celery:</strong> a Python library for running background tasks on worker processes.</li>
+<li><strong>DLQ (dead-letter queue):</strong> a side queue where repeatedly failing work is parked for an operator.</li>
+<li><strong>ELK (Elasticsearch, Logstash, Kibana):</strong> a stack for collecting and searching logs. <strong>New Relic:</strong> an APM (application performance monitoring) tool that traces requests.</li>
+</ul>
+<h3 id="architecture_2">Architecture</h3>
+<pre><code class="language-text"> Client ERP / Dashboard
+        |
+ +------v------------------------------+
+ | API Gateway  (canary % -&gt; FastAPI)  |
+ |              (fallback -&gt; PHP)      |
+ +------+------------------------------+
+        v
+ FastAPI microservices (auth . submit . bulk . recon)
+        |
+   +----+------------+--------------+--------------+
+   v    v            v              v              v
+  PG   Redis      Kafka topics    MongoDB         S3
+  (by  (cache-    (chunks . IRP   (IRN/QR         (bulk file
+  tax  aside,      jobs . hooks)   snapshots)      landing)
+  qtr) hot config)
+        |
+        v
+  IRP workers (Celery on this track)
+     --idempotency + retries + DLQ--&gt; Government IRP
+        |
    ELK + New Relic (request-id correlation)
 </code></pre>
-<h3 id="bulk-irp-flow">Bulk IRP flow</h3>
-<pre><code>File → validate chunks → Kafka → IRP workers → signed response → webhook/dashboard
-Key: client + fileHash + batchIndex  (no double register with gov)
-</code></pre>
-<h3 id="mermaid_3">Mermaid</h3>
+<p><em>What to notice:</em> the gateway is what makes the migration safe. Every route can be sent back to PHP on its own.</p>
 <div class="mermaid">flowchart LR
-  ERP --> GW[Gateway canary]
-  GW --> API[FastAPI]
-  API --> KF[Kafka]
-  KF --> W[IRP workers] --> IRP[Gov IRP]
-  API --> PG[(PG by quarter)]
-  API --> Redis
-  W --> Mongo[(Mongo snapshots)]
+  ERP["Client ERP or dashboard"] --&gt; GW["API gateway canary per route"]
+  GW --&gt;|"canary share"| API["FastAPI microservices"]
+  GW -.-&gt;|"fallback"| PHP["Legacy PHP monolith"]
+  API --&gt; PG["PostgreSQL sharded by tax quarter"]
+  API --&gt; RD["Redis cache-aside"]
+  API --&gt; S3["S3 bulk file landing"]
+  API --&gt; KF["Kafka event bus"]
+  KF --&gt; WK["IRP workers"]
+  WK --&gt;|"idempotent submit with retries"| IRP["Government IRP"]
+  WK -.-&gt;|"poison batches"| DLQ["Dead-letter queue"]
+  WK --&gt; MG["MongoDB IRN and QR snapshots"]
+  API --&gt; OBS["ELK and New Relic"]
 </div>
+<h4 id="box-by-box-walkthrough_3">Box-by-box walkthrough</h4>
+<ol>
+<li><strong>API gateway with per-route canary.</strong> Sends a percentage of each route's traffic to FastAPI and falls back to PHP. The rule was shared database first, no dual-write source of truth.</li>
+<li><strong>FastAPI microservices.</strong> Auth, submit, bulk and recon services. p95 latency fell 75%, from 1.2 seconds to 300 ms, across 1,500+ enterprise clients. The latency win came from async IO for IRP calls, connection pooling, query and index fixes, plus Redis for reads.</li>
+<li><strong>PostgreSQL sharded by tax quarter.</strong> Filing work clusters around quarters, so sharding by quarter keeps each shard's working set small.</li>
+<li><strong>Redis cache-aside.</strong> Holds hot config and master data. Together with ELK and New Relic work, database read load fell 30%.</li>
+<li><strong>S3.</strong> Bulk files land here before validation (from the Masters deep dive).</li>
+<li><strong>Kafka.</strong> The event bus carrying chunks, IRP jobs and webhook events between services. This is a different product from the Uber Menu Kafka, and there is no Flink at Masters.</li>
+<li><strong>IRP workers.</strong> On this track, IRP calls, PDF generation, webhooks and email ran on Celery workers with retries and idempotency keys, so request threads never blocked on the government portal. Keep the exact Kafka-to-Celery wiring qualitative if asked.</li>
+<li><strong>MongoDB.</strong> Stores flexible IRN and QR snapshots and vendor responses. Elasticsearch powered invoice search and the ELK stack.</li>
+<li><strong>ELK and New Relic.</strong> One request ID across API, Kafka consumer and IRP worker. Incident triage fell about 70% (HISTORICAL, from roughly 30 minutes to under 10, ESTIMATED).</li>
+</ol>
+<h4 id="one-bulk-import-step-by-step">One bulk import, step by step</h4>
+<div class="mermaid">sequenceDiagram
+  participant C as Client
+  participant API as FastAPI
+  participant K as Kafka
+  participant W as IRP worker
+  participant IRP as Government IRP
+  participant DB as PostgreSQL and MongoDB
+  C-&gt;&gt;API: Upload invoice file
+  API--&gt;&gt;API: Store in S3 and validate in chunks
+  API-&gt;&gt;K: Publish chunk events
+  K-&gt;&gt;W: Chunk for batch 7
+  W--&gt;&gt;W: Check key client plus fileHash plus batchIndex
+  W-&gt;&gt;IRP: Submit batch with bounded concurrency
+  alt IRP succeeds
+    IRP--&gt;&gt;W: IRN and signed QR
+    W-&gt;&gt;DB: Save status and snapshot
+  else IRP fails repeatedly
+    W--&gt;&gt;W: Backoff retries then park in DLQ
+  end
+  API--&gt;&gt;C: Progress on dashboard or webhook
+</div>
+<p><em>What to notice:</em> the idempotency check happens before the government call, so a retried message never double-registers an invoice.</p>
+<h4 id="failure-modes_2">Failure modes</h4>
+<table>
+<thead>
+<tr>
+<th>What fails</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IRP portal is slow or down</td>
+<td>Exponential backoff with bounded retries, then DLQ for operator replay</td>
+</tr>
+<tr>
+<td>Same chunk processed twice</td>
+<td>Idempotency key <code>client + fileHash + batchIndex</code> returns the earlier result</td>
+</tr>
+<tr>
+<td>Filing-deadline spike</td>
+<td>Roughly 8 to 10 times the average (ESTIMATED), absorbed by Kafka buffering and bounded worker concurrency</td>
+</tr>
+<tr>
+<td>New FastAPI route misbehaves</td>
+<td>Gateway sends that route back to PHP</td>
+</tr>
+<tr>
+<td>Cache stampede on hot keys</td>
+<td>TTL jitter and SETNX lock (prep pattern)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="the-numbers_2">The numbers</h4>
+<ul>
+<li><strong>1M+ daily submissions</strong> is about 12 per second on average (1,000,000 / 86,400 = 11.6).</li>
+<li><strong>Throughput from 700 to 4,000 requests per minute</strong>, which is about 12 to about 67 requests per second.</li>
+<li><strong>100K+ concurrent imports</strong> handled with exactly-once idempotent processing.</li>
+<li><strong>Coverage from 35% to 82%, 98% deployment success.</strong></li>
+</ul>
+<h3 id="how-to-draw-masters-in-3-minutes">How to draw Masters in 3 minutes</h3>
+<ul>
+<li><strong>Minute 1.</strong> Draw the client, then the gateway, with FastAPI on one side and PHP dotted on the other. Say "strangler with canary per route, p95 from 1.2 seconds to 300 ms across 1,500+ clients, mentored 2 engineers".</li>
+<li><strong>Minute 2.</strong> Draw PostgreSQL by tax quarter, Redis, MongoDB and S3 under FastAPI. Then Kafka to the IRP workers to the government IRP.</li>
+<li><strong>Minute 3.</strong> Write the idempotency key on the worker arrow and draw the DLQ dotted. Say "1M+ a day, about 12 per second average, 700 to 4,000 requests per minute". Finish with ELK and New Relic and "triage about 70% faster".</li>
+</ul>
 <hr>
 <h2 id="5-geeksforgeeks">5. GeeksforGeeks</h2>
-<h3 id="architecture-ascii_4">Architecture (ASCII)</h3>
-<pre><code> Learners / influencers
-        │
-        ▼
- ┌──────────────────┐
- │ Django REST APIs │  (PHP → Django migration)
- └────────┬─────────┘
-     ┌────┼────┬────────┐
-     ▼    ▼    ▼        ▼
+<h3 id="the-business-in-plain-english_4">The business in plain English</h3>
+<p>GeeksforGeeks runs a learning platform with courses and live coding contests. Learners post doubts (questions) during courses and contests, and influencers sell courses with affiliate coupons. I migrated the doubt-support backend from PHP to Django so it could handle 10K+ daily queries and 10x traffic spikes during live contests, and built the influencer analytics and earnings dashboard.</p>
+<h3 id="words-you-need_4">Words you need</h3>
+<ul>
+<li><strong>Django:</strong> a Python web framework with an ORM, admin and auth built in.</li>
+<li><strong>Elasticsearch:</strong> a search engine that indexes text for fast full-text search.</li>
+<li><strong>Asynchronous scheduled workflows:</strong> background jobs that run on a schedule, separate from user requests.</li>
+</ul>
+<h3 id="architecture_3">Architecture</h3>
+<pre><code class="language-text"> Learners / influencers
+        |
+        v
+ +------------------+
+ | Django REST APIs |  (PHP -&gt; Django migration)
+ +--------+---------+
+     +----+----+--------+
+     v    v    v        v
    MySQL Mongo Redis  Elasticsearch
-     │
-     ▼
- Cron workers — video · reminders · cleanup   (+70% ops, separate from sales)
- Influencer dashboard — earnings / coupons     (+30% course sales)
- Votes / pins / locks                           (+15–20% premium)
+     |
+     v
+ Async scheduled workflows - video . reminders . cleanup   (+70% ops efficiency)
+ Influencer dashboard - earnings / coupons                  (+30% course sales)
+ Votes / pins / locks on doubts                             (20% premium lift)
 </code></pre>
-<h3 id="mermaid_4">Mermaid</h3>
+<p><em>What to notice:</em> each store has one job, and the three outcomes come from three different parts of the system.</p>
 <div class="mermaid">flowchart TB
-  Clients --> Django
-  Django --> MySQL
-  Django --> MongoDB
-  Django --> Redis
-  Django --> ES[Elasticsearch]
-  Cron --> MySQL
-  Cron --> MongoDB
+  CL["Learners and influencers"] --&gt; DJ["Django REST APIs"]
+  DJ --&gt; MY["MySQL source of truth"]
+  DJ --&gt; MO["MongoDB flexible bodies"]
+  DJ --&gt; RE["Redis counters"]
+  DJ --&gt; ES["Elasticsearch search"]
+  JOBS["Async scheduled workflows"] --&gt; MY
+  JOBS --&gt; MO
+  DASH["Influencer dashboard"] --&gt; MY
 </div>
+<h4 id="box-by-box-walkthrough_4">Box-by-box walkthrough</h4>
+<ol>
+<li><strong>Django REST APIs.</strong> The voting, pinning and locking APIs for doubt threads, rebuilt from PHP.</li>
+<li><strong>MySQL.</strong> Source of truth for threads and permissions. The vote table has a unique (user_id, content_id) constraint, so a double-submit is harmless.</li>
+<li><strong>Redis.</strong> Holds display counters, reconciled asynchronously to MySQL to avoid hot-row contention on popular doubts.</li>
+<li><strong>MongoDB.</strong> Holds flexible payloads such as doubt bodies or attachments that vary in shape.</li>
+<li><strong>Elasticsearch.</strong> Powers search across doubts and content.</li>
+<li><strong>Async scheduled workflows.</strong> Video processing, reminders and data cleanup. These lifted engineering ops efficiency 70%.</li>
+<li><strong>Influencer dashboard.</strong> Transactions and affiliate coupon conversions. Course sales rose 30%.</li>
+</ol>
+<h4 id="failure-modes_3">Failure modes</h4>
+<table>
+<thead>
+<tr>
+<th>What fails</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contest spike, 10x traffic</td>
+<td>Counters in Redis absorb hot writes, MySQL reconciled asynchronously</td>
+</tr>
+<tr>
+<td>User double-clicks vote</td>
+<td>Unique constraint makes it idempotent</td>
+</tr>
+<tr>
+<td>Slow background job</td>
+<td>Runs outside request path, so users are unaffected</td>
+</tr>
+</tbody>
+</table>
+<h4 id="the-numbers-and-how-to-say-them">The numbers and how to say them</h4>
+<ul>
+<li><strong>10K+ daily queries, 10x traffic spikes</strong> during live contests.</li>
+<li><strong>20% lift in premium subscriptions</strong>, relative, attributed by the growth team. Older prep said "15 to 20%". The current resume says 20%.</li>
+<li><strong>+30% course sales</strong> and <strong>+70% ops efficiency</strong>. Say: "I owned the engineering, the business team attributed the lift."</li>
+</ul>
+<h3 id="how-to-draw-geeksforgeeks-in-3-minutes">How to draw GeeksforGeeks in 3 minutes</h3>
+<ul>
+<li><strong>Minute 1.</strong> Draw Django in the middle and say "PHP to Django, 10K+ daily queries, 10x contest spikes".</li>
+<li><strong>Minute 2.</strong> Draw the four stores below and give each one job: MySQL truth, Redis counters, MongoDB flexible bodies, Elasticsearch search.</li>
+<li><strong>Minute 3.</strong> Draw the scheduled workflows and the influencer dashboard on the side, and attach the three outcomes: 20% premium lift, 30% course sales, 70% ops efficiency.</li>
+</ul>
 <hr>
 <h2 id="whiteboard-checklist">Whiteboard checklist</h2>
 <ul>
-<li>[ ] Draw AssortSmart agent vs doing layer split and where SQL is forbidden  </li>
-<li>[ ] Draw FRM handler→service→repo→MySQL and HFM/10-Q inputs  </li>
-<li>[ ] Draw Menu Selenium→Kafka→Flink with RAG branch; say ANZ ≠ Eats  </li>
-<li>[ ] Draw Masters gateway canary + Kafka IRP + quarter PG  </li>
-<li>[ ] Name one rejected alternative per critical box  </li>
+<li>[ ] Draw AssortSmart: Go/Gin edge, ClickHouse with rollups, Keep/Drop batch with "JSON only" to the LLM, Ask Iris with frozen plan_scope. Say where SQL is forbidden.</li>
+<li>[ ] Draw FRM: handler, service, repository, MySQL on SOADB, with HFM and 10-Q inputs and PwC output.</li>
+<li>[ ] Draw Menu: Selenium, Kafka, Flink, with the RAG branch. Say ANZ is not Eats.</li>
+<li>[ ] Draw Masters: gateway canary, Kafka to IRP workers, PostgreSQL by tax quarter.</li>
+<li>[ ] Name one rejected alternative per critical box.</li>
 </ul>
-<p><strong>ER + full table catalogs + why/problem per tech:</strong> <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a></p></main>
+<p><strong>Deeper reading:</strong> ER, full table catalogs and why each technology: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a>. Project deep dives: <a href="10_impact_analytics_deep_dive.html"><code>10_impact_analytics_deep_dive.md</code></a>, <a href="43_ia_bullet_defense.html"><code>43_ia_bullet_defense.md</code></a>, <a href="42_clickhouse_rollup_migration.html"><code>42_clickhouse_rollup_migration.md</code></a>, <a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a>, <a href="14_uber_menu_deep_dive.html"><code>14_uber_menu_deep_dive.md</code></a>, <a href="12_masters_gfg_deep_dive.html"><code>12_masters_gfg_deep_dive.md</code></a>.</p></main>
 </div>
 
 <script type="module">

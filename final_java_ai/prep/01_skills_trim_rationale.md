@@ -10,7 +10,7 @@ Defend with `36_skills_ai_agents_defense.md` + Menu offline eval + IA MCP tools 
 | Mentorship | Soft skill; leadership is in FRM/Masters bullets | "Led 3 on FRM; mentored 2 at Masters" |
 | SOA / Microservices (skills) | Prefer Distributed Systems + experience proof | Point at Masters strangler / FRM services |
 | ELK (skills) | Still on Masters tech/alerting bullet | "ELK + New Relic triage story" |
-| SQLAlchemy (skills) | FRM tech line / verbal | "SQLAlchemy 2.0 on FRM ORM" |
+| SQLAlchemy (skills) | Not on this PDF. The FRM ORM on this track is Spring Data JPA / Hibernate | "On FRM I used Spring Data JPA with Hibernate" |
 | Mockito | Trimmed from Java Core | Testing covers it verbally |
 | JUnit | Trimmed from Core Engineering (Aug 2026) | Still on the **FRM experience Tech line**, so the keyword is on the PDF — just not in Skills |
 | Design Patterns | Trimmed from Backend & APIs (Aug 2026) | Defended verbally via strangler / layered / repository / cache-aside |

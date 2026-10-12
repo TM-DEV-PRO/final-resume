@@ -40,17 +40,32 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/35_table_schemas_api_design.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#table-schemas-database-design-api-contracts-all-resume-projects">Table schemas · database design · API contracts (all resume projects)</a>
-<a class="lvl2" href="#how-to-answer">How to answer</a>
-<a class="lvl1" href="#1-impact-analytics-clickhouse-schemas-api-surface">1. Impact Analytics — ClickHouse schemas + API surface</a>
-<a class="lvl1" href="#2-uber-frm-mysql-schemas-measured-orm-rest">2. Uber FRM — MySQL schemas (MEASURED ORM) + REST</a>
-<a class="lvl1" href="#3-uber-eats-menu-event-catalog-rag-schemas-logical">3. Uber Eats Menu — event / catalog / RAG schemas (LOGICAL)</a>
-<a class="lvl1" href="#4-masters-india-gst-e-invoice-schemas-apis-logical-historical">4. Masters India — GST e-invoice schemas + APIs (LOGICAL / HISTORICAL)</a>
-<a class="lvl1" href="#5-geeksforgeeks-content-votes-subs-logical-historical">5. GeeksforGeeks — content / votes / subs (LOGICAL / HISTORICAL)</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#table-schemas-database-design-and-api-contracts-all-resume-projects">Table schemas, database design and API contracts (all resume projects)</a>
+<a class="lvl2" href="#what-is-real-and-what-is-a-teaching-example">What is real and what is a teaching example</a>
+<a class="lvl2" href="#words-you-need-on-this-page">Words you need on this page</a>
+<a class="lvl2" href="#how-to-answer-a-design-the-schema-api-question">How to answer a "design the schema / API" question</a>
+<a class="lvl1" href="#1-impact-analytics-clickhouse-schemas-and-api-surface">1. Impact Analytics: ClickHouse schemas and API surface</a>
+<a class="lvl2" href="#1a-resume-level-tables">1A. Resume-level tables</a>
+<a class="lvl2" href="#1b-resume-level-apis">1B. Resume-level APIs</a>
+<a class="lvl2" href="#1c-agentic-cluster-module-phase-1-clickhouse-ddl-measured-design-verbal-only">1C. Agentic Cluster Module: Phase-1 ClickHouse DDL (MEASURED design, verbal only)</a>
+<a class="lvl1" href="#2-uber-frm-mysql-schemas-measured-orm-and-rest">2. Uber FRM: MySQL schemas (MEASURED ORM) and REST</a>
+<a class="lvl1" href="#3-uber-eats-menu-event-catalog-and-rag-schemas-logical">3. Uber Eats Menu: event, catalog and RAG schemas (LOGICAL)</a>
+<a class="lvl1" href="#4-masters-india-gst-e-invoice-schemas-and-apis-logical-historical">4. Masters India: GST e-invoice schemas and APIs (LOGICAL / HISTORICAL)</a>
+<a class="lvl1" href="#5-geeksforgeeks-content-votes-and-subscriptions-logical-historical">5. GeeksforGeeks: content, votes and subscriptions (LOGICAL / HISTORICAL)</a>
 <a class="lvl1" href="#6-one-page-whiteboard-cheat-sheet">6. One-page whiteboard cheat sheet</a>
+<a class="lvl2" href="#practice-drill">Practice drill</a>
 <a class="lvl1" href="#sources">Sources</a></nav>
-<main><h1 id="table-schemas-database-design-api-contracts-all-resume-projects">Table schemas · database design · API contracts (all resume projects)</h1>
-<p>Column-level schemas and API surfaces you can whiteboard. Complements <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a> (ER / why-tech) and deep dives.</p>
+<main><h1 id="table-schemas-database-design-and-api-contracts-all-resume-projects">Table schemas, database design and API contracts (all resume projects)</h1>
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> column-level table designs and API contracts for every project on the Java + Python resume. For each table: what it stores in plain words, a sample row, why each key or index exists, and which query it serves. For each API: purpose, a JSON request and response, status codes, idempotency, auth and pagination.</li>
+<li><b>When to read it:</b> before a low-level design round, a "design the schema" exercise, or any "walk me through one endpoint" question.</li>
+<li><b>What to memorise:</b> 2-3 tables per project with their keys, and 3-5 endpoints per project. The rest is reference.</li>
+<li><b>Companion page:</b> ER diagrams and "why this tech" reasoning live in <a href="34_er_tables_tech_why.html">34_er_tables_tech_why.md</a>.</li>
+</ul>
+</div>
+<h2 id="what-is-real-and-what-is-a-teaching-example">What is real and what is a teaching example</h2>
 <table>
 <thead>
 <tr>
@@ -61,24 +76,29 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td><strong>IA AssortSmart</strong></td>
-<td>MEASURED design — CH DDL Phase-1 (<code>DDL.sql</code> / Confluence)</td>
-<td>DESIGN — MCP tools + Go write path (load test pending)</td>
+<td><strong>IA AssortSmart, resume level</strong></td>
+<td>MEASURED table names for the six rollups. Column lists are ILLUSTRATIVE.</td>
+<td>Ask Iris WebSocket and auth waterfall are MEASURED behaviour. Exact payload JSON and route names are ILLUSTRATIVE.</td>
+</tr>
+<tr>
+<td><strong>IA Agentic Cluster Module</strong></td>
+<td>MEASURED design: ClickHouse DDL Phase-1, validated, no runtime evidence</td>
+<td>DESIGN: tool categories plus a Go write API sketch. Verbal depth only, not a resume bullet.</td>
 </tr>
 <tr>
 <td><strong>Uber FRM</strong></td>
-<td>MEASURED code — 11 SQLAlchemy models</td>
-<td>MEASURED code — 32 routes under <code>/frm-scoping</code></td>
+<td>MEASURED code: 11 ORM models (JPA entities) in the scoping service (the PDF calls the normalized core an 8-table schema)</td>
+<td>MEASURED code: the scoping controller's routes under <code>/frm-scoping</code>. The PDF's 36 endpoints adds the collaboration APIs (breakdown below).</td>
 </tr>
 <tr>
 <td><strong>Uber Menu</strong></td>
-<td>LOGICAL / HISTORICAL shapes (no public DDL in repo)</td>
-<td>LOGICAL event + upsert contracts</td>
+<td>LOGICAL / HISTORICAL shapes. No production DDL in this repo.</td>
+<td>LOGICAL event and upsert contracts</td>
 </tr>
 <tr>
 <td><strong>Masters India</strong></td>
-<td>LOGICAL / HISTORICAL (compliance SaaS narrative)</td>
-<td>LOGICAL REST + async IRP</td>
+<td>LOGICAL / HISTORICAL</td>
+<td>LOGICAL REST plus async IRP</td>
 </tr>
 <tr>
 <td><strong>GFG</strong></td>
@@ -87,21 +107,320 @@ strong{color:#fff}
 </tr>
 </tbody>
 </table>
-<p><strong>Honesty:</strong> omit IA <strong>624 columns</strong>. No invented IA TPS. FRM = say <strong>11 models in scoping service</strong>, <strong>30+</strong> APIs. Menu = <strong>Milvus</strong> (not Pinecone). Copilot = <strong>building</strong>.</p>
+<p><strong>Tags used on this page.</strong> MEASURED means there is code, a log or a validated document. MEASURED design means a validated design document that has not run under production load. TARGET is a design goal ("targeting"). ESTIMATED is arithmetic I can show ("roughly, derived from"). HISTORICAL is from my past work records. LOGICAL is the whiteboard shape, not literal production names. ILLUSTRATIVE is a teaching example with made-up columns or values. Never present an ILLUSTRATIVE block as the production schema.</p>
+<div class="callout warn">
+<p><b>Honesty rules that apply to this page.</b> Omit the old IA "624 columns" figure. Do not invent IA TPS or latency SLAs. FRM: lead with the PDF (36 endpoints, 8-table SOADB), keep "11 ORM models" and "32 controller route mappings" as verbal depth. Menu uses Milvus, not Pinecone. The Cluster Copilot design is verbal only. Ask Iris is shipped, with no SLA or usage numbers. No human-review queue (HITL) on IA.</p>
+</div>
 <hr>
-<h2 id="how-to-answer">How to answer</h2>
+<h2 id="words-you-need-on-this-page">Words you need on this page</h2>
+<ul>
+<li><strong>REST endpoint.</strong> A URL plus an HTTP method (GET reads, POST creates, PUT replaces, PATCH changes part of a record, DELETE removes).</li>
+<li><strong>Status code.</strong> The three-digit number on every HTTP response. 2xx means it worked, 4xx means the caller did something wrong, 5xx means the server failed.</li>
+<li><strong>Idempotent request.</strong> Sending it twice leaves the system in the same state as sending it once. GET, PUT and DELETE are idempotent by definition. POST is not, unless you add an idempotency key.</li>
+<li><strong>Idempotency key.</strong> A unique token the client sends with a write. The server remembers it, and if the same key arrives again it returns the original result instead of doing the work twice. Like a cloakroom ticket: showing the same ticket twice gets you the same coat, not two coats.</li>
+<li><strong>202 Accepted.</strong> "I have your request and will finish it later." Used when the real work (for example a government portal call) happens asynchronously.</li>
+<li><strong>Pagination.</strong> Returning a large list in pages. Offset pagination says "skip 100, give me 50". Cursor pagination says "give me 50 after this marker", which stays correct when rows are being inserted.</li>
+<li><strong>JWT (JSON Web Token).</strong> A signed token that says who the caller is. The server can verify the signature without a database lookup.</li>
+<li><strong>WebSocket.</strong> A long-lived two-way connection, opened by an HTTP "upgrade" handshake. Good for chat, where both sides send messages at any time.</li>
+<li><strong>Composite index.</strong> An index on several columns in order, for example <code>(client_id, invoice_date)</code>. It serves queries that filter on the first column, or the first and second together.</li>
+<li><strong>Unique constraint.</strong> The database refuses a second row with the same value. This is the simplest way to make a write idempotent.</li>
+</ul>
+<hr>
+<h2 id="how-to-answer-a-design-the-schema-api-question">How to answer a "design the schema / API" question</h2>
 <ol>
-<li>Name the <strong>store</strong> (MySQL / CH / Kafka+catalog / PG+Mongo).  </li>
-<li>Draw <strong>2–3 tables</strong> with PK + natural key + 5–8 critical columns.  </li>
-<li>Sketch <strong>3–5 endpoints</strong> with method, path, query/body, response shape.  </li>
-<li>Tag MEASURED / DESIGN / HISTORICAL / LOGICAL.</li>
+<li>Name the <strong>store</strong> (MySQL, ClickHouse, Kafka plus catalog, PostgreSQL plus MongoDB).</li>
+<li>Draw <strong>2-3 tables</strong> with the primary key, the natural key and 5-8 critical columns.</li>
+<li>Sketch <strong>3-5 endpoints</strong> with method, path, body and response shape.</li>
+<li>Say the <strong>idempotency story</strong> and the <strong>auth story</strong> for each write.</li>
+<li>Tag MEASURED, DESIGN, HISTORICAL, LOGICAL or ILLUSTRATIVE as you go.</li>
 </ol>
+<h3 id="status-code-conventions-used-in-the-examples-illustrative">Status code conventions used in the examples (ILLUSTRATIVE)</h3>
+<p>These are standard HTTP meanings, used consistently in the sample contracts below. They explain the design. They are not a claim about every production error mapping.</p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Meaning in these examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200 OK</td>
+<td>Read succeeded, or a synchronous write finished</td>
+</tr>
+<tr>
+<td>201 Created</td>
+<td>A new resource was created</td>
+</tr>
+<tr>
+<td>202 Accepted</td>
+<td>Work queued, poll or wait for a callback</td>
+</tr>
+<tr>
+<td>400 Bad Request</td>
+<td>Malformed input, or input that breaks a business rule. In the Spring Boot services (FRM, Masters), a Bean Validation failure on the request DTO also returns 400 with a validation error body listing the bad fields.</td>
+</tr>
+<tr>
+<td>401 Unauthorized</td>
+<td>No valid identity</td>
+</tr>
+<tr>
+<td>403 Forbidden</td>
+<td>Valid identity, but not allowed to see or change this tenant, hierarchy or record</td>
+</tr>
+<tr>
+<td>404 Not Found</td>
+<td>Unknown id</td>
+</tr>
+<tr>
+<td>409 Conflict</td>
+<td>Same idempotency key with a different body, or a version conflict</td>
+</tr>
+<tr>
+<td>422 Unprocessable Entity</td>
+<td>Used in the Menu and GFG examples: the body is well-formed but fails schema or value validation</td>
+</tr>
+<tr>
+<td>429 Too Many Requests</td>
+<td>Rate limited</td>
+</tr>
+<tr>
+<td>503 / 504</td>
+<td>Downstream unavailable or a timeout fired</td>
+</tr>
+</tbody>
+</table>
 <hr>
-<h1 id="1-impact-analytics-clickhouse-schemas-api-surface">1. Impact Analytics — ClickHouse schemas + API surface</h1>
-<p><strong>Tenant DB example:</strong> <code>cluster_briscoes</code> (one CH database per retailer).<br>
-<strong>Inventory:</strong> 63 tables (incl. 7 stage twins) · 8 layers · 5 dictionaries · 19 views.<br>
-<strong>Writers:</strong> SYNC (facts/cubes/mirrors) · API/JR/NIGHT (decision plane) · agent = <code>readonly=1</code> only.</p>
-<h3 id="11-facts-p1-mergetree-stage-twin-replace-partition">1.1 Facts (P1 — MergeTree + stage twin + <code>REPLACE PARTITION</code>)</h3>
+<h1 id="1-impact-analytics-clickhouse-schemas-and-api-surface">1. Impact Analytics: ClickHouse schemas and API surface</h1>
+<p><strong>In plain English.</strong> AssortSmart helps retail planners decide which articles to keep, drop or add each season. The heavy data (sales, inventory, forecasts, rollups, AI decisions) lives in ClickHouse, a columnar database built for scanning billions of rows. The small, transactional data (users, roles, which part of the product hierarchy a user may see) lives in PostgreSQL. The Go / Gin platform serves the APIs at 10k peak RPS, and the Python agent plane (FastAPI, LangGraph) runs the AI batch and the Ask Iris copilot.</p>
+<p>This section has two halves. <strong>1A</strong> is the resume-level design that the PDF bullets rest on. <strong>1B</strong> is the Agentic Cluster Module Phase-1 DDL, a validated design that is verbal depth only.</p>
+<h2 id="1a-resume-level-tables">1A. Resume-level tables</h2>
+<h3 id="1a1-rollup-tables-product_weekly-and-its-five-siblings">1A.1 Rollup tables: <code>product_weekly</code> and its five siblings</h3>
+<p><strong>What it stores, in plain words.</strong> Pre-computed sales and inventory totals at a coarser grain than the raw daily data, so a planner's pivot reads thousands of summary rows instead of hundreds of millions of raw ones. There are six: product, store and attr, each at season and weekly grain. The table names and <code>PARTITION BY season_code</code> are MEASURED. The column list below is ILLUSTRATIVE (the real load SQL is generated and has roughly 110 aggregate states on the weekly path).</p>
+<pre><code class="language-sql">-- ILLUSTRATIVE columns. Real: MergeTree, PARTITION BY season_code, six tables.
+CREATE TABLE product_weekly
+(
+    season_code       UInt16,
+    fiscal_year_week  UInt32,
+    product_code      String,
+    style             String,
+    color             LowCardinality(String),
+    size              LowCardinality(String),
+    l1_name           LowCardinality(String),
+    l2_name           LowCardinality(String),
+    l3_name           LowCardinality(String),
+    revenue           Float64,
+    units             Float64,
+    on_hand_units     Float64
+)
+ENGINE = MergeTree
+PARTITION BY season_code
+ORDER BY (l1_name, l2_name, l3_name, product_code, fiscal_year_week);
+-- bloom filter skip indexes on product / store / attr columns (MEASURED idea)
+</code></pre>
+<p><strong>Sample row (made-up values).</strong></p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>fiscal_year_week</th>
+<th>product_code</th>
+<th>l1_name</th>
+<th>l2_name</th>
+<th>revenue</th>
+<th>units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>202614</td>
+<td>P-10234</td>
+<td>Womens</td>
+<td>Tops</td>
+<td>18,420.50</td>
+<td>612</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why each key or index exists.</strong>
+- <code>PARTITION BY season_code</code> (MEASURED): planners filter by season, so ClickHouse skips every other season on disk. It is also the unit of rebuild and copy. A failed season is fixed by <code>DROP PARTITION</code> and recopy.
+- <code>ORDER BY</code> with the hierarchy first (ILLUSTRATIVE): ClickHouse stores rows sorted by this key and keeps a sparse index on it, so a filter on <code>l1_name</code> and <code>l2_name</code> reads only the matching ranges. Low-cardinality columns go first because they prune best.
+- Bloom filter skip indexes (MEASURED idea): a bloom filter is a compact "definitely not here / maybe here" check per block, which lets a point lookup on a product or store code skip most blocks.</p>
+<p><strong>Query it serves (ILLUSTRATIVE).</strong></p>
+<pre><code class="language-sql">SELECT l2_name, fiscal_year_week, sum(revenue) AS revenue, sum(units) AS units
+FROM product_weekly
+WHERE season_code = 7 AND l1_name = 'Womens'
+GROUP BY l2_name, fiscal_year_week
+ORDER BY l2_name, fiscal_year_week;
+</code></pre>
+<p>This is the planner pivot shape. On a 250M-row harness, reading pre-aggregated rollups took the pivot from 189 seconds to 12 seconds (12.3s rounded, 15.5x, MEASURED query time).</p>
+<p><strong>How it is built.</strong> Weekly tables are loaded one fiscal week per <code>INSERT SELECT</code>, with memory and disk-spill caps (verbal knobs: 55 GB memory cap, 16 GB spill, 8 threads, 4 weeks in flight). A whole-season weekly aggregate needed about 170GB and failed at 80GB and 200GB caps. That fix is load time and is separate from the 15.5x.</p>
+<h3 id="1a2-ai-decision-outputs-replacingmergetree-illustrative-columns">1A.2 AI decision outputs (ReplacingMergeTree, ILLUSTRATIVE columns)</h3>
+<p><strong>What it stores.</strong> One row per article-season per run: the deterministic score, the LLM score, the blended score, the decision, whether the LLM timed out and the run fell back to the deterministic score, and the <code>config_hash</code> of the run. The mechanism (ReplacingMergeTree, version column, <code>config_hash</code> on every row, deterministic fallback) is MEASURED. The table and column names are ILLUSTRATIVE.</p>
+<pre><code class="language-sql">-- ILLUSTRATIVE names. Real mechanism: ReplacingMergeTree with a version column.
+CREATE TABLE decision_output_example
+(
+    season_code   UInt16,
+    article_id    String,
+    pipeline      LowCardinality(String),   -- keep_drop / missed_opportunity / top_style
+    s_det         Float64,
+    s_agent       Nullable(Float64),
+    s_final       Float64,
+    decision      LowCardinality(String),   -- KEEP / DROP
+    fallback      UInt8,                    -- 1 = LLM timed out, deterministic score used
+    config_hash   FixedString(64),          -- SHA-256 of guardrails + params + prompts + catalog
+    run_id        UUID,
+    version       UInt64
+)
+ENGINE = ReplacingMergeTree(version)
+PARTITION BY season_code
+ORDER BY (pipeline, season_code, article_id);
+</code></pre>
+<p><strong>Sample row and worked math (made-up scores, real formula).</strong> The blend is s_final = 0.4 times s_det plus 0.6 times s_agent, and the rule is keep if s_final is at least 0.55. With s_det = 0.70 and s_agent = 0.50, s_final = 0.28 + 0.30 = 0.58, so the article is kept.</p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>article_id</th>
+<th>pipeline</th>
+<th>s_det</th>
+<th>s_agent</th>
+<th>s_final</th>
+<th>decision</th>
+<th>fallback</th>
+<th>config_hash</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>A-55120</td>
+<td>keep_drop</td>
+<td>0.70</td>
+<td>0.50</td>
+<td>0.58</td>
+<td>KEEP</td>
+<td>0</td>
+<td>9f2c...e1 (64 hex)</td>
+</tr>
+</tbody>
+</table>
+<p>If the LLM had timed out, <code>s_agent</code> would be null, <code>fallback</code> would be 1, and the row would carry the precomputed deterministic baseline so the 88k-item pass keeps moving.</p>
+<p><strong>Why each key exists.</strong>
+- <code>ORDER BY (pipeline, season_code, article_id)</code>: in ReplacingMergeTree the sort key is also the dedupe key. Two rows with the same key collapse to the one with the highest <code>version</code>. A retried batch that lands twice becomes one row.
+- <code>version</code>: decides which duplicate wins.
+- <code>config_hash</code>: lets anyone trace a decision back to the exact frozen configuration, and lets you compare two runs fairly.</p>
+<p><strong>Query it serves.</strong> "Show the latest decision for every article in this season."</p>
+<pre><code class="language-sql">SELECT article_id,
+       argMax(decision, version) AS decision,
+       argMax(s_final, version)  AS s_final,
+       argMax(config_hash, version) AS config_hash
+FROM decision_output_example
+WHERE pipeline = 'keep_drop' AND season_code = 7
+GROUP BY article_id;
+</code></pre>
+<p>Say this carefully: Keep/Drop defaults to CSV output first, and publishing to ClickHouse is a separate operations step. The model never gets a SQL tool. "Async" describes how batches run, not the model querying the database.</p>
+<h3 id="1a3-thin-postgresql-identity-uam-roles-illustrative-columns">1A.3 Thin PostgreSQL: identity, UAM, roles (ILLUSTRATIVE columns)</h3>
+<p><strong>What it stores.</strong> Who the users are, which tenant they belong to, their role, and which part of the product hierarchy (UAM scope) they may see. The split (PostgreSQL holds UAM and roles, ClickHouse holds facts) is MEASURED. The columns are ILLUSTRATIVE.</p>
+<pre><code class="language-sql">-- ILLUSTRATIVE
+users(id UUID PRIMARY KEY, email TEXT UNIQUE NOT NULL, created_at TIMESTAMPTZ)
+tenant_membership(
+  user_id UUID REFERENCES users(id),
+  tenant_id TEXT NOT NULL,
+  role TEXT NOT NULL,                 -- for example planner / admin
+  PRIMARY KEY (user_id, tenant_id)
+)
+hierarchy_access(
+  user_id UUID, tenant_id TEXT,
+  hierarchy_path TEXT,                -- for example 'Womens/Tops'
+  PRIMARY KEY (user_id, tenant_id, hierarchy_path)
+)
+workflow_state / feature_flags        -- small metadata tables
+</code></pre>
+<p><strong>Sample row.</strong> <code>tenant_membership</code>: <code>user_id = 3b1e...</code>, <code>tenant_id = 'retailer_a'</code>, <code>role = 'planner'</code>. <code>hierarchy_access</code>: the same user may see <code>Womens/Tops</code> only.</p>
+<p><strong>Why the keys exist.</strong> The composite primary key <code>(user_id, tenant_id)</code> makes "is this user in this tenant, and with what role" a single index lookup, and it stops duplicate memberships. <code>hierarchy_access</code> keyed by user, tenant and path answers "which slices may this user query", and that list becomes a filter on every ClickHouse read.</p>
+<p><strong>Query it serves.</strong> Role resolution on each request (after the Redis cache misses), and building the hierarchy filter for ClickHouse queries.</p>
+<h3 id="1a4-redis-auth-cache-illustrative-key-shape">1A.4 Redis auth cache (ILLUSTRATIVE key shape)</h3>
+<pre><code class="language-text">auth:token:&lt;sha256 of token&gt;  -&gt;  {&quot;user_id&quot;: &quot;3b1e...&quot;, &quot;tenant_id&quot;: &quot;retailer_a&quot;, &quot;role&quot;: &quot;planner&quot;}   TTL shorter than the token lifetime
+</code></pre>
+<p><strong>Why.</strong> Verifying a token with Firebase Admin or Google OIDC on every call is slow. Redis caches the verified result. A cache miss falls through to the real verification and to PostgreSQL role resolution. It never fails open.</p>
+<h2 id="1b-resume-level-apis">1B. Resume-level APIs</h2>
+<h3 id="1b1-ask-iris-jwt-secured-websocket-copilot-a4">1B.1 Ask Iris: JWT-secured WebSocket copilot (A4)</h3>
+<p><strong>Purpose.</strong> Planners ask questions in chat ("why was this article dropped?", "what is sell-through for Womens Tops this season?") and inspect AI decisions. It is a FastAPI WebSocket in front of a LangGraph supervisor with a 3-attempt evaluator loop (<code>MAX_ATTEMPTS = 3</code>), traced in LangSmith. Shipped capability. No SLA or usage numbers.</p>
+<p><strong>Handshake and auth (MEASURED behaviour, ILLUSTRATIVE path).</strong> The JWT is checked on the handshake, either from <code>Authorization: Bearer &lt;jwt&gt;</code> or a <code>?token=</code> query parameter (browsers cannot set headers on WebSocket upgrades). The user's tenant and hierarchy scope (<code>plan_scope</code>) are resolved once and frozen for the whole socket. A later message cannot change it, which is how cross-tenant leaks are prevented.</p>
+<pre><code class="language-text">GET /ws/iris?token=&lt;jwt&gt;        (ILLUSTRATIVE path)
+Upgrade: websocket
+</code></pre>
+<p><strong>Messages (ILLUSTRATIVE JSON).</strong></p>
+<pre><code class="language-json">{ &quot;type&quot;: &quot;question&quot;, &quot;id&quot;: &quot;q-001&quot;, &quot;text&quot;: &quot;Why was article A-55120 kept in season 7?&quot; }
+</code></pre>
+<pre><code class="language-json">{
+  &quot;type&quot;: &quot;answer&quot;,
+  &quot;id&quot;: &quot;q-001&quot;,
+  &quot;text&quot;: &quot;It was kept. The deterministic score was 0.70 and the blended score 0.58, above the 0.55 keep threshold.&quot;,
+  &quot;evidence&quot;: { &quot;s_det&quot;: 0.70, &quot;s_final&quot;: 0.58, &quot;config_hash&quot;: &quot;9f2c...e1&quot; },
+  &quot;attempts&quot;: 2
+}
+</code></pre>
+<p><strong>Failure behaviour.</strong>
+- Bad or expired token: the server refuses the upgrade or closes the socket with a policy-violation close code (1008 is the standard code for this, ILLUSTRATIVE).
+- Evaluator still unhappy after 3 attempts: the graph stops and returns a graceful "could not answer confidently" message rather than looping. A recursion limit on the supervisor graph is the second guard.
+- A question outside the frozen <code>plan_scope</code>: tools inherit the frozen scope, so the data simply is not reachable.</p>
+<p><strong>Idempotency.</strong> Chat questions are reads. Each carries a client <code>id</code> so the UI can match an answer to a question after a reconnect. <strong>Pagination:</strong> not applicable (streamed messages).</p>
+<h3 id="1b2-kpi-configurator-and-formula-compiler-c2-illustrative-contract">1B.2 KPI configurator and formula compiler (C2, ILLUSTRATIVE contract)</h3>
+<p><strong>Purpose.</strong> Operators author KPI formulas in business terms. A Go tokenizer and parser compile them into parameterized ClickHouse SQL fragments, so business formulas change without a code release. The mechanism (tokenizer, allowlisted functions, logical-to-physical column mapping, <code>ifNotFinite(toFloat64(expr), 0)</code> wrapper, unknown tokens fail closed) is MEASURED. The route and JSON below are ILLUSTRATIVE.</p>
+<pre><code class="language-http">POST /v1/kpis/compile          (ILLUSTRATIVE)
+Authorization: Bearer &lt;jwt&gt;
+Content-Type: application/json
+</code></pre>
+<pre><code class="language-json">{ &quot;name&quot;: &quot;sell_through&quot;, &quot;formula&quot;: &quot;units_sold / (units_sold + on_hand)&quot; }
+</code></pre>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;sell_through&quot;,
+  &quot;sql_fragment&quot;: &quot;ifNotFinite(toFloat64(sum(units) / (sum(units) + sum(on_hand_units))), 0)&quot;,
+  &quot;columns&quot;: [&quot;units&quot;, &quot;on_hand_units&quot;]
+}
+</code></pre>
+<p>What to notice: <code>units_sold</code> and <code>on_hand</code> are logical names the operator sees. The compiler maps them to physical columns through the catalog. The whole expression is wrapped in <code>ifNotFinite(..., 0)</code>, so dividing by zero yields 0 instead of Infinity or NaN poisoning planner JSON.</p>
+<p><strong>Status codes.</strong> 200 on success. 400 with the offending token when the formula has an unknown identifier or a function outside the allowlist (fail closed). 401 / 403 as usual.</p>
+<p><strong>Idempotency.</strong> Compiling the same formula always yields the same fragment, so it is naturally idempotent. <strong>Security:</strong> raw operator SQL is never concatenated. Tokens must parse, functions must be on the allowlist and identifiers must resolve through the catalog.</p>
+<h3 id="1b3-auth-waterfall-and-tenant-isolation-c3">1B.3 Auth waterfall and tenant isolation (C3)</h3>
+<p><strong>Purpose.</strong> Every API request is authenticated and scoped to one tenant and the user's UAM hierarchy, across PostgreSQL and ClickHouse.</p>
+<div class="mermaid">sequenceDiagram
+  participant C as Client
+  participant G as Go Gin API
+  participant R as Redis
+  participant A as Firebase or OIDC
+  participant P as Postgres
+  participant H as ClickHouse
+  C-&gt;&gt;G: Request with token or API key
+  G-&gt;&gt;R: Look up verified token
+  alt cache hit
+    R--&gt;&gt;G: user, tenant, role
+  else cache miss
+    G-&gt;&gt;A: Verify with Firebase Admin, then JWT or Google OIDC
+    A--&gt;&gt;G: identity
+    G-&gt;&gt;P: Resolve role and hierarchy access
+    P--&gt;&gt;G: role, scope
+    G-&gt;&gt;R: Cache result with TTL
+  end
+  G-&gt;&gt;H: Query filtered by tenant and scope
+  H--&gt;&gt;G: rows
+  G--&gt;&gt;C: 200 JSON
+</div>
+<p><em>What to notice:</em> identity checks go through Redis first. A miss walks the waterfall (Firebase Admin, then JWT / Google OIDC) and resolves roles in PostgreSQL. The tenant and scope filter is applied before ClickHouse is touched.</p>
+<p><strong>API keys.</strong> Machine clients can use an API key, compared in constant time. A normal <code>==</code> returns early at the first wrong character, so response timing leaks how much of the key was right. A constant-time compare takes the same time on every mismatch.</p>
+<p><strong>Status codes.</strong> 401 when no identity resolves. 403 when the identity is valid but the requested tenant or hierarchy slice is outside the user's UAM scope. Isolation is access control, not encryption.</p>
+<h3 id="1b4-platform-conventions-c1">1B.4 Platform conventions (C1)</h3>
+<p>The Go / Gin platform runs at 10k peak RPS, uses Google Wire for compile-time dependency injection, and serves native h2c (HTTP/2 cleartext, meaning HTTP/2 without TLS inside the trusted network) with no reverse proxy in front. Nested timeouts mean every request gets an overall deadline, and every downstream call (Redis, PostgreSQL, ClickHouse) gets a shorter deadline inside it, so a slow dependency fails that request fast (a 504-style error) instead of tying up the server. Datadog traces each request across those hops. No invented SLA.</p>
+<h2 id="1c-agentic-cluster-module-phase-1-clickhouse-ddl-measured-design-verbal-only">1C. Agentic Cluster Module: Phase-1 ClickHouse DDL (MEASURED design, verbal only)</h2>
+<div class="callout warn">
+<p><b>Say this carefully.</b> This is the validated Phase-1 design for the Cluster Recommendation Copilot, which is verbal depth, not a resume bullet. It was syntax-validated on ClickHouse 25.12 with four adversarial review passes, but has <b>zero runtime evidence</b> (load test planned at bring-up). The approval and write-back tables are part of that design. They are not a shipped human-review queue, and the IA resume makes no HITL claim. The <code>REPLACE PARTITION</code> pattern here is design, as is the incremental <code>REPLACE PARTITION</code> rollup design. What actually ran on the rollups was <code>DROP PARTITION</code> then recopy.</p>
+</div>
+<p><strong>Tenant database example:</strong> <code>cluster_briscoes</code> (one ClickHouse database per retailer). <strong>Inventory:</strong> 63 tables (including 7 stage twins), 8 layers, 5 dictionaries, 19 views. <strong>Writers:</strong> SYNC jobs (facts, cubes, mirrors), API / JR / NIGHT jobs (decision plane). The agent database user is <code>readonly=1</code> only.</p>
+<h3 id="1c1-facts-p1-mergetree-plus-stage-twin-plus-replace-partition">1C.1 Facts (P1: MergeTree plus stage twin plus <code>REPLACE PARTITION</code>)</h3>
+<p><strong><code>fact_sales</code>: what it stores.</strong> One row per product, store and date with sales measures, with the product hierarchy copied onto every row (denormalized) so pivots never need a join.</p>
 <pre><code class="language-sql">-- fact_sales  ENGINE = MergeTree
 -- PARTITION BY toYYYYMM(date)
 -- ORDER BY (l1_name, l2_name, l3_name, store_code, date)
@@ -111,13 +430,27 @@ channel / sub_channel LowCardinality(String)
 store_code LowCardinality(String)
 product_code / article / style String
 color / size / season LowCardinality(String)
-l0_name … l6_name LowCardinality(String)   -- hierarchy denormalized on fact
-product_bucket_code, brand, product_type, …
+l0_name ... l6_name LowCardinality(String)   -- hierarchy denormalized on fact
+product_bucket_code, brand, product_type, ...
 is_clearance UInt8
 revenue / qty / qty_returns / cost / margin / discount_amount / msrp / price / lost_units Float64
 -- bloom indexes: style, article, product_code
 -- twin: fact_sales_stage AS fact_sales
 </code></pre>
+<p><strong>Sample row (made-up values).</strong> <code>date = 2026-04-03</code>, <code>fy_fw = 202614</code>, <code>channel = 'Store'</code>, <code>store_code = 'S042'</code>, <code>product_code = 'P-10234'</code>, <code>l1_name = 'Womens'</code>, <code>l2_name = 'Tops'</code>, <code>revenue = 129.90</code>, <code>qty = 3</code>, <code>is_clearance = 0</code>.</p>
+<p><strong>Why each key exists.</strong>
+- <code>PARTITION BY toYYYYMM(date)</code>: one partition per month. A restatement of March rebuilds only March in the stage twin, then swaps it in.
+- <code>ORDER BY (l1, l2, l3, store_code, date)</code>: pivots filter by hierarchy then store, so this order prunes the most.
+- <code>LowCardinality(String)</code>: dictionary-encodes columns with few distinct values (channel, color), which shrinks storage and speeds filters.
+- Bloom indexes on <code>style</code>, <code>article</code>, <code>product_code</code>: fast "find this product" lookups that the sort key does not cover.
+- <code>fact_sales_stage AS fact_sales</code>: the stage twin has an identical structure, which <code>REPLACE PARTITION</code> requires.</p>
+<p><strong>Queries it serves.</strong> Hierarchy-by-store-by-period pivots, and the source for cubes.</p>
+<p><strong>How a restatement works (design).</strong></p>
+<pre><code class="language-sql">INSERT INTO fact_sales_stage SELECT ... WHERE toYYYYMM(date) = 202603;  -- build offline
+ALTER TABLE fact_sales REPLACE PARTITION 202603 FROM fact_sales_stage;  -- swap in one step
+</code></pre>
+<p>Readers see either the old month or the new month, never half of each. "No row UPDATE on the hot path."</p>
+<p><strong><code>fact_inventory_wk</code>.</strong> Weekly on-hand, receipts and stockouts per product and store.</p>
 <pre><code class="language-sql">-- fact_inventory_wk  PARTITION BY toYYYYMM(week_start)
 -- ORDER BY (l1_name, l2_name, l3_name, store_code, week_start)
 week_start Date
@@ -127,13 +460,15 @@ product_code String
 oh_units / oh_cost / receipts_qty / receipts_cost / receipts_msrp / lost_units Float64
 stockout_flag UInt8
 </code></pre>
-<pre><code class="language-sql">-- fact_forecast_wk  (future windows use forecast KPIs like actuals)
-week_start, fy_fw, channel, store_code, l1/l2/l3
+<p>Serves inventory pivots and stockout analysis. Same partition and sort reasoning as <code>fact_sales</code>, at weekly grain.</p>
+<p><strong><code>fact_forecast_wk</code>.</strong> Forecast measures for future weeks, so future windows can use forecast KPIs exactly like actuals.</p>
+<pre><code class="language-sql">week_start, fy_fw, channel, store_code, l1/l2/l3
 forecast_ver LowCardinality(String)
 fc_revenue / fc_qty / fc_margin Float64
 </code></pre>
-<pre><code class="language-sql">-- ingest_watermark  (append-only sync ledger — reproducibility anchor)
-source_table LowCardinality(String)
+<p><code>forecast_ver</code> keeps several forecast versions side by side, so a plan can say which forecast it used.</p>
+<p><strong><code>ingest_watermark</code>: the sync ledger (P4).</strong> What it stores: one append-only row per partition landed from upstream, with row counts, bytes and status. It is the reproducibility anchor: "this decision was made on data as of this watermark."</p>
+<pre><code class="language-sql">source_table LowCardinality(String)
 partition_id String
 last_modified DateTime64(3)
 row_count UInt64
@@ -144,32 +479,37 @@ detail String
 synced_at DateTime64(3)
 -- views: v_watermark_latest (argMax), v_data_as_of
 </code></pre>
-<p><strong>Interview line:</strong> “Facts restate by building a stage twin and <code>REPLACE PARTITION</code> — no row UPDATE on the hot path.”</p>
-<h3 id="12-dims-p2-replacingmergetree">1.2 Dims (P2 — ReplacingMergeTree)</h3>
+<p><strong>Sample rows.</strong> <code>('fact_sales', '202603', ..., row_count = 41,200,000, status = 'landed')</code> followed later by the same partition with <code>status = 'verified'</code>. The view <code>v_watermark_latest</code> uses <code>argMax</code> to show only the latest status per partition. <code>v_data_as_of</code> answers "how fresh is the data I am looking at", which the agent discloses to the planner.</p>
+<h3 id="1c2-dimensions-p2-replacingmergetree">1C.2 Dimensions (P2: ReplacingMergeTree)</h3>
+<p><strong><code>dim_store</code>: what it stores.</strong> One current row per store (name, channel, region, open and close dates). Updates are new versions, not UPDATEs.</p>
 <pre><code class="language-sql">-- dim_store  RMT(synced_at, is_deleted)  ORDER BY store_code
 store_code, store_name, channel, sub_channel, region, store_type
 active UInt8, open_date Date, close_date Nullable(Date)
 is_deleted UInt8, synced_at DateTime
-
--- dim_hierarchy  RMT(synced_at, is_deleted)
+</code></pre>
+<p><strong>Sample.</strong> <code>('S042', 'Auckland Central', 'Store', ..., active = 1, is_deleted = 0, synced_at = 2026-07-01 02:00)</code>. If the store closes, a new row arrives with <code>close_date</code> set and a newer <code>synced_at</code>, and it wins.</p>
+<p><strong>Why the keys exist.</strong> <code>ORDER BY store_code</code> is the dedupe key. <code>synced_at</code> is the version (newest wins). <code>is_deleted</code> lets a delete be expressed as an insert (a "tombstone"), which ReplacingMergeTree can drop during merges.</p>
+<p><strong><code>dim_hierarchy</code>.</strong></p>
+<pre><code class="language-sql">-- dim_hierarchy  RMT(synced_at, is_deleted)
 hierarchy_code, level UInt8
-l0_name … l6_name, path, is_leaf, is_custom, active
+l0_name ... l6_name, path, is_leaf, is_custom, active
 attribute_list String, search_text (+ ngram / aliases)
-
 -- dim_fiscal, dim_sister_store, dim_channel  (same RMT pattern)
 </code></pre>
-<p>Dictionaries (5 + <code>dict_user</code> at bring-up): store / hierarchy / fiscal / channel / sister-store — <code>dictGet</code> for agent grounding.</p>
-<h3 id="13-cubes-caches-planner-rollups">1.3 Cubes / caches (planner rollups)</h3>
+<p>Serves "grounding": when a planner types "womens tops", <code>search_text</code> with n-gram and alias matching resolves it to a real hierarchy node. An n-gram index breaks text into short overlapping chunks so fuzzy matches are fast.</p>
+<p><strong>Dictionaries.</strong> Five (store, hierarchy, fiscal, channel, sister-store) plus <code>dict_user</code> at bring-up. A ClickHouse dictionary is an in-memory key-value lookup loaded from a table. <code>dictGet('dict_store', 'region', 'S042')</code> returns a region instantly without a join, which keeps agent grounding queries cheap.</p>
+<h3 id="1c3-cubes-and-caches-planner-rollups-inside-the-design">1C.3 Cubes and caches (planner rollups inside the design)</h3>
 <pre><code class="language-sql">-- cube_store_attr_week / cube_store_kpi_week  (+ stage twins, P1 swap)
 -- significance_cache / precomputed_candidates  RMT(computed_at)
 -- feature_matrix_cache  MergeTree
 </code></pre>
-<p>Say purpose in interview; full column lists live in DDL § cubes — do not recite every column.</p>
-<h3 id="14-pg-mirrors-transitional-read-models">1.4 PG mirrors (transitional read models)</h3>
+<p>Say the purpose in an interview and do not recite columns. Cubes are pre-aggregated store-by-attribute and store-by-KPI weekly views (rebuilt by partition swap). Caches hold expensive computed inputs (significance tests, candidate lists, feature matrices) with <code>computed_at</code> as the version.</p>
+<h3 id="1c4-postgresql-mirrors-transitional-read-models">1C.4 PostgreSQL mirrors (transitional read models)</h3>
+<p><strong><code>mirror_plan</code>: what it stores.</strong> A ClickHouse copy of each plan defined in the incumbent product, so the agent can reason about plans without calling the incumbent database.</p>
 <pre><code class="language-sql">-- mirror_plan  ORDER BY plan_code
 plan_code UInt32
 plan_name, description String
-step_x10 UInt8          -- NEVER Float32 (1.3 not binary-safe); 13 = step 1.3
+step_x10 UInt8          -- NEVER Float32 (1.3 is not binary-safe); 13 = step 1.3
 is_deleted UInt8
 selling_sdate / selling_edate Date
 selling_periods JSON
@@ -186,37 +526,85 @@ created_via, created_at, updated_at, synced_at
 plan_code, channel, store_code, cluster_code, display_name, synced_at
 
 -- mirror_strategy_consumer  ORDER BY (cluster_plan_code, strategy_plan_id)
--- mirror_plan_line  (+ stage) planned_* / bought_* by week — outcome loop
+-- mirror_plan_line  (+ stage) planned_* / bought_* by week (outcome loop)
 </code></pre>
-<p>View <code>v_doorway_eligible</code>: <code>step_x10 &gt;= 13 AND is_deleted = 0 AND member_cnt &gt; 0 AND scope_recoverable = 1</code>.</p>
-<h3 id="15-decision-plane-content-addressed-config-event-status">1.5 Decision plane (content-addressed config + event status)</h3>
+<p><strong>Sample row.</strong> <code>plan_code = 1182</code>, <code>plan_name = 'SS26 Womens'</code>, <code>step_x10 = 13</code>, <code>member_cnt = 240</code>, <code>scope_recoverable = 1</code>, <code>is_deleted = 0</code>.</p>
+<p><strong>A design detail worth saying.</strong> <code>step_x10</code> stores the workflow step multiplied by 10 as an integer. Step 1.3 cannot be represented exactly in binary floating point (it becomes 1.2999999...), so a comparison like <code>step &gt;= 1.3</code> could silently fail. Storing 13 avoids that. <code>scope_fingerprint</code> is a hash of the plan's scope, so two plans with the same scope can be matched without comparing JSON.</p>
+<p><strong>Query it serves.</strong> The view <code>v_doorway_eligible</code> lists plans the copilot may work on:</p>
+<pre><code class="language-sql">SELECT plan_code FROM mirror_plan
+WHERE step_x10 &gt;= 13 AND is_deleted = 0 AND member_cnt &gt; 0 AND scope_recoverable = 1;
+</code></pre>
+<h3 id="1c5-decision-plane-content-addressed-config-plus-event-status">1C.5 Decision plane: content-addressed config plus event status</h3>
+<p><strong><code>cluster_config</code>: what it stores.</strong> A clustering configuration document, keyed by its own SHA-256 hash ("content addressing"). The same config always has the same key, so inserting it twice is harmless.</p>
 <pre><code class="language-sql">-- cluster_config  RMT(created_at)  ORDER BY config_hash
 config_hash FixedString(64)     -- content address; insert dedup token
 doc JSON
 scope_fingerprint FixedString(64)
 entry_mode, created_by, created_at
-
--- cluster_run  (immutable HEADER — status NEVER here)
+</code></pre>
+<p><strong><code>cluster_run</code>: an immutable header.</strong> One row per run: which config, on which data watermark, with which scorer version and seed. Status is <strong>never</strong> stored here.</p>
+<pre><code class="language-sql">-- cluster_run  (immutable HEADER, status NEVER here)
 config_hash, data_watermark, run_id UUID, batch_id UUID, session_id UUID
 plan_code UInt32 DEFAULT 0
 scope_fingerprint, entry_mode, scorer_version, weights_version, seed
 created_by, created_at, created_date
 ORDER BY (config_hash, data_watermark, run_id)
-
--- cluster_run_event  (P3 append-only status)
+</code></pre>
+<p>Why that sort key: "have we already run this config on this data?" becomes a prefix lookup on <code>(config_hash, data_watermark)</code>, which is how duplicate runs are avoided.</p>
+<p><strong><code>cluster_run_event</code>: status as an append-only stream (P3).</strong></p>
+<pre><code class="language-sql">-- cluster_run_event  (P3 append-only status)
 run_id, event_seq UInt16, event_time DateTime64(6)
 status Enum8('queued','claimed','running','scored','failed','timeout','superseded')
 claim_token, error, actor, event_date
 -- latest: v_run_status / v_run_status_recent via argMax(event_seq, event_time, claim_token)
-
--- cluster_run_membership  (typed store→label; shortlist policy)
-run_id, config_hash, batch_id
+</code></pre>
+<p><strong>Sample history for one run (made-up).</strong></p>
+<table>
+<thead>
+<tr>
+<th>run_id</th>
+<th>event_seq</th>
+<th>status</th>
+<th>claim_token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r-77</td>
+<td>1</td>
+<td>queued</td>
+<td></td>
+</tr>
+<tr>
+<td>r-77</td>
+<td>2</td>
+<td>claimed</td>
+<td>tok-A</td>
+</tr>
+<tr>
+<td>r-77</td>
+<td>3</td>
+<td>running</td>
+<td>tok-A</td>
+</tr>
+<tr>
+<td>r-77</td>
+<td>4</td>
+<td>scored</td>
+<td>tok-A</td>
+</tr>
+</tbody>
+</table>
+<p>The view <code>v_run_status</code> returns <code>scored</code> for <code>r-77</code>, because that row has the highest <code>event_seq</code>.</p>
+<p><strong>Lock-free claim (design).</strong> ClickHouse has no row locks, so workers claim a run by racing: each worker inserts a <code>claimed</code> event with its own <code>claim_token</code>, then reads <code>v_run_status</code>. Only the worker whose token won the <code>argMax</code> proceeds. The loser backs off. If a worker crashes, a <code>superseded</code> event is appended and the retry gets a <strong>new</strong> <code>run_id</code>, so the history stays clean.</p>
+<p><strong><code>cluster_run_membership</code>.</strong> Typed store-to-cluster labels produced by a run.</p>
+<pre><code class="language-sql">run_id, config_hash, batch_id
 axis Enum8('product','performance','store')
 k UInt8, channel, store_code, label, label_ord, margin_to_next
 pinned UInt8, shortlisted UInt8
 </code></pre>
-<p><strong>Lock-free claim:</strong> runner INSERTs <code>claimed</code> + <code>claim_token</code>, reads <code>v_run_status*</code>, proceeds only if its token won argMax. Crash reclaim: append <code>superseded</code>, mint <strong>new</strong> <code>run_id</code>.</p>
-<h3 id="16-approval-immutable-snapshot-write-back">1.6 Approval + immutable snapshot + write-back</h3>
+<p><code>margin_to_next</code> records how close a store was to the next cluster, which helps explain borderline assignments. <code>pinned</code> marks stores a planner fixed in place.</p>
+<h3 id="1c6-approval-immutable-snapshot-and-write-back-design">1C.6 Approval, immutable snapshot and write-back (design)</h3>
 <pre><code class="language-sql">-- approval_event
 run_id, event_seq, event_time
 status Enum8('pending','approved','rejected')
@@ -227,7 +615,7 @@ writeback_plan_code UInt32
 
 -- Ordering contract: write plan_snapshot + snapshot_* FIRST, 'approved' event LAST
 
--- plan_snapshot  ORDER BY (plan_code, approved_at)  FOREVER
+-- plan_snapshot  ORDER BY (plan_code, approved_at)  kept forever
 plan_code, approved_at, snapshot_id, run_id, config_hash
 config_doc JSON, metric_vector JSON, pins_applied JSON
 data_watermark, scorer_version, weights_version, approved_by
@@ -235,21 +623,21 @@ data_watermark, scorer_version, weights_version, approved_by
 -- snapshot_cluster  ORDER BY (snapshot_id, channel, cluster_code)
 -- cluster_code = trim(concat(channel, ' ', product_label, performance_label, ' ', store_label))
 
--- snapshot_membership  frozen store→cluster (+ per-axis labels)
+-- snapshot_membership  frozen store-to-cluster (+ per-axis labels)
 
 -- writeback_staging / writeback_plan_shell / writeback_event  (transitional PG wire)
--- pending_intent + intent_event  (strategy_create, recluster_proposal, …)
+-- pending_intent + intent_event  (strategy_create, recluster_proposal, ...)
 </code></pre>
-<p><strong>Gotcha to say:</strong> <code>is_optimal</code> (engine on run metrics) ≠ <code>is_final</code> (human via approval/snapshot). Agent never writes these tables.</p>
-<h3 id="17-thin-postgresql-identity-uam">1.7 Thin PostgreSQL (identity / UAM)</h3>
-<p>Logical only in interview:</p>
-<pre><code>users(id, email, …)
+<p><strong>Why the ordering contract matters.</strong> The snapshot rows are written first and the <code>approved</code> event last. If the process crashes in between, there is no <code>approved</code> event, so nothing downstream treats a half-written snapshot as final. The event acts as the commit marker, which is how you get atomic-looking behaviour in a database without multi-statement transactions.</p>
+<p><strong>Gotcha to say.</strong> <code>is_optimal</code> (the engine's verdict on run metrics) is not the same as <code>is_final</code> (the human decision, via approval and snapshot). The agent never writes these tables.</p>
+<h3 id="1c7-thin-postgresql-in-the-design">1C.7 Thin PostgreSQL in the design</h3>
+<pre><code class="language-text">users(id, email, ...)
 tenant_membership(user_id, tenant_id, role)
 workflow_state / feature_flags
--- CH dict_user syncs identity for audit labels; PG remains auth SoR
+-- ClickHouse dict_user syncs identity for audit labels; Postgres remains the auth source of truth
 </code></pre>
-<h3 id="18-api-tool-design-design-building">1.8 API / tool design (DESIGN — building)</h3>
-<p><strong>Plane split</strong></p>
+<h3 id="1c8-cluster-module-api-and-tool-design-design-verbal-only">1C.8 Cluster Module API and tool design (DESIGN, verbal only)</h3>
+<p><strong>Plane split.</strong></p>
 <table>
 <thead>
 <tr>
@@ -260,71 +648,88 @@ workflow_state / feature_flags
 </thead>
 <tbody>
 <tr>
-<td>FastAPI + LangGraph + MCP</td>
+<td>FastAPI plus LangGraph plus MCP</td>
 <td>Chat, tool sequencing, evidence packs</td>
 <td>No planning facts</td>
 </tr>
 <tr>
 <td><strong>14 audited tools</strong> (MCP)</td>
-<td>Templated reads: grounding, significance, candidates, score, compare, pins/impact, …</td>
+<td>Templated reads: grounding, significance, candidates, score, compare, pins and impact</td>
 <td>SELECT / <code>dictGet</code> only</td>
 </tr>
 <tr>
-<td>Go Gin doing layer</td>
-<td>Clustering / Hindsight / Strategy product writes after gates</td>
-<td>INSERT-only on owned CH + PG write-back SPs</td>
+<td>Go Gin "doing layer"</td>
+<td>Clustering (and, in the design, Hindsight and Strategy) writes after gates</td>
+<td>INSERT-only on owned ClickHouse tables plus PostgreSQL write-back procedures</td>
 </tr>
 <tr>
 <td>Sync / NIGHT jobs</td>
-<td>BQ→CH facts, cube rebuild, mirror refresh</td>
-<td>Stage + partition swap / RMT inserts</td>
+<td>BigQuery to ClickHouse facts, cube rebuild, mirror refresh</td>
+<td>Stage plus partition swap, RMT inserts</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Human gates:</strong> grounding → search plan → approval → write-back.</p>
-<p><strong>Tool categories (say these — do not invent 14 product names unless from FRD):</strong></p>
+<p><strong>Design gates:</strong> grounding, then search plan, then approval, then write-back. These are design steps of a verbal-only module, not a shipped HITL queue.</p>
+<p><strong>Tool categories</strong> (say these, do not invent 14 product names):</p>
 <ol>
-<li>Scope / hierarchy grounding  </li>
-<li>Eligibility / doorway FitScore inputs  </li>
-<li>Significance / candidate generation  </li>
-<li>Feature matrix / k-search support reads  </li>
-<li>Score / rank / compare configs  </li>
-<li>Pin &amp; edit-impact preview (read)  </li>
-<li>Run/batch progress (<code>v_batch_progress</code>)  </li>
-<li>Watermark / data-as-of disclosure  </li>
+<li>Scope and hierarchy grounding</li>
+<li>Eligibility / doorway FitScore inputs</li>
+<li>Significance and candidate generation</li>
+<li>Feature matrix and k-search support reads</li>
+<li>Score, rank and compare configs</li>
+<li>Pin and edit-impact preview (read only)</li>
+<li>Run and batch progress (<code>v_batch_progress</code>)</li>
+<li>Watermark and data-as-of disclosure</li>
 </ol>
-<p><strong>Go write API sketch (DESIGN shape):</strong></p>
-<pre><code>POST /v1/runs                    {config_hash|config_doc, plan_code?, session_id}
-                                 → {run_id, batch_id, status: queued}
-GET  /v1/runs/{run_id}           → header + v_run_status
-POST /v1/batches/{id}/claim      → claim_token dance (worker)
+<p><strong>Go write API sketch (DESIGN shape).</strong></p>
+<pre><code class="language-text">POST /v1/runs                    {config_hash|config_doc, plan_code?, session_id}
+                                 -&gt; {run_id, batch_id, status: queued}
+GET  /v1/runs/{run_id}           -&gt; header + v_run_status
+POST /v1/batches/{id}/claim      -&gt; claim_token dance (worker)
 POST /v1/approvals               {run_id, decision, comment}
-                                 → snapshot_id (snapshot rows then approved event)
-POST /v1/writeback               {snapshot_id, plan_code}  // after human gate
-GET  /v1/plans/{plan_code}       → mirror + doorway eligibility
+                                 -&gt; snapshot_id (snapshot rows then approved event)
+POST /v1/writeback               {snapshot_id, plan_code}  // after the gate
+GET  /v1/plans/{plan_code}       -&gt; mirror + doorway eligibility
 </code></pre>
-<p><strong>Auth / tenancy:</strong> tenant → CH database; agent DB user <code>readonly=1</code>; service roles INSERT-only; OTEL <code>trace_id</code> across LangSmith / Datadog / PostHog.</p>
+<p><strong>One contract in full: <code>POST /v1/runs</code> (DESIGN).</strong></p>
+<pre><code class="language-json">{ &quot;config_hash&quot;: &quot;4ab1...7c&quot;, &quot;plan_code&quot;: 1182, &quot;session_id&quot;: &quot;s-901&quot; }
+</code></pre>
+<pre><code class="language-json">{ &quot;run_id&quot;: &quot;r-77&quot;, &quot;batch_id&quot;: &quot;b-12&quot;, &quot;status&quot;: &quot;queued&quot; }
+</code></pre>
+<ul>
+<li><strong>Status codes:</strong> 202 Accepted (the run is queued, not finished). 404 if <code>config_hash</code> is unknown. 403 if the plan is outside the caller's scope.</li>
+<li><strong>Idempotency:</strong> the config is content-addressed, and <code>cluster_run</code> is ordered by <code>(config_hash, data_watermark, run_id)</code>, so the service can detect "same config on the same data" and return the existing run instead of creating a duplicate.</li>
+<li><strong>Auth and tenancy:</strong> tenant maps to a ClickHouse database. The agent database user is <code>readonly=1</code>. Service roles are INSERT-only. An OpenTelemetry <code>trace_id</code> links traces across tools.</li>
+<li><strong>Pagination:</strong> <code>GET /v1/runs/{run_id}</code> is a single resource. A run list would page by <code>created_at</code> cursor (design suggestion).</li>
+</ul>
 <hr>
-<h1 id="2-uber-frm-mysql-schemas-measured-orm-rest">2. Uber FRM — MySQL schemas (MEASURED ORM) + REST</h1>
-<p><strong>Source:</strong> <code>frm_scoping_service/database/models/*.py</code> + <code>handler/scoping_handler.py</code>.<br>
-<strong>Prefix:</strong> <code>/frm-scoping</code>. <strong>Auth:</strong> <code>x-auth-params-email</code> → <code>updated_by</code>.<br>
-<strong>Period key on almost every row:</strong> <code>fiscal_quarter</code> String(4) · <code>fiscal_year</code> String(8).<br>
-<strong>No DB foreign keys</strong> — logical joins on <code>level_id</code> + period + active flags.</p>
+<h1 id="2-uber-frm-mysql-schemas-measured-orm-and-rest">2. Uber FRM: MySQL schemas (MEASURED ORM) and REST</h1>
+<p><strong>In plain English.</strong> Each quarter, Uber Finance decides which financial statement lines and entities are material enough to be in scope for audit testing. I owned the FRM scoping backend (via EPAM): Spring Boot, Spring Data JPA, Hibernate and Bean Validation on MySQL, on Uber's SOADB service-owned MySQL standard, built with Bazel and tested with JUnit. It replaced a Google Sheets workflow, migrated 19M raw GL rows off Sheets, exposes 36 endpoints, and cut quarterly reconciliation from 14 days to 3 days (70%) against a $340M materiality threshold.</p>
+<p><strong>Source:</strong> the scoping service's entity models and its scoping controller. <strong>Route prefix:</strong> <code>/frm-scoping</code>. <strong>Auth:</strong> the edge authenticates and passes <code>x-auth-params-email</code>. A Spring filter / interceptor reads it, and the service writes it to <code>updated_by</code>. <strong>Period key on almost every row:</strong> <code>fiscal_quarter</code> String(4) and <code>fiscal_year</code> String(8). <strong>No database foreign keys:</strong> joins are logical, on <code>level_id</code> plus period plus active flags.</p>
+<div class="callout note">
+<p><b>Counting tables.</b> The PDF says an 8-table normalized MySQL schema on SOADB. The scoping service code below has 11 ORM models. Lead with 8. If someone counts models, say the code has 11 once you include the recon v2 leaves and configuration tables. There is no recorded 8-of-11 mapping in the notes, so do not improvise one.</p>
+</div>
 <h3 id="21-shared-audit-columns">2.1 Shared audit columns</h3>
-<pre><code>created_at TIMESTAMP
+<pre><code class="language-text">created_at TIMESTAMP
 created_by String(36)   -- default &quot;Scoping APP&quot; on some tables
 updated_at TIMESTAMP
-updated_by String(36)
+updated_by String(36)   -- from x-auth-params-email
 </code></pre>
-<h3 id="22-level_mapping-hierarchy-spine">2.2 <code>level_mapping</code> — hierarchy spine</h3>
-<pre><code>uuid PK String(36)          -- THIS is level_id on facts
-level1…level4 String(256)
+<p><strong>Why.</strong> PwC-facing work papers need to know who changed what and when. Every table carries these four columns, so "who changed the scope conclusion on this line?" is always one query.</p>
+<h3 id="22-level_mapping-the-hierarchy-spine">2.2 <code>level_mapping</code>: the hierarchy spine</h3>
+<p><strong>What it stores.</strong> One row per FSLI (Financial Statement Line Item) path per quarter. FSLI is a line on the financial statements, such as "Current assets / Cash and equivalents". The hierarchy has four levels, L1 to L4. ETL flattens the recursive tree into these rows.</p>
+<pre><code class="language-text">uuid PK String(36)          -- THIS is level_id on facts
+level1 ... level4 String(256)
 fiscal_quarter, fiscal_year
 is_active String(16)
-+ audit
++ audit columns
 </code></pre>
-<h3 id="23-balance_sheet-income_statement-fsli-facts">2.3 <code>balance_sheet</code> / <code>income_statement</code> — FSLI facts</h3>
-<pre><code>uuid PK String(36)
+<p><strong>Sample row (made-up labels).</strong> <code>uuid = 'a41f...'</code>, <code>level1 = 'Assets'</code>, <code>level2 = 'Current assets'</code>, <code>level3 = 'Cash'</code>, <code>level4 = 'Cash and equivalents'</code>, <code>fiscal_quarter = 'Q4'</code>, <code>fiscal_year = '2025'</code>, <code>is_active = 'Y'</code>.</p>
+<p><strong>Why the key exists.</strong> <code>uuid</code> is the stable id every fact row stores as <code>level_id</code>. Lookups are always by <code>uuid</code> plus period.</p>
+<p><strong>Query it serves.</strong> Building the nested L1-L4 tree for any screen: join facts to this table on <code>level_id</code> and period, then group in the Java service layer into nested JSON.</p>
+<h3 id="23-balance_sheet-and-income_statement-fsli-facts">2.3 <code>balance_sheet</code> and <code>income_statement</code>: FSLI facts</h3>
+<p><strong>What it stores.</strong> One row per FSLI line per quarter: the HFM amount (HFM is Oracle Hyperion Financial Management, Uber's consolidation system), its share of the total, materiality flags, the significance conclusion, scope, residual risk and the review statuses. <code>income_statement</code> has the same shape.</p>
+<pre><code class="language-text">uuid PK String(36)
 level_id String(36)         -- = level_mapping.uuid
 hfm_amount DECIMAL(18,2)
 percentage_of_total DECIMAL(5,2)
@@ -342,29 +747,87 @@ residual_percentage DECIMAL(5,2)
 residual_balance_prev_year, residual_dollar_change, residual_percentage_change
 group_dollar_change, group_percentage_change
 greater_than_materiality / greater_than_threshold_change / investigate String(16)
-level_1…level_4 String(256)   -- denormalized labels for UI tree
+level_1 ... level_4 String(256)   -- denormalized labels for the UI tree
 is_level_active String(16)
 group_status / component_status / residual_status String(36)
   -- group_status allowlist: Draft | Review | ReOpen | Closed
 fiscal_quarter, fiscal_year + audit
 </code></pre>
-<p><code>income_statement</code> same shape (+ ORM helpers <code>fetch_for_period</code>, <code>update_scope_and_status</code>, …).</p>
-<h3 id="24-recon-v2-leaves">2.4 Recon v2 leaves</h3>
-<pre><code>-- recon_balance_sheet / recon_income_statement
-uuid PK, level_id
+<p>The repository and service layers carry the common operations: fetch every line for a period, and update the scope and status of one line.</p>
+<p><strong>Sample row and worked math (made-up amounts, real rules and real $340M materiality).</strong></p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Value</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hfm_amount_in_millions</code></td>
+<td>1,250.00</td>
+<td>From HFM</td>
+</tr>
+<tr>
+<td><code>quantitative_material</code></td>
+<td>YES</td>
+<td>Rule: YES if HFM amount is greater than materiality. 1,250 is greater than 340.</td>
+</tr>
+<tr>
+<td><code>conclusion_overall_significance</code></td>
+<td>Significant</td>
+<td>Rule in code: Significant if quantitative OR qualitative is YES</td>
+</tr>
+<tr>
+<td><code>total_inscope</code> (millions)</td>
+<td>1,100.00</td>
+<td>Covered by in-scope components</td>
+</tr>
+<tr>
+<td><code>residual_balances</code> (millions)</td>
+<td>150.00</td>
+<td>HFM amount minus total in scope: 1,250 minus 1,100</td>
+</tr>
+<tr>
+<td><code>residual_multiples</code></td>
+<td>0.44</td>
+<td>Residual divided by materiality: 150 / 340</td>
+</tr>
+<tr>
+<td><code>group_status</code></td>
+<td>Review</td>
+<td>From the allowlist</td>
+</tr>
+</tbody>
+</table>
+<p>The residual flag "greater than 50% of materiality" would not fire here, because 0.44 is below 0.5.</p>
+<p><strong>Why each key or column exists.</strong>
+- <code>uuid</code> PK: the stable line id that assessments, comments and audit history attach to. Sheets never had this.
+- <code>level_id</code>: the logical join to <code>level_mapping</code>.
+- <code>(fiscal_quarter, fiscal_year)</code>: every screen reads one period, so composite indexes on the period are what make reads fast.
+- Denormalized <code>level_1</code> to <code>level_4</code>: the UI tree renders without a second join.
+- Change columns (<code>group_dollar_change</code>, <code>group_percentage_change</code>, <code>residual_percentage_change</code>) and flags (<code>greater_than_threshold_change</code>, <code>investigate</code>): these hold the quarter-over-quarter deltas. The PDF's automated FSM gates with 50% delta-variance checks for SOX work on this kind of delta: a large swing must be investigated before a line's status can move forward. The exact gate code is not quoted in these notes, so explain the mechanism rather than reciting code.
+- Three status columns: the polymorphic review-status model. One vocabulary (Draft, Review, ReOpen, Closed), reused for group, component and residual review.</p>
+<p><strong>Queries it serves.</strong> <code>GET /group_balance_sheet</code> (nested tree for a period), <code>PATCH /group_balance_sheet/{uuid}</code> (scope or status change), <code>GET /residual_risk</code>.</p>
+<h3 id="24-recon-v2-leaves-recon_balance_sheet-and-recon_income_statement">2.4 Recon v2 leaves: <code>recon_balance_sheet</code> and <code>recon_income_statement</code></h3>
+<p><strong>What it stores.</strong> The HFM amount next to the amount in the filed 10-Q (the quarterly report filed with the SEC), per leaf line, with the difference. This is the finance "tie-out": scoping must be built on numbers that match what was filed.</p>
+<pre><code class="language-text">uuid PK, level_id
 hfm_amount, hfm_amount_in_millions
 financial_statement_amount_in_millions
-difference                    -- HFM − filed (10-Q)
-level_1…level_3
+difference                    -- HFM minus filed (10-Q)
+level_1 ... level_3
 is_level_active
 fiscal_quarter, fiscal_year + audit
 </code></pre>
-<h3 id="25-component-emi-metrics-thresholds-qa">2.5 Component, EMI, metrics, thresholds, Q&amp;A</h3>
-<pre><code>-- component_entity
+<p><strong>Sample row (made-up).</strong> <code>hfm_amount_in_millions = 812.40</code>, <code>financial_statement_amount_in_millions = 812.40</code>, <code>difference = 0.00</code>. A nonzero difference is a "break" a manager must explain before scoping proceeds. The system displays and persists it, and the control is procedural (a manager must clear it), not a hard block in code.</p>
+<p><strong>Why it exists.</strong> Recon v1 read from Sheets. I owned the v2 migration to MySQL (a parallel run, 18 files, +1,268 lines of code). Persisting leaves with stable <code>uuid</code>s means each break can be commented on and audited.</p>
+<h3 id="25-component-emi-metrics-thresholds-questions-and-answers">2.5 Component, EMI, metrics, thresholds, questions and answers</h3>
+<pre><code class="language-text">-- component_entity
 uuid PK, level_id, scoping_component, amount DECIMAL(18,2)
 is_active, fiscal_quarter, fiscal_year + audit
 
--- emi_data  (one row ≈ one UI column / investee)
+-- emi_data  (one row is roughly one UI column / one investee)
 uuid PK
 investee, investee_entity, uber_investor_entity
 period_acquired, security
@@ -377,12 +840,12 @@ audited_financial_statements_available, report_issuance_date
 auditor, additional_considerations Text
 significant_emi, auditboard_link_to_risk_assessment
 is_active, fiscal_quarter, fiscal_year + audit
--- @validates strips whitespace on string columns
+-- @PrePersist / @PreUpdate hook trims whitespace on string columns
 
 -- frm_metrics_table  (class ScopingMetrics)
 uuid PK, metric_key String(128), metric_value String(512)
 unit String(32), is_active
--- materiality key → e.g. $340M (MEASURED product number)
+-- materiality key, for example $340M (MEASURED product number)
 
 -- threshold_table_v2  (class ThresholdSetup)
 uuid PK, legal_entity
@@ -393,7 +856,7 @@ conclusion / updated_conclusion / review_status
 is_active, fiscal_quarter, fiscal_year + audit
 
 -- scoping_questions
-uuid PK   -- SHA-256(question_text + normalized page_name) → 32 hex
+uuid PK   -- SHA-256(question_text + normalized page_name), 32 hex
 question_text Text, page_name String(36), is_active
 
 -- scoping_assessments
@@ -401,14 +864,38 @@ uuid PK, question_id, line_id   -- line_id = fact uuid
 answer_text Text
 fiscal_quarter, fiscal_year + audit
 </code></pre>
-<h3 id="26-api-catalog-32-registrations-say-30">2.6 API catalog (32 registrations; say <strong>30+</strong>)</h3>
-<p>Query period (most GETs): <code>fiscal_quarter=Q1|…|Q4</code> &amp; <code>fiscal_year=YYYY</code>.</p>
+<p><strong>In plain words, table by table.</strong></p>
+<ul>
+<li><strong><code>component_entity</code>:</strong> how much of each FSLI line is covered by each scoping component. Sample: <code>level_id = 'a41f...'</code>, <code>scoping_component = 'US Rides'</code> (made-up), <code>amount = 420,000,000.00</code>. Serves the component scoping screens (<code>/bs_components</code>, <code>/is_components</code>).</li>
+<li><strong><code>emi_data</code>:</strong> equity-method investees, meaning minority stakes Uber accounts for under the equity method rather than consolidating. One row per investee, shown as one grid column. A JPA <code>@PrePersist</code> / <code>@PreUpdate</code> hook trims whitespace so " Acme " and "Acme" do not become two investees. Serves <code>/emi_data</code> and <code>/emi_scoping</code>.</li>
+<li><strong><code>frm_metrics_table</code>:</strong> key-value configuration. Sample: <code>metric_key = 'materiality'</code>, <code>metric_value = '340000000'</code>, <code>unit = 'USD'</code>, <code>is_active = 'Y'</code>. Versioned by <code>is_active</code>: a new value is a new row, and the old one is deactivated, so history is kept. Serves <code>/materiality</code> and <code>/scoping_metrics</code>.</li>
+<li><strong><code>threshold_table_v2</code>:</strong> per legal entity, total assets and revenue, their percentages of the group, and whether the entity is significant. Sample: <code>legal_entity = 'Entity 0412'</code>, <code>total_revenue_percentage = 6.10</code>, <code>financially_significant_component = 'YES'</code> (above the 5% significance threshold). Serves <code>/threshold-setup</code>.</li>
+<li><strong><code>scoping_questions</code>:</strong> the qualitative questions on each screen. Natural key from text plus page.</li>
+<li><strong><code>scoping_assessments</code>:</strong> the answer to one question for one line. Sample: <code>question_id = '5d0e...'</code>, <code>line_id = '7f3c...'</code> (a balance sheet uuid), <code>answer_text = 'Yes, new revenue stream this quarter'</code>.</li>
+</ul>
+<p><strong>The SHA-256 natural key, in code (ILLUSTRATIVE helper names, real rule).</strong></p>
+<pre><code class="language-java">import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
+
+static String questionUuid(String questionText, String pageName) throws NoSuchAlgorithmException {
+    String normalizedPage = normalizePageName(pageName);   // e.g. trim and lowercase
+    byte[] digest = MessageDigest.getInstance(&quot;SHA-256&quot;)
+            .digest((questionText + normalizedPage).getBytes(StandardCharsets.UTF_8));
+    return HexFormat.of().formatHex(digest).substring(0, 32);
+}
+</code></pre>
+<p>Same question on the same page always gives the same <code>uuid</code>, so re-seeding questions every quarter updates rows instead of duplicating them.</p>
+<h3 id="26-api-catalog">2.6 API catalog</h3>
+<p><strong>Breakdown of 36.</strong> The PDF says 36 Spring Boot endpoints. The scoping service controller has 32 route mappings: about 31 functional routes plus <code>/health</code>. The collaboration-service APIs from the TDD (comments and notifications) make up the rest of the 36. If asked, give that breakdown. The real-time collaboration and Slack notification service itself was separate, so do not claim building it. Older prep said "say 30+, do not say 36". That guidance is obsolete.</p>
+<p><strong>Query parameters on most GETs:</strong> <code>fiscal_quarter=Q1|Q2|Q3|Q4</code> and <code>fiscal_year=YYYY</code>.</p>
 <table>
 <thead>
 <tr>
 <th>Method</th>
 <th>Path</th>
-<th>Body / notes</th>
+<th>Body or notes</th>
 <th>Response idea</th>
 </tr>
 </thead>
@@ -416,7 +903,7 @@ fiscal_quarter, fiscal_year + audit
 <tr>
 <td>GET</td>
 <td><code>/health</code></td>
-<td>—</td>
+<td>none</td>
 <td><code>{status, service}</code></td>
 </tr>
 <tr>
@@ -428,31 +915,31 @@ fiscal_quarter, fiscal_year + audit
 <tr>
 <td>GET</td>
 <td><code>/recon_balance_sheet</code></td>
-<td>v1 Sheets</td>
+<td>v1, reads Sheets</td>
 <td>recon response</td>
 </tr>
 <tr>
 <td>GET</td>
 <td><code>/v2/recon_balance_sheet</code></td>
-<td><strong>MySQL nested tree</strong> (migration owned)</td>
+<td><strong>MySQL nested tree</strong> (the migration I owned)</td>
 <td><code>ReconFetchResponse</code></td>
 </tr>
 <tr>
 <td>GET</td>
 <td><code>/v2/recon_income_statement</code></td>
-<td>same for IS</td>
+<td>same for income statement</td>
 <td><code>ReconFetchResponse</code></td>
 </tr>
 <tr>
 <td>GET</td>
 <td><code>/recon_income_statement</code></td>
 <td>v1</td>
-<td>—</td>
+<td>recon response</td>
 </tr>
 <tr>
 <td>GET</td>
 <td><code>/group_balance_sheet</code></td>
-<td>nested from <code>balance_sheet</code></td>
+<td>nested tree from <code>balance_sheet</code></td>
 <td>tree</td>
 </tr>
 <tr>
@@ -464,7 +951,7 @@ fiscal_quarter, fiscal_year + audit
 <tr>
 <td>GET</td>
 <td><code>/group_income_statement</code></td>
-<td>—</td>
+<td>nested tree</td>
 <td>tree</td>
 </tr>
 <tr>
@@ -476,7 +963,7 @@ fiscal_quarter, fiscal_year + audit
 <tr>
 <td>GET</td>
 <td><code>/bs_components</code></td>
-<td>optional <code>level_1…4</code> filters</td>
+<td>optional <code>level_1</code> to <code>level_4</code> filters</td>
 <td><code>ComponentScopingResponse</code></td>
 </tr>
 <tr>
@@ -495,7 +982,7 @@ fiscal_quarter, fiscal_year + audit
 <td>GET</td>
 <td><code>/is_component_filters</code></td>
 <td>same</td>
-<td>—</td>
+<td>filter options</td>
 </tr>
 <tr>
 <td>GET</td>
@@ -507,25 +994,25 @@ fiscal_quarter, fiscal_year + audit
 <td>GET</td>
 <td><code>/emi_scoping</code></td>
 <td>comparison view</td>
-<td>—</td>
+<td>view</td>
 </tr>
 <tr>
 <td>GET</td>
 <td><code>/emi_data</code></td>
-<td>grid; active flag</td>
-<td><code>header_row</code> + <code>columns_data</code></td>
+<td>grid, active flag</td>
+<td><code>header_row</code> plus <code>columns_data</code></td>
 </tr>
 <tr>
 <td>PATCH</td>
 <td><code>/emi_data/{uuid}</code></td>
-<td>partial column; not <code>investee</code></td>
+<td>partial column update, not <code>investee</code></td>
 <td>patch response</td>
 </tr>
 <tr>
 <td>POST</td>
 <td><code>/add_scoping_metrics</code></td>
 <td>metrics payload</td>
-<td>—</td>
+<td>created</td>
 </tr>
 <tr>
 <td>GET</td>
@@ -536,17 +1023,17 @@ fiscal_quarter, fiscal_year + audit
 <tr>
 <td>PUT</td>
 <td><code>/update_benchmark_thresholds</code></td>
-<td>assets/revenue benchmarks → recompute significance</td>
+<td>assets / revenue benchmarks, recomputes significance</td>
 <td>dict</td>
 </tr>
 <tr>
-<td>GET/PUT</td>
+<td>GET / PUT</td>
 <td><code>/materiality</code></td>
 <td><code>metric_key=materiality</code></td>
-<td>value + doc link</td>
+<td>value plus doc link</td>
 </tr>
 <tr>
-<td>GET/PUT</td>
+<td>GET / PUT</td>
 <td><code>/active-page-number</code></td>
 <td>UI page state</td>
 <td>dict</td>
@@ -579,61 +1066,159 @@ fiscal_quarter, fiscal_year + audit
 <td>POST</td>
 <td><code>/scoping_assessments</code></td>
 <td>create</td>
-<td>—</td>
+<td>created</td>
 </tr>
 <tr>
 <td>GET</td>
 <td><code>/scoping_assessments</code></td>
 <td>by <code>line_id</code></td>
-<td>joined questions</td>
+<td>joined with questions</td>
 </tr>
 <tr>
 <td>PATCH</td>
 <td><code>/scoping_assessments/{uuid}</code></td>
-<td><code>{answer_text}</code>; may sync BS qualitative fields in same txn</td>
+<td><code>{answer_text}</code>, may sync balance-sheet qualitative fields in the same transaction</td>
 <td>dict</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Idempotency talking points</strong></p>
+<p><strong>Dynamic quarter-annualization.</strong> <code>/is_components</code> applies YTD (year-to-date) annualization: income-statement amounts are cumulative through the quarter, so to compare a Q2 YTD number against an annual threshold it is scaled to a full year. As a general illustration, a Q2 YTD amount covers two quarters, so it is multiplied by 4 / 2. Balance-sheet amounts are point-in-time and are not annualized.</p>
+<h3 id="27-five-contracts-in-full">2.7 Five contracts in full</h3>
+<p>Request and response bodies below are ILLUSTRATIVE (shaped from the response DTO names and columns above, with made-up values). Request DTOs carry Bean Validation annotations (<code>@Valid</code> on the controller parameter, <code>@NotNull</code> and allowlist checks on fields), so a bad body is rejected with 400 and a validation error body before any service code runs.</p>
+<p><strong>A. <code>GET /frm-scoping/v2/recon_balance_sheet?fiscal_quarter=Q4&amp;fiscal_year=2025</code></strong></p>
+<p>Purpose: return the HFM vs 10-Q tie-out as a nested L1-L3 tree from MySQL.</p>
+<pre><code class="language-json">{
+  &quot;fiscal_quarter&quot;: &quot;Q4&quot;,
+  &quot;fiscal_year&quot;: &quot;2025&quot;,
+  &quot;data&quot;: [
+    {
+      &quot;level_1&quot;: &quot;Assets&quot;,
+      &quot;children&quot;: [
+        {
+          &quot;level_2&quot;: &quot;Current assets&quot;,
+          &quot;children&quot;: [
+            { &quot;uuid&quot;: &quot;c9e2...&quot;, &quot;level_3&quot;: &quot;Cash&quot;,
+              &quot;hfm_amount_in_millions&quot;: 812.40,
+              &quot;financial_statement_amount_in_millions&quot;: 812.40,
+              &quot;difference&quot;: 0.00 }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<p>Status codes: 200, and 400 with a validation error body if the quarter or year fails validation. Idempotent (read). Auth: edge header. Pagination: none in the notes. The period filter bounds the response (per-quarter extracts were about 38K-95K raw GL rows across about 1.7K-1.8K accounts), so if asked, say the period is the natural page and a cursor would be the next step if it grew.</p>
+<p><strong>B. <code>PATCH /frm-scoping/group_balance_sheet/{uuid}</code></strong></p>
+<p>Purpose: change the scope conclusion or review status on one balance-sheet line.</p>
+<pre><code class="language-json">{ &quot;conclusion_scope&quot;: &quot;In scope&quot;, &quot;group_status&quot;: &quot;Review&quot; }
+</code></pre>
+<pre><code class="language-json">{ &quot;uuid&quot;: &quot;7f3c...&quot;, &quot;conclusion_scope&quot;: &quot;In scope&quot;, &quot;group_status&quot;: &quot;Review&quot;, &quot;updated_by&quot;: &quot;analyst@uber.com&quot; }
+</code></pre>
+<p>Status codes: 200. 400 with a validation error body if <code>group_status</code> is not in the allowlist (Draft, Review, ReOpen, Closed). 404 for an unknown <code>uuid</code> (ILLUSTRATIVE mapping). Idempotent: it sets explicit values by primary key, so replaying it gives the same state. Auth: <code>x-auth-params-email</code> becomes <code>updated_by</code>.</p>
+<p><strong>C. <code>POST /frm-scoping/scoping_questions/bulk</code></strong></p>
+<p>Purpose: seed or refresh the qualitative questions for a screen.</p>
+<pre><code class="language-json">[
+  { &quot;question_text&quot;: &quot;Is there a new revenue stream this quarter?&quot;, &quot;page_name&quot;: &quot;Group Scoping&quot;, &quot;is_active&quot;: &quot;Y&quot; },
+  { &quot;question_text&quot;: &quot;Any restatement in the prior year?&quot;, &quot;page_name&quot;: &quot;Group Scoping&quot;, &quot;is_active&quot;: &quot;Y&quot; }
+]
+</code></pre>
+<pre><code class="language-json">{ &quot;uuids&quot;: [&quot;5d0e...&quot;, &quot;b871...&quot;] }
+</code></pre>
+<p>Status codes: 200 (upsert), 400 with a validation error body on validation failure. Idempotent by design: the <code>uuid</code> is the SHA-256 natural key, so sending the same list twice updates in place.</p>
+<p><strong>D. <code>PATCH /frm-scoping/scoping_assessments/{uuid}</code></strong></p>
+<p>Purpose: save an answer. If the answer changes the line's qualitative materiality, the balance-sheet row is updated in the same database transaction (an atomic cross-table sync, one <code>@Transactional</code> service method), so the answer and the conclusion can never disagree.</p>
+<pre><code class="language-json">{ &quot;answer_text&quot;: &quot;Yes, new revenue stream this quarter&quot; }
+</code></pre>
+<pre><code class="language-json">{ &quot;uuid&quot;: &quot;e204...&quot;, &quot;line_id&quot;: &quot;7f3c...&quot;, &quot;answer_text&quot;: &quot;Yes, new revenue stream this quarter&quot;, &quot;synced_balance_sheet&quot;: true }
+</code></pre>
+<p>Status codes: 200, 400 (validation error body), 404. Idempotent (set semantics). If the second write fails, both roll back.</p>
+<p><strong>E. <code>GET /frm-scoping/residual_risk?fsli_type=bs&amp;fiscal_quarter=Q4&amp;fiscal_year=2025</code></strong></p>
+<p>Purpose: show, per leaf line, how much uncovered balance is left after in-scope components and whether it still matters.</p>
+<pre><code class="language-json">{
+  &quot;fsli_type&quot;: &quot;bs&quot;,
+  &quot;materiality&quot;: 340000000,
+  &quot;lines&quot;: [
+    { &quot;uuid&quot;: &quot;7f3c...&quot;, &quot;level_4&quot;: &quot;Cash and equivalents&quot;,
+      &quot;residual_balances&quot;: 150000000.00, &quot;residual_multiples&quot;: 0.44,
+      &quot;greater_than_50pct_materiality&quot;: false }
+  ]
+}
+</code></pre>
+<p>Status codes: 200, and 400 with a validation error body if <code>fsli_type</code> is not <code>bs</code> or <code>is</code>. Read only.</p>
+<h3 id="28-idempotency-auth-and-pagination-summary">2.8 Idempotency, auth and pagination summary</h3>
 <ul>
-<li>GET/PATCH/PUT by uuid = set semantics.  </li>
-<li>Questions bulk: deterministic uuid → upsert.  </li>
-<li><code>POST /add_scoping_metrics</code> is append/versioned by <code>is_active</code> (not strictly idempotent).</li>
+<li><strong>GET, PATCH and PUT by <code>uuid</code></strong> set explicit values, so they are idempotent.</li>
+<li><strong>Questions bulk:</strong> deterministic <code>uuid</code>, so it upserts.</li>
+<li><strong><code>POST /add_scoping_metrics</code></strong> appends a new version (old rows deactivated via <code>is_active</code>). It is not strictly idempotent, which is acceptable because the history is the point.</li>
+<li><strong>Auth:</strong> the edge authenticates. The service trusts <code>x-auth-params-email</code> and writes it to the audit columns. <code>page_name</code> and status values are allowlisted. Reporting SQL uses allowlists (PDF).</li>
+<li><strong>Concurrency:</strong> each write is one committed <code>@Transactional</code> unit keyed by <code>uuid</code>, with rollback on failure. The PDF's optimistic row-locking means "update only if the version you read is still current". In JPA the standard mechanism is a <code>@Version</code> field, which Hibernate checks on every UPDATE and reports as an <code>OptimisticLockException</code> when it is stale. Say this carefully if pressed: the TDD places the version-number check in the separate collaboration service and the frontend, and the scoping service relies on transactional per-uuid writes.</li>
+<li><strong>Pagination:</strong> responses are bounded by the fiscal period. No pagination is recorded in the notes.</li>
 </ul>
-<p><strong>Bug story (schema-linked):</strong> join <code>balance_sheet</code> ⨝ <code>level_mapping</code> without <code>.label()</code> → duplicate <code>uuid</code> keys in <code>dict(zip(...))</code> → wrong PATCH target. Fix: SQLAlchemy 2.0 <code>select</code> + explicit labels (<code>fsli_id</code> vs <code>level_mapping_uuid</code>).</p>
+<h3 id="29-the-column-aliasing-bug-schema-linked-story">2.9 The column-aliasing bug (schema-linked story)</h3>
+<p><strong>What broke.</strong> A raw SQL join of <code>balance_sheet</code> and <code>level_mapping</code> returned two columns both named <code>uuid</code>. The code mapped each result row into a map keyed by column name, and the second <code>uuid</code> silently overwrote the first. A PATCH then targeted the <code>level_mapping</code> id instead of the balance-sheet line id. No error, wrong row.</p>
+<p><strong>The fix.</strong> Spring Data JPA queries with explicit column aliases, mapped into a typed projection, so the two ids can never collide. This was part of the Spring Data JPA / Hibernate migration I led with 3 engineers, which raised module statement coverage to 100%.</p>
+<pre><code class="language-java">// ILLUSTRATIVE, shaped like the fix
+public interface FsliRow {
+    String getFsliId();
+    String getLevelMappingUuid();
+    BigDecimal getHfmAmountInMillions();
+    String getLevel1();
+    String getLevel2();
+}
+
+@Query(value = &quot;&quot;&quot;
+        SELECT b.uuid AS fsliId, l.uuid AS levelMappingUuid,
+               b.hfm_amount_in_millions AS hfmAmountInMillions,
+               l.level1 AS level1, l.level2 AS level2
+        FROM balance_sheet b
+        JOIN level_mapping l ON b.level_id = l.uuid
+        WHERE b.fiscal_quarter = :quarter AND b.fiscal_year = :year
+        &quot;&quot;&quot;, nativeQuery = true)
+List&lt;FsliRow&gt; findFsliRows(@Param(&quot;quarter&quot;) String quarter, @Param(&quot;year&quot;) String year);
+// each id has its own alias and getter, so neither can overwrite the other
+</code></pre>
 <hr>
-<h1 id="3-uber-eats-menu-event-catalog-rag-schemas-logical">3. Uber Eats Menu — event / catalog / RAG schemas (LOGICAL)</h1>
-<p>No production DDL in this repo. Defend <strong>shapes</strong>, not invent Uber table names as fact.</p>
+<h1 id="3-uber-eats-menu-event-catalog-and-rag-schemas-logical">3. Uber Eats Menu: event, catalog and RAG schemas (LOGICAL)</h1>
+<p><strong>In plain English.</strong> Restaurant menus arrive as websites, PDFs and images in many languages, and must become a strict catalog of items, prices and modifiers. A Selenium fleet scrapes, Kafka buffers events, Apache Flink deduplicates and normalizes, and Gemini 2.5 Pro with LangChain RAG over Milvus extracts structured menus from unstructured files. Onboarding went from 24 hours to 2 hours, $600K per year saved, 30K+ menus per month, 98% field fidelity on offline evaluation, and extraction success of 95%+.</p>
+<p>There is no production DDL in this repo. Defend the <strong>shapes</strong>. Do not present these field names as Uber's real table names.</p>
 <h3 id="31-kafka-scrape-event-producer-selenium">3.1 Kafka scrape event (producer: Selenium)</h3>
+<p><strong>What it is.</strong> One message per scrape attempt. Partitioned by <code>vendor_id</code>, so all events for one restaurant stay in order on one partition.</p>
 <pre><code class="language-json">{
   &quot;event_id&quot;: &quot;uuid&quot;,
-  &quot;event_time&quot;: &quot;2024-…Z&quot;,
-  &quot;vendor_id&quot;: &quot;string&quot;,          // partition key
-  &quot;menu_id&quot;: &quot;string|null&quot;,
-  &quot;source_url&quot;: &quot;https://…&quot;,
-  &quot;content_type&quot;: &quot;html|pdf|image&quot;,
+  &quot;event_time&quot;: &quot;2024-...Z&quot;,
+  &quot;vendor_id&quot;: &quot;string&quot;,
+  &quot;menu_id&quot;: &quot;string or null&quot;,
+  &quot;source_url&quot;: &quot;https://...&quot;,
+  &quot;content_type&quot;: &quot;html | pdf | image&quot;,
   &quot;content_hash&quot;: &quot;sha256&quot;,
-  &quot;object_uri&quot;: &quot;gs://…/raw/…&quot;,
-  &quot;locale&quot;: &quot;en|…&quot;,
+  &quot;object_uri&quot;: &quot;gs://.../raw/...&quot;,
+  &quot;locale&quot;: &quot;en | ...&quot;,
   &quot;scrape_attempt&quot;: 1,
   &quot;proxy_pool&quot;: &quot;string&quot;,
-  &quot;status&quot;: &quot;ok|blocked|timeout&quot;,
+  &quot;status&quot;: &quot;ok | blocked | timeout&quot;,
   &quot;http_status&quot;: 200
 }
 </code></pre>
-<h3 id="32-flink-catalog-upsert-contract">3.2 Flink → catalog upsert contract</h3>
+<p><strong>Why each field exists.</strong>
+- <code>vendor_id</code>: the partition key, which gives per-vendor ordering.
+- <code>content_hash</code>: SHA-256 of the raw bytes. Same bytes, same hash, so Flink can drop exact duplicates.
+- <code>object_uri</code>: the raw file lives in object storage. The event carries a pointer, not the file, which keeps messages small and lets us replay extraction from the raw input when a parser breaks.
+- <code>scrape_attempt</code>, <code>proxy_pool</code>, <code>status</code>: feed the adaptive retry logic and proxy-pool health (how success rose to 95%+).</p>
+<h3 id="32-flink-dedupe-state-and-catalog-upsert-contract">3.2 Flink dedupe state and catalog upsert contract</h3>
+<p><strong>Dedupe state (Flink keyed state).</strong> Key <code>(vendor_id, content_hash)</code>. If the key was seen recently, drop the event. Late events are handled by event time. Keyed state is per-key memory Flink keeps for you and checkpoints, like a per-restaurant notebook of "menus I have already processed".</p>
+<p><strong>Catalog upsert contract.</strong></p>
 <pre><code class="language-json">{
-  &quot;vendor_id&quot;: &quot;…&quot;,
+  &quot;vendor_id&quot;: &quot;...&quot;,
   &quot;menu_version&quot;: &quot;content_hash or version&quot;,
   &quot;items&quot;: [
     {
       &quot;item_key&quot;: &quot;vendor_id+normalized_name+size&quot;,
-      &quot;name&quot;: &quot;…&quot;,
-      &quot;description&quot;: &quot;…&quot;,
+      &quot;name&quot;: &quot;...&quot;,
+      &quot;description&quot;: &quot;...&quot;,
       &quot;price_amount&quot;: 12.99,
       &quot;currency&quot;: &quot;USD&quot;,
-      &quot;modifiers&quot;: [{&quot;name&quot;: &quot;…&quot;, &quot;price_delta&quot;: 1.5}],
+      &quot;modifiers&quot;: [{ &quot;name&quot;: &quot;...&quot;, &quot;price_delta&quot;: 1.5 }],
       &quot;availability&quot;: true,
       &quot;raw_refs&quot;: [&quot;object_uri#chunk&quot;]
     }
@@ -641,9 +1226,9 @@ fiscal_quarter, fiscal_year + audit
   &quot;idempotency_key&quot;: &quot;vendor_id+menu_version&quot;
 }
 </code></pre>
-<p><strong>Dedupe state (Flink keyed):</strong> <code>(vendor_id, content_hash)</code> → drop duplicates; late events by event-time.</p>
-<h3 id="33-rag-milvus-metadata-schema-gate">3.3 RAG / Milvus metadata + schema gate</h3>
-<pre><code>milvus collection fields (logical):
+<p><strong>Why the keys exist.</strong> <code>item_key</code> is a natural key from vendor, normalized name and size, so the same dish maps to the same catalog row on every run. <code>idempotency_key</code> (vendor plus menu version) makes a redelivered message rewrite the same state. That is how the PDF's "exactly-once catalog upserts" works in practice: at-least-once delivery plus idempotent upserts. Do not claim zero message loss or two-phase commit across third parties.</p>
+<h3 id="33-rag-milvus-metadata-and-the-schema-gate">3.3 RAG, Milvus metadata and the schema gate</h3>
+<pre><code class="language-text">milvus collection fields (logical):
   embedding vector
   menu_id / vendor_id
   locale
@@ -651,49 +1236,77 @@ fiscal_quarter, fiscal_year + audit
   label_tags
   source_uri
 
-Gemini output → JSON Schema validate → catalog upsert
-low confidence → human review queue
+Gemini output -&gt; JSON Schema validate -&gt; catalog upsert
+low confidence -&gt; human review queue (LOGICAL)
 </code></pre>
-<p><strong>Offline HISTORICAL:</strong> <strong>98%</strong> fidelity · <strong>100%</strong> schema consistency. Say offline/eval, not live SLA.</p>
-<h3 id="34-processing-apis-logical-ops-surface">3.4 Processing APIs (LOGICAL ops surface)</h3>
-<pre><code>POST /internal/scrape/jobs          {vendor_ids[], priority}
+<p><strong>What each piece does.</strong> An embedding is a list of numbers that captures meaning, so similar menu text sits close together. Milvus is a vector database that finds the nearest embeddings fast. For a new menu, we retrieve similar labeled menu chunks (filtered by <code>locale</code> where useful), give them to Gemini as examples, and ask for JSON in the catalog schema. A JSON Schema check rejects anything malformed before it reaches the catalog.</p>
+<p><strong>Offline HISTORICAL numbers:</strong> 98% field fidelity and 100% schema consistency on the offline evaluation set. Say "offline evaluation", not a live SLA.</p>
+<h3 id="34-processing-apis-logical-operations-surface">3.4 Processing APIs (LOGICAL operations surface)</h3>
+<pre><code class="language-text">POST /internal/scrape/jobs          {vendor_ids[], priority}
 GET  /internal/scrape/jobs/{id}     lag / success
-POST /internal/catalog/upsert       (from Flink sink; idempotent)
-POST /internal/rag/extract          {object_uri} → validated menu JSON
-GET  /internal/menus/{vendor_id}    freshness SLO (24h→2h HISTORICAL)
+POST /internal/catalog/upsert       (from the Flink sink, idempotent)
+POST /internal/rag/extract          {object_uri} -&gt; validated menu JSON
+GET  /internal/menus/{vendor_id}    latest normalized menu and its onboarding status
 </code></pre>
-<p><strong>ANZ Mobility (separate):</strong> <code>driver</code>, <code>vehicle</code>, <code>document</code>, <code>compliance_check</code> — not Eats Kafka topics.</p>
+<p>Older prep labelled the last endpoint a "freshness SLO (24h to 2h)". The 24 hours to 2 hours number is restaurant onboarding time on the PDF, not a freshness SLO, so it is described that way here.</p>
+<p><strong>One contract in full: <code>POST /internal/rag/extract</code> (LOGICAL).</strong></p>
+<pre><code class="language-json">{ &quot;object_uri&quot;: &quot;gs://bucket/raw/vendor-881/menu.pdf&quot;, &quot;vendor_id&quot;: &quot;vendor-881&quot;, &quot;locale&quot;: &quot;ja&quot; }
+</code></pre>
+<pre><code class="language-json">{
+  &quot;vendor_id&quot;: &quot;vendor-881&quot;,
+  &quot;menu_version&quot;: &quot;sha256:4be1...&quot;,
+  &quot;schema_valid&quot;: true,
+  &quot;items&quot;: [ { &quot;item_key&quot;: &quot;vendor-881+tonkotsu ramen+regular&quot;, &quot;name&quot;: &quot;Tonkotsu Ramen&quot;, &quot;price_amount&quot;: 1200, &quot;currency&quot;: &quot;JPY&quot; } ]
+}
+</code></pre>
+<ul>
+<li><strong>Status codes (ILLUSTRATIVE):</strong> 200 with validated JSON. 422 when the model output fails the schema gate (not written to the catalog). 503 when the model provider is unavailable, so the job is retried with backoff.</li>
+<li><strong>Idempotency:</strong> keyed by <code>content_hash</code>. Re-extracting the same file produces the same <code>menu_version</code>, and the upsert is idempotent.</li>
+<li><strong>Auth:</strong> internal service-to-service only.</li>
+<li><strong>Pagination:</strong> <code>GET /internal/scrape/jobs</code> would page by cursor on job creation time (design suggestion).</li>
+</ul>
+<p><strong>Load.</strong> 30K+ menus per month on the PDF. Peak around 200-500 events per second is an ESTIMATE, prep-only.</p>
+<p><strong>ANZ Mobility (separate product):</strong> <code>driver</code>, <code>vehicle</code>, <code>document</code>, <code>compliance_check</code>, <code>authority_rule</code>. A deterministic validation backend, 99.9% regulatory compliance and about 20 hours per week saved (HISTORICAL). Not Eats Kafka topics.</p>
 <hr>
-<h1 id="4-masters-india-gst-e-invoice-schemas-apis-logical-historical">4. Masters India — GST e-invoice schemas + APIs (LOGICAL / HISTORICAL)</h1>
-<h3 id="41-postgresql-quarter-routed">4.1 PostgreSQL (quarter-routed)</h3>
+<h1 id="4-masters-india-gst-e-invoice-schemas-and-apis-logical-historical">4. Masters India: GST e-invoice schemas and APIs (LOGICAL / HISTORICAL)</h1>
+<p><strong>In plain English.</strong> Indian businesses must register B2B invoices with the government IRP (Invoice Registration Portal), which returns an IRN (Invoice Reference Number) and a signed QR code. Masters India does that for 1,500+ enterprise clients. I led the move from a PHP monolith to Spring Boot microservices (p95 latency from 1.2 seconds to 300 milliseconds, throughput from 700 to 4,000 requests per minute) and built the bulk pipeline: 1M+ daily government submissions, Kafka, PostgreSQL sharded by tax quarter, idempotent processing for 100K+ concurrent imports, dead-letter queues and bounded retries.</p>
+<h3 id="41-postgresql-tables-sharded-by-tax-quarter">4.1 PostgreSQL tables (sharded by tax quarter)</h3>
 <pre><code class="language-sql">-- clients
 client_id PK, gstin UNIQUE, name, config JSONB, created_at
 
--- invoice_header_YYYY_QN   (or schema per quarter)
+-- invoice_header_YYYY_QN   (or one schema per quarter)
 invoice_id PK
 client_id, gstin
 invoice_number, invoice_date
 supply_type, place_of_supply
 taxable_value, cgst, sgst, igst, total_value
 status Enum('accepted','irp_pending','registered','failed','cancelled')
-idempotency_key UNIQUE   -- client + doc ref
-period_quarter  -- derived at API; reject mismatch
+idempotency_key UNIQUE   -- client + document reference
+period_quarter           -- derived at the API; reject mismatch
 INDEX (client_id, invoice_date)
 
 -- invoice_line
-line_id PK, invoice_id, hsn, qty, rate, tax_breakup…
+line_id PK, invoice_id, hsn, qty, rate, tax_breakup...
 
 -- irp_registration
 invoice_id PK/FK
 irn, signed_qr, ack_no, ack_date
-irp_status, raw_response_ref  -- points to Mongo
+irp_status, raw_response_ref  -- points to the Mongo snapshot
 </code></pre>
-<h3 id="42-mongo-redis-kafka">4.2 Mongo + Redis + Kafka</h3>
-<pre><code>mongo.invoice_payload_snapshot:
+<p><strong><code>clients</code>: what it stores.</strong> One row per business. <code>gstin</code> (the 15-character GST tax id) is UNIQUE, because one business must never exist twice. <code>config JSONB</code> holds per-client settings, which Redis caches. Sample: <code>client_id = 1042</code>, <code>gstin = '27ABCDE1234F1Z5'</code> (made-up), <code>name = 'Acme Traders'</code>.</p>
+<p><strong><code>invoice_header_YYYY_QN</code>: what it stores.</strong> One row per invoice, in the table for its tax quarter. CGST, SGST and IGST are the central, state and integrated GST components. Sample (made-up): <code>invoice_id = 88812</code>, <code>client_id = 1042</code>, <code>invoice_number = 'INV-2024-00931'</code>, <code>invoice_date = 2024-02-14</code>, <code>period_quarter = '2023-24 Q4'</code>, <code>taxable_value = 10000.00</code>, <code>igst = 1800.00</code>, <code>total_value = 11800.00</code>, <code>status = 'registered'</code>.</p>
+<p><strong>Why each key or index exists.</strong>
+- <strong>Quarter table:</strong> "PostgreSQL sharded by tax quarter" on the PDF. The current quarter is the hot shard. The API derives <code>period_quarter</code> from <code>invoice_date</code> and rejects a mismatch, so an invoice can never land in the wrong shard.
+- <strong><code>idempotency_key UNIQUE</code>:</strong> the database itself refuses a second copy of the same client document, which is the last line of defence against double registration.
+- <strong><code>INDEX (client_id, invoice_date)</code>:</strong> serves the most common read, "this client's invoices in a date range", and the composite order means a filter on <code>client_id</code> alone can use it too.</p>
+<p><strong><code>invoice_line</code>.</strong> The items on an invoice. <code>hsn</code> is the HSN code (the product classification used for GST rates). Serves invoice detail and tax breakup.</p>
+<p><strong><code>irp_registration</code>.</strong> At most one row per invoice (primary key equals the invoice id), holding the IRN, signed QR and acknowledgement. The one-to-one key enforces "registered at most once". <code>raw_response_ref</code> points to the full response in MongoDB.</p>
+<h3 id="42-mongodb-redis-and-kafka">4.2 MongoDB, Redis and Kafka</h3>
+<pre><code class="language-text">mongo.invoice_payload_snapshot:
   { invoice_id, request_doc, irp_response, irn, qr, ts }
 
 redis keys:
-  irp:token:{env} TTL &lt; IRP lifetime
+  irp:token:{env}           TTL shorter than the IRP token lifetime
   client:config:{client_id}
   gstin:master:{gstin}
 
@@ -704,24 +1317,61 @@ kafka topics (logical):
   client.webhook        key=client_id
   *.dlq
 </code></pre>
-<h3 id="43-rest-async-api-sketch">4.3 REST + async API sketch</h3>
-<pre><code>POST /v1/einvoice/submit
+<ul>
+<li><strong>MongoDB snapshot:</strong> the IRP response shape varies, and we must keep exactly what the government signed. A document store keeps it as-is.</li>
+<li><strong>Redis:</strong> the same GSTIN master data and client config are needed for every row of a bulk file. Cache-aside means: read Redis, on a miss read PostgreSQL and fill Redis. That cut DB read load by 30% (MI3). The IRP auth token is cached with a TTL shorter than its real lifetime, so we never send an expired token.</li>
+<li><strong>Kafka topics keyed by GSTIN:</strong> all events for one business stay in order on one partition. Failed messages go to <code>*.dlq</code> (dead-letter queue) after bounded retries, so one bad invoice never blocks the rest.</li>
+</ul>
+<h3 id="43-rest-and-async-api-contracts">4.3 REST and async API contracts</h3>
+<pre><code class="language-text">POST /v1/einvoice/submit
   Headers: Authorization, Idempotency-Key
-  Body: { gstin, invoice_number, invoice_date, lines[], … }
-  → 200 { invoice_id, status, irn? }  or  202 { invoice_id, status: irp_pending }
+  Body: { gstin, invoice_number, invoice_date, lines[], ... }
+  -&gt; 200 { invoice_id, status, irn? }  or  202 { invoice_id, status: irp_pending }
 
 GET  /v1/einvoice/{invoice_id}
-POST /v1/bulk/imports          multipart → S3; returns import_id
+POST /v1/bulk/imports          multipart -&gt; S3; returns import_id
 GET  /v1/bulk/imports/{id}     progress {chunks_done, failed, irp_ok}
 POST /v1/webhooks/irp/callback (if used) / internal consumer from Kafka
-GET  /v1/invoices?client_id&amp;from&amp;to   // ES-backed search optional
+GET  /v1/invoices?client_id&amp;from&amp;to   // Elasticsearch-backed search optional
 </code></pre>
-<p><strong>Idempotency:</strong> <code>client + fileHash + batchIndex</code> (bulk) and client invoice refs — never double-register IRP.</p>
-<p><strong>Numbers (HISTORICAL):</strong> p95 ~1.2s→~300ms · 700→4,000 req/min · 1M+/day · Redis −30% redundant reads.</p>
+<p><strong>A. <code>POST /v1/einvoice/submit</code>.</strong> Purpose: register one invoice.</p>
+<pre><code class="language-http">POST /v1/einvoice/submit
+Authorization: &lt;client credential&gt;
+Idempotency-Key: 1042-INV-2024-00931
+</code></pre>
+<pre><code class="language-json">{
+  &quot;gstin&quot;: &quot;27ABCDE1234F1Z5&quot;,
+  &quot;invoice_number&quot;: &quot;INV-2024-00931&quot;,
+  &quot;invoice_date&quot;: &quot;2024-02-14&quot;,
+  &quot;lines&quot;: [ { &quot;hsn&quot;: &quot;8471&quot;, &quot;qty&quot;: 1, &quot;rate&quot;: 10000.00, &quot;igst_rate&quot;: 18 } ]
+}
+</code></pre>
+<pre><code class="language-json">{ &quot;invoice_id&quot;: 88812, &quot;status&quot;: &quot;irp_pending&quot; }
+</code></pre>
+<ul>
+<li><strong>Status codes:</strong> 200 with the IRN if the IRP answered quickly. 202 Accepted with <code>irp_pending</code> if the IRP call is still in flight (the client polls <code>GET /v1/einvoice/{invoice_id}</code>). 409 if the same <code>Idempotency-Key</code> arrives with a different body. 400 with a validation error body on validation failure (Bean Validation on the request DTO), including an <code>invoice_date</code> that does not match the quarter. 429 when rate limited (ILLUSTRATIVE mapping).</li>
+<li><strong>Idempotency:</strong> a repeat with the same key returns the original <code>invoice_id</code> and status. The IRP is never called twice for one invoice.</li>
+<li><strong>Auth:</strong> per-client credential in <code>Authorization</code>.</li>
+<li><strong>Why async:</strong> the latency win (1.2 seconds to 300 milliseconds at p95) came from non-blocking IRP calls (Spring WebClient) and bounded thread pools, HikariCP connection pooling, query and index fixes, and Redis for reads.</li>
+</ul>
+<p><strong>B. <code>POST /v1/bulk/imports</code>.</strong> Purpose: upload a file of thousands of invoices. The file goes to S3, the server splits it into chunks (the shape a Spring Batch chunked job handles), and each chunk becomes Kafka work for the IRP consumers.</p>
+<pre><code class="language-json">{ &quot;import_id&quot;: &quot;imp-5521&quot;, &quot;status&quot;: &quot;queued&quot;, &quot;chunks_total&quot;: 40 }
+</code></pre>
+<ul>
+<li><strong>Status codes:</strong> 202 Accepted (processing is asynchronous). 400 with a validation error body for an unreadable file.</li>
+<li><strong>Idempotency:</strong> each chunk has the key <code>client + fileHash + batchIndex</code>. Re-uploading the same file, or a worker retrying a chunk, finds the existing record and does not resubmit to the IRP. This is what made 100K+ concurrent imports safe.</li>
+</ul>
+<p><strong>C. <code>GET /v1/bulk/imports/{id}</code>.</strong></p>
+<pre><code class="language-json">{ &quot;import_id&quot;: &quot;imp-5521&quot;, &quot;chunks_done&quot;: 38, &quot;failed&quot;: 1, &quot;irp_ok&quot;: 37950 }
+</code></pre>
+<p>Idempotent read. Failed chunks are visible here and sit in the DLQ for replay.</p>
+<p><strong>D. <code>GET /v1/invoices?client_id=1042&amp;from=2024-01-01&amp;to=2024-03-31</code>.</strong> Purpose: list a client's invoices. Served by the <code>(client_id, invoice_date)</code> index or by Elasticsearch for text search. <strong>Pagination (ILLUSTRATIVE):</strong> cursor-based, <code>?limit=100&amp;after=&lt;last invoice_id&gt;</code>, because new invoices arrive constantly and offset pages would shift.</p>
+<p><strong>Numbers:</strong> p95 from 1.2 seconds to 300 milliseconds, from 700 to 4,000 requests per minute (about 12 to about 67 requests per second), 1M+ submissions per day (about 12 TPS on average, 1,000,000 / 86,400, with peaks ESTIMATED at 8-10x around filing deadlines), Redis cut DB read load by 30%.</p>
 <hr>
-<h1 id="5-geeksforgeeks-content-votes-subs-logical-historical">5. GeeksforGeeks — content / votes / subs (LOGICAL / HISTORICAL)</h1>
+<h1 id="5-geeksforgeeks-content-votes-and-subscriptions-logical-historical">5. GeeksforGeeks: content, votes and subscriptions (LOGICAL / HISTORICAL)</h1>
+<p><strong>In plain English.</strong> GeeksforGeeks has a doubt-support forum used heavily during live coding contests. I migrated the PHP backend to Django and built REST APIs for voting, pinning and locking threads on MySQL, MongoDB, Redis and Elasticsearch. It was stabilised for 10K+ daily queries and 10x contest spikes, and the growth team attributed a 20% lift in premium subscriptions. I also built the influencer analytics and earnings dashboard (course sales +30%) and asynchronous scheduled workflows (engineering ops efficiency +70%).</p>
 <h3 id="51-mysql-core">5.1 MySQL core</h3>
-<pre><code class="language-sql">users(id, email, …)
+<pre><code class="language-sql">users(id, email, ...)
 content(id, type, author_id, title, status, created_at)
 votes(
   id PK,
@@ -732,23 +1382,41 @@ votes(
 pins(user_id, content_id, created_at) UNIQUE(user_id, content_id)
 locks(content_id, locked_by, reason, expires_at)
 subscriptions(user_id, plan, status, started_at, renewed_at)
-unread_counters(user_id, thread_id, count)  -- durable; Redis for badge hot path
+unread_counters(user_id, thread_id, count)  -- durable; Redis serves the badge hot path
 </code></pre>
-<h3 id="52-mongo-es-redis">5.2 Mongo / ES / Redis</h3>
-<pre><code>mongo: flexible article / doubt payloads
-elasticsearch: content_id, title, body, tags — search
+<p><strong>Table by table.</strong>
+- <strong><code>votes</code>:</strong> one row per user per piece of content. Sample: <code>(id = 901, user_id = 55, content_id = 3120, value = 1)</code>. <code>UNIQUE(user_id, content_id)</code> means a second vote from the same user is an update, not a new row. Serves "score for this doubt" and "has this user voted".
+- <strong><code>pins</code>:</strong> a user pinning a thread. Same unique-pair reasoning.
+- <strong><code>locks</code>:</strong> a moderator locking a thread during a contest. <code>expires_at</code> lets a lock lapse on its own, so a forgotten lock does not block a thread forever.
+- <strong><code>subscriptions</code>:</strong> premium plans. Serves entitlement checks.
+- <strong><code>unread_counters</code>:</strong> the durable count of unread replies. Redis serves the badge number on the hot path. MySQL is the record.</p>
+<h3 id="52-mongodb-elasticsearch-and-redis">5.2 MongoDB, Elasticsearch and Redis</h3>
+<pre><code class="language-text">mongo: flexible article / doubt payloads
+elasticsearch: content_id, title, body, tags  (search)
 redis: vote_buffer:{content_id}, unread:{user_id}, contest hot keys
 </code></pre>
-<h3 id="53-rest-sketch">5.3 REST sketch</h3>
-<pre><code>POST /api/v1/votes          {content_id, value}  → idempotent upsert
+<p><strong>Why Redis vote buffers.</strong> During a contest spike, thousands of votes land on the same few doubts. Incrementing one MySQL row per vote makes that row a lock hotspot. Instead, Redis increments <code>vote_buffer:{content_id}</code> in memory, and a job reconciles the totals to MySQL asynchronously. The <code>votes</code> table still records each user's vote for correctness.</p>
+<h3 id="53-rest-contracts">5.3 REST contracts</h3>
+<pre><code class="language-text">POST   /api/v1/votes              {content_id, value}  -&gt; idempotent upsert
 DELETE /api/v1/votes/{content_id}
-POST /api/v1/pins           {content_id}
-POST /api/v1/content/{id}/lock
-GET  /api/v1/unread/count
-POST /api/v1/subscriptions  …
-GET  /api/v1/search?q=
+POST   /api/v1/pins               {content_id}
+POST   /api/v1/content/{id}/lock
+GET    /api/v1/unread/count
+POST   /api/v1/subscriptions      ...
+GET    /api/v1/search?q=
 </code></pre>
-<p><strong>Numbers (HISTORICAL):</strong> 10K+ daily interactions · premium +15–20% · course sales +30% (influencer dashboard) · ops +70% (crons — separate bullet).</p>
+<p><strong>One contract in full: <code>POST /api/v1/votes</code> (LOGICAL).</strong></p>
+<pre><code class="language-json">{ &quot;content_id&quot;: 3120, &quot;value&quot;: 1 }
+</code></pre>
+<pre><code class="language-json">{ &quot;content_id&quot;: 3120, &quot;value&quot;: 1, &quot;score&quot;: 47 }
+</code></pre>
+<ul>
+<li><strong>Status codes (ILLUSTRATIVE):</strong> 200 (created or updated, since it is an upsert). 401 if not logged in. 403 if the thread is locked. 422 if <code>value</code> is not +1 or -1.</li>
+<li><strong>Idempotency:</strong> the unique <code>(user_id, content_id)</code> pair. Sending the same vote twice leaves one row with the same value.</li>
+<li><strong>Auth:</strong> Django session or token auth for the logged-in user.</li>
+<li><strong>Pagination:</strong> <code>GET /api/v1/search</code> pages results (Elasticsearch <code>size</code> and <code>search_after</code>, general practice).</li>
+</ul>
+<p><strong>Numbers (HISTORICAL):</strong> 10K+ daily queries, 10x contest spikes, premium subscriptions +20% (relative, attributed by the growth team), course sales +30% (influencer dashboard), engineering ops efficiency +70% (scheduled workflows, a separate bullet). Older prep said "premium +15-20%" and "10K+ daily interactions". The resume says 20% and 10K+ daily queries.</p>
 <hr>
 <h1 id="6-one-page-whiteboard-cheat-sheet">6. One-page whiteboard cheat sheet</h1>
 <table>
@@ -761,40 +1429,62 @@ GET  /api/v1/search?q=
 </thead>
 <tbody>
 <tr>
-<td>IA</td>
-<td><code>fact_*</code> + <code>cluster_run</code>/<code>_event</code> + <code>plan_snapshot</code></td>
-<td>MCP read tools → Go approve/writeback</td>
+<td>IA (resume)</td>
+<td>ClickHouse master, six rollups by season, decision outputs on ReplacingMergeTree with <code>config_hash</code>, PostgreSQL UAM</td>
+<td>Ask Iris WebSocket (JWT handshake, frozen <code>plan_scope</code>), KPI compile with <code>ifNotFinite</code>, auth waterfall</td>
+</tr>
+<tr>
+<td>IA (verbal design)</td>
+<td><code>fact_*</code>, <code>cluster_run</code> plus <code>cluster_run_event</code>, <code>plan_snapshot</code></td>
+<td>Read-only tools, then Go <code>POST /v1/runs</code> and approvals</td>
 </tr>
 <tr>
 <td>FRM</td>
-<td><code>level_mapping</code> ← <code>balance_sheet</code> ← <code>scoping_assessments</code></td>
-<td><code>GET/PATCH /group_balance_sheet</code> + <code>/v2/recon_*</code></td>
+<td><code>level_mapping</code>, then <code>balance_sheet</code>, then <code>scoping_assessments</code></td>
+<td><code>GET / PATCH /group_balance_sheet</code> and <code>/v2/recon_*</code></td>
 </tr>
 <tr>
 <td>Menu</td>
-<td>scrape_event → Flink state → catalog + Milvus</td>
-<td>upsert + schema-gated extract</td>
+<td>scrape event, Flink keyed state, catalog plus Milvus</td>
+<td>Idempotent upsert and schema-gated extract</td>
 </tr>
 <tr>
 <td>Masters</td>
-<td>invoice_header → irp_registration + Kafka</td>
-<td>submit + bulk import + idempotency</td>
+<td><code>invoice_header</code> by quarter, <code>irp_registration</code>, Kafka by GSTIN</td>
+<td>Submit with <code>Idempotency-Key</code>, bulk import, progress</td>
 </tr>
 <tr>
 <td>GFG</td>
-<td>content ← votes (unique user+content)</td>
-<td>vote/pin APIs + Redis counters</td>
+<td><code>content</code> and <code>votes</code> with unique user plus content</td>
+<td>Vote and pin APIs plus Redis counters</td>
 </tr>
 </tbody>
 </table>
 <hr>
+<h2 id="practice-drill">Practice drill</h2>
+<ol>
+<li><strong>How does a retried AI batch avoid duplicate rows at IA?</strong> Outputs go into a ReplacingMergeTree whose sort key is the article identity, with a version column. A duplicate collapses to the newest version, and readers use <code>argMax</code> so they never see both.</li>
+<li><strong>What is <code>config_hash</code> and why stamp it on every row?</strong> It is the SHA-256 of the frozen guardrails, parameters, prompts and catalog for a run. Stamping it makes every decision reproducible and lets me compare runs fairly.</li>
+<li><strong>How does Ask Iris prevent cross-tenant leaks?</strong> The JWT is verified on the socket handshake and the hierarchy scope is frozen for the whole connection. Every tool inherits that scope, so a later message cannot reach another tenant's data.</li>
+<li><strong>How does the KPI compiler stop divide-by-zero?</strong> It wraps every compiled expression in <code>ifNotFinite(toFloat64(expr), 0)</code>, so Infinity and NaN become 0 before they reach planner JSON. Unknown tokens fail closed.</li>
+<li><strong>In the Cluster design, how do you claim a job without locks?</strong> Each worker appends a <code>claimed</code> event with its own token, then reads the latest-status view. Only the token that wins the <code>argMax</code> proceeds.</li>
+<li><strong>FRM: why is <code>uuid</code> on <code>scoping_questions</code> a hash?</strong> So re-seeding the same question each quarter upserts instead of duplicating. Same text and page, same key.</li>
+<li><strong>FRM: how many endpoints, really?</strong> 36 Spring Boot endpoints on the PDF. The scoping controller maps 32 routes (about 31 functional plus health), and the collaboration-service APIs from the TDD make up the rest.</li>
+<li><strong>FRM: what is an atomic cross-table sync?</strong> Saving an assessment answer updates the balance-sheet line's qualitative fields in the same transaction. Both commit or both roll back.</li>
+<li><strong>FRM: what was the aliasing bug?</strong> Two joined columns were both named <code>uuid</code>, so the name-keyed row map kept the wrong one and a PATCH hit the wrong row. JPA queries with explicit column aliases mapped into a typed projection removed that class of bug.</li>
+<li><strong>Masters: what stops a double IRP registration?</strong> The idempotency key on every write (<code>client + fileHash + batchIndex</code> for bulk), a UNIQUE constraint on the invoice table, and a one-to-one <code>irp_registration</code> row per invoice.</li>
+<li><strong>Masters: why return 202?</strong> The IRP is slow and volatile. Returning 202 with <code>irp_pending</code> frees the client immediately, and the status is polled or pushed later.</li>
+<li><strong>Menu: what makes the upsert idempotent?</strong> The catalog key is vendor plus normalized item name plus size, and the message key is vendor plus menu version. A redelivered message rewrites the same rows.</li>
+<li><strong>GFG: how do votes survive a 10x spike?</strong> Redis buffers the counts so no single MySQL row becomes a hotspot. The unique <code>(user_id, content_id)</code> row keeps each user's vote correct.</li>
+</ol>
+<hr>
 <h1 id="sources">Sources</h1>
 <ul>
-<li>IA: <code>KNOWLEDGE-MATERIAL/.../ClickHouse DDL Model (Phase-1).md</code> · <a href="29_ia_ch_ddl_phase1_source.html"><code>29_ia_ch_ddl_phase1_source.md</code></a>  </li>
-<li>FRM: <code>frm_scoping_service/database/models/*</code> · <a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a>  </li>
-<li>Menu / Masters / GFG: deep dives + packs — <strong>logical</strong> unless code present  </li>
+<li>IA: ClickHouse DDL Model (Phase-1) notes, <a href="29_ia_ch_ddl_phase1_source.html"><code>29_ia_ch_ddl_phase1_source.md</code></a>. Rollups and copier: <a href="42_clickhouse_rollup_migration.html"><code>42_clickhouse_rollup_migration.md</code></a>. Bullet defense: <a href="43_ia_bullet_defense.html"><code>43_ia_bullet_defense.md</code></a>. Pivot benchmark: <a href="21_ia_pivot_benchmark_source.html"><code>21_ia_pivot_benchmark_source.md</code></a>.</li>
+<li>FRM: the scoping service entity models and <a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a>.</li>
+<li>Menu, Masters, GFG: <a href="14_uber_menu_deep_dive.html"><code>14_uber_menu_deep_dive.md</code></a>, <a href="12_masters_gfg_deep_dive.html"><code>12_masters_gfg_deep_dive.md</code></a> and the interview packs. These are logical unless code is present.</li>
 </ul>
-<p>Full ER/why-tech: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a>. Diagrams: <a href="33_architecture_diagrams.html"><code>33_architecture_diagrams.md</code></a>.</p></main>
+<p>Full ER and why-tech reasoning: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.md</code></a>. Architecture diagrams: <a href="33_architecture_diagrams.html"><code>33_architecture_diagrams.md</code></a>.</p></main>
 </div>
 
 <script type="module">

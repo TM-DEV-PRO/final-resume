@@ -40,18 +40,209 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final Java+PyGo IA</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/deployment_and_scale.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#deployment-scale-for-every-resume-project">Deployment + scale for every resume project</a>
-<a class="lvl2" href="#impact-analytics-agentic-assortsmart-hindsight">Impact Analytics — Agentic AssortSmart + Hindsight</a>
-<a class="lvl2" href="#uber-frm-risk-scoping">Uber — FRM Risk Scoping</a>
-<a class="lvl2" href="#uber-menu-ingestion">Uber — Menu Ingestion</a>
-<a class="lvl2" href="#masters-india-gst-e-invoice">Masters India — GST / e-invoice</a>
-<a class="lvl2" href="#geeksforgeeks-platform">GeeksforGeeks — platform</a>
-<a class="lvl2" href="#quick-comparison-table">Quick comparison table</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#deployment-and-scale-for-every-resume-project">Deployment and Scale for Every Resume Project</a>
+<a class="lvl1" href="#part-1-the-concepts-from-zero">Part 1: The concepts, from zero</a>
+<a class="lvl2" href="#1-build-image-release">1. Build, image, release</a>
+<a class="lvl2" href="#2-rolling-blue-green-and-canary-deployments">2. Rolling, blue-green and canary deployments</a>
+<a class="lvl2" href="#3-rollback">3. Rollback</a>
+<a class="lvl2" href="#4-feature-flags-and-config-driven-changes">4. Feature flags and config-driven changes</a>
+<a class="lvl2" href="#5-zero-downtime-deploys-health-checks-and-graceful-shutdown">5. Zero-downtime deploys, health checks and graceful shutdown</a>
+<a class="lvl2" href="#6-horizontal-versus-vertical-scaling-and-statelessness">6. Horizontal versus vertical scaling, and statelessness</a>
+<a class="lvl2" href="#7-autoscaling">7. Autoscaling</a>
+<a class="lvl2" href="#8-load-balancers-and-reverse-proxies">8. Load balancers and reverse proxies</a>
+<a class="lvl2" href="#9-rate-limiting-and-quotas">9. Rate limiting and quotas</a>
+<a class="lvl2" href="#10-timeouts-retries-with-backoff-and-circuit-breakers">10. Timeouts, retries with backoff, and circuit breakers</a>
+<a class="lvl2" href="#11-queues-and-backpressure">11. Queues and backpressure</a>
+<a class="lvl2" href="#12-idempotency-and-dead-letter-queues">12. Idempotency and dead-letter queues</a>
+<a class="lvl2" href="#13-caching">13. Caching</a>
+<a class="lvl2" href="#14-sharding-and-partitioning">14. Sharding and partitioning</a>
+<a class="lvl2" href="#15-pre-aggregation-and-batching">15. Pre-aggregation and batching</a>
+<a class="lvl2" href="#16-observability-logs-metrics-traces">16. Observability: logs, metrics, traces</a>
+<a class="lvl2" href="#17-load-testing-and-capacity-planning">17. Load testing and capacity planning</a>
+<a class="lvl2" href="#18-kubernetes-literacy-only">18. Kubernetes (literacy only)</a>
+<a class="lvl1" href="#part-2-project-by-project">Part 2: Project by project</a>
+<a class="lvl2" href="#impact-analytics-assortsmart-platform-and-ai">Impact Analytics: AssortSmart (Platform and AI)</a>
+<a class="lvl2" href="#uber-via-epam-frm-scoping-platform">Uber via EPAM: FRM Scoping Platform</a>
+<a class="lvl2" href="#uber-via-epam-menu-ingestion-uber-eats">Uber via EPAM: Menu Ingestion (Uber Eats)</a>
+<a class="lvl2" href="#uber-via-epam-anz-document-compliance-historical">Uber via EPAM: ANZ Document Compliance (HISTORICAL)</a>
+<a class="lvl2" href="#masters-india-gst-and-e-invoicing">Masters India: GST and e-invoicing</a>
+<a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
+<a class="lvl2" href="#quick-comparison">Quick comparison</a>
+<a class="lvl2" href="#practice-questions">Practice questions</a>
 <a class="lvl2" href="#related">Related</a></nav>
-<main><h1 id="deployment-scale-for-every-resume-project">Deployment + scale for every resume project</h1>
-<p>How each project shipped, why that deploy shape, and the scale numbers you can defend. Tags: MEASURED / TARGET / HISTORICAL / DESIGN.</p>
+<main><h1 id="deployment-and-scale-for-every-resume-project">Deployment and Scale for Every Resume Project</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li>Part 1 explains deployment and scaling ideas from zero: canary, rollback, blue-green, autoscaling, rate limiting, circuit breakers, backpressure, caching, sharding and more. Each one ends with where it honestly shows up in my work.</li>
+<li>Part 2 goes project by project: how each system shipped, how it scaled, how it rolled back, and which numbers I can defend.</li>
+<li>Read it before system-design rounds and "how did you deploy this / what happens at 10x" questions.</li>
+<li>Memorise the per-project "deploy story" paragraphs in Part 2 and the honesty lines. They're what you'll actually say.</li>
+</ul>
+</div>
+<p><strong>Tags:</strong> MEASURED means there's a benchmark, log or doc behind it. TARGET means a design goal (say "targeting"). ESTIMATED means arithmetic I can show. HISTORICAL means from past work records, not re-measured. DESIGN means designed but not claimed as running.</p>
+<div class="callout warn">
+<p><b>The one honesty rule for this page.</b> I have deployed and consumed containerised services (Docker on GCP and AWS). I have <b>not</b> operated Kubernetes clusters, written Terraform, or run multi-region setups. Those are study topics. When an interviewer asks about them, explain how they work and say plainly that I didn't own them.</p>
+</div>
 <hr>
-<h2 id="impact-analytics-agentic-assortsmart-hindsight">Impact Analytics — Agentic AssortSmart + Hindsight</h2>
+<h1 id="part-1-the-concepts-from-zero">Part 1: The concepts, from zero</h1>
+<h2 id="1-build-image-release">1. Build, image, release</h2>
+<p><strong>Plain English.</strong> Deploying means getting new code running for real users. First you <em>build</em> the code. Then you package it into a <em>container image</em>, a sealed box holding the app and everything it needs. A <em>release</em> starts new copies of that image and stops the old ones.</p>
+<p><strong>Analogy.</strong> A container image is like a meal-prep box: same ingredients, same recipe, so it tastes the same on any stove.</p>
+<p><strong>Where it shows up in my work.</strong> Every project shipped as Docker images: Impact Analytics on GCP, Masters India on AWS, Uber Menu on GCP, and Uber FRM through Uber's release process with Bazel builds.</p>
+<h2 id="2-rolling-blue-green-and-canary-deployments">2. Rolling, blue-green and canary deployments</h2>
+<p>These are three ways to swap old code for new without a big outage.</p>
+<ul>
+<li><strong>Rolling deploy.</strong> Replace copies one at a time. Like changing the tyres on a bus one by one while it's parked at different stops.</li>
+<li><strong>Blue-green deploy.</strong> Run two full environments. "Blue" serves users while "green" gets the new version. When green looks healthy, flip all traffic over in one step. Rollback means flipping back.</li>
+<li><strong>Canary deploy.</strong> Send a small share of real traffic, say 5%, to the new version. Watch errors and latency. If it's healthy, increase step by step to 100%. The name comes from canaries that miners carried to detect gas early.</li>
+</ul>
+<div class="mermaid">flowchart LR
+    U["Users"] --&gt; G["Gateway"]
+    G --&gt;|"95 percent"| OLD["Old PHP route"]
+    G --&gt;|"5 percent"| NEW["New Spring Boot route"]
+    NEW --&gt; M["Watch errors and p95"]
+</div>
+<p><em>What to notice:</em> only a small slice of real users hit the new code first. If the metrics look bad, the gateway sends everyone back to the old route.</p>
+<p><strong>Tiny example.</strong> Week 1, <code>/invoice/status</code> sends 5% of traffic to the Spring Boot service. Error rate matches PHP, and p95 is lower. Week 2 it's 50%. Week 3 it's 100%, and the PHP route is retired.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Masters India: canary per route.</strong> This is my real canary experience. During the strangler migration (replacing the monolith one endpoint at a time), each route moved to a Spring Boot service behind the gateway with a canary percentage. Rollback was a traffic flip, not a rebuild.
+- <strong>Blue-green: not claimed.</strong> The closest idea in my work is the ClickHouse <em>REPLACE PARTITION</em> design at Impact Analytics, which loads data into a staging table and swaps it in one step. That design was written but not executed. Don't present it as running.</p>
+<h2 id="3-rollback">3. Rollback</h2>
+<p><strong>Plain English.</strong> Rollback means returning to the last known good state when a release goes wrong. There are three kinds, and interviewers like it when you separate them.</p>
+<ol>
+<li><strong>Code rollback.</strong> Run the previous version again. Easy if the deployment is a traffic flip or an image tag change.</li>
+<li><strong>Data rollback.</strong> Undo or redo data changes. Much harder, because data has already been written.</li>
+<li><strong>Schema rollback.</strong> Undo a database structure change. The safe pattern is <em>expand and contract</em>: first add the new column (expand), make the code use it, and only later remove the old one (contract). At every step, both the old and the new code still work.</li>
+</ol>
+<p><strong>Tiny example of expand and contract.</strong> You want to rename <code>amount</code> to <code>amount_usd</code>. Release 1 adds <code>amount_usd</code> and writes to both columns. Release 2 reads from <code>amount_usd</code>. Release 3 drops <code>amount</code>. If release 2 breaks, you roll back to release 1 and nothing is lost.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Masters India.</strong> Code rollback was flipping the canary traffic back to the PHP route.
+- <strong>Uber FRM.</strong> Rollback was the previous service revision plus migration discipline in the expand-and-contract style. Releases went out as stacked Bazel PRs (a chain of small, dependent pull requests), so each step was small enough to revert.
+- <strong>Uber Menu.</strong> Data rollback by replay. If a bad parser shipped, we rewound the Kafka consumer offsets to before the bad release and reprocessed events with the fixed parser.
+- <strong>Impact Analytics (data).</strong> For the cluster migration, a failed season copy was handled by <code>DROP PARTITION</code> for that season, then recopying it. That's a "drop and redo", not an atomic swap with live readers.
+- <strong>Impact Analytics (AI).</strong> Every output row is stamped with a <code>config_hash</code>, a fingerprint of the prompts, parameters, guardrails and catalog used. If a config turns out bad, the hash tells you exactly which rows came from it and need rerunning.</p>
+<h2 id="4-feature-flags-and-config-driven-changes">4. Feature flags and config-driven changes</h2>
+<p><strong>Plain English.</strong> A <em>feature flag</em> is an on/off switch in configuration that turns a feature on for some users without a new deployment. <em>Config-driven</em> means behaviour comes from data or config, not hard-coded logic.</p>
+<p><strong>Analogy.</strong> A light switch versus rewiring the house.</p>
+<p><strong>Tiny example.</strong> <code>if flags.enabled("new_scoping_screen", user): show_new()</code> lets you turn the screen on for the Finance team first.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics, KPI configurator.</strong> Operators change KPI formulas as configuration. A Go parser turns them into safe ClickHouse SQL, so business logic changes without a code release.
+- <strong>Uber FRM.</strong> Older notes describe staged rollout and feature flags inside the finance tooling path. Keep it general if asked.
+- <strong>Uber Menu.</strong> Proxy pools and IP settings for anti-bot handling were configuration, not code.</p>
+<h2 id="5-zero-downtime-deploys-health-checks-and-graceful-shutdown">5. Zero-downtime deploys, health checks and graceful shutdown</h2>
+<p><strong>Plain English.</strong> Zero-downtime means users never see an error during a release. Three pieces make it work:</p>
+<ul>
+<li><strong>Health checks.</strong> The platform asks each copy "are you ready?" and only sends traffic to copies that say yes.</li>
+<li><strong>Graceful shutdown.</strong> When the platform wants to stop a copy, it sends a signal called SIGTERM. A well-behaved service stops accepting new requests, finishes the ones in flight, then exits. This is called <em>draining</em>.</li>
+<li><strong>Backward-compatible changes.</strong> Old and new versions must both work during the overlap, which is why expand-and-contract matters.</li>
+</ul>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics Go edge.</strong> There's no reverse proxy in front, so the Go process itself has to handle slow clients, request-size limits and draining on SIGTERM. That's part of what "self-protecting edge" means.
+- <strong>Uber FRM.</strong> Zero-downtime releases via stacked Bazel PRs (on the PDF).
+- <strong>Masters India.</strong> Canary per route meant no single release could take the whole system down. We had no outage during deadline windows throughout the migration.</p>
+<h2 id="6-horizontal-versus-vertical-scaling-and-statelessness">6. Horizontal versus vertical scaling, and statelessness</h2>
+<p><strong>Plain English.</strong>
+- <strong>Vertical scaling</strong> means a bigger machine: more CPU and memory. It's simple, but there's a ceiling and it gets expensive.
+- <strong>Horizontal scaling</strong> means more machines running copies of the same service, with a load balancer spreading requests across them.
+- <strong>Stateless</strong> services keep no user data in memory between requests, so any copy can serve any request. Stateless services are easy to scale horizontally.</p>
+<p><strong>Analogy.</strong> Vertical is hiring one faster cashier. Horizontal is opening more checkout lanes.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics.</strong> The Go/Gin edge is stateless. Auth results are cached in Redis, not in process memory, so it can scale out by adding copies. The 170 GB out-of-memory story is a lesson in <em>not</em> scaling vertically: a bigger memory cap still failed, and slicing the work into one-week chunks fixed it.
+- <strong>Masters India and Uber Menu.</strong> Kafka consumers scale horizontally, up to the number of topic partitions.</p>
+<h2 id="7-autoscaling">7. Autoscaling</h2>
+<p><strong>Plain English.</strong> Autoscaling automatically adds copies when load rises and removes them when it falls. It's usually based on a metric like CPU usage, request rate or queue length.</p>
+<p><strong>Tiny example.</strong> "Keep average CPU around 60%. If it goes above that for 3 minutes, add a copy. Never run fewer than 2 or more than 20." For queue workers a better signal is often queue lag: "if more than 10,000 messages are waiting, add a worker."</p>
+<p><strong>Things interviewers like to hear.</strong>
+- Autoscaling reacts with a delay, so you still need headroom for sudden spikes.
+- Scaling the app without scaling the database just moves the bottleneck.
+- For queue consumers, you can't usefully run more consumers than there are partitions.</p>
+<p><strong>Where it shows up in my work (honestly).</strong> I didn't own autoscaling policies on any project. What I did own is designing services so they <em>can</em> scale out: a stateless Go edge, Kafka consumers that scale with partitions, and Menu scrapers and stream consumers that scale as separate jobs. If asked "how was it autoscaled?", say: "The platform team owned scaling policies. My part was making the services stateless and the work partitionable."</p>
+<h2 id="8-load-balancers-and-reverse-proxies">8. Load balancers and reverse proxies</h2>
+<p><strong>Plain English.</strong> A <em>load balancer</em> spreads incoming requests across copies of a service. A <em>reverse proxy</em>, like Nginx, sits in front of an app and can also enforce timeouts, size limits and TLS.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics.</strong> The Go edge deliberately runs <em>without</em> a reverse proxy, so it handles HTTP/2 and timeouts itself.
+- <strong>Masters India.</strong> The canary split happened at the gateway in front of the PHP and Spring Boot services. Older notes say that gateway was Nginx.</p>
+<h2 id="9-rate-limiting-and-quotas">9. Rate limiting and quotas</h2>
+<p><strong>Plain English.</strong> Rate limiting caps how many requests a client can make in a time window, so one noisy client can't starve everyone else. Servers usually reply with HTTP 429 "Too Many Requests" when the limit is hit.</p>
+<p><strong>How a token bucket works.</strong> Each client has a bucket that holds, say, 10 tokens and refills at 5 tokens per second. Each request takes one token. A burst of 10 requests is fine. After that, the client is limited to 5 per second. An empty bucket means a 429.</p>
+<pre><code class="language-text">t=0s   bucket=10  -&gt; 10 requests pass, bucket=0
+t=1s   bucket=5   -&gt; 5 pass
+t=1s   11th request in that second -&gt; 429 Too Many Requests
+</code></pre>
+<p><strong>Two kinds of limits for AI products.</strong> Request limits protect the API. AI systems also need <em>budgets</em>: maximum tokens, maximum cost, maximum tool calls or retries per session. An HTTP 429 doesn't stop an agent that is already looping. You need limits inside the agent too.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics, AI side.</strong> The Ask Iris evaluator is capped at 3 attempts, so a chat can't loop forever. The batch engine has hard timeouts and circuit breakers for LLM provider failures, and it logs tokens and USD cost per run as JSON telemetry.
+- <strong>Impact Analytics, API side.</strong> The PDF claim is a self-protecting edge with nested timeouts. If asked whether the Go edge has per-tenant request rate limits, keep it qualitative unless you can point to the code.
+- <strong>Masters India.</strong> We were on the receiving end of the government portals' limits and instability. Bounded retries with backoff kept us from hammering them. Bulk work went through Kafka instead of the HTTP tier, so the API wasn't the bulk throttle. Background and scheduled work ran inside the Spring Boot services as <code>@Async</code> and <code>@Scheduled</code> jobs on bounded thread pools, with Spring Batch for chunked bulk imports, so the pool size capped how hard we could push the portals.
+- <strong>Uber Menu.</strong> Also on the receiving end, from restaurant and aggregator websites blocking bots. We used proxy pools, adaptive retries and per-source retry budgets.</p>
+<h2 id="10-timeouts-retries-with-backoff-and-circuit-breakers">10. Timeouts, retries with backoff, and circuit breakers</h2>
+<p><strong>Plain English.</strong>
+- <strong>Timeout.</strong> Stop waiting after a set time. Without one, a slow dependency ties up your workers forever.
+- <strong>Nested timeouts.</strong> An outer limit on the whole request, inner limits on each call inside it. The inner ones must be shorter.
+- <strong>Retry with exponential backoff.</strong> If a call fails, wait and try again, doubling the wait each time (1 s, 2 s, 4 s), usually with some randomness (jitter) so clients don't all retry at once.
+- <strong>Circuit breaker.</strong> After several failures in a row, stop calling the failing service for a while and use a fallback. Like a fuse that trips to protect the house.</p>
+<p><strong>Tiny example.</strong> An LLM call has a 30-second timeout. Five calls in a row time out, so the breaker opens. For the next minute, items get the deterministic score instead of waiting on the LLM. Then the breaker lets one test call through.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics.</strong> The orchestration registry has hard timeouts and circuit breakers that trip after about 5 consecutive failures or a high failure fraction. On an LLM timeout the item falls back to the deterministic baseline score, and the batch continues. The Go edge uses nested timeouts.
+- <strong>Masters India.</strong> Bounded retries against the government portal, with a dead-letter queue for messages that keep failing.
+- <strong>Uber Menu.</strong> Adaptive retries with per-source budgets for scrapers.</p>
+<h2 id="11-queues-and-backpressure">11. Queues and backpressure</h2>
+<p><strong>Plain English.</strong> A queue sits between a producer and a consumer, so bursts don't crush the consumer. <em>Backpressure</em> means a slow consumer pushes back, so the producer slows down instead of everything overflowing memory.</p>
+<p><strong>Analogy.</strong> A restaurant's order rail. If the kitchen is slow, tickets pile up on the rail, and the host stops seating new tables.</p>
+<div class="mermaid">flowchart LR
+    S["Scrapers"] --&gt; K["Kafka buffer"]
+    K --&gt; F["Flink job"]
+    F --&gt; C["Catalog sink"]
+    C -.-&gt;|"slow sink"| F
+    F -.-&gt;|"reads slower"| K
+</div>
+<p><em>What to notice:</em> when the catalog slows down, Flink reads from Kafka more slowly, and events wait safely in Kafka instead of piling up in memory.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Uber Menu.</strong> Kafka buffered bursty scrapers. Flink's built-in backpressure slowed consumption when the catalog sink slowed down.
+- <strong>Masters India.</strong> Kafka absorbed bulk import spikes around filing deadlines.
+- <strong>Impact Analytics.</strong> No Kafka. The batch engine controls its own pace through batch sizes (about 88k items per pass), and the data pump through 500k-row double-buffered batches.</p>
+<h2 id="12-idempotency-and-dead-letter-queues">12. Idempotency and dead-letter queues</h2>
+<p><strong>Plain English.</strong> <em>Idempotent</em> means doing something twice has the same effect as doing it once. That matters because retries and message re-delivery always happen eventually. A <em>dead-letter queue</em> (DLQ) holds messages that keep failing, so a human can inspect and replay them instead of the system retrying forever.</p>
+<p><strong>Tiny example.</strong> Key = <code>client_42:filehash_ab12:batch_3</code>. The first attempt registers the invoice and stores the key. A retry with the same key returns the stored result and doesn't submit to the government again.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Masters India.</strong> Idempotency keys (client plus file hash plus batch index) across the whole bulk pipeline, plus a DLQ with replay. This is the double-filing near-miss story.
+- <strong>Uber Menu.</strong> "Exactly-once catalog upserts" in practice means at-least-once delivery plus idempotent upserts keyed by vendor or menu and content hash.
+- <strong>Impact Analytics.</strong> ReplacingMergeTree keeps the newest version of a row with the same key, so a retried batch doesn't leave duplicate decisions.</p>
+<h2 id="13-caching">13. Caching</h2>
+<p><strong>Plain English.</strong> A cache keeps a copy of frequently read data somewhere fast, usually in memory with Redis, so you don't hit the database every time. <em>Cache-aside</em> means the app checks the cache first. On a miss it reads the database and fills the cache. The hard part is staleness: deciding how long a cached value may live.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Masters India.</strong> A Redis cache-aside layer cut database read load by 30%.
+- <strong>Impact Analytics.</strong> Redis fronts the auth waterfall, so verified identities don't get re-checked against Firebase or OIDC on every request.</p>
+<h2 id="14-sharding-and-partitioning">14. Sharding and partitioning</h2>
+<p><strong>Plain English.</strong> <em>Partitioning</em> splits a big table into slices inside one database, often by date. <em>Sharding</em> splits data across separate databases. Both keep each piece small and let queries skip irrelevant data.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Masters India.</strong> PostgreSQL sharded by tax quarter.
+- <strong>Impact Analytics.</strong> ClickHouse rollup tables partitioned by season code. Migration and rollback happen one season partition at a time.</p>
+<h2 id="15-pre-aggregation-and-batching">15. Pre-aggregation and batching</h2>
+<p><strong>Plain English.</strong> <em>Pre-aggregation</em> means computing totals ahead of time, so queries read small summary tables. <em>Batching</em> means processing many items together to reduce per-item overhead.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics.</strong> Six rollup tables took planner pivots from 189 seconds to 12 seconds on a 250-million-row benchmark. The weekly rollups are built one fiscal week at a time to keep memory bounded.</p>
+<h2 id="16-observability-logs-metrics-traces">16. Observability: logs, metrics, traces</h2>
+<p><strong>Plain English.</strong>
+- <strong>Logs</strong> are timestamped text records of what happened.
+- <strong>Metrics</strong> are numbers over time, like requests per second or error rate.
+- <strong>Traces</strong> follow one request across services, showing where the time went.
+- For LLM apps, <em>LLM tracing</em> records every prompt, tool call and model response.</p>
+<p><strong>Where it shows up in my work.</strong>
+- <strong>Impact Analytics.</strong> Datadog distributed tracing on the Go edge. LangSmith traces for Ask Iris. Custom JSON telemetry for the batch engine, covering tokens, USD cost, step duration and batch fallbacks.
+- <strong>Masters India.</strong> ELK (Elasticsearch, Logstash, Kibana, a log search stack) plus New Relic tracing cut incident triage time by about 70%. The baseline is ESTIMATED: from about 30 minutes to under 10.</p>
+<h2 id="17-load-testing-and-capacity-planning">17. Load testing and capacity planning</h2>
+<p><strong>Plain English.</strong> Load testing sends realistic traffic at a system to find where it breaks before users do. Capacity planning uses those results plus growth estimates to decide how much headroom to keep.</p>
+<p><strong>Tiny example.</strong> If normal peak is 1,000 requests per second, test at 3,000 and watch p95 latency, error rate, connection pools and memory.</p>
+<p><strong>Where it shows up in my work.</strong> The connection-leak STAR story (a packet story, not on the PDF) ended with a load test at 3 times peak added to CI. The ClickHouse PoC was a benchmark on 250 million rows, which is a form of capacity test for reads. Don't invent other load-test numbers.</p>
+<h2 id="18-kubernetes-literacy-only">18. Kubernetes (literacy only)</h2>
+<p><strong>Plain English.</strong> Kubernetes runs containers across a cluster of machines. You describe what you want ("3 copies of this image, with this health check") and it keeps reality matching: restarting crashed copies, rolling out new versions and scaling.</p>
+<p><strong>Words worth knowing.</strong> A <em>pod</em> is one or more containers running together. A <em>Deployment</em> manages rolling updates of pods. A <em>Service</em> gives pods a stable address. <em>Readiness and liveness probes</em> are health checks. The <em>Horizontal Pod Autoscaler</em> adds or removes pods based on metrics.</p>
+<p><strong>Where it shows up in my work.</strong> Skills-level only. It's on my skills line as literacy. I haven't operated clusters. If asked, explain the concepts above and say: "I've deployed services that ran on container platforms, but I didn't own the cluster operations."</p>
+<hr>
+<h1 id="part-2-project-by-project">Part 2: Project by project</h1>
+<h2 id="impact-analytics-assortsmart-platform-and-ai">Impact Analytics: AssortSmart (Platform and AI)</h2>
 <table>
 <thead>
 <tr>
@@ -61,30 +252,51 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td><strong>Scale</strong></td>
-<td>Multi-tenant retail SaaS; kik audit <strong>437</strong> clustering runs; CH <strong>63 tables / 8 layers</strong>; pivot POC <strong>250M</strong> rows <strong>189s→12.3s</strong>; aggregates <strong>~25M</strong> choice-cluster-week; edits <strong>~0.4 ms</strong></td>
+<td><strong>Scale (PDF)</strong></td>
+<td>Go/Gin edge at 10k peak requests per second. A 2.11B-row ClickHouse master. Six rollup tables. Pivots from 189 s to 12 s on a 250M-row benchmark. 348k article-seasons scored, 88k items per pass. Data pump at about 344k rows per second, on partitions up to 4.09B rows</td>
 </tr>
 <tr>
 <td><strong>Deploy shape</strong></td>
-<td>Separate deployables: <strong>Python FastAPI</strong> agent service + <strong>Go Gin</strong> doing-layer services + per-tenant <strong>ClickHouse</strong> + UI. Config/catalog changes for Hindsight metrics <strong>without code deploy</strong>.</td>
+<td>Docker services on GCP. The Go/Gin platform and the Python agent service (FastAPI, LangGraph) are separate deployables and ship independently. ClickHouse holds analytics. PostgreSQL holds roles and access rules. Redis caches auth</td>
 </tr>
 <tr>
-<td><strong>Why</strong></td>
-<td>Agent tier scales with LLM latency/cost; Go tier scales with request volume; boundary matches API contracts. Tenant CH isolates noisy neighbors.</td>
+<td><strong>Why this shape</strong></td>
+<td>The Go tier scales with request volume. The agent tier scales with LLM latency and cost. Keeping them separate means one doesn't drag the other down</td>
 </tr>
 <tr>
-<td><strong>CI / gates</strong></td>
-<td>Design review PASS; tool allow-list tests; <strong>load test pending</strong> before calling copilot shipped</td>
+<td><strong>Change without deploy</strong></td>
+<td>KPI formulas are configuration, compiled by the Go parser into safe ClickHouse SQL</td>
 </tr>
 <tr>
-<td><strong>Honesty</strong></td>
-<td>Say <strong>building</strong>. Do not invent prod TPS/RPM.</td>
+<td><strong>Release gates</strong></td>
+<td>A 300-case evaluation set with an 80% accuracy gate in CI blocks AI changes that regress. Model choice came from a separate 200-item benchmark</td>
+</tr>
+<tr>
+<td><strong>Failure handling</strong></td>
+<td>Nested timeouts on the edge. Hard timeouts and circuit breakers in the batch registry. Deterministic fallback on LLM timeouts. Checkpoints (<code>det.json</code>, <code>agent_progress.json</code>, <code>--resume</code>) so a restart skips finished work</td>
+</tr>
+<tr>
+<td><strong>Observability</strong></td>
+<td>Datadog tracing for Go. LangSmith for Ask Iris. JSON telemetry (tokens, USD, step duration, fallbacks) for batches</td>
+</tr>
+<tr>
+<td><strong>Data migration</strong></td>
+<td>Custom Go native-TLS pump across ClickHouse Cloud clusters. TSV ledgers and <code>.done</code> checkpoint files. Failed seasons handled with drop partition and recopy</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Deploy story (interview):</strong> "Dockerized services on GCP. Agent and Go ship independently. Tenant onboarding is config sync into PG/CH catalogs, not a binary per retailer. Observability: Datadog + LangSmith + PostHog on one <code>trace_id</code>."</p>
-<hr>
-<h2 id="uber-frm-risk-scoping">Uber — FRM Risk Scoping</h2>
+<p><strong>Deploy story (say this).</strong></p>
+<blockquote>
+<p>"The services are Docker containers on GCP. The Go platform and the Python agent service ship independently, because one scales with request volume and the other with LLM latency and cost. Business formulas change through configuration, not releases. AI changes have to pass an 80% accuracy gate in CI before promotion. In production, every LLM call has a hard timeout, a circuit breaker protects against provider outages, and if the LLM fails we fall back to the rule-based score. So a batch run finishes even on a bad provider day."</p>
+</blockquote>
+<p><strong>Say this carefully.</strong>
+- No Kafka, Flink, CDC or Kubernetes operations at Impact Analytics.
+- 10k peak RPS is the stated peak. Don't invent averages, latency SLAs or TPS.
+- 344k is rows per second, an ingest rate, not requests per second.
+- The 4.09B copy was measured in flight. Don't say the cutover finished.
+- Ask Iris is a shipped capability. No usage or uptime numbers.
+- The Cluster Recommendation Copilot and Hindsight are verbal only. Older notes for those mention a pending load test, extra product analytics and per-tenant ClickHouse. Those belong to verbal design work, not the resume.</p>
+<h2 id="uber-via-epam-frm-scoping-platform">Uber via EPAM: FRM Scoping Platform</h2>
 <table>
 <thead>
 <tr>
@@ -94,30 +306,37 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td><strong>Scale</strong></td>
-<td><strong>8</strong> screens, <strong>30+</strong> REST APIs, <strong>$340M</strong> group / <strong>$170M</strong> residual sample, <strong>55</strong> FSLIs × <strong>14</strong> entities, <strong>1,100+</strong> Bazel tests, led <strong>3</strong></td>
+<td><strong>Scale (PDF)</strong></td>
+<td>36 Spring Boot endpoints. 19M raw general-ledger rows migrated off Sheets. $340M materiality threshold. Reconciliation from 14 days to 3 days. Led 3 engineers. Module coverage 100%</td>
+</tr>
+<tr>
+<td><strong>Verbal depth</strong></td>
+<td>8 screens. 11 ORM models (JPA entities). 1,100+ tests (JUnit 5 and Mockito). Residual materiality $170M on the Q4 2025 close</td>
 </tr>
 <tr>
 <td><strong>Deploy shape</strong></td>
-<td>FastAPI services + <strong>MySQL</strong> SSOT + React UI; <strong>Bazel</strong> monorepo CI; Docker images behind Uber/EPAM release process</td>
+<td>Java Spring Boot services (Spring Data JPA and Hibernate) with MySQL on SOADB (Uber's standard service-owned MySQL) as the source of truth, and a React UI. Bazel monorepo builds and tests. Docker images through Uber's release process</td>
 </tr>
 <tr>
 <td><strong>Why</strong></td>
-<td>Sheets could not be PwC audit SSOT. MySQL gives line-level audit trail tying <strong>HFM</strong> extracts to <strong>10-Q</strong>.</td>
+<td>Sheets couldn't be the audit source of truth. MySQL gives a line-level trail tying the finance system's numbers to the filed 10-Q report</td>
 </tr>
 <tr>
-<td><strong>CI / gates</strong></td>
-<td>Design reviews, API contracts, pytest via Bazel — quality gate for audit-facing releases</td>
+<td><strong>Release gates</strong></td>
+<td>Design reviews, API contracts, and tests run through Bazel. Automated state-machine gates with 50% delta-variance checks for SOX</td>
 </tr>
 <tr>
-<td><strong>Honesty</strong></td>
-<td><strong>70%</strong> time cut is TARGET (~2 weeks → ~3–4 days). Do not claim multi-region FRM ownership.</td>
+<td><strong>Rollback</strong></td>
+<td>Previous service revision, plus expand-and-contract schema discipline. Small stacked PRs so each step is revertible</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Deploy story:</strong> "Feature flags / staged rollout inside the finance tooling path. Schema migrations reviewed with audit trail in mind. Rollback = previous service revision + MySQL migration discipline (expand/contract)."</p>
-<hr>
-<h2 id="uber-menu-ingestion">Uber — Menu Ingestion</h2>
+<p><strong>Deploy story (say this).</strong></p>
+<blockquote>
+<p>"It shipped through Uber's monorepo with Bazel, as small stacked PRs, so every release was small and zero-downtime. Schema changes were reviewed with the audit trail in mind, and we used expand-and-contract so old and new code always worked side by side. Rollback meant going back to the previous revision. During the reconciliation move from Sheets to MySQL, we ran the old and new versions in parallel to compare results before cutting over."</p>
+</blockquote>
+<p><strong>Say this carefully.</strong> 70% from 14 days to 3 days is on the PDF and you defend it as written. If pressed: "The technical design doc framed that cut, and that's what the platform delivered for the close." Older prep said "30+ endpoints" and called 70% a "target". That's obsolete. Don't claim multi-region ownership or the collaboration/Slack notification service.</p>
+<h2 id="uber-via-epam-menu-ingestion-uber-eats">Uber via EPAM: Menu Ingestion (Uber Eats)</h2>
 <table>
 <thead>
 <tr>
@@ -127,34 +346,37 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td><strong>Scale</strong></td>
-<td><strong>30K+</strong> menus/month; onboarding <strong>24h→2h</strong>; <strong>$600K+/yr</strong>; ingest success <strong>95%+</strong>; offline RAG <strong>98%</strong> fidelity / <strong>100%</strong> schema; ANZ <strong>99.9%</strong>, <strong>20 h/week</strong></td>
+<td><strong>Scale (PDF)</strong></td>
+<td>30K+ menus a month. Onboarding from 24 hours to 2 hours. $600K a year saved. Extraction success 95%+. 98% field fidelity on offline evaluation</td>
 </tr>
 <tr>
 <td><strong>Deploy shape</strong></td>
-<td><strong>Selenium</strong> scraper fleet on <strong>GCP</strong> + <strong>Kafka</strong> ingest bus + <strong>Flink</strong> normalize/dedupe (hot path) + Python <strong>RAG/Gemini</strong> workers + Docker</td>
+<td>Selenium scraper fleet on GCP. Kafka ingestion bus. Flink jobs for keyed dedupe and normalisation. Python RAG workers (LangChain, Gemini 2.5 Pro, Milvus). All in Docker</td>
 </tr>
 <tr>
 <td><strong>Why Kafka</strong></td>
-<td>Scrapers are bursty/flaky; need replay and multiple consumers</td>
+<td>Scrapers are bursty and flaky. Kafka buffers bursts and allows replay and multiple consumers</td>
 </tr>
 <tr>
 <td><strong>Why Flink</strong></td>
-<td>Stateful keyed dedupe / event-time ordering for late pages; lower latency than Spark micro-batches for catalog freshness</td>
+<td>Stateful keyed dedupe as events stream in, with lower latency than micro-batches for catalog freshness</td>
 </tr>
 <tr>
-<td><strong>Why not Spark on hot path</strong></td>
-<td>Spark for backfill/reprocess (verbal); Flink for streaming state</td>
+<td><strong>Why not Spark on the hot path</strong></td>
+<td>Spark isn't on the PDF. Mention it only as a verbal option for backfills</td>
 </tr>
 <tr>
-<td><strong>Honesty</strong></td>
-<td>RAG metrics are <strong>offline eval</strong>. $600K+ HISTORICAL vs third-party ~$2/menu.</td>
+<td><strong>Rollback</strong></td>
+<td>Rewind Kafka offsets to before a bad parser release and reprocess</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Deploy story:</strong> "Scrapers and consumers scale as separate jobs. Bad parser → rewind Kafka offsets before the bad watermark and reprocess. Proxies/IP pools are config, not code, for anti-bot."</p>
-<hr>
-<h2 id="masters-india-gst-e-invoice">Masters India — GST / e-invoice</h2>
+<p><strong>Deploy story (say this).</strong></p>
+<blockquote>
+<p>"Scrapers and stream consumers scaled as separate jobs, so a scraping spike didn't overload processing. If we shipped a bad parser, we rewound the Kafka offsets to before it and reprocessed. Proxy pools and IP settings were configuration, so we could react to new bot defences without a deploy."</p>
+</blockquote>
+<p><strong>Say this carefully.</strong> 98% is offline evaluation. $600K is about $2 per menu × 30K menus × 12 months, which is $720K, floored to $600K. The Kafka peak of roughly 200 to 500 events per second is a prep-only estimate. Exactly-once means at-least-once plus idempotent upserts. No ClickHouse here.</p>
+<h2 id="uber-via-epam-anz-document-compliance-historical">Uber via EPAM: ANZ Document Compliance (HISTORICAL)</h2>
 <table>
 <thead>
 <tr>
@@ -165,29 +387,16 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td><strong>Scale</strong></td>
-<td><strong>1,500+</strong> clients; p95 <strong>1.2s→300ms</strong>; <strong>700→4,000</strong> req/min; <strong>1M+</strong> IRP/day; <strong>100K+/import</strong>; Redis <strong>−30%</strong> reads; triage <strong>−70%</strong>; coverage <strong>35%→82%</strong>; deploy success <strong>98%</strong></td>
+<td>99.9% regulatory compliance. 20 hours a week of manual work removed</td>
 </tr>
 <tr>
-<td><strong>Deploy shape</strong></td>
-<td><strong>Strangler:</strong> FastAPI services cut over behind gateway <strong>endpoint-by-endpoint</strong> with <strong>canary</strong> % traffic; shared DB during move; Kafka consumers for bulk; Docker on <strong>AWS</strong></td>
-</tr>
-<tr>
-<td><strong>Why</strong></td>
-<td>Laravel monolith: one slow IRP blocked a worker; all-or-nothing deploys; could not scale filing spikes</td>
-</tr>
-<tr>
-<td><strong>CI / gates</strong></td>
-<td>pytest coverage gate; contract tests vs old PHP payloads; ELK + New Relic alerts</td>
-</tr>
-<tr>
-<td><strong>Honesty</strong></td>
-<td>Triage baseline ~30→&lt;10 min ESTIMATED behind HISTORICAL 70%.</td>
+<td><strong>Shape</strong></td>
+<td>A deterministic validation backend checking driver and vehicle documents against local authority rules</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Deploy story:</strong> "Nginx canary per route. Rollback = traffic flip, not a rebuild. Idempotency keys + DLQ so Kafka replay does not double-file."</p>
-<hr>
-<h2 id="geeksforgeeks-platform">GeeksforGeeks — platform</h2>
+<p><strong>Say this carefully.</strong> This is Uber Mobility in Australia and New Zealand, not Uber Eats. No Selenium or RAG here.</p>
+<h2 id="masters-india-gst-and-e-invoicing">Masters India: GST and e-invoicing</h2>
 <table>
 <thead>
 <tr>
@@ -197,71 +406,139 @@ strong{color:#fff}
 </thead>
 <tbody>
 <tr>
-<td><strong>Scale</strong></td>
-<td><strong>10K+</strong> daily users; <strong>10×</strong> traffic spikes; premium <strong>+15–20%</strong>; course sales <strong>+30%</strong>; ops efficiency <strong>+70%</strong> (HISTORICAL portfolio metrics)</td>
+<td><strong>Scale (PDF)</strong></td>
+<td>1,500+ clients. p95 from 1.2 s to 300 ms. Throughput from 700 to 4,000 requests per minute (about 12 to 67 per second). 1M+ government submissions a day (about 12 per second on average, ESTIMATED). 100K+ concurrent imports. Redis cut database reads by 30%. Triage down 70%. Coverage from 35% to 82%. Deployment success 98%</td>
 </tr>
 <tr>
 <td><strong>Deploy shape</strong></td>
-<td>Django/app services + MySQL/Redis patterns of the era; CI deploys; feature work behind normal web release cadence</td>
+<td>Strangler migration: Java Spring Boot services cut over behind the gateway endpoint by endpoint, with a canary per route. Shared database during the move, reached through HikariCP connection pools. Spring Kafka consumers for bulk work. <code>@Async</code> and scheduled jobs, plus Spring Batch for chunked bulk imports. Docker on AWS</td>
 </tr>
 <tr>
 <td><strong>Why</strong></td>
-<td>Monetization + reliability under spike load on a content/learning platform</td>
+<td>The PHP monolith was synchronous. One slow government portal call blocked a worker. Deploys were all-or-nothing, and filing-deadline spikes caused pile-ups</td>
 </tr>
 <tr>
-<td><strong>Honesty</strong></td>
-<td>Keep claims at product/ops outcomes; do not invent modern K8s/operator ownership for GFG.</td>
+<td><strong>Release gates</strong></td>
+<td>Test coverage gate in CI (JUnit and Mockito). Contract tests against the old PHP responses. ELK and New Relic alerts</td>
+</tr>
+<tr>
+<td><strong>Rollback</strong></td>
+<td>Flip the route's traffic back to PHP. No rebuild needed</td>
 </tr>
 </tbody>
 </table>
+<p><strong>Deploy story (say this).</strong></p>
+<blockquote>
+<p>"We moved one route at a time behind the gateway, starting with a small canary share. Rollback was a traffic flip, not a rebuild. We froze cutovers during filing-deadline weeks. Bulk submissions went through Kafka, with idempotency keys and a dead-letter queue, so a replay could never file the same invoice twice."</p>
+</blockquote>
+<p><strong>Say this carefully.</strong> The triage baseline of about 30 minutes to under 10 is ESTIMATED behind the HISTORICAL 70%. Peaks of roughly 8 to 10 times average around deadlines are ESTIMATED. This Kafka is a different product from the Uber Menu Kafka. No Flink at Masters. Older notes call the monolith Laravel, a PHP framework. The resume says PHP monolith.</p>
+<h2 id="geeksforgeeks">GeeksforGeeks</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Scale (PDF, HISTORICAL)</strong></td>
+<td>10K+ daily queries. 10x traffic spikes during live coding contests. 20% lift in premium subscriptions. 30% course-sales lift. 70% ops efficiency</td>
+</tr>
+<tr>
+<td><strong>Deploy shape</strong></td>
+<td>Django application services with MySQL, MongoDB, Redis and Elasticsearch, on a normal web release cadence</td>
+</tr>
+<tr>
+<td><strong>Why</strong></td>
+<td>Reliability under contest spikes, plus monetisation features</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Say this carefully.</strong> The business lifts were attributed by business teams. Say "I owned the engineering". Don't claim Kubernetes or modern platform ownership at GFG. Older prep said "+15 to 20%" for premium. The resume says 20%.</p>
 <hr>
-<h2 id="quick-comparison-table">Quick comparison table</h2>
+<h2 id="quick-comparison">Quick comparison</h2>
 <table>
 <thead>
 <tr>
 <th>Project</th>
-<th>Primary deploy unit</th>
-<th>Bus / data plane</th>
-<th>Hard scale number</th>
+<th>What gets deployed</th>
+<th>Data and messaging</th>
+<th>Headline scale number</th>
+<th>How rollback works</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>IA Assort</td>
-<td>FastAPI agent + Go services + CH</td>
-<td>Kafka jobs (embed); CH OLAP</td>
-<td>250M pivot 15.5×; 8.5% baseline</td>
+<td>IA AssortSmart</td>
+<td>Go/Gin service, Python agent service</td>
+<td>ClickHouse, PostgreSQL, Redis</td>
+<td>10k peak RPS. Pivots from 189 s to 12 s on 250M rows</td>
+<td>Config hash identifies runs. Drop partition and recopy for migration</td>
 </tr>
 <tr>
-<td>FRM</td>
-<td>FastAPI + MySQL</td>
-<td>Sync REST; Bazel CI</td>
-<td>$340M; 30+ APIs; 1100+ tests</td>
+<td>Uber FRM</td>
+<td>Spring Boot service</td>
+<td>MySQL on SOADB</td>
+<td>36 endpoints. 14 days to 3 days. $340M</td>
+<td>Previous revision, expand and contract</td>
 </tr>
 <tr>
-<td>Menu</td>
-<td>Scraper jobs + Kafka + Flink + RAG workers</td>
-<td>Kafka → Flink → catalog</td>
-<td>30K menus/mo; 24h→2h</td>
+<td>Uber Menu</td>
+<td>Scraper jobs, Flink jobs, RAG workers</td>
+<td>Kafka, Flink, catalog</td>
+<td>30K+ menus a month. 24 h to 2 h</td>
+<td>Rewind Kafka offsets</td>
 </tr>
 <tr>
 <td>Masters</td>
-<td>FastAPI strangler + Kafka consumers</td>
-<td>Kafka + PG shards</td>
-<td>1M+/day; 4k req/min</td>
+<td>Spring Boot services, Kafka consumers</td>
+<td>Kafka, PostgreSQL shards, Redis</td>
+<td>1M+ a day. 700 to 4,000 requests per minute</td>
+<td>Flip canary traffic back</td>
 </tr>
 <tr>
 <td>GFG</td>
-<td>Web app releases</td>
-<td>Classic LAMP-ish stack</td>
-<td>10K+ daily; 10× spikes</td>
+<td>Django web app</td>
+<td>MySQL, MongoDB, Redis, Elasticsearch</td>
+<td>10K+ daily queries. 10x spikes</td>
+<td>Normal web release</td>
 </tr>
 </tbody>
 </table>
+<hr>
+<h2 id="practice-questions">Practice questions</h2>
+<p><strong>"How did you roll out the Masters migration safely?"</strong></p>
+<blockquote>
+<p>One route at a time, behind the gateway, with a canary share first. We shadowed read routes before moving them, moved bulk Kafka paths before interactive filing, and froze cutovers in deadline weeks. Rollback was flipping a route's traffic back to PHP.</p>
+</blockquote>
+<p><strong>"What happens if the LLM provider goes down mid-batch at Impact Analytics?"</strong></p>
+<blockquote>
+<p>Each call has a hard timeout. After about five failures in a row, a circuit breaker stops calling the provider for a while. Items get the deterministic score instead, so the batch finishes. When the provider recovers, we resume from the checkpoint and skip work that's already done.</p>
+</blockquote>
+<p><strong>"How would you autoscale your Go service?"</strong></p>
+<blockquote>
+<p>It's stateless, with auth cached in Redis, so it scales horizontally. I'd scale on request rate or CPU, keep headroom for spikes, and watch ClickHouse, because scaling the edge just moves load to the database. To be clear, I didn't own the autoscaling policies there.</p>
+</blockquote>
+<p><strong>"How do you roll back bad data?"</strong></p>
+<blockquote>
+<p>It depends on the system. On Uber Menu we rewound Kafka offsets and reprocessed. On the ClickHouse migration we dropped the failed season's partition and recopied it. For AI outputs, every row carries a config hash, so we know exactly which rows came from a bad config and need rerunning.</p>
+</blockquote>
+<p><strong>"Have you used Kubernetes?"</strong></p>
+<blockquote>
+<p>At skills level. I understand pods, deployments, probes and autoscalers, and my services ran in containers. I haven't operated clusters myself.</p>
+</blockquote>
+<p><strong>"What's the difference between a canary and blue-green?"</strong></p>
+<blockquote>
+<p>A canary sends a small share of real traffic to the new version and ramps up gradually. Blue-green runs two full environments and flips all traffic at once. Canary limits blast radius. Blue-green makes rollback a single flip. I used canaries per route at Masters India.</p>
+</blockquote>
 <h2 id="related">Related</h2>
 <ul>
-<li>Architecture folder: <a href="architecture/00_index.html">architecture/00_index.md</a></li>
-<li>Numbers: <a href="numbers_defense.html">numbers_defense.md</a></li>
+<li><a href="numbers_defense.html">Numbers defense</a></li>
+<li><a href="design_decisions_tradeoffs.html">Design decisions</a></li>
+<li><a href="architecture/00_index.html">Architecture index</a></li>
+<li><a href="tech_depth/auth_tenancy_rate_limits.html">Auth, tenancy and rate limits</a></li>
+<li><a href="../../prep/17_senior_systems_study_only.html">Senior systems study-only topics</a></li>
 </ul></main>
 </div>
 

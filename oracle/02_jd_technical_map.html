@@ -56,9 +56,23 @@ strong{color:#fff}
 <a class="lvl2" href="#12-change-management-patching-updating-rolling-back">12. Change management: patching, updating, rolling back</a>
 <a class="lvl2" href="#13-distributed-state-tools-they-may-name-them">13. Distributed state tools (they may name them)</a></nav>
 <main><h1 id="02-jd-technical-map-every-responsibility-the-concept-and-my-evidence">02. JD technical map: every responsibility, the concept, and my evidence</h1>
-<p>For each JD line: <strong>what it means</strong>, <strong>what a strong answer covers</strong>, <strong>my real evidence</strong>, and an <strong>honest bridge</strong> where my experience is thinner. OCI interviewers respect "I haven't operated X, here's how I'd do it and what I did that's closest." They don't respect bluffing.</p>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> every responsibility line in the OCI job description, explained in plain English, with the concepts a strong answer needs and the real evidence from my own projects.</li>
+<li><b>When to read it:</b> two or three days before the loop, and again the night before the hiring manager or bar raiser round. Reliability, operations and security questions can come up in any round.</li>
+<li><b>What to memorise:</b> the OCI vocabulary table in section 0, the incident response sequence in section 5, the safe deployment waves in section 12, and the "honest bridge" lines, which are what I say when my experience is thinner.</li>
+<li><b>How to practise:</b> read a section, close the page, and say the "Speakable answer" out loud in under 90 seconds.</li>
+</ul>
+</div>
+<div class="callout highlight">
+<p><b>What the tags mean.</b> <b>MEASURED</b> means there is a log, document or code behind the number. <b>ESTIMATED</b> means arithmetic I can show on a whiteboard ("roughly, derived from..."). <b>TARGET</b> means a design goal, so I say "targeting". <b>HISTORICAL</b> means it comes from my past work records. <b>Verbal / off PDF</b> means it is true and I can talk about it, but it is not printed on my resume, so I never lead with it.</p>
+</div>
+<p><strong>Why this page exists.</strong> An OCI (Oracle Cloud Infrastructure) job description is unusually heavy on reliability, operations, security and change management. For each JD line this page gives four things: what the line means, what a strong answer covers, my real evidence, and an honest bridge where my experience is thinner. OCI interviewers respect "I haven't operated X, here is how I would do it, and here is the closest thing I did." They do not respect bluffing.</p>
+<p>Related pages: <a href="04_system_design_fundamentals.html">system design fundamentals</a>, <a href="04_system_design_questions.html">system design questions</a>, <a href="07_projects_deep_dive.html">projects deep dive</a>, <a href="06_concurrency.html">concurrency</a>.</p>
 <hr>
 <h2 id="0-oci-vocabulary-you-should-use-naturally">0. OCI vocabulary you should use naturally</h2>
+<p><strong>In plain English.</strong> Oracle's cloud is organised as nested boxes of failure. A region is a city-sized area. Inside it are availability domains, which are separate data centers. Inside each of those are fault domains, which are groups of racks. Every good OCI answer says which box a failure stays inside. Think of it like an apartment building: if one flat's fuse blows (fault domain), the floor is fine; if the whole building loses power (availability domain), the neighbouring building still has power; if the whole city floods (region), another city keeps serving.</p>
 <table>
 <thead>
 <tr>
@@ -70,128 +84,190 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td><strong>Region</strong></td>
-<td>Geographic area with one or more availability domains</td>
-<td>Region-by-region deploys; data residency</td>
+<td>A geographic area with one or more availability domains</td>
+<td>Deploys go region by region. Data residency rules are per region</td>
 </tr>
 <tr>
 <td><strong>Availability Domain (AD)</strong></td>
-<td>One or more isolated data centers in a region. Independent power/cooling/network</td>
-<td>Replicate across ADs for HA; quorum across 3 ADs</td>
+<td>One or more isolated data centers in a region, each with independent power, cooling and network</td>
+<td>Replicate across ADs for high availability. A quorum across 3 ADs survives one AD loss</td>
 </tr>
 <tr>
 <td><strong>Fault Domain (FD)</strong></td>
-<td>Grouping of hardware inside an AD (3 per AD). Anti-affinity for instances</td>
-<td>Spread replicas across FDs so one rack/hardware failure doesn't take all</td>
+<td>A grouping of hardware inside an AD. There are 3 per AD. Used for anti-affinity</td>
+<td>Spread replicas across FDs so one rack or hardware failure does not take everything</td>
 </tr>
 <tr>
 <td><strong>Control plane</strong></td>
-<td>APIs that create/modify resources (create bucket, launch VM)</td>
-<td>Can be less available; must be correct and idempotent</td>
+<td>The APIs that create or change resources (create a bucket, launch a VM)</td>
+<td>Can be somewhat less available, but must be correct and idempotent</td>
 </tr>
 <tr>
 <td><strong>Data plane</strong></td>
-<td>The path that serves the resource (read object, route packet)</td>
-<td>Must be highly available; should keep working if control plane is down (<strong>static stability</strong>)</td>
+<td>The path that serves the resource itself (read an object, route a packet)</td>
+<td>Must be highly available and should keep working when the control plane is down</td>
+</tr>
+<tr>
+<td><strong>Static stability</strong></td>
+<td>The data plane keeps serving with the last known good configuration if the control plane fails</td>
+<td>The single most "OCI" idea to mention</td>
 </tr>
 <tr>
 <td><strong>Cell / shard architecture</strong></td>
 <td>Split a service into independent cells, each serving a subset of tenants</td>
-<td>Limits blast radius; deploy cell by cell</td>
+<td>Limits blast radius. Deploy cell by cell</td>
 </tr>
 <tr>
 <td><strong>Blast radius</strong></td>
-<td>How many customers one failure or bad deploy can hurt</td>
-<td>Every design and deploy answer should reduce it</td>
+<td>How many customers one failure or one bad deploy can hurt</td>
+<td>Every design and deploy answer should shrink it</td>
 </tr>
 <tr>
 <td><strong>One-box / canary</strong></td>
-<td>Deploy to one host, then one FD, then one AD, then region, then next region, with bake time</td>
+<td>Deploy to one host, then one FD, then one AD, then the region, then the next region, with bake time at each step</td>
 <td>Change management answers</td>
 </tr>
 <tr>
 <td><strong>Tenancy / compartment</strong></td>
-<td>OCI's multi-tenant isolation units; IAM policies are written against compartments</td>
+<td>OCI's multi-tenant isolation units. IAM (Identity and Access Management) policies are written against compartments</td>
 <td>Access control answers</td>
 </tr>
 <tr>
 <td><strong>COE / RCA</strong></td>
-<td>Post-incident review: timeline, root cause (5 whys), action items with owners</td>
+<td>Correction of Error / Root Cause Analysis. A post-incident review: timeline, root cause (5 whys), action items with owners</td>
 <td>Incident answers</td>
 </tr>
 </tbody>
 </table>
+<p>A few definitions in everyday words:</p>
+<ul>
+<li><strong>Control plane vs data plane.</strong> The control plane is the airline's booking system. The data plane is the plane in the air. If the booking website goes down, planes already flying must keep flying. That is static stability.</li>
+<li><strong>Idempotent</strong> means doing something twice has the same effect as doing it once. Pressing a lift button five times still calls one lift.</li>
+<li><strong>Blast radius</strong> is how far the damage spreads. Watertight compartments on a ship exist to keep blast radius small.</li>
+</ul>
 <hr>
 <h2 id="1-system-scalability">1. System scalability</h2>
 <p><strong>JD:</strong> components that support horizontal and vertical scaling, distributed state management, optimizing large-scale data processing, reviewing teammates for scalability, data plane platforms, performance and load testing.</p>
+<p><strong>In plain English.</strong> Scalability means the system keeps meeting its speed and correctness goals when load grows. There are two ways to grow: buy a bigger machine, or add more machines. Most of the hard work is about where the <em>state</em> (the data that must be remembered) lives, because stateless code is easy to copy and stateful data is not.</p>
+<h3 id="words-you-need">Words you need</h3>
+<ul>
+<li><strong>Vertical scaling (scale up):</strong> a bigger machine with more CPU and memory. Like replacing a small van with a lorry. Simple, but there is a biggest lorry, it is expensive, and if it breaks, everything stops.</li>
+<li><strong>Horizontal scaling (scale out):</strong> more machines sharing the work. Like adding more vans. Needs the work to be splittable.</li>
+<li><strong>Stateless service:</strong> any copy of the service can answer any request, because nothing about the user is kept in that copy's memory. Like a bank counter where any teller can serve you because your record is in the central system.</li>
+<li><strong>Partitioning (sharding):</strong> splitting data by a key so each machine owns a slice. Like a library that puts authors A to F on floor 1 and G to M on floor 2.</li>
+<li><strong>Hot key:</strong> one key that gets far more traffic than others, so the machine owning it is overloaded. Like one checkout queue for a celebrity book signing.</li>
+<li><strong>Bottleneck:</strong> the one resource that saturates first and limits everything else (CPU, memory, disk, locks, connection pool, a downstream dependency).</li>
+</ul>
 <h3 id="what-a-strong-answer-covers">What a strong answer covers</h3>
 <ul>
-<li><strong>Vertical</strong> = bigger machine: simple, has a ceiling, a single point of failure. <strong>Horizontal</strong> = more machines: needs stateless services or partitioned state.</li>
-<li>Make compute <strong>stateless</strong>. Push state into a store built for it (DB, cache, log). Session affinity is a smell.</li>
-<li><strong>Partition</strong> state by a key with good cardinality and even load (tenant, hash of id). Avoid hot keys: salting, splitting hot tenants into their own cell.</li>
-<li>Scale reads with caches and replicas. Scale writes with partitioning, batching, and append-only logs.</li>
-<li>Know the <strong>bottleneck</strong> before scaling: CPU, memory, IO, locks, connection pool, downstream dependency.</li>
-<li>Back-of-envelope: QPS, payload size, storage per day, fan-out.</li>
+<li>Vertical is simple but has a ceiling and is a single point of failure. Horizontal needs stateless services or partitioned state.</li>
+<li>Make compute stateless. Push state into a store built for it (a database, a cache, a log). Session affinity (pinning a user to one server) is a smell.</li>
+<li>Partition state by a key with high cardinality and even load (tenant, hash of id). Avoid hot keys by salting the key, or by moving a hot tenant into its own cell.</li>
+<li>Scale reads with caches and replicas. Scale writes with partitioning, batching and append-only logs.</li>
+<li>Find the bottleneck before scaling. Otherwise you scale the wrong tier.</li>
+<li>Do a back-of-envelope estimate: QPS (queries per second), payload size, storage per day, fan-out.</li>
 </ul>
+<p><strong>Tiny worked example.</strong> Suppose 50 million requests a day. 50,000,000 / 86,400 seconds is about 580 requests per second on average. If the peak is 5 times the average, that is about 2,900 per second. If one instance comfortably handles 1,000 per second, I need 3 instances at peak, plus one spare per fault domain, so 4 to 6. That is the kind of arithmetic interviewers want to hear.</p>
 <h3 id="my-evidence">My evidence</h3>
 <ul>
-<li><strong>Go/Gin platform, 10k peak RPS.</strong> Stateless processes behind the load balancer. The process is a self-protecting edge (no reverse proxy) with native h2c, nested context timeouts, and Datadog tracing. It scales horizontally by adding instances. Auth identity is cached in Redis (Firebase to JWT/OIDC waterfall), so no instance holds session state.</li>
-<li><strong>ClickHouse rollups, 15.5x (189s to 12s on 250M rows).</strong> Scaling reads by precomputing: pay once at load, read cheap with <code>PARTITION BY season_code</code> and bloom indexes on product/store/attr.</li>
-<li><strong>Vertical limits, handled:</strong> weekly rollup needed ~170 GB of aggregator state and OOM'd on a ~236 GiB box. I shrank the unit of work to one fiscal week with memory caps and spill, instead of buying a bigger box. That is the classic "you can't scale up forever" story.</li>
-<li><strong>Masters India:</strong> Kafka + Postgres <strong>sharded by tax quarter</strong>, 1M+ transactions/day, sustained <strong>700 to 4,000 rpm</strong>. Worker autoscaling on queue depth. Queue-based load leveling for 8 to 10x filing-deadline spikes.</li>
-<li><strong>Data processing:</strong> Go pump at ~344k rows/s combined with 500k columnar double buffers and no per-row reflection. Keep/Drop engine processes 88k items per pass with bounded parallel batches.</li>
+<li><strong>Go/Gin platform at 10k peak RPS (requests per second).</strong> Gin is a lightweight Go web framework. The processes are stateless and sit behind the load balancer. Each process is a self-protecting edge, meaning it enforces its own limits and timeouts with no reverse proxy (like nginx) in front. It speaks native h2c (HTTP/2 over plain TCP without TLS, used inside a trusted network), uses nested context timeouts, and is traced with Datadog. It scales horizontally by adding instances. User identity is cached in Redis through an auth waterfall (Firebase Admin first, then JWT or Google OIDC), so no instance holds session state.</li>
+<li><strong>ClickHouse rollups: 15.5× faster pivots, from 189 seconds to 12 seconds on a 250M-row harness (MEASURED, 12.3 s rounded).</strong> ClickHouse is a columnar analytics database. A rollup table is a pre-summed copy of the data at a coarser grain. This is "scale reads by precomputing": pay the cost once at load time, then reads are cheap. The six rollup tables are <code>PARTITION BY season_code</code> so a query touches only the seasons it needs, and older prep notes also mention bloom filter skip indexes on product, store and attribute columns.</li>
+<li><strong>Vertical limits, handled.</strong> Separately, a weekly rollup build needed about 170 GB of aggregation state and ran out of memory (OOM). Older prep notes it OOM'd on a machine of about 236 GiB, and it failed even with 80 GB and 200 GB memory caps when building a whole season at once. Instead of buying a bigger box, I shrank the unit of work to one fiscal week per INSERT, with a 55 GB memory cap, 16 GB spill to disk, 8 threads and 4 weeks in flight (verbal knobs). A product week needs about 11 GB and an attribute week needs more than 40 GB, so one week fits. That is the classic "you cannot scale up forever" story.</li>
+<li><strong>Masters India.</strong> Kafka plus PostgreSQL <strong>sharded by tax quarter</strong> for <strong>1M+ daily government submissions</strong>, with throughput raised <strong>from 700 to 4,000 requests per minute</strong> (about 12 to about 67 requests per second). Older prep also mentions autoscaling workers on queue depth, and queue-based load leveling for filing-deadline peaks of roughly 8 to 10 times average (ESTIMATED).</li>
+<li><strong>Data processing.</strong> A custom Go data pump copied ClickHouse rollups at <strong>~344k rows per second</strong> combined (an ingest rate, not requests per second), using <strong>500k-row double-buffered batches</strong> (read the next batch while sending the previous one) and no per-row reflection. The Keep/Drop engine processes <strong>88k items per pass</strong> with bounded parallel batches.</li>
 </ul>
+<p><strong>Speakable answer: "How have you scaled a system?"</strong></p>
+<blockquote>
+<p>"The clearest example is the Go/Gin platform at Impact Analytics, which serves 10k peak requests per second. I kept the processes stateless, with identity resolved from the token and cached in Redis, so scaling is just adding instances. Reads were the real problem, because planner pivots were slow, so I precomputed six ClickHouse rollup tables and pivots went from 189 seconds to 12 seconds on a 250-million-row harness. And when a weekly rollup build ran out of memory at about 170 GB, I did not buy a bigger box. I sliced the work into one fiscal week per insert with memory and spill caps. That taught me to shrink the unit of work before scaling up."</p>
+<p><em>Follow-up they may ask:</em> "Is the 15.5× because you fixed the OOM?" No. 15.5× is query time for pivots. The 170 GB OOM was load time for weekly builds. They are separate problems.</p>
+</blockquote>
 <h3 id="performance-and-load-testing-how-i-answer">Performance and load testing: how I answer</h3>
+<p><strong>In plain English.</strong> Load testing means sending fake but realistic traffic to find out how fast the system is and how it breaks. The key word is realistic. Uniform random keys hide hot-key problems that real traffic will expose.</p>
 <ol>
-<li>Define the SLO first (p99 latency at target QPS, error budget).</li>
-<li>Build a <strong>realistic</strong> workload: production-shaped payloads and key distributions (hot keys!), not uniform random.</li>
-<li>Step load (ramp), soak (hours, looking for leaks), spike (sudden 10x), stress (to break point, to learn <em>how</em> it fails).</li>
-<li>Measure p50/p95/p99, saturation (CPU, memory, pool usage, GC), and downstream latency.</li>
-<li>Compare apples to apples. My <strong>row-identical harness</strong> for Postgres vs ClickHouse used the same 250M rows and the same query, and checked results matched, so the 15.5x wasn't a benchmark trick.</li>
-<li>Put a performance regression check in CI for critical paths.</li>
+<li><strong>Define the SLO first.</strong> An SLO (Service Level Objective) is the target, for example "p99 latency under 200 ms at 5,000 QPS". p99 means 99% of requests are faster than this number.</li>
+<li><strong>Build a realistic workload.</strong> Use production-shaped payloads and key distributions, including hot keys.</li>
+<li><strong>Run four shapes of test.</strong> Step load (ramp up gradually), soak (hours at steady load, looking for memory leaks), spike (sudden 10× jump), and stress (push to breaking point to learn <em>how</em> it fails).</li>
+<li><strong>Measure</strong> p50, p95 and p99 latency, saturation (CPU, memory, connection pool usage, garbage collection) and downstream latency.</li>
+<li><strong>Compare like with like.</strong> My row-identical harness for Postgres vs ClickHouse used the same 250M rows and the same query, and checked the results matched. That is why the 15.5× is not a benchmark trick.</li>
+<li><strong>Put a performance regression check in CI</strong> for critical paths.</li>
 </ol>
-<p>Tools to name: k6, Locust (Python), vegeta / ghz (Go, gRPC), wrk. In Go, <code>pprof</code> for CPU/heap and <code>go test -bench</code>.</p>
-<h3 id="reviewing-peers-for-scalability-they-ask-what-do-you-look-for-in-code-review">Reviewing peers for scalability (they ask "what do you look for in code review?")</h3>
+<p>Tools to name: k6, Locust (Python), vegeta and ghz (Go, gRPC), wrk. In Go, <code>pprof</code> for CPU and heap profiles and <code>go test -bench</code> for micro-benchmarks.</p>
+<h3 id="reviewing-peers-for-scalability-what-do-you-look-for-in-code-review">Reviewing peers for scalability ("What do you look for in code review?")</h3>
+<p><strong>Speakable answer.</strong></p>
+<blockquote>
+<p>"I look for anything unbounded first, because that is what breaks at 10×. Loops over user input, queues without a size limit, a SELECT without a LIMIT, goroutines spawned per item, and retries without a cap. Then I look for N+1 queries and missing indexes, anything holding a lock or a database connection across a network call, and outbound calls without timeouts. In hot paths I look for per-request allocations like reflection or JSON encoding in a loop. And I always ask whether any new state can be partitioned, and what happens at 10 times the load."</p>
+</blockquote>
 <ul>
 <li>Unbounded things: loops over user input, unbounded queues, <code>SELECT</code> without <code>LIMIT</code>, unbounded goroutines, retries without caps.</li>
-<li>N+1 queries, missing indexes, full scans.</li>
+<li>N+1 queries (one query for a list, then one more query per item), missing indexes, full scans.</li>
 <li>Anything holding a lock or connection across a network call.</li>
 <li>Missing timeouts on outbound calls.</li>
 <li>Per-request allocations in hot paths (reflection, JSON in a loop).</li>
-<li>Is the new state partitionable? What happens at 10x?</li>
+<li>Is the new state partitionable? What happens at 10×?</li>
 </ul>
 <hr>
 <h2 id="2-reliability-design-redundancy-replication-automatic-failover-in-service-updates">2. Reliability design: redundancy, replication, automatic failover, in-service updates</h2>
 <p><strong>JD:</strong> fault-tolerant components that withstand in-service updates, redundancy, replication, automatic failover.</p>
+<p><strong>In plain English.</strong> Reliability means customers do not notice when parts break or when we deploy. You get it by having spare capacity, keeping copies of data in different places, switching to a healthy copy automatically, and deploying in a way that never takes everything down at once.</p>
+<h3 id="words-you-need_1">Words you need</h3>
+<ul>
+<li><strong>Redundancy (N+1, N+2):</strong> run one or two more copies than you need, so losing one is invisible. Like carrying a spare tyre.</li>
+<li><strong>Replication:</strong> keeping copies of the same data on several machines.</li>
+<li><strong>Leader-follower replication:</strong> one machine (the leader) accepts writes and the others copy its log. Like one teacher writing on the board and students copying.</li>
+<li><strong>Quorum:</strong> a majority vote. With N copies, a write is safe when W copies confirm, and a read is fresh when R copies answer, as long as R + W &gt; N.</li>
+<li><strong>RPO (Recovery Point Objective):</strong> how much recent data you can afford to lose. <strong>RTO (Recovery Time Objective):</strong> how long you can be down.</li>
+<li><strong>Split brain:</strong> two machines both believe they are the leader and both accept writes. Like two captains steering one ship.</li>
+<li><strong>Fencing token:</strong> an increasing number handed out with leadership. Storage rejects writes carrying an old number, so a stale leader cannot corrupt data.</li>
+<li><strong>Expand/contract migration:</strong> change a schema in safe steps (add the new thing, move to it, then remove the old thing) so old and new code both work during a deploy.</li>
+</ul>
 <h3 id="what-a-strong-answer-covers_1">What a strong answer covers</h3>
 <ul>
-<li><strong>Redundancy:</strong> N+1 or N+2 capacity so losing one instance/FD/AD doesn't breach the SLO. Spread across fault domains and ADs.</li>
-<li><strong>Replication:</strong> leader-follower (simple, failover needed), multi-leader (conflicts), leaderless quorum (R + W &gt; N). Sync vs async: sync costs latency, async risks losing recent writes on failover (RPO &gt; 0).</li>
-<li><strong>Automatic failover:</strong> health checks, then leader election (Raft/etcd/ZooKeeper leases), then fencing tokens so an old leader can't write (split brain), then clients re-resolve. Failover must be <strong>tested regularly</strong>, or it won't work when needed.</li>
-<li><strong>In-service updates:</strong> rolling deploys with connection draining, backwards-compatible schemas (expand, migrate, contract), feature flags, versioned APIs, readiness probes gating traffic.</li>
+<li><strong>Redundancy:</strong> N+1 or N+2 capacity so losing one instance, FD or AD does not breach the SLO. Spread across fault domains and ADs.</li>
+<li><strong>Replication:</strong> leader-follower (simple, needs failover), multi-leader (conflicts to resolve), leaderless quorum (R + W &gt; N). Synchronous replication costs latency. Asynchronous replication risks losing recent writes on failover, which means RPO greater than zero.</li>
+<li><strong>Automatic failover:</strong> health checks detect the failure, leader election picks a new leader (Raft, etcd or ZooKeeper leases), fencing tokens stop the old leader from writing, and clients re-resolve where the leader is. Failover must be <strong>tested regularly</strong> or it will not work when needed.</li>
+<li><strong>In-service updates:</strong> rolling deploys with connection draining, backwards-compatible schemas (expand, migrate, contract), feature flags, versioned APIs, and readiness probes that gate traffic.</li>
 <li><strong>Static stability:</strong> the data plane keeps serving with last known config if the control plane dies.</li>
 </ul>
+<div class="mermaid">flowchart LR
+    C["Clients"] --&gt; LB["Load balancer"]
+    LB --&gt; A1["Service in AD1"]
+    LB --&gt; A2["Service in AD2"]
+    LB --&gt; A3["Service in AD3"]
+    A1 --&gt; L["DB leader in AD1"]
+    A2 --&gt; L
+    A3 --&gt; L
+    L --&gt;|"replicate log"| F2["Follower in AD2"]
+    L --&gt;|"replicate log"| F3["Follower in AD3"]
+</div>
+<p><em>What to notice:</em> stateless service copies in every AD, one leader for writes, followers in the other ADs ready to be promoted if AD1 fails.</p>
 <h3 id="my-evidence_1">My evidence</h3>
 <ul>
-<li><strong>Idempotent, replay-safe writes:</strong> <code>ReplacingMergeTree</code> keeps the latest version per key, so a retried batch or overlapping wave never duplicates. Reads use <code>argMax</code> / <code>LIMIT 1 BY</code>.</li>
-<li><strong>SHA-256 natural keys</strong> (Uber FRM): reloading the same source data produces the same keys, so reloads are upserts.</li>
-<li><strong>Optimistic row locking</strong> (FRM): version column; a concurrent update fails instead of silently overwriting.</li>
-<li><strong>Zero-downtime migration</strong> (Masters): a strangler behind the gateway, per-endpoint canaries, and config-based rollback. The shared DB during cutover avoided dual writes.</li>
-<li><strong>Stacked Bazel PRs</strong> (FRM): changes land in small, reversible steps.</li>
+<li><strong>Idempotent, replay-safe writes.</strong> <code>ReplacingMergeTree</code> is a ClickHouse table type that keeps only the newest version of rows that share the same key. Think of a notebook where you never erase, you just write the new value below, and a cleaner later crosses out the old lines. So a retried batch or an overlapping wave never creates duplicates. Reads use <code>argMax</code> or <code>LIMIT 1 BY</code> to pick the latest version before the cleaner has run.</li>
+<li><strong>SHA-256 natural keys (Uber FRM, via EPAM).</strong> A natural key is an ID computed from the content itself, for example <code>uuid = SHA-256(question_text + normalized page_name)</code>. Reloading the same source data produces the same keys, so a reload becomes an upsert (update if present, insert if not) instead of a duplicate.</li>
+<li><strong>Optimistic row locking (FRM).</strong> Each row has a version number. An update says "only if the version is still 7". If someone else changed it first, my update touches zero rows and fails loudly instead of silently overwriting.</li>
+<li><strong>Zero-downtime migration (Masters India).</strong> The strangler pattern (wrap the old system and replace it route by route, like a fig vine slowly replacing a tree) behind the gateway, a canary per route, and rollback through gateway config. Sharing the database during cutover avoided dual writes.</li>
+<li><strong>Stacked Bazel PRs (FRM).</strong> Bazel is Uber's build system. Stacked PRs are a chain of small pull requests that each land safely on their own, so changes ship in small reversible steps.</li>
 </ul>
+<p><strong>Speakable answer: "How do you design for failover?"</strong></p>
+<blockquote>
+<p>"I make the application side safe for failover, because that is what I have owned. Writes are idempotent, so a client that retries after a failover does not create duplicates. At Uber I used SHA-256 natural keys so reloads became upserts, and in ClickHouse I used ReplacingMergeTree so a retried batch collapses to one version. Every outbound call has a timeout, so clients do not hang on a dead leader. And long jobs checkpoint, so they resume instead of restarting."</p>
+</blockquote>
 <h3 id="honest-bridge">Honest bridge</h3>
 <blockquote>
 <p>"I haven't personally run a leader election or operated a multi-AD failover. Managed services (Cloud SQL, ClickHouse Cloud replicas) handled that for my systems. What I own is the application side of failover: idempotent writes so retries after failover don't duplicate, timeouts so clients don't hang on a dead leader, and replay from checkpoints or a log. For a design at OCI I'd use Raft-based replication across 3 ADs, fencing tokens, and regular game days."</p>
 </blockquote>
 <hr>
 <h2 id="3-recovery-oriented-computing-roc-retries-circuit-breakers-timeouts">3. Recovery-oriented computing (ROC), retries, circuit breakers, timeouts</h2>
-<h3 id="roc-in-one-paragraph">ROC in one paragraph</h3>
-<p>Failures are inevitable, so optimize <strong>MTTR</strong> (time to recover), not only MTBF. Principles:
-1. <strong>Fast, safe restart</strong> (crash-only software: the only way to stop is crash, and the only way to start is recovery).
-2. <strong>Isolation / partitioning</strong> so failures stay small (bulkheads, cells).
-3. <strong>Undo / rollback</strong> of operator actions and data.
-4. <strong>Checkpoints</strong> so work resumes instead of restarting.
-5. <strong>Fault injection</strong> to test recovery paths.
-6. <strong>Diagnosis aids:</strong> tracing and correlation IDs.</p>
+<p><strong>In plain English.</strong> Recovery-oriented computing accepts that things will fail and focuses on recovering fast. The goal is to make MTTR (mean time to recover) small, not only to make MTBF (mean time between failures) large. A good fire brigade matters as much as fireproof walls.</p>
+<h3 id="roc-principles">ROC principles</h3>
+<ol>
+<li><strong>Fast, safe restart.</strong> "Crash-only software" means the only way to stop is to crash, and the only way to start is the recovery path. So the recovery path is always tested.</li>
+<li><strong>Isolation and partitioning</strong> so failures stay small (bulkheads, cells).</li>
+<li><strong>Undo and rollback</strong> for operator actions and data.</li>
+<li><strong>Checkpoints</strong> so work resumes instead of restarting from zero. Like a video game save point.</li>
+<li><strong>Fault injection</strong> to test recovery paths on purpose.</li>
+<li><strong>Diagnosis aids:</strong> tracing and correlation IDs (one ID that follows a request everywhere).</li>
+</ol>
 <h3 id="my-evidence-mapped-to-roc">My evidence, mapped to ROC</h3>
 <table>
 <thead>
@@ -203,57 +279,79 @@ strong{color:#fff}
 <tbody>
 <tr>
 <td>Checkpoint and resume</td>
-<td>Orchestration registry: det results land first (<code>det.json</code>), LLM progress appended per article. <code>--resume</code> skips finished work and never recomputes the deterministic phase.</td>
+<td>Orchestration registry: deterministic results land first (<code>det.json</code>), LLM progress is appended per article (<code>agent_progress.json</code>). <code>--resume</code> skips finished work and never recomputes the deterministic phase.</td>
 </tr>
 <tr>
 <td>Crash-safe unit of work</td>
-<td>Go copier: unit = one <code>season_code</code> partition. Incomplete season means DROP PARTITION + recopy. SIGINT finishes the batch and doesn't checkpoint.</td>
+<td>Go copier: the unit is one <code>season_code</code> partition. An incomplete season means DROP PARTITION and recopy. On SIGINT (Ctrl+C) it finishes the batch and does not checkpoint.</td>
 </tr>
 <tr>
 <td>Truth from the system, not the client</td>
-<td>Loader success = <code>QueryFinish</code> in <code>system.query_log</code>, not curl exit (an HTTP client can time out after the server commits).</td>
+<td>Loader success means a <code>QueryFinish</code> row in ClickHouse's <code>system.query_log</code>, not the curl exit code. An HTTP client can time out after the server has already committed.</td>
 </tr>
 <tr>
 <td>Isolation</td>
-<td>Per-table flock. Circuit breaker per provider. Tenant scope frozen per socket.</td>
+<td>A file lock (flock) per table. A circuit breaker per provider. Tenant scope frozen per WebSocket.</td>
 </tr>
 <tr>
 <td>Undo</td>
-<td>Config-based rollback at Masters. Frozen <code>config_hash</code> per output row so any bad run is identifiable and re-runnable.</td>
+<td>Config-based rollback at Masters. A frozen <code>config_hash</code> on every output row so any bad run can be identified and re-run.</td>
 </tr>
 <tr>
 <td>Dead-letter</td>
-<td>Masters DLQ: poison batches park for operator replay.</td>
+<td>Masters DLQ (dead-letter queue): poison batches are parked for operator replay.</td>
 </tr>
 </tbody>
 </table>
+<p>The <code>config_hash</code> is a SHA-256 of the guardrails, parameters, prompts and catalog, frozen at the start of a run and stamped on every output row. It is like a batch number printed on medicine packaging. If one batch is bad, you know exactly which rows came from it.</p>
 <h3 id="timeouts">Timeouts</h3>
+<p><strong>Plain words:</strong> a timeout is the longest you are willing to wait. Without one, a slow dependency holds your threads and connections hostage.</p>
 <ul>
-<li>Every outbound call has a timeout. Set it from the dependency's p99.9, not a guess.</li>
-<li><strong>Deadline propagation:</strong> in Go, <code>context.WithTimeout</code> from the edge down, so inner calls get the <em>remaining</em> budget. That's what "nested timeouts" means on my resume.</li>
-<li>Timeouts at each layer must be <strong>decreasing</strong> inward (edge 10s &gt; service 8s &gt; DB 5s). Otherwise the outer layer gives up while the inner one still burns resources.</li>
+<li>Every outbound call has a timeout. Set it from the dependency's p99.9 latency, not a guess.</li>
+<li><strong>Deadline propagation:</strong> in Go, <code>context.WithTimeout</code> at the edge, passed down, so inner calls get the <em>remaining</em> budget. That is what "nested timeouts" means on my resume.</li>
+<li>Timeouts must <strong>decrease</strong> as you go inward (edge 10 s, service 8 s, database 5 s). Otherwise the outer layer gives up while the inner one keeps burning resources on a result nobody will read.</li>
 </ul>
+<pre><code class="language-go">// Edge sets the total budget; every inner call inherits what is left.
+func handler(c *gin.Context) {
+    ctx, cancel := context.WithTimeout(c.Request.Context(), 10*time.Second)
+    defer cancel()
+    rows, err := repo.Query(ctx, q) // DB call gets at most the remaining time
+    // ...
+}
+</code></pre>
 <h3 id="retries">Retries</h3>
+<p><strong>Plain words:</strong> a retry is trying again after a failure. It helps with brief glitches and hurts badly when the dependency is overloaded, because retries add more load.</p>
 <ul>
 <li>Only retry <strong>idempotent</strong> operations, or make them idempotent with idempotency keys.</li>
-<li><strong>Exponential backoff with jitter</strong> (full jitter: <code>sleep = random(0, min(cap, base * 2^attempt))</code>).</li>
-<li><strong>Cap</strong> attempts, and use a <strong>retry budget</strong> (e.g. retries ≤ 10% of requests) to avoid retry storms.</li>
-<li>Retry at <strong>one</strong> layer only. Retries at 3 layers × 3 attempts = 27x amplification.</li>
-<li>Don't retry 4xx (except 429 with Retry-After).</li>
+<li>Use <strong>exponential backoff with jitter</strong>. "Full jitter" is <code>sleep = random(0, min(cap, base × 2^attempt))</code>. Jitter spreads clients out so they do not all retry at the same instant.</li>
+<li><strong>Cap</strong> attempts, and use a <strong>retry budget</strong> (for example, retries no more than 10% of requests) to avoid retry storms.</li>
+<li>Retry at <strong>one</strong> layer only. Three layers each retrying 3 times gives 3 × 3 × 3 = 27 times amplification.</li>
+<li>Do not retry 4xx client errors, except 429 (Too Many Requests) with a <code>Retry-After</code> header.</li>
 </ul>
+<p><strong>Worked example of backoff:</strong> base 100 ms, cap 2 s. Attempt 0 waits up to 100 ms, attempt 1 up to 200 ms, attempt 2 up to 400 ms, attempt 3 up to 800 ms, attempt 4 up to 1.6 s, and attempt 5 and later up to 2 s.</p>
 <h3 id="circuit-breaker">Circuit breaker</h3>
+<p><strong>Plain words:</strong> a circuit breaker is like the fuse box in your house. When a dependency keeps failing, the breaker "trips" and you stop calling it for a while, which protects both you and it. After a cool-off you let one test call through.</p>
 <ul>
-<li>States: <strong>closed</strong> (normal, count failures), <strong>open</strong> (fail fast for a cool-off period), <strong>half-open</strong> (let a few trial requests through; success closes, failure reopens).</li>
-<li>Trip on consecutive failures or failure rate over a window with a minimum request count.</li>
+<li><strong>Closed:</strong> normal, count failures. <strong>Open:</strong> fail fast for a cool-off period. <strong>Half-open:</strong> let a few trial requests through; success closes the breaker, failure reopens it.</li>
+<li>Trip on consecutive failures, or on failure rate over a window with a minimum request count (so 1 failure out of 1 request does not trip it).</li>
 <li><strong>Fallback</strong> when open: cached value, default, degraded response, or fail fast with a clear error.</li>
-<li>My registry trips after about 5 consecutive failures or a fail fraction. When open, articles get the <strong>deterministic baseline</strong> score (graceful degradation), and the run finishes.</li>
+<li>My orchestration registry trips after <strong>about 5 consecutive failures or a fail fraction</strong>. When open, articles get the <strong>deterministic baseline score</strong> (graceful degradation) and the run still finishes.</li>
 </ul>
+<div class="mermaid">stateDiagram-v2
+    [*] --&gt; Closed
+    Closed --&gt; Open: failures reach threshold
+    Open --&gt; HalfOpen: cooldown elapsed
+    HalfOpen --&gt; Closed: trial succeeds
+    HalfOpen --&gt; Open: trial fails
+</div>
+<p><em>What to notice:</em> there is no path from Open straight to Closed. You always test with a trial first.</p>
 <h3 id="bulkheads-and-load-shedding">Bulkheads and load shedding</h3>
 <ul>
-<li>Separate pools per dependency so one slow dependency can't eat all threads or connections.</li>
-<li>Shed load early (at admission) with 429/503 when queues are too deep. Serving everyone slowly is worse than rejecting some fast.</li>
+<li><strong>Bulkhead:</strong> separate pools per dependency, so one slow dependency cannot eat all threads or connections. Named after the walls between compartments in a ship's hull.</li>
+<li><strong>Load shedding:</strong> reject early (at admission) with 429 or 503 when queues are too deep. Serving everyone slowly is worse than rejecting some quickly.</li>
 </ul>
-<p>Go sketch for "timeout + retry + breaker" (they may ask you to write it):</p>
+<h3 id="go-sketch-for-timeout-plus-retry-plus-breaker-they-may-ask-you-to-write-it">Go sketch for "timeout plus retry plus breaker" (they may ask you to write it)</h3>
+<p><strong>Plain words first.</strong> <code>Breaker</code> counts failures under a mutex. Once the count hits the threshold it sets <code>openUntil</code> and refuses calls until that time. <code>CallWithRetry</code> gives each attempt its own 2-second timeout, stops immediately if the breaker is open, and sleeps a jittered, growing backoff between attempts while respecting the caller's overall deadline. This is simplified: after the cooldown it lets all traffic back in, whereas a true half-open state lets only one trial through (see the Python version in <a href="05_lld_problems.html">LLD problems</a> section 8).</p>
 <pre><code class="language-go">type Breaker struct {
     mu        sync.Mutex
     failures  int
@@ -308,217 +406,316 @@ func CallWithRetry(ctx context.Context, b *Breaker, attempts int, fn func(contex
     return err
 }
 </code></pre>
+<p><strong>Speakable answer: "Tell me about a circuit breaker you built."</strong></p>
+<blockquote>
+<p>"In the AssortSmart orchestration registry, every LLM provider call goes through a hard timeout and a circuit breaker per provider. The breaker trips after about five consecutive failures or a failure fraction. When it is open, the article gets its deterministic baseline score instead of an LLM score, so the run still finishes and the telemetry shows how many items fell back. I chose degrade-and-finish over fail-the-run because a planner would rather have a complete, slightly less nuanced result than nothing."</p>
+<p><em>Follow-up they may ask:</em> "How do you know the fallback isn't hiding a problem?" The per-run JSON telemetry records batch fallbacks, so a high fallback rate is visible. I would alarm on it (see section 4).</p>
+</blockquote>
 <hr>
 <h2 id="4-tests-alarms-dashboards-telemetry">4. Tests, alarms, dashboards, telemetry</h2>
+<p><strong>In plain English.</strong> You cannot run what you cannot see. Telemetry is the data a system emits about itself (logs, metrics, traces). Dashboards show it. Alarms wake a human only when customers are hurting. Tests stop bad changes before they ship.</p>
+<h3 id="words-you-need_2">Words you need</h3>
+<ul>
+<li><strong>SLI (Service Level Indicator):</strong> a measured number, like "percent of requests under 200 ms".</li>
+<li><strong>SLO (Service Level Objective):</strong> the target for that number, like "99.9%".</li>
+<li><strong>Error budget:</strong> the failure you are allowed. 99.9% availability means 0.1% may fail, about 43 minutes a month (0.001 × 30 × 24 × 60 = 43.2). When the budget is burnt, you freeze risky launches.</li>
+<li><strong>Burn rate:</strong> how fast you are spending the error budget. A burn rate of 1 uses exactly the whole budget in the window. A burn rate of 14.4 uses 2% of a 30-day budget in one hour (14.4 / 720 hours = 0.02).</li>
+<li><strong>Four golden signals:</strong> latency, traffic, errors, saturation. <strong>RED</strong> for services: rate, errors, duration. <strong>USE</strong> for resources: utilization, saturation, errors.</li>
+<li><strong>Distributed trace:</strong> a record of one request as it hops across services, like a parcel tracking history.</li>
+<li><strong>Correlation ID:</strong> one ID attached to a request and copied into every log line, so you can search one ID and see the whole story.</li>
+</ul>
 <h3 id="what-a-strong-answer-covers_2">What a strong answer covers</h3>
 <ul>
-<li><strong>SLIs</strong> (availability, latency p99, error rate, freshness), <strong>SLOs</strong> (targets), <strong>error budgets</strong> (what you can burn before freezing launches).</li>
-<li><strong>Four golden signals:</strong> latency, traffic, errors, saturation. <strong>RED</strong> for services (rate, errors, duration). <strong>USE</strong> for resources (utilization, saturation, errors).</li>
-<li><strong>Alarms on symptoms</strong> (customer impact), not causes. Page only on things that need a human now. Everything else is a ticket.</li>
-<li><strong>Multi-window burn-rate alerts:</strong> for example, page if the 1h burn rate is &gt; 14.4x <em>and</em> the 5m burn rate is &gt; 14.4x.</li>
-<li><strong>Canaries / synthetic probes:</strong> a script that continuously calls your API like a customer, from outside.</li>
-<li>Dashboards: one top-level "is it healthy?" page, then drill-downs per dependency. Deploy markers on graphs.</li>
-<li>Telemetry: structured logs with correlation IDs, metrics (counters, histograms), and distributed traces.</li>
+<li>SLIs (availability, p99 latency, error rate, freshness), SLOs (targets), and error budgets.</li>
+<li><strong>Alarms on symptoms</strong> (customer impact), not causes. Page only when a human is needed now. Everything else is a ticket.</li>
+<li><strong>Multi-window burn-rate alerts.</strong> For example, page if the 1-hour burn rate is above 14.4 <em>and</em> the 5-minute burn rate is above 14.4. The long window proves it is real, the short window proves it is still happening.</li>
+<li><strong>Canaries / synthetic probes:</strong> a script that calls your API like a customer, from outside, all the time.</li>
+<li>Dashboards: one top-level "is it healthy?" page, then drill-downs per dependency, with deploy markers on graphs.</li>
+<li>Telemetry: structured logs with correlation IDs, metrics (counters, histograms), distributed traces.</li>
 <li>Tests: unit, integration, contract, end-to-end, load, chaos. Alarms themselves should be tested.</li>
 </ul>
 <h3 id="my-evidence_2">My evidence</h3>
 <ul>
-<li><strong>Masters India:</strong> built ELK + New Relic on-call alerting on error rate and latency, with structured JSON logs and request IDs across services and workers. <strong>Triage 70% faster</strong> (about 30 min to under 10), support tickets down 35%.</li>
-<li><strong>AssortSmart:</strong> Datadog distributed tracing on the Go edge. <strong>Per-run JSON telemetry</strong> in the orchestration registry: tokens, USD cost, step duration, and batch fallbacks. Every output row is stamped with a frozen <code>config_hash</code>. LangSmith traces on Ask Iris.</li>
-<li><strong>Tests as guardrails:</strong> 300-case eval + 80% CI gate. Coverage 35 to 82% (Masters), 100% statement coverage (FRM migration; IA Go CI).</li>
-<li><strong>Alarm example I'd define for the Keep/Drop engine:</strong> fallback rate &gt; X% in a run (provider degraded), cost per 1k items above budget, and run duration p95.</li>
+<li><strong>Masters India.</strong> I built ELK (Elasticsearch, Logstash, Kibana: a log search stack) plus New Relic (a tracing and monitoring service) alerting on error rate and latency, with structured JSON logs and request IDs across services and workers. Incident triage became <strong>70% faster (ESTIMATED, about 30 minutes to under 10 minutes)</strong>. Older resumes also said support tickets fell 35%. That number is not on the current resume, so don't quote it.</li>
+<li><strong>AssortSmart (Impact Analytics).</strong> Datadog distributed tracing on the Go edge. <strong>Per-run JSON telemetry</strong> in the orchestration registry: tokens, USD cost, step duration and batch fallbacks. Every output row is stamped with a frozen <code>config_hash</code>. LangSmith (LangChain's tracing tool for LLM apps) traces on Ask Iris only.</li>
+<li><strong>Tests as guardrails.</strong> A <strong>300-case proxy evaluation harness</strong> with an <strong>80% accuracy CI gate</strong>. This is a promotion gate, not live accuracy for every tenant. Coverage <strong>from 35% to 82%</strong> at Masters. <strong>100% module statement coverage</strong> on the FRM ORM migration at Uber (on the PDF). The IA Go platform's 100% statement coverage is verbal / off PDF.</li>
+<li><strong>Alarms I would define for the Keep/Drop engine:</strong> fallback rate above a threshold in a run (provider degraded), cost per 1k items above budget, and run duration p95.</li>
 </ul>
+<p><strong>Speakable answer: "How do you know your system is healthy?"</strong></p>
+<blockquote>
+<p>"I start from what the customer feels, so the first alarms are on error rate and latency, not CPU. At Masters India I set up ELK and New Relic with structured JSON logs and a request ID that followed an invoice across services and workers, and that cut incident triage by about 70%, roughly from 30 minutes to under 10. On AssortSmart, every batch run writes JSON telemetry with tokens, cost, step duration and fallbacks, and every output row carries a config hash. So if results look wrong, I can tell exactly which configuration produced them."</p>
+</blockquote>
 <p>Honest line: "I built alerting and dashboards and was on the escalation path at Masters. I don't claim a formal pager rotation title."</p>
 <hr>
 <h2 id="5-runbooks-incident-response-rca">5. Runbooks, incident response, RCA</h2>
+<p><strong>In plain English.</strong> An incident is when customers are hurt now. The first job is to stop the hurt (mitigate), not to understand it. Understanding comes after, in a blameless review that produces fixes with owners. A runbook is the recipe card on-call engineers follow at 3 a.m.</p>
 <h3 id="incident-response-flow-say-this-as-a-sequence">Incident response flow (say this as a sequence)</h3>
 <ol>
-<li><strong>Detect:</strong> alarm or customer report. Acknowledge.</li>
-<li><strong>Triage:</strong> severity by customer impact and blast radius. Open an incident channel. Assign roles for big incidents (incident commander, comms, ops).</li>
-<li><strong>Mitigate first, root-cause later:</strong> roll back the last change, shift traffic away from a bad AD/cell, scale up, flip a feature flag, shed load. "What changed?" is the first question.</li>
-<li><strong>Communicate:</strong> status updates on a cadence, and customer-facing status if external.</li>
-<li><strong>Resolve and verify:</strong> metrics back to baseline.</li>
-<li><strong>RCA / COE:</strong> timeline, impact, 5 whys, what went well and badly, <strong>action items with owners and dates</strong>. Blameless: focus on mechanisms, not people.</li>
-<li><strong>Follow through:</strong> action items tracked to done. Add alarms/tests that would have caught it.</li>
+<li><strong>Detect:</strong> an alarm or a customer report. Acknowledge it.</li>
+<li><strong>Triage:</strong> set severity by customer impact and blast radius. Open an incident channel. For big incidents, assign roles: incident commander, communications, operations.</li>
+<li><strong>Mitigate first, root-cause later:</strong> roll back the last change, shift traffic away from a bad AD or cell, scale up, flip a feature flag, or shed load. "What changed?" is the first question.</li>
+<li><strong>Communicate:</strong> status updates on a fixed cadence, and a customer-facing status page if external.</li>
+<li><strong>Resolve and verify:</strong> metrics are back to baseline.</li>
+<li><strong>RCA / COE:</strong> timeline, impact, 5 whys, what went well and badly, <strong>action items with owners and dates</strong>. Blameless means you fix mechanisms, not people.</li>
+<li><strong>Follow through:</strong> track action items to done. Add the alarms and tests that would have caught it.</li>
 </ol>
+<div class="mermaid">flowchart LR
+    D["Detect"] --&gt; T["Triage severity"]
+    T --&gt; M["Mitigate: rollback, shift, flag"]
+    M --&gt; C["Communicate"]
+    C --&gt; R["Resolve and verify"]
+    R --&gt; A["RCA with owners"]
+    A --&gt; F["Follow through: new alarms and tests"]
+</div>
+<p><em>What to notice:</em> mitigation comes before root cause. Interviewers listen for that ordering.</p>
 <h3 id="runbook-structure">Runbook structure</h3>
 <ul>
 <li><strong>Symptom / alarm name</strong>, what it means, customer impact.</li>
 <li><strong>Dashboards and queries</strong> to check (links).</li>
 <li><strong>Diagnosis tree:</strong> if X, go to step N.</li>
-<li><strong>Mitigation steps</strong> as copy-pasteable, idempotent commands. Prefer scripts over manual steps (people make mistakes, per "Choose safety").</li>
+<li><strong>Mitigation steps</strong> as copy-pasteable, idempotent commands. Prefer scripts over manual steps, because people make mistakes under pressure (OCI's "Choose safety" value).</li>
 <li><strong>Rollback steps.</strong></li>
-<li><strong>Escalation:</strong> who, when.</li>
-<li><strong>Verification:</strong> how to know it's fixed.</li>
+<li><strong>Escalation:</strong> who, and when.</li>
+<li><strong>Verification:</strong> how to know it is fixed.</li>
 </ul>
 <h3 id="my-real-incident-story-use-for-walk-me-through-an-incident">My real incident story (use for "walk me through an incident")</h3>
-<p><strong>64.1M half-loaded partition.</strong>
-- Detect: counts didn't reconcile between product and store rollups at the same filters.
-- Diagnose: a failed HTTP INSERT still commits the blocks it wrote. My resume check "skip if partition has rows" treated a partial partition as done.
-- Mitigate: DROP PARTITION for that season and rebuild.
-- Root cause: success signal came from the wrong place (row existence or client exit code).
-- Fix: TSV ledger of finished <code>(kind, season_code)</code>; success = <code>QueryFinish</code> in <code>system.query_log</code>; no ledger entry = drop and rebuild.
-- Prevent: failure catalog entry "never <code>count() &gt; 0</code> for success"; parity check <code>sum(product) = sum(store) = sum(attr)</code> at the same filters.</p>
-<p>I also wrote a failure catalog for the copier (9 entries: OOM, half-written partition, client timeout after commit, EOF, retrying a spent batch, TLS reset, allowlists, oversubscription, secrets). That is effectively a runbook.</p>
-<p>Other options: the Masters <strong>double-filing near-miss</strong> review (it became the team's incident template) and the <strong>timeout canary rollback</strong>.</p>
+<p><strong>The 64.1M-row half-loaded partition (ClickHouse rollup loader).</strong></p>
+<ul>
+<li><strong>Detect:</strong> counts did not reconcile between the product and store rollups at the same filters.</li>
+<li><strong>Diagnose:</strong> a failed HTTP INSERT into ClickHouse still commits the blocks it already wrote. My resume check, "skip the season if its partition already has rows", treated a partial partition as done.</li>
+<li><strong>Mitigate:</strong> DROP PARTITION for that season and rebuild it.</li>
+<li><strong>Root cause:</strong> the success signal came from the wrong place (row existence or the client's exit code).</li>
+<li><strong>Fix:</strong> a TSV ledger of finished <code>(kind, season_code)</code> pairs. Success means a <code>QueryFinish</code> entry in <code>system.query_log</code>. No ledger entry means drop and rebuild.</li>
+<li><strong>Prevent:</strong> a failure catalog entry, "never use <code>count() &gt; 0</code> as success", plus a parity check that <code>sum(product) = sum(store) = sum(attr)</code> at the same filters.</li>
+</ul>
+<p><strong>Speakable version.</strong></p>
+<blockquote>
+<p>"One weekly rollup season reconciled wrong between the product and store tables. I found that a failed HTTP insert into ClickHouse had still committed part of its data, about 64 million rows, and my loader's resume logic saw rows in the partition and treated it as finished. I mitigated by dropping that partition and rebuilding it. The root cause was trusting the wrong success signal, so I changed the loader to record success in a ledger only after ClickHouse's own query log showed the insert finished, and I added a parity check across the three rollups. The lesson I took is that data being present is not the same as the job having succeeded."</p>
+</blockquote>
+<p>I also wrote a failure catalog for the copier with 9 entries: OOM, half-written partition, client timeout after commit, EOF, retrying a spent batch, TLS reset, IP allowlists, oversubscription, and secrets handling. That is effectively a runbook.</p>
+<p>Other options: the Masters <strong>double-filing near-miss</strong> review (it became the team's incident template) and the <strong>timeout canary rollback</strong>. Details for both are in <a href="07_projects_deep_dive.html">projects deep dive</a> and <a href="01_core_values_star.html">core values STAR</a>.</p>
 <hr>
 <h2 id="6-fault-injection-and-brown-out-testing">6. Fault injection and brown-out testing</h2>
+<p><strong>In plain English.</strong> Fault injection means breaking things on purpose to prove the recovery works, like a fire drill. A brown-out is a partial failure: the dependency is slow, or fails some requests. Brown-outs are harder than clean outages, because the system has to decide when to give up.</p>
 <h3 id="concepts">Concepts</h3>
 <ul>
-<li><strong>Fault injection:</strong> deliberately inject failures (kill instance, add latency, drop packets, return 500s, fill disk, expire certs, clock skew) to verify detection, failover, and recovery work. Start in test, then staging, then small production experiments with an abort switch.</li>
-<li><strong>Brown-out:</strong> partial degradation, not full outage. The dependency is <em>slow</em> or fails 20% of requests. That is harder than a clean failure, because timeouts, retries, and breakers must all behave. Brown-outs cause most real cascades (retry storms, thread pool exhaustion).</li>
-<li><strong>Game days:</strong> scheduled exercises where a team practices an incident with runbooks.</li>
-<li>Tools: Chaos Monkey style instance kill, <code>tc netem</code> for latency and loss, Toxiproxy between service and dependency, fault flags in code.</li>
+<li><strong>Fault injection:</strong> kill an instance, add latency, drop packets, return 500s, fill a disk, expire certificates, skew a clock. Start in test, then staging, then small production experiments with an abort switch.</li>
+<li><strong>Brown-out:</strong> a slow dependency, or one failing 20% of requests. Timeouts, retries and breakers must all behave together. Brown-outs cause most real cascades (retry storms, thread pool exhaustion).</li>
+<li><strong>Game days:</strong> scheduled exercises where a team practises an incident using its runbooks.</li>
+<li>Tools: Chaos Monkey-style instance kills, <code>tc netem</code> for latency and packet loss, Toxiproxy between a service and its dependency, and fault flags in code.</li>
 </ul>
-<h3 id="what-id-test-for-my-systems-strong-because-its-specific">What I'd test for my systems (strong because it's specific)</h3>
+<h3 id="what-i-would-test-for-my-systems-strong-because-it-is-specific">What I would test for my systems (strong because it is specific)</h3>
 <table>
 <thead>
 <tr>
 <th>Fault</th>
-<th>Expected behavior</th>
+<th>Expected behaviour</th>
 <th>Where my design handles it</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>LLM provider returns 504 for 20% of calls (brown-out)</td>
-<td>Timed batches fall back to det score; breaker opens after threshold; run finishes; telemetry shows fallback rate</td>
-<td>Registry</td>
+<td>Timed-out batches fall back to the deterministic score. The breaker opens after its threshold. The run finishes. Telemetry shows the fallback rate</td>
+<td>Orchestration registry</td>
 </tr>
 <tr>
 <td>Process killed mid-run</td>
-<td><code>--resume</code> reloads det, skips finished articles</td>
+<td><code>--resume</code> reloads <code>det.json</code> and skips finished articles</td>
 <td>Checkpoints</td>
 </tr>
 <tr>
 <td>ClickHouse INSERT fails midway</td>
-<td>Partition not in ledger; DROP + rebuild</td>
+<td>The partition is not in the ledger, so it is dropped and rebuilt</td>
 <td>Loader ledger</td>
 </tr>
 <tr>
 <td>Copier TLS reset</td>
-<td>Crash; season not checkpointed; rerun recopies</td>
+<td>The copier crashes. The season is not checkpointed. A rerun recopies it</td>
 <td>Copier</td>
 </tr>
 <tr>
 <td>IRP slow (Masters)</td>
-<td>Async 202; bounded concurrency; backoff with jitter; DLQ after max attempts</td>
+<td>Async 202 Accepted, bounded concurrency, backoff with jitter, DLQ after max attempts</td>
 <td>Bulk pipeline</td>
 </tr>
 <tr>
 <td>Redis down</td>
-<td>Auth falls through the waterfall to source of truth; latency up, not errors</td>
+<td>Auth falls through the waterfall to the source of truth. Latency goes up, but no errors</td>
 <td>Auth cache-aside</td>
 </tr>
 </tbody>
 </table>
+<p>IRP is the government Invoice Registration Portal. It returns an IRN (Invoice Reference Number) and a signed QR code for each valid e-invoice.</p>
+<p><strong>Speakable answer: "How would you test resilience in your system?"</strong></p>
+<blockquote>
+<p>"I would start with a brown-out, not a clean outage, because that is what really happens. For the Keep/Drop engine I would make the LLM provider return 504 for 20% of calls and check three things: timed-out batches fall back to the deterministic score, the breaker opens, and the run still completes with the fallback rate visible in telemetry. Then I would kill the process mid-run and confirm <code>--resume</code> skips finished work without recomputing the deterministic phase."</p>
+</blockquote>
 <hr>
 <h2 id="7-replication-synchronization-data-integrity">7. Replication, synchronization, data integrity</h2>
+<p><strong>In plain English.</strong> When data lives in several places, the copies drift. Synchronization is how they catch up. Integrity checks prove the copies, and any derived tables, still agree with the source.</p>
 <h3 id="concepts_1">Concepts</h3>
 <ul>
-<li>Replication modes and consistency levels (see <a href="04_system_design_fundamentals.html">fundamentals</a> §6).</li>
-<li><strong>Synchronization</strong> techniques: change data capture, log shipping, anti-entropy with <strong>Merkle trees</strong>, read repair, hinted handoff, version vectors, last-writer-wins (with the clock caveat), CRDTs.</li>
-<li><strong>Integrity checks:</strong> checksums per block/object (end to end), row counts and sums per partition, parity checks between derived and source data, periodic scrubbing.</li>
+<li>Replication modes and consistency levels are in <a href="04_system_design_fundamentals.html">fundamentals</a> section 6.</li>
+<li><strong>Synchronization techniques:</strong></li>
+<li><strong>CDC (change data capture):</strong> stream every committed change out of a database's log. Like subscribing to a bank statement instead of re-reading your whole account.</li>
+<li><strong>Log shipping:</strong> copy the database's write-ahead log to a replica.</li>
+<li><strong>Anti-entropy with Merkle trees:</strong> a tree of hashes lets two replicas find which ranges differ by comparing a few hashes, instead of comparing every row.</li>
+<li><strong>Read repair:</strong> when a read finds a stale replica, fix it on the spot.</li>
+<li><strong>Hinted handoff:</strong> if a replica is down, another node holds its writes and hands them over later.</li>
+<li><strong>Version vectors / last-writer-wins (LWW):</strong> ways to resolve conflicts. LWW depends on clocks, which drift, so it can lose writes.</li>
+<li><strong>CRDTs (conflict-free replicated data types):</strong> data types designed so merges always converge, like a counter where each node only increments its own slot.</li>
+<li><strong>Integrity checks:</strong> checksums per block or object (end to end), row counts and sums per partition, parity checks between derived and source data, and periodic scrubbing (background re-verification).</li>
 </ul>
 <h3 id="my-evidence_3">My evidence</h3>
 <ul>
-<li>Parity validation: <code>sum(product)</code> vs <code>sum(store)</code> vs <code>sum(attr)</code> at the same filters. Store totals are re-weighted to match SKU sums. Earlier season-grain parity was 0% difference across seasons 1 to 7.</li>
-<li>Row-identical harness to verify ClickHouse answers equal Postgres answers.</li>
-<li>SHA-256 natural keys for idempotent reload (FRM).</li>
-<li>Keyed dedup with exactly-once upserts (Uber Menu: Kafka + Flink). I say honestly that end to end it's at-least-once plus idempotent upsert.</li>
+<li><strong>Parity validation</strong> in ClickHouse: <code>sum(product)</code> vs <code>sum(store)</code> vs <code>sum(attr)</code> at the same filters. Store totals are re-weighted to match SKU sums. Older prep notes that earlier season-grain parity showed 0% difference across seasons 1 to 7.</li>
+<li><strong>Row-identical harness</strong> to verify ClickHouse answers equal Postgres answers on the same 250M rows.</li>
+<li><strong>SHA-256 natural keys</strong> for idempotent reloads (Uber FRM).</li>
+<li><strong>Keyed dedup with exactly-once catalog upserts</strong> (Uber Menu: Kafka plus Apache Flink). Say this honestly: end to end it is at-least-once delivery plus idempotent upserts. I do not claim zero message loss or two-phase commit across third parties.</li>
 </ul>
+<pre><code class="language-sql">-- Parity check: the three rollups must agree at the same grain
+SELECT
+  (SELECT sum(units) FROM rollup_product WHERE season_code = 'S1') AS p,
+  (SELECT sum(units) FROM rollup_store   WHERE season_code = 'S1') AS s,
+  (SELECT sum(units) FROM rollup_attr    WHERE season_code = 'S1') AS a;
+-- Expect p = s = a. Any gap means a partial or double load.
+</code></pre>
+<p>(Table and column names here are illustrative, not the real schema.)</p>
 <hr>
 <h2 id="8-zero-maintenance-windows">8. Zero maintenance windows</h2>
 <p><strong>JD:</strong> "ensuring no maintenance windows are required for customers and users when resolving issues."</p>
+<p><strong>In plain English.</strong> Customers should never see "down for maintenance". Every fix and every schema change must be applied while the service keeps serving. It is like repairing a motorway one lane at a time while traffic keeps moving.</p>
 <h3 id="techniques">Techniques</h3>
 <ul>
-<li>Rolling deploys with draining. Blue/green. Canary.</li>
-<li><strong>Expand/contract schema migrations:</strong> add the new column (nullable), dual-write or backfill, switch reads, then drop the old column in a later release. Never rename in place.</li>
-<li>Online index builds. Chunked backfills with throttling.</li>
+<li>Rolling deploys with connection draining. Blue/green (two full environments, switch traffic). Canary (a small slice first).</li>
+<li><strong>Expand/contract schema migrations:</strong> add the new column as nullable, dual-write or backfill, switch reads, then drop the old column in a later release. Never rename in place.</li>
+<li>Online index builds. Chunked, throttled backfills.</li>
 <li>Feature flags to turn off a broken path without a deploy.</li>
-<li>Backwards and forwards compatible API and message formats (add fields, never repurpose).</li>
-<li>Config-driven behavior (hot reload) so fixes don't need restarts.</li>
+<li>Backwards- and forwards-compatible API and message formats: add fields, never repurpose them.</li>
+<li>Config-driven behaviour (hot reload) so fixes do not need restarts.</li>
 </ul>
+<p><strong>Worked example (expand/contract to rename <code>cust_name</code> to <code>customer_name</code>):</strong></p>
+<ol>
+<li>Release 1: add <code>customer_name</code> (nullable). Code writes both columns, reads the old one.</li>
+<li>Backfill <code>customer_name</code> from <code>cust_name</code> in chunks of, say, 10,000 rows with a pause between chunks.</li>
+<li>Release 2: read <code>customer_name</code>, still write both.</li>
+<li>Release 3: stop writing <code>cust_name</code>.</li>
+<li>Release 4: drop <code>cust_name</code>.</li>
+</ol>
+<p>At every step, the previous release still works, so rollback is always safe.</p>
 <h3 id="my-evidence_4">My evidence</h3>
 <ul>
-<li><strong>Masters strangler:</strong> per-endpoint canary, rollback via gateway config, shared DB during cutover (no dual writes), contract tests pinning old PHP responses field by field so clients saw no payload change.</li>
-<li><strong>KPI configurator:</strong> new formulas without a code release.</li>
-<li><strong>ClickHouse partition rebuilds:</strong> per season, while other seasons keep serving. Honest caveat: DROP PARTITION then recopy is <em>not</em> an atomic swap. The proper design is building into a scratch table and <code>REPLACE PARTITION</code>. That was written but not executed.</li>
+<li><strong>Masters strangler migration:</strong> a canary per endpoint, rollback through gateway config, a shared database during cutover (no dual writes), and contract tests that pinned the old PHP responses field by field, so clients saw no payload change.</li>
+<li><strong>KPI configurator:</strong> new formulas ship as data, without a code release.</li>
+<li><strong>ClickHouse partition rebuilds:</strong> one season at a time, while the other seasons keep serving. Say this carefully: DROP PARTITION then recopy is <strong>not</strong> an atomic swap with live readers. During the gap that season is missing. The proper design is to build into a scratch table and then <code>REPLACE PARTITION</code>. That design was written but not executed.</li>
 </ul>
 <hr>
 <h2 id="9-automation-troubleshooting-tooling-infrastructure-as-code">9. Automation, troubleshooting tooling, Infrastructure as Code</h2>
+<p><strong>In plain English.</strong> Infrastructure as Code (IaC) means servers, networks and permissions are described in files that are reviewed and versioned like application code, instead of being clicked together in a console. Good operational tools are safe to run twice and show you what they will do before they do it.</p>
 <h3 id="concepts_2">Concepts</h3>
 <ul>
-<li>IaC (Terraform, which OCI supports through the OCI Terraform provider and <strong>Resource Manager</strong>): declarative, reviewed in PRs, <code>plan</code> before <code>apply</code>, remote state with locking, modules, drift detection.</li>
-<li>Immutable infrastructure: replace, don't patch in place.</li>
-<li>Operational tooling: scripts that are <strong>idempotent</strong>, have <code>--dry-run</code>, log what they do, and require confirmation for destructive steps.</li>
+<li><strong>IaC</strong> with Terraform (OCI supports it through the OCI Terraform provider and <strong>Resource Manager</strong>, OCI's managed Terraform service): declarative files, reviewed in PRs, <code>plan</code> before <code>apply</code>, remote state with locking, modules, and drift detection (noticing when reality no longer matches the files).</li>
+<li><strong>Immutable infrastructure:</strong> replace servers, do not patch them in place. Like replacing a light bulb instead of rewiring it.</li>
+<li><strong>Operational tooling</strong> should be <strong>idempotent</strong>, have <code>--dry-run</code>, log what it does, and ask for confirmation before destructive steps.</li>
 </ul>
 <h3 id="my-evidence_5">My evidence</h3>
 <ul>
-<li><strong>Go copier</strong> as operational tooling: per-table flock, checkpoint ledger, <code>-reset</code> required for full truncate, env-only secrets (never <code>.env</code> auto-read, never committed).</li>
-<li><strong>Generated settings:</strong> weekly rollup memory caps, thread counts, and spill are generated per build, not hand-typed.</li>
-<li><strong>CI/CD:</strong> Bazel at Uber, Docker, CI gates (coverage, eval, SAST/SBOM on IA).</li>
+<li><strong>Go copier as operational tooling:</strong> a flock (file lock) per table so two copies cannot run on the same table, a checkpoint ledger, a required <code>-reset</code> flag for a full truncate, and secrets read only from the environment (never auto-read from a <code>.env</code> file, never committed).</li>
+<li><strong>Generated settings:</strong> weekly rollup memory caps, thread counts and spill settings are generated per build, not hand-typed.</li>
+<li><strong>CI/CD:</strong> Bazel at Uber, Docker, and CI gates (coverage, evaluation, and SAST/SBOM on IA as a verbal detail). SAST is static application security testing (scanning code for vulnerabilities). SBOM is a software bill of materials (a list of every dependency).</li>
 <li><strong>Resume flags</strong> (<code>--resume</code>) on the batch engine.</li>
 </ul>
 <h3 id="honest-bridge_1">Honest bridge</h3>
 <blockquote>
 <p>"I've written Dockerfiles and CI pipelines and built operational tooling. I haven't been the Terraform owner for a production estate. I know the workflow (modules, remote state with locking, plan in PR, apply from CI), and I'd be comfortable picking up OCI Resource Manager."</p>
 </blockquote>
+<p>More on Terraform as it came up in the real loop: <a href="08c_behavioral_terraform.html">08c behavioral and Terraform</a>.</p>
 <hr>
 <h2 id="10-security-in-multi-tenant-environments">10. Security in multi-tenant environments</h2>
+<p><strong>In plain English.</strong> Multi-tenant means many customers share the same software and hardware. Security means each tenant can only see its own data, secrets stay secret, and data is protected both on the wire and on disk. It is like an apartment building: shared walls and plumbing, but every flat has its own lock, and the building manager never hands out the wrong key.</p>
 <h3 id="concepts-to-cover">Concepts to cover</h3>
 <ul>
-<li><strong>Encryption in transit:</strong> TLS everywhere, mTLS between services, cert rotation.</li>
-<li><strong>Encryption at rest:</strong> <strong>envelope encryption.</strong> A data encryption key (DEK) encrypts the data, and a key encryption key (KEK) in a KMS/HSM (OCI Vault) wraps the DEK. Rotation re-wraps DEKs without re-encrypting all the data. Customer-managed keys.</li>
-<li><strong>Access control:</strong> authentication (who) vs authorization (what). Least privilege, RBAC/ABAC, OCI IAM policies on compartments. Short-lived credentials (instance principals rather than static keys).</li>
-<li><strong>Tenant isolation:</strong> tenant ID derived from the <em>authenticated token</em>, never from request parameters. Enforced at the data layer (row-level security, per-tenant schemas/keys). Noisy-neighbor limits (quotas, rate limits per tenant).</li>
-<li><strong>Secrets:</strong> never in code or logs. A vault. Rotation.</li>
-<li><strong>Input safety:</strong> parameterized queries, allowlists, and constant-time comparison for secrets.</li>
-<li><strong>Remediation:</strong> vulnerability scanning (SAST, dependency/SBOM), patch SLAs by severity, and pen-test findings tracked to closure.</li>
+<li><strong>Encryption in transit:</strong> TLS everywhere, mTLS (mutual TLS, where both sides prove identity with certificates) between services, and certificate rotation.</li>
+<li><strong>Encryption at rest with envelope encryption.</strong> A data encryption key (DEK) encrypts the data. A key encryption key (KEK) stored in a KMS or HSM (OCI Vault) encrypts ("wraps") the DEK. Rotation re-wraps the DEKs without re-encrypting all the data. Think of putting your house key in a lockbox: you change the lockbox code, not every lock in the house. Customer-managed keys let a customer revoke access.</li>
+<li><strong>Access control:</strong> authentication (who you are) vs authorization (what you may do). Least privilege, RBAC (role-based) and ABAC (attribute-based) access control, OCI IAM policies on compartments, and short-lived credentials (instance principals instead of static keys).</li>
+<li><strong>Tenant isolation:</strong> the tenant ID comes from the <em>authenticated token</em>, never from request parameters. Enforce it at the data layer (row-level security, per-tenant schemas or keys). Add noisy-neighbour limits (quotas, per-tenant rate limits).</li>
+<li><strong>Secrets:</strong> never in code or logs. Use a vault. Rotate.</li>
+<li><strong>Input safety:</strong> parameterized queries, allowlists, and constant-time comparison for secrets (so an attacker cannot learn a key by timing how long a comparison takes).</li>
+<li><strong>Remediation:</strong> vulnerability scanning (SAST, dependency/SBOM), patch deadlines by severity, and pen-test findings tracked to closure.</li>
 </ul>
 <h3 id="my-evidence_6">My evidence</h3>
 <ul>
-<li><strong>Auth:</strong> Redis-fronted Firebase to JWT/OIDC waterfall on the Go platform. <strong>Constant-time API key</strong> comparison. <strong>Postgres roles</strong> per service.</li>
-<li><strong>Multi-tenant scope frozen at handshake</strong> (Ask Iris): tenant, hierarchy, and plan scope are bound when the JWT is verified on WebSocket connect. Tools can't widen it.</li>
-<li><strong>No LLM SQL tool;</strong> JSON payloads only (injection surface removed).</li>
-<li><strong>KPI compiler:</strong> allowlisted functions and logical-to-physical column mapping, compiled to <strong>parameterized</strong> SQL.</li>
-<li><strong>Uber FRM:</strong> SQL allowlists, SOX controls.</li>
-<li><strong>Secrets hygiene:</strong> env-only for Cloud passwords, never committed.</li>
+<li><strong>Auth waterfall on the Go platform.</strong> A Redis-fronted chain: check the Redis cache, then Firebase Admin, then JWT / Google OIDC. API keys are compared in <strong>constant time</strong>. Roles are resolved from PostgreSQL. Isolation here is access control, not encryption.</li>
+<li><strong>UAM-scoped access</strong> (UAM is User Access Management): multi-tenant data isolation and hierarchy-scoped access control across PostgreSQL and ClickHouse.</li>
+<li><strong>Multi-tenant scope frozen at the handshake (Ask Iris).</strong> Tenant, hierarchy and <code>plan_scope</code> are bound when the JWT is verified on WebSocket connect. Tools cannot widen it later, which prevents cross-tenant leaks.</li>
+<li><strong>No LLM SQL tool.</strong> The LLM receives JSON payloads only, which removes a whole injection surface.</li>
+<li><strong>KPI formula compiler.</strong> Allowlisted functions and logical-to-physical column mapping, compiled to <strong>parameterized</strong> SQL. Unknown tokens fail closed (are rejected).</li>
+<li><strong>Uber FRM:</strong> reporting SQL allowlists and SOX controls.</li>
+<li><strong>Secrets hygiene:</strong> cloud passwords from environment variables only, never committed.</li>
 <li><strong>CI:</strong> SAST/SBOM on the IA Go platform (verbal).</li>
 </ul>
+<pre><code class="language-go">// Constant-time API key check: time taken does not depend on how many bytes match.
+if subtle.ConstantTimeCompare([]byte(presented), []byte(expected)) != 1 {
+    return ErrUnauthorized
+}
+</code></pre>
+<p><strong>Speakable answer: "How do you keep tenants apart?"</strong></p>
+<blockquote>
+<p>"The rule I follow is that the tenant comes from the verified token, never from a request parameter. On the Go platform the auth waterfall resolves identity and roles, and every query is scoped through the user access hierarchy in both Postgres and ClickHouse. In the Ask Iris copilot, the tenant and plan scope are frozen at the WebSocket handshake, so no tool call later in the conversation can widen them. And the LLM never gets a SQL tool, only JSON payloads we prepared, which removes an injection path entirely."</p>
+</blockquote>
 <h3 id="honest-bridge-on-encryption">Honest bridge on encryption</h3>
 <blockquote>
 <p>"I've used TLS everywhere and managed KMS-backed encryption on cloud databases. I haven't implemented envelope encryption myself. I can explain it and would design with it: per-tenant DEKs wrapped by a KEK in Vault, so revoking a tenant's key crypto-shreds their data."</p>
 </blockquote>
 <hr>
 <h2 id="11-compliance-and-documentation">11. Compliance and documentation</h2>
+<p><strong>In plain English.</strong> Compliance means proving to an outside party (an auditor or a government) that you follow the rules. The proof is evidence: logs, access reviews, change records. Documentation is how a team remembers decisions and how a new person learns the system.</p>
 <ul>
-<li><strong>SOX</strong> at Uber FRM: audit trail (review status history), FSM gates (50% delta-variance blocks transitions until reviewed), change control through code review and CI. Output feeds the external auditor's work papers.</li>
-<li><strong>GST compliance</strong> at Masters: e-invoices registered with the government IRP. Idempotency prevents double filing, and records are traceable.</li>
+<li><strong>SOX (Sarbanes-Oxley, US financial controls law) at Uber FRM:</strong> an audit trail (review status history), FSM gates (a finite state machine, here a 50% delta-variance check that blocks a status transition until someone reviews it), and change control through code review and CI. Older prep notes the output feeds the external auditor's work papers.</li>
+<li><strong>GST compliance at Masters India:</strong> e-invoices registered with the government IRP. Idempotency prevents double filing, and every record is traceable.</li>
 <li><strong>Documentation habits:</strong> RFCs (the ClickHouse RFC), failure catalogs, a conventions doc for new services, and the incident review template.</li>
-<li>For OCI: know the names SOC 1/2, ISO 27001, PCI DSS, HIPAA, and FedRAMP. Compliance means evidence, meaning logs, access reviews, and change records.</li>
+<li><strong>For OCI:</strong> know the names SOC 1/2, ISO 27001, PCI DSS, HIPAA and FedRAMP. Compliance means evidence: logs, access reviews and change records.</li>
 </ul>
+<p><strong>Worked example of an FSM gate:</strong> a line item's balance was 100 last quarter and is 160 this quarter. The delta is (160 - 100) / 100 = 60%. That exceeds the 50% threshold, so the status cannot move from Review to Closed until a reviewer records a justification.</p>
 <hr>
 <h2 id="12-change-management-patching-updating-rolling-back">12. Change management: patching, updating, rolling back</h2>
+<p><strong>In plain English.</strong> Most outages are caused by changes. Safe change management means every change goes out in small waves, each wave is watched for a while (baked), and a bad wave rolls back automatically before it reaches everyone.</p>
 <h3 id="safe-deployment-pipeline-say-this-for-oci">Safe deployment pipeline (say this for OCI)</h3>
 <ol>
 <li>Code review, then CI (unit, integration, security scans), then build an immutable artifact.</li>
-<li>Deploy to <strong>pre-prod / integration</strong>, run automated tests.</li>
-<li><strong>One-box</strong> in the first production region, then bake (watch alarms automatically).</li>
-<li><strong>One fault domain</strong>, then the rest of the AD, then the other ADs, then <strong>the next region</strong>. Start with the smallest, least-used region. Bake at each step. Never deploy to multiple regions at once.</li>
+<li>Deploy to <strong>pre-prod / integration</strong> and run automated tests.</li>
+<li><strong>One-box</strong> in the first production region, then bake (alarms watched automatically).</li>
+<li><strong>One fault domain</strong>, then the rest of the AD, then the other ADs, then <strong>the next region</strong>. Start with the smallest, least-used region. Bake at each step. Never deploy to several regions at once.</li>
 <li><strong>Automated rollback</strong> when alarms fire during bake.</li>
-<li>Rollback must be tested. The previous artifact stays deployable. Data migrations must be backwards compatible, so rollback doesn't need a data rollback.</li>
-<li>Change freezes around peak periods (I did this around GST deadlines).</li>
+<li>Rollback must be tested. The previous artifact stays deployable. Data migrations must be backwards compatible, so a rollback never needs a data rollback.</li>
+<li>Change freezes around peak periods (I did this around GST filing deadlines).</li>
 </ol>
+<div class="mermaid">flowchart LR
+    B["Build artifact"] --&gt; P["Pre-prod tests"]
+    P --&gt; O["One-box, bake"]
+    O --&gt; F["One fault domain, bake"]
+    F --&gt; AD["Rest of AD, other ADs"]
+    AD --&gt; R1["Smallest region"]
+    R1 --&gt; RN["Next regions, one at a time"]
+    O -.-&gt;|"alarm fires"| RB["Auto rollback"]
+    F -.-&gt;|"alarm fires"| RB
+</div>
+<p><em>What to notice:</em> each wave is larger than the last, and every wave has a rollback exit.</p>
 <h3 id="my-evidence_7">My evidence</h3>
 <ul>
-<li>Masters canary ramps with config rollback, cutover freezes during GST deadline weeks, 98% deploy success.</li>
-<li>Uber stacked Bazel PRs: small reversible changes, and "pure refactor means zero test diff."</li>
-<li>The frozen <code>config_hash</code> on every output row makes prompt/config changes auditable and revertible.</li>
-<li>The 80% eval gate as a promotion gate for AI changes (the change management for models).</li>
+<li><strong>Masters India:</strong> canary ramps with config rollback, cutover freezes during GST deadline weeks, and <strong>98% deployment success</strong>.</li>
+<li><strong>Uber FRM:</strong> stacked Bazel PRs for small reversible changes, with the rule "a pure refactor means zero test diff".</li>
+<li><strong>AssortSmart:</strong> the frozen <code>config_hash</code> on every output row makes prompt and config changes auditable and revertible.</li>
+<li><strong>The 80% evaluation gate</strong> is the promotion gate for AI changes. It is change management for models and prompts.</li>
 </ul>
+<p><strong>Speakable answer: "How do you roll out a risky change?"</strong></p>
+<blockquote>
+<p>"Small waves with automatic rollback. At Masters India we moved a PHP monolith to FastAPI one route at a time behind the gateway, with a canary per route and rollback by flipping gateway config, and we froze cutovers during GST deadline weeks. Deployment success was 98%. For AI changes at Impact Analytics, the equivalent is the 80% CI evaluation gate: a new prompt or model does not get promoted unless it passes the 300-case harness. At OCI I would follow the one-box, fault domain, AD, region sequence with bake time at each step."</p>
+</blockquote>
 <hr>
 <h2 id="13-distributed-state-tools-they-may-name-them">13. Distributed state tools (they may name them)</h2>
+<p><strong>In plain English.</strong> Different kinds of state need different tools. A tiny, critical fact like "who is the leader" goes in a consensus store. Hot, short-lived data goes in a cache. A history of events goes in a log. Money and metadata go in a relational database. Big analytics go in a columnar store. Big files go in object storage.</p>
 <table>
 <thead>
 <tr>
@@ -530,33 +727,33 @@ func CallWithRetry(ctx context.Context, b *Breaker, attempts int, fn func(contex
 <tbody>
 <tr>
 <td>etcd / ZooKeeper / Consul</td>
-<td>Consensus-backed small KV for config, leader election, locks</td>
-<td>Coordination, not data</td>
+<td>A consensus-backed small key-value store for config, leader election and locks</td>
+<td>Coordination, not bulk data</td>
 </tr>
 <tr>
 <td>Redis / Memcached</td>
-<td>In-memory cache, rate limit counters, short-lived locks</td>
+<td>In-memory cache, rate-limit counters, short-lived locks</td>
 <td>Hot reads, counters</td>
 </tr>
 <tr>
 <td>Kafka</td>
-<td>Durable partitioned log</td>
+<td>A durable, partitioned, append-only log</td>
 <td>Event streams, replay, decoupling</td>
 </tr>
 <tr>
 <td>Cassandra / DynamoDB-like</td>
-<td>Leaderless or partitioned wide-column, tunable consistency</td>
-<td>High write volume KV</td>
+<td>Leaderless or partitioned wide-column stores with tunable consistency</td>
+<td>High write volume key-value</td>
 </tr>
 <tr>
 <td>Oracle DB / MySQL / Postgres</td>
-<td>Relational, transactions</td>
-<td>Control plane metadata</td>
+<td>Relational, transactional</td>
+<td>Control plane metadata, money</td>
 </tr>
 <tr>
 <td>ClickHouse</td>
-<td>Columnar OLAP</td>
-<td>Analytics</td>
+<td>Columnar OLAP (analytics) database</td>
+<td>Aggregations over billions of rows</td>
 </tr>
 <tr>
 <td>Object storage</td>
@@ -565,7 +762,11 @@ func CallWithRetry(ctx context.Context, b *Breaker, attempts int, fn func(contex
 </tr>
 </tbody>
 </table>
-<p>I've used Redis, Kafka, Postgres, MySQL, ClickHouse, BigQuery, and S3 in production. I know etcd/ZooKeeper conceptually (Raft/ZAB, leases, watches).</p></main>
+<p><strong>What I have used.</strong> Redis, Kafka, PostgreSQL, MySQL, ClickHouse, BigQuery and S3 in production. I know etcd and ZooKeeper conceptually (Raft and ZAB consensus, leases, watches) but have not operated them. DynamoDB is skills-level literacy, not a production ownership claim.</p>
+<p><strong>Speakable answer: "Where would you keep leader election state?"</strong></p>
+<blockquote>
+<p>"In a consensus store like etcd or ZooKeeper, not in Redis or the main database. Leader election needs linearizable writes and leases that expire when a node dies, which is exactly what Raft-based stores give you. I would also hand out a fencing token with each lease so storage can reject a paused old leader. I have not operated etcd myself, but I have built the application-side patterns that depend on it, like idempotent writes and checkpointed jobs."</p>
+</blockquote></main>
 </div>
 
 <script type="module">

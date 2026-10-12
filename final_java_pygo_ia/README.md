@@ -13,5 +13,8 @@
 - Overleaf: [`artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI_Overleaf.zip`](artifacts/Tarun_Mittal_SSE_5yr_Java_PyGo_AI_Overleaf.zip)
 - Hub: [`InterviewPrep.html`](InterviewPrep.html) · [`index.html`](index.html)
 
+## Start here
+[`handbook/00_START_HERE.md`](handbook/00_START_HERE.md) is the plain-English study handbook: intros, every number explained, each project in depth with diagrams, every technology, STAR stories and LinkedIn.
+
 ## Honesty
-Same as `prep/GROUND_TRUTH.md`. Building not shipped for AssortSmart agentic. FRM 70% is TARGET. Menu 98%/100% offline. No Spark claim on PDF. IA write plane = **Go Gin**, not Spring.
+Same as `prep/GROUND_TRUTH.md`. Ask Iris is a shipped capability (no invented SLAs). The 80% figure is a CI promotion gate, not live accuracy. FRM 70% (14 days to 3 days) is stated as the outcome on the PDF. Menu 98% is offline evaluation. No Spark claim on PDF. IA write plane = **Go Gin**, not Spring.

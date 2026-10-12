@@ -40,124 +40,686 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/42_clickhouse_rollup_migration.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#clickhouse-rollups-and-cluster-copy-pdf-p4-p5">ClickHouse rollups and cluster copy (PDF P4 / P5)</a>
-<a class="lvl2" href="#pdf-lines-memorize">PDF lines (memorize)</a>
-<a class="lvl2" href="#six-tables-draw-this-first">Six tables (draw this first)</a>
-<a class="lvl2" href="#elevator-use-this-not-a-slogan">Elevator (use this, not a slogan)</a>
-<a class="lvl2" href="#hero-story-170-gb-oom">Hero story (170 GB OOM)</a>
-<a class="lvl2" href="#interview-questions">Interview questions</a>
-<a class="lvl2" href="#failure-catalog-say-out-loud">Failure catalog (say out loud)</a>
-<a class="lvl2" href="#linkedin-outreach-honesty">LinkedIn / outreach honesty</a>
-<a class="lvl2" href="#code-map-verbal">Code map (verbal)</a></nav>
-<main><h1 id="clickhouse-rollups-and-cluster-copy-pdf-p4-p5">ClickHouse rollups and cluster copy (PDF P4 / P5)</h1>
-<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code> · Canonical: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a></p>
-<p>Interview-depth notes for the six rollup tables, the weekly <code>INSERT SELECT</code> OOM, and the Go copier. Snapshot of measured numbers: 8 Sep 2026 (generated SQL, pipeline comments, migrate checkpoints, live copy logs). If a figure is an estimate, say so.</p>
-<p><strong>Do not</strong> paste cluster passwords, hosts, or <code>.env</code> into interviews, GitHub, or commits. <strong>Do not</strong> open-source the copier. Whiteboard the design. KPI configurator is a different bullet (<code>P2</code>). Isolation is <code>P3</code>. These two are <strong>P4</strong> (pre-agg / OOM) and <strong>P5</strong> (pump).</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#clickhouse-rollups-and-cluster-copy-pdf-bullets-c4-and-c5">ClickHouse rollups and cluster copy (PDF bullets C4 and C5)</a>
+<a class="lvl2" href="#1-the-two-pdf-lines-memorise-word-for-word">1. The two PDF lines (memorise word for word)</a>
+<a class="lvl2" href="#2-the-story-in-plain-english-the-one-minute-version">2. The story in plain English (the one-minute version)</a>
+<a class="lvl2" href="#3-words-you-need">3. Words you need</a>
+<a class="lvl2" href="#4-the-six-rollup-tables-c4-first-half-draw-this-first">4. The six rollup tables (C4, first half). Draw this first.</a>
+<a class="lvl2" href="#5-the-numbers-explained">5. The numbers, explained</a>
+<a class="lvl2" href="#6-the-170-gb-oom-c4-second-half-hero-story">6. The 170 GB OOM (C4, second half): hero story</a>
+<a class="lvl2" href="#7-partial-loads-ghost-rows-and-the-tsv-ledger-the-loader">7. Partial loads, ghost rows and the TSV ledger (the loader)</a>
+<a class="lvl2" href="#8-the-go-native-tls-copier-c5">8. The Go native-TLS copier (C5)</a>
+<a class="lvl2" href="#9-failure-catalog-say-these-out-loud">9. Failure catalog (say these out loud)</a>
+<a class="lvl2" href="#10-interview-questions-speakable-answers">10. Interview questions (speakable answers)</a>
+<a class="lvl2" href="#11-say-this-dont-say-this">11. Say this / don't say this</a>
+<a class="lvl2" href="#12-three-minute-whiteboard-script">12. Three-minute whiteboard script</a>
+<a class="lvl2" href="#13-code-map-verbal-only-never-share-the-code">13. Code map (verbal only, never share the code)</a></nav>
+<main><h1 id="clickhouse-rollups-and-cluster-copy-pdf-bullets-c4-and-c5">ClickHouse rollups and cluster copy (PDF bullets C4 and C5)</h1>
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> the two Impact Analytics infrastructure bullets about ClickHouse. C4 covers the six rollup tables, the 15.5× pivot speed-up and the 170 GB out-of-memory failure. C5 covers the custom Go copier that moved rollups between ClickHouse Cloud clusters at about 344k rows per second.</li>
+<li><b>When to read it:</b> before any data-infrastructure, "hardest technical problem" or "debugging at scale" round, and before a system-design round where you might draw your own work.</li>
+<li><b>What to memorise:</b> the six-table grid, the three honesty splits in the warning box, the numbers table in section 5, the hero story in section 6, and the checkpoint status table in section 9.</li>
+<li><b>Related pages:</b> every PDF bullet with its tech is in <a href="41_pdf_bullet_tech_defense.html">41 PDF bullet + tech defense</a>. The full IA set is in <a href="43_ia_bullet_defense.html">43 IA bullet defense</a>.</li>
+</ul>
+</div>
+<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>. Canonical wording: <a href="../../docs/ASSORTSMART_TAB_RESUME.html"><code>docs/ASSORTSMART_TAB_RESUME.md</code></a>. Benchmark source for 15.5×: <a href="21_ia_pivot_benchmark_source.html">21 IA pivot benchmark source</a>.</p>
+<p><strong>Snapshot date.</strong> The measured numbers on this page come from 8 Sep 2026: generated SQL, pipeline comments, migrate checkpoints and live copy logs.</p>
+<p><strong>Tags.</strong> MEASURED means there is a log, document, benchmark or code behind the number. ESTIMATED means arithmetic I can show. Say "roughly, derived from..." HISTORICAL means from past work records. If a figure is an estimate, say so out loud.</p>
+<p><strong>Bullet labels.</strong> Older prep called these bullets <strong>P4</strong> and <strong>P5</strong>. The handbook calls them <strong>C4</strong> and <strong>C5</strong> (Core Infrastructure bullets 4 and 5). They are the same two lines. The KPI configurator is C2 and tenant isolation is C3. Those are different bullets.</p>
 <div class="callout warn">
-<p><b>Split the jobs.</b> 15.5x pivot is request-time (250M harness). The 170 GB OOM is write-time (whole-season weekly GROUP BY). The Go pump is a Cloud to Cloud copy, not the reason pivots got faster.
-<b>4.09B</b> is attr weekly, two seasons, one table. Not “all weekly rollups.” Copy of that set was measured in flight, not a finished cutover.
-<b>64.1M</b> half-loaded partition is the POC <b>loader</b>, not the copier.
-<b>100% Go coverage / 1,200+ tests</b> is still true, now <b>LinkedIn / verbal</b> (off this PDF).
-<b>1.6M article-seasons</b> is still true catalog (product x season). Off this PDF for space. Say it if asked.
-PDF does <b>not</b> name remoteSecure. You may explain the allowlist workaround if they ask why a laptop pump.</p>
+<p><b>Safety rules.</b> Never paste cluster passwords, hostnames or <code>.env</code> values into an interview, GitHub, LinkedIn or a commit. The copier stays private. Whiteboard the design instead of sharing the code.</p>
+</div>
+<div class="callout warn">
+<p><b>Split the jobs. Say these out loud before anyone asks.</b></p>
+<ul>
+<li><b>15.5× is query time.</b> It is a 250M-row pivot benchmark. <b>170 GB is load time.</b> It is the estimated memory for one whole-season weekly GROUP BY. The Go copier is a cloud-to-cloud copy. None of these caused the others.</li>
+<li><b>4.09B is one table:</b> attr weekly, two seasons. It is not "all weekly rollups". The copy of that table was measured in flight, not a finished cutover.</li>
+<li><b>The 64.1M half-loaded partition</b> happened in the POC <b>loader</b>, not in the copier.</li>
+<li><b>"TSV ledgers"</b> on the PDF means the weekly loader's skip file. The copier's ledger is <code>migrate-checkpoints/&lt;table&gt;.done</code>.</li>
+<li><b>"Atomic partition rollbacks"</b> means DROP PARTITION, then recopy that season. It is <b>not</b> an atomic swap that live readers never notice.</li>
+<li><b>100% Go statement coverage and 1,200+ tests</b> are still true, but they are LinkedIn and verbal now, not on this PDF.</li>
+<li><b>1.6M article-seasons</b> is still the true catalog size (product × season). It is off this PDF for space. Say it if asked.</li>
+<li>The PDF does not name <code>remoteSecure</code>. You may explain the allowlist workaround if they ask why a laptop ran the copy.</li>
+</ul>
 </div>
 <hr>
-<h2 id="pdf-lines-memorize">PDF lines (memorize)</h2>
-<p><strong>P4.</strong> Reduced planner pivot latency by 15.5× (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
-<p><strong>P5.</strong> Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
-<p>PDF names allowlists and TSV on P5. Verbal knobs for P4: one fiscal week, 55 GB, 16 GB spill. In the loop still split: TSV = weekly loader. Copier = <code>.done</code>. Partition rollback = <code>DROP PARTITION</code> then recopy, not a live reader swap. 4.09B copy was in flight.</p>
-<p>XYZ for P2: X = serve planners from pre-aggregated rollups. Z = 15.5x, 189s to 12s on 250M, plus surviving weekly builds after ~170 GB OOM. Y = six tables, one fiscal week per INSERT SELECT.</p>
-<p>XYZ for P5: X = copy season-partitioned rollups between Cloud clusters. Z = about 344k rows/s combined, largest source object 4.09B attr weekly (two seasons). Y = Go native TLS, 500k columnar batches, double buffering, season checkpoints, DROP PARTITION replay.</p>
+<h2 id="1-the-two-pdf-lines-memorise-word-for-word">1. The two PDF lines (memorise word for word)</h2>
+<p><strong>C4.</strong> Reduced planner pivot latency by 15.5× (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
+<p><strong>C5.</strong> Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
+<p><strong>What the PDF names and what stays verbal.</strong> The PDF names allowlists and TSV ledgers on C5, and "temporal chunks" and "memory and disk-spill caps" on C4. The verbal knobs behind C4 are: one fiscal week per insert, a 55 GB memory cap, a 16 GB spill threshold, 8 threads and 4 weeks in flight.</p>
+<p><strong>XYZ framing</strong> ("Accomplished X, measured by Z, by doing Y"):</p>
+<ul>
+<li><strong>C4.</strong> X = serve planners from pre-aggregated rollups. Z = 15.5×, from 189 seconds to 12 seconds on 250M rows, plus weekly builds that survive after the roughly 170 GB OOM. Y = six tables, one fiscal week per INSERT SELECT. (Older prep mislabelled this line "XYZ for P2". It is C4, formerly P4.)</li>
+<li><strong>C5.</strong> X = copy season-partitioned rollups between Cloud clusters. Z = about 344k rows per second combined, with the largest source object 4.09B rows (attr weekly, two seasons). Y = Go native TLS, 500k-row columnar batches, double buffering, season checkpoints and DROP PARTITION replay.</li>
+</ul>
 <hr>
-<h2 id="six-tables-draw-this-first">Six tables (draw this first)</h2>
-<p>Daily source is SKU x store x date. Planners cannot GROUP BY that on every chart. You pay once at load and read six MergeTree tables, all <code>PARTITION BY season_code</code>:</p>
+<h2 id="2-the-story-in-plain-english-the-one-minute-version">2. The story in plain English (the one-minute version)</h2>
+<p>AssortSmart is retail planning software. Planners look at big pivot grids: sales by department, by store, by week, by attribute such as colour or fabric. The raw data is one row per product, per store, per day. Grouping that on every click is far too slow.</p>
+<p>So I built a <strong>pre-aggregation layer</strong>. Six ClickHouse tables hold the data already summed up at the grains planners actually use. Planners read those small, ready-made tables instead of the raw daily data. On the pivot benchmark, the heavy pivot went from 189 seconds to about 12.</p>
+<p>Building the weekly versions of those tables was its own problem. A whole season at weekly grain needed an estimated 170 GB of memory in one query, and it crashed even with 80 GB and 200 GB limits. I changed the unit of work to one fiscal week per insert, with memory and spill caps, and it built reliably.</p>
+<p>Later we had to move these tables between two ClickHouse Cloud clusters that were not allowed to talk to each other. I wrote a Go program that reads from one and writes to the other through an allowlisted machine. It copied at about 344k rows per second combined, measured on a 4.09-billion-row table. It used checkpoint files and partition drops so a crash never left a half-copied season counted as "done".</p>
+<p><strong>Say it in 30 seconds:</strong>
+"I'm a Senior Software Engineer who owns high-throughput backends and data platforms. At Impact Analytics I moved planner reads onto six ClickHouse rollup tables, and the 250M-row pivot benchmark dropped from 189 seconds to about 12. Weekly grain is built one fiscal week at a time, because a full-season weekly aggregate needed around 170 GB and ran out of memory. I also wrote a Go native-TLS pump that copies season partitions between ClickHouse Cloud clusters at about 344k rows per second combined, measured on a 4.09-billion-row attr weekly set."</p>
+<p><strong>Hook if they want data infrastructure:</strong> "A lot of my time goes into memory-bound ClickHouse builds, and into moving billion-row partitions without pretending a crash is an atomic swap."</p>
+<p>Kafka and Flink stay on Uber Menu. Do not put stateful event streaming on AssortSmart.</p>
+<hr>
+<h2 id="3-words-you-need">3. Words you need</h2>
+<p>Each term gets one plain sentence and, where it helps, an analogy.</p>
+<p><strong>ClickHouse basics</strong></p>
+<ul>
+<li><strong>ClickHouse.</strong> A columnar analytics database. It stores each column in its own file, so "sum revenue over 250M rows" reads only the revenue column. Think of a warehouse where all the left shoes are on one shelf and all the right shoes on another. It is great for counting left shoes, bad for fetching one particular pair.</li>
+<li><strong>ClickHouse Cloud.</strong> The managed, hosted version of ClickHouse. You get a cluster with an address and credentials, and the vendor runs the machines.</li>
+<li><strong>Replica.</strong> One copy of the database server in a cluster. Ours had about 59 CPU cores and 234 to 236 GiB of RAM.</li>
+<li><strong>MergeTree.</strong> ClickHouse's main table engine. Inserts land as small sorted "parts", and a background process merges them into bigger parts. Think of a mailroom that drops letters into trays all day and sorts trays together at night.</li>
+<li><strong>ReplacingMergeTree.</strong> A MergeTree that keeps only the newest version of rows with the same key, during those background merges. Think of a notebook where you never erase. You write the new value below, and a cleaner later crosses out the old lines. Until the cleaner comes, both lines exist, so queries must pick the newest one themselves.</li>
+<li><strong>FINAL.</strong> A query keyword that forces ReplacingMergeTree to deduplicate at read time. It is correct but slower, and it does not use projections.</li>
+<li><strong>Projection.</strong> A hidden, pre-sorted or pre-aggregated copy of a table that ClickHouse can use automatically to speed up matching queries. Think of an index at the back of a book that already lists the totals.</li>
+<li><strong>argMax / argMin.</strong> Functions that return the value of one column at the row where another column is largest or smallest. <code>argMax(price, sale_date)</code> means "the price on the latest date".</li>
+<li><strong>any().</strong> Returns any one value from the group. It is used for columns that are the same for every row in the group, like a product's style name. It is cheap per call, but a hundred of them add up.</li>
+<li><strong>Bloom filter index.</strong> A compact "definitely not here / maybe here" index that lets ClickHouse skip blocks of data. Think of a bouncer with a list who can say "you are definitely not on it" without checking the whole guest book.</li>
+</ul>
+<p><strong>Partitions and grains</strong></p>
+<ul>
+<li><strong>Partition.</strong> A physical slice of a table, stored separately. Our rollups use <code>PARTITION BY season_code</code>, so each selling season is its own slice. You can drop, replace or copy one season without touching others, like one drawer in a filing cabinet.</li>
+<li><strong>Grain.</strong> The level of detail of one row. "Product × season" is coarser than "product × week".</li>
+<li><strong>Rollup / pre-aggregation.</strong> A table that stores results already summed up at a chosen grain, so queries read the answer instead of recomputing it. It is like keeping a running monthly total in your budget sheet instead of re-adding every receipt each time.</li>
+<li><strong>Fiscal week (<code>fiscal_year_week</code>).</strong> A week in the retailer's own accounting calendar. It is the unit planners use at weekly grain.</li>
+<li><strong>Unpivot / ARRAY JOIN.</strong> Turning columns into rows. One product row with five attributes becomes five rows, one per attribute. ClickHouse does this with <code>ARRAY JOIN</code>.</li>
+</ul>
+<p><strong>Memory words</strong></p>
+<ul>
+<li><strong>INSERT SELECT.</strong> A single SQL statement that runs a query and writes its result straight into another table. All the work happens inside the database.</li>
+<li><strong>Aggregator state.</strong> The working memory ClickHouse keeps while grouping: one entry per group, with running sums and the partial state for every <code>any()</code> and <code>argMax()</code>. More groups and more functions mean more memory.</li>
+<li><strong>OOM (out of memory) / MEMORY_LIMIT_EXCEEDED.</strong> The query asked for more memory than its cap allowed, so ClickHouse killed it with that error.</li>
+<li><strong>Spill to disk (external GROUP BY).</strong> When the aggregator state passes a threshold, ClickHouse writes partial results to disk and merges them later. It is slower than RAM but it does not crash. Think of a desk that is full, so you stack finished pages on the floor and collect them at the end.</li>
+</ul>
+<p><strong>Copier words</strong></p>
+<ul>
+<li><strong>Native protocol.</strong> ClickHouse's own binary wire format. It is more efficient than HTTP for big transfers because data travels in columnar blocks. With TLS it uses port 9440.</li>
+<li><strong>TLS.</strong> Encryption for data in transit. It is the "s" in https.</li>
+<li><strong>IP allowlist.</strong> A list of network addresses a server accepts connections from. Everyone else is refused, like a gated community's guest list.</li>
+<li><strong>remoteSecure.</strong> A ClickHouse function that lets one cluster query another cluster directly over TLS. It only works if the two clusters can reach each other.</li>
+<li><strong>Columnar batch.</strong> A block of rows held as one array per column, ready to send in ClickHouse's native format.</li>
+<li><strong>Double buffering.</strong> Using two buffers so one is being filled while the other is being sent. Think of two dishwasher racks: one in the machine, one being loaded.</li>
+<li><strong>Checkpoint / ledger.</strong> A small file that records which units of work finished, so a restart can skip them.</li>
+<li><strong>TSV.</strong> Tab-separated values, a plain text file with one record per line.</li>
+<li><strong>Ghost rows.</strong> Rows from a partially committed load that look like real data but belong to a run that never finished.</li>
+<li><strong>DROP PARTITION / REPLACE PARTITION.</strong> DROP deletes one whole partition. REPLACE swaps a partition in from another table in one step.</li>
+<li><strong>system.query_log.</strong> ClickHouse's built-in table that records every query with its id and whether it finished (<code>QueryFinish</code>) or failed.</li>
+<li><strong>flock.</strong> A file lock. Two processes cannot hold it at once.</li>
+<li><strong>SIGINT.</strong> The signal sent when you press Ctrl+C.</li>
+<li><strong>Watermark.</strong> A recorded point in time ("data up to here was included") used to make rebuilds repeatable.</li>
+</ul>
+<hr>
+<h2 id="4-the-six-rollup-tables-c4-first-half-draw-this-first">4. The six rollup tables (C4, first half). Draw this first.</h2>
+<h3 id="41-what-and-why-in-plain-english">4.1 What and why, in plain English</h3>
+<p>The daily source table has one row per SKU (stock-keeping unit, one specific product variant), per store, per date. A planner's grid wants totals by product, by store or by attribute, per season or per week. Running that GROUP BY over the daily data on every chart click is the wrong design for an interactive tool.</p>
+<p>So we pay the cost once, at load time, and planners read six small, pre-summed MergeTree tables. All six are <code>PARTITION BY season_code</code>.</p>
 <table>
 <thead>
 <tr>
 <th>Grain</th>
-<th>Product (SKU dims)</th>
+<th>Product (keeps SKU dimensions)</th>
 <th>Store (no SKU, two-pass totals)</th>
-<th>Attr (unpivot, about 5x product weekly)</th>
+<th>Attr (unpivot, about 5× product weekly)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Season</td>
+<td><strong>Season</strong></td>
 <td>product_season</td>
 <td>store_season</td>
 <td>attr_season</td>
 </tr>
 <tr>
-<td>Weekly</td>
+<td><strong>Weekly</strong></td>
 <td>product_weekly</td>
 <td>store_weekly</td>
 <td>attr_weekly</td>
 </tr>
 </tbody>
 </table>
-<p>Build order that ran: product then store then attr, per grain. Kik vs Briscoes is not a rename (hierarchy depth, store names, dedup identity). Load SQL is generated.</p>
-<p><strong>Scale cheat sheet</strong></p>
+<div class="mermaid">flowchart LR
+  D["Daily facts: SKU x store x date"] --&gt; L["Generated load SQL, INSERT SELECT"]
+  L --&gt; PS["product_season"]
+  L --&gt; SS["store_season"]
+  L --&gt; AS["attr_season"]
+  L --&gt; PW["product_weekly"]
+  L --&gt; SW["store_weekly"]
+  L --&gt; AW["attr_weekly"]
+  PS --&gt; G["Planner pivot grids"]
+  SS --&gt; G
+  AS --&gt; G
+  PW --&gt; G
+  SW --&gt; G
+  AW --&gt; G
+</div>
+<p><em>What to notice:</em> the expensive arrow is on the left, at load time, once. The arrows on the right are cheap, partition-pruned reads that happen on every click.</p>
+<h3 id="42-what-a-row-looks-like-at-each-grain-illustrative-values">4.2 What a row looks like at each grain (illustrative values)</h3>
+<p>These rows are made up to show the shape. Column names are simplified.</p>
+<p><strong>Daily source row (SKU × store × date):</strong></p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>sale_date</th>
+<th>sku</th>
+<th>style</th>
+<th>color</th>
+<th>size</th>
+<th>store_code</th>
+<th>units</th>
+<th>revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>2026-03-02</td>
+<td>SKU-88121</td>
+<td>Linen Shirt</td>
+<td>Blue</td>
+<td>M</td>
+<td>ST-014</td>
+<td>3</td>
+<td>89.97</td>
+</tr>
+</tbody>
+</table>
+<p><strong>product_weekly row (product × fiscal week, all stores summed):</strong></p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>fiscal_year_week</th>
+<th>product_code</th>
+<th>style</th>
+<th>color</th>
+<th>size</th>
+<th>units</th>
+<th>revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>SKU-88121</td>
+<td>Linen Shirt</td>
+<td>Blue</td>
+<td>M</td>
+<td>412</td>
+<td>12,355.88</td>
+</tr>
+</tbody>
+</table>
+<p><strong>store_weekly row (store × fiscal week, all products summed, no SKU columns):</strong></p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>fiscal_year_week</th>
+<th>store_code</th>
+<th>units</th>
+<th>revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>ST-014</td>
+<td>5,880</td>
+<td>171,402.10</td>
+</tr>
+</tbody>
+</table>
+<p><strong>attr_weekly rows (one product week unpivoted into one row per attribute):</strong></p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>fiscal_year_week</th>
+<th>attr_name</th>
+<th>attr_value</th>
+<th>units</th>
+<th>revenue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>color</td>
+<td>Blue</td>
+<td>412</td>
+<td>12,355.88</td>
+</tr>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>fabric</td>
+<td>Linen</td>
+<td>412</td>
+<td>12,355.88</td>
+</tr>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>fit</td>
+<td>Regular</td>
+<td>412</td>
+<td>12,355.88</td>
+</tr>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>sleeve</td>
+<td>Long</td>
+<td>412</td>
+<td>12,355.88</td>
+</tr>
+<tr>
+<td>7</td>
+<td>(week id)</td>
+<td>collar</td>
+<td>Button-down</td>
+<td>412</td>
+<td>12,355.88</td>
+</tr>
+</tbody>
+</table>
+<p><em>What to notice:</em> one product row became five attr rows. That multiplication is why attr weekly is about 5× product weekly, and why it is the largest table and the memory hog.</p>
+<h3 id="43-how-the-unpivot-works-simplified-sql">4.3 How the unpivot works (simplified SQL)</h3>
+<pre><code class="language-sql">SELECT
+    season_code,
+    fiscal_year_week,
+    attr.1 AS attr_name,
+    attr.2 AS attr_value,
+    sum(units)   AS units,
+    sum(revenue) AS revenue
+FROM product_weekly_source
+ARRAY JOIN [('color', color), ('fabric', fabric), ('fit', fit)] AS attr
+GROUP BY season_code, fiscal_year_week, attr_name, attr_value;
+</code></pre>
+<p><code>ARRAY JOIN</code> takes the array of (name, value) pairs and emits one row per pair. This is a simplified illustration. The real load SQL is generated per tenant.</p>
+<h3 id="44-table-shape-simplified-ddl">4.4 Table shape (simplified DDL)</h3>
+<pre><code class="language-sql">CREATE TABLE product_weekly
+(
+    season_code       UInt16,
+    fiscal_year_week  UInt32,
+    product_code      String,
+    style             String,
+    units             Float64,
+    revenue           Float64,
+    INDEX bf_product product_code TYPE bloom_filter GRANULARITY 4
+)
+ENGINE = MergeTree
+PARTITION BY season_code
+ORDER BY (season_code, fiscal_year_week, product_code);
+</code></pre>
+<p><em>Illustrative types and index settings.</em> What matters: <code>PARTITION BY season_code</code> (each season is a drawer you can drop or copy), and bloom filter indexes on product, store and attr keys, so a filtered pivot skips blocks it does not need.</p>
+<h3 id="45-how-the-store-and-attr-tables-stay-consistent-with-product">4.5 How the store and attr tables stay consistent with product</h3>
+<p>Store and attr tables drop the style, colour and size leftovers that only make sense per SKU. Store totals are built in <strong>two passes</strong>: first the weighted sums, then a re-weight so that each store's total equals the sum of its SKUs. Validation compares <code>sum(product)</code>, <code>sum(store)</code> and <code>sum(attr)</code> under the same filters. On an earlier Briscoes season-grain check, product and store revenue matched the weekly spine with 0% difference across seasons 1 to 7.</p>
+<p><strong>Build order that ran:</strong> product, then store, then attr, for each grain. Kik and Briscoes are two retailer tenants. Their builds are not just a rename of each other: hierarchy depth, store names and deduplication identity differ. Load SQL is generated, not hand-written.</p>
+<h3 id="46-design-decision-pre-aggregate-at-load-read-cheap">4.6 Design decision: pre-aggregate at load, read cheap</h3>
 <ul>
-<li>1.6M article-seasons: product x season catalog (verbal / LinkedIn)</li>
-<li>Product weekly, seasons 6+7: about 839M (569.4M + 269.8M)</li>
-<li>Attr weekly, seasons 6+7: <strong>4.09B</strong> (2,779,317,472 + 1,311,108,195)</li>
-<li>2.11B: agentic fact table (A2), different table</li>
-<li>Weekly grain is roughly 2x season grain groups. Attr unpivot is why attr weekly is the largest object.</li>
+<li><strong>What.</strong> Six MergeTree rollup tables, product, store and attr at season and weekly grain, partitioned by season.</li>
+<li><strong>Why.</strong> A daily GROUP BY with many <code>any()</code> and <code>argMax()</code> states over wide rows is far too slow for an interactive grid. Running FINAL on ReplacingMergeTree at read time is slower still, and it does not use projections.</li>
+<li><strong>How.</strong> Generated INSERT SELECT per table and per partition, with bounded memory, published by partition. Reads are pruned by <code>season_code</code> and filtered with bloom filter indexes.</li>
+<li><strong>Alternatives an interviewer may suggest, and how I'd answer.</strong></li>
+<li><em>"Query the daily facts directly with good indexes."</em> Indexes help find rows, not add up hundreds of millions of them. The GROUP BY cost is still paid on every click.</li>
+<li><em>"Use materialized views that update on insert."</em> That works for simple sums. These rollups need many <code>any()</code> and <code>argMax()</code> states and two-pass re-weighting, and a correct incremental version is harder. The incremental design was written but not executed.</li>
+<li><em>"Keep it in PostgreSQL."</em> On the benchmark, PostgreSQL took 189 seconds on the heavy pivot and spilled 42 GB to disk.</li>
+<li><strong>Trade-off.</strong> Data in rollups is only as fresh as the last build. Every new grain is another table to build, validate and copy. Storage is spent to save query time.</li>
+<li><strong>What I'd do differently.</strong> Make the incremental, partition-replace pipeline the default from day one, so a correction rebuilds one season into a scratch table and swaps it in, instead of dropping and reloading in place.</li>
 </ul>
 <hr>
-<h2 id="elevator-use-this-not-a-slogan">Elevator (use this, not a slogan)</h2>
-<p><strong>30s.</strong> I am a Senior Software Engineer who owns high throughput backends and data platforms. At Impact Analytics I moved planner reads onto six ClickHouse rollup tables after a 250M pivot dropped from 189s to 12s. Weekly grain is built one fiscal week at a time because a full-season weekly aggregate sat around 170 GB and OOM'd. I also wrote a Go native TLS pump that copies season partitions between ClickHouse Cloud clusters at about 344k rows/s combined, measured on a 4.09B row attr weekly set.</p>
-<p><strong>Hook if they want data infra.</strong> I spend a lot of my time on memory-bound ClickHouse builds and moving billion-row partitions without pretending a crash is an atomic swap.</p>
-<p>Kafka and Flink stay on Uber Menu. Do not put stateful event streaming on AssortSmart.</p>
-<hr>
-<h2 id="hero-story-170-gb-oom">Hero story (170 GB OOM)</h2>
-<p>Use for “hardest technical hurdle,” “failure,” “how you debug scale.”</p>
+<h2 id="5-the-numbers-explained">5. The numbers, explained</h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>Derivation or source</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>15.5×</strong></td>
+<td>Speed-up on the heavy planner pivot</td>
+<td>189,408 ms ÷ 12,256 ms ≈ 15.45, rounded to 15.5</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>189 s to 12 s</strong></td>
+<td>Wall-clock time of that pivot at 250M rows</td>
+<td>189.4 s baseline, 12.26 s on ClickHouse. The PDF rounds 12.3 s to 12 s</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>250M rows</strong></td>
+<td>Size of the benchmark fact table</td>
+<td>Benchmark harness scale (current Briscoes was about 5M; 250M tests growth)</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>170 GB</strong></td>
+<td>Estimated aggregator memory for one whole-season weekly INSERT SELECT</td>
+<td>Estimate from the failed builds, which also failed at 80 GB and 200 GB caps</td>
+<td>ESTIMATED, failures MEASURED</td>
+</tr>
+<tr>
+<td><strong>~11 GB / &gt;40 GB</strong></td>
+<td>Peak memory of one product week / one Briscoes attr week</td>
+<td>Measured per-week peaks</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>55 GB, 16 GB, 8 threads, 4 weeks</strong></td>
+<td>Weekly build caps: memory, spill threshold, threads, weeks in flight</td>
+<td>Generated weekly settings</td>
+<td>MEASURED (verbal, off PDF)</td>
+</tr>
+<tr>
+<td><strong>~344k rows/s</strong></td>
+<td>Combined copy rate, two season streams</td>
+<td>~150k to 190k rows/s per stream, live snapshot about 34 minutes in</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>4.09B rows</strong></td>
+<td>Attr weekly, Briscoes seasons 6 and 7, one table</td>
+<td>2,779,317,472 + 1,311,108,195 = 4,090,425,667</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>500k rows</strong></td>
+<td>Copier batch size</td>
+<td><code>batchSize = 500_000</code></td>
+<td>MEASURED (code)</td>
+</tr>
+<tr>
+<td><strong>~839M rows</strong></td>
+<td>Product weekly, seasons 6 and 7</td>
+<td>569.4M + 269.8M</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>1.6M</strong></td>
+<td>Article-season catalog (product × season)</td>
+<td>Catalog count. Off PDF</td>
+<td>MEASURED (verbal)</td>
+</tr>
+<tr>
+<td><strong>2.11B</strong></td>
+<td>Agentic fact table (bullet A2)</td>
+<td>A different table from the rollups</td>
+<td>MEASURED</td>
+</tr>
+</tbody>
+</table>
+<h3 id="51-the-155-in-depth">5.1 The 15.5× in depth</h3>
 <ul>
-<li><strong>S:</strong> Weekly rollups need ~110 <code>any()</code> states plus <code>argMax</code> / <code>argMin</code> over wide strings. A whole-season weekly INSERT SELECT estimated around 170 GB aggregator state. It failed <code>MEMORY_LIMIT_EXCEEDED</code> at 80 GB and again at 200 GB. Replica is about 59 cores / 234 to 236 GiB.</li>
-<li><strong>T:</strong> Keep weekly grain (planners need <code>fiscal_year_week</code>) without melting the box.</li>
-<li><strong>A:</strong> Unit of work became one fiscal week, not one season. Generated weekly settings: 8 threads, 55 GB cap, 16 GB spill, 4 weeks in flight. Product week peaked around 11 GB. Briscoes attr week peaked over 40 GB (40 GB cap was too low). Do not raise season parallel and week parallel together on the same box.</li>
-<li><strong>R:</strong> Weekly grain builds. Request path stays partition-pruned reads. 15.5x is a different harness (250M pivot). Say that unprompted.</li>
+<li><strong>What it measures.</strong> Wall-clock time of the heaviest planner pivot (a grid with contribution percent and option count, joined across hierarchy, cluster and calendar) at 250M rows.</li>
+<li><strong>How it was derived.</strong> On the benchmark, the old PostgreSQL path took 189,408 ms and spilled 42 GB of sort files to disk. ClickHouse took 12,256 ms on the same pivot. 189,408 ÷ 12,256 ≈ 15.45, which rounds to 15.5. The ClickHouse side ran on a small VM (about 10 CPUs and 3.3 GB), while PostgreSQL had a 48 GB host, so the hardware did not favour ClickHouse.</li>
+<li><strong>Why it mattered.</strong> Three minutes per grid refresh makes a planning tool unusable. Twelve seconds is slow but workable for a 250M-row grid.</li>
+<li><strong>How to say it.</strong> "From 189 seconds to about 12 on the 250M-row pivot benchmark, roughly 15.5 times faster."</li>
+<li><strong>Say this carefully.</strong> The 189 s baseline in the benchmark was PostgreSQL, the old path, not a raw-ClickHouse query. If someone asks "189 seconds on what?", say "on the old PostgreSQL path, same 250M-row pivot." The rollups are how that ClickHouse read layer is served to planners in production. The benchmark notes also say lighter, typical aggregates were closer to 2 to 3 times faster. The 15.5× is the heavy grid.</li>
+<li><strong>What not to say.</strong> "Sub-second pivots." "Every query got 15.5× faster." "The OOM fix caused the 15.5×."</li>
 </ul>
-<p><strong>Trap:</strong> “So you fixed OOM and that is why latency is 15.5x.” No. OOM is load time. 15.5x is query time.</p>
+<h3 id="52-scale-cheat-sheet">5.2 Scale cheat sheet</h3>
+<ul>
+<li><strong>1.6M article-seasons:</strong> product × season catalog (verbal, LinkedIn).</li>
+<li><strong>Product weekly, seasons 6 and 7:</strong> about 839M rows (569.4M + 269.8M).</li>
+<li><strong>Attr weekly, seasons 6 and 7:</strong> <strong>4.09B</strong> rows (2,779,317,472 + 1,311,108,195).</li>
+<li><strong>2.11B:</strong> the agentic fact table from bullet A2. It is a different table.</li>
+<li><strong>Ratios:</strong> weekly grain has roughly 2× the groups of season grain. The attr unpivot is why attr weekly is the largest object, about 5× product weekly on Briscoes seasons 6 and 7.</li>
+</ul>
 <hr>
-<h2 id="interview-questions">Interview questions</h2>
-<h3 id="1-how-did-you-design-the-rollup-schema-and-why-not-query-daily-facts-on-every-request">1. How did you design the rollup schema, and why not query daily facts on every request?</h3>
-<p>Daily <code>GROUP BY</code> with many <code>any()</code> / <code>argMax</code> states on a wide row is the wrong SLO. <code>FINAL</code> on ReplacingMergeTree does not use projections. We pay once at load (bounded memory, partition publish) and read cheap (<code>PARTITION BY season_code</code>, bloom on product / store / attr). Product keeps SKU dims. Store and attr drop style/color/size leftovers and re-weight so store totals match the sum of SKUs. Attr is an unpivot (<code>ARRAY JOIN</code> on attr pairs), which is why attr weekly is about 5x product weekly on Briscoes seasons 6 and 7.</p>
-<h3 id="2-walk-through-a-time-you-hit-severe-resource-limits-how-did-you-debug-and-fix-the-oom">2. Walk through a time you hit severe resource limits. How did you debug and fix the OOM?</h3>
-<p>See hero story. Profile by grain. Do not raise memory first. Shrink the unit to one week, then cap threads and spill. Attr weeks are the memory hog.</p>
-<h3 id="3-how-did-you-get-about-344k-rowss-in-go-was-that-an-http-api">3. How did you get about 344k rows/s in Go? Was that an HTTP API?</h3>
-<p>No. That is ingest rate, not request RPS. Two season streams on one laptop, native TLS, about 150 to 190k rows/s each, about 344k combined at a live snapshot (~34m, dual workers, 500k batches). Batch commit rate is about 0.3 to 0.4 <code>Send()</code> per second per worker. If they hear “344k TPS,” correct them.</p>
-<p>Why a Go pump: cluster-to-cluster pull was not available (Cloud allowlists). The operator IP is. The copier is an allowlisted pump, not a shard-to-shard design goal. PDF does not name the Cloud function that failed.</p>
-<p>How 344k: <code>batchSize = 500_000</code>, columnar <code>[]T</code> buffers, <code>batch.Column(i).Append</code> then <code>Send()</code>, no per-row <code>reflect</code>. Two buffer sets so SELECT of the next 500k overlaps INSERT of the previous. That overlap is what stopped HTTP unexpected EOF when SELECT sat idle during INSERT. Do not retry <code>Send</code> on a spent batch.</p>
-<h3 id="4-how-did-you-handle-failure-and-idempotency-on-billion-row-copies">4. How did you handle failure and idempotency on billion-row copies?</h3>
-<p>Partition unit is <code>season_code</code>. Copier ledger is <code>migrate-checkpoints/&lt;table&gt;.done</code>. Incomplete season: if the target already has rows, DROP PARTITION (or DELETE) then recopy. No full TRUNCATE unless <code>-reset</code>. SIGINT finishes the in-flight batch and does <strong>not</strong> checkpoint that season. Per-table flock so two terminals cannot copy the same table.</p>
-<p><strong>64.1M is the loader, not this copier.</strong> A failed weekly HTTP INSERT still commits blocks. A half-loaded partition of 64.1M rows once passed “skip if the partition has rows.” Weekly resume is a TSV ledger of finished <code>(kind, season_code)</code>. If missing, DROP PARTITION that season and rebuild. Completion of each HTTP INSERT is query-id / <code>QueryFinish</code> in <code>system.query_log</code>, not curl exit.</p>
-<p>Drop PARTITION is <strong>not</strong> an atomic swap. A crash leaves a truncated season. Readers can see partial seasons. The incremental design (<code>REPLACE PARTITION</code> from scratch tables) was written and <strong>not executed</strong>. Do not claim it ran.</p>
-<h3 id="5-what-is-the-scale">5. What is the scale?</h3>
-<p>Largest timed object: Briscoes attr weekly seasons 6+7 = 4.09B rows in one table, two partitions. Product weekly same seasons = 839M. Season grain is smaller. Replica about 59 cores / 234 to 236 GiB. 15.5x is 250M row-identical pivot (PDF rounds 12.3s to 12s).</p>
-<h3 id="6-why-not-one-insert-of-the-whole-season-at-weekly-grain">6. Why not one INSERT of the whole season at weekly grain?</h3>
-<p>About 170 GB aggregator state. OOM at 80 GB and 200 GB. One week: ~11 GB product, over 40 GB attr.</p>
-<h3 id="7-how-do-store-totals-stay-consistent-with-skus">7. How do store totals stay consistent with SKUs?</h3>
-<p>Two-pass weighted sums, then re-weight. Validate <code>sum(product)</code> vs <code>sum(store)</code> vs <code>sum(attr)</code> at the same filters. Earlier Briscoes season-grain parity: product and store revenue vs weekly spine 0% across seasons 1 to 7.</p>
-<h3 id="8-replacingmergetree-corrections">8. ReplacingMergeTree corrections?</h3>
-<p>New INSERT versions keyed by <code>updated_at</code>. Rebuild at a captured watermark. Do not <code>FINAL</code> if you want projections. Dirty arrival token on the MV is not the same clock as the build watermark. Incremental pipeline is design only.</p>
-<h3 id="9-biggest-production-risk-in-the-copier">9. Biggest production risk in the copier?</h3>
-<p>No atomic swap. Crash = truncated season until DROP + retry. Target readers can see partial seasons. Do not copy through a laptop for prod if you can allowlist and INSERT SELECT, or freeze via object storage.</p>
-<h3 id="10-whiteboard-the-go-copier">10. Whiteboard the Go copier</h3>
-<pre><code>source CH Cloud  --native TLS--&gt;  laptop Go process  --native TLS--&gt;  target CH Cloud
+<h2 id="6-the-170-gb-oom-c4-second-half-hero-story">6. The 170 GB OOM (C4, second half): hero story</h2>
+<p>Use this for "hardest technical hurdle", "tell me about a failure" and "how do you debug at scale".</p>
+<h3 id="61-plain-english-first">6.1 Plain English first</h3>
+<p>Building the weekly rollup for a whole season in one SQL statement needed more memory than the machine had. We tried giving it more memory and it still died. The fix was not more memory. It was a smaller unit of work: one fiscal week per statement, with hard caps so any single statement stays inside a known budget.</p>
+<h3 id="62-why-weekly-is-so-heavy">6.2 Why weekly is so heavy</h3>
+<p>A weekly rollup row carries about 110 <code>any()</code> states, plus <code>argMax()</code> and <code>argMin()</code> over wide string columns. ClickHouse must hold all of that for every group until the GROUP BY finishes. Weekly grain has roughly twice as many groups as season grain, and attr multiplies rows again through the unpivot. For a whole season the estimated aggregator state was around 170 GB. The replica has about 59 cores and 234 to 236 GiB of RAM, shared with everything else.</p>
+<h3 id="63-star">6.3 STAR</h3>
+<ul>
+<li><strong>Situation.</strong> Weekly rollups need about 110 <code>any()</code> states plus <code>argMax</code> and <code>argMin</code> over wide strings. A whole-season weekly INSERT SELECT was estimated at around 170 GB of aggregator state. It failed with <code>MEMORY_LIMIT_EXCEEDED</code> at an 80 GB cap and again at a 200 GB cap. The replica is about 59 cores and 234 to 236 GiB.</li>
+<li><strong>Task.</strong> Keep weekly grain, because planners need <code>fiscal_year_week</code>, without melting the box.</li>
+<li><strong>Action.</strong> I changed the unit of work from one season to one fiscal week. The generated weekly settings were 8 threads, a 55 GB memory cap, a 16 GB spill threshold, and 4 weeks in flight. I measured per-week peaks: a product week peaked around 11 GB, and a Briscoes attr week peaked above 40 GB, which is why a 40 GB cap was too low. Rule I set: never raise season parallelism and week parallelism together on the same box.</li>
+<li><strong>Result.</strong> Weekly grain builds reliably. The request path stays partition-pruned reads. The 15.5× is a different benchmark (the 250M pivot). Say that unprompted.</li>
+</ul>
+<p><strong>Trap:</strong> "So you fixed the OOM, and that is why latency is 15.5×." No. The OOM is load time. The 15.5× is query time.</p>
+<h3 id="64-what-one-weekly-insert-looks-like-simplified-sql">6.4 What one weekly insert looks like (simplified SQL)</h3>
+<pre><code class="language-sql">INSERT INTO product_weekly
+SELECT
+    season_code,
+    fiscal_year_week,
+    product_code,
+    any(style)                 AS style,       -- ~110 any() columns in the real build
+    argMax(price, sale_date)   AS last_price,
+    argMin(price, sale_date)   AS first_price,
+    sum(units)                 AS units,
+    sum(revenue)               AS revenue
+FROM daily_sales
+WHERE season_code = {season}
+  AND fiscal_year_week = {week}               -- one fiscal week per statement
+GROUP BY season_code, fiscal_year_week, product_code
+SETTINGS
+    max_memory_usage                   = 55000000000,  -- 55 GB hard cap for this query
+    max_bytes_before_external_group_by = 16000000000,  -- start spilling to disk at 16 GB
+    max_threads                        = 8;
+</code></pre>
+<p><em>Simplified illustration. Column names are illustrative. The real SQL is generated, and the generated settings are the source of truth.</em> <code>{season}</code> and <code>{week}</code> are filled in by the driver loop.</p>
+<p><strong>The three settings, in plain words.</strong></p>
+<ul>
+<li><strong><code>max_memory_usage</code></strong> is the hard ceiling for one query. Go over it and ClickHouse kills the query with <code>MEMORY_LIMIT_EXCEEDED</code> instead of letting it take down the server. It is a circuit breaker for RAM.</li>
+<li><strong><code>max_bytes_before_external_group_by</code></strong> is the spill threshold. When the GROUP BY's in-memory state passes it, ClickHouse writes partial aggregates to disk and merges them at the end. Setting it well below the hard cap (16 GB against 55 GB) means a heavy week slows down instead of dying.</li>
+<li><strong><code>max_threads</code></strong> limits how many CPU threads the query uses. Each thread keeps its own partial aggregation state, so fewer threads also means less memory.</li>
+</ul>
+<h3 id="65-the-driver-loop">6.5 The driver loop</h3>
+<div class="mermaid">sequenceDiagram
+  participant D as Driver loop
+  participant CH as ClickHouse replica
+  participant QL as system.query_log
+  participant T as TSV ledger
+  D-&gt;&gt;T: Is this kind and season already finished?
+  T--&gt;&gt;D: No
+  loop Each fiscal week, up to 4 in flight
+    D-&gt;&gt;CH: INSERT SELECT for one week with 55 GB cap, 16 GB spill, 8 threads
+    CH--&gt;&gt;D: Response, or a client timeout
+    D-&gt;&gt;QL: Did this query_id reach QueryFinish?
+    QL--&gt;&gt;D: Yes or no
+  end
+  D-&gt;&gt;T: Append kind and season as finished
+</div>
+<p><em>What to notice:</em> success is judged by <code>system.query_log</code>, not by whether the HTTP client returned cleanly. The ledger is written only after every week finished.</p>
+<p><strong>Sanity-check arithmetic (ESTIMATED).</strong> Four weeks in flight at a 55 GB cap each is at most 220 GB, which is under the replica's roughly 234 to 236 GiB. Raising weeks in flight and season parallelism together would blow straight through that. That is the reason for the "never raise both" rule.</p>
+<h3 id="66-design-decision-shrink-the-unit-of-work-dont-buy-ram">6.6 Design decision: shrink the unit of work, don't buy RAM</h3>
+<ul>
+<li><strong>What.</strong> One fiscal week per INSERT SELECT, with a memory cap, a spill threshold, a thread cap and bounded weeks in flight.</li>
+<li><strong>Why.</strong> Memory grows with the number of groups in one statement. Cutting the time range cuts the groups. More RAM did not work: it failed at 200 GB too.</li>
+<li><strong>How.</strong> A generated loop over weeks, capped settings per statement, success checked in <code>system.query_log</code>, finished seasons recorded in a TSV ledger.</li>
+<li><strong>Alternatives an interviewer may suggest, and how I'd answer.</strong></li>
+<li><em>"Just use a bigger machine."</em> It failed at a 200 GB cap on a 234 GiB box. There is no headroom left to buy on that replica, and a bigger box just moves the cliff.</li>
+<li><em>"Spill everything to disk."</em> Spill alone at season scale would be very slow and still risky. Spill works best as a safety net under a right-sized unit of work.</li>
+<li><em>"Slice by store instead of week."</em> It is possible, but week is the natural grain of the target table, so each slice writes complete rows with no later merge step.</li>
+<li><strong>Trade-off.</strong> More statements and more orchestration. Total build time is longer than one giant query would be if it could fit. The ledger and query-log checks are extra code.</li>
+<li><strong>What I'd do differently.</strong> Profile memory per grain on a small sample before the first full-season run, instead of discovering the 170 GB cliff by failing.</li>
+</ul>
+<hr>
+<h2 id="7-partial-loads-ghost-rows-and-the-tsv-ledger-the-loader">7. Partial loads, ghost rows and the TSV ledger (the loader)</h2>
+<h3 id="71-plain-english">7.1 Plain English</h3>
+<p>A load can fail halfway and still leave rows behind. If the next run only asks "does this partition have rows?", it will wrongly skip a half-loaded season. Those leftover rows are <strong>ghost rows</strong>: they look like real data but belong to a run that never finished.</p>
+<h3 id="72-what-actually-happened">7.2 What actually happened</h3>
+<ul>
+<li>A weekly HTTP INSERT failed on the client side, but the server had <strong>already committed some blocks</strong>.</li>
+<li>A half-loaded partition with <strong>64.1M rows</strong> once passed a "skip if the partition has rows" check. This was in the POC <strong>loader</strong>, not the copier.</li>
+<li><strong>Fix 1: a TSV ledger.</strong> Weekly resume reads a TSV file listing finished <code>(kind, season_code)</code> pairs. If a pair is missing, the loader runs DROP PARTITION for that season and rebuilds it from scratch.</li>
+<li><strong>Fix 2: trust the server, not the client.</strong> Completion of each HTTP INSERT is checked by its query id reaching <code>QueryFinish</code> in <code>system.query_log</code>, not by the <code>curl</code> exit code.</li>
+</ul>
+<p><strong>What the ledger looks like (illustrative):</strong></p>
+<pre><code class="language-text">product_weekly  6
+product_weekly  7
+store_weekly    6
+</code></pre>
+<p>Each line means "this kind of table, for this season, finished completely". If <code>attr_weekly 7</code> is not in the file, that season is dropped and rebuilt, no matter how many rows it currently has.</p>
+<p><strong>Rule to say out loud:</strong> never use <code>count() &gt; 0</code> as the success test for a weekly build.</p>
+<hr>
+<h2 id="8-the-go-native-tls-copier-c5">8. The Go native-TLS copier (C5)</h2>
+<h3 id="81-plain-english-first">8.1 Plain English first</h3>
+<p>We had to move rollup tables from one ClickHouse Cloud cluster to another. Normally you would tell the target cluster to pull directly from the source with <code>remoteSecure</code>. That was blocked: each cluster's IP allowlist did not include the other cluster. The operator machine's IP was allowed on both. So I wrote a Go program that runs on that machine, reads from the source and writes to the target, both over ClickHouse's native protocol with TLS. It is an allowlisted pump, a workaround, not a design goal.</p>
+<div class="mermaid">flowchart LR
+  SRC["Source ClickHouse Cloud"] -- "native TLS port 9440, SELECT stream" --&gt; GO["Go copier on allowlisted machine"]
+  GO -- "native TLS port 9440, INSERT Send" --&gt; DST["Target ClickHouse Cloud"]
+  SRC -.-&gt;|"remoteSecure blocked by IP allowlist"| DST
+  GO --&gt; CK["migrate-checkpoints table.done files"]
+</div>
+<p><em>What to notice:</em> the dotted line is the direct path that was blocked. Everything goes through one machine, which is why caps are per process and why it is not a production pattern.</p>
+<p>Whiteboard version:</p>
+<pre><code class="language-text">source CH Cloud  --native TLS--&gt;  laptop Go process  --native TLS--&gt;  target CH Cloud
                      SELECT stream                    INSERT Send()
                      500k columnar                    500k columnar
                      buffer A while B sends           checkpoint season_code
 </code></pre>
-<p><code>-workers N</code> = N seasons in parallel, each with its own source and target connections. Caps are <strong>per process</strong>. Two terminals of <code>-workers 2</code> double the budget. Host assumed 59 CPU / 236 GiB. Copier splits about 48 threads / 180 GiB across workers (example: 2 workers, 24 threads / 90 GiB each query).</p>
-<p>Draw double buffering: read next 500k while previous <code>Send</code> runs.</p>
-<p>Hindsight tables on this path are tiny (season 7 on source): keep_drop_score 4,150 rows, missed 360, top style 360. Verbal if they ask. Hindsight is still not a PDF headline.</p>
-<p>Checkpoint status at the 8 Sep snapshot (say this if they ask “did 4.09B finish?”):</p>
+<h3 id="82-how-it-gets-about-344k-rows-per-second">8.2 How it gets about 344k rows per second</h3>
+<ul>
+<li><strong>Batch size.</strong> <code>batchSize = 500_000</code> rows per batch.</li>
+<li><strong>Columnar buffers.</strong> Each column is a typed Go slice (<code>[]T</code>). Rows are appended with <code>batch.Column(i).Append(...)</code>, then <code>Send()</code> ships the block. There is no per-row <code>reflect</code>. Reflection inspects types at runtime and is slow when done billions of times.</li>
+<li><strong>Double buffering.</strong> Two buffer sets. While batch N is being sent to the target, the reader is already filling batch N+1 from the source.</li>
+<li><strong>Why double buffering also fixed an error.</strong> In an earlier HTTP-based version, the source SELECT sat idle while the INSERT ran, and the idle connection died with "unexpected EOF". Overlapping read and write keeps the read stream busy. Moving to the native protocol helped too.</li>
+<li><strong>Never retry <code>Send</code> on a spent batch.</strong> Once <code>Send()</code> has been called, the batch is consumed. Retrying it either duplicates rows or fails again. The correct recovery is DROP PARTITION and restart that season.</li>
+</ul>
+<p><strong>Simplified double-buffering sketch (not the real code):</strong></p>
+<pre><code class="language-go">const batchSize = 500_000
+
+type colBuf struct {
+    ids     []uint64
+    names   []string
+    revenue []float64
+}
+
+func (b *colBuf) reset() { b.ids, b.names, b.revenue = b.ids[:0], b.names[:0], b.revenue[:0] }
+
+func copySeason(ctx context.Context, src, dst driver.Conn, season uint16) error {
+    rows, err := src.Query(ctx, &quot;SELECT id, name, revenue FROM attr_weekly WHERE season_code = ?&quot;, season)
+    if err != nil {
+        return err
+    }
+    defer rows.Close()
+
+    free := make(chan *colBuf, 2)  // two buffers: one filling, one sending
+    full := make(chan *colBuf, 1)
+    errc := make(chan error, 1)
+    free &lt;- &amp;colBuf{}
+    free &lt;- &amp;colBuf{}
+
+    go func() { // writer: sends a full buffer while the reader fills the other one
+        for buf := range full {
+            batch, err := dst.PrepareBatch(ctx, &quot;INSERT INTO attr_weekly&quot;)
+            if err != nil {
+                errc &lt;- err
+                return
+            }
+            batch.Column(0).Append(buf.ids)
+            batch.Column(1).Append(buf.names)
+            batch.Column(2).Append(buf.revenue)
+            if err := batch.Send(); err != nil { // a spent batch is never retried
+                errc &lt;- err
+                return
+            }
+            buf.reset()
+            free &lt;- buf
+        }
+        errc &lt;- nil
+    }()
+
+    handOff := func(b *colBuf) error { // give a full buffer to the writer unless it already failed
+        select {
+        case full &lt;- b:
+            return nil
+        case err := &lt;-errc:
+            return err
+        }
+    }
+
+    buf := &lt;-free
+    for rows.Next() {
+        var id uint64
+        var name string
+        var rev float64
+        if err := rows.Scan(&amp;id, &amp;name, &amp;rev); err != nil {
+            return err
+        }
+        buf.ids, buf.names, buf.revenue = append(buf.ids, id), append(buf.names, name), append(buf.revenue, rev)
+        if len(buf.ids) == batchSize {
+            if err := handOff(buf); err != nil {
+                return err
+            }
+            select {
+            case buf = &lt;-free: // waits only if both buffers are busy
+            case err := &lt;-errc:
+                return err
+            }
+        }
+    }
+    if len(buf.ids) &gt; 0 {
+        if err := handOff(buf); err != nil {
+            return err
+        }
+    }
+    close(full)
+    return &lt;-errc
+}
+</code></pre>
+<p><em>What to notice:</em> the channel <code>free</code> holds at most two buffers. The reader blocks only when both are in use, which is exactly when the writer is still sending. That back-pressure keeps memory bounded at two batches per worker. The real copier also handles per-table column lists, connection setup with TLS from environment variables, the per-table lock and checkpoints.</p>
+<h3 id="83-workers-and-resource-caps">8.3 Workers and resource caps</h3>
+<ul>
+<li><code>-workers N</code> copies N seasons in parallel. Each worker has its own source and target connections.</li>
+<li>Caps are <strong>per process</strong>. Two terminals each running <code>-workers 2</code> double the total budget, so they can oversubscribe the cluster.</li>
+<li>The copier assumes the host has about 59 CPUs and 236 GiB. It splits about 48 threads and 180 GiB across workers. Example: with 2 workers, each query gets 24 threads and 90 GiB.</li>
+</ul>
+<h3 id="84-the-344k-number-explained">8.4 The 344k number, explained</h3>
+<ul>
+<li><strong>What it measures.</strong> Rows per second written to the target, combined across two season streams. It is an <strong>ingest rate</strong>, not requests or transactions per second.</li>
+<li><strong>How it was derived.</strong> A live snapshot about 34 minutes into a run with two workers and 500k batches. Each stream ran at roughly 150k to 190k rows per second, about 344k combined. Cross-check: each worker committed about 0.3 to 0.4 <code>Send()</code> calls per second. 0.35 × 500,000 ≈ 175,000 rows per second per worker, and two workers give about 350,000, consistent with 344k.</li>
+<li><strong>Why it mattered.</strong> At billions of rows, the copy rate decides whether a migration takes hours or days.</li>
+<li><strong>How to say it.</strong> "About 344 thousand rows per second combined, two season streams on one machine, measured on a 4.09-billion-row table."</li>
+<li><strong>What not to say.</strong> "344k TPS" or "344k RPS". "I migrated 4.09 billion rows." If they hear TPS, correct them.</li>
+</ul>
+<h3 id="85-failure-handling-and-idempotency">8.5 Failure handling and idempotency</h3>
+<p><strong>Plain English.</strong> The unit of work is one season (one partition). A season is either recorded as done, or it is treated as dirty and redone from scratch. There is no "resume from the middle of a season".</p>
+<ol>
+<li><strong>Ledger.</strong> The copier writes <code>migrate-checkpoints/&lt;table&gt;.done</code>, listing finished seasons.</li>
+<li><strong>Incomplete season.</strong> If the target already has rows for a season not in the ledger, the copier runs DROP PARTITION (or DELETE) for that season and recopies it.</li>
+<li><strong>No full wipe.</strong> There is no TRUNCATE of the whole table unless the operator passes <code>-reset</code>.</li>
+<li><strong>Ctrl+C (SIGINT).</strong> The copier finishes the in-flight batch and does <strong>not</strong> checkpoint that season, so it will be redone next time.</li>
+<li><strong>Per-table flock.</strong> Two terminals cannot copy the same table at once.</li>
+</ol>
+<div class="mermaid">flowchart TD
+  A["Start table copy"] --&gt; B{"Season in table.done?"}
+  B -- "yes" --&gt; S["Skip season"]
+  B -- "no" --&gt; C{"Target already has rows for season?"}
+  C -- "yes" --&gt; D["DROP PARTITION season"]
+  C -- "no" --&gt; E["Copy season in 500k batches"]
+  D --&gt; E
+  E --&gt; F{"Finished cleanly?"}
+  F -- "yes" --&gt; G["Append season to table.done"]
+  F -- "no, crash or Ctrl C" --&gt; H["No checkpoint, redo next run"]
+</div>
+<p><em>What to notice:</em> the only way a season counts as done is a clean finish followed by a ledger write. That is what "eliminated partial-commit ghost rows" means.</p>
+<p><strong>Say this carefully.</strong> DROP PARTITION is <strong>not</strong> an atomic swap. If the copier crashes, the target has a truncated season until it is dropped and retried, and readers of the target can see that partial season meanwhile. The incremental design, which builds into scratch tables and swaps in with <code>REPLACE PARTITION</code>, was written and <strong>not executed</strong>. Do not claim it ran.</p>
+<h3 id="86-checkpoint-status-at-the-8-sep-2026-snapshot">8.6 Checkpoint status at the 8 Sep 2026 snapshot</h3>
+<p>Say this if they ask "did the 4.09B copy finish?"</p>
 <table>
 <thead>
 <tr>
 <th>Table</th>
-<th>Status</th>
+<th>Status at snapshot</th>
 </tr>
 </thead>
 <tbody>
@@ -167,48 +729,145 @@ PDF does <b>not</b> name remoteSecure. You may explain the allowlist workaround 
 </tr>
 <tr>
 <td>attr_season</td>
-<td>3, 6, 7 done</td>
+<td>seasons 3, 6 and 7 done</td>
 </tr>
 <tr>
 <td>store_weekly</td>
-<td>6, 7 done</td>
+<td>seasons 6 and 7 done</td>
 </tr>
 <tr>
 <td>product_weekly</td>
-<td>empty ledger, failed mid-copy, partitions dirty</td>
+<td>empty ledger. Failed mid-copy, partitions dirty</td>
 </tr>
 <tr>
 <td>attr_weekly</td>
-<td>empty ledger, in flight 6+7 (the 4.09B object)</td>
+<td>empty ledger. In flight for seasons 6 and 7 (the 4.09B object)</td>
 </tr>
 <tr>
-<td>hindsight three</td>
+<td>Hindsight three tables</td>
 <td>season 7 done</td>
 </tr>
 </tbody>
 </table>
-<p>So you say <strong>measured on</strong> a 4.09B-row set, not <strong>migrated 4.09B</strong>.</p>
+<p>So the phrase is <strong>"measured on"</strong> a 4.09-billion-row set, never <strong>"migrated 4.09 billion rows"</strong>.</p>
+<p>The Hindsight tables on this path are tiny (season 7 on source): keep_drop_score 4,150 rows, missed 360, top style 360. Mention only if asked. Hindsight is not a PDF headline.</p>
+<h3 id="87-design-decision-a-laptop-pump-over-native-tls">8.7 Design decision: a laptop pump over native TLS</h3>
+<ul>
+<li><strong>What.</strong> A custom Go program on an allowlisted machine, native protocol with TLS on both sides, 500k-row columnar batches, double buffering, per-season checkpoints, DROP PARTITION replay.</li>
+<li><strong>Why.</strong> Cluster-to-cluster pull was not available because of the Cloud IP allowlists. The operator machine was allowed. The PDF does not name the Cloud function that failed.</li>
+<li><strong>How.</strong> Sections 8.2 to 8.5.</li>
+<li><strong>Alternatives an interviewer may suggest, and how I'd answer.</strong></li>
+<li><em>"Use remoteSecure or INSERT SELECT across clusters."</em> That is the right answer when the clusters can reach each other. Here the allowlists blocked it.</li>
+<li><em>"Export to object storage and import."</em> Freezing partitions out through object storage is a good production pattern. It is one of the things I would pick for production.</li>
+<li><em>"Use the HTTP interface."</em> HTTP is simpler, but the earlier HTTP version hit unexpected EOF when the SELECT sat idle. Native blocks are also more efficient for columnar data.</li>
+<li><strong>Trade-off.</strong> Everything flows through one machine, so it is a single point of failure, and the caps are per process. There is no atomic swap, so target readers can see partial seasons during a redo.</li>
+<li><strong>What I'd do differently.</strong> For production I would get the clusters allowlisted to each other and use INSERT SELECT, or freeze through object storage, rather than copy through a laptop. I would also make REPLACE PARTITION from a scratch table the default, so readers never see a partial season.</li>
+</ul>
 <hr>
-<h2 id="failure-catalog-say-out-loud">Failure catalog (say out loud)</h2>
+<h2 id="9-failure-catalog-say-these-out-loud">9. Failure catalog (say these out loud)</h2>
 <ol>
-<li>OOM on weekly GROUP BY: shrink to one week, measure attr weeks before raising RAM.</li>
-<li>Half-written partition looks complete: never <code>count() &gt; 0</code> for weekly success.</li>
-<li>HTTP client timeout after server commit: trust <code>system.query_log</code>.</li>
-<li>HTTP SELECT EOF during INSERT: double buffer, or native protocol.</li>
-<li>Retrying a spent batch: duplicates or a second failure. DROP PARTITION, restart the unit.</li>
-<li>Connection reset on native TLS: crash. Checkpoint only finished seasons.</li>
-<li>Cluster-to-cluster pull blocked by allowlists: laptop pump is a workaround.</li>
-<li>Oversubscribe workers: caps are per process.</li>
-<li>Never commit Cloud passwords. Env only. Binary does not read <code>.env</code> for you.</li>
+<li><strong>OOM on the weekly GROUP BY.</strong> Shrink the unit to one week, and measure attr weeks before raising RAM.</li>
+<li><strong>A half-written partition looks complete.</strong> Never use <code>count() &gt; 0</code> as the success test for weekly builds. Use the ledger.</li>
+<li><strong>HTTP client timeout after the server already committed.</strong> Trust <code>system.query_log</code>, not the client's exit code.</li>
+<li><strong>HTTP SELECT dies with EOF during the INSERT.</strong> Double buffer, or use the native protocol.</li>
+<li><strong>Retrying a spent batch.</strong> It causes duplicates or a second failure. DROP PARTITION and restart the unit instead.</li>
+<li><strong>Connection reset on native TLS.</strong> The copier crashes. Only finished seasons are checkpointed, so the next run redoes the dirty season.</li>
+<li><strong>Cluster-to-cluster pull blocked by allowlists.</strong> The laptop pump is a workaround, not the ideal design.</li>
+<li><strong>Oversubscribed workers.</strong> Caps are per process, so two terminals double the load.</li>
+<li><strong>Credentials.</strong> Never commit Cloud passwords. They come from environment variables only, and the binary does not read <code>.env</code> for you.</li>
 </ol>
 <hr>
-<h2 id="linkedin-outreach-honesty">LinkedIn / outreach honesty</h2>
-<p>Safe: six tables, 170 GB OOM and week slicing, Go pump, about 344k rows/s combined, 4.09B attr weekly as the largest object timed, 500k batches, double buffering.</p>
-<p>Not safe: “I streamed 4.09 billion rows at 344,000 rows/s” as a finished job. “Atomic DROP PARTITION.” “OOM fix caused 15.5x.” Kafka/Flink on IA. Open-sourcing the copier.</p>
-<p>CI gate (100% statement coverage, 1,200+ Go tests, SAST/SBOM) is fine on LinkedIn. It left the PDF for the copier bullet.</p>
+<h2 id="10-interview-questions-speakable-answers">10. Interview questions (speakable answers)</h2>
+<h3 id="1-how-did-you-design-the-rollup-schema-and-why-not-query-daily-facts-on-every-request">1. How did you design the rollup schema, and why not query daily facts on every request?</h3>
+<p>"We pay once at load time and read cheap. A daily GROUP BY with many <code>any()</code> and <code>argMax()</code> states over wide rows is far too slow for an interactive grid, and FINAL on a ReplacingMergeTree is slower still and skips projections. So there are six MergeTree rollups, product, store and attr at season and weekly grain, all partitioned by season, with bloom filter indexes on product, store and attr keys. Product keeps SKU dimensions. Store and attr drop them and re-weight so store totals match the sum of SKUs. Attr is an unpivot using ARRAY JOIN, which is why attr weekly is about five times product weekly on the Briscoes seasons 6 and 7."</p>
+<p><strong>Follow-up they may ask:</strong> "How do you know the rollups are right?" Answer: "We compare product, store and attr sums under the same filters. On the earlier season-grain check, product and store revenue matched the weekly spine with zero difference across seasons 1 to 7."</p>
+<h3 id="2-walk-through-a-time-you-hit-severe-resource-limits-how-did-you-debug-and-fix-the-oom">2. Walk through a time you hit severe resource limits. How did you debug and fix the OOM?</h3>
+<p>"Building weekly rollups for a whole season in one statement needed an estimated 170 GB, and it failed at both 80 and 200 GB caps on a replica with about 236 GiB. The cause was aggregator state: about 110 <code>any()</code> columns plus <code>argMax</code> over wide strings, for every group. I did not raise memory first. I profiled by grain, shrank the unit to one fiscal week, then capped it at 55 GB with a 16 GB spill threshold, 8 threads and four weeks in flight. Product weeks peaked around 11 GB and attr weeks above 40 GB, so attr is the hog, and now it builds reliably."</p>
+<h3 id="3-how-did-you-get-about-344k-rows-per-second-in-go-was-that-an-http-api">3. How did you get about 344k rows per second in Go? Was that an HTTP API?</h3>
+<p>"No, it is a copy rate in rows per second, not requests. Two workers each streamed one season over native TLS at roughly 150 to 190 thousand rows a second, about 344 thousand combined at a live snapshot around 34 minutes in. The speed came from 500k-row columnar batches with typed slices, no per-row reflection, and double buffering, so reading the next batch overlaps sending the previous one. That overlap also fixed an unexpected-EOF problem we had when the SELECT sat idle over HTTP."</p>
+<p><strong>Follow-up they may ask:</strong> "Why a Go pump at all?" Answer: "Cluster-to-cluster pull was blocked by the Cloud IP allowlists, and the operator machine was allowed on both. It is a workaround, not a shard-to-shard design goal."</p>
+<h3 id="4-how-did-you-handle-failure-and-idempotency-on-billion-row-copies">4. How did you handle failure and idempotency on billion-row copies?</h3>
+<p>"The unit is one season partition, and a season is either done or redone from scratch. The copier records finished seasons in a per-table <code>.done</code> checkpoint file. If the target has rows for a season that is not in the file, it drops that partition and recopies. Ctrl+C finishes the in-flight batch but does not checkpoint the season, and a file lock stops two terminals copying the same table. Separately, on the loader side, we once had a 64.1-million-row half-loaded partition pass a 'has rows' check, which is why weekly loads use a TSV ledger and check <code>system.query_log</code> instead of trusting the client."</p>
+<p><strong>Say this carefully:</strong> "DROP PARTITION then recopy is not an atomic swap. Readers can see a partial season until the redo finishes. The REPLACE PARTITION design was written, not run."</p>
+<h3 id="5-what-is-the-scale">5. What is the scale?</h3>
+<p>"The largest object I timed is the Briscoes attr weekly table for seasons 6 and 7: 4.09 billion rows in one table, two partitions. Product weekly for the same seasons is about 839 million. Season grain is smaller. The replica is about 59 cores and 234 to 236 GiB. The 15.5× is a separate number, a 250M-row pivot benchmark, and the PDF rounds 12.3 seconds to 12."</p>
+<h3 id="6-why-not-one-insert-of-the-whole-season-at-weekly-grain">6. Why not one INSERT of the whole season at weekly grain?</h3>
+<p>"Because it needed about 170 GB of aggregator state and failed at both an 80 GB and a 200 GB cap. One week at a time is about 11 GB for product and over 40 GB for attr, which fits under a 55 GB cap with spill as a safety net."</p>
+<h3 id="7-how-do-store-totals-stay-consistent-with-skus">7. How do store totals stay consistent with SKUs?</h3>
+<p>"Store totals are built in two passes: weighted sums first, then a re-weight so each store's total equals the sum of its SKUs. Then we validate product, store and attr sums at the same filters. On the earlier Briscoes season-grain check, product and store revenue matched the weekly spine with zero difference across seasons 1 to 7."</p>
+<h3 id="8-how-do-replacingmergetree-corrections-work">8. How do ReplacingMergeTree corrections work?</h3>
+<p>"A correction is a new INSERT with a newer <code>updated_at</code> version, and ReplacingMergeTree keeps the newest version per key during background merges. Rollups are rebuilt at a captured watermark, so a rebuild is repeatable. I avoid FINAL where I want projections to work. One subtlety: the 'dirty' arrival token on the materialized view is not the same clock as the build watermark, so you cannot use one to reason about the other. The incremental pipeline is a design only."</p>
+<h3 id="9-what-is-the-biggest-production-risk-in-the-copier">9. What is the biggest production risk in the copier?</h3>
+<p>"There is no atomic swap. If it crashes, the target has a truncated season until we drop and retry, and readers of the target can see that partial season. For a real production move I would not copy through a laptop. I would allowlist the clusters to each other and use INSERT SELECT, or freeze through object storage, and swap seasons in with REPLACE PARTITION."</p>
+<h3 id="10-whiteboard-the-go-copier">10. Whiteboard the Go copier.</h3>
+<p>"I draw three boxes: source cluster, the Go process on an allowlisted machine, target cluster, both connections native TLS. Inside the Go box I draw two buffers of 500k rows: one filling from the SELECT stream while the other is sent with <code>Send()</code>. Then I add the <code>.done</code> checkpoint per table and the rule that only finished seasons are recorded. Finally I note that <code>-workers N</code> means N seasons in parallel with their own connections, and that caps are per process: about 48 threads and 180 GiB split across workers, so 24 threads and 90 GiB each with two workers."</p>
+<h3 id="11-did-the-409-billion-row-copy-finish">11. Did the 4.09-billion-row copy finish?</h3>
+<p>"At the snapshot I am quoting, no, it was in flight. The attr weekly ledger was still empty, with seasons 6 and 7 being copied, and product weekly had failed mid-copy with dirty partitions. Product season, attr season, store weekly and the small Hindsight tables had finished seasons. So I say the rate was measured on a 4.09-billion-row set, not that I migrated 4.09 billion rows."</p>
 <hr>
-<h2 id="code-map-verbal">Code map (verbal)</h2>
-<p><code>docs/scripts/gen_rollup_from_imputed.py</code> generator. <code>docs/scripts/{kik,briscoes}/run_pipeline.sh</code> POC loader that ran. <code>cmd/migrate-rollup-table/</code> Cloud copy. <code>docs/scripts/automated_rollup/</code> incremental design, not run.</p></main>
+<h2 id="11-say-this-dont-say-this">11. Say this / don't say this</h2>
+<table>
+<thead>
+<tr>
+<th>Safe to say</th>
+<th>Not safe to say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Six rollup tables, partitioned by season</td>
+<td>"Sub-second pivots"</td>
+</tr>
+<tr>
+<td>From 189 seconds to about 12 on a 250M-row pivot benchmark, against the old PostgreSQL path</td>
+<td>"Every query got 15.5× faster" or "the OOM fix caused the 15.5×"</td>
+</tr>
+<tr>
+<td>A whole-season weekly build needed about 170 GB and failed at 80 and 200 GB caps. Fixed with one fiscal week per insert</td>
+<td>"We just added more RAM"</td>
+</tr>
+<tr>
+<td>Go native-TLS pump, about 344k rows per second combined</td>
+<td>"344k TPS" or "344k requests per second"</td>
+</tr>
+<tr>
+<td>Measured on a 4.09B-row attr weekly set</td>
+<td>"I streamed 4.09 billion rows at 344,000 rows a second" as a finished job</td>
+</tr>
+<tr>
+<td>500k batches with double buffering</td>
+<td>"Atomic DROP PARTITION" or "zero-downtime swap"</td>
+</tr>
+<tr>
+<td>TSV ledger for the loader, <code>.done</code> checkpoints for the copier</td>
+<td>"The TSV file is the copier's checkpoint"</td>
+</tr>
+<tr>
+<td>REPLACE PARTITION incremental design written</td>
+<td>"We run incremental REPLACE PARTITION in production"</td>
+</tr>
+<tr>
+<td></td>
+<td>Kafka, Flink or CDC on Impact Analytics. Open-sourcing or sharing the copier. Hosts or passwords</td>
+</tr>
+</tbody>
+</table>
+<p><strong>LinkedIn and outreach.</strong> Safe: six tables, the 170 GB OOM and week slicing, the Go pump, about 344k rows per second combined, 4.09B attr weekly as the largest object timed, 500k batches and double buffering. The CI gate (100% statement coverage, 1,200+ Go tests, SAST and SBOM checks) is fine on LinkedIn. It left the PDF for the copier bullet. SAST is static application security testing. SBOM is a software bill of materials, the list of dependencies.</p>
+<hr>
+<h2 id="12-three-minute-whiteboard-script">12. Three-minute whiteboard script</h2>
+<ol>
+<li><strong>First, draw the daily fact box and the six-table grid</strong> (product, store, attr × season, weekly). Say: "Planners can't GROUP BY daily data on every click, so we pay once at load and read small tables partitioned by season."</li>
+<li><strong>Second, draw one weekly INSERT SELECT with a loop around it.</strong> Say: "Whole-season weekly needed about 170 GB and failed even at 200. One fiscal week per statement, 55 GB cap, 16 GB spill, 8 threads, four weeks in flight. The TSV ledger and query_log decide success, not row counts."</li>
+<li><strong>Third, draw source cluster, Go box, target cluster.</strong> Say: "The allowlists blocked direct pull, so a Go pump on an allowlisted machine copies seasons over native TLS in 500k double-buffered batches, about 344k rows a second combined. Seasons are checkpointed only when finished. Dirty seasons are dropped and recopied."</li>
+<li><strong>Close with the honesty line.</strong> "15.5× is query time, 170 GB is load time, and the 4.09-billion-row copy was measured in flight. DROP PARTITION is not an atomic swap. For production I'd use REPLACE PARTITION from a scratch table."</li>
+</ol>
+<hr>
+<h2 id="13-code-map-verbal-only-never-share-the-code">13. Code map (verbal only, never share the code)</h2>
+<ul>
+<li><code>docs/scripts/gen_rollup_from_imputed.py</code> is the generator for the rollup load SQL.</li>
+<li><code>docs/scripts/{kik,briscoes}/run_pipeline.sh</code> is the POC loader that actually ran.</li>
+<li><code>cmd/migrate-rollup-table/</code> is the Cloud-to-Cloud copier.</li>
+<li><code>docs/scripts/automated_rollup/</code> is the incremental REPLACE PARTITION design. It was not run.</li>
+</ul></main>
 </div>
 
 <script type="module">

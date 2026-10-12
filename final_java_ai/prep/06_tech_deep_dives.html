@@ -40,96 +40,533 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/06_tech_deep_dives.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#tech-deep-dives-java-spring-resume-track">Tech deep-dives — Java / Spring resume track</a>
-<a class="lvl2" href="#1-java-language-concurrency">1. Java (language + concurrency)</a>
-<a class="lvl2" href="#2-spring-boot-spring-mvc">2. Spring Boot + Spring MVC</a>
-<a class="lvl2" href="#3-hibernate-spring-data-jpa">3. Hibernate / Spring Data JPA</a>
-<a class="lvl2" href="#4-spring-security-jwt">4. Spring Security (JWT)</a>
-<a class="lvl2" href="#5-spring-batch-async-workers">5. Spring Batch + async workers</a>
-<a class="lvl2" href="#6-bean-validation-jackson">6. Bean Validation + Jackson</a>
-<a class="lvl2" href="#7-python-agent-tier-fastapi-langgraph-mcp">7. Python agent tier (FastAPI + LangGraph + MCP)</a>
-<a class="lvl2" href="#8-apache-kafka-java-client-spring-kafka">8. Apache Kafka (Java client / Spring Kafka)</a>
-<a class="lvl2" href="#9-flink-spark-pinot">9. Flink / Spark / Pinot</a>
-<a class="lvl2" href="#10-redis-mysql-postgresql-clickhouse">10. Redis / MySQL / PostgreSQL / ClickHouse</a>
-<a class="lvl2" href="#11-cloud-build-observability">11. Cloud, build, observability</a>
-<a class="lvl2" href="#12-one-line-why-for-the-rest">12. One-line "why" for the rest</a></nav>
-<main><h1 id="tech-deep-dives-java-spring-resume-track">Tech deep-dives — Java / Spring resume track</h1>
-<p>Every technology on <code>resume_java</code>. Fundamentals → internals → why we used it → interview gotchas. Streaming (Kafka/Flink/Spark/Pinot) and ClickHouse/cloud overlap with the main track — abbreviated here with Java integration notes.</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#tech-deep-dives-every-skill-on-the-java-python-resume">Tech deep dives: every skill on the Java + Python resume</a>
+<a class="lvl2" href="#1-where-each-technology-lives">1. Where each technology lives</a>
+<a class="lvl2" href="#2-java-and-the-spring-family">2. Java and the Spring family</a>
+<a class="lvl2" href="#3-python-go-and-api-styles">3. Python, Go and API styles</a>
+<a class="lvl2" href="#4-generative-ai">4. Generative AI</a>
+<a class="lvl2" href="#5-data-and-streaming">5. Data and streaming</a>
+<a class="lvl2" href="#6-databases-and-storage">6. Databases and storage</a>
+<a class="lvl2" href="#7-cloud-and-devops">7. Cloud and DevOps</a>
+<a class="lvl2" href="#8-architecture-and-core-concepts">8. Architecture and core concepts</a>
+<a class="lvl2" href="#9-cross-cutting-interview-questions">9. Cross-cutting interview questions</a>
+<a class="lvl2" href="#10-what-not-to-say">10. What not to say</a></nav>
+<main><h1 id="tech-deep-dives-every-skill-on-the-java-python-resume">Tech deep dives: every skill on the Java + Python resume</h1>
+<p><strong>PDF:</strong> <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code> · Summary line: "Expertise in Java and Python microservices"</p>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
+<ul>
+<li><strong>What it covers:</strong> every technology on this track's Skills line, in plain English: what it is, where I used it, why it was chosen there, what the alternatives were, and one interview question with a short answer.</li>
+<li><strong>When to read it:</strong> the night before a technical screen, or when a job description lists a tool and you want to know how honestly you can claim it.</li>
+<li><strong>What to memorise:</strong> the "where I used it" line for each tech, especially which ones are <strong>skills-level</strong> (literacy, no production claim), and the "what not to say" list at the end.</li>
+</ul>
+</div>
+<p><strong>Labels on this page.</strong> <strong>Production</strong> means a resume bullet or tech line backs it. <strong>Skills-level</strong> means I understand it and can discuss it, but I do not claim production ownership. Number tags: MEASURED means a log, document or code. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records.</p>
+<p>For longer entries see the <a href="../handbook/09_tech_glossary.html">tech glossary</a>. For project context see <a href="../handbook/03_ia_core_platform.html">IA core platform</a>, <a href="../handbook/04_ia_agentic_ai.html">IA agentic AI</a>, <a href="projects/02_uber_frm_scoping.html">Uber FRM</a>, <a href="projects/03_uber_menu_ingestion.html">Uber Menu</a>, <a href="projects/04_masters_india_gst.html">Masters India</a> and <a href="projects/05_geeksforgeeks_platform.html">GeeksforGeeks</a>.</p>
 <hr>
-<h2 id="1-java-language-concurrency">1. Java (language + concurrency)</h2>
+<h2 id="1-where-each-technology-lives">1. Where each technology lives</h2>
+<div class="mermaid">flowchart LR
+  IA["Impact Analytics"] --&gt;|platform| IAG["Go, Gin, ClickHouse, PostgreSQL, Redis, Datadog"]
+  IA --&gt;|agents| IAP["Python, FastAPI, LangGraph, LangSmith"]
+  FRM["Uber FRM"] --&gt;|service| FRMJ["Java, Spring Boot, JPA, Hibernate, MySQL, JUnit, Bazel"]
+  MENU["Uber Menu"] --&gt;|pipeline| MENUP["Python, Selenium, Kafka, Flink, Gemini, RAG, Milvus"]
+  MI["Masters India"] --&gt;|services| MIJ["Java, Spring Boot, Hibernate, Kafka, PostgreSQL, Redis, ELK"]
+  GFG["GeeksforGeeks"] --&gt;|backend| GFGD["Python, Django, MySQL, MongoDB, Redis, Elasticsearch"]
+</div>
+<p><em>What to notice: Java lives at Uber FRM and Masters India. Go and the Python agent plane live at Impact Analytics, which is never Spring Boot. Kafka appears twice, at Masters and at Menu, and never at Impact Analytics. Flink and Milvus are Menu only.</em></p>
+<hr>
+<h2 id="2-java-and-the-spring-family">2. Java and the Spring family</h2>
+<h3 id="java">Java</h3>
+<p><strong>What it is.</strong> A statically typed language that compiles to bytecode and runs on the JVM (Java Virtual Machine), with automatic garbage collection. Think of it as a strict, well-tooled language where the compiler catches many mistakes before production.</p>
+<p><strong>Ideas that matter in interviews.</strong> The heap and garbage collectors (G1 by default, ZGC for very low pauses). Thread pools through <code>ExecutorService</code> with a bounded queue and a rejection policy. <code>CompletableFuture</code> for fan-out. Virtual threads (Java 21) for cheap blocking concurrency. <code>ConcurrentHashMap</code> instead of <code>HashMap</code> across threads. The <code>equals</code> and <code>hashCode</code> contract.</p>
+<p><strong>Where I used it.</strong> Production: Uber FRM (36 Spring Boot endpoints) and Masters India (Spring Boot microservices). <strong>Why there:</strong> typed services with a mature ecosystem for web, data, security and Kafka. <strong>Alternative:</strong> Python web stacks, which I use at Impact Analytics for agents and used at GeeksforGeeks.</p>
+<p><strong>Q: Why should a thread pool have a bounded queue?</strong> <em>A:</em> An unbounded queue hides overload. Requests pile up in memory until latency explodes or the process runs out of memory. A bounded queue with a rejection policy fails fast, so the caller can retry or shed load.</p>
+<h3 id="spring-boot">Spring Boot</h3>
+<p><strong>What it is.</strong> A framework on top of Spring that gives you sensible defaults: auto-configuration, "starter" dependency bundles, an embedded web server and health endpoints (Actuator). Like a furnished flat for Java services.</p>
+<p><strong>Ideas that matter.</strong> Dependency injection through constructors. Configuration in <code>application.yml</code> with profiles and <code>@ConfigurationProperties</code>. <code>@Transactional</code> works through a proxy, so calling a transactional method from the same class skips the transaction (the self-invocation trap).</p>
+<p><strong>Where I used it.</strong> Production: Uber FRM and Masters India (PHP monolith to Spring Boot microservices). <strong>Why there:</strong> fast, standard path to REST microservices with JPA, validation and Kafka support built in. <strong>Alternative:</strong> FastAPI or Django in Python, Gin in Go.</p>
+<p><strong>Q: Why might <code>@Transactional</code> silently not apply?</strong> <em>A:</em> Spring wraps the bean in a proxy. If a method in the same class calls the annotated method directly, the call bypasses the proxy and no transaction starts. Move the method to another bean or call it through the proxy.</p>
+<h3 id="spring-mvc">Spring MVC</h3>
+<p><strong>What it is.</strong> Spring's web layer for the servlet model, where each request gets a thread. A request flows through filters, then the <code>DispatcherServlet</code>, which finds the right <code>@RestController</code> method, and Jackson converts JSON to Java objects and back. <code>@ControllerAdvice</code> maps exceptions to status codes in one place.</p>
+<p><strong>Where I used it.</strong> Skills-line item. It is the web layer under the FRM controllers (<code>@GetMapping</code>, <code>@PatchMapping</code>, a 409 for stale versions) and the Masters services. <strong>Why there:</strong> thread-per-request is simple and fits short database calls. <strong>Alternative:</strong> Spring WebFlux (reactive), which pays off when requests wait on slow I/O at very high concurrency.</p>
+<p><strong>Q: MVC or WebFlux for a service that calls a slow government API?</strong> <em>A:</em> First move the slow call off the request path, for example into a Kafka consumer, and return 202. Then MVC is fine. That is what we did at Masters. WebFlux is worth its complexity only if requests must wait on slow I/O at high concurrency.</p>
+<h3 id="spring-security">Spring Security</h3>
+<p><strong>What it is.</strong> A chain of servlet filters that authenticates the caller and authorizes the request before your controller runs. For APIs it usually validates a JWT (a signed token carrying who the caller is) and runs statelessly.</p>
+<pre><code class="language-java">@Bean
+SecurityFilterChain api(HttpSecurity http) throws Exception {
+    http.csrf(csrf -&gt; csrf.disable())
+        .sessionManagement(s -&gt; s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(a -&gt; a.requestMatchers(&quot;/health&quot;).permitAll()
+                                     .anyRequest().authenticated())
+        .oauth2ResourceServer(o -&gt; o.jwt(Customizer.withDefaults()));
+    return http.build();
+}
+</code></pre>
+<p><strong>Where I used it.</strong> Skills-level. It is where identity handling fits in Java services: at FRM the gateway injects the caller's email header and the service records it on every write, and at Masters there was an auth service among the extracted services. I do not claim a Spring Security outcome. <strong>Alternative:</strong> custom filters, or a gateway that does all auth.</p>
+<p><strong>Q: What do you validate on a JWT?</strong> <em>A:</em> The signature, expiry, issuer (<code>iss</code>) and audience (<code>aud</code>). Then map claims to roles and check them per method with <code>@PreAuthorize</code>.</p>
+<h3 id="spring-data-jpa-and-hibernate">Spring Data JPA and Hibernate</h3>
+<p><strong>What they are.</strong> JPA is Java's standard for mapping rows to objects. Hibernate is the engine that implements it, with a <strong>persistence context</strong> (a per-transaction cache of loaded entities) and <strong>dirty checking</strong> (it writes changed fields at commit). Spring Data JPA generates repositories from interfaces like <code>JpaRepository&lt;Line, String&gt;</code>.</p>
+<p><strong>Ideas that matter.</strong> <code>@Version</code> for optimistic locking. N+1 queries from lazy loading, fixed with <code>JOIN FETCH</code> or <code>@EntityGraph</code>. Typed projections into records. Keep "open session in view" off in APIs.</p>
+<p><strong>Where I used it.</strong> Production: Uber FRM (led 3 engineers on the Spring Data JPA and Hibernate migration that removed column-aliasing bugs and reached 100% module statement coverage) and Masters India (Hibernate on the tech line, where N+1 fixes helped the p95 drop). <strong>Why there:</strong> <code>@Version</code>, <code>@Transactional</code> and typed projections gave correctness by default. <strong>Alternative:</strong> jOOQ or MyBatis for SQL-first teams, or plain JDBC.</p>
+<p><strong>Q: How do you find and fix N+1?</strong> <em>A:</em> Turn on SQL logging or watch query counts in APM. If a list of 50 invoices fires 51 queries, fetch the children in one go with <code>JOIN FETCH</code>, <code>@EntityGraph</code> or a batch size.</p>
+<h3 id="spring-batch">Spring Batch</h3>
+<p><strong>What it is.</strong> A framework for chunked batch jobs. A <strong>Job</strong> has <strong>Steps</strong>, and a chunk step reads N items, processes them, writes them, and commits, with a job repository that remembers progress so a failed job restarts from the last committed chunk.</p>
+<pre><code class="language-java">@Bean
+Step validateInvoices(JobRepository repo, PlatformTransactionManager tx,
+                      ItemReader&lt;InvoiceRow&gt; reader,
+                      ItemProcessor&lt;InvoiceRow, Invoice&gt; validator,
+                      ItemWriter&lt;Invoice&gt; writer) {
+    return new StepBuilder(&quot;validateInvoices&quot;, repo)
+            .&lt;InvoiceRow, Invoice&gt;chunk(500, tx)
+            .reader(reader).processor(validator).writer(writer)
+            .faultTolerant().skip(ValidationException.class).skipLimit(100)
+            .build();
+}
+</code></pre>
+<p><em>Chunk size and skip limit are illustrative.</em> <strong>Where I used it.</strong> Skills-level. It fits the chunked bulk-import validation at Masters India. I do not claim a Spring Batch outcome. <strong>Alternative:</strong> Kafka consumers for stage-to-stage events, which is what the Masters pipeline is built on.</p>
+<p><strong>Q: Spring Batch or Kafka?</strong> <em>A:</em> Spring Batch for a bounded file with restart-from-chunk semantics. Kafka when several consumers need a durable, replayable stream.</p>
+<h3 id="maven">Maven</h3>
+<p><strong>What it is.</strong> Java's standard build tool. A <code>pom.xml</code> declares dependencies and plugins, and the Spring Boot parent pins compatible versions.</p>
+<p><strong>Where I used it.</strong> Skills-level. The FRM build was Bazel because Uber uses a monorepo, so I do not claim Maven on FRM. <strong>Alternative:</strong> Gradle (faster incremental builds), Bazel (monorepos).</p>
+<p><strong>Q: Why use the Spring Boot parent or BOM?</strong> <em>A:</em> It pins versions of dozens of libraries that are tested together, so you avoid dependency conflicts.</p>
+<h3 id="junit-with-mockito-and-mockmvc">JUnit (with Mockito and MockMvc)</h3>
+<p><strong>What it is.</strong> JUnit 5 is Java's test framework. Mockito creates fake collaborators. MockMvc calls controllers without a real server. Slice tests (<code>@WebMvcTest</code>, <code>@DataJpaTest</code>) load only part of the app.</p>
+<p><strong>Where I used it.</strong> Production: Uber FRM (JUnit on the tech line, 100% module statement coverage, 1,100+ tests is verbal depth) and Masters India (coverage from 35% to 82%, 98% deployment success). <strong>Why there:</strong> layer-by-layer tests with mocks need no database and run fast in CI. <strong>Alternative:</strong> integration tests only, with Testcontainers for real databases, which are slower but closer to production.</p>
+<p><strong>Q: What does 100% statement coverage not prove?</strong> <em>A:</em> That the assertions are meaningful or that every branch combination was tested. It proves every line ran at least once.</p>
+<hr>
+<h2 id="3-python-go-and-api-styles">3. Python, Go and API styles</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is</th>
+<th>Where I used it</th>
+<th>Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>General-purpose language with strong AI and web libraries</td>
+<td>Production: IA agent plane, Uber Menu, GeeksforGeeks</td>
+<td>Java, Go</td>
+</tr>
+<tr>
+<td>Go</td>
+<td>Compiled language with cheap goroutines and simple deployment</td>
+<td>Production: IA platform APIs, formula parser, the ClickHouse data pump</td>
+<td>Java</td>
+</tr>
+<tr>
+<td>Gin</td>
+<td>Fast, minimal Go HTTP framework</td>
+<td>Production: IA multi-tenant platform at 10k peak RPS with Google Wire, h2c, nested timeouts</td>
+<td>Echo, net/http only</td>
+</tr>
+<tr>
+<td>FastAPI</td>
+<td>Async Python web framework built on Pydantic</td>
+<td>Production: IA agent plane</td>
+<td>Flask, Django</td>
+</tr>
+<tr>
+<td>Pydantic</td>
+<td>Data validation from Python type hints</td>
+<td>Comes with FastAPI on the IA agent plane. No bullet is about it</td>
+<td>dataclasses plus hand checks</td>
+</tr>
+<tr>
+<td>asyncio</td>
+<td>Python's event loop for concurrent I/O</td>
+<td>How IA LLM batches run concurrently</td>
+<td>Threads</td>
+</tr>
+<tr>
+<td>Celery</td>
+<td>Python background task queue</td>
+<td>Skills-level on this track. No bullet relies on it</td>
+<td>Kafka consumers, cron</td>
+</tr>
+<tr>
+<td>Django</td>
+<td>Batteries-included Python framework</td>
+<td>Production: GeeksforGeeks PHP to Django migration</td>
+<td>Flask, FastAPI</td>
+</tr>
+<tr>
+<td>REST</td>
+<td>Resource URLs plus HTTP verbs</td>
+<td>Every project</td>
+<td>gRPC, GraphQL</td>
+</tr>
+<tr>
+<td>gRPC</td>
+<td>Binary RPC over HTTP/2 with generated clients</td>
+<td>Skills-level</td>
+<td>REST</td>
+</tr>
+<tr>
+<td>SQL</td>
+<td>The language of relational and analytical databases</td>
+<td>Every project. IA's parser emits parameterized ClickHouse SQL</td>
+<td>ORMs only</td>
+</tr>
+<tr>
+<td>C, C++</td>
+<td>Low-level systems languages</td>
+<td>Skills-level, competitive programming (Code Jam 2021 qualifier)</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Go: why Go for the IA platform?</strong> Goroutines handle thousands of concurrent requests cheaply, a single static binary deploys easily, and <strong>Google Wire</strong> wires dependencies at compile time, so a missing dependency fails the build instead of production. <strong>h2c</strong> is HTTP/2 without TLS, used because the edge runs with no reverse proxy in front.</p>
+<p><strong>One question each.</strong></p>
 <ul>
-<li><strong>Fundamentals.</strong> Statically typed, JVM bytecode, GC'd. Memory: heap + metaspace; escape analysis; generations (young/old) — know G1 vs ZGC at a high level for latency talk.</li>
-<li><strong>Concurrency.</strong> Threads → <code>ExecutorService</code> / <code>ThreadPoolExecutor</code> (core/max/queue/rejection). <code>CompletableFuture</code> for fan-out. <strong>Virtual threads (Java 21+)</strong> = cheap blocking concurrency without reactive complexity. <code>synchronized</code> / <code>ReentrantLock</code> / concurrent collections; happens-before via <code>volatile</code> / atomics.</li>
-<li><strong>Gotchas.</strong> Thread-pool leaks (unbounded queues); <code>HashMap</code> in concurrent use → <code>ConcurrentHashMap</code>; equals/hashCode contracts; checked exceptions at API boundaries; autoboxing + identity (<code>==</code> on Integer); string concat in hot loops → <code>StringBuilder</code>.</li>
+<li><strong>Python. Q:</strong> What is the GIL and when does it matter? <strong>A:</strong> A lock that lets one thread run Python bytecode at a time. It hurts CPU-bound threads, not I/O-bound work, so for LLM calls async I/O works well.</li>
+<li><strong>Go. Q:</strong> How do you stop a goroutine leak? <strong>A:</strong> Pass a <code>context.Context</code> with a deadline and have every goroutine return when it is cancelled.</li>
+<li><strong>Gin. Q:</strong> What are nested timeouts? <strong>A:</strong> An outer request deadline with tighter deadlines for each downstream call inside it, so one slow dependency cannot use the whole budget.</li>
+<li><strong>FastAPI. Q:</strong> What happens if you call blocking code in an async endpoint? <strong>A:</strong> It blocks the event loop for every request. Use async libraries or run it in a thread pool.</li>
+<li><strong>Pydantic. Q:</strong> Why validate LLM output with a schema? <strong>A:</strong> Models sometimes return malformed or extra fields. A schema rejects them before they reach storage.</li>
+<li><strong>asyncio. Q:</strong> How do you cap concurrent LLM calls? <strong>A:</strong> An <code>asyncio.Semaphore</code> around each call, plus a timeout.</li>
+<li><strong>Celery. Q:</strong> Celery or Kafka? <strong>A:</strong> Celery for fire-and-forget tasks. Kafka when you need ordering, replay and many independent readers.</li>
+<li><strong>Django. Q:</strong> Why Django at GFG? <strong>A:</strong> Admin, auth, ORM and migrations out of the box for a content product.</li>
+<li><strong>REST. Q:</strong> Is PATCH idempotent? <strong>A:</strong> Not by definition, but you can make it so with a version check or by setting absolute values.</li>
+<li><strong>gRPC. Q:</strong> When pick gRPC over REST? <strong>A:</strong> Internal service-to-service calls that need strict contracts, streaming or low overhead.</li>
+<li><strong>SQL. Q:</strong> How do you stop SQL injection? <strong>A:</strong> Bound parameters and allowlists, never string concatenation.</li>
+<li><strong>C, C++. Q:</strong> Stack vs heap? <strong>A:</strong> Stack is automatic, fast and scoped to a function. Heap is manual or garbage-collected and lives until freed.</li>
 </ul>
-<h2 id="2-spring-boot-spring-mvc">2. Spring Boot + Spring MVC</h2>
+<hr>
+<h2 id="4-generative-ai">4. Generative AI</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is</th>
+<th>Where I used it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LangGraph</td>
+<td>Framework for LLM workflows as graphs with state and loops</td>
+<td>Production: IA "Ask Iris", a LangGraph supervisor with a 3-attempt evaluator loop</td>
+</tr>
+<tr>
+<td>LangChain</td>
+<td>Library for chaining loaders, retrievers, prompts and parsers</td>
+<td>Production: Uber Menu RAG. LangChain Academy certificate</td>
+</tr>
+<tr>
+<td>RAG</td>
+<td>Retrieve examples or facts, then generate</td>
+<td>Production: Uber Menu, 98% field fidelity in offline evaluation</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>Open-source vector database</td>
+<td>Production: Uber Menu only</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>Vector search inside PostgreSQL</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td>LLM agents (OpenAI, Gemini, Claude)</td>
+<td>Programs where an LLM decides or scores within guardrails</td>
+<td>Production: IA 7 AI lenses and Ask Iris, Menu Gemini 2.5 Pro</td>
+</tr>
+<tr>
+<td>Tool calling</td>
+<td>The model asks the app to run a named function with JSON arguments</td>
+<td>Skills-level. IA tool design is verbal depth only</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>Model Context Protocol, a standard way to expose tools to models</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td>Prompt engineering</td>
+<td>Designing instructions, examples and output formats</td>
+<td>IA lenses, Menu few-shot examples</td>
+</tr>
+<tr>
+<td>LangSmith</td>
+<td>Tracing and debugging for LangChain and LangGraph runs</td>
+<td>Production: Ask Iris only</td>
+</tr>
+<tr>
+<td>Offline evaluation</td>
+<td>Scoring a system on a fixed labelled set before release</td>
+<td>Production: IA 300-case harness and 80% CI gate, Menu 98%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key facts to keep straight.</strong> Keep/Drop scores <strong>348k article-seasons</strong>, 88k items per pass, blending deterministic KPI math with structured LLM calls across 7 lenses. The LLM never queries the database. Context arrives as JSON from a 2.11B-row ClickHouse master. Keep/Drop has no LLM orchestrator, its order is fixed in code. The <strong>80%</strong> is a CI promotion gate on the 300-case harness. The <strong>73%</strong> lower live cost at 100% coverage and the <strong>74%</strong> deterministic baseline come from a separate gold-200 benchmark. Do not fuse them.</p>
+<p><strong>One question each.</strong></p>
 <ul>
-<li><strong>Boot.</strong> Auto-config + starters + embedded server + Actuator. Externalized config (<code>application.yml</code>, profiles, <code>@ConfigurationProperties</code>). Fat JAR deploy.</li>
-<li><strong>MVC.</strong> DispatcherServlet → HandlerMapping → Controller → View/HttpMessageConverter. <code>@RestController</code> + Jackson. Filter / <code>HandlerInterceptor</code> / <code>ControllerAdvice</code> chain.</li>
-<li><strong>Why.</strong> Fast production path for REST microservices; ecosystem for Security, Data, Batch, Kafka.</li>
-<li><strong>Gotchas.</strong> Component-scan boundaries; circular deps; <code>@Transactional</code> self-invocation (proxy); blocking calls on Tomcat threads under load (scale threads or go WebFlux/virtual threads).</li>
+<li><strong>LangGraph. Q:</strong> How do you stop an agent looping forever? <strong>A:</strong> A hard cap. Ask Iris has a 3-attempt evaluator loop, then it returns the best answer or a clear failure.</li>
+<li><strong>LangChain. Q:</strong> What does it add over raw API calls? <strong>A:</strong> Reusable pieces for loading, splitting, retrieving and parsing, so the pipeline is easy to rearrange.</li>
+<li><strong>RAG. Q:</strong> RAG or fine-tuning for menus? <strong>A:</strong> RAG. A newly labelled menu helps the next extraction immediately, with no retraining when the schema changes.</li>
+<li><strong>Milvus. Q:</strong> What does a vector index trade off? <strong>A:</strong> Approximate nearest-neighbour search gives speed in exchange for occasionally missing the exact best match.</li>
+<li><strong>pgvector. Q:</strong> When is pgvector enough? <strong>A:</strong> When vectors fit comfortably in one PostgreSQL instance and you want them next to relational data.</li>
+<li><strong>LLM agents. Q:</strong> What if the model times out? <strong>A:</strong> Fall back to the deterministic baseline score, which is what Keep/Drop does.</li>
+<li><strong>Tool calling. Q:</strong> Why does Keep/Drop give the LLM no SQL tool? <strong>A:</strong> Safety and cost. Context is prepared as JSON, so the model cannot run arbitrary queries on a 2.11B-row table.</li>
+<li><strong>MCP. Q:</strong> How does MCP relate to tool calling? <strong>A:</strong> Tool calling is the model asking for a function. MCP standardises how tools are described and served so any client can use them.</li>
+<li><strong>Prompt engineering. Q:</strong> How do you get reliable JSON? <strong>A:</strong> Give the schema, show examples, ask for JSON only, then validate and reject failures.</li>
+<li><strong>LangSmith. Q:</strong> What do you look at in a trace? <strong>A:</strong> Each node's inputs and outputs, tokens, latency and where retries happened.</li>
+<li><strong>Offline evaluation. Q:</strong> What did you do when the LLM lost to the baseline? <strong>A:</strong> The blended score was about 63% against a 74% deterministic baseline, so we froze the blend weights instead of retuning to chase the benchmark.</li>
 </ul>
-<h2 id="3-hibernate-spring-data-jpa">3. Hibernate / Spring Data JPA</h2>
+<hr>
+<h2 id="5-data-and-streaming">5. Data and streaming</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is</th>
+<th>Where I used it</th>
+<th>Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apache Kafka</td>
+<td>Durable, partitioned, replayable message log</td>
+<td>Production: Masters India (Spring Kafka consumers), Uber Menu (Python pipeline). Not IA</td>
+<td>RabbitMQ, SQS</td>
+</tr>
+<tr>
+<td>Apache Flink</td>
+<td>Stateful stream processor with event time</td>
+<td>Production: Uber Menu only</td>
+<td>Kafka Streams</td>
+</tr>
+<tr>
+<td>ClickHouse</td>
+<td>Columnar analytics database</td>
+<td>Production: IA 2.11B-row master, six rollup tables, cross-cluster copy</td>
+<td>BigQuery, Druid, Pinot</td>
+</tr>
+<tr>
+<td>BigQuery</td>
+<td>Google's serverless data warehouse</td>
+<td>On the IA tech line as the upstream warehouse. Keep claims qualitative</td>
+<td>ClickHouse</td>
+</tr>
+<tr>
+<td>ETL pipelines</td>
+<td>Extract, transform, load jobs</td>
+<td>IA rollup builds, Masters bulk imports, Menu ingestion. FRM consumes a shared ETL</td>
+<td>Ad hoc scripts</td>
+</tr>
+</tbody>
+</table>
+<p><strong>ClickHouse facts to keep straight.</strong> Planner pivots went from 189 seconds to 12 seconds (15.5×) on a 250M-row harness through six pre-aggregated MergeTree rollups. Separately, weekly rollup builds hit a 170GB out-of-memory failure, fixed by inserting one fiscal week at a time with memory and disk-spill caps. 15.5× is query time and 170GB is load time. They are not cause and effect. The cross-cluster migration ran at about <strong>344k rows per second</strong> (ingest rate, not requests per second) with a custom Go native-TLS pump, partitions up to 4.09B rows (measured in flight, not a finished cutover). Rollback meant <code>DROP PARTITION</code> then recopy, not an atomic swap. <strong>ReplacingMergeTree</strong> keeps only the newest version of rows with the same key, eventually, like a notebook where you write new values below and a cleaner later crosses out old lines.</p>
+<p><strong>One question each.</strong></p>
 <ul>
-<li><strong>JPA.</strong> ORM standard; Hibernate = implementation. Entity = persistent identity; <code>EntityManager</code> / persistence context; flush vs commit.</li>
-<li><strong>Spring Data.</strong> <code>JpaRepository</code>, derived queries, <code>@Query</code>, Specifications/Criteria for dynamic filters, <code>@EntityGraph</code>.</li>
-<li><strong>Gotchas.</strong> N+1 lazy loads; Open Session In View (often disable in APIs); dirty checking surprises; <code>@OneToMany</code> default fetch; equals/hashCode on entities (prefer business key or don't put entities in Sets across sessions); 2nd-level cache only with clear invalidation story.</li>
-<li><strong>Do not claim:</strong> Hibernate against ClickHouse — planning facts use the ClickHouse Java/JDBC client; JPA is for MySQL/Postgres OLTP metadata only.</li>
+<li><strong>Kafka. Q:</strong> How do you keep one customer's events in order? <strong>A:</strong> Use the customer ID as the message key, so all their events land on one partition. Masters used the GSTIN, Menu used <code>vendor_id</code>.</li>
+<li><strong>Spring Kafka (Masters). Q:</strong> When do you commit offsets? <strong>A:</strong> After processing succeeds. Committing first can lose work on a crash. Committing after can duplicate it, so processing must be idempotent.</li>
+<li><strong>Flink. Q:</strong> What is a watermark? <strong>A:</strong> Flink's estimate that all events up to time T have arrived, so it can finish a window while tolerating bounded lateness.</li>
+<li><strong>ClickHouse. Q:</strong> Why not just add indexes in PostgreSQL? <strong>A:</strong> Pivots scan and aggregate hundreds of millions of rows. Columnar storage reads only the needed columns, compressed, and rollups pre-compute the common shapes.</li>
+<li><strong>BigQuery. Q:</strong> Why not serve pivots from BigQuery? <strong>A:</strong> Interactive, repeated pivots need predictable latency and no per-scan cost, which pre-aggregated ClickHouse rollups gave us.</li>
+<li><strong>ETL. Q:</strong> How do you make a load safe to re-run? <strong>A:</strong> Deterministic keys, checkpoint or ledger files, and partition-level replace or drop-and-recopy.</li>
 </ul>
-<h2 id="4-spring-security-jwt">4. Spring Security (JWT)</h2>
+<hr>
+<h2 id="6-databases-and-storage">6. Databases and storage</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>What it is</th>
+<th>Where I used it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL</td>
+<td>Relational database with strong transactions</td>
+<td>Production: IA metadata, UAM and roles, Masters India sharded by tax quarter</td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>Popular relational database</td>
+<td>Production: Uber FRM on SOADB (8-table schema), GeeksforGeeks</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>In-memory key-value store</td>
+<td>Production: IA auth front, Masters cache-aside (30% fewer reads), GFG counters</td>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>Document database for varying JSON shapes</td>
+<td>Production: Masters signed IRP responses, GFG doubt bodies</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>Search engine over an inverted index</td>
+<td>Production: Masters (ELK logs), GFG search</td>
+</tr>
+<tr>
+<td>DynamoDB</td>
+<td>AWS managed key-value and document store</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td>Amazon S3</td>
+<td>AWS object storage</td>
+<td>Masters ran on AWS and my design notes put bulk upload files in S3. No bullet names it</td>
+</tr>
+</tbody>
+</table>
+<p><strong>One question each.</strong></p>
 <ul>
-<li><strong>Resource server.</strong> Validate JWT signature/issuer; map claims → <code>Authentication</code>; method security (<code>@PreAuthorize</code>) for roles/tenants.</li>
-<li><strong>Filter chain.</strong> Stateless session; CORS; CSRF off for pure bearer APIs.</li>
-<li><strong>Gotchas.</strong> Wrong order of filters; mixing session + JWT; leaking stack traces; not validating <code>aud</code>/<code>iss</code>.</li>
+<li><strong>PostgreSQL. Q:</strong> App-routed quarter shards or native partitioning? <strong>A:</strong> Today I would start with native range partitioning. It gives pruning and clean detach with less custom code.</li>
+<li><strong>MySQL. Q:</strong> How does optimistic locking work? <strong>A:</strong> A version column in the WHERE clause. Zero rows updated means someone else saved first.</li>
+<li><strong>Redis. Q:</strong> How do you prevent a cache stampede? <strong>A:</strong> TTL jitter so keys do not expire together, plus a short <code>SET NX</code> lock so only one worker rebuilds a hot key.</li>
+<li><strong>MongoDB. Q:</strong> Why not put signed responses in PostgreSQL? <strong>A:</strong> Their shape varies and they are stored for audits, so a document store avoids constant schema changes.</li>
+<li><strong>Elasticsearch. Q:</strong> Why is it fast for text search? <strong>A:</strong> An inverted index maps each word to the documents containing it, like a textbook's back index.</li>
+<li><strong>DynamoDB. Q:</strong> What drives DynamoDB design? <strong>A:</strong> Access patterns first. You choose partition and sort keys for the queries you will run.</li>
+<li><strong>Amazon S3. Q:</strong> Why land uploads in object storage first? <strong>A:</strong> The upload returns fast, and the file stays available for retries and replays.</li>
 </ul>
-<h2 id="5-spring-batch-async-workers">5. Spring Batch + async workers</h2>
+<hr>
+<h2 id="7-cloud-and-devops">7. Cloud and DevOps</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Where I used it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCP</td>
+<td>Production: Impact Analytics, Uber Menu</td>
+</tr>
+<tr>
+<td>AWS</td>
+<td>Production: Masters India. Only name services you actually touched</td>
+</tr>
+<tr>
+<td>Docker</td>
+<td>Production: IA, FRM, Menu, Masters</td>
+</tr>
+<tr>
+<td>Kubernetes</td>
+<td>Skills-level. No cluster operations claim</td>
+</tr>
+<tr>
+<td>Maven</td>
+<td>Skills-level. See section 2</td>
+</tr>
+<tr>
+<td>Bazel</td>
+<td>Production: Uber FRM stacked PRs with per-layer test targets</td>
+</tr>
+<tr>
+<td>CI/CD</td>
+<td>Masters coverage gate and 98% deploys, IA 80% eval gate, FRM Bazel merge gates</td>
+</tr>
+<tr>
+<td>Datadog</td>
+<td>Production: IA Go/Gin distributed tracing</td>
+</tr>
+<tr>
+<td>ELK</td>
+<td>Production: Masters, structured JSON logs with request IDs</td>
+</tr>
+<tr>
+<td>New Relic</td>
+<td>Production: Masters, per-request timing. Triage about 70% faster with ELK</td>
+</tr>
+</tbody>
+</table>
+<p><strong>One question each.</strong></p>
 <ul>
-<li><strong>Batch.</strong> Job → Step → chunk-oriented reader/processor/writer; JobRepository for restartability; skip/retry policies.</li>
-<li><strong>vs Celery (main track).</strong> Same product need (bulk imports, retries); Spring Batch = first-class job semantics on JVM.</li>
-<li><strong>Idempotency.</strong> Business keys in writers; restart from failed chunk without double side effects.</li>
-<li><strong>Gotchas.</strong> Wrong chunk size; stateful processors; not making readers restartable.</li>
+<li><strong>GCP. Q:</strong> Which services did you use? <strong>A:</strong> I name only what I touched, and keep the rest general.</li>
+<li><strong>AWS. Q:</strong> Same question. <strong>A:</strong> Same rule. Masters ran on AWS, and I do not invent a service list.</li>
+<li><strong>Docker. Q:</strong> Why containers? <strong>A:</strong> The same image runs on a laptop, in CI and in production.</li>
+<li><strong>Kubernetes. Q:</strong> Have you run clusters? <strong>A:</strong> No. I understand deployments, services and autoscaling, but I do not claim operating clusters.</li>
+<li><strong>Bazel. Q:</strong> Why stacked PRs? <strong>A:</strong> Small additive changes are reviewable and each can deploy alone, which gave zero-downtime releases.</li>
+<li><strong>CI/CD. Q:</strong> What should block a merge? <strong>A:</strong> Failing tests, a coverage drop, and for AI changes an evaluation score under the gate.</li>
+<li><strong>Datadog, ELK, New Relic. Q:</strong> How does tracing cut triage time? <strong>A:</strong> One request ID joins logs and spans across services, so finding the cause is one search instead of grepping several boxes.</li>
 </ul>
-<h2 id="6-bean-validation-jackson">6. Bean Validation + Jackson</h2>
+<hr>
+<h2 id="8-architecture-and-core-concepts">8. Architecture and core concepts</h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Where it shows on the resume</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Distributed systems, microservices</td>
+<td>Masters PHP to Spring Boot migration, IA platform plus agent plane</td>
+</tr>
+<tr>
+<td>System design (HLD and LLD)</td>
+<td>Every project. FRM layering is a clean LLD example</td>
+</tr>
+<tr>
+<td>Data structures and algorithms</td>
+<td>Code Jam 2021 qualifier, HackerRank certificate, IA formula tokenizer and parser</td>
+</tr>
+<tr>
+<td>Caching</td>
+<td>Masters Redis cache-aside, GFG counters, IA Redis-fronted auth</td>
+</tr>
+<tr>
+<td>Reliability</td>
+<td>Masters DLQ and bounded retries, IA circuit breakers, timeouts and fallbacks</td>
+</tr>
+<tr>
+<td>Multithreading, concurrency</td>
+<td>FRM optimistic locking, Masters bounded consumers, Go goroutines at IA</td>
+</tr>
+<tr>
+<td>Database sharding</td>
+<td>Masters PostgreSQL by tax quarter</td>
+</tr>
+<tr>
+<td>Idempotency</td>
+<td>Masters <code>client + fileHash + batchIndex</code>, FRM SHA-256 natural keys, Menu upserts, GFG unique votes</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9-cross-cutting-interview-questions">9. Cross-cutting interview questions</h2>
+<p><strong>"Why do you use three languages?"</strong><br>
+Each fits its job. Java with Spring Boot for transactional business services at Uber FRM and Masters India, Go for the high-concurrency platform edge at Impact Analytics, and Python wherever AI and data libraries matter, the IA agent plane and the Uber Menu pipeline. I pick by the problem and the team's standard, not by habit.</p>
+<p><strong>"Kafka at Masters and Kafka at Menu. Same thing?"</strong><br>
+Same technology, different products. At Masters, Spring Boot consumers carried e-invoice stages keyed by GSTIN with dead-letter topics. At Menu, Kafka fed an Apache Flink job keyed by vendor. Flink was only at Menu.</p>
+<p><strong>"What does exactly-once mean in your systems?"</strong><br>
+At-least-once delivery plus idempotent writes, which gives an exactly-once effect. At Masters the key was client plus file hash plus batch index. At Menu the upsert was keyed by vendor, menu version and item key. I never claim zero message loss.</p>
+<p><strong>"Hibernate or plain SQL?"</strong><br>
+Hibernate with typed projections for transactional services, because <code>@Version</code> and <code>@Transactional</code> give correctness by default. Explicit SQL for heavy reporting or analytics. At FRM, moving untyped native queries to typed projections is what removed the column-aliasing bug.</p>
+<p><strong>"How do you decide between PostgreSQL and ClickHouse?"</strong><br>
+PostgreSQL for many small transactional reads and writes, ClickHouse for large scans and aggregations. At Impact Analytics, POCs showed ClickHouse winning large analytical reads, so planning facts moved there and PostgreSQL kept thin metadata, access control and roles.</p>
+<p><strong>"Which items on your Skills line are not production claims?"</strong><br>
+C and C++, pgvector, DynamoDB, Kubernetes, gRPC, MCP, tool calling, Celery on this track, Maven, Spring Security and Spring Batch. I can discuss each one and I am clear that they are skills-level.</p>
+<hr>
+<h2 id="10-what-not-to-say">10. What not to say</h2>
+<div class="callout warn">
 <ul>
-<li>Boundary validation (<code>@NotNull</code>, custom constraints) on DTOs — never trust clients.</li>
-<li>Jackson: <code>ObjectMapper</code> config, <code>@JsonIgnore</code>, unknown properties policy; record/DTO preference over exposing entities.</li>
+<li>Spring Boot or Hibernate at Impact Analytics. IA platform APIs are <strong>Go/Gin</strong> and agents are <strong>Python</strong>.</li>
+<li>Kafka, Flink, CDC, Milvus or Kubernetes operations at Impact Analytics.</li>
+<li>LangSmith on the Keep/Drop batch. LangSmith is Ask Iris only.</li>
+<li>"80% accuracy live for all tenants". It is a CI gate on the 300-case harness.</li>
+<li>344k as requests per second. It is rows per second.</li>
+<li>15.5× as caused by the 170GB OOM fix. One is query time, the other is load time.</li>
+<li>Spark or Pinot as resume claims. Neither is on the PDF. Older versions of this page listed Spark backfill and Pinot numbers, and those are study-only.</li>
+<li>Spring Boot at GeeksforGeeks. It is Django.</li>
+<li>Celery at Masters on this track. Background work is Kafka consumers, <code>@Async</code> and scheduled jobs.</li>
+<li>Maven on Uber FRM. The FRM build is Bazel.</li>
+<li>Production claims for any skills-level item listed in section 9.</li>
 </ul>
-<h2 id="7-python-agent-tier-fastapi-langgraph-mcp">7. Python agent tier (FastAPI + LangGraph + MCP)</h2>
-<ul>
-<li><strong>Role on this resume.</strong> All agentic / RAG / LLM orchestration stays Python — FastAPI service, LangGraph workflows, LangChain tools, MCP integrations. Spring Boot does not run the agents.</li>
-<li><strong>Why Python here.</strong> Mature agent graphs, tool-calling, RAG, and eval loops; pairs cleanly with a Java API tier over versioned HTTP contracts.</li>
-<li><strong>Gotchas.</strong> Prompt injection; schema validation of tool args; timeout/budget per turn; never let the model write raw SQL without a guarded text-to-SQL layer.</li>
-<li>Defenses for LangGraph/RAG/MCP: same depth as main <code>../../resume/prep/agentic_assort_playbook/05_tech_deep_dives.md</code>.</li>
-</ul>
-<h2 id="8-apache-kafka-java-client-spring-kafka">8. Apache Kafka (Java client / Spring Kafka)</h2>
-<ul>
-<li>Same fundamentals as main track (partitions, consumer groups, exactly-once story).</li>
-<li><strong>Java:</strong> <code>KafkaProducer</code>/<code>KafkaConsumer</code>; <code>spring-kafka</code> <code>@KafkaListener</code>; error handlers + DLT; idempotent producer config.</li>
-<li><strong>Gotchas.</strong> Listener concurrency vs partition count; blocking work in listeners; committing offsets too early.</li>
-</ul>
-<h2 id="9-flink-spark-pinot">9. Flink / Spark / Pinot</h2>
-<p>Same depth as main <code>../../resume/prep/06_tech_deep_dives.md</code> §§3–6 (now includes ESTIMATED rates). Flink/Spark jobs are often Java/Scala at Uber; this resume's Menu <strong>Tech Used</strong> line stays Python + streaming (matches live stack) — do not invent a Spring control-plane bullet you cannot defend.</p>
-<p><strong>Numbers to memorize (ESTIMATED):</strong> Kafka peak ~200–500 events/sec · Flink keeps pace · Spark backfills ~1–2M item rows · Pinot sub-second health queries · +95% ingest success (~60–65% → 95%+). Full derivation: <code>09_metrics_derivations.md</code>.</p>
-<h2 id="10-redis-mysql-postgresql-clickhouse">10. Redis / MySQL / PostgreSQL / ClickHouse</h2>
-<ul>
-<li><strong>Redis:</strong> cache, rate limits, Batch/broker adjacent state; eviction + stampede.</li>
-<li><strong>MySQL (FRM):</strong> normalized 8-table schema; ETL aggregation.</li>
-<li><strong>PostgreSQL:</strong> IA metadata ACID plane; Masters India primary store.</li>
-<li><strong>ClickHouse:</strong> insert-only / partition-swapped planning facts (agent <code>readonly=1</code>) — <strong>not</strong> via Hibernate.</li>
-</ul>
-<h2 id="11-cloud-build-observability">11. Cloud, build, observability</h2>
-<ul>
-<li><strong>GCP/AWS, Docker, K8s</strong> — same stories as main track.</li>
-<li><strong>Maven/Gradle</strong> — reproducible builds; dependency BOM (Spring Boot parent).</li>
-<li><strong>ELK / New Relic / Grafana / Sentry / Actuator</strong> — RED metrics, correlation IDs, alerts on user symptoms.</li>
-<li><strong>JUnit 5 / Mockito / Testcontainers</strong> — unit vs slice (<code>@WebMvcTest</code>, <code>@DataJpaTest</code>) vs full integration.</li>
-</ul>
-<h2 id="12-one-line-why-for-the-rest">12. One-line "why" for the rest</h2>
-<ul>
-<li><strong>WebSockets/SSE:</strong> agent progress streaming (Python agent tier / UI).</li>
-<li><strong>Bazel:</strong> Uber monorepo build — prefer this over inventing Maven on FRM.</li>
-<li><strong>Maven:</strong> fine for Spring Boot services outside Uber.</li>
-</ul></main>
+</div></main>
 </div>
 
 <script type="module">

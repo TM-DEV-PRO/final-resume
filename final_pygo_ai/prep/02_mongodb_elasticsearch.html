@@ -40,27 +40,215 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final PyGo+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_pygo_ai/prep/02_mongodb_elasticsearch.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#masters-india-geeksforgeeks-mongodb-elasticsearch-v2">Masters India &amp; GeeksforGeeks — MongoDB / Elasticsearch (v2)</a>
-<a class="lvl2" href="#masters-india">Masters India</a>
-<a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
-<a class="lvl2" href="#interview-one-liners">Interview one-liners</a></nav>
-<main><h1 id="masters-india-geeksforgeeks-mongodb-elasticsearch-v2">Masters India &amp; GeeksforGeeks — MongoDB / Elasticsearch (v2)</h1>
-<p>Added to <code>resume_v2</code> Tech Used because you owned them on these roles. Defend like this:</p>
-<h2 id="masters-india">Masters India</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#masters-india-and-geeksforgeeks-mongodb-and-elasticsearch">Masters India and GeeksforGeeks: MongoDB and Elasticsearch</a>
+<a class="lvl2" href="#1-the-one-line-split-say-this-first">1. The one-line split (say this first)</a>
+<a class="lvl2" href="#2-mongodb-in-plain-english">2. MongoDB in plain English</a>
+<a class="lvl2" href="#3-elasticsearch-in-plain-english">3. Elasticsearch in plain English</a>
+<a class="lvl2" href="#4-mongodb-vs-elasticsearch-vs-the-relational-database">4. MongoDB vs Elasticsearch vs the relational database</a>
+<a class="lvl2" href="#5-interview-questions-with-speakable-answers">5. Interview questions with speakable answers</a>
+<a class="lvl2" href="#6-say-this-dont-say-this">6. Say this / don't say this</a></nav>
+<main><h1 id="masters-india-and-geeksforgeeks-mongodb-and-elasticsearch">Masters India and GeeksforGeeks: MongoDB and Elasticsearch</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
 <ul>
-<li><strong>Elasticsearch (ELK):</strong> centralized logging — structured JSON logs, correlation IDs, Kibana queries; pairs with the New Relic story (triage ~70% faster). Same stack as the resume “ELK” bullet.</li>
-<li><strong>MongoDB:</strong> document store for flexible / semi-structured payloads (e.g. client config blobs, import job metadata, or non-relational side collections) alongside PostgreSQL as the system of record for invoices/returns. Say which collections you touched if asked — don’t invent schemas you can’t draw.</li>
+<li><b>What it covers:</b> why MongoDB and Elasticsearch appear on the Masters India and GeeksforGeeks tech lines, what each one is, how it works, where I used it, and how to defend the choice against "why not just PostgreSQL or MySQL?".</li>
+<li><b>When to read it:</b> when a job asks for NoSQL or search experience, or when an interviewer points at those two words on the resume.</li>
+<li><b>What to memorise:</b> the one-line split ("relational database for correctness, Mongo where the document shape varied, Elasticsearch for search and, at Masters, the log plane"), the inverted-index explanation, and the honesty rule about schemas.</li>
 </ul>
-<h2 id="geeksforgeeks">GeeksforGeeks</h2>
+</div>
+<p><strong>Companion docs:</strong> full project context in <a href="12_masters_gfg_deep_dive.html"><code>12_masters_gfg_deep_dive.md</code></a> and the speakable packs in <a href="23c_masters_gfg_interview_packs.html"><code>23c_masters_gfg_interview_packs.md</code></a>.</p>
+<p>Both technologies were added to the resume's Tech line for these two roles because I worked with them there. They are supporting stores, not the system of record. PostgreSQL (Masters India) and MySQL (GeeksforGeeks) held the transactional truth.</p>
+<div class="callout warn">
+<p><b>Honesty rule.</b> The example documents and queries below are <b>illustrative shapes</b> to teach the idea. They are not the real production schemas. If asked which collections or indexes you touched, describe the purpose (payload snapshots, flexible doubt bodies, log search) and do not invent field-level schemas you cannot draw from memory.</p>
+</div>
+<hr>
+<h2 id="1-the-one-line-split-say-this-first">1. The one-line split (say this first)</h2>
+<p>"PostgreSQL or MySQL for transactional correctness, MongoDB where the document shape varied, and Elasticsearch for search and, at Masters India, the log plane in ELK."</p>
+<div class="mermaid">flowchart LR
+  APP["Application services"] --&gt; SQL["PostgreSQL or MySQL: source of truth"]
+  APP --&gt; MG["MongoDB: variable-shape documents"]
+  APP --&gt; ES["Elasticsearch: full-text search"]
+  LOGS["Service logs with request IDs"] --&gt; LS["Logstash or log shipper"]
+  LS --&gt; ES
+  ES --&gt; KB["Kibana: search and dashboards"]
+</div>
+<p><em>What to notice: the relational database is the truth. MongoDB and Elasticsearch each do one job the relational database does poorly. At Masters India, Elasticsearch also receives logs as part of ELK.</em></p>
+<hr>
+<h2 id="2-mongodb-in-plain-english">2. MongoDB in plain English</h2>
+<p><strong>What it is.</strong> MongoDB is a document database. Instead of rows in fixed-column tables, it stores <strong>documents</strong>: JSON-like records (stored internally as BSON, a binary form of JSON) grouped into <strong>collections</strong>. Two documents in the same collection can have different fields. Think of a relational table as a spreadsheet where every row must fill the same columns, and a MongoDB collection as a folder of forms where each form can have extra pages.</p>
+<p><strong>The ideas that matter in interviews.</strong></p>
+<ol>
+<li><strong>Flexible schema.</strong> You can store nested objects and arrays directly, and new fields need no migration. That is great for payloads whose shape you do not control, and risky if you need strict consistency across records.</li>
+<li><strong>Indexes still matter.</strong> MongoDB scans the whole collection without an index, just like SQL. You create indexes on the fields you query, including compound indexes such as <code>{client_id: 1, created_at: -1}</code>.</li>
+<li><strong>One document is the unit of atomicity.</strong> An update to a single document is atomic. Multi-document transactions exist in modern MongoDB but cost more. So you model data to keep things that change together in one document.</li>
+<li><strong>Replica sets and write concern.</strong> Production MongoDB runs as a replica set (one primary and copies). Write concern (for example <code>w: "majority"</code>) controls how many copies must confirm a write before it counts.</li>
+<li><strong>Sharding.</strong> MongoDB can split a collection across servers by a shard key. That is a capability, not something I claim to have operated.</li>
+</ol>
+<h3 id="where-i-used-mongodb">Where I used MongoDB</h3>
+<p><strong>Masters India.</strong> MongoDB held <strong>snapshots of flexible, semi-structured payloads</strong> alongside PostgreSQL as the system of record for invoices and returns. The main use was the raw invoice payload as received and the IRP's signed response, whose shapes varied by document type and changed over time. Older notes also mention client config blobs, import job metadata and other non-relational side collections. In the Kafka pipeline, one stage persisted the signed IRP response to a MongoDB snapshot.</p>
+<p>An illustrative snapshot document:</p>
+<pre><code class="language-json">{
+  &quot;_id&quot;: &quot;42:INV-2024-000917&quot;,
+  &quot;client_id&quot;: 42,
+  &quot;seller_gstin&quot;: &quot;29ABCDE1234F1Z5&quot;,
+  &quot;request_id&quot;: &quot;7f3c9a1e&quot;,
+  &quot;received_payload&quot;: { &quot;doc_type&quot;: &quot;INV&quot;, &quot;doc_no&quot;: &quot;INV-2024-000917&quot;, &quot;items&quot;: [ &quot;...&quot; ] },
+  &quot;irp_response&quot;: { &quot;irn&quot;: &quot;&lt;64-char hash&gt;&quot;, &quot;ack_no&quot;: &quot;...&quot;, &quot;signed_qr&quot;: &quot;...&quot; },
+  &quot;created_at&quot;: &quot;2024-01-18T10:42:09Z&quot;
+}
+</code></pre>
+<pre><code class="language-javascript">// Illustrative index for &quot;show me this client's recent snapshots&quot;
+db.irp_snapshots.createIndex({ client_id: 1, created_at: -1 })
+</code></pre>
+<p><strong>GeeksforGeeks.</strong> MongoDB held <strong>flexible documents for community and content shapes</strong> that did not fit cleanly in MySQL, such as doubt bodies and attachments that varied in structure. Older notes also mention dual-write or dual-read paths during the PHP to Django migration. MySQL remained the primary relational store for threads, permissions and votes.</p>
+<h3 id="why-mongodb-there-and-the-alternatives">Why MongoDB there, and the alternatives</h3>
+<p><strong>Why.</strong> The payloads were documents by nature. An invoice payload or IRP response is a nested JSON object whose fields differ by document type and change when the government updates its schema. Storing it whole, as received, is simple and preserves an exact audit copy.</p>
+<p><strong>Alternatives and when I'd pick them.</strong>
+- <strong>PostgreSQL JSONB.</strong> A JSON column inside PostgreSQL, with indexing. Today I would seriously consider this for Masters India, because it keeps one database to operate and lets you join snapshots to invoice rows. MongoDB wins when document volume is large, the documents are the main access pattern, and you want to scale that store independently.
+- <strong>Object storage (S3).</strong> Cheapest for raw blobs you rarely query. The trade-off is that you cannot query inside them easily.
+- <strong>Columns in MySQL or PostgreSQL.</strong> Correct and strict, but every shape change needs a migration.</p>
+<p><strong>Trade-off.</strong> Two databases mean two things to back up, monitor and keep consistent. MongoDB is not the place for anything that needs a cross-record transaction or a unique business constraint. That stayed in the relational database.</p>
+<hr>
+<h2 id="3-elasticsearch-in-plain-english">3. Elasticsearch in plain English</h2>
+<p><strong>What it is.</strong> Elasticsearch is a distributed search engine built on Apache Lucene. You send it JSON documents, and it indexes every word so you can search text fast, rank results by relevance and run aggregations (counts, histograms). Think of it as the index at the back of a book, built automatically for millions of documents at once.</p>
+<p><strong>The ideas that matter in interviews.</strong></p>
+<ol>
+<li><strong>Inverted index.</strong> The core structure. It maps each term to the list of documents that contain it. Searching "kafka timeout" looks up two short lists and intersects them, instead of reading every document.</li>
+<li><strong>Analyzers.</strong> Before indexing, text passes through an analyzer that splits it into tokens, lowercases it, and can remove stop words or reduce words to their stem. "Timeouts" and "timeout" can then match. The same analyzer runs on the search query.</li>
+<li><strong>Mappings.</strong> The schema of an index. <code>text</code> fields are analyzed for full-text search. <code>keyword</code> fields are stored exactly, for filters and aggregations such as <code>request_id</code> or <code>client_id</code>.</li>
+<li><strong>Shards and replicas.</strong> An index is split into shards spread across nodes, and each shard can have replicas for availability and read throughput.</li>
+<li><strong>Near real time.</strong> New documents become searchable after a short refresh interval (about one second by default), not instantly. It is not a transactional database.</li>
+<li><strong>Relevance scoring.</strong> Results are ranked by a scoring formula (BM25 by default) that rewards rare terms and term frequency.</li>
+</ol>
+<p>A tiny inverted-index example:</p>
+<pre><code class="language-text">doc 1: &quot;IRP timeout on bulk import&quot;
+doc 2: &quot;bulk import finished&quot;
+doc 3: &quot;IRP returned duplicate IRN&quot;
+
+term       -&gt; documents
+&quot;irp&quot;      -&gt; 1, 3
+&quot;timeout&quot;  -&gt; 1
+&quot;bulk&quot;     -&gt; 1, 2
+&quot;import&quot;   -&gt; 1, 2
+&quot;duplicate&quot;-&gt; 3
+
+query &quot;irp bulk&quot; -&gt; docs containing both: 1
+</code></pre>
+<h3 id="what-elk-is">What ELK is</h3>
+<p><strong>ELK</strong> is Elasticsearch, Logstash and Kibana used together for logs. Services write structured JSON log lines. Logstash (or a lightweight shipper) collects and parses them. Elasticsearch stores and indexes them. Kibana is the screen where you search and build dashboards. It is a searchable library of every log line from every service.</p>
+<h3 id="where-i-used-elasticsearch">Where I used Elasticsearch</h3>
+<p><strong>Masters India: the log plane, plus invoice search.</strong> Elasticsearch was the "E" in ELK. Every log line was structured JSON with a request ID (a correlation ID), so a single Kibana search showed a request's whole journey through the API, the Kafka consumer and the IRP worker. That is the core of the "incident triage down 70%" bullet, together with New Relic tracing. Older notes also say Elasticsearch powered invoice search.</p>
+<p>An illustrative Kibana query (KQL, Kibana Query Language) during an incident:</p>
+<pre><code class="language-text">request_id:&quot;7f3c9a1e&quot;
+</code></pre>
+<p>and a broader one:</p>
+<pre><code class="language-text">service:&quot;irp-worker&quot; and level:&quot;ERROR&quot; and event:&quot;irp_timeout&quot; and client_id:42
+</code></pre>
+<p>An illustrative log index mapping:</p>
+<pre><code class="language-json">{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;ts&quot;:         { &quot;type&quot;: &quot;date&quot; },
+      &quot;service&quot;:    { &quot;type&quot;: &quot;keyword&quot; },
+      &quot;level&quot;:      { &quot;type&quot;: &quot;keyword&quot; },
+      &quot;request_id&quot;: { &quot;type&quot;: &quot;keyword&quot; },
+      &quot;client_id&quot;:  { &quot;type&quot;: &quot;long&quot; },
+      &quot;message&quot;:    { &quot;type&quot;: &quot;text&quot; }
+    }
+  }
+}
+</code></pre>
+<p><code>request_id</code> is a <code>keyword</code> because you want an exact match, not word splitting.</p>
+<p><strong>GeeksforGeeks: product search.</strong> Elasticsearch powered full-text search and feed retrieval over doubts, posts and content. This is a different use from Masters India's logging, so distinguish them if asked.</p>
+<p>An illustrative doubt search:</p>
+<pre><code class="language-json">GET doubts/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;:   [{ &quot;match&quot;: { &quot;body&quot;: &quot;segmentation fault in recursion&quot; } }],
+      &quot;filter&quot;: [{ &quot;term&quot;: { &quot;course_id&quot;: 118 } }, { &quot;term&quot;: { &quot;is_locked&quot;: false } }]
+    }
+  },
+  &quot;size&quot;: 10
+}
+</code></pre>
+<p><code>match</code> is analyzed full-text search and is scored for relevance. <code>term</code> filters are exact and unscored, which makes them cheap and cacheable.</p>
+<h3 id="why-elasticsearch-there-and-the-alternatives">Why Elasticsearch there, and the alternatives</h3>
+<p><strong>Why at Masters India.</strong> Logs from many services needed one searchable place with fast filtering by request ID, client and error type. ELK is the standard self-managed answer for that, and it pairs with New Relic for traces.</p>
+<p><strong>Why at GeeksforGeeks.</strong> Learners search doubts and content in free text with typos, plurals and partial matches. Relevance ranking and analyzers are what a search engine does well and what <code>LIKE '%...%'</code> in MySQL does badly.</p>
+<p><strong>Alternatives and when I'd pick them.</strong>
+- <strong>PostgreSQL or MySQL full-text search</strong> (<code>tsvector</code> in PostgreSQL, <code>FULLTEXT</code> in MySQL). Good enough for small, simple search without another cluster. I'd pick it for a small catalogue.
+- <strong>OpenSearch.</strong> The open-source fork of Elasticsearch, offered as a managed service on AWS. It has the same model and is a reasonable choice on AWS.
+- <strong>CloudWatch Logs</strong> (for the logging use case on AWS). Less to run, but weaker search and dashboards for heavy incident work.</p>
+<p><strong>Trade-off.</strong> Elasticsearch is not a source of truth. It is near real time, and data in it can be rebuilt from the primary store. It also costs memory and disk, and log retention needs a policy or storage grows forever.</p>
+<hr>
+<h2 id="4-mongodb-vs-elasticsearch-vs-the-relational-database">4. MongoDB vs Elasticsearch vs the relational database</h2>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Relational (PostgreSQL, MySQL)</th>
+<th>MongoDB</th>
+<th>Elasticsearch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Best at</td>
+<td>Transactions, constraints, joins</td>
+<td>Variable-shape documents</td>
+<td>Full-text search, log search, aggregations</td>
+</tr>
+<tr>
+<td>Source of truth?</td>
+<td>Yes</td>
+<td>Sometimes, for its own documents</td>
+<td>No, rebuildable</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>Strict, migrations</td>
+<td>Flexible</td>
+<td>Mapping per index</td>
+</tr>
+<tr>
+<td>Where I used it</td>
+<td>Masters invoices and job state, GFG threads and votes</td>
+<td>Masters payload snapshots, GFG flexible doubt bodies</td>
+<td>Masters ELK logs and invoice search, GFG doubt search</td>
+</tr>
+</tbody>
+</table>
+<p>The rule behind the table: keep anything that needs a unique constraint or a transaction in the relational database. That is why idempotency keys at Masters India and the one-vote-per-user rule at GeeksforGeeks lived in PostgreSQL and MySQL, not in MongoDB.</p>
+<hr>
+<h2 id="5-interview-questions-with-speakable-answers">5. Interview questions with speakable answers</h2>
+<p><strong>"Why did you need MongoDB if you had PostgreSQL?"</strong>
+PostgreSQL was the system of record for invoices and job state, and MongoDB held the documents whose shape we did not control. The raw invoice payloads and the government's signed responses are nested JSON that varies by document type and changes when the schema changes. Storing them whole in MongoDB gave us an exact audit copy without a migration for every change. Anything that needed a constraint, like the idempotency key, stayed in PostgreSQL. If I built it again today, I would also consider PostgreSQL JSONB to run one fewer database.</p>
+<p><strong>"How does Elasticsearch search so fast?"</strong>
+It builds an inverted index, a map from every term to the documents that contain it, much like the index at the back of a book. A query looks up a few short lists and intersects them instead of scanning every document. Analyzers normalise text first, lowercasing it and splitting tokens, so "Timeouts" can match "timeout". Results are then ranked by relevance.</p>
+<p><strong>"Is the Elasticsearch on your Masters line the same as on your GeeksforGeeks line?"</strong>
+No, they were different uses. At Masters India it was mainly the log plane in ELK: structured logs with request IDs, searched in Kibana during incidents, which drove the triage improvement. Older notes also say it powered invoice search there. At GeeksforGeeks it was product search over doubts and content for learners.</p>
+<p><strong>"Can Elasticsearch be your primary database?"</strong>
+I would not use it that way. It is near real time rather than transactional, it lacks the constraints and transactions you need for business truth, and you should be able to rebuild it from the primary store. We treated it as a derived index in both jobs.</p>
+<p><strong>"How do you index MongoDB?"</strong>
+The same way you think about SQL indexes: index the fields you filter and sort on, in query order. For "this client's latest snapshots", a compound index on client ID ascending and created-at descending serves both the filter and the sort. Without an index, MongoDB scans the whole collection.</p>
+<p><em>Follow-up they may ask:</em> "Which collections did you design?" Say what they were for (payload and response snapshots at Masters, flexible doubt bodies at GeeksforGeeks), and do not invent field-level schemas.</p>
+<hr>
+<h2 id="6-say-this-dont-say-this">6. Say this / don't say this</h2>
+<div class="callout warn">
+<p><b>Say this</b></p>
 <ul>
-<li><strong>MongoDB:</strong> flexible documents for community/content shapes that didn’t fit cleanly in MySQL alone (or dual-write/read paths during migration). MySQL remained the primary relational store for votes/pins counts.</li>
-<li><strong>Elasticsearch:</strong> search / feed retrieval over posts and content (full-text), not just logging — distinguish from Masters ELK if asked.</li>
+<li>"Relational database for correctness, Mongo where the document shape varied, Elasticsearch for search and, at Masters, the log plane."</li>
+<li>"At Masters, ELK plus request IDs is what made triage fast."</li>
+<li>"At GeeksforGeeks, Elasticsearch was product search, a different use from Masters logging."</li>
 </ul>
-<h2 id="interview-one-liners">Interview one-liners</h2>
+<p><b>Don't say this</b></p>
 <ul>
-<li>“Postgres/MySQL for transactional correctness; Mongo where the document shape varied; Elasticsearch for search and (at Masters) the log plane.”</li>
-<li>If probed on indexing: ES inverted index + analyzers; Mongo indexes on query fields; know when you’d pick one over the other.</li>
-</ul></main>
+<li>That MongoDB or Elasticsearch was the system of record for invoices or votes.</li>
+<li>Detailed collection schemas or cluster sizes you cannot draw from memory.</li>
+<li>That you operated MongoDB sharding or large Elasticsearch clusters. Keep it to how you used them.</li>
+</ul>
+</div></main>
 </div>
 
 <script type="module">

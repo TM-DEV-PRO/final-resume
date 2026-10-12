@@ -48,14 +48,73 @@ strong{color:#fff}
 <a class="lvl2" href="#e-heap-priority-queue">E. Heap / priority queue</a>
 <a class="lvl2" href="#heap-facts-to-say-out-loud">Heap facts to say out loud</a></nav>
 <main><h1 id="032-linked-list-stack-monotonic-stack-queue-deque-heap">03.2 Linked list, stack, monotonic stack, queue, deque, heap</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> the "linear" data structures beyond arrays: linked lists, stacks, monotonic stacks, queues, deques and heaps, with the problems interviewers ask most for each.</li>
+<li><b>When to read it:</b> after the arrays file. Read the heap section again before any round with a "top k" or "merge logs" flavour, which OCI likes.</li>
+<li><b>What to memorise:</b> the dummy-head trick, fast/slow pointers, the monotonic-stack template, "min-heap of size k for top k largest", and the two-heaps median.</li>
+<li><b>How each section is laid out:</b> the idea with an analogy, signals, a hand-traced example, the template, complexity, common mistakes, then problems with a restatement, key insight, dry run, code, complexity and a 60-second spoken version.</li>
+</ul>
+</div>
+<p>Imports assumed by every snippet on this page:</p>
+<pre><code class="language-python">from collections import Counter, defaultdict, deque
+import heapq
+</code></pre>
 <hr>
 <h2 id="a-linked-list">A. Linked list</h2>
-<p><strong>Intuition:</strong> pointer manipulation. Draw it. Use a <strong>dummy head</strong> whenever the head might change. Use <strong>fast/slow</strong> pointers for middle, cycles, and k-th from the end.</p>
+<h3 id="the-idea">The idea</h3>
+<p>A <strong>linked list</strong> is a chain of nodes where each node holds a value and a pointer to the next node. There is no index. To reach the fifth node you must walk from the head through the first four. In exchange, inserting or removing a node is O(1) once you're standing at the right place, because you only rewire pointers instead of shifting elements.</p>
+<p><strong>Analogy:</strong> a treasure hunt. Each clue tells you where the next clue is hidden. You can't jump to clue 5, but you can easily slip a new clue between clue 2 and clue 3 by changing what clue 2 says.</p>
+<p>Two tricks solve most linked-list problems:</p>
+<ul>
+<li><strong>Dummy head:</strong> a fake node placed before the real head. Whenever the head itself might be removed or replaced, the dummy gives you a stable node to hang the answer from, and you return <code>dummy.next</code>.</li>
+<li><strong>Fast/slow pointers:</strong> two pointers that move at different speeds (fast moves two nodes per step, slow moves one). When fast reaches the end, slow is in the middle. If there is a cycle, fast eventually laps slow and they meet.</li>
+</ul>
+<p>The real skill is pointer discipline: draw the boxes and arrows, and save <code>next</code> before you overwrite it.</p>
+<h3 id="when-to-recognise-it">When to recognise it</h3>
+<ul>
+<li>The input is a <code>ListNode</code>.</li>
+<li>"Reverse", "merge", "reorder", "remove the nth from the end", "find the middle", "detect a cycle".</li>
+<li>"O(1) extra space" on a list problem usually means fast/slow pointers or in-place reversal.</li>
+</ul>
+<h3 id="hand-traced-example">Hand-traced example</h3>
+<p>Find the middle of <code>1 → 2 → 3 → 4 → 5</code> with fast/slow pointers.</p>
+<pre><code class="language-text">step  slow  fast
+0     1     1
+1     2     3
+2     3     5      fast.next is None, stop. middle = 3
+</code></pre>
+<h3 id="template">Template</h3>
 <pre><code class="language-python">class ListNode:
     def __init__(self, val=0, next=None):
         self.val, self.next = val, next
+
+def middle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+    return slow                         # second middle for even lengths
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time for one walk, O(1) space.</p>
+<h3 id="common-mistakes">Common mistakes</h3>
+<ul>
+<li>Losing the rest of the list by overwriting <code>node.next</code> before saving it.</li>
+<li>Forgetting the dummy head, then writing special-case code for "remove the head".</li>
+<li>Checking <code>fast.next.next</code> without first checking <code>fast.next</code>, which crashes on <code>None</code>.</li>
+<li>Returning <code>head</code> after reversing. The new head is the old tail.</li>
+</ul>
+<hr>
 <h3 id="a1-reverse-linked-list-iterative-then-recursive">A1. Reverse Linked List (iterative, then recursive)</h3>
+<p><strong>Problem in one sentence:</strong> reverse a singly linked list and return the new head.</p>
+<p><strong>Key insight:</strong> walk the list once and flip each arrow to point backwards. You need three references at each step: the previous node (where the arrow should point), the current node, and the next node (saved before you overwrite the arrow).</p>
+<p><strong>Dry run</strong> on <code>1 → 2 → 3</code>:</p>
+<pre><code class="language-text">prev  head  action                        list state
+None  1     1.next = None, prev=1, head=2  1 -&gt; None
+1     2     2.next = 1,    prev=2, head=3  2 -&gt; 1 -&gt; None
+2     3     3.next = 2,    prev=3, head=None 3 -&gt; 2 -&gt; 1 -&gt; None
+return prev = 3
+</code></pre>
 <pre><code class="language-python">def reverse(head):
     prev = None
     while head:
@@ -70,8 +129,20 @@ def reverse_rec(head):
     head.next = None
     return new_head
 </code></pre>
-<p>O(n) time. Iterative is O(1) space, recursive O(n) stack.</p>
+<p>The one-line swap works because Python evaluates the whole right side (<code>prev, head, head.next</code>) before assigning anything, so <code>head.next</code> on the right is still the original next node.</p>
+<p><strong>Complexity:</strong> O(n) time. Iterative is O(1) space. Recursive is O(n) space for the call stack, and can hit Python's recursion limit on long lists.</p>
+<p><strong>Say it in 60 seconds:</strong> "I walk the list with a <code>prev</code> pointer that starts at None. For each node I save its next, point it back at <code>prev</code>, then advance <code>prev</code> and the current node. When the current node is None, <code>prev</code> is the new head. That's O(n) time and O(1) space. The recursive version reverses the rest first, then makes the next node point back at me, but it uses O(n) stack, so I'd use the iterative one in production."</p>
+<hr>
 <h3 id="a2-merge-two-sorted-lists">A2. Merge Two Sorted Lists</h3>
+<p><strong>Problem in one sentence:</strong> merge two sorted linked lists into one sorted list.</p>
+<p><strong>Key insight:</strong> like merging two sorted piles of exam papers: always take the smaller top paper. A dummy head avoids special-casing the first node, and when one list runs out you attach the rest of the other in one step.</p>
+<p><strong>Dry run</strong> on <code>a = 1 → 3</code>, <code>b = 2 → 4</code>:</p>
+<pre><code class="language-text">a   b   pick  merged so far
+1   2   1     1
+3   2   2     1 2
+3   4   3     1 2 3
+None 4  attach rest of b -&gt; 1 2 3 4
+</code></pre>
 <pre><code class="language-python">def merge(a, b):
     dummy = tail = ListNode()
     while a and b:
@@ -83,8 +154,28 @@ def reverse_rec(head):
     tail.next = a or b
     return dummy.next
 </code></pre>
+<p><strong>Complexity:</strong> O(m + n) time, O(1) extra space, because we relink existing nodes.</p>
+<p><strong>Say it in 60 seconds:</strong> "I keep a dummy head and a tail pointer. While both lists have nodes, I attach the smaller head to the tail and advance that list. Using <code>&lt;=</code> keeps the merge stable. When one list is empty, I attach the remainder of the other in one assignment. I return <code>dummy.next</code>. Linear time, constant extra space."</p>
+<hr>
 <h3 id="a3-linked-list-cycle-and-cycle-start-floyd">A3. Linked List Cycle and cycle start (Floyd)</h3>
-<p><strong>Intuition:</strong> fast moves 2, slow moves 1. If there's a cycle they meet. To find the start, reset one pointer to the head and move both by 1; they meet at the cycle start (distance math: <code>a = k·c - b</code>).</p>
+<p><strong>Problem in one sentence:</strong> detect whether a linked list loops back on itself, and if so return the node where the loop begins.</p>
+<p><strong>Key insight:</strong> fast moves 2, slow moves 1. If there's a cycle, fast gains one node per step on slow inside the loop, so they must meet. To find the start, reset one pointer to the head and move both by 1; they meet at the cycle start.</p>
+<p>Why the reset works, in words: let <code>a</code> be the distance from the head to the cycle start, <code>c</code> the cycle length, and <code>b</code> how far past the start they met. Slow walked <code>a + b</code>, fast walked twice that. The extra distance fast walked is a whole number of laps, which gives <code>a = k·c - b</code>. So walking <code>a</code> more steps from the meeting point lands exactly on the start, which is also <code>a</code> steps from the head.</p>
+<p><strong>Analogy:</strong> two runners on a track that starts with a straight road. The faster runner always catches the slower one on the loop.</p>
+<p><strong>Dry run</strong> on <code>1 → 2 → 3 → 4 → 5 → (back to 3)</code>:</p>
+<pre><code class="language-text">phase 1     slow  fast
+start       1     1
+step 1      2     3
+step 2      3     5
+step 3      4     4      meet at 4
+
+phase 2 (slow reset to head)
+            slow  fast
+            1     4
+step 1      2     5
+step 2      3     3      meet at 3 = cycle start
+check: a = 2, c = 3, b = 1, and a = 1*3 - 1 = 2
+</code></pre>
 <pre><code class="language-python">def detect_cycle(head):
     slow = fast = head
     while fast and fast.next:
@@ -96,13 +187,66 @@ def reverse_rec(head):
             return slow
     return None
 </code></pre>
-<p>O(n) time, O(1) space. Same trick: Find the Duplicate Number (array as a linked list).</p>
+<p><strong>Complexity:</strong> O(n) time, O(1) space. A hash set of visited nodes is the simpler O(n)-space alternative.</p>
+<p><strong>Same trick:</strong> Find the Duplicate Number. Treat the array as a linked list where index <code>i</code> points to <code>nums[i]</code>. The duplicate value is where two arrows point to the same node, which is the cycle start.</p>
+<p><strong>Say it in 60 seconds:</strong> "I run two pointers, one moving one step and one moving two. If fast hits None, there's no cycle. If there is a cycle, fast gains one step per move on slow inside the loop, so they meet. To find where the cycle starts, I put one pointer back at the head and move both one step at a time. The math says the distance from the head to the start equals the distance from the meeting point to the start, modulo the loop length, so they meet exactly at the start. O(n) time and O(1) space."</p>
+<hr>
 <h3 id="a4-remove-nth-from-end">A4. Remove Nth From End</h3>
-<p>Move <code>fast</code> n steps ahead, then move both until <code>fast.next</code> is None. Use a dummy for the "remove head" case.</p>
+<p><strong>Problem in one sentence:</strong> delete the nth node counted from the end of the list, in one pass.</p>
+<p><strong>Key insight:</strong> move <code>fast</code> n steps ahead, then move both until <code>fast.next</code> is None. The gap of n nodes means <code>slow</code> stops just <strong>before</strong> the node to delete. Use a dummy for the "remove head" case.</p>
+<p><strong>Dry run</strong> on <code>1 → 2 → 3 → 4 → 5</code>, <code>n = 2</code> (D is the dummy):</p>
+<pre><code class="language-text">fast moves 2 ahead: slow = D, fast = 2
+both move:  slow 1, fast 3 | slow 2, fast 4 | slow 3, fast 5 (fast.next is None)
+slow = 3, so remove 3.next (the 4) -&gt; 1 2 3 5
+</code></pre>
+<pre><code class="language-python">def remove_nth_from_end(head, n):
+    dummy = ListNode(0, head)
+    fast = slow = dummy
+    for _ in range(n):
+        fast = fast.next
+    while fast.next:
+        fast, slow = fast.next, slow.next
+    slow.next = slow.next.next
+    return dummy.next
+</code></pre>
+<p><strong>Complexity:</strong> O(L) time in one pass, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I want the node just before the target. I start two pointers at a dummy node, move the fast one n steps ahead, then move both together until fast is on the last node. Because they're n apart, slow is now right before the node to delete, so I skip over it. The dummy handles deleting the head without special code. One pass, O(1) space."</p>
+<hr>
 <h3 id="a5-reorder-list-l0-ln-l1-ln-1">A5. Reorder List (L0 → Ln → L1 → Ln-1)</h3>
-<p>Find the middle (fast/slow), reverse the second half, then merge alternately. O(n), O(1).</p>
+<p><strong>Problem in one sentence:</strong> rearrange <code>1 2 3 4 5</code> into <code>1 5 2 4 3</code> in place.</p>
+<p><strong>Key insight:</strong> the result alternates between the front half in order and the back half in reverse. So: find the middle (fast/slow), reverse the second half, then merge alternately. Three building blocks you already know.</p>
+<p><strong>Dry run</strong> on <code>1 → 2 → 3 → 4</code>:</p>
+<pre><code class="language-text">middle: slow stops at 2 -&gt; first half 1 2, second half 3 4
+reverse second half -&gt; 4 3
+weave: 1 4 2 3
+</code></pre>
+<pre><code class="language-python">def reorder_list(head):
+    if not head or not head.next:
+        return
+    slow = fast = head
+    while fast.next and fast.next.next:
+        slow, fast = slow.next, fast.next.next
+    second = reverse(slow.next)
+    slow.next = None
+    first = head
+    while second:
+        n1, n2 = first.next, second.next
+        first.next = second
+        second.next = n1
+        first, second = n1, n2
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "The output alternates the front half with the back half reversed. So I find the middle with fast and slow pointers, cut the list there, reverse the second half in place, and then weave the two halves by alternating nodes. Each step is linear and none needs extra memory, so it's O(n) time and O(1) space."</p>
+<hr>
 <h3 id="a6-copy-list-with-random-pointer">A6. Copy List with Random Pointer</h3>
-<p>Hashmap old → new (O(n) space), or interleave copies <code>A → A' → B → B'</code>, set randoms, then split (O(1) extra).</p>
+<p><strong>Problem in one sentence:</strong> deep-copy a linked list where each node also has a <code>random</code> pointer to any node (or None).</p>
+<p><strong>Key insight:</strong> the hard part is that a random pointer may point to a node you haven't copied yet. Solve it in two passes: first create every copy, then wire up <code>next</code> and <code>random</code> using a map from original to copy. Use a hashmap old → new (O(n) space), or interleave copies <code>A → A' → B → B'</code>, set randoms, then split (O(1) extra).</p>
+<p><strong>Dry run</strong> on <code>A(random → B) → B(random → A)</code>:</p>
+<pre><code class="language-text">pass 1: m = {None: None, A: A', B: B'}
+pass 2: A'.next = m[B] = B',  A'.random = m[B] = B'
+        B'.next = m[None] = None, B'.random = m[A] = A'
+return m[A] = A'
+</code></pre>
 <pre><code class="language-python">def copy_random_list(head):
     m = {None: None}
     cur = head
@@ -116,8 +260,22 @@ def reverse_rec(head):
         cur = cur.next
     return m[head]
 </code></pre>
+<p><code>Node</code> here is the problem's class with <code>val</code>, <code>next</code> and <code>random</code>. Seeding the map with <code>None: None</code> removes all the "if pointer is None" checks.</p>
+<p><strong>Complexity:</strong> O(n) time, O(n) space for the map. The interleaving version is O(1) extra space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Random pointers can point forward to nodes I haven't copied yet, so I do two passes. First I create a copy of every node and store original-to-copy in a map. Second I set each copy's next and random by looking up the originals' targets in the map. I seed the map with None mapping to None so null pointers need no special case. O(n) time and space. To get O(1) extra space, I can interleave each copy right after its original, set randoms through <code>node.random.next</code>, then unzip the lists."</p>
+<hr>
 <h3 id="a7-reverse-nodes-in-k-group-hard">A7. Reverse Nodes in k-Group (hard)</h3>
-<p>For each group: check that k nodes exist, reverse them, then connect the previous group's tail to the new head.</p>
+<p><strong>Problem in one sentence:</strong> reverse the list in chunks of k nodes, leaving a final chunk shorter than k unchanged.</p>
+<p><strong>Key insight:</strong> for each group: check that k nodes exist, reverse them, then connect the previous group's tail to the new head. The trick that makes the reversal clean is to start <code>prev</code> at the node <strong>after</strong> the group, so the group's old first node automatically points to the rest of the list once reversed.</p>
+<p><strong>Dry run</strong> on <code>1 → 2 → 3 → 4 → 5</code>, <code>k = 2</code>:</p>
+<pre><code class="language-text">group 1: nodes 1 2, next group starts at 3
+         reverse with prev = 3 -&gt; 2 1 3 ...
+         dummy.next = 2, group_prev = 1
+group 2: nodes 3 4, next group starts at 5
+         reverse -&gt; 4 3 5, 1.next = 4, group_prev = 3
+group 3: only 1 node (5), fewer than k, stop
+result 2 1 4 3 5
+</code></pre>
 <pre><code class="language-python">def reverse_k_group(head, k):
     dummy = ListNode(0, head)
     group_prev = dummy
@@ -135,11 +293,60 @@ def reverse_rec(head):
         group_prev.next = kth
         group_prev = first
 </code></pre>
-<h3 id="a8-lru-cache-see-lld-problems-hashmap-doubly-linked-list-o1-getput">A8. LRU Cache: see <a href="05_lld_problems.html">LLD problems</a> (hashmap + doubly linked list, O(1) get/put).</h3>
+<p><strong>Complexity:</strong> O(n) time, because each node is visited a constant number of times. O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I keep <code>group_prev</code>, the node just before the current group, starting at a dummy. I walk k steps to find the group's last node. If I run out, the remaining nodes stay as they are and I return. Otherwise I reverse the group with <code>prev</code> initialised to the node after the group, so the reversed group is already connected to what follows. Then I point <code>group_prev.next</code> at the new group head, and the old group head becomes the next <code>group_prev</code>. Linear time, constant space."</p>
+<hr>
+<h3 id="a8-lru-cache">A8. LRU Cache</h3>
+<p>See <a href="05_lld_problems.html">LLD problems</a>. The idea in one paragraph: an LRU (Least Recently Used) cache evicts the item that hasn't been touched for the longest time. A hashmap gives O(1) lookup from key to node, and a doubly linked list keeps nodes in order of last use, so moving a node to the front and removing the tail are both O(1). Together they give O(1) <code>get</code> and <code>put</code>. In Python, <code>OrderedDict</code> with <code>move_to_end</code> and <code>popitem(last=False)</code> does the same job.</p>
 <hr>
 <h2 id="b-stack">B. Stack</h2>
-<p><strong>Intuition:</strong> last in, first out. Use it for nesting (brackets, expressions, directories), undo, and DFS without recursion.</p>
+<h3 id="the-idea_1">The idea</h3>
+<p>A <strong>stack</strong> is last in, first out (LIFO): you can only add to or remove from the top. In Python, a list with <code>append</code> and <code>pop</code> is a stack.</p>
+<p><strong>Analogy:</strong> a stack of plates. You put clean plates on top and take from the top. The plate you put down last is the first one you use.</p>
+<p>Stacks fit anything <strong>nested</strong>, because the most recently opened thing must be the first one closed: brackets, function calls, HTML tags, folders in a path. They also give undo history and let you write DFS without recursion.</p>
+<h3 id="when-to-recognise-it_1">When to recognise it</h3>
+<ul>
+<li>"Valid parentheses", "balanced", "nested", "decode <code>3[ab]</code>".</li>
+<li>"Evaluate an expression", "calculator".</li>
+<li>"Undo", "back button", "simplify a path".</li>
+<li>Collisions or cancellations between neighbours (asteroids).</li>
+</ul>
+<h3 id="hand-traced-example_1">Hand-traced example</h3>
+<p>Is <code>"{[]}"</code> balanced?</p>
+<pre><code class="language-text">char  action          stack
+{     push            {
+[     push            { [
+]     pop [ matches   {
+}     pop { matches   (empty) -&gt; valid
+</code></pre>
+<h3 id="template_1">Template</h3>
+<pre><code class="language-python">def process(tokens):
+    st = []
+    for t in tokens:
+        if opens(t):
+            st.append(t)
+        else:
+            top = st.pop() if st else None
+            combine(top, t)
+    return st
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, because each item is pushed and popped at most once. O(n) space in the worst case.</p>
+<h3 id="common-mistakes_1">Common mistakes</h3>
+<ul>
+<li>Popping from an empty stack. Always check <code>if st</code> first.</li>
+<li>Forgetting to check the stack is empty at the end (<code>"(("</code> has no mismatch but is invalid).</li>
+<li>Popping operands in the wrong order for <code>-</code> and <code>/</code>. The first pop is the <strong>right</strong> operand.</li>
+</ul>
+<hr>
 <h3 id="b1-valid-parentheses">B1. Valid Parentheses</h3>
+<p><strong>Problem in one sentence:</strong> check that every bracket in a string is closed by the right type in the right order.</p>
+<p><strong>Key insight:</strong> the most recent unclosed bracket must be closed first, which is exactly LIFO. Push openers. For each closer, the top of the stack must be its matching opener.</p>
+<p><strong>Dry run</strong> on <code>"([)]"</code>:</p>
+<pre><code class="language-text">char  action                       stack
+(     push                         (
+[     push                         ( [
+)     pop [, but ) needs (  -&gt; False
+</code></pre>
 <pre><code class="language-python">def is_valid(s):
     pairs = {&quot;)&quot;: &quot;(&quot;, &quot;]&quot;: &quot;[&quot;, &quot;}&quot;: &quot;{&quot;}
     st = []
@@ -151,8 +358,20 @@ def reverse_rec(head):
             st.append(c)
     return not st
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(n) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Brackets nest, so the latest opener must close first, which is a stack. I map each closer to its opener. Openers get pushed. On a closer, if the stack is empty or the popped opener doesn't match, it's invalid. At the end the stack must be empty, otherwise something was left open. One pass, O(n)."</p>
+<hr>
 <h3 id="b2-min-stack-o1-getmin">B2. Min Stack (O(1) getMin)</h3>
-<p>Push <code>(value, current_min)</code> pairs.</p>
+<p><strong>Problem in one sentence:</strong> build a stack that also returns its current minimum in O(1).</p>
+<p><strong>Key insight:</strong> the minimum only changes when you push or pop, so store "the minimum so far" alongside every value. Push <code>(value, current_min)</code> pairs. When you pop, the previous minimum is automatically restored.</p>
+<p><strong>Dry run:</strong></p>
+<pre><code class="language-text">op        stack (value, min)            get_min
+push 5    (5,5)                         5
+push 3    (5,5) (3,3)                   3
+push 7    (5,5) (3,3) (7,3)             3
+pop       (5,5) (3,3)                   3
+pop       (5,5)                         5
+</code></pre>
 <pre><code class="language-python">class MinStack:
     def __init__(self):
         self.st = []
@@ -165,9 +384,54 @@ def reverse_rec(head):
     def get_min(self):
         return self.st[-1][1]
 </code></pre>
+<p><strong>Complexity:</strong> every operation O(1). O(n) space (two numbers per element).</p>
+<p><strong>Say it in 60 seconds:</strong> "A single 'current min' variable breaks when you pop the minimum, because you don't know the previous one. So each stack entry stores the value and the minimum of everything at or below it. Push computes the new min from the top entry. Pop just removes the top, and the entry below already knows its own minimum. Everything is O(1)."</p>
+<hr>
 <h3 id="b3-evaluate-reverse-polish-notation">B3. Evaluate Reverse Polish Notation</h3>
-<p>Push numbers. On an operator, pop b, then a, and push <code>a op b</code>. Use <code>int(a / b)</code> for truncation toward zero.</p>
+<p><strong>Problem in one sentence:</strong> evaluate an expression written in postfix form, like <code>["2", "1", "+", "3", "*"]</code>, which means <code>(2 + 1) * 3</code>.</p>
+<p><strong>Key insight:</strong> in postfix, an operator always applies to the two most recent values, so a stack holds the pending values. Push numbers. On an operator, pop b, then a, and push <code>a op b</code>. Use <code>int(a / b)</code> for truncation toward zero, because Python's <code>//</code> rounds toward negative infinity (<code>-7 // 2</code> is -4, but the problem wants -3).</p>
+<p><strong>Dry run</strong> on <code>["2", "1", "+", "3", "*"]</code>:</p>
+<pre><code class="language-text">token  stack
+2      2
+1      2 1
++      3
+3      3 3
+*      9      -&gt; answer 9
+</code></pre>
+<pre><code class="language-python">def eval_rpn(tokens):
+    st = []
+    for t in tokens:
+        if t in {&quot;+&quot;, &quot;-&quot;, &quot;*&quot;, &quot;/&quot;}:
+            b, a = st.pop(), st.pop()
+            if t == &quot;+&quot;:
+                st.append(a + b)
+            elif t == &quot;-&quot;:
+                st.append(a - b)
+            elif t == &quot;*&quot;:
+                st.append(a * b)
+            else:
+                st.append(int(a / b))
+        else:
+            st.append(int(t))
+    return st[0]
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(n) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Postfix means each operator acts on the two most recent values, so I keep a stack of numbers. Numbers are pushed. For an operator I pop the right operand first, then the left, apply the operator, and push the result. Order matters for minus and divide. For division I use <code>int(a / b)</code> so it truncates toward zero, since Python's floor division rounds negatives down. The final stack holds the answer."</p>
+<hr>
 <h3 id="b4-decode-string-3a2c-accaccacc">B4. Decode String <code>3[a2[c]]</code> → <code>accaccacc</code></h3>
+<p><strong>Problem in one sentence:</strong> expand an encoded string where <code>k[...]</code> means "repeat the inside k times", and brackets can nest.</p>
+<p><strong>Key insight:</strong> when you hit <code>[</code>, you are starting a new inner string, but you must remember the outer string built so far and the repeat count. Push both. When you hit <code>]</code>, pop them and combine: <code>outer + inner * count</code>.</p>
+<p><strong>Dry run</strong> on <code>"3[a2[c]]"</code>:</p>
+<pre><code class="language-text">char  action                               cur     stack
+3     num = 3                              &quot;&quot;      []
+[     push (&quot;&quot;, 3), reset                  &quot;&quot;      [(&quot;&quot;,3)]
+a     cur += a                             &quot;a&quot;     [(&quot;&quot;,3)]
+2     num = 2                              &quot;a&quot;
+[     push (&quot;a&quot;, 2), reset                 &quot;&quot;      [(&quot;&quot;,3), (&quot;a&quot;,2)]
+c     cur += c                             &quot;c&quot;
+]     pop (&quot;a&quot;,2): &quot;a&quot; + &quot;c&quot;*2             &quot;acc&quot;   [(&quot;&quot;,3)]
+]     pop (&quot;&quot;,3):  &quot;&quot; + &quot;acc&quot;*3            &quot;accaccacc&quot;
+</code></pre>
 <pre><code class="language-python">def decode_string(s):
     st = []            # (prev_string, repeat)
     cur, num = &quot;&quot;, 0
@@ -184,13 +448,108 @@ def reverse_rec(head):
             cur += c
     return cur
 </code></pre>
+<p><strong>Complexity:</strong> O(output length) time and space. The output can be much longer than the input.</p>
+<p><strong>Say it in 60 seconds:</strong> "Nesting means a stack. I build the current string and the current number as I scan. On an open bracket I push the string so far and the repeat count, then start fresh. On a close bracket I pop, and the new current string is the popped prefix plus the inner string repeated. Digits accumulate with <code>num * 10 + digit</code> so multi-digit counts like 12 work. Time is proportional to the output size."</p>
+<hr>
 <h3 id="b5-basic-calculator-with-and-parentheses">B5. Basic Calculator (with + - and parentheses)</h3>
-<p>Keep <code>result</code>, <code>sign</code>, and a stack of <code>(result, sign)</code> pushed at <code>(</code>.</p>
-<h3 id="b6-asteroid-collision-simplify-path-abc-c-classic-stack-simulations">B6. Asteroid Collision, Simplify Path (<code>/a/./b/../../c</code> → <code>/c</code>): classic stack simulations.</h3>
+<p><strong>Problem in one sentence:</strong> evaluate a string like <code>"1 - (2 + 3)"</code> containing numbers, plus, minus, parentheses and spaces.</p>
+<p><strong>Key insight:</strong> without parentheses you just keep a running <code>result</code> and the <code>sign</code> of the next number. A parenthesis starts a fresh sub-expression, so keep <code>result</code>, <code>sign</code>, and a stack of <code>(result, sign)</code> pushed at <code>(</code>. At <code>)</code>, the inner result is combined with what you saved: <code>saved_result + saved_sign * inner</code>.</p>
+<p><strong>Dry run</strong> on <code>"1 - (2 + 3)"</code> (spaces skipped):</p>
+<pre><code class="language-text">char  action                                       result  sign  num  stack
+1     num = 1                                      0       +1    1
+-     result += 1, sign = -1                       1       -1    0
+(     push (1, -1), reset                          0       +1    0    [(1,-1)]
+2     num = 2                                      0       +1    2
++     result += 2, sign = +1                       2       +1    0
+3     num = 3                                      2       +1    3
+)     result = 2 + 3 = 5, pop -&gt; 1 + (-1)*5 = -4   -4                 []
+end   -4 + sign*0 = -4
+</code></pre>
+<pre><code class="language-python">def calculate(s):
+    result, num, sign = 0, 0, 1
+    st = []
+    for c in s:
+        if c.isdigit():
+            num = num * 10 + int(c)
+        elif c in &quot;+-&quot;:
+            result += sign * num
+            num, sign = 0, (1 if c == &quot;+&quot; else -1)
+        elif c == &quot;(&quot;:
+            st.append((result, sign))
+            result, sign = 0, 1
+        elif c == &quot;)&quot;:
+            result += sign * num
+            num = 0
+            prev_result, prev_sign = st.pop()
+            result = prev_result + prev_sign * result
+    return result + sign * num
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(depth of nesting) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I scan once keeping a running result, the sign for the next number, and the number being read. When I see plus or minus, I fold the pending number into the result and set the new sign. An open parenthesis pushes the current result and sign and starts a clean sub-expression. A close parenthesis finishes the inner result and folds it into the saved one with the saved sign. Spaces are ignored. O(n) time."</p>
+<hr>
+<h3 id="b6-asteroid-collision-simplify-path-abc-c-classic-stack-simulations">B6. Asteroid Collision, Simplify Path (<code>/a/./b/../../c</code> → <code>/c</code>): classic stack simulations</h3>
+<p><strong>Asteroid Collision in one sentence:</strong> asteroids move right (positive) or left (negative) at the same speed. When a right-mover meets a left-mover, the smaller one explodes, and equal sizes both explode. Return what survives.</p>
+<p><strong>Key insight:</strong> only a new left-mover can collide, and it collides with the most recent right-movers first, which is the top of the stack.</p>
+<p><strong>Dry run</strong> on <code>[5, 10, -5]</code>:</p>
+<pre><code class="language-text">a    stack before  collision                   stack after
+5    []            none                        [5]
+10   [5]           none                        [5, 10]
+-5   [5, 10]       10 &gt; 5, -5 explodes          [5, 10]
+</code></pre>
+<pre><code class="language-python">def asteroid_collision(asteroids):
+    st = []
+    for a in asteroids:
+        alive = True
+        while alive and a &lt; 0 and st and st[-1] &gt; 0:
+            if st[-1] &lt; -a:
+                st.pop()
+            elif st[-1] == -a:
+                st.pop()
+                alive = False
+            else:
+                alive = False
+        if alive:
+            st.append(a)
+    return st
+</code></pre>
+<p><strong>Simplify Path in one sentence:</strong> turn a Unix path with <code>.</code>, <code>..</code> and repeated slashes into its shortest equivalent.</p>
+<p><strong>Key insight:</strong> split on <code>/</code>. A folder name is pushed, <code>..</code> pops (go up one folder), and <code>.</code> or empty parts are ignored.</p>
+<p><strong>Dry run</strong> on <code>"/a/./b/../../c"</code>: parts are <code>a . b .. .. c</code>, so the stack goes <code>[a]</code>, <code>[a]</code>, <code>[a, b]</code>, <code>[a]</code>, <code>[]</code>, <code>[c]</code>, and the answer is <code>/c</code>.</p>
+<pre><code class="language-python">def simplify_path(path):
+    st = []
+    for part in path.split(&quot;/&quot;):
+        if part == &quot;..&quot;:
+            if st:
+                st.pop()
+        elif part and part != &quot;.&quot;:
+            st.append(part)
+    return &quot;/&quot; + &quot;/&quot;.join(st)
+</code></pre>
+<p><strong>Complexity:</strong> both O(n) time and space.</p>
+<p><strong>Say it in 60 seconds (asteroids):</strong> "Only a left-moving asteroid can hit something, and it hits the most recent right-movers first, so I keep survivors on a stack. For each left-mover, while the top is a right-mover, I compare sizes: if the top is smaller it explodes and I keep checking, if equal both explode, if bigger my asteroid explodes. If my asteroid survives, I push it. Each asteroid is pushed and popped at most once, so O(n)."</p>
 <hr>
 <h2 id="c-monotonic-stack">C. Monotonic stack</h2>
-<p><strong>Intuition:</strong> keep the stack increasing (or decreasing). When a new element breaks the order, everything it pops has just found its <strong>next greater (or smaller)</strong> element. Each index is pushed and popped once, so O(n).</p>
-<p><strong>Template (next greater element to the right):</strong></p>
+<h3 id="the-idea_2">The idea</h3>
+<p>A <strong>monotonic stack</strong> is a stack you keep sorted, either always increasing or always decreasing from bottom to top. When a new element would break the order, you pop elements until it fits. The key fact: every element you pop has just found its <strong>next greater (or smaller)</strong> element, which is the new one. Each index is pushed and popped once, so O(n).</p>
+<p><strong>Analogy:</strong> people standing in a line, each waiting to see someone taller than them arrive. When a tall person walks up, every shorter person at the back of the line says "that's my answer" and leaves. People taller than the newcomer keep waiting. So the people still waiting are always sorted from tallest (front) to shortest (back).</p>
+<h3 id="when-to-recognise-it_2">When to recognise it</h3>
+<ul>
+<li>"Next greater element", "next smaller element", "previous smaller".</li>
+<li>"How many days until a warmer temperature", "stock span".</li>
+<li>"Largest rectangle", "maximal rectangle", "trapping water" (stack version).</li>
+<li>"Remove k digits to make the smallest number" (greedy with a stack).</li>
+</ul>
+<h3 id="hand-traced-example-and-the-template-below">Hand-traced example (and the template below)</h3>
+<p>Next greater element for <code>[2, 1, 2, 4, 3]</code>. The stack holds indices whose answer is still unknown, with values decreasing.</p>
+<pre><code class="language-text">i  x  pops (they found x)        stack (values)  res
+0  2  none                       [2]             [-1,-1,-1,-1,-1]
+1  1  none                       [2, 1]
+2  2  index 1 (1 &lt; 2) -&gt; res[1]=2 [2, 2]          [-1, 2,-1,-1,-1]
+3  4  index 2, index 0 -&gt; 4      [4]             [ 4, 2, 4,-1,-1]
+4  3  none                       [4, 3]
+answer [4, 2, 4, -1, -1]
+</code></pre>
+<h3 id="template-next-greater-element-to-the-right">Template (next greater element to the right)</h3>
 <pre><code class="language-python">def next_greater(nums):
     res = [-1] * len(nums)
     st = []                       # indices, values decreasing
@@ -200,10 +559,56 @@ def reverse_rec(head):
         st.append(i)
     return res
 </code></pre>
+<p>Store <strong>indices</strong>, not values, so you can compute distances and look up values.</p>
+<p><strong>Complexity:</strong> O(n) time, because each index is pushed once and popped at most once. O(n) space.</p>
+<h3 id="common-mistakes_2">Common mistakes</h3>
+<ul>
+<li>Storing values instead of indices, then being unable to compute distances.</li>
+<li>Choosing the wrong direction. Popping smaller elements finds the next <strong>greater</strong>. Popping greater elements finds the next <strong>smaller</strong>.</li>
+<li>Using <code>&lt;</code> versus <code>&lt;=</code> carelessly. With duplicates, decide whether "equal" counts as greater.</li>
+<li>Forgetting a sentinel to flush the stack at the end (histogram).</li>
+</ul>
+<hr>
 <h3 id="c1-daily-temperatures">C1. Daily Temperatures</h3>
-<p>Same template: <code>res[j] = i - j</code>.</p>
+<p><strong>Problem in one sentence:</strong> for each day, how many days until a warmer temperature (0 if never)?</p>
+<p><strong>Key insight:</strong> this is "next greater element", but you record the distance. Same template: <code>res[j] = i - j</code>.</p>
+<p><strong>Dry run</strong> on <code>[73, 74, 75, 71, 72]</code>:</p>
+<pre><code class="language-text">i  t   pops                    stack (temps)  res
+0  73                          [73]
+1  74  73 -&gt; res[0] = 1        [74]
+2  75  74 -&gt; res[1] = 1        [75]
+3  71                          [75, 71]
+4  72  71 -&gt; res[3] = 1        [75, 72]
+answer [1, 1, 0, 1, 0]
+</code></pre>
+<pre><code class="language-python">def daily_temperatures(t):
+    res = [0] * len(t)
+    st = []
+    for i, x in enumerate(t):
+        while st and t[st[-1]] &lt; x:
+            j = st.pop()
+            res[j] = i - j
+        st.append(i)
+    return res
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time and space.</p>
+<p><strong>Say it in 60 seconds:</strong> "This is next-greater-element with distances. I keep a stack of indices of days still waiting for a warmer day, so their temperatures are decreasing. When today is warmer than the top, that day's wait is today's index minus its index, and I pop it. I keep popping while today is warmer, then push today. Anything left in the stack never warms up and stays 0. Each day is pushed and popped once, so O(n)."</p>
+<hr>
 <h3 id="c2-largest-rectangle-in-histogram-hard-very-common">C2. Largest Rectangle in Histogram (hard, very common)</h3>
-<p><strong>Intuition:</strong> for each bar, the widest rectangle using its height extends to the first shorter bar on each side. With an increasing stack, when bar i is shorter than the top, the top's right boundary is i and its left boundary is the new top after popping.</p>
+<p><strong>Problem in one sentence:</strong> given bar heights of width 1, find the area of the largest rectangle that fits under the bars.</p>
+<p><strong>Key insight:</strong> for each bar, the widest rectangle using its height extends to the first shorter bar on each side. With an increasing stack, when bar i is shorter than the top, the top's right boundary is i and its left boundary is the new top after popping. A sentinel 0 at the end forces every bar to be popped and measured.</p>
+<p><strong>Dry run</strong> on <code>[2, 1, 5, 6, 2, 3]</code> (with sentinel 0 at index 6):</p>
+<pre><code class="language-text">i  h  pops: height x (i - left - 1) = area            stack after  best
+0  2                                                   [0]          0
+1  1  pop 0: 2 x (1 - (-1) - 1) = 2                    [1]          2
+2  5                                                   [1,2]        2
+3  6                                                   [1,2,3]      2
+4  2  pop 3: 6 x (4 - 2 - 1) = 6                                    6
+      pop 2: 5 x (4 - 1 - 1) = 10                      [1,4]        10
+5  3                                                   [1,4,5]      10
+6  0  pop 5: 3 x 1 = 3, pop 4: 2 x 4 = 8, pop 1: 1 x 6 = 6           10
+answer 10 (bars 5 and 6, height 5, width 2)
+</code></pre>
 <pre><code class="language-python">def largest_rectangle(heights):
     st = []                  # indices, heights increasing
     best = 0
@@ -215,16 +620,110 @@ def reverse_rec(head):
         st.append(i)
     return best
 </code></pre>
-<p>O(n). Extension: Maximal Rectangle in a binary matrix is this per row, over accumulated column heights.</p>
+<p><strong>Complexity:</strong> O(n) time and space.</p>
+<p><strong>Extension:</strong> Maximal Rectangle in a binary matrix is this per row, over accumulated column heights (each row turns the matrix above it into a histogram).</p>
+<p><strong>Say it in 60 seconds:</strong> "Every candidate rectangle has some bar as its shortest bar, and it extends left and right until a shorter bar. I keep a stack of indices with increasing heights. When the current bar is shorter than the top, the top bar's rectangle ends here: its right edge is the current index, and its left edge is the new top after popping, because that's the nearest shorter bar to its left. Width is <code>i - left - 1</code>. A zero sentinel at the end flushes everything. Each bar is pushed and popped once, so O(n)."</p>
+<hr>
 <h3 id="c3-car-fleet">C3. Car Fleet</h3>
-<p>Sort by position descending. Compute time to reach the target. A car forms a new fleet only if its time is greater than the fleet ahead of it.</p>
+<p><strong>Problem in one sentence:</strong> cars drive toward a target on a one-lane road and can't pass. A faster car that catches a slower one joins it as a fleet. How many fleets arrive?</p>
+<p><strong>Key insight:</strong> sort by position descending (closest to the target first). Compute each car's time to reach the target alone. A car behind can only catch up with the fleet in front, never pass it. So a car forms a new fleet only if its time is greater than the fleet ahead of it. Otherwise it joins that fleet. (This is a monotonic stack where you only need the top, so a single variable is enough.)</p>
+<p><strong>Dry run</strong> on <code>target = 12</code>, <code>position = [10, 8, 0, 5, 3]</code>, <code>speed = [2, 4, 1, 1, 3]</code>:</p>
+<pre><code class="language-text">car (pos, speed)  time to target  slower than fleet ahead?  fleets  slowest
+(10, 2)           1               yes (nothing ahead)       1       1
+(8, 4)            1               no, joins                 1       1
+(5, 1)            7               yes                       2       7
+(3, 3)            3               no, joins                 2       7
+(0, 1)            12              yes                       3       12
+answer 3
+</code></pre>
+<pre><code class="language-python">def car_fleet(target, position, speed):
+    cars = sorted(zip(position, speed), reverse=True)
+    fleets, slowest = 0, 0.0
+    for p, s in cars:
+        t = (target - p) / s
+        if t &gt; slowest:
+            fleets += 1
+            slowest = t
+    return fleets
+</code></pre>
+<p><strong>Complexity:</strong> O(n log n) for the sort, then O(n).</p>
+<p><strong>Say it in 60 seconds:</strong> "Cars can't pass, so I process them from closest to the target backwards. For each car I compute how long it would take alone. If a car would arrive later than the fleet in front of it, it can never catch up and becomes a new fleet, and its time becomes the new bar to beat. If it would arrive sooner, it catches up and merges. Sorting is O(n log n), the scan is linear."</p>
+<hr>
 <h3 id="c4-sum-of-subarray-minimums-stock-span-remove-k-digits">C4. Sum of Subarray Minimums, Stock Span, Remove K Digits</h3>
-<p>Remove K Digits: pop while the top is greater than the current digit and k &gt; 0, which makes the smallest number greedily.</p>
+<p><strong>Remove K Digits in one sentence:</strong> delete k digits from a number string to make the smallest possible number.</p>
+<p><strong>Key insight:</strong> a smaller digit earlier always beats a larger digit earlier. So pop while the top is greater than the current digit and k &gt; 0, which makes the smallest number greedily. If deletions remain at the end, cut from the right (the stack is non-decreasing, so the largest digits are at the end). Strip leading zeros.</p>
+<p><strong>Dry run</strong> on <code>num = "1432219"</code>, <code>k = 3</code>:</p>
+<pre><code class="language-text">digit  pops (k after)     stack
+1                         1
+4                         1 4
+3      pop 4 (k=2)        1 3
+2      pop 3 (k=1)        1 2
+2                         1 2 2
+1      pop 2 (k=0)        1 2 1
+9                         1 2 1 9
+answer &quot;1219&quot;
+</code></pre>
+<pre><code class="language-python">def remove_k_digits(num, k):
+    st = []
+    for d in num:
+        while k and st and st[-1] &gt; d:
+            st.pop()
+            k -= 1
+        st.append(d)
+    st = st[:-k] if k else st
+    return &quot;&quot;.join(st).lstrip(&quot;0&quot;) or &quot;0&quot;
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time and space.</p>
+<p><strong>The other two, in one line each:</strong>
+- <strong>Stock Span:</strong> for each day, count consecutive previous days with price ≤ today. Keep a decreasing stack of <code>(price, span)</code>. Pop smaller-or-equal prices and add their spans.
+- <strong>Sum of Subarray Minimums:</strong> for each element, count how many subarrays it is the minimum of, which is <code>(distance to previous smaller) × (distance to next smaller)</code>. Both distances come from monotonic stacks. Multiply by the value and sum.</p>
+<p><strong>Say it in 60 seconds (Remove K Digits):</strong> "To minimise a number, the leftmost digits matter most, so whenever the current digit is smaller than the previous kept digit, deleting the previous one helps. I keep a stack of kept digits and pop while the top is bigger and I still have deletions. If deletions are left over, the stack is non-decreasing, so I remove from the end. Finally I strip leading zeros and return '0' if nothing is left. O(n)."</p>
 <hr>
 <h2 id="d-queue-and-deque">D. Queue and deque</h2>
-<p><strong>Queue:</strong> FIFO, used for BFS, producer/consumer, and task scheduling. In Python use <code>collections.deque</code>.</p>
+<h3 id="the-idea_3">The idea</h3>
+<p>A <strong>queue</strong> is first in, first out (FIFO). It's used for BFS, producer/consumer, and task scheduling. A <strong>deque</strong> (double-ended queue, pronounced "deck") lets you add and remove at both ends in O(1). In Python use <code>collections.deque</code> for both, never <code>list.pop(0)</code>.</p>
+<p><strong>Analogy:</strong> a queue is the line at a ticket counter. A deque is a line where people can also join or leave from the back, like a bus with doors at both ends.</p>
+<h3 id="when-to-recognise-it_3">When to recognise it</h3>
+<ul>
+<li>"Level by level", "shortest number of steps" (BFS uses a queue, see the <a href="03_dsa_4_graphs_dsu.html">graphs file</a>).</li>
+<li>"Sliding window maximum or minimum" (monotonic deque).</li>
+<li>"Recent requests in the last N seconds" (hit counter, rate limiter).</li>
+<li>Fixed-size buffers (circular queue, ring buffer).</li>
+</ul>
+<h3 id="hand-traced-example_2">Hand-traced example</h3>
+<p>Sliding window maximum with k = 3 on <code>[1, 3, -1, -3, 5]</code>. The deque holds indices with decreasing values, so the front is always the max.</p>
+<pre><code class="language-text">i  x   expire front?   pop back smaller   deque (values)  output
+0  1                                      [1]
+1  3                   pop 1              [3]
+2  -1                                     [3, -1]         3
+3  -3                                     [3, -1, -3]     3
+4  5   index 1 expires pop -3, -1         [5]             5
+</code></pre>
+<h3 id="template_2">Template</h3>
+<p>The template is the Sliding Window Maximum code in D1 below.</p>
+<p><strong>Complexity:</strong> queue and deque operations are O(1). A monotonic deque over n elements is O(n) total, because each index enters and leaves once.</p>
+<h3 id="common-mistakes_3">Common mistakes</h3>
+<ul>
+<li>Using <code>list.pop(0)</code>, which is O(n).</li>
+<li>In the monotonic deque, forgetting to expire the front when it falls out of the window.</li>
+<li>Storing values instead of indices, which makes it impossible to tell when the front has expired.</li>
+</ul>
+<hr>
 <h3 id="d1-sliding-window-maximum-monotonic-deque">D1. Sliding Window Maximum (monotonic deque)</h3>
-<p><strong>Intuition:</strong> keep a deque of indices with decreasing values. The front is the max. Pop the front when it leaves the window, and pop the back while it's smaller than the new element (it can never be a max again).</p>
+<p><strong>Problem in one sentence:</strong> for every window of size k, report the maximum.</p>
+<p><strong>Key insight:</strong> keep a deque of indices with decreasing values. The front is the max. Pop the front when it leaves the window, and pop the back while it's smaller than the new element (it can never be a max again, because the new element is both larger and will stay in the window longer).</p>
+<p><strong>Dry run</strong> on <code>nums = [1, 3, -1, -3, 5, 3, 6, 7]</code>, <code>k = 3</code>:</p>
+<pre><code class="language-text">i  x   deque after (values)  output
+0  1   [1]
+1  3   [3]
+2  -1  [3, -1]               3
+3  -3  [3, -1, -3]           3
+4  5   [5]                   5     (3 expired, -1 and -3 popped)
+5  3   [5, 3]                5
+6  6   [6]                   6
+7  7   [7]                   7
+answer [3, 3, 5, 5, 6, 7]
+</code></pre>
 <pre><code class="language-python">def max_sliding_window(nums, k):
     dq, res = deque(), []
     for i, x in enumerate(nums):
@@ -237,18 +736,158 @@ def reverse_rec(head):
             res.append(nums[dq[0]])
     return res
 </code></pre>
-<p>O(n). Related: Shortest Subarray with Sum at Least K (prefix sums + monotonic deque, handles negatives).</p>
+<p><strong>Complexity:</strong> O(n) time, O(k) space.</p>
+<p><strong>Related:</strong> Shortest Subarray with Sum at Least K (prefix sums + monotonic deque, handles negatives).</p>
+<p><strong>Say it in 60 seconds:</strong> "A heap would give O(n log k). For O(n) I keep a deque of indices whose values are decreasing, so the front is always the current max. For each new element, I drop the front if it's slid out of the window, then pop from the back every element smaller than the new one, because those can never be the max again. Then I append the new index and, once the first window is full, record the front's value. Each index enters and leaves once."</p>
+<hr>
 <h3 id="d2-implement-a-queue-using-two-stacks">D2. Implement a Queue using two stacks</h3>
-<p><code>in</code> stack for push, <code>out</code> stack for pop. Refill <code>out</code> only when it's empty. Amortized O(1).</p>
+<p><strong>Problem in one sentence:</strong> build a FIFO queue using only two LIFO stacks.</p>
+<p><strong>Key insight:</strong> pouring one stack into another reverses the order, which turns LIFO into FIFO. Use an <code>in</code> stack for push and an <code>out</code> stack for pop. Refill <code>out</code> only when it's empty. Each element is moved at most once, so the cost is amortized O(1).</p>
+<p><strong>Dry run:</strong></p>
+<pre><code class="language-text">push 1, push 2   inbox [1, 2]  outbox []
+pop              outbox empty, pour -&gt; outbox [2, 1], pop 1
+push 3           inbox [3]     outbox [2]
+pop              outbox not empty, pop 2
+pop              outbox empty, pour -&gt; [3], pop 3
+</code></pre>
+<pre><code class="language-python">class MyQueue:
+    def __init__(self):
+        self.inbox, self.outbox = [], []
+    def push(self, x):
+        self.inbox.append(x)
+    def pop(self):
+        self.peek()
+        return self.outbox.pop()
+    def peek(self):
+        if not self.outbox:
+            while self.inbox:
+                self.outbox.append(self.inbox.pop())
+        return self.outbox[-1]
+    def empty(self):
+        return not self.inbox and not self.outbox
+</code></pre>
+<p><strong>Complexity:</strong> amortized O(1) per operation, worst case O(n) for a single pop that triggers a pour.</p>
+<p><strong>Say it in 60 seconds:</strong> "Pushes go onto an inbox stack. Pops come from an outbox stack. When the outbox is empty, I pour the whole inbox into it, which reverses the order so the oldest element is on top. I only pour when the outbox is empty, so every element moves exactly once from inbox to outbox. That makes each operation amortized O(1), even though one pop can occasionally cost O(n)."</p>
+<hr>
 <h3 id="d3-design-circular-queue">D3. Design Circular Queue</h3>
-<p>A fixed array with <code>head</code> and <code>count</code>. <code>tail = (head + count) % cap</code>. This is also the core of a bounded ring buffer (see <a href="06_concurrency.html">concurrency</a>).</p>
+<p><strong>Problem in one sentence:</strong> build a fixed-capacity queue on top of an array, reusing slots as items leave.</p>
+<p><strong>Key insight:</strong> a fixed array with <code>head</code> and <code>count</code>. <code>tail = (head + count) % cap</code>. The modulo wraps around the end of the array like a clock face. This is also the core of a bounded ring buffer (see <a href="06_concurrency.html">concurrency</a>).</p>
+<p><strong>Dry run</strong> with capacity 3:</p>
+<pre><code class="language-text">op          buf          head  count  note
+enqueue 1   [1, _, _]    0     1      slot (0+0)%3 = 0
+enqueue 2   [1, 2, _]    0     2
+enqueue 3   [1, 2, 3]    0     3
+enqueue 4   full -&gt; False
+dequeue     [x, 2, 3]    1     2
+enqueue 4   [4, 2, 3]    1     3      slot (1+2)%3 = 0, wrapped
+front = buf[1] = 2, rear = buf[(1+3-1)%3] = buf[0] = 4
+</code></pre>
+<pre><code class="language-python">class MyCircularQueue:
+    def __init__(self, k):
+        self.buf = [0] * k
+        self.head = self.count = 0
+        self.cap = k
+    def en_queue(self, x):
+        if self.count == self.cap:
+            return False
+        self.buf[(self.head + self.count) % self.cap] = x
+        self.count += 1
+        return True
+    def de_queue(self):
+        if self.count == 0:
+            return False
+        self.head = (self.head + 1) % self.cap
+        self.count -= 1
+        return True
+    def front(self):
+        return -1 if self.count == 0 else self.buf[self.head]
+    def rear(self):
+        return -1 if self.count == 0 else self.buf[(self.head + self.count - 1) % self.cap]
+</code></pre>
+<p><strong>Complexity:</strong> every operation O(1). O(k) space, fixed.</p>
+<p><strong>Say it in 60 seconds:</strong> "I use a fixed array, a head index, and a count. The next free slot is head plus count, modulo capacity, so the queue wraps around the end of the array. Enqueue fails when count equals capacity. Dequeue just advances head modulo capacity. Keeping a count instead of a separate tail avoids the classic ambiguity where head equals tail could mean either full or empty. All operations are O(1), and it's exactly the ring buffer used in bounded producer-consumer queues."</p>
+<hr>
 <h3 id="d4-design-hit-counter-hits-in-the-last-300s">D4. Design Hit Counter (hits in the last 300s)</h3>
-<p>A deque of timestamps, popping old ones from the left. Or, for high volume, 300 buckets of <code>(timestamp, count)</code> indexed by <code>ts % 300</code>, which is O(1) memory per second. That's a rate limiter warmup.</p>
+<p><strong>Problem in one sentence:</strong> record hits with timestamps in seconds and return how many happened in the last 300 seconds.</p>
+<p><strong>Key insight:</strong> the simple version is a deque of timestamps, popping old ones from the left. That uses memory proportional to traffic. For high volume, use 300 buckets of <code>(timestamp, count)</code> indexed by <code>ts % 300</code>. Memory stays fixed at 300 slots no matter how many hits arrive, which is O(1) memory per second of window. When a bucket's stored timestamp is old, it's reset before reuse. That's a rate limiter warmup.</p>
+<p><strong>Dry run</strong> (window shortened to 3 seconds to keep it small):</p>
+<pre><code class="language-text">op            slot = ts % 3   times      counts
+hit(1)        1               [0,1,0]    [0,1,0]
+hit(1)        1               [0,1,0]    [0,2,0]
+hit(2)        2               [0,1,2]    [0,2,1]
+get_hits(3)   count slots with 3 - t &lt; 3: t=1 (2 hits), t=2 (1 hit) -&gt; 3
+hit(4)        1, stale (1 != 4), reset   [0,4,2]  [0,1,1]
+get_hits(4)   t=4 (1), t=2 (1) -&gt; 2
+</code></pre>
+<pre><code class="language-python">class HitCounter:
+    def __init__(self, window=300):
+        self.window = window
+        self.times = [0] * window
+        self.counts = [0] * window
+    def hit(self, ts):
+        i = ts % self.window
+        if self.times[i] != ts:
+            self.times[i] = ts
+            self.counts[i] = 0
+        self.counts[i] += 1
+    def get_hits(self, ts):
+        return sum(c for t, c in zip(self.times, self.counts) if ts - t &lt; self.window)
+</code></pre>
+<p><strong>Complexity:</strong> <code>hit</code> O(1), <code>get_hits</code> O(window) which is a constant 300. Fixed memory.</p>
+<p><strong>Say it in 60 seconds:</strong> "The deque version stores every timestamp, which grows with traffic. Instead I keep 300 buckets, one per second of the window, indexed by timestamp modulo 300. Each bucket stores which second it currently represents and a count. On a hit, if the bucket holds an older second, I reset it first. To count, I sum buckets whose second is within the last 300. Memory is fixed regardless of QPS. To make it thread safe I'd lock per bucket or use atomic counters, and at scale it becomes a sliding-window rate limiter."</p>
 <hr>
 <h2 id="e-heap-priority-queue">E. Heap / priority queue</h2>
-<p><strong>Intuition:</strong> always need the min or max of a changing set. Push/pop O(log n), peek O(1). <strong>Top K largest:</strong> keep a <em>min</em>-heap of size k (the smallest of the top k is on top, and you evict it).</p>
+<h3 id="the-idea_4">The idea</h3>
+<p>A <strong>heap</strong> (priority queue) is a structure that always gives you the smallest (min-heap) or largest (max-heap) item quickly. Push and pop are O(log n), and peeking at the top is O(1). It doesn't keep everything sorted, only enough order that the top is always the extreme. Python's <code>heapq</code> is a min-heap stored in a plain list, with the smallest item at index 0.</p>
+<p><strong>Analogy:</strong> a hospital emergency room. Patients arrive in any order, but the most urgent one is always seen next. Nobody sorts the whole waiting room, the triage nurse just knows who is most urgent.</p>
+<p><strong>Top K largest trick:</strong> keep a <em>min</em>-heap of size k. The smallest of the top k is on top, and when a bigger item arrives you evict it. This uses O(k) memory, which matters when the data is a stream or huge.</p>
+<h3 id="when-to-recognise-it_4">When to recognise it</h3>
+<ul>
+<li>"k-th largest", "top k", "k closest", "k most frequent".</li>
+<li>"Merge k sorted lists or files".</li>
+<li>"Median of a stream".</li>
+<li>"Always process the cheapest or earliest next" (Dijkstra, scheduling, meeting rooms).</li>
+</ul>
+<h3 id="hand-traced-example_3">Hand-traced example</h3>
+<p>Keep the 2 largest numbers from the stream <code>5, 1, 8, 3, 9</code> with a min-heap of size 2.</p>
+<pre><code class="language-text">x  heap before  action                     heap after (min on left)
+5  []           push                       [5]
+1  [5]          push                       [1, 5]
+8  [1, 5]       8 &gt; 1, replace top         [5, 8]
+3  [5, 8]       3 &lt; 5, ignore              [5, 8]
+9  [5, 8]       9 &gt; 5, replace top         [8, 9]
+2nd largest = top = 8
+</code></pre>
+<h3 id="template_3">Template</h3>
+<pre><code class="language-python">def top_k_largest(stream, k):
+    h = []
+    for x in stream:
+        if len(h) &lt; k:
+            heapq.heappush(h, x)
+        elif x &gt; h[0]:
+            heapq.heapreplace(h, x)     # pop the smallest and push x, in one O(log k) step
+    return h
+</code></pre>
+<p><strong>Complexity:</strong> O(n log k) time, O(k) space.</p>
+<h3 id="common-mistakes_4">Common mistakes</h3>
+<ul>
+<li>Using a max-heap of everything for "top k largest" (O(n log n) and O(n) memory) instead of a min-heap of size k.</li>
+<li>Forgetting that Python only has a min-heap. Negate values for a max-heap.</li>
+<li>Pushing tuples whose second element isn't comparable. Add a tiebreak counter.</li>
+<li>Thinking <code>heapq</code> supports "decrease key". It doesn't. Push a new entry and skip stale ones.</li>
+</ul>
+<hr>
 <h3 id="e1-kth-largest-element-in-an-array">E1. Kth Largest Element in an Array</h3>
-<p>Min-heap of size k: O(n log k). Quickselect: O(n) average, O(n²) worst.</p>
+<p><strong>Problem in one sentence:</strong> return the k-th largest value in an unsorted array.</p>
+<p><strong>Key insight:</strong> a min-heap of size k: O(n log k). The top of a size-k min-heap of the largest values seen is exactly the k-th largest. Quickselect: O(n) average, O(n²) worst.</p>
+<p><strong>Dry run</strong> on <code>[3, 2, 1, 5, 6, 4]</code>, <code>k = 2</code>:</p>
+<pre><code class="language-text">heapify [3, 2] -&gt; [2, 3]
+x=1: not &gt; 2, skip      [2, 3]
+x=5: &gt; 2, replace       [3, 5]
+x=6: &gt; 3, replace       [5, 6]
+x=4: not &gt; 5, skip      [5, 6]
+answer top = 5
+</code></pre>
 <pre><code class="language-python">def find_kth_largest(nums, k):
     h = nums[:k]
     heapq.heapify(h)
@@ -257,9 +896,43 @@ def reverse_rec(head):
             heapq.heapreplace(h, x)
     return h[0]
 </code></pre>
+<p><strong>Complexity:</strong> O(n log k) time, O(k) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Sorting is O(n log n). I keep a min-heap of the k largest values seen so far. I heapify the first k elements, then for every other element, if it's bigger than the heap's smallest, I replace the smallest. At the end, the top is the k-th largest. That's O(n log k) time and O(k) memory, which also works on a stream. If they want average O(n), I'd mention quickselect, with the caveat that its worst case is O(n²) unless the pivot is randomised."</p>
+<hr>
 <h3 id="e2-k-closest-points-to-origin">E2. K Closest Points to Origin</h3>
-<p>Max-heap of size k on distance (push the negative distance). O(n log k).</p>
+<p><strong>Problem in one sentence:</strong> return the k points nearest to (0, 0).</p>
+<p><strong>Key insight:</strong> this is "top k smallest distances", so keep a <strong>max</strong>-heap of size k on distance (push the negative distance). The farthest of the current k is on top and gets evicted when a closer point arrives. Compare squared distances, no square root needed.</p>
+<p><strong>Dry run</strong> on <code>points = [[1, 3], [-2, 2], [2, -2]]</code>, <code>k = 2</code> (squared distances 10, 8, 8):</p>
+<pre><code class="language-text">point    d   heap (stores -d)       action
+(1,3)    10  [-10]                  push
+(-2,2)   8   [-10, -8]              push
+(2,-2)   8   top is -10 (farthest)  -8 &gt; -10, replace -&gt; [-8, -8]
+answer [[-2, 2], [2, -2]]
+</code></pre>
+<pre><code class="language-python">def k_closest(points, k):
+    h = []
+    for x, y in points:
+        d = x * x + y * y
+        if len(h) &lt; k:
+            heapq.heappush(h, (-d, x, y))
+        elif -d &gt; h[0][0]:
+            heapq.heapreplace(h, (-d, x, y))
+    return [[x, y] for _, x, y in h]
+</code></pre>
+<p><strong>Complexity:</strong> O(n log k) time, O(k) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I want the k smallest distances, so I keep a max-heap of size k, where the top is the farthest of my current best k. Python only has min-heaps, so I store negative distances. For each new point, if the heap isn't full I push it. Otherwise, if it's closer than the top, I replace the top. I compare squared distances to avoid square roots. O(n log k) time, O(k) space."</p>
+<hr>
 <h3 id="e3-merge-k-sorted-lists-also-merge-k-sorted-log-files">E3. Merge K Sorted Lists (also "merge k sorted log files")</h3>
+<p><strong>Problem in one sentence:</strong> merge k sorted linked lists into one sorted list.</p>
+<p><strong>Key insight:</strong> the next output is always the smallest of the k current heads. A min-heap of the k heads gives that in O(log k). After taking a node, push its successor from the same list.</p>
+<p><strong>Dry run</strong> on <code>[1 → 4], [1 → 3], [2]</code>:</p>
+<pre><code class="language-text">heap (val, list index)        pop       push next      output
+(1,0) (1,1) (2,2)             (1,0)     (4,0)          1
+(1,1) (2,2) (4,0)             (1,1)     (3,1)          1 1
+(2,2) (3,1) (4,0)             (2,2)     none           1 1 2
+(3,1) (4,0)                   (3,1)     none           1 1 2 3
+(4,0)                         (4,0)     none           1 1 2 3 4
+</code></pre>
 <pre><code class="language-python">def merge_k_lists(lists):
     h = []
     for i, node in enumerate(lists):
@@ -273,9 +946,22 @@ def reverse_rec(head):
             heapq.heappush(h, (node.next.val, i, node.next))
     return dummy.next
 </code></pre>
-<p>O(N log k). The index <code>i</code> breaks ties because nodes aren't comparable. At scale this is <strong>external merge sort</strong>: sort chunks that fit in memory, write them, then k-way merge with a heap and buffered IO.</p>
+<p><code>tail.next = tail = node</code> assigns left to right: first the old tail's <code>next</code> becomes <code>node</code>, then <code>tail</code> moves to <code>node</code>.</p>
+<p><strong>Complexity:</strong> O(N log k) time, where N is the total number of nodes, because each node is pushed and popped once on a heap of size at most k. O(k) heap space. The index <code>i</code> breaks ties because nodes aren't comparable.</p>
+<p><strong>At scale, this is external merge sort:</strong> sort chunks that fit in memory, write them to disk, then k-way merge them with a heap and buffered IO (read a block from each file at a time, not one line). The same shape merges time-ordered logs from many servers.</p>
+<p><strong>Say it in 60 seconds:</strong> "At any moment the next node in the output is the smallest among the k list heads. I put all k heads in a min-heap keyed by value, with the list index as a tiebreaker since nodes can't be compared. I pop the smallest, append it, and push that node's successor. Each of the N nodes goes through a heap of size k once, so O(N log k). It's the same algorithm as merging sorted log files from many machines, or the merge phase of external sort."</p>
+<hr>
 <h3 id="e4-find-median-from-data-stream-two-heaps">E4. Find Median from Data Stream (two heaps)</h3>
-<p><strong>Intuition:</strong> a max-heap for the lower half and a min-heap for the upper half. Keep sizes balanced (lower can have one extra).</p>
+<p><strong>Problem in one sentence:</strong> numbers arrive one at a time. Support adding a number and asking for the current median, both fast.</p>
+<p><strong>Key insight:</strong> split the numbers into a lower half and an upper half. A max-heap for the lower half shows its largest, and a min-heap for the upper half shows its smallest. The median is at the boundary. Keep sizes balanced (lower can have one extra).</p>
+<p><strong>Analogy:</strong> two piles of exam papers, low scores and high scores, where you can always see the best of the low pile and the worst of the high pile. The median is one of those, or their average.</p>
+<p><strong>Dry run</strong> adding <code>1, 2, 3</code>:</p>
+<pre><code class="language-text">add  lo (max-heap, shown as values)  hi (min-heap)  median
+1    [1]                              []             1
+2    [1]                              [2]            (1 + 2) / 2 = 1.5
+3    [2, 1]                           [3]            2
+</code></pre>
+<p>The <code>add_num</code> steps: push to <code>lo</code>, move <code>lo</code>'s largest to <code>hi</code> (so every element of <code>lo</code> ≤ every element of <code>hi</code>), then if <code>hi</code> became bigger, move its smallest back.</p>
 <pre><code class="language-python">class MedianFinder:
     def __init__(self):
         self.lo = []   # max-heap (negated)
@@ -292,21 +978,106 @@ def reverse_rec(head):
             return -self.lo[0]
         return (-self.lo[0] + self.hi[0]) / 2
 </code></pre>
-<p>add O(log n), median O(1). Follow-ups: sliding-window median (lazy deletion with a hashmap of to-delete counts). For p99 latency at scale use histograms or t-digest, not exact medians.</p>
+<p><strong>Complexity:</strong> <code>add_num</code> O(log n), <code>find_median</code> O(1). O(n) space.</p>
+<p><strong>Follow-ups:</strong> sliding-window median (lazy deletion with a hashmap of to-delete counts, removing entries only when they reach the top). For p99 latency at scale use histograms or t-digest (a compact summary that estimates percentiles accurately with small memory), not exact medians.</p>
+<p><strong>Say it in 60 seconds:</strong> "I keep the smaller half in a max-heap and the larger half in a min-heap, with the lower heap allowed one extra element. To add, I push into the lower heap, move its max to the upper heap to keep the ordering correct, and if the upper heap is now larger, I move its min back. The median is the top of the lower heap for odd counts, or the average of both tops for even. Add is O(log n), median is O(1). For latency percentiles in production I wouldn't store every value. I'd use a histogram or t-digest."</p>
+<hr>
 <h3 id="e5-task-scheduler-cooldown-n">E5. Task Scheduler (cooldown n)</h3>
+<p><strong>Problem in one sentence:</strong> CPU tasks are letters. The same letter needs n idle slots between runs. What's the minimum total time?</p>
+<p><strong>Key insight:</strong> the most frequent task decides the shape. If A appears <code>maxFreq</code> times, there are <code>maxFreq - 1</code> gaps of length <code>n + 1</code> (one A plus n slots), followed by a final row containing every task that ties for the max frequency. If there are enough other tasks to fill all gaps, there's no idle time and the answer is just the number of tasks.</p>
 <p><strong>Math answer:</strong> <code>max(len(tasks), (maxFreq - 1) * (n + 1) + countOfMaxFreq)</code>. The simulation uses a max-heap plus a cooldown queue.</p>
+<p><strong>Dry run</strong> on <code>["A","A","A","B","B","B"]</code>, <code>n = 2</code>:</p>
+<pre><code class="language-text">maxFreq = 3 (A and B), countOfMaxFreq = 2
+frame: A B _ | A B _ | A B
+(3 - 1) * (2 + 1) + 2 = 8, max(6, 8) = 8
+</code></pre>
+<pre><code class="language-python">def least_interval(tasks, n):
+    freq = Counter(tasks).values()
+    max_f = max(freq)
+    count_max = sum(1 for f in freq if f == max_f)
+    return max(len(tasks), (max_f - 1) * (n + 1) + count_max)
+</code></pre>
+<p><strong>Complexity:</strong> O(len(tasks)) time, O(26) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "The most frequent task forces the schedule. With frequency f, I need f minus 1 full frames of length n plus 1, and then a last frame holding every task that shares the max frequency. If other tasks fill all the idle slots, the answer is just the number of tasks, so I take the max of the two. That's linear time. If they want the actual schedule, I'd simulate with a max-heap of counts and a queue of tasks cooling down."</p>
+<hr>
 <h3 id="e6-reorganize-string-no-two-adjacent-the-same">E6. Reorganize String (no two adjacent the same)</h3>
-<p>Max-heap by count. Pop the top, append it, and hold it back one step (push the previous one back).</p>
-<h3 id="e7-meeting-rooms-ii-see-intervals-min-heap-of-end-times">E7. Meeting Rooms II: see <a href="03_dsa_6_backtracking_greedy_intervals_matrix_bits.html">intervals</a> (min-heap of end times).</h3>
-<h3 id="e8-dijkstra-and-prim-use-heaps-see-graphs">E8. Dijkstra and Prim use heaps: see <a href="03_dsa_4_graphs_dsu.html">graphs</a>.</h3>
+<p><strong>Problem in one sentence:</strong> rearrange a string so no two neighbouring characters are equal, or return "" if impossible.</p>
+<p><strong>Key insight:</strong> always place the most frequent remaining character, but never the same one twice in a row. Max-heap by count. Pop the top, append it, and hold it back one step (push the previous one back).</p>
+<p><strong>Dry run</strong> on <code>"aab"</code>:</p>
+<pre><code class="language-text">heap (count, char)   pop    out    held back
+(-2,a) (-1,b)        a      a      (-1,a)
+(-1,b)               b      ab     push (-1,a) back, b now used up
+(-1,a)               a      aba    none
+answer &quot;aba&quot;
+</code></pre>
+<p>For <code>"aaab"</code> the heap empties while <code>a</code> is still held back, so the output has 3 characters instead of 4, and the function returns "".</p>
+<pre><code class="language-python">def reorganize_string(s):
+    h = [(-c, ch) for ch, c in Counter(s).items()]
+    heapq.heapify(h)
+    out, prev = [], None
+    while h:
+        c, ch = heapq.heappop(h)
+        out.append(ch)
+        if prev:
+            heapq.heappush(h, prev)
+        c += 1
+        prev = (c, ch) if c &lt; 0 else None
+    return &quot;&quot;.join(out) if len(out) == len(s) else &quot;&quot;
+</code></pre>
+<p><strong>Complexity:</strong> O(n log 26) which is O(n) time, O(26) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Greedily, I should place the character with the most copies left, as long as it differs from the last one placed. I keep a max-heap of counts. Each step I pop the most frequent character, append it, and push back the character I held from the previous step. The one I just used is held out for one turn so it can't repeat immediately. If the heap runs dry while a character is still waiting, it's impossible. A quick check up front: if any count exceeds (n + 1) / 2, return empty."</p>
+<hr>
+<h3 id="e7-meeting-rooms-ii">E7. Meeting Rooms II</h3>
+<p>See <a href="03_dsa_6_backtracking_greedy_intervals_matrix_bits.html">intervals</a> (a min-heap of end times). The one-line idea: sort meetings by start time, keep the end times of rooms in use in a min-heap, and reuse the room that frees up earliest if it's free by the time the next meeting starts.</p>
+<h3 id="e8-dijkstra-and-prim-use-heaps">E8. Dijkstra and Prim use heaps</h3>
+<p>See <a href="03_dsa_4_graphs_dsu.html">graphs</a>. Both repeatedly take the cheapest frontier option, which is exactly what a min-heap provides.</p>
+<hr>
 <h3 id="e9-design-twitter-news-feed-of-top-10">E9. Design Twitter (news feed of top 10)</h3>
-<p>Per-user tweet lists with timestamps. The feed is a k-way merge over the user and their followees with a heap, taking 10. That's the same idea as fan-out-on-read in system design.</p>
+<p><strong>Problem in one sentence:</strong> support posting tweets, following and unfollowing, and getting the 10 most recent tweets from yourself and the people you follow.</p>
+<p><strong>Key insight:</strong> each user's tweets are already in time order. The feed is a k-way merge over the user and their followees with a heap, taking 10. That's the same idea as fan-out-on-read in system design: build the feed when it's requested, by merging the sources.</p>
+<p><strong>Dry run:</strong> user 1 posts tweet 5 (time 1). User 2 posts tweet 6 (time 2). User 1 follows 2. Feed for user 1: push the newest tweet of each source, <code>(time 2, tweet 6)</code> and <code>(time 1, tweet 5)</code>. Pop the newest, tweet 6, then tweet 5. Feed <code>[6, 5]</code>.</p>
+<pre><code class="language-python">class Twitter:
+    def __init__(self):
+        self.time = 0
+        self.tweets = defaultdict(list)     # user -&gt; [(time, tweet_id)]
+        self.follows = defaultdict(set)
+
+    def post_tweet(self, user, tweet_id):
+        self.time += 1
+        self.tweets[user].append((self.time, tweet_id))
+
+    def get_news_feed(self, user):
+        h = []
+        for u in self.follows[user] | {user}:
+            if self.tweets[u]:
+                i = len(self.tweets[u]) - 1
+                t, tid = self.tweets[u][i]
+                heapq.heappush(h, (-t, tid, u, i))
+        feed = []
+        while h and len(feed) &lt; 10:
+            _, tid, u, i = heapq.heappop(h)
+            feed.append(tid)
+            if i &gt; 0:
+                t, nid = self.tweets[u][i - 1]
+                heapq.heappush(h, (-t, nid, u, i - 1))
+        return feed
+
+    def follow(self, a, b):
+        if a != b:
+            self.follows[a].add(b)
+
+    def unfollow(self, a, b):
+        self.follows[a].discard(b)
+</code></pre>
+<p><strong>Complexity:</strong> <code>get_news_feed</code> is O(F + 10 log F) for F followees. Posting and following are O(1).</p>
+<p><strong>Say it in 60 seconds:</strong> "Each user has a time-ordered list of tweets. To build a feed, I put the newest tweet from the user and every followee into a max-heap by time, then pop up to 10 times, each time pushing the next-older tweet from the same author. That's a k-way merge that stops after 10. In system design terms this is fan-out on read. For celebrity accounts with millions of followers, real systems mix this with fan-out on write, pushing tweets into followers' precomputed feeds."</p>
 <hr>
 <h2 id="heap-facts-to-say-out-loud">Heap facts to say out loud</h2>
 <ul>
-<li><code>heapify</code> is O(n), not O(n log n).</li>
+<li><code>heapify</code> is O(n), not O(n log n). Most nodes are near the bottom and only move a little, so the total work sums to linear.</li>
 <li>Python has only a min-heap. Negate for max, or push <code>(-priority, ...)</code>.</li>
 <li>There's no decrease-key in heapq. Push a new entry and skip stale ones on pop (lazy deletion). Dijkstra does exactly this.</li>
+<li><code>heapreplace(h, x)</code> pops then pushes in one O(log n) step. <code>heappushpop(h, x)</code> pushes then pops, which is faster when <code>x</code> would be popped immediately.</li>
 </ul></main>
 </div>
 

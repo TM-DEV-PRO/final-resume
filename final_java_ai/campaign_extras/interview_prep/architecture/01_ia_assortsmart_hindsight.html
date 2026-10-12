@@ -40,110 +40,509 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/architecture/01_ia_assortsmart_hindsight.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-impact-analytics-assortsmart-platform-ai">Architecture — Impact Analytics AssortSmart (Platform &amp; AI)</a>
-<a class="lvl2" href="#1-where-each-tech-is-used-pdf">1. Where each tech is used (PDF)</a>
-<a class="lvl2" href="#2-ascii-pdf-honest">2. ASCII (PDF-honest)</a>
-<a class="lvl2" href="#3-stores">3. Stores</a>
-<a class="lvl2" href="#4-hindsight-cluster-copilot">4. Hindsight / Cluster Copilot</a>
-<a class="lvl2" href="#5-observability-datadog-json-packet-ia-honest">5. Observability (Datadog JSON — packet, IA-honest)</a></nav>
-<main><h1 id="architecture-impact-analytics-assortsmart-platform-ai">Architecture — Impact Analytics AssortSmart (Platform &amp; AI)</h1>
-<p><strong>PDF (Sep 2026):</strong> two subsections — Core Infrastructure &amp; Pipeline, Agentic Flows &amp; Orchestration.
-<strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight (keep FRD notes below labeled as such).
-Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
-<h2 id="1-where-each-tech-is-used-pdf">1. Where each tech is used (PDF)</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-impact-analytics-assortsmart-platform-and-ai">Architecture: Impact Analytics AssortSmart (Platform and AI)</a>
+<a class="lvl2" href="#1-the-one-paragraph-version">1. The one-paragraph version</a>
+<a class="lvl2" href="#2-words-you-need">2. Words you need</a>
+<a class="lvl2" href="#3-the-architecture-diagram">3. The architecture diagram</a>
+<a class="lvl2" href="#4-box-by-box-walkthrough">4. Box-by-box walkthrough</a>
+<a class="lvl2" href="#5-one-request-step-by-step-a-planner-opens-a-pivot">5. One request, step by step: a planner opens a pivot</a>
+<a class="lvl2" href="#6-one-job-step-by-step-a-keepdrop-batch">6. One job, step by step: a Keep/Drop batch</a>
+<a class="lvl2" href="#7-design-decisions">7. Design decisions</a>
+<a class="lvl2" href="#8-the-numbers-on-this-diagram">8. The numbers on this diagram</a>
+<a class="lvl2" href="#9-failure-modes-and-what-the-system-does">9. Failure modes and what the system does</a>
+<a class="lvl2" href="#10-observability-what-a-log-line-looks-like">10. Observability: what a log line looks like</a>
+<a class="lvl2" href="#11-hindsight-verbal-only-depth-not-on-the-resume">11. Hindsight (verbal-only depth, not on the resume)</a>
+<a class="lvl2" href="#12-say-this-not-that">12. Say this, not that</a>
+<a class="lvl2" href="#13-how-to-draw-it-in-3-minutes">13. How to draw it in 3 minutes</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="architecture-impact-analytics-assortsmart-platform-and-ai">Architecture: Impact Analytics AssortSmart (Platform and AI)</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> the full AssortSmart architecture as it appears on the resume. That means the Go/Gin platform, ClickHouse and its rollups, the Python agent plane (Keep/Drop and Ask Iris) and the ClickHouse copier. A separate section at the end covers Hindsight, which is verbal-only.</li>
+<li><b>When to read it:</b> before any system design round, and before any "walk me through your current project" question.</li>
+<li><b>What to memorise:</b> the main diagram (eight boxes), the planner pivot request and the Keep/Drop batch job step by step, and the split between query-time numbers (15.5×) and load-time numbers (170GB OOM).</li>
+</ul>
+</div>
+<div class="callout warn">
+<p><b>Read this first.</b></p>
+<ul>
+<li><b>Hindsight and the Cluster Recommendation Copilot are verbal-only depth.</b> They are not resume bullets. Bring them up only if the interviewer asks what else you are working on, and say "this is in progress, it is not on my resume".</li>
+<li><b>Impact Analytics has no Kafka, no Flink, no CDC, no Kubernetes operations, no Milvus and no human review queue (HITL).</b> Kafka and Flink are Uber Menu. Milvus is Uber Menu. The CDC pipeline (pg2ch) was built by a colleague, Ashvin Sharma. Do not claim it.</li>
+<li><b>The platform APIs are Go with the Gin framework.</b> The agent plane is Python (FastAPI and LangGraph).</li>
+<li><b>LangSmith is on Ask Iris only.</b> The Keep/Drop batch uses custom JSON telemetry, not LangSmith.</li>
+</ul>
+</div>
+<p><strong>Tags on this page.</strong> MEASURED means there is a log, a doc or code. ESTIMATED means arithmetic I can show. TARGET means a design goal (say "targeting"). HISTORICAL means from past work records.</p>
+<hr>
+<h2 id="1-the-one-paragraph-version">1. The one-paragraph version</h2>
+<p>AssortSmart is a retail merchandise planning product sold as SaaS (software as a service, meaning many retailers share one hosted product). Merchandise planners at a retailer use it to decide, season by season, which products to keep, which to drop and which to add. Planners look at large pivot tables of sales and inventory, and they also get AI recommendations. I work on two halves. The <strong>core platform</strong> is a multi-tenant Go/Gin API in front of ClickHouse (a fast analytics database) and PostgreSQL. The <strong>agent plane</strong> is Python: batch AI pipelines that score every article-season as Keep or Drop, and a chat copilot called Ask Iris that lets planners ask questions about KPIs and AI decisions.</p>
+<hr>
+<h2 id="2-words-you-need">2. Words you need</h2>
+<p>Read these once. Each one is used later on the page.</p>
+<ul>
+<li><strong>Article-season.</strong> One product (an "article") in one selling season. "Blue linen shirt, Summer 2026" is one article-season. The resume scores <strong>348k</strong> of them.</li>
+<li><strong>Assortment planning.</strong> Choosing the range of products a retailer will carry. Think of a shop owner deciding which items stay on the shelf next season.</li>
+<li><strong>Pivot.</strong> A summary table where the planner picks rows (for example product category) and columns (for example store region) and the system sums sales for each cell. Like an Excel pivot table, but over hundreds of millions of rows.</li>
+<li><strong>Multi-tenant.</strong> Many customers (tenants) share the same running system, and each must only ever see its own data. Like flats in one building: shared walls and plumbing, separate locked doors.</li>
+<li><strong>ClickHouse.</strong> A columnar analytics database. "Columnar" means it stores each column separately, so a query that sums one column reads only that column. Think of a library where every book's page 12 is shelved together: if you only need page 12, you grab one shelf.</li>
+<li><strong>MergeTree.</strong> The main ClickHouse table type. Data lands in small sorted chunks called "parts", and ClickHouse merges them in the background, like sorting new mail into an already sorted pile later in the day.</li>
+<li><strong>ReplacingMergeTree (RMT).</strong> A MergeTree variant that keeps only the newest version of rows that share the same key. Think of a notebook where you never erase. You write the new value below the old one, and a cleaner later crosses out the old lines. Until the cleaner comes, readers must pick the newest line themselves.</li>
+<li><strong>Partition.</strong> A slice of a table, here one season (<code>PARTITION BY season_code</code>). You can drop or rebuild one partition without touching the others, like replacing one drawer in a filing cabinet.</li>
+<li><strong>Rollup or pre-aggregation.</strong> A table of sums computed ahead of time. Instead of adding up every daily sale when a planner opens a chart, you add them once at load time and store the totals. Like keeping a running monthly total instead of re-adding every receipt.</li>
+<li><strong>OOM (out of memory).</strong> The process needed more RAM than allowed, so the database killed the query.</li>
+<li><strong>Go and Gin.</strong> Go is a compiled, fast language with cheap concurrency. Gin is a lightweight HTTP framework for Go, the layer that maps URLs to handler functions.</li>
+<li><strong>Google Wire (compile-time dependency injection).</strong> Dependency injection means a component receives the things it needs (database client, cache, logger) instead of creating them itself. Wire generates that wiring code at build time, so a missing dependency is a compile error, not a crash at startup. Like a checklist the build system ticks before the plane is allowed to take off.</li>
+<li><strong>Reverse proxy.</strong> A server such as nginx that sits in front of your app and handles timeouts, body limits and HTTP/2. "No reverse proxy" means the Go process does those jobs itself.</li>
+<li><strong>h2c (HTTP/2 cleartext).</strong> HTTP/2 without TLS at the process. It is normally used when TLS is terminated in front of the process (for example by a cloud load balancer), so the app can speak HTTP/2 directly without nginx in between.</li>
+<li><strong>Nested timeouts.</strong> A total deadline for the request, with smaller deadlines inside it for each downstream call (auth, Postgres, ClickHouse). Like a 30-minute meeting where each agenda item also has its own 5-minute limit.</li>
+<li><strong>Distributed tracing (Datadog).</strong> Every request gets a trace ID, and each step records a timed "span" under it, so you can see where time went across services.</li>
+<li><strong>JWT (JSON Web Token).</strong> A signed token that says who the user is. The server checks the signature instead of looking the user up every time, like checking the hologram on an ID card.</li>
+<li><strong>OIDC (OpenID Connect).</strong> A standard login protocol on top of OAuth, used here for Google sign-in.</li>
+<li><strong>Firebase Admin.</strong> Google's server-side SDK that verifies Firebase login tokens.</li>
+<li><strong>Constant-time comparison.</strong> Comparing two secrets in a way that always takes the same time, so an attacker cannot guess an API key one character at a time by measuring response times.</li>
+<li><strong>UAM (User Access Management).</strong> The rules for which part of the product hierarchy (for example which departments or regions) each user may see.</li>
+<li><strong>LLM (large language model).</strong> The AI model (for example a GPT model) that reads text and returns text or structured JSON.</li>
+<li><strong>Structured invoke.</strong> Calling an LLM and forcing the answer into a fixed JSON schema, so code can parse it reliably.</li>
+<li><strong>Lens.</strong> One analytical question the LLM answers about an article, such as "is weekly demand accelerating or dying?". There are <strong>7</strong> active lenses.</li>
+<li><strong>LangGraph.</strong> A Python library for building AI workflows as a graph of steps (nodes) with explicit state and edges. Like a flowchart that the code actually executes.</li>
+<li><strong>Supervisor.</strong> A LangGraph node that decides which step runs next.</li>
+<li><strong>Evaluator loop.</strong> A step that checks a draft answer and sends it back for another try if it fails, here capped at <strong>3 attempts</strong>.</li>
+<li><strong>LangSmith.</strong> A tracing and evaluation tool for LLM apps. It records each prompt, tool call, token count and cost.</li>
+<li><strong>WebSocket.</strong> A long-lived two-way connection between browser and server, used for chat. The "handshake" is the first request that opens it.</li>
+<li><strong>Circuit breaker.</strong> A switch that stops calling a failing dependency after too many failures, like a fuse that trips so the whole house does not burn.</li>
+<li><strong>Checkpoint.</strong> A saved progress file so a crashed job can resume where it stopped instead of starting over.</li>
+<li><strong>config_hash.</strong> A SHA-256 fingerprint of the exact guardrails, parameters, prompts and catalog used for a run. Stamped on every output row, so you can always tell which configuration produced a decision.</li>
+<li><strong>CI gate.</strong> An automated check in the build pipeline (CI, continuous integration) that blocks a change from being promoted if it fails.</li>
+</ul>
+<hr>
+<h2 id="3-the-architecture-diagram">3. The architecture diagram</h2>
+<div class="mermaid">flowchart LR
+  UI["Planner UI"]
+  EDGE["Go/Gin HTTP edge"]
+  AUTH["Auth waterfall: Redis, Firebase, JWT, OIDC"]
+  PG["PostgreSQL: tenants, roles, UAM"]
+  KPI["KPI formula parser"]
+  CH["ClickHouse: 2.11B-row master and six rollups"]
+  DD["Datadog traces"]
+  REG["Python orchestration registry"]
+  KD["Keep/Drop, Missed Opportunities, Top Style"]
+  LLM["LLM provider"]
+  IRIS["Ask Iris: LangGraph supervisor and evaluator"]
+  LS["LangSmith"]
+  PUMP["Go native-TLS data pump"]
+  CH2["Target ClickHouse Cloud cluster"]
+
+  UI --&gt;|"REST"| EDGE
+  UI --&gt;|"WebSocket with JWT"| IRIS
+  EDGE --&gt; AUTH
+  AUTH --&gt; PG
+  EDGE --&gt; KPI
+  KPI --&gt; CH
+  EDGE --&gt;|"scoped pivot queries"| CH
+  EDGE -.-&gt; DD
+  REG --&gt; KD
+  CH --&gt;|"fixed SELECTs packed as JSON"| KD
+  KD --&gt;|"structured invokes, no SQL tool"| LLM
+  KD --&gt;|"versioned rows, ReplacingMergeTree"| CH
+  IRIS --&gt;|"reads scoped by plan_scope"| CH
+  IRIS -.-&gt; LS
+  CH --&gt; PUMP
+  PUMP --&gt; CH2
+</div>
+<p><em>What to notice: the LLM never touches the database. Python code reads ClickHouse with fixed queries and hands the LLM JSON. The platform half (left) and the agent half (right) meet only at ClickHouse.</em></p>
+<hr>
+<h2 id="4-box-by-box-walkthrough">4. Box-by-box walkthrough</h2>
+<h3 id="planner-ui">Planner UI</h3>
+<p>The browser app planners use. It calls the Go/Gin API for grids, pivots and KPI tiles, and opens a WebSocket for Ask Iris chat.</p>
+<h3 id="gogin-http-edge">Go/Gin HTTP edge</h3>
+<p>This is the front door for every platform request, scaling to <strong>10k peak RPS</strong> (requests per second).
+- <strong>What it does:</strong> routes requests, authenticates them, applies the tenant and hierarchy scope, builds ClickHouse or Postgres queries, and returns JSON.
+- <strong>Why Go/Gin:</strong> Go handles many concurrent requests cheaply with goroutines (very light threads), and compiles to one binary. Gin is a thin, fast router.
+- <strong>Why Google Wire:</strong> all dependencies (DB pools, Redis client, logger, tracer) are wired at compile time. A missing or mis-typed dependency fails the build instead of failing at 2 a.m.
+- <strong>Why no reverse proxy:</strong> the Go process itself enforces timeouts, request body limits and graceful shutdown, and speaks h2c. One fewer hop and one fewer component to configure. The trade-off is that you must implement those protections yourself, carefully.
+- <strong>Nested timeouts:</strong> a request deadline wraps smaller deadlines on auth, Postgres and ClickHouse calls. A slow ClickHouse query cannot hold a connection forever.
+- <strong>Datadog tracing:</strong> every request carries a trace ID, so a slow pivot shows which span (auth, parse, ClickHouse) took the time.</p>
+<h3 id="auth-waterfall-redis-firebase-admin-jwt-google-oidc-api-keys">Auth waterfall (Redis, Firebase Admin, JWT, Google OIDC, API keys)</h3>
+<p>Different clients log in different ways, so authentication tries a sequence of verifiers.
+1. Check Redis for a cached verdict on this token. Redis is an in-memory key-value store, so this is fast and saves repeated cryptographic checks.
+2. On a miss, try Firebase Admin token verification.
+3. If that does not apply, verify as a JWT or Google OIDC token.
+4. Machine clients use API keys, compared in constant time (in Go, <code>subtle.ConstantTimeCompare</code>).
+5. Resolve the user's role from PostgreSQL, then compute the UAM hierarchy scope.</p>
+<p>Isolation here means "each tenant only reads its own rows and each user only reads their allowed hierarchy". It is not encryption. Do not call it encryption.</p>
+<h3 id="postgresql">PostgreSQL</h3>
+<p>A normal relational database (row store) for thin, transactional data: tenants, users, roles, UAM rules and metadata. It is not used for the heavy planner grids.
+Background (verbal): planner pivots used to run on PostgreSQL and were slow. We ran proofs of concept comparing Postgres and ClickHouse, ClickHouse won the large analytical reads, and Postgres kept metadata, UAM and roles.</p>
+<h3 id="kpi-formula-parser">KPI formula parser</h3>
+<p>Operators (business users who configure the product) write KPI formulas like <code>units_sold / (units_sold + eop_units) * 100</code>. The parser turns them into safe ClickHouse SQL without a code release.
+- A Go tokenizer splits the formula into tokens (names, numbers, operators, parentheses).
+- A parser builds a tree and checks every function against an allowlist.
+- Logical names (<code>units_sold</code>) map to physical columns.
+- Division is wrapped as <code>ifNotFinite(toFloat64(expr), 0)</code>, so divide-by-zero returns 0 instead of infinity or NaN (not a number).
+- Unknown tokens fail closed, meaning the formula is rejected rather than guessed.</p>
+<p>Tiny example (teaching sketch):</p>
+<pre><code class="language-text">Formula typed by operator:   sell_through = units_sold / (units_sold + eop_units) * 100
+Tokens:                      IDENT(units_sold) / ( IDENT(units_sold) + IDENT(eop_units) ) * NUM(100)
+Generated SQL fragment:      ifNotFinite(toFloat64(sum(qty) / (sum(qty) + sum(eop_units)) * 100), 0)
+Values such as season come in as bound parameters, never pasted into the SQL string.
+</code></pre>
+<h3 id="clickhouse">ClickHouse</h3>
+<p>The analytics store. Two kinds of data matter here.
+- <strong>The master fact table, 2.11B rows.</strong> This is the big table the agent plane reads context from.
+- <strong>Six rollup tables.</strong> Product, store and attribute rollups, each at season grain and weekly grain, all <code>PARTITION BY season_code</code>. Planner pivots read these instead of raw daily data.</p>
 <table>
 <thead>
 <tr>
-<th>Tech</th>
-<th>Where</th>
-<th>Why</th>
+<th>Grain</th>
+<th>Product</th>
+<th>Store</th>
+<th>Attribute</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Go / Gin + Wire</strong></td>
-<td>Multi-tenant HTTP edge, 10k peak RPS</td>
-<td>Compile-time DI, h2c, nested timeouts</td>
+<td>Season</td>
+<td>product_season</td>
+<td>store_season</td>
+<td>attr_season</td>
 </tr>
 <tr>
-<td><strong>Datadog</strong></td>
-<td>Distributed tracing on the edge</td>
-<td>Debug 10k RPS without a reverse proxy</td>
-</tr>
-<tr>
-<td><strong>ClickHouse</strong></td>
-<td>250M pivots, 1.6M article-seasons, 2.4B rollups, 2.11B fact</td>
-<td>Columnar planner analytics</td>
-</tr>
-<tr>
-<td><strong>ifNotFinite parser</strong></td>
-<td>KPI configurator</td>
-<td>Safe operator SQL without deploys</td>
-</tr>
-<tr>
-<td><strong>Firebase / JWT / OIDC + Redis + Postgres</strong></td>
-<td>Auth waterfall + roles</td>
-<td>Tenant + UAM boundaries</td>
-</tr>
-<tr>
-<td><strong>golangci-lint / SAST/SBOM / 1200+ tests</strong></td>
-<td>Bitbucket CI</td>
-<td>Zero-regression gate</td>
-</tr>
-<tr>
-<td><strong>Python, FastAPI, LangGraph / LangGraph</strong></td>
-<td>Keep/Drop lenses + Ask Iris Supervisor+Evaluator</td>
-<td>Stateful agent graphs, not chatbots</td>
-</tr>
-<tr>
-<td><strong>LangSmith + JSON telemetry</strong></td>
-<td>Token cost, step duration, fallbacks</td>
-<td>Eval + cost control</td>
-</tr>
-<tr>
-<td><strong>ReplacingMergeTree</strong></td>
-<td>Two-phase inserts after air-gapped LLM</td>
-<td>Idempotent fact writes</td>
+<td>Weekly</td>
+<td>product_weekly</td>
+<td>store_weekly</td>
+<td>attr_weekly</td>
 </tr>
 </tbody>
 </table>
-<p>Kafka / Flink / Spark / K8s-ops are <strong>not</strong> IA PDF claims (Menu owns Kafka+Flink).</p>
-<h2 id="2-ascii-pdf-honest">2. ASCII (PDF-honest)</h2>
-<pre><code>[ Planner UI / Ask Iris WebSocket ]
-              │
-[ Go/Gin edge — Wire, h2c, 10k peak RPS, Datadog ]
-              │
-     ┌────────┼─────────────┬──────────────────┐
-     ▼        ▼             ▼                  ▼
-  Redis    Postgres     ClickHouse        Python agents
-  auth     roles/UAM    2.11B fact        Keep/Drop + Missed Opp + Top Style
-  cache                 2.4B rollups      7 lenses, 88k/pass &lt;$100
-                        RMT two-phase     air-gap LLM (JSON) vs DB
-                        ifNotFinite KPI   breakers / checkpoints
-                                          Ask Iris Supervisor+Evaluator
-                                          frozen socket scopes
-                                          300-case / 80% gate vs 74% baseline
+<p>The attribute tables are "unpivoted" (one row per attribute and value pair), which is why attr weekly is the largest object.</p>
+<h3 id="python-orchestration-registry">Python orchestration registry</h3>
+<p>One shared runner for the three AI pipelines (Keep/Drop, Missed Opportunities, Top Style). It gives every pipeline the same safety kit:
+- <strong>Hard timeouts</strong> on every LLM call. In the current Keep/Drop config the timeout scales with batch size: <code>min(600, 60 + 8 × articles)</code> seconds, so a 64-article batch gets 572 seconds (verbal depth from the pipeline docs).
+- <strong>Circuit breakers</strong> that stop a step after about 5 consecutive failures, or when the failure fraction passes a limit (0.25 in the current config).
+- <strong>Durable checkpoints</strong> (<code>det.json</code>, <code>agent_progress.json</code>) and a <code>--resume</code> flag. A resumed run reloads the saved deterministic scores and skips articles the LLM already finished.
+- <strong>config_hash</strong> stamped on every output row.
+- <strong>Custom JSON telemetry</strong>: tokens, USD cost, step duration and batch fallbacks.</p>
+<p>Why not Airflow or Temporal? Those are workflow orchestrators. We needed resume logic tied directly to ClickHouse inserts and to the config hash, inside the app. Adding a whole orchestration platform was not justified for one team's batch jobs.</p>
+<h3 id="keepdrop-missed-opportunities-top-style-pipelines">Keep/Drop, Missed Opportunities, Top Style pipelines</h3>
+<p>Three batch pipelines that evaluate <strong>348k article-seasons</strong>, processing <strong>88k items per pass</strong>. Keep/Drop is the one to explain in depth.
+- <strong>No LLM orchestrator.</strong> The batch order is fixed in code: peer context, then the decider, then the lenses, then the blend, then the explanation.
+- <strong>Deterministic score (s_det):</strong> pure math from sell-through and rate of sale.
+- <strong>Agent score (s_agent):</strong> the 7 lenses, each an LLM call that scores the article from 0 to 1, combined by a "decider" into weighted mixes.
+- <strong>Blend:</strong> <code>s_final = 0.4 × s_det + 0.6 × s_agent</code>. Keep if <code>s_final ≥ 0.55</code>.</p>
+<p>The 7 active lenses are trend velocity, size curve, colour cannibalization, channel divergence, multi-season consistency, discount dependency and margin resilience. A cheap gate runs first, so a lens only runs if the article has the data for it. A one-colour item skips the colour cannibalization lens, for example.</p>
+<p>Missed Opportunities and Top Style reuse the same registry and scoring infrastructure. If asked for their internals, keep it qualitative.</p>
+<h3 id="llm-provider">LLM provider</h3>
+<p>The hosted model. It only ever receives JSON context and returns JSON in a fixed schema. It has <strong>no SQL tool</strong>. "Async" on the resume describes how batches run in parallel, not the LLM querying anything.</p>
+<h3 id="ask-iris-langgraph-supervisor-plus-evaluator">Ask Iris (LangGraph supervisor plus evaluator)</h3>
+<p>A shipped chat copilot for planners to query KPIs and inspect AI decisions.
+- <strong>JWT-secured WebSocket.</strong> The JWT is checked at the handshake.
+- <strong>Hierarchy scope frozen at the handshake.</strong> The user's <code>plan_scope</code> (which part of the hierarchy they may see) is computed once when the socket opens and attached to the session. Nothing the user types later can widen it. That is what prevents cross-tenant leaks.
+- <strong>Supervisor</strong> picks the next step. <strong>Evaluator</strong> checks the draft answer. If it fails, the graph retries, up to <strong>MAX_ATTEMPTS = 3</strong>, then stops instead of looping forever.
+- <strong>LangSmith</strong> records each run for observability.</p>
+<h3 id="go-native-tls-data-pump-and-target-cluster">Go native-TLS data pump and target cluster</h3>
+<p>A custom Go program that copied rollup tables between two ClickHouse Cloud clusters at about <strong>344k rows per second</strong>. Cluster-to-cluster copy was blocked by IP allowlists, so the pump connected to both clusters from an allowlisted machine over ClickHouse's native protocol with TLS (port 9440). Details are in the decisions and numbers sections below.</p>
+<hr>
+<h2 id="5-one-request-step-by-step-a-planner-opens-a-pivot">5. One request, step by step: a planner opens a pivot</h2>
+<p><strong>Example.</strong> A planner at tenant "retailer_a" opens a pivot of revenue by product category (L2) and store region for season 74, weekly grain.</p>
+<div class="mermaid">sequenceDiagram
+  participant UI as Planner UI
+  participant E as Go Gin edge
+  participant R as Redis
+  participant P as PostgreSQL
+  participant C as ClickHouse rollups
+  UI-&gt;&gt;E: GET pivot for season 74, rows L2, cols region
+  E-&gt;&gt;R: cached verdict for this token
+  R--&gt;&gt;E: miss
+  E-&gt;&gt;E: verify Firebase or JWT or OIDC token
+  E-&gt;&gt;P: load role and UAM hierarchy for user
+  P--&gt;&gt;E: role planner, allowed L1 Womenswear
+  E-&gt;&gt;E: build SQL on product_weekly with tenant and hierarchy filters
+  E-&gt;&gt;C: parameterized SELECT, partition season 74 only
+  C--&gt;&gt;E: aggregated cells
+  E--&gt;&gt;UI: JSON pivot
+</div>
+<ol>
+<li>The browser sends the request with a token.</li>
+<li>The edge starts a request deadline and a Datadog trace.</li>
+<li>Redis has no cached verdict, so the edge verifies the token through the waterfall and caches the result.</li>
+<li>Postgres says the user is a planner who may only see the Womenswear L1 branch.</li>
+<li>The edge builds a query on <code>product_weekly</code>. It adds <code>tenant = retailer_a</code>, <code>l1 = 'Womenswear'</code> and <code>season_code = 74</code> as bound parameters. Because the table is partitioned by season, ClickHouse only reads partition 74.</li>
+<li>ClickHouse sums a pre-aggregated table, not 250M raw rows, so the answer comes back in seconds rather than minutes.</li>
+<li>If ClickHouse is slow, the inner timeout fires, the client gets a clean error, and the trace shows exactly where the time went.</li>
+</ol>
+<p>Sample SQL shape (teaching sketch):</p>
+<pre><code class="language-sql">SELECT l2_name, region, sum(revenue) AS revenue
+FROM product_weekly
+WHERE season_code = {season:UInt16}
+  AND tenant_id = {tenant:String}
+  AND l1_name IN {allowed_l1:Array(String)}
+GROUP BY l2_name, region
 </code></pre>
-<p>Packet diagrams that show Kafka→Flink→CH on IA, or K8s as “owned ops,” are <strong>overclaim</strong>. Use them only as generic study sketches, never as “what I shipped on AssortSmart.”</p>
-<h2 id="3-stores">3. Stores</h2>
-<h3 id="clickhouse">ClickHouse</h3>
+<hr>
+<h2 id="6-one-job-step-by-step-a-keepdrop-batch">6. One job, step by step: a Keep/Drop batch</h2>
+<p><strong>Example.</strong> A batch of 64 articles from season 74. Follow one article, "A1".</p>
+<div class="mermaid">sequenceDiagram
+  participant REG as Registry
+  participant CH as ClickHouse
+  participant DET as Deterministic scorer
+  participant LLM as LLM lenses
+  participant OUT as Output rows
+  REG-&gt;&gt;CH: fixed SELECT of KPIs and features for 64 articles
+  CH--&gt;&gt;REG: rows
+  REG-&gt;&gt;DET: compute s_det per article
+  DET--&gt;&gt;REG: s_det for A1 is 0.737, saved to det.json
+  REG-&gt;&gt;LLM: JSON payload, peer then decider then gated lenses
+  LLM--&gt;&gt;REG: lens scores, mixed into s_agent 0.711
+  REG-&gt;&gt;REG: blend s_final and check 0.55 threshold
+  REG-&gt;&gt;OUT: row with outcome keep, config_hash, computed_at
+  REG-&gt;&gt;REG: update agent_progress.json and telemetry
+</div>
+<ol>
+<li><strong>Read context.</strong> Python code (not the LLM) runs a fixed query and builds one JSON row per article: units sold, revenue, sell-through, rate of sale, number of sizes, colours and channels, and a short weekly sales series.</li>
+<li><strong>Deterministic score.</strong> For A1, sell-through and rate of sale map onto 0-to-1 ramps and combine into <code>s_det = 0.737</code>. This is saved in the checkpoint so a resumed run never recomputes it.</li>
+<li><strong>Lens gate.</strong> In this illustrative example A1 has 3 colours, 5 sizes, 2 channels, history in 2 seasons, some discounting and 10 weeks on sale, so all 7 lenses are eligible. A single-colour, single-size sock sold for 2 weeks would only get the margin lens.</li>
+<li><strong>LLM calls.</strong> The peer step adds context about sibling colours. The decider proposes weighted mixes of lenses. Each lens returns a score, an outcome and reason codes in strict JSON. The mixes are averaged into <code>s_agent = 0.711</code>.</li>
+<li><strong>Blend.</strong> <code>s_final = 0.4 × 0.737 + 0.6 × 0.711 = 0.295 + 0.427 = 0.721</code>. Since 0.721 is at least 0.55, A1 is <strong>Keep</strong>.</li>
+<li><strong>Write.</strong> The output row carries the outcome, the scores, the explanation, the <code>config_hash</code> and a <code>computed_at</code> timestamp.</li>
+<li><strong>If the LLM times out</strong> for this batch, A1 still gets a usable decision from its deterministic baseline. When the agent score arrives later (for example on <code>--resume</code>), a newer row with the same key is written. ReplacingMergeTree keeps the newest version. That is the "eventually consistent write pattern" on the resume: the right answer settles in over time, and the system is never without an answer.</li>
+</ol>
+<p>Sample rows for A1 with the same key <code>(season_code, article)</code>:</p>
+<table>
+<thead>
+<tr>
+<th>season_code</th>
+<th>article</th>
+<th>computed_at</th>
+<th>s_final</th>
+<th>outcome</th>
+<th>source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>74</td>
+<td>A1</td>
+<td>10:00</td>
+<td>0.737 (baseline)</td>
+<td>keep</td>
+<td>deterministic fallback</td>
+</tr>
+<tr>
+<td>74</td>
+<td>A1</td>
+<td>10:07</td>
+<td>0.721</td>
+<td>keep</td>
+<td>blended</td>
+</tr>
+</tbody>
+</table>
+<p>Readers take the latest <code>computed_at</code> per key. Background merges later drop the 10:00 row.</p>
+<p>Write-path detail for deep follow-ups: in the current package version, scoring engines write staging files first, and a separate operator command publishes them into ClickHouse. No agent ever holds a write path.</p>
+<hr>
+<h2 id="7-design-decisions">7. Design decisions</h2>
+<h3 id="decision-1-gogin-edge-with-no-reverse-proxy">Decision 1: Go/Gin edge with no reverse proxy</h3>
 <ul>
-<li>Fact <strong>2.11B</strong> (PDF). Rollups <strong>2.4B</strong> weekly (PDF). Pivot POC <strong>250M / 189s→12s</strong> (MEASURED).</li>
-<li>Engine: <strong>ReplacingMergeTree</strong> two-phase; agent path air-gapped from SQL writes.</li>
-<li>Verbal depth: 63/8 insert-only DDL (<code>29_ia_ch_ddl_phase1_source.md</code>) — <strong>not</strong> a PDF bullet.</li>
+<li><strong>What:</strong> the Go process is the HTTP edge. It handles h2c, timeouts, body caps and tracing itself.</li>
+<li><strong>Why:</strong> fewer moving parts, one place to reason about timeouts, and tracing at the exact process that serves traffic.</li>
+<li><strong>Alternatives:</strong> nginx or Envoy in front. They are battle-tested, but they add a hop and a second place where timeouts are configured, which often drift apart.</li>
+<li><strong>Trade-off:</strong> you own every protection a proxy would give you for free. A missed body-size cap is your bug.</li>
+<li><strong>What I'd do differently:</strong> write the edge protections as a small shared middleware package with its own tests from day one, so new services cannot forget them.</li>
 </ul>
-<h3 id="postgresql">PostgreSQL</h3>
+<h3 id="decision-2-clickhouse-for-planner-reads-postgresql-for-metadata">Decision 2: ClickHouse for planner reads, PostgreSQL for metadata</h3>
 <ul>
-<li>Roles / tenant / workflow — not the heavy grid.</li>
+<li><strong>What:</strong> heavy pivots and AI context on ClickHouse. Roles, UAM and metadata on Postgres.</li>
+<li><strong>Why:</strong> pivots read a few columns across hundreds of millions of rows. Columnar storage reads only those columns and processes them in vectorised batches. Postgres reads whole rows.</li>
+<li><strong>Alternatives:</strong> Snowflake or BigQuery. Good warehouses, but interactive pivots need predictable latency and cost on a store we operate. Postgres alone was what we started with, and it was slow.</li>
+<li><strong>Trade-off:</strong> ClickHouse is weak at updating single rows, so writes become insert-new-version (ReplacingMergeTree) rather than UPDATE.</li>
+<li><strong>What I'd do differently:</strong> decide the versioning and dedup strategy for every output table at design time, not after duplicates show up.</li>
 </ul>
-<h3 id="milvus">Milvus</h3>
+<h3 id="decision-3-serve-ai-context-as-json-never-give-the-llm-a-sql-tool">Decision 3: serve AI context as JSON, never give the LLM a SQL tool</h3>
 <ul>
-<li><strong>Menu RAG</strong>, not IA PDF.</li>
+<li><strong>What:</strong> Python runs fixed queries and passes JSON to the LLM. The LLM cannot query the 2.11B-row master.</li>
+<li><strong>Why:</strong> an LLM writing SQL can hallucinate a query that scans billions of rows, leaks another tenant's data or writes garbage. Fixed queries are reviewed, scoped and cheap.</li>
+<li><strong>Alternatives:</strong> a read-only SQL tool with guardrails. Still risky for cost and scope, and harder to test.</li>
+<li><strong>Trade-off:</strong> the LLM only sees what we choose to send, so a lens that needs a new field needs a code change.</li>
+<li><strong>What I'd do differently:</strong> add a schema contract test per lens so a missing field fails CI rather than producing a weak score.</li>
 </ul>
-<h2 id="4-hindsight-cluster-copilot">4. Hindsight / Cluster Copilot</h2>
-<p><strong>Verbal only / not on PDF.</strong> Tenant catalogs without code deploy, carry-forward Keep/Shop/Drop, 14 tools / 3 gates — interview depth only. See <code>../projects/01b_hindsight_defense.md</code>.</p>
-<h2 id="5-observability-datadog-json-packet-ia-honest">5. Observability (Datadog JSON — packet, IA-honest)</h2>
-<p>Every Go/Python service should emit structured JSON Datadog can facet:</p>
+<h3 id="decision-4-blend-deterministic-math-with-llm-lenses-and-fall-back-to-the-baseline">Decision 4: blend deterministic math with LLM lenses, and fall back to the baseline</h3>
+<ul>
+<li><strong>What:</strong> <code>s_final = 0.4 × s_det + 0.6 × s_agent</code>, keep at 0.55 or above. On LLM timeout, use the deterministic baseline.</li>
+<li><strong>Why:</strong> rules are cheap, explainable and always available. Lenses catch nuance (colour cannibalization, discount dependency). The fallback keeps the product working when the provider is down.</li>
+<li><strong>Alternatives:</strong> LLM-only decisions (unavailable when the provider fails, hard to audit) or rules-only (too coarse).</li>
+<li><strong>Trade-off:</strong> two scoring systems to maintain and evaluate.</li>
+<li><strong>What I'd do differently:</strong> gate on drop recall (catching true drops) from the start, not only on accuracy. See the evals page for why.</li>
+</ul>
+<h3 id="decision-5-app-native-orchestration-registry-instead-of-airflow-or-temporal">Decision 5: app-native orchestration registry instead of Airflow or Temporal</h3>
+<ul>
+<li><strong>What:</strong> one Python registry gives every pipeline timeouts, breakers, checkpoints, config hashing and telemetry.</li>
+<li><strong>Why:</strong> resume had to be coupled to ClickHouse inserts and to <code>config_hash</code>. That is easier inside the app.</li>
+<li><strong>Alternatives:</strong> Airflow (task scheduler) or Temporal (durable workflow engine). Both are strong, but they are another platform to run, and they would not remove the need for app-level resume logic.</li>
+<li><strong>Trade-off:</strong> we own the retry and resume code.</li>
+<li><strong>What I'd do differently:</strong> if more teams start running agent batches, revisit Temporal.</li>
+</ul>
+<h3 id="decision-6-pre-aggregated-rollups-and-one-week-insert-slices">Decision 6: pre-aggregated rollups and one-week insert slices</h3>
+<ul>
+<li><strong>What:</strong> six rollup tables, and weekly rollups built one fiscal week per INSERT SELECT.</li>
+<li><strong>Why:</strong> pay the aggregation cost once at load time, read cheaply at query time. A whole season at weekly grain needed about 170GB of aggregation memory and crashed.</li>
+<li><strong>Alternatives:</strong> query raw daily data on every request (too slow), or ClickHouse projections (they do not help when queries use <code>FINAL</code> on ReplacingMergeTree).</li>
+<li><strong>Trade-off:</strong> more tables to build, validate and keep in sync.</li>
+<li><strong>What I'd do differently:</strong> run the incremental <code>REPLACE PARTITION</code> design (written, not executed) so rebuilds swap in cleanly for readers.</li>
+</ul>
+<h3 id="decision-7-a-custom-go-pump-to-copy-across-clusters">Decision 7: a custom Go pump to copy across clusters</h3>
+<ul>
+<li><strong>What:</strong> a Go program reading from one ClickHouse Cloud cluster and writing to another over native TLS.</li>
+<li><strong>Why:</strong> cross-cluster IP allowlists blocked cluster-to-cluster copy. An allowlisted machine could reach both.</li>
+<li><strong>Alternatives:</strong> <code>INSERT SELECT</code> across clusters (blocked), or exporting to object storage and importing (slower to set up for this one-off).</li>
+<li><strong>Trade-off:</strong> the copy depends on one machine and is not an atomic swap.</li>
+<li><strong>What I'd do differently:</strong> for production cutovers, get the allowlist changed or go through object storage, rather than copying through an operator machine.</li>
+</ul>
+<hr>
+<h2 id="8-the-numbers-on-this-diagram">8. The numbers on this diagram</h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10k peak RPS</td>
+<td>Peak request rate the Go/Gin edge serves</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>2.11B rows</td>
+<td>Size of the ClickHouse master fact table the agent plane reads from</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>348k article-seasons</td>
+<td>Article-seasons scored by the decision engine</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>88k items per pass</td>
+<td>Items processed in one batch run</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>7 lenses</td>
+<td>Active LLM lenses per article</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>15.5×, 189s to 12s on 250M rows</td>
+<td>Planner pivot query time before and after rollups</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>170GB</td>
+<td>Aggregation memory a whole-season weekly build needed before it crashed</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>~344k rows/s</td>
+<td>Combined copy rate of the Go pump</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>4.09B rows</td>
+<td>Largest source object copied (attr weekly, two seasons)</td>
+<td>MEASURED, copy in flight</td>
+</tr>
+<tr>
+<td>500k rows</td>
+<td>Batch size in the pump</td>
+<td>MEASURED</td>
+</tr>
+</tbody>
+</table>
+<p><strong>15.5× pivot speed-up.</strong> It measures how long one planner pivot query took on a 250M-row test harness: 189 seconds on the old path, about 12.3 seconds on the rollup tables. The PDF rounds 12.3 to 12. Arithmetic: 189 divided by 12.3 is about 15.4, and 189 divided by 12 is about 15.75. The reported harness ratio is about 15.5×. If someone checks the arithmetic, say the ratio comes from the measured harness timings, and the headline seconds are rounded. Say it as: "a planner pivot went from 189 seconds to 12 seconds, about fifteen and a half times faster." Do not say "sub-second".</p>
+<p><strong>170GB OOM.</strong> It measures memory, not speed. A whole-season weekly INSERT SELECT needed about 170GB of aggregation state. It failed even with 80GB and 200GB memory caps. The fix was one fiscal week per insert, with a 55GB memory cap, 16GB disk spill, 8 threads and 4 weeks in flight (verbal knobs). One product week peaked around 11GB, one attribute week over 40GB. Say it as: "the weekly build kept crashing out of memory, so I sliced it into one-week inserts with memory and spill caps." <strong>This is load time. The 15.5× is query time. One did not cause the other.</strong></p>
+<p><strong>~344k rows per second.</strong> It measures ingest rate during the copy, not requests per second. Two season streams ran in parallel at roughly 150k to 190k rows per second each, combined about 344k. Say it as "about 344 thousand rows per second", never "344k TPS".</p>
+<p><strong>4.09B rows.</strong> The attr weekly table for two seasons: 2,779,317,472 plus 1,311,108,195 rows. The copy was measured while running. Do not say the cutover finished.</p>
+<p><strong>$100 per pass (off PDF, true).</strong> Token spend for one pass. Arithmetic: $100 divided by 88,000 items is about $0.0011, roughly a tenth of a cent per item (ESTIMATED). With 64 articles per LLM batch, one pass is roughly 88,000 / 64 ≈ 1,375 batches (ESTIMATED).</p>
+<p><strong>1.6M article-seasons (off PDF).</strong> The full product-by-season catalog. It is a different number from the 348k that were scored. Do not mix them.</p>
+<hr>
+<h2 id="9-failure-modes-and-what-the-system-does">9. Failure modes and what the system does</h2>
+<table>
+<thead>
+<tr>
+<th>What breaks</th>
+<th>How you notice</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM provider slow or down</td>
+<td>Timeouts and fallback counts in JSON telemetry</td>
+<td>Hard timeout fires. Article keeps its deterministic baseline score. Circuit breaker stops the step after about 5 consecutive failures.</td>
+</tr>
+<tr>
+<td>Batch job crashes mid-run</td>
+<td>Run stops, checkpoint files remain</td>
+<td><code>--resume</code> reloads <code>det.json</code> and <code>agent_progress.json</code>, skips finished work, and does not re-run deterministic scoring.</td>
+</tr>
+<tr>
+<td>Prompt or config edited</td>
+<td>New <code>config_hash</code> on new rows</td>
+<td>Old and new decisions are distinguishable. A change must pass the 80% CI gate before promotion.</td>
+</tr>
+<tr>
+<td>Duplicate rows before merges</td>
+<td>Two rows for the same key</td>
+<td>Readers pick the latest <code>computed_at</code>. ReplacingMergeTree merges later.</td>
+</tr>
+<tr>
+<td>Slow ClickHouse query</td>
+<td>Datadog span shows ClickHouse time</td>
+<td>Inner timeout fires, request fails cleanly instead of hanging.</td>
+</tr>
+<tr>
+<td>Bad KPI formula from an operator</td>
+<td>Parser rejects unknown token</td>
+<td>Fails closed. No SQL is generated.</td>
+</tr>
+<tr>
+<td>Divide by zero in a KPI</td>
+<td>Would produce infinity or NaN</td>
+<td><code>ifNotFinite(toFloat64(expr), 0)</code> returns 0.</td>
+</tr>
+<tr>
+<td>Ask Iris answer keeps failing evaluation</td>
+<td>Attempt counter</td>
+<td>Stops after 3 attempts instead of looping.</td>
+</tr>
+<tr>
+<td>User tries to see another region in chat</td>
+<td>Query outside plan_scope</td>
+<td>Scope was frozen at handshake, so reads stay inside it.</td>
+</tr>
+<tr>
+<td>Weekly rollup build out of memory</td>
+<td><code>MEMORY_LIMIT_EXCEEDED</code></td>
+<td>One fiscal week per insert, memory and spill caps.</td>
+</tr>
+<tr>
+<td>Half-loaded weekly partition</td>
+<td>Missing entry in the TSV ledger</td>
+<td>DROP PARTITION for that season and rebuild.</td>
+</tr>
+<tr>
+<td>Copier killed mid-season</td>
+<td>No <code>.done</code> checkpoint for that table</td>
+<td>DROP PARTITION then recopy that season. Readers can see a partial season until then. This is not an atomic swap.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="10-observability-what-a-log-line-looks-like">10. Observability: what a log line looks like</h2>
+<p>Every Go and Python service emits structured JSON that Datadog can filter on.</p>
 <pre><code class="language-json">{
   &quot;timestamp&quot;: &quot;2026-09-03T03:40:39.123Z&quot;,
   &quot;level&quot;: &quot;ERROR&quot;,
@@ -156,7 +555,104 @@ Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
   &quot;metadata&quot;: { &quot;pipeline&quot;: &quot;keep_drop&quot;, &quot;batch_id&quot;: &quot;b_981273&quot; }
 }
 </code></pre>
-<p>Honesty: do not claim <code>dd.trace_id</code> log injection if the repo does not inject it — correlate via your explicit <code>trace_id</code> field + Datadog traces.\n</p></main>
+<p>Say this carefully: correlate logs with traces through the explicit <code>trace_id</code> field. Do not claim automatic Datadog trace-ID log injection unless you have checked the code does it.</p>
+<hr>
+<h2 id="11-hindsight-verbal-only-depth-not-on-the-resume">11. Hindsight (verbal-only depth, not on the resume)</h2>
+<div class="callout warn">
+<p><b>Hindsight is not a resume bullet.</b> It is a module I am building against a functional requirements document (FRD v1.2). Say "building", not "shipped". There is no dollar or latency number for Hindsight. Full defense: <a href="../projects/01b_hindsight_defense.html">../projects/01b_hindsight_defense.md</a>.</p>
+</div>
+<p><strong>Plain English.</strong> Hindsight is the first screen of the planning cycle. Before planners buy for next season, they look back at last season: what worked, what did not, which styles to carry forward. It has a scorecard (this year against last year), contribution charts, a store map, an item grid, an attribute heatmap, a carry-forward panel and short AI-written narration.</p>
+<div class="mermaid">flowchart LR
+  CAT["Tenant metric catalog, config not code"]
+  METRICS["Computed metrics from ClickHouse"]
+  VIS["Deterministic charts from config"]
+  NARR["Overnight narration batch"]
+  CHECK["Numbers check before save"]
+  TMPL["Template sentence fallback"]
+  UI["Hindsight screen, permission-scoped"]
+
+  CAT --&gt; METRICS
+  METRICS --&gt; VIS
+  METRICS --&gt; NARR
+  NARR --&gt; CHECK
+  CHECK --&gt;|"pass"| UI
+  CHECK --&gt;|"fail"| TMPL
+  TMPL --&gt; UI
+  VIS --&gt; UI
+</div>
+<p><em>What to notice: the AI writes sentences, but it never chooses charts and never calculates metrics. Every number in a sentence is checked against the computed value before it is saved.</em></p>
+<p>Key design points:
+- <strong>Overnight batch narration</strong>, not live, so filter changes do not trigger LLM cost or latency.
+- <strong>Grounding check:</strong> numbers in the narration are compared with computed metrics before save. If they do not match, a templated sentence is used instead.
+- <strong>Charts come from configuration only.</strong> The narration agent never picks layout.
+- <strong>One shared metric catalog per tenant</strong>, and onboarding config goes live without a code deploy.
+- <strong>Permission-scoped filters:</strong> "select all" never leaks outside the user's scope.
+- <strong>Item grid stays fast at 1,000+ items</strong> via pagination or virtualized scrolling.</p>
+<hr>
+<h2 id="12-say-this-not-that">12. Say this, not that</h2>
+<table>
+<thead>
+<tr>
+<th>Say this</th>
+<th>Not this</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"The LLM never gets a SQL tool. Python serves it JSON context."</td>
+<td>"The agents query ClickHouse."</td>
+</tr>
+<tr>
+<td>"80% is the CI promotion gate on a 300-case proxy set."</td>
+<td>"We are at 80% accuracy in production for all tenants."</td>
+</tr>
+<tr>
+<td>"15.5× is query time. The 170GB OOM fix is load time."</td>
+<td>"Fixing the OOM made pivots 15.5× faster."</td>
+</tr>
+<tr>
+<td>"About 344 thousand rows per second during the copy."</td>
+<td>"344k TPS" or "344k requests per second."</td>
+</tr>
+<tr>
+<td>"The 4.09B copy was measured in flight."</td>
+<td>"We finished the 4.09B cutover."</td>
+</tr>
+<tr>
+<td>"Partition rollback means DROP PARTITION then recopy that season."</td>
+<td>"Atomic swap with live readers."</td>
+</tr>
+<tr>
+<td>"Ask Iris is a shipped capability."</td>
+<td>Any usage number or SLA for Ask Iris.</td>
+</tr>
+<tr>
+<td>"Kafka and Flink were on Uber Menu."</td>
+<td>Kafka, Flink, CDC or Kubernetes operations on AssortSmart.</td>
+</tr>
+<tr>
+<td>"Isolation means tenant and hierarchy scoping."</td>
+<td>"Encryption."</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="13-how-to-draw-it-in-3-minutes">13. How to draw it in 3 minutes</h2>
+<p><strong>Minute 1: the platform spine.</strong> Draw the Planner UI on the left, the Go/Gin edge in the middle, and ClickHouse and Postgres on the right. Say: "Planners hit a multi-tenant Go/Gin edge at 10k peak RPS. Wire wires dependencies at compile time, and the process itself handles h2c, nested timeouts and Datadog tracing, with no reverse proxy. Auth is a Redis-fronted waterfall, roles come from Postgres, and every query is scoped by tenant and hierarchy." Add a small KPI parser box between the edge and ClickHouse: "Operator formulas compile to parameterized ClickHouse SQL, with divide-by-zero protection."</p>
+<p><strong>Minute 2: the data layer.</strong> Inside ClickHouse draw the 2.11B master and a 2×3 grid for the six rollups. Say: "Pivots read pre-aggregated rollups partitioned by season. That took a 250M-row pivot from 189 seconds to 12 seconds. Separately, weekly builds were crashing at around 170GB, so I sliced inserts by fiscal week with memory and spill caps." Draw the Go pump to a second cluster: "I copied rollups across Cloud clusters at about 344k rows a second with a native-TLS Go pump, because allowlists blocked cluster-to-cluster copy."</p>
+<p><strong>Minute 3: the agent plane.</strong> Draw the Python registry below ClickHouse with an arrow labelled "JSON" into an LLM box. Say: "The decision engine scores 348k article-seasons, 88k per pass, blending deterministic KPI math with 7 LLM lenses. The LLM only sees JSON, never SQL. Output rows go back as versioned rows in ReplacingMergeTree, and if the LLM times out we keep the deterministic baseline. Timeouts, breakers, checkpoints and a config hash on every row come from a shared registry." Finally draw Ask Iris on the WebSocket: "Planners chat through Ask Iris: JWT WebSocket, scope frozen at handshake, LangGraph supervisor with a 3-attempt evaluator, traced in LangSmith. Changes promote only through an 80% CI gate."</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li>Interview pack for this project: <a href="../projects/01_impact_analytics.html">../projects/01_impact_analytics.md</a></li>
+<li>Evals, guardrails and flow: <a href="../projects/01d_agentic_evals_guardrails_flow.html">../projects/01d_agentic_evals_guardrails_flow.md</a></li>
+<li>Hindsight defense (verbal only): <a href="../projects/01b_hindsight_defense.html">../projects/01b_hindsight_defense.md</a></li>
+<li>Agent read tools (verbal only): <a href="../projects/01c_agent_read_tools_defense.html">../projects/01c_agent_read_tools_defense.md</a></li>
+<li>ClickHouse deep dive: <a href="../tech_depth/clickhouse.html">../tech_depth/clickhouse.md</a></li>
+<li>Go/Gin deep dive: <a href="../tech_depth/go_gin.html">../tech_depth/go_gin.md</a></li>
+<li>Auth and tenancy: <a href="../tech_depth/auth_tenancy_rate_limits.html">../tech_depth/auth_tenancy_rate_limits.md</a></li>
+<li>Rollups and copier detail: <a href="../../../prep/42_clickhouse_rollup_migration.html">../../../prep/42_clickhouse_rollup_migration.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

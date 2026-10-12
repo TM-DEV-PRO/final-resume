@@ -1,883 +1,1380 @@
-> **PDF sync (Sep 2026):** Cluster Recommendation Copilot and Hindsight are **verbal only / not on PDF**.
-> Defend the live resume from `docs/ASSORTSMART_TAB_RESUME.md` (Platform + Agentic: 10k RPS, CH 189s to 12s / six tables / 170 GB OOM, Ask Iris shipped, 300-case / 80% promotion gate).
-> This file is interview **depth**, not a PDF bullet map.
+# Impact Analytics Deep Dive: AssortSmart, Bullet by Bullet
 
-# Impact Analytics Deep Dive: Bullet-by-Bullet Interview Defense
+<div class="callout highlight">
+<b>How to use this page</b>
+<ul>
+<li><b>What it covers:</b> every Impact Analytics (IA) bullet on the resume, five Agentic bullets (A1 to A5) and five Core bullets (C1 to C5), explained from plain English down to code, plus the older POC and design material that is verbal depth only.</li>
+<li><b>When to read it:</b> read sections 1 to 4 the night before any interview. Read the bullet you expect to be grilled on (sections 5 and 6) the morning of. Use section 13 (practice drill) as a self-test.</li>
+<li><b>What to memorise:</b> the one-minute version, the Keep/Drop formula (0.4 times deterministic plus 0.6 times agent, keep at 0.55 or above), and the "split these numbers" box below. Everything else you should be able to explain, not recite.</li>
+<li><b>Shorter packs:</b> <a href="../../../prep/23a_ia_interview_pack.md">IA interview pack</a> (30 seconds, 2 minutes, mock Q&amp;A) and <a href="../../../prep/43_ia_bullet_defense.md">IA bullet defense</a>. ClickHouse rollup and copier depth: <a href="../../../prep/42_clickhouse_rollup_migration.md">ClickHouse rollup migration</a>.</li>
+</ul>
+</div>
 
-> **Start here for interviews:** [`23a_ia_interview_pack.md`](../../../prep/23a_ia_interview_pack.md) — 30s/2min, architecture, design decisions, bullet defenses, 12 mock Q&As, Do NOT say. This file is deeper background + source extracts.
+**Role:** Senior Software Engineer, Impact Analytics, Bangalore, May 2026 to Present. Individual contributor (no people reports at IA).
+**Project on the resume:** AssortSmart, Senior Software Engineer (Platform & AI).
+**Tech line on the resume:** Go, Gin, Python, FastAPI, LangGraph, ClickHouse, BigQuery, Redis, PostgreSQL, Datadog, LangSmith, GCP, Docker.
 
-**Role:** Senior Software Engineer · Impact Analytics, Bangalore · 14 May 2026 – Present  
-**Project:** Agentic AssortSmart (FastAPI chat + Go doing layer) on **ClickHouse/GCS** (insert-only versioned planning store); POC evidence from Pivot / LinePlanning / consolidated CH-vs-PG report  
-**Sources of truth:** `GROUND_TRUTH.md`, resume IA bullets, Jul 2026 stack direction (`10_stack_direction_jul2026.md`), HLD `final_agenticassort.png`, POC source extracts `19`/`20`/`21`  
-**Honesty rule:** Every number below is tagged MEASURED / TARGET / ESTIMATED / design-only. Do not invent. **Resume direction = CH end-to-end for agentic planning data.** POC hybrid slides are decision history (legacy OLTP / why the write model had to change), not a contradiction if you tell the evolution story.
+**How the honesty tags work on this page.** Every number carries a tag so you know how hard you can push it.
 
----
+- **PDF** means it is printed on the resume. Defend it as written.
+- **MEASURED** means there is a log, a benchmark output, a config file or a design doc behind it.
+- **ESTIMATED** means arithmetic I can show on a whiteboard. Say "roughly, derived from...".
+- **TARGET** means a design goal that has not been proven. Say "targeting".
+- **VERBAL** means it is true but deliberately left off the resume. Use it only when asked.
 
-## 0. Role framing (30-second open)
-
-I joined Impact Analytics as a Senior Software Engineer on 14 May 2026. My charter sits at the intersection of two workstreams:
-
-1. **Agentic AssortSmart data plane:** ClickHouse/GCS as the end-to-end planning store — insert-only versioned writes (`ReplacingMergeTree` + `argMax`) so the doing layer is not stuck on classic OLTP mutations. BigQuery stays upstream historical truth (BQ→CH ingest). Thin Postgres metadata only if asked.
-2. **Agentic product:** Cluster Recommendation Copilot — FastAPI/LangGraph owns chat; Go (Gin) is the doing layer for Hindsight / Clustering / Strategy; Datadog + LangSmith + PostHog share an OTEL `trace_id`.
-
-I am an IC so far (no people lead at IA). CDC platform tooling (`pg2ch_cdc`) was authored by another engineer (Ashvin Sharma). Copilot: Phase 1 design approved (external review PASS); bring-up load test pending. Obs stack on the resume is **MEASURED design / instrumentation**, not sole SaaS ownership.
-
-**Source tension to own unprompted:** The Jul 2026 POC report verdict is still **hybrid per surface** for assortment benchmarks and **no wholesale CH** for legacy mtp-assort. The **agentic-assort** build follows the Jul 2026 stack directive + HLD: planning data on ClickHouse end-to-end because we changed the write model. Do not collapse “no CH for legacy UPDATE/JSONB” into “no CH for agentic AssortSmart.”
-
----
-
-## 1. End-to-end architecture (Order Batching CQRS + edit path)
-
-This is the picture I draw on a whiteboard when asked how Order Batching moves to ClickHouse without breaking saves, locks, or edit sessions.
-
-```
-                         WRITE PATH (always PostgreSQL)
-┌────────────┐   SPs / APIs    ┌─────────────────────────────────────────────┐
-│   Client   │ ──────────────► │  PostgreSQL (system of record for writes)   │
-└────────────┘                 │  CARFG, plan_master, plan_attributes,       │
-                               │  order_batching_access_data (locks)         │
-                               └──────────────────┬──────────────────────────┘
-                                                  │  CDC mirrors (hot facts)
-                                                  │  CARFG · plan_master ·
-                                                  │  dc_pack_reserve_quantity
-                                                  ▼
-                               ┌─────────────────────────────────────────────┐
-                               │  ClickHouse (analytical read plane)         │
-                               │  ReplacingMergeTree mirrors + daily-refresh │
-                               │  dims (product/store filters, DCs, etc.)    │
-                               └──────────────────┬──────────────────────────┘
-                                                  │
-                         READ PATH                ▼
-┌────────────┐   read SPs      ┌─────────────────────────────────────────────┐
-│   Client   │ ◄────────────── │  Backend routing layer                      │
-└────────────┘                 │  default → ClickHouse                       │
-                               │  if Redis key ob:ryw:{l0_name} set (TTL~30s) │
-                               │            → PostgreSQL (read-your-writes)  │
-                               └─────────────────────────────────────────────┘
-
-
-              EDIT SESSION (GCS parquet: no DB during in-memory edits)
-
-┌────────────┐  /update-mode-toggle   ┌────┐  upload   ┌──────────────────┐
-│   Client   │ ──────────────────────►│ PG │──────────►│ GCS parquet      │
-└────────────┘  (seed from CARFG)     └────┘           │ ob-edits-{uid}   │
-     │                                                  └────────┬─────────┘
-     │  /session/updates  (pandas in-memory edits)               │
-     │ ◄─────────────────────────────────────────────────────────┤
-     │  re-upload edited parquet                                 │
-     └──────────────────────────────────────────────────────────►│
-     │
-     │  /session/save  →  order_batching_session_save SP
-     │ ──────────────────────────────────────────────────────────► PG (CARFG)
-     │                                                              │
-     │                                                              ▼ CDC ► CH
-     │  Redis.set("ob:ryw:{l0_name}", ttl=30s)  ◄── after save/finalise
-```
-
-**Table sync strategy (MEASURED design: Order Batching migration arch):**
-
-| Table | Churn | Sync |
-|---|---|---|
-| `create_allocation_result_flat_gurobi` (CARFG) | High (every save/finalise) | CDC mirror |
-| `plan_master` | Moderate (status on finalise) | CDC mirror |
-| `dc_pack_reserve_quantity` | Moderate | CDC mirror |
-| `product_attributes_filter`, `store_attributes_filter` | Low | Daily full refresh |
-| `store_current_inventory` | Daily batch | Daily full refresh |
-| `distribution_centres`, `dc_pack_configuration` | Very low | Daily full refresh |
-| Lock tables (`order_batching_access_data`, GCS locks) | N/A | PG-only (no CDC) |
+<div class="callout warn">
+<b>Split these numbers. Never fuse them.</b>
+<ul>
+<li><b>348k article-seasons</b> is the scored Keep/Drop volume (PDF). <b>1.6M article-seasons</b> is the whole catalog (VERBAL). They are different numbers.</li>
+<li><b>300-case harness and 80% gate</b> are the CI promotion gate. <b>73% cheaper at 100% coverage</b> and <b>74% deterministic baseline</b> come from a separate 200-case benchmark. Do not say the 300-case file measured 73%.</li>
+<li><b>80%</b> is a gate a new config must pass. It is not "every tenant runs at 80% accuracy in production".</li>
+<li><b>15.5x (189 seconds to 12 seconds)</b> is query time for planner pivots. <b>170 GB OOM</b> is load time for weekly rollup builds. Fixing the OOM did not cause the 15.5x.</li>
+<li><b>~344k rows per second</b> is a data copy rate. It is not requests per second or transactions per second.</li>
+<li><b>4.09B rows</b> was measured while the copy was in flight. Do not say the cutover finished.</li>
+<li><b>"Atomic partition rollback"</b> means DROP PARTITION, then recopy that season. It is not an atomic swap that live readers never notice.</li>
+<li><b>$100 per pass</b> token spend is true but off the PDF.</li>
+</ul>
+</div>
 
 ---
 
-## 2. ClickHouse planning / agentic schema sketch
+## 1. The one-minute version (say this out loud)
 
-Two related but distinct models show up in interviews. Keep them separate.
+**30 seconds.**
+"At Impact Analytics I work on AssortSmart, a merchandise planning product that helps retailers decide which products to keep, drop or add each season. I own two areas. On the agentic side, I built a decision engine that scores 348k article-seasons for Keep/Drop, Missed Opportunities and Top Style, blending deterministic KPI math with structured LLM calls across seven analytical lenses, behind a 300-case evaluation harness and an 80% CI gate. I also shipped Ask Iris, a WebSocket copilot planners use to question KPIs and AI decisions. On the platform side, I built the multi-tenant Go/Gin edge that peaks at 10k requests per second, and a ClickHouse pre-aggregation layer that took a heavy planner pivot from 189 seconds to 12 seconds on a 250M-row benchmark."
 
-### 2a. Order Batching / inventory mirrors (migration plane)
-
-```
-PG OLTP                         CH OLAP mirrors
-─────────────────               ─────────────────────────────────
-CARFG (partitioned              CARFG_rmt  ENGINE = ReplacingMergeTree(_cdc_synced_at)
-  by created_at)     ─CDC──►      ORDER BY (allocation_code, store, article, …)
-                                  + _cdc_synced_at, _cdc_deleted
-
-plan_master          ─CDC──►    plan_master_rmt  (same pattern)
-dc_pack_reserve_*    ─CDC──►    dc_pack_reserve_*_rmt
-
-product_attributes_filter  ─daily─►  product_attributes_filter (full replace / swap)
-store_attributes_filter    ─daily─►  store_attributes_filter
-distribution_centres       ─daily─►  distribution_centres
-```
-
-Pattern for hot facts: **insert-only updates** into ReplacingMergeTree; version column (e.g. `_cdc_synced_at`) collapses duplicates on merge. Soft deletes via `_cdc_deleted`. Reads that need exact latest may use `FINAL` (costly) or partition-scoped queries + application-level version awareness.
-
-### 2b. Agentic Cluster ClickHouse model (copilot read plane)
-
-**Source of truth:** Confluence [DDL Model Phase-1](https://impactanalytics.atlassian.net/wiki/spaces/AgenticAss/pages/2816606240) v1.5 — full extract in [`../../../resume_v2/prep/29_ia_ch_ddl_phase1_source.md`](../../../prep/29_ia_ch_ddl_phase1_source.md).
-
-**Summary (MEASURED design):** **63 tables / 8 layers** (incl. **7** stage twins), **5** dictionaries, **19** argMax views, one database per tenant, `formatQuery`-validated on ClickHouse **25.12**. Doctrine: **never erase** on the hot path. **Zero runtime evidence** on this schema yet — load test at bring-up. **Do not recite 624 columns** (not on Phase-1 page).
-
-```
-LAYER MAP (Phase-1 names)
-
-1. L0 FACTS + LEDGER (P1 swap · P4 watermark)
-   fact_sales / fact_inventory_wk / fact_forecast_wk (+ stage twins)
-   ingest_watermark  ← reproducibility anchor for every run
-
-2. GROUNDING DIMS (P2 RMT + FINAL-sourced dictionaries)
-   dim_store / dim_hierarchy / dim_fiscal / dim_sister_store / dim_channel
-   season_registry · attribute_registry → 5 in-memory dicts
-
-3. L1 CUBES + CACHES (P1 swap · P2 caches)
-   cube_store_attr_week / cube_store_kpi_week (+ stages)
-   significance_cache · precomputed_candidates · feature_matrix_cache
-
-4. PG MIRRORS — transitional (EXCHANGE TABLES / P1 plan lines)
-   mirror_plan · membership · strategy_consumer · plan_line(+stage)
-
-5. DECISION PLANE (20 tables — P2/P3/P4)
-   cluster_config (content-addressed) · cluster_run · *_event streams
-   pin · approval_event · session · feedback · recommendation_log …
-   latest state = argMax views (event_seq first tiebreak), not overwrites
-
-6. OUTCOME LOOP (immutable snapshots + variance cube)
-   plan_snapshot + snapshot_*  minted at approval before the approval event
-
-7. WRITE-BACK — transitional → incumbent PG (retire on timeline)
-8. TELEMETRY — append-only, never expires (run_telemetry · probe_log)
-```
-
-**Four physical patterns (DDL labels):**
-
-1. **P1 partition-swapped MergeTree** — stage twin → `REPLACE PARTITION`; no mutations / no `FINAL` / no MVs on hot paths.
-2. **P2 RMT(version) + FINAL** — **only tiny** dims/registries/caches.
-3. **P3 append-only event streams** — status/intent/approval; claim-token winner check.
-4. **P4 ledgers / immutable snapshots / telemetry** — watermarks, approval quadruple, probe logs.
-
-**Privilege enforcement:** agent profile `readonly=1` (SELECT + `dictGet` only). Service roles are **INSERT-only** on owned tables — no `ALTER` below sync ⇒ “no UPDATE path” is a grant, not a convention. LLM never writes SQL ad-hoc; it calls **14 audited tools**. Human gates: grounding → search plan → approval → write-back.
-
-**Feed honesty:** land nonzero slim extract (~**10⁸** rows/tenant), not the raw **46.9B**/43 TB BQ spine. At runtime agent probes do not hit BigQuery.
+**60 seconds (add this).**
+"Two design rules run through all of it. First, the LLM never touches the database. Deterministic code reads ClickHouse, packs the context for each article into JSON, and the model only returns structured scores. If the model times out, we fall back to the deterministic score, so an 88k-item run never stalls. Second, nothing ships on vibes. Every output row carries a frozen config hash, and a new model or prompt has to clear the 80% gate. In one benchmark the blended LLM scored below the free deterministic rule, so we froze the blend weights instead of tuning them on a tiny set. On the data side, the hard problems were memory and movement. Weekly rollups hit about 170 GB of aggregation state and crashed, so I sliced the build to one fiscal week per insert with memory and spill caps. And when cluster-to-cluster copy was blocked by IP allowlists, I wrote a Go data pump on ClickHouse's native TLS protocol that moved rollups at about 344k rows per second."
 
 ---
 
-## 3. Clustering copilot user flow (what I walk through)
+## 2. The business in plain English
 
-Aligned to AssortSmart HLR v1.1 (behavioral + constraints) and Copilot Phase-1 FRD.
+**Who the users are.** The users are **merchandise planners** at retail chains (fashion and general merchandise, for example the tenants called kik and Briscoes in our data). A planner owns a slice of the product range, such as "women's tops" or "kids' footwear", and is accountable for what the stores carry next season.
 
-```
-1. SCOPE SUBMIT
-   Planner states intent: hierarchy + reference period
-   (wizard pickers OR one chat prompt)
-        │
-        ▼
-2. GROUNDING CARD  (human gate 1: confirm understanding)
-   Agent resolves hierarchy paths, season dates, store cohort
-   (active + sister-store substitutions, sample-size guards)
-   Proposes attribute/feature set from significance ranking
-        │
-        ▼
-3. FEATURE + k SELECTION  (deterministic plane)
-   Autonomous feature weights from significance / coverage / redundancy
-   Optimal k via elbow method + silhouette scoring
-   Client min/max k and child-cluster cap (default 10) act as guardrails
-        │
-        ▼
-4. SCENARIO GENERATION  (constraint: 3–5 scenarios)
-   Distinct across: primary lens, time horizon, store scope, k
-   Always include Baseline (Previous Plan) when one exists
-   Batch explores many configs (TARGET ≥20 evaluated per plan; from 1 today)
-        │
-        ▼
-5. COMPARISON + EVIDENCE
-   Top recommendations with composite score, cluster composition,
-   plain-English narrative; swing stores flagged
-   Planner can pin/move stores with impact preview (pins persist)
-        │
-        ▼
-6. APPROVAL  (human gates 2–3)
-   Planner picks winner; optional governance sign-off
-   Agent cannot write; is_optimal ≠ is_final
-        │
-        ▼
-7. MASTER WRITE / WRITE-BACK
-   Approved config document + membership written into today's
-   cluster master / product tables (incumbent path unchanged)
-```
+**What they do.** Every season a planner builds an **assortment plan**: which products to carry, in which stores, in what depth. The biggest single decision is **Keep or Drop**: for each product that sold last season, do we carry it again or cut it? They also want to know what they **missed** (where demand was left on the table) and what the **top styles** are (the winners to protect and repeat).
 
-**Measured baselines (kik tenant audit, MEASURED):** run failures **8.5% (37/437)**; median clustering job **~20s** (370 live runs); reproducibility **0%** (winning config/seed not persisted historically).
+**What hurt before.** A large retailer has hundreds of thousands of product-season combinations. Planners worked from heavy pivot tables (rows of products, columns of weeks and stores, cells of sales and stock). Those pivots were slow on PostgreSQL, so planners waited minutes for a screen. And the Keep/Drop judgement itself was manual, inconsistent between planners, and hard to explain later.
 
-**Targets (TARGET: say "targeting"):** hierarchy-to-finalized-plan **days → under 1 hour**; configs evaluated **1 → ≥20**; failures **8.5% → under 2%**; reproducibility **0% → 100%**; CH read plane **sub-second** for tool queries.
+**Why the company paid for this.** Assortment is where retailers make or lose margin. Carrying a dead product ties up cash in stock that ends in markdown. Dropping a product that was about to take off loses sales. A system that scores every article-season consistently, explains its reasoning, and lets the planner question it saves planner time and makes decisions auditable. Fast pivots matter because planners will not trust a tool that makes them wait three minutes per click.
 
-**Platform NFRs (TARGET from Planning Platform Architecture):** grid p95 **<500ms**, cell edit **<80ms**, History Opt **<30s**, 3 scenarios **<60s**.
-
-**Status honesty:** Phase 1 design complete; four internal adversarial passes + external review **PASS (approve to bring-up)**. Remaining gate: **bring-up load test** (cube sizing on real kik extract). Do not claim shipped production copilot.
+**A tiny example.** Article `A1` is a blue cotton T-shirt. In plan season 74 it sold 840 units, with residual stock of 160 units at season end. Its sell-through is 840 / (840 + 160) = 84%. It sold about 1.17 units per store-week where it was on sale. Is that a Keep? The rule layer says "borderline". The lenses look deeper: is demand rising or dying, is the size curve healthy, do sibling colours steal its sales, does it only sell on discount? The engine blends both and returns Keep or Drop with an explanation the planner can read.
 
 ---
 
-## 4. Resume bullet 1: Cluster Recommendation Copilot
+## 3. Words you need
 
-> Building the Cluster Recommendation Copilot for AssortSmart, an agentic store clustering module where an LLM agent (LangGraph, MCP) plans and calls 14 audited tools while a deterministic engine computes clusters, with human approval gates before any write. Targets are plan turnaround under 1 hour (from days), 20+ configurations evaluated per run (from 1), and run failures under 2% (from a measured 8.5%).
-
-### 4.1 Exact story with numbers
-
-**Problem:** Store clustering is the foundation for assortment strategy, but today the planner does four expert choices blind, then runs **one** configuration. The system already computes significance scores and then ignores them for recommendation. Measured on live tenant data: **8.5% of runs fail (37 of 437)**; most failures are avoidable input-boundary mistakes. Winning algorithm/hyperparameters/seed are not saved ⇒ **reproducibility 0%**. Compute itself is fine (median job **~20s**); the bottleneck is everything around the machine.
-
-**Solution design:** Two planes. An **LLM (LangGraph + MCP)** orchestrates and explains. A **deterministic engine** does feature selection, k search (elbow + silhouette), clustering, and scoring via **14 audited tools**. The agent **cannot write**. Humans confirm at grounding, search-plan, approval, and write-back gates. Schema is agentic-first: **63 tables / 8 layers**, partition-swapped facts, INSERT-only / append-only decisions, content-addressed configs (`readonly=1` agent).
-
-**Targets (TARGET):** under **1 hour** turnaround (from days), **≥20** configs per run (from 1), failures **under 2%** (from 8.5%), reproducibility **100%**, CH read plane sub-second.
-
-### 4.2 How it was done step by step
-
-1. Audited live tenant pain (failure rate, one-shot config, non-reproducible runs, lost store swaps).
-2. Wrote Phase-1 FRD: intent → grounding → search plan → batch compute → top recommendations → pins → approval → write-back.
-3. Locked product constraints from HLR v1.1: **3–5 scenarios**, mandatory distinctness, baseline inclusion, child cluster cap default **10**.
-4. Split responsibility: LLM plans/narrates; tools compute; DB profiles enforce read-only for the agent.
-5. Designed CH DDL (63/8, 5 dicts, 19 views) with zero row-level mutations; `formatQuery`-validated on CH **25.12** (load test pending).
-6. Ran adversarial design reviews (engine idiom, concurrency, operation coverage, scale) + external pricing-team playbook review → **PASS**.
-7. Remaining: bring-up load test before implementation cutover claims.
-
-### 4.3 Design decisions and trade-offs
-
-| Decision | Why | Trade-off |
-|---|---|---|
-| LLM orchestrates, tools compute | Numbers must be deterministic and auditable; LLM is bad at inventing stats | More engineering on tool contracts; less "magic" agent autonomy |
-| 14 audited tools, no free SQL | Prevents hallucinated queries and uncontrolled warehouse load | New capability requires a new tool, not a prompt tweak |
-| Human gates before any write | Clustering ships into strategy plans; silent auto-finalize is unacceptable | Latency of human-in-the-loop; need clear UX for gates |
-| 3–5 scenarios (not 6–10) | Decision fatigue; HLR superseded earlier wider range | Less coverage of search space in the UI; breadth moves into batch under the hood (TARGET ≥20 evaluated) |
-| Elbow + silhouette for k | Statistical fit inside client min/max + child-cap guardrails | Not business-optimal by itself; planner can override with evidence |
-| CH as decision/read plane, PG identity + transitional write-back | OLAP + append-only decision history fits CH; auth/UAM and incumbent product still on PG | Dual-store complexity until write-back retirement |
-| Content-addressed configs | Makes reproducibility a schema property | Storage of snapshots; must watermark data versions |
-
-### 4.4 What breaks at 10x and gotchas
-
-- **10× tenants / hierarchies:** nightly precompute and cube partition swaps become the bottleneck; need per-tenant quotas and concurrency budgets (design includes them; load test pending).
-- **10× store universe:** significance matrices and what-if caches grow; partition strategy and retention must be proven on kik×10 sizing (in DDL sizing section; MEASURED design, not measured latency).
-- **Gotcha:** agent proposes; human must still own intent. Autopilot (L2) and drift monitor (L3) are later phases: do not claim them as shipped.
-- **Gotcha:** `is_optimal` (engine) must never overwrite `is_final` (human). Interviewers love this distinction.
-- **Gotcha:** strategy doorway found **1 in 5** finalized plans on kik with **zero stores** attached: eligibility gates before scoring are not pedantry.
-
-### 4.5 Honesty tags
-
-| Claim | Tag |
+| Term | Plain meaning |
 |---|---|
-| 14 audited tools, LangGraph/MCP orchestration, human gates | MEASURED design |
-| Failures 8.5% (37/437), median ~20s, reproducibility 0% | MEASURED baseline |
-| Under 1h, ≥20 configs, <2% failures, 100% reproducibility, sub-second CH reads | **TARGET** |
-| 63 tables / 8 layers (7 stage twins), INSERT-only services + agent `readonly=1`, zero row-level mutations | MEASURED design (DDL Phase-1 on CH 25.12; no runtime evidence yet) |
-| External review PASS | MEASURED design status |
-| Production copilot live / load-tested | **NO (load test pending)** |
-
-**Say in interview:** "Phase 1 design is approved to bring-up. I am not claiming a production-shipped agent yet. Load test is the remaining gate."
-
----
-
-## 5. Prep depth: Order Batching PG vs CH benchmarks (replaced on resume headline)
-
-> **Resume now leads with hybrid pivot/line-plan (189s→12.3s, cell &lt;1ms, 12B avoided).** Keep this section for "what else did you measure?" — Order Batching metric over 23.7M joined rows: CH 3.86s vs PG 3m40s+ (~60×); inserts ~5.9M vs 250K rows/s; export ~43×.
-
-### 5.1 Exact story with numbers (memorize these)
-
-All MEASURED from older POC dump. Infra was **not** identical.
-
-**Hardware caveat (say this first if challenged):**
-
-| | PostgreSQL | ClickHouse |
-|---|---|---|
-| Setup | Tuned production-grade | Untuned / direct SQL port |
-| RAM | **256 GB** | **64 GB** |
-| vCPU | **32** | **16** (+ 2 replicas in some setups) |
-
-CH often had **weaker** hardware and less tuning, and still won. Treat results as directional POC evidence, not a lab-perfect A/B.
-
-**Headline numbers:**
-
-| Workload | PG | CH | Multiple |
-|---|---|---|---|
-| Order Batching metric, **23,749,263** join rows | **3m 40s** (UTC) / **7m 48s** (Australia/Melbourne TZ) | **3.857s** (~3.86s) | **~60×** (docs; range ~57–120× depending on TZ path) |
-| Insert effective throughput (30 promos × 10M = **3.9B** rows) | **250K** rows/s raw; **~417K** detach/attach | **~5.91M** rows/s | **~14–24×**; CH at **~30** connections vs PG **280** for detach/attach |
-| Query → CSV export | **541s** / **607** rows/s (328,692 rows) | **~38s** / **26,442** rows/s (1M rows) | **~43×** export throughput |
-| Small Order Batching join (~57K rows) | **2.043s** | **2.803s** | Parity (PG slightly faster) |
-| Incremental MV: 100K insert | Full `REFRESH` **~4.013s** over ~1.69M source | INSERT+MV **0.646s** (~0.65s) | CH **~85%** faster incremental path |
-| Fact compression (ISP POC) | 3.31 GiB raw | **432.81 MiB** compressed on **17.15M** rows | **~7.8×** |
-
-### 5.2 How it was done step by step
-
-1. **Frame the pain:** aggregation-heavy retail reads (promo loaders, MVs, Order Batching metric SP) degrade to minutes on PG; MV refresh is full-table.
-2. **Hypothesis:** columnar CH + MergeTree family wins on analytical scans/joins/bulk loads; keep transactional writes on PG.
-3. **Insert POC:** run `load_ps_reco_non_agg_parallel.py`; compute **effective** rows/s as `sum(expected_rows) / (max(ended) − min(started))` across successful parallel jobs: not sum of per-job times. Scale from single-promo 10M → 100M → **30×10M**.
-4. **Export POC:** same analytical intent; time query vs CSV write separately; note PG used temp/unlogged materialization, CH used direct CTE.
-5. **MV POC:** identical GROUP BY at 100K / 400K / full; compare CH incremental MV cost vs PG full refresh after 100K insert.
-6. **Order Batching metric:** fixed reference date; warm/small (~57K) then full (**23.7M** join rows); measure PG with prod TZ and UTC to isolate timezone conversion cost (~2× on PG alone).
-7. **Document caveats** in Confluence: unequal hardware, untuned CH, methodology.
-
-### 5.3 Design decisions and trade-offs
-
-| Decision | Why |
-|---|---|
-| Port real workloads, not synthetic TPC | Stakeholders trust Order Batching / promo paths they own |
-| Report wall-clock effective throughput | Matches how loaders actually finish in production |
-| Keep small-scale parity visible | Honesty: at ~57K rows PG ≈ CH; cliff appears at multi-million joins |
-| Isolate TZ on PG | Prevents attributing pure conversion cost to "engine superiority" alone |
-
-### 5.4 What breaks at 10x and gotchas
-
-- **10× join cardinality:** memory for join build/probe; need stricter partition pruning and pre-aggregation (see exploded batch OOM at **133.7M** rows in update-metrics doc).
-- **10× insert parallelism:** CH insert path still needs part-merge budget; uncontrolled small parts create merge storms.
-- **Gotcha:** do not claim identical hardware. Interviewers who know CH will ask.
-- **Gotcha:** if they cite older **60×** / **3m 40s+** from prep or prior PDF: defend with both PG times (3m40s UTC and 7m48s TZ) and CH **3.86s**. Lead interviews with Jul 2026 hybrid numbers first.
-- **Gotcha:** export row counts differ (PG ~329K vs CH 1M in the recorded run). Defend on **rows/sec** and wall time methodology, not "same row count dump."
-
-### 5.5 Honesty tags
-
-| Claim | Tag |
-|---|---|
-| All table numbers above | MEASURED |
-| Identical hardware A/B | **FALSE (do not claim)** |
-| Production cutover complete because of these numbers | **FALSE (POC / architecture)** |
-| ~60× / 43× / 14–24× | MEASURED multiples from documented runs |
+| **Article** | One sellable product, for example "blue cotton T-shirt, style 123". Think of it as a row in the product catalog. |
+| **Season** (plan season) | A selling period the retailer plans for, identified by a `season_code` such as 74 or 76. |
+| **Article-season** | One article in one season. It is the unit the engine scores. The same T-shirt in season 74 and in season 76 is two article-seasons. |
+| **Assortment planning** | Deciding the product range for a season: what to keep, drop and add. Like deciding next term's menu at a restaurant from this term's sales. |
+| **Keep / Drop** | The binary outcome per article-season. There is no third "maybe" outcome in the engine. |
+| **Missed Opportunities** | A pipeline that surfaces demand the plan missed. If asked for its exact rules, keep it qualitative and say it runs on the same harness as Keep/Drop. |
+| **Top Style** | A pipeline that ranks the strongest styles. The related Top Performing card gives Keep articles a short planner-facing tagline. |
+| **Product hierarchy (L0 to L4)** | The tree that groups products, for example division, department, class, subclass. Access control and scoping happen on this tree. |
+| **KPI** (Key Performance Indicator) | A business metric such as sell-through or rate of sale. |
+| **Sell-through** | Units sold divided by units sold plus units left. 84% means 84 of every 100 units available were sold. |
+| **Rate of sale (ROS)** | Units sold per store-week. It tells you how fast an item moves where it is stocked. |
+| **Pivot** | A planner screen that groups and sums data on the fly, like an Excel pivot table over hundreds of millions of rows. |
+| **Tenant** | One retailer customer. Multi-tenant means many retailers share the platform and must never see each other's data. |
+| **UAM** (User Access Management) | Which parts of the hierarchy a given user may see, for example "only kids' footwear in region North". |
+| **ClickHouse** | A column-oriented analytical database. It stores each column separately so a query that needs 5 of 100 columns reads only those 5. Think of reading one column of a spreadsheet instead of every row. |
+| **MergeTree** | The main ClickHouse table engine. Data lands in sorted immutable chunks called parts, and a background process merges parts together. |
+| **ReplacingMergeTree (RMT)** | A MergeTree that keeps only the newest version of rows with the same key, once parts merge. Think of a notebook where you never erase, you just write the new value below, and a cleaner later crosses out the old lines. Until the cleaner runs, readers must pick the latest line themselves. |
+| **Partition** | A physical slice of a table, here one slice per `season_code`. You can drop or rebuild one season without touching the others. |
+| **Rollup / pre-aggregation** | A table that stores sums that were computed once at load time, so a screen reads 1 row instead of summing 1,000. |
+| **OOM** (out of memory) | A query or process dies because it asked for more RAM than it was allowed. |
+| **Disk spill** | Letting a big GROUP BY write intermediate state to disk instead of holding it all in RAM. Slower, but it finishes. |
+| **LLM** (Large Language Model) | A model like GPT or Claude. Here it returns structured scores, not free text. |
+| **Lens** | One focused LLM analysis of an article, for example "is demand accelerating or dying?" There are 7 active lenses. |
+| **Decider** | The step that chooses which lenses to weigh for each article and how much. |
+| **Structured invoke** | An LLM call whose output must match a strict JSON schema (score, outcome, confidence, reason codes). Bad shape means the call failed. |
+| **Circuit breaker** | A switch that stops calling a failing dependency after repeated failures, like a fuse in a house that trips instead of letting wires burn. |
+| **Checkpoint** | A saved record of finished work, so a restart skips what is already done. |
+| **config_hash** | A SHA-256 fingerprint of the frozen guardrails, parameters, prompts and catalog used for a run. It is stamped on every output row. |
+| **Gold set** | Labelled cases with the known right answer, used to grade the engine offline. |
+| **Proxy gold** | Gold labels derived from what actually happened next season, used when planners have not labelled cases by hand. |
+| **CI gate** (Continuous Integration gate) | An automated check that blocks promotion if a quality bar is not met. |
+| **LangGraph** | A Python framework for building LLM workflows as explicit graphs of steps, with state and loop limits. |
+| **Supervisor** | A LangGraph node that routes a user's question to the right worker step. |
+| **Evaluator loop** | A step that checks an answer and asks for a retry if it is not good enough, capped at 3 attempts in Ask Iris. |
+| **LangSmith** | A tracing and evaluation tool for LLM apps. It shows each step, prompt, tool call, tokens and cost. On this resume it belongs to Ask Iris. |
+| **WebSocket** | A long-lived two-way connection between browser and server, good for chat. |
+| **JWT** (JSON Web Token) | A signed token that proves who the user is and carries claims like tenant and role. |
+| **OIDC** (OpenID Connect) | A standard login protocol on top of OAuth. Google OIDC means signing in with Google identity. |
+| **Firebase Admin** | Google's server-side SDK that verifies Firebase-issued user tokens. |
+| **Go / Gin** | Go is a compiled language with cheap concurrency (goroutines). Gin is a fast HTTP router and middleware framework for Go. |
+| **Google Wire** | A Go dependency injection tool that generates the wiring code at compile time. If a dependency is missing, the build fails instead of a request. |
+| **h2c** | HTTP/2 over plain TCP without TLS ("cleartext"). It gives HTTP/2 multiplexing inside a trusted network. |
+| **Datadog distributed tracing** | Each request gets a trace id, and every service and database call it touches is recorded as a timed span under that id. |
+| **Native protocol (port 9440)** | ClickHouse's own binary protocol over TLS, faster than its HTTP interface for bulk data. |
+| **IP allowlist** | A firewall rule that only lets listed IP addresses connect to a cluster. |
+| **Double buffering** | Using two buffers so you can fill the next batch while the previous one is still being sent. |
+| **Ghost rows** | Rows from a failed, partial write that stay in the table and make a broken load look complete. |
+| **BigQuery** | Google's serverless data warehouse. Here it is upstream historical data that feeds ClickHouse. |
 
 ---
 
-## 6. Resume bullet 3: CQRS migration (Order Batching)
+## 4. Architecture
 
-> Designed the ClickHouse read path for Order Batching, keeping writes on PostgreSQL, syncing hot fact tables in near real time, and routing post save reads through Redis (30s TTL) so planners see their own saves instantly.
+```mermaid
+flowchart LR
+  UI["Planner UI"] --> EDGE["Go/Gin edge: Wire, h2c, nested timeouts"]
+  UI --> IRIS["Ask Iris: FastAPI WebSocket"]
+  EDGE --> AUTH["Auth waterfall: Redis cache, Firebase Admin, JWT, Google OIDC"]
+  AUTH --> PG["PostgreSQL: tenants, UAM, roles, metadata"]
+  EDGE --> KPI["KPI formula compiler"]
+  KPI --> CH["ClickHouse: 2.11B-row master, six rollup tables"]
+  EDGE --> CH
+  BQ["BigQuery upstream history"] --> CH
+  CH --> DET["Deterministic KPI engine"]
+  DET --> PACK["JSON context payloads"]
+  PACK --> LLM["LLM lenses and decider"]
+  LLM --> BLEND["Blend and explain"]
+  DET --> BLEND
+  BLEND --> STAGE["Staged rows with config_hash"]
+  STAGE --> CH
+  REG["Orchestration registry: timeouts, breaker, checkpoints, telemetry"] --> DET
+  REG --> LLM
+  IRIS --> GRAPH["LangGraph supervisor and 3-attempt evaluator"]
+  GRAPH --> CH
+  GRAPH --> LS["LangSmith traces"]
+  EDGE --> DD["Datadog traces"]
+```
 
-Note: the resume now carries only ONE ClickHouse point, the PG to ClickHouse migration POC with benchmark numbers. The read path design below (CQRS, CDC mirrors, Redis read your writes) is prep-only depth: bring it up verbally when asked "what would the production migration look like".
+*What to notice: there is no arrow from the LLM to ClickHouse. Deterministic code reads the database and the LLM only ever sees JSON.*
 
-### 6.1 Exact story with numbers
+**Walkthrough, box by box.**
 
-**Goal:** move aggregation-heavy **reads** for Order Batching to ClickHouse to cut PG load, while **all writes stay on Postgres**. GCS parquet edit sessions stay unchanged (no DB during in-memory edits).
+1. **Planner UI.** Planners use web screens (pivots, Keep/Drop grids, KPI views) and the Ask Iris chat panel.
+2. **Go/Gin edge.** Every normal API call lands on a Go service built with Gin. It is the HTTP edge itself. There is no nginx or Envoy layer we run in front, so the Go process owns HTTP/2 (h2c), request timeouts, body limits and tracing. Google Wire builds the dependency graph at compile time. It peaks at 10k requests per second (PDF).
+3. **Auth waterfall.** Each request is authenticated through a chain: a Redis cache of already-verified identities first, then Firebase Admin token verification, then JWT or Google OIDC. API keys are compared in constant time. Roles come from PostgreSQL.
+4. **PostgreSQL.** The small, transactional data: tenants, users, UAM hierarchy scopes, roles, thin metadata. It is the right tool for correct, consistent identity data.
+5. **KPI formula compiler.** Operators define KPIs as formulas ("units / (units + eop) * 100"). The Go tokenizer and parser compile them into safe, parameterized ClickHouse SQL fragments with division-by-zero protection.
+6. **ClickHouse.** The big analytical data: a 2.11B-row master fact table and six rollup tables (product, store and attribute, each at season and weekly grain). Planner pivots read rollups, not raw daily facts.
+7. **BigQuery.** Historical data upstream. It feeds ClickHouse. Interactive screens and agents do not query BigQuery directly.
+8. **Deterministic KPI engine (Python).** Computes sell-through, rate of sale and the rule score `s_det` for each article-season, straight from ClickHouse with SQL.
+9. **JSON context payloads.** For each batch of articles, deterministic code packs the features each lens needs into JSON.
+10. **LLM lenses and decider.** Structured LLM calls return per-lens scores. The decider weighs lenses per article. Their combination is `s_agent`.
+11. **Blend and explain.** `s_final = 0.4 x s_det + 0.6 x s_agent`. Keep if `s_final >= 0.55`. Then a planner-facing explanation is written.
+12. **Staged rows with config_hash.** Results are staged first, then loaded into ClickHouse ReplacingMergeTree tables, each row stamped with the run's `config_hash`.
+13. **Orchestration registry.** One shared harness for all three pipelines: hard timeouts, circuit breakers, durable checkpoints, and JSON telemetry (tokens, USD cost, step duration, batch fallbacks).
+14. **Ask Iris.** A FastAPI WebSocket service. The JWT is checked once at the handshake and the user's hierarchy scope (`plan_scope`) is frozen for the session. A LangGraph supervisor routes questions and a 3-attempt evaluator stops loops. LangSmith traces each run.
+15. **Datadog.** Distributed traces for the Go edge and its database calls.
 
-**Sync:** CDC for high/moderate churn facts (CARFG, plan_master, dc_pack_reserve); daily full refresh for low-churn dims.
+### 4.1 One batch, step by step (Keep/Drop)
 
-**RYW:** after `/session/save` or `/finalise`, set `Redis.set("ob:ryw:{l0_name}", ttl=30s)`. Router: if key present → PG; else → CH. **30s** covers typical CDC lag window.
+```mermaid
+sequenceDiagram
+  participant R as Registry
+  participant D as Deterministic engine
+  participant C as ClickHouse
+  participant P as Peer step
+  participant DE as Decider
+  participant L as Lenses
+  participant B as Blend and explain
+  R->>D: start run, freeze config_hash
+  D->>C: SELECT KPIs for the scope
+  C-->>D: sell-through, ROS, features
+  D->>R: write det checkpoint
+  R->>P: batch of up to 64 articles as JSON
+  P-->>DE: sibling and category context
+  DE->>L: lens mixes per article
+  L-->>B: score, outcome, confidence per lens
+  B->>B: s_agent, then s_final = 0.4 s_det + 0.6 s_agent
+  B->>R: staged rows plus agent progress checkpoint
+```
 
-**CDC platform SLOs I designed against / integrated with (MEASURED tool SLOs; tool authored by Ashvin Sharma):**
+*What to notice: the batch order is fixed in code (peer, decider, lenses, blend, explain). There is no LLM orchestrator deciding what runs next.*
 
-| SLO | Target |
-|---|---|
-| PG commit → CH visible | **p95 ≤ 10s** (low-throughput tables) |
-| Initial snapshot | **≥ 25K rows/s** per mirror |
-| Row-count drift | **≤ 0.5%** steady state (health diagnostics; note drift UI thresholds also use absolute+relative guards) |
-| Reference: 1 mirror | ~**30K** rows/s snapshot, ~**5K** rows/s stream |
-| Reference: 10 mirrors | ~**8K** rows/s aggregate stream |
+**Concrete walk-through with one article.**
 
-**k6 POC (planned, not claimed done):** 50 concurrent users, 11 read SPs, pass if p95 < current PG baseline.
+1. The deterministic engine reads article `A1`, season 74: sell-through 84%, ROS 1.168.
+2. It normalises each KPI to a 0-to-1 score with a ramp (section 5, A1) and computes `s_det = 0.65`.
+3. The article joins a batch of up to 64 articles. The registry sends the batch as JSON. No SQL is in the payload.
+4. The peer step adds relative context: how `A1` compares with its sibling colours and its category.
+5. The decider builds 4 to 5 lens mixes for `A1`. Lenses with no data are gated out. `A1` comes in one colour only, so the colour-cannibalisation lens does not run.
+6. The lenses return scores. Say they combine to `s_agent = 0.711`.
+7. Blend: `0.4 x 0.65 + 0.6 x 0.711 = 0.687`. That is at or above 0.55, so the outcome is Keep.
+8. The explain step writes a planner-facing reason. The row is staged with the run's `config_hash`, then loaded into ClickHouse.
 
-### 6.2 How it was done step by step
+### 4.2 One planner pivot request, step by step
 
-1. Classify every Order Batching table by change frequency → CDC vs daily refresh vs PG-only.
-2. Draw dual paths: write APIs always hit PG SPs; read APIs go through a routing layer defaulting to CH.
-3. Preserve GCS HLE parquet edit flow (`/session/updates` never touches DB mid-edit).
-4. Solve read-your-writes with Redis TTL after save/finalise (not dual-write).
-5. Call out lock atomicity fix before cutover: partial unique index on `order_batching_access_data(hierarchy_hash) WHERE status IN (1,2)`.
-6. Align mirror list with `pg2ch_cdc` capabilities (logical replication, ReplacingMergeTree, apply-before-slot-commit).
-7. Plan validation: k6 on 11 read SPs; SP equivalence harnesses elsewhere in the migration toolkit.
-
-### 6.3 Design decisions and trade-offs (high-value interview meat)
-
-#### Why CQRS, not dual-write?
-
-- Dual-write (app writes PG and CH in one request) creates **split-brain** on partial failure, retries, and lock semantics.
-- Order Batching writes need PG transactions, `l0_name` locks, finalise status transitions, and existing SPs.
-- CQRS: **one writer (PG)**, async projection to CH, router absorbs lag. Operationally simpler and safer for this module.
-
-#### Why CDC (not nightly-only for hot facts)?
-
-- CARFG changes on every save/finalise. Nightly refresh would make analytical screens stale for a full day.
-- CDC targets **seconds** of lag (SLO p95 ≤ 10s), which matches interactive planning if combined with RYW.
-
-#### Why direct CDC (no Kafka) for this platform context?
-
-- Volume is a handful of high-fidelity tables, not a company-wide event bus.
-- Kafka + Debezium + sink would add brokers, schema registry, and multi-hop opacity for low-thousands rows/s peaks.
-- `pg2ch_cdc` is a single-process gateway: PG logical slot (`pgoutput`) → apply to CH. I **designed against / integrated with** this tool; I did **not** author it.
-
-#### Why Redis RYW with TTL fallback (not "wait for CDC" or "always read PG after write")?
-
-- Waiting for CDC in the request path couples UX to replication health.
-- Always reading PG after write defeats the migration (PG stays on the hot path forever).
-- Redis flag for **~30s** is a bounded window: users see their own saves on PG immediately; everyone else (and the same user after TTL) rides CH. If CDC is healthy, window is usually more than enough; if CDC is sick, RYW still protects the writer while ops fix lag (though prolonged lag needs ops, not a longer TTL forever).
-
-#### Why not move writes to ClickHouse?
-
-- CH is poor for row-level transactional locks, session save semantics, and frequent point updates without a careful mutation strategy (see bullet 4).
-- Retail planning UX still expects OLTP guarantees on save/finalise.
-
-### 6.4 What breaks at 10x and gotchas
-
-- **10× write QPS on CARFG:** CDC stream apply and CH part merges become the bottleneck; slot lag risk if CH slows (`SLOT_LAG` diagnostics at ≥1 GiB critical in the CDC tool).
-- **10× concurrent planners on same hierarchy:** lock table must be atomically correct before cutover (partial unique index note).
-- **Gotcha:** UPDATE on CH side in CDC is **DELETE + INSERT**; ReplacingMergeTree dedupes by version. Without `FINAL` or careful querying, you can briefly see duplicates.
-- **Gotcha:** truncates default **off** in CDC (`apply_truncates=False`): accidental OLTP truncate must not wipe the warehouse.
-- **Gotcha:** apply **CH first**, then commit PG slot → at-least-once + RMT dedupe. Never claim exactly-once without explaining merge-time dedupe.
-- **Gotcha:** ownership language: say **"designed against / integrated with `pg2ch_cdc`"**, not "I built the CDC platform."
-
-### 6.5 Honesty tags
-
-| Claim | Tag |
-|---|---|
-| CQRS architecture, table sync matrix, Redis 30s RYW | MEASURED design doc |
-| CDC SLOs (10s p95, 25K snapshot) | MEASURED platform SLOs |
-| Authorship of `pg2ch_cdc` | **NOT MINE** (Ashvin Sharma) |
-| Full production cutover of Order Batching reads | **Do not claim unless you personally cut over**: architecture + POC stage |
-| k6 50-user pass | Planned validation, not a measured resume claim |
-
----
-
-## 7. Resume bullet 4: Update strategies, ReplacingMergeTree, compression
-
-> Cut 10K row update handling on a 29M row fact table from 39s to 7s using partition scoped merges over full table rewrites, and validated ReplacingMergeTree versioned updates, partition pruning, and dictionary lookups (17M row fact table compressed 7.8x to 433 MiB).
-
-### 7.1 Exact story with numbers
-
-**CARFG-scale update bake-off (~29M rows, MEASURED):**
-
-| Approach | Result |
-|---|---|
-| Naive full-table read+insert | ~**24 GB** read; runs **33.8s / 73.5s / 77.9s** (high variance) |
-| Full-table scope merge for **10K** updates | **~35.6–38.8s** (resume rounds to **39s**) |
-| **Partition-scoped** merge (partition `20260512`, ~3.80M rows) | **7.309s** (~**7s**) |
-| Delta join on one partition | **6.734s**, 3.08 GB processed, peak mem **2.39 GiB** |
-| Full-table delta join (~29M delta) | **OOM** at **14.40 GiB** (Code 241) |
-
-**Query cliffs (same doc):**
-
-| Query | CARFG rows | Latency |
-|---|---|---|
-| order batching batch SP | 5.2M (1 partition) | 12.475s |
-| order batching batch exploded | 133.7M (1 partition) | **OOM / server crash** |
-
-**Compression (ISP / architecture review, MEASURED):** fact table **17.15M** rows, **432.81 MiB** compressed vs **3.31 GiB** raw ⇒ **~7.8×**.
-
-### 7.2 How it was done step by step
-
-1. Establish naive baseline: SELECT entire table + INSERT rewritten rows (proves cost of "update = rewrite everything").
-2. Partition by `toYYYYMMDD(created_at)`; confirm which partition holds the 10K-change working set.
-3. Re-run merge scoped to one partition only → ~7s.
-4. Prototype delta table (`delta_carfg`) LEFT JOIN base with version `COALESCE` for ~24 metric columns.
-5. Show delta join ≈ partition merge on single partition, but **OOM** when delta grows to full table.
-6. Validate ReplacingMergeTree versioned insert patterns and partition pruning on analytical queries; note dictionary lookups as a CH-native acceleration pattern in the broader ISP POC.
-7. Document failure modes for the team so migration SPs do not "just explode the join."
-
-### 7.3 Design decisions and trade-offs
-
-#### Why ReplacingMergeTree?
-
-- CH in-place `ALTER UPDATE` mutations are expensive and queue poorly for interactive planning.
-- Insert-only "updates" with a version column let background merges collapse to latest row.
-- Fits CDC apply path (DELETE+INSERT / new version row) and analytical rebuilds.
-
-**Cost:** readers may need `FINAL`, argMax patterns, or partition-local logic to see latest before merge. `FINAL` forces merge-on-read and can be expensive at scale: use sparingly, prefer query shapes that naturally prune.
-
-#### Why partition-scoped updates over full rewrites?
-
-- Full rewrite reads **~24 GB** and sits in the **36–39s** band for 10K changes on ~30M rows.
-- Same logical update scoped to one day partition finishes in **~7s** because IO and merge work track partition size (~3.8M rows), not table size.
-- Retail facts already have natural time/partition keys (`created_at`).
-
-#### Why consider delta join, and when to reject it?
-
-- Comparable latency to partition merge on a hot partition (**6.7s vs 7.3s**) with less IO.
-- Reject unbounded deltas: at full-table delta size the join **OOMs at 14.4 GiB**. Delta must stay small or be compacted/partitioned.
-
-#### Why dictionary lookups (where used)?
-
-- Dim attributes that would otherwise explode joins can be served as CH dictionaries for low-latency enrichment on large facts (ISP-style analytical path). Trade-off: dictionary refresh semantics and memory residency must be owned.
-
-### 7.4 What breaks at 10x and gotchas
-
-- **10× partition size:** partition-scoped "win" shrinks; re-evaluate partition granularity (day → hour is not free either: too many parts).
-- **10× concurrent mutations:** merge pressure and memory; exploded queries already crash at **133.7M** rows today.
-- **Gotcha:** ReplacingMergeTree is eventually consistent until merge/`FINAL`. Demo queries without `FINAL` can confuse QA comparing PG vs CH row-for-row.
-- **Gotcha:** resume "39s → 7s" maps to full-table scope **~36–39s** vs partition **7.309s** for **10K** updates on ~**29–30M** rows.
-- **Gotcha:** compression **7.8× to ~433 MiB** is on the **17.15M** fact table example: do not mix it with the 29M CARFG update story as the same table unless asked carefully.
-
-### 7.5 Honesty tags
-
-| Claim | Tag |
-|---|---|
-| 39s → 7s, 10K updates, ~29M rows, delta 6.7s, OOM 14.4 GiB | MEASURED |
-| 17.15M rows, 432.81 MiB, ~7.8× | MEASURED |
-| ReplacingMergeTree / partition pruning validation | MEASURED POC + design |
-| Production mutation framework fully rolled out | Do not overclaim: bake-off + architecture guidance |
+1. The planner opens a "weekly sales by department" pivot for season 74.
+2. The browser calls the Go/Gin API over HTTP/2. Datadog starts a trace.
+3. Auth middleware finds the user's verified identity in Redis (or falls through to Firebase, JWT, OIDC), then loads roles and UAM scope from PostgreSQL.
+4. The handler resolves KPI formulas through the compiler into safe SQL fragments.
+5. It queries the `product_weekly` rollup with `season_code = 74` and the user's hierarchy scope. ClickHouse reads only the season-74 partition and only the needed columns.
+6. The response returns in seconds instead of minutes, because the heavy aggregation was paid once at load time.
 
 ---
 
-## 8. Cross-cutting talking track (2-minute narrative)
+## 5. Agentic Flows & Orchestration (A1 to A5)
 
-"Sources are the agentic module Overview, Copilot FRD, ClickHouse DDL Phase-1 (Confluence v1.5), HLD, PRDs, and `pivot-poc/` plus line-plan POC — not the old AssortSmart dump. Copilot cuts clustering from days toward under **1 hour** and from **1 to 20–100** configs — FastAPI agent over a Go doing layer. Safety moves failures from measured **8.5%** toward under **2%** with **14** audited read-only tools and three confirm gates. The store is per-tenant ClickHouse — **63 tables / 8 layers**, insert-only / partition-swapped, agent `readonly=1`. Pivot hybrid cuts **250M** Hindsight grids **189s→12.3s** (~**15.5×**) on ClickHouse reads while Postgres keeps cell edits sub-ms; line-plan shrinks **12B→~25M** (**100–450×**). DDL syntax PASS on CH 25.12; load test pending — say building, not shipped."
+### A1. Multi-pipeline AI merchandise decision engine
 
+> **PDF:** Architected a multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style) evaluating 348k article-seasons. Optimized inference at scale, processing 88k items per pass, by blending deterministic KPI math with structured LLM invokes across 7 AI lenses.
 
----
+**In plain words.** I built the engine that decides, for every product in every season, whether the retailer should carry it again. It runs three related pipelines (Keep/Drop, Missed Opportunities, Top Style). For each article-season it does two things: plain math on the sales numbers, and a set of focused LLM analyses ("lenses"). Then it blends the two into one score and one decision. It is a batch decision engine, not a chatbot.
 
-## 9. Rapid-fire Q&A (12+)
+**How it works.**
 
-### Q1. Why ClickHouse over Postgres for this?
-
-**A:** Columnar scans, partition pruning, and incremental MVs win on aggregation-heavy retail reads. We measured Order Batching at **23.7M** join rows: CH **3.86s** vs PG **3m40s–7m48s** (~**60×**). Inserts hit ~**5.9M** rows/s vs PG **250K** raw. PG stays SoT for transactional writes. At small scale (~57K) they are comparable: the cliff is large joins/aggs.
-
-### Q2. Why not Druid or Pinot?
-
-**A:** Our path was driven by existing CH investment, SQL familiarity for porting PG SPs, MergeTree family fit for CDC mirrors (ReplacingMergeTree), and operational simplicity for a handful of mirrored facts plus agentic decision tables. Pinot I have used elsewhere for ops dashboards; for this migration the team standardized on ClickHouse Cloud / CH-native DDL already in flight. I would reopen Druid/Pinot only if we needed their specific ingestion or concurrency characteristics and the org wanted a second OLAP stack: not for this POC scope.
-
-### Q3. How does CDC handle updates and deletes?
-
-**A:** On the platform CDC I integrated with: PG logical replication (`pgoutput`). An UPDATE is applied as CH **DELETE by PK + INSERT** of the new row (or insert of a newer version row into ReplacingMergeTree). Deletes set/apply delete semantics with `_cdc_deleted`. Truncates are parsed but **default not applied** to CH. Slot advances only after CH apply succeeds (apply-first).
-
-### Q4. What is the cost of `ReplacingMergeTree` + `FINAL`?
-
-**A:** RMT defers deduplication to background merges: cheap writes, eventually one row per key. `FINAL` forces merge-on-read so you see the latest version immediately, but it burns CPU/IO and scales poorly on huge unpartitioned scans. Prefer partition filters, `argMax`, or query shapes that avoid full-table `FINAL`. CDC and analytics should be designed so interactive paths prune first.
-
-### Q5. How would you cut over safely?
-
-**A:** (1) Fix lock atomicity on PG. (2) Stand up CDC mirrors; verify snapshot + drift. (3) Shadow-read: run CH queries in parallel, compare to PG (row counts + checksum samples). (4) Route a fraction of read SPs via the router with kill switch. (5) Keep Redis RYW. (6) k6 at 50 users on 11 read SPs; p95 must beat PG baseline. (7) Expand routing; keep PG write path untouched. (8) Hold rollback: router defaults back to PG in one config flag.
-
-### Q6. What OOM failure modes did you see?
-
-**A:** Full-table delta join on ~**29M** rows exceeded **14.40 GiB**. Order Batching "batch exploded" shaped query on **133.7M** rows in one partition crashed the server. Lesson: bound working sets with partition scope or compact deltas; never assume a join that works on 5M rows works when exploded 20×.
-
-### Q7. How do you guarantee correctness between PG and CH?
-
-**A:** PG is source of truth. CDC is at-least-once with RMT dedupe. Health checks for row-count drift (platform target ≤**0.5%** steady state). After writes, RYW forces the writer onto PG for **~30s**. For cutover, SP equivalence tests (same inputs, compare outputs) and shadow reads. I do not claim byte-identical every millisecond under lag: I claim bounded lag + explicit fallback + drift alarms.
-
-### Q8. Benchmark fairness challenge: "your CH box was different"?
-
-**A:** Agreed: and documented. PG was **32 vCPU / 256 GB** tuned; CH was **16 vCPU / 64 GB** untuned. That makes the CH wins **more** persuasive, not less, but I still call them POC-directional, not a perfect lab A/B. I also show the small-scale case where PG was slightly faster, so I am not hiding counter-evidence.
-
-### Q9. Why CQRS instead of dual-write?
-
-**A:** Dual-write splits failure domains: PG succeeds, CH fails (or vice versa), retries create duplicates, and lock/finalise semantics live in PG SPs today. CQRS keeps one writer, projects asynchronously, and uses Redis RYW to hide projection lag for the user who just saved.
-
-### Q10. Why Redis TTL ~30s: why not 5s or 5 minutes?
-
-**A:** Tuned to **typical CDC lag** under the platform SLO (p95 ≤ **10s** commit-to-visible) with margin for blips. Too short ⇒ users occasionally miss their own writes. Too long ⇒ writers keep hammering PG and you never shed load. 30s is the design default in the Order Batching architecture; it is a knob, not a law of physics.
-
-### Q11. Why daily refresh for dims instead of CDC everything?
-
-**A:** Product/store filters and DC reference data change rarely. CDC slots and worker threads are not free; daily full refresh is simpler and good enough for low-churn dims. Hot facts that change on every save get CDC.
-
-### Q12. Copilot: can the agent write the cluster master?
-
-**A:** No. Engine-enforced read-only profiles; write-back only after human approval gates. `is_optimal` never becomes `is_final` without a human signature. Phase 1 is design-approved; load test pending: I do not claim production autonomy.
-
-### Q13. What does "14 audited tools" mean?
-
-**A:** A fixed registry of templated tool calls (scope grounding, significance, candidate generation, scoring, comparison, pins/impact, etc.). The LLM selects and sequences them; it does not invent SQL. Every number in an evidence pack should be traceable to a tool call.
-
-### Q14. How does elbow + silhouette interact with business guardrails?
-
-**A:** Statistical k search runs inside client min/max and the child-cluster cap (default **10**, configurable). If the unconstrained optimum exceeds the cap, the agent picks the best k within the cap and records the constraint in the scenario summary (HLR-SC-004).
-
-### Q15. What were insert concurrency differences?
-
-**A:** CH hit ~**5.9M** rows/s with roughly **30** concurrent promos/connections. PG detach/attach baseline used **280** connections for ~**417K** rows/s. Higher aggregate throughput at far lower client concurrency: important when connection limits matter.
-
-### Q16. Incremental MV vs PG refresh: one liner?
-
-**A:** CH INSERT of 100K with MV ~**0.65s** vs PG full `REFRESH` ~**4s** over ~**1.69M** source rows: about **85%** faster incremental path, and CH stays fresh on insert instead of stale until manual refresh.
-
----
-
-## 10. Numbers cheat sheet (flash card)
-
-| # | Number | Context | Tag |
-|---|---|---|---|
-| 1 | 3.86s vs 3m40s–7m48s | Order Batching metric, 23.7M join rows | MEASURED |
-| 2 | ~60× | Same | MEASURED |
-| 3 | 5.9M vs 250K rows/s | Insert (also vs ~417K detach/attach → ~14–24×) | MEASURED |
-| 4 | 30 vs 280 connections | CH vs PG insert concurrency | MEASURED |
-| 5 | 607 → 26.4K rows/s (~43×) | Export path | MEASURED |
-| 6 | 0.65s vs ~4s | CH MV insert vs PG full refresh | MEASURED |
-| 7 | 39s → 7s | 10K updates on ~29M rows, partition scope | MEASURED |
-| 8 | 6.7s / OOM 14.4 GiB | Delta join single partition vs full | MEASURED |
-| 9 | 17.15M · 433 MiB · 7.8× | Fact compression | MEASURED |
-| 10 | Redis TTL ~30s | RYW routing | MEASURED design |
-| 11 | CDC p95 ≤10s · snapshot ≥25K/s | Platform SLOs | MEASURED (tool by other) |
-| 12 | 8.5% (37/437) · ~20s median · 0% repro | Copilot baselines | MEASURED |
-| 13 | <1h · ≥20 configs · <2% failures | Copilot targets | **TARGET** |
-| 14 | 63 / 8 (+ 5 dict / 19 views) | Agentic CH schema | MEASURED design (omit 624) |
-| 15 | 14 tools | Copilot tool registry | MEASURED design |
-| 16 | 3–5 scenarios · elbow+silhouette | Clustering HLR flow | MEASURED PRD |
-| 17 | PG 32vCPU/256GB vs CH 16vCPU/64GB | Hardware caveat | MEASURED |
-| 18 | Grid <500ms · cell <80ms · HistOpt <30s · 3 scen <60s | Platform NFRs | **TARGET** |
-
----
-
-## 11. Phrases to use / avoid
-
-**Use:**
-- "We measured…"
-- "Design targets are…"
-- "I designed the Order Batching CQRS migration against the platform CDC…"
-- "Phase 1 design approved; load test pending…"
-- "Hardware was not identical; CH was weaker and still faster…"
-
-**Avoid:**
-- "I built `pg2ch_cdc` end to end"
-- "We fully cut over production Order Batching to CH" (unless you personally did)
-- "Identical benchmark hardware"
-- "Shipped the copilot to all tenants"
-- Em dashes and hedged mush: speak in clean sentences with tags when needed
-
----
-
-## 12. Suggested 45-minute drill order
-
-1. Draw the ASCII architecture (5 min).  
-2. Recite the 6 headline benchmark numbers + hardware caveat (5 min).  
-3. Defend CQRS vs dual-write and Redis RYW (8 min).  
-4. Walk update strategies 39s→7s + OOM story (7 min).  
-5. Copilot flow + honesty (Phase 1 / TARGET vs MEASURED) (10 min).  
-6. Rapid-fire from §9 (10 min).
-
----
-
-*End of IA deep dive core. Mock interview Q&A below. All figures still trace to `GROUND_TRUTH.md` and the cited Confluence/PRD sources. If a number is not on this page, do not invent it in the interview.*
-
----
-
-## Mock interview: hardest questions with answers
-
-Format: skeptical engineering manager asks; candidate answers. Tags match `GROUND_TRUTH.md`. Do not soften TARGET into measured. No production cutover claim. Hardware for the insert/metric POC was not identical (PG 32 vCPU / 256 GB vs CH 16 vCPU / 64 GB).
-
-### Q1. You say you are "building" AssortSmart with AI agents. What ships today versus what is design?
-
-**A:** AssortSmart is the merchandise planning SaaS: retailers decide what to buy, in what depth, for which stores, a season ahead. Store clustering is the foundation every strategy plan binds to. The agentic rebuild inverts today's flow (four expert choices up front, one config run) into: planner states intent (hierarchy + reference period), the agent proposes scope and features, batch-explores configs, and a human approves before write-back. Phase 1 of the Cluster Recommendation Copilot is design-complete: four internal adversarial passes plus external review **PASS, approve to bring-up**. Bring-up load test is still pending. So I own present-tense design and build work, not a claim that every tenant already runs the shipped copilot in production.
-
-### Q2. Why LangGraph instead of a plain function-calling loop in FastAPI?
-
-**A:** Clustering is a multi-step stateful workflow: ground scope, confirm a search plan, fan out batch compute, stream scored candidates, pause for pins and what-ifs, then hit approval gates. LangGraph makes that graph explicit (nodes, edges, checkpointable state, human-in-the-loop interrupts) instead of burying control flow in ad-hoc `while` loops around chat messages. Plain function calling is fine for one-shot tool use; it gets brittle when you need durable session state, gate pauses that survive a reconnect, and the same graph driving both wizard Mode A and chat Mode B under the convergence rule (same config document, same gates, same write-back). Trade-off: more framework surface; payoff is auditable orchestration that matches product gates rather than prompt spaghetti.
-
-### Q3. Why MCP on top of LangGraph? Isn't that two frameworks for one agent?
-
-**A:** They solve different layers. LangGraph orchestrates *when* to call tools and *when* to stop for a human. MCP is the tool delivery contract: a fixed registry of **14 audited tools** lives behind an MCP server so the agent discovers schemas at runtime and cannot invent SQL. That decoupling matters for tenancy and ops: tool versioning, read-only enforcement, and reuse across clients without hardcoding tool implementations into the graph. Function-calling schemas alone would couple tool code to the orchestrator process. Trade-off: an extra process boundary and discovery handshake; payoff is a hard boundary between "LLM may select a tool" and "only these templated tools run."
-
-### Q4. Walk the Cluster Recommendation Copilot. Where do the 20 to 100 configs and "under 1 hour" come from?
-
-**A:** Today the pipeline evaluates **exactly 1** configuration the planner chose by hand, inside a search space of roughly 12 algorithms × k 3–10 × any attribute subset (MEASURED live audit). The FRD designs a pruned batch of **20–100** configs against an isolated scratch plan, with results streaming as they score; the headline product target is **≥20** configs evaluated per plan (TARGET). Hierarchy-to-finalized-plan **days → under 1 hour** is also TARGET, not a production measurement yet. Compute itself is already fast: median clustering job **~20s** over 370 live runs (MEASURED). The bottleneck is everything around the machine: blind expert choices, one shot, no reproducibility. UI still presents **3–5** distinct scenarios (HLR-SC-001 constraint); batch breadth under the hood is the 20–100 / ≥20 story. Say "targeting under 1 hour" and "batch evaluating 20 to 100 in design / ≥20 as the success bar."
-
-### Q5. Failures 8.5% to under 2%, reproducibility 0% to 100%. Prove the baselines and stop claiming the targets as done.
-
-**A:** On the kik tenant: **8.5% run failures (37 of 437)**; **>80%** of those are input mistakes at the data boundary (MEASURED). Winning algorithm, hyperparameters, and seed were never persisted ⇒ **reproducibility 0%** (MEASURED). Manual store swaps also die on re-run (0% survival). Targets are **failures under 2%** and **100% reproducible shipped clusterings** via content-addressed config documents (hash of recipe + data watermark) and append-only decision events (TARGET). Mechanism for the failure cut: deterministic grounding (catalog backtrack for hierarchy, fiscal calendar for seasons), sample-size guards, and machine-composed requests so the input-error class never reaches the engine. I will not say "we cut failures to under 2%" until post-load-test metrics exist. Correct phrase: "designed to cut from a measured 8.5% toward under 2%."
-
-### Q6. Why only three human approval gates? Overview docs mention grounding, search plan, approval, and write-back.
-
-**A:** The Phase-1 FRD product story is **three confirm gates** after intent: Gate 1 search plan (attributes + 20–100 config plan), Gate 2 approve the winning recommendation, Gate 3 governance sign-off where required; write-back then lands in today's tables. The grounding card is the confirm-what-was-understood step before compute (Mode B clubs cohort + attributes on that card). Module overview language lists grounding → search plan → approval → write-back as the consequential human stops. In the room I say: "Three product confirm gates plus write-back that never happens without an approved config; the agent physically cannot write." Resume "3 human approval gates" maps to the FRD's three confirms. If pressed on four stops, acknowledge grounding and write-back as the bookends without inventing a fourth numbered gate beyond the FRD.
-
-### Q7. Why read-only agent tools at the database profile, not just a prompt that says "don't write"?
-
-**A:** Prompts are not a control plane. The agent runs with a **`readonly=1` DB profile** (SELECT + `dictGet` only); service writers are **INSERT-only** on owned tables; exploration never mutates facts. Write-back is a separate path after human approval. That matches the FRD non-goal: no silent auto-finalize, and `is_optimal` (engine) never overwrites `is_final` (human). Schema reinforces it: **63 tables / 8 layers**, partition-swapped facts, append-only events, zero row-level mutations by doctrine (MEASURED design, DDL Phase-1 on ClickHouse 25.12 — load test still pending). Failure mode if you skip this: an LLM tool that can `INSERT` into cluster master under prompt drift. Trade-off: new capability needs a new audited tool, not a prompt tweak.
-
-### Q8. Why dedicated ClickHouse for agent probes instead of shared BigQuery?
-
-**A:** Measured agent data-probe latency on shared BigQuery slots is **1–20s+** with uncontrolled variance (MEASURED live audit). Interactive copilot UX and platform NFRs need deterministic probes; design target is agent probe **p95 under 500ms** on a dedicated ClickHouse read plane (TARGET), with nightly precompute aiming to move **≥80%** of sessions cold→warm (TARGET). Feed is the org's existing BQ→CH ingestion lane (ItemSmart-proven pattern): BigQuery stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots. Cube reconciliation target within **0.1%** of BigQuery (TARGET). Explicit FRD non-goal: not moving transactional/plan data to ClickHouse for this module's Phase 1 read plane. Trade-off: a derived copy can rot; mitigate with owned ingestion, freshness sentinel, and data-as-of stamped on every recommendation.
-
-### Q9. Why Go (Gin) for plan lifecycle and bulk save instead of keeping everything in Python FastAPI?
-
-**A:** Service split is intentional. One Python microservice (FastAPI, LangGraph, MCP) owns agentic workflows that scale with LLM latency. The non-agentic core is throughput-shaped I/O: plan lifecycle CRUD (create/copy/finalize/soft-delete with server-side state transitions), reference data fan-out, and bulk save of versioned cell batches. Go gives goroutine-per-request concurrency without an async framework tax, a static binary, and boring code many engineers can touch. Gin: radix-tree router, middleware chain (`c.Next()`), `ShouldBindJSON` validation. Rejected fiber because fasthttp breaks standard `net/http` semantics; chi/Echo were fine but Gin won on team familiarity. JWT middleware carries tenant + role claims. Bulk save: bounded goroutine worker pool fans validated batches (design: version = epoch-ms, idempotency via batch id + content hash). This is **current build / stack direction**, not a MEASURED production RPS claim in ground truth. Do not invent peak RPS unless you label it estimated capacity from prep.
-
-### Q10. Goroutine worker pools for bulk save: what problem, what failure mode?
-
-**A:** A grid save arrives as a large batch of cell edits that must become one versioned insert wave, not N serial round-trips. A bounded worker pool (channel + N workers) caps concurrency into ClickHouse native batch inserts so you do not open unbounded goroutines under a save spike. Context timeouts cancel slow probes instead of piling up. Failure modes to own: goroutine leaks if cancel paths are missing; unbounded fan-out melting merge pressure on ClickHouse parts; retries without idempotency double-inserting versions. Mitigations: `context.WithTimeout` on every handler, pool size as a hard cap, batch id + content hash for safe replay, graceful `Shutdown` that drains in-flight work.
-
-### Q11. Why ClickHouse over staying on PostgreSQL for the Order Batching analytics POC?
-
-**A:** PostgreSQL is excellent OLTP; at multi-million join/agg scale it becomes the wrong engine for this read shape. We ported real workloads, not synthetic TPC. Order Batching metric at **23,749,263** join rows: ClickHouse **3.857s (~3.86s)** vs PostgreSQL **3m 40s** (UTC) / **7m 48s** (`Australia/Melbourne`) ⇒ about **~60×** (docs; range ~57–120× depending on TZ path) (MEASURED). At small scale (~57K join rows) PG was slightly faster (2.04s vs 2.80s), so we do not hide the parity case. Insert POC: CH **~5.91M rows/s** effective on **3.9B** rows (30 promos × 10M) vs PG **250K** raw / **~417K** detach-attach ⇒ **~14–24×**, and CH did it at **~30** connections vs PG **280** (MEASURED). Hardware caveat first: PG **32 vCPU / 256 GB** tuned; CH **16 vCPU / 64 GB** untuned. POC evidence, not production cutover.
-
-### Q12. Why not Apache Druid or Pinot (or BigQuery directly) for that OLAP path?
-
-**A:** For the Order Batching migration POC the team standardized on ClickHouse: SQL familiarity when porting PG stored procedures, MergeTree / ReplacingMergeTree fit for CDC mirrors, and existing CH investment / Cloud DDL already in flight. BigQuery remains upstream historical truth for agentic cubes, but shared-slot variance (**1–20s+**) fails the interactive agent-probe budget; dedicated CH is the gated read plane. Pinot I know from Uber-style high-QPS ops dashboards; Druid is strong at certain ingest/concurrency shapes. I would reopen Druid/Pinot only if we needed those specific characteristics and wanted a second OLAP stack. For this POC scope, a second engine was unjustified complexity. ReplacingMergeTree behavior matches our CDC apply pattern (versioned inserts, background dedupe; `FINAL` or `argMax` when latest-before-merge matters).
-
-### Q13. Defend the 24× bulk load claim. How was throughput measured?
-
-**A:** Effective rows/sec = `sum(expected_rows) / (max(ended) − min(started))` across successful parallel jobs, not the sum of per-job times. Best CH run: **30 promos × 10M = 3.9B** rows in **660.184s** ⇒ **5,907,446 ~5.9M rows/s** (MEASURED). Against PG raw **250K rows/s** that is **~23.6×** (resume rounds to **24×**). Against PG detach/attach **~417K** it is **~14×**. Resume "24× (250K to 5.9M)" is the raw-insert comparison; if challenged on detach/attach, cite both multiples honestly. Export path separately: PG **541s / 607 rows/s** vs CH **~38s / 26.4K rows/s** (~**43×** throughput) (MEASURED); note export row counts differed (~329K vs 1M), so defend rows/sec and wall methodology, not identical dump size.
-
-### Q14. ReplacingMergeTree and partition updates: what broke, and why still CH?
-
-**A:** ClickHouse mutations (`ALTER UPDATE`) are async and expensive for interactive planning; insert-only versioned rows fit both CDC and analytical rebuilds. On ~**29M**-row CARFG: full-table scope merge for **10K** updates sat **~35.6–38.8s**; partition-scoped merge on day partition `20260512` (~3.8M rows) finished in **7.309s** (MEASURED). Delta join on one partition **6.734s**; full-table delta **OOM at 14.40 GiB**. Exploded Order Batching query at **133.7M** rows in one partition crashed the server. Lesson: bound working sets; prefer partition swap / scoped merge over unbounded joins. `FINAL` forces merge-on-read for latest visibility but costs CPU/IO; prefer prune-first query shapes. Compression example (separate fact): **17.15M** rows, **432.81 MiB** compressed vs **3.31 GiB** raw (~**7.8×**) (MEASURED).
-
-### Q15. CQRS for Order Batching: why not dual-write PG and CH in one request?
-
-**A:** Dual-write splits the failure domain: PG commit succeeds, CH fails (or the reverse), retries create duplicates, and lock/finalise semantics live in PG stored procedures today. Design: PG remains system of record for writes (CARFG, locks, session save); CDC mirrors hot facts (CARFG, plan_master, dc_pack_reserve); low-churn dims refresh daily; router defaults reads to CH; after save/finalise Redis key `ob:ryw:{l0_name}` TTL **~30s** forces the writer onto PG for read-your-writes (MEASURED design). CDC platform SLOs I designed against / integrated with (tool authored by Ashvin Sharma, not me): commit-to-visible **p95 ≤ 10s**, snapshot **≥ 25K rows/s**. Apply CH first, then advance PG slot: at-least-once + ReplacingMergeTree dedupe. This is architecture + POC stage; do not claim full production cutover unless you personally cut over.
-
-### Q16. Elbow + silhouette for k, but business wants actionable assortments. How do you not optimize the wrong objective?
-
-**A:** HLR-AG-002: agent picks k via elbow + silhouette inside client min/max guardrails; HLR-SC-004 adds a default **max 10** child clusters per parent (configurable). If unconstrained optimum exceeds the cap, pick best k within the cap and record the constraint in the scenario summary. HLR-SC-001 caps UI scenarios at **3–5** with mandatory distinctness across lens, time horizon, store scope, and k; HLR-SC-003 always includes Baseline (Previous Plan) when one exists. Statistical fit is necessary but not sufficient; planner approval and pins inject business knowledge the dataset does not contain. That is why this is a gated decision agent, not AutoML that ships a loss minimum silently.
-
-### Q17. What would make you discard the POC numbers in a design review?
-
-**A:** Three things I already document. (1) Non-identical hardware: CH often weaker and still faster, so treat as directional, not lab-perfect A/B. (2) Small-scale parity: at ~57K join rows PG can win; the cliff is tens of millions of rows. (3) Methodology differences: export row counts differed; insert throughput is wall-clock effective across parallel jobs. Separately, ML fit median **~9s/config** is accepted physics (MEASURED); we parallelize and precompute around it rather than claiming we made the model faster. If load test on real kik extract fails cube sizing or p95 probe budgets, we revisit precompute and concurrency quotas before claiming agent latency targets.
-
-### Q18. Ownership challenge: did you build `pg2ch_cdc` and ship the copilot?
-
-**A:** No on both overclaims. `pg2ch_cdc` was authored by Ashvin Sharma; I designed Order Batching migration against its SLOs and mirror patterns and integrated with them. Copilot: Phase 1 design approved to bring-up; load test pending; L2 autopilot and L3 drift monitor are later phases. Correct ownership language: "designed / developing / designed against," not "I built the CDC platform end to end" or "shipped the copilot to all tenants."
-
----
-
-## New POC + HLD mock interview (Jul 2026)
-
-**Sources:** Pivot-Engine-Benchmark, LinePlanning-Benchmark, ClickHouse-vs-Postgres-POCs (consolidated v1.0), Agentic HLD (`final_agenticassort.png`).  
-**Honesty rule:** Every number is tagged **MEASURED** / **TARGET** / **ESTIMATED**. Adversarial pass corrected first-pass magnitudes downward — defend the corrected figures, not the raw scoreboard. Hardware was deliberately PG-favorable (PG native **48 GB** host; CH **10 CPU / 3.3 GB** Docker VM) — MEASURED harness config.
-
----
-
-### 1. Hybrid PG writes / CH reads (corrected magnitudes)
-
-**Interviewer Q:** Your first slide said ClickHouse was 15× faster on the pivot and Postgres was 80–90× faster on cell edits. Then you walked it back to 2–3× and 14×. Which story is real, and why isn't this just "stay on Postgres"?
-
-**Candidate A:** Both stories are real; the second is the one you should hire me for. We ran a controlled, row-identical harness at **5M / 50M / 250M** (MEASURED). Raw heavy-grid wall-clock at 250M: PG **189.4 s** with **42 GB** spill vs CH **12.3 s** ⇒ **~15.5×** (MEASURED). Adversarial re-measure showed ~**90%** of that gap is `COUNT(DISTINCT)` / option-count: PG's grouped distinct cannot parallelize and spills; CH runs parallel `uniqExact`. Strip the distinct and the CH lead collapses to **~2–3×** on typical aggregates (MEASURED, adversarial). Keep option-count (wireframe 1.1.1) and you honestly cite **~13–15×** (MEASURED). So: **2–3× typical, 13–15× only on DISTINCT grids** — that is the corrected pitch.
-
-**Attack vector (recruiter/persona loop):** "Is 12B measured or projected?" — answer: combinatorial product from **4,800** stores × levels × choices × **52** weeks; flat loads at ~1B already OOM'd the **3.3 GB** CH VM (MEASURED). "Targeting vs shipped?" — under 1h / under 2% are TARGET; 8.5% and BQ 1–20s are MEASURED. "Two POCs one bullet?" — pivot and line-plan are different surfaces under one hybrid design rule.
-
-On writes: raw single-cell edit cycle p50 at 250M was PG **0.94 ms** vs CH **~77 ms** ⇒ ~**82×** (MEASURED, untuned). ~**62 ms** of CH's cycle was CH 26.5's default `async_insert` buffer flush. With `async_insert=0` + fsync durability parity, CH drops to **~16 ms** ⇒ PG wins **~14×**, not 90× (MEASURED, adversarial). PG stays **sub-millisecond and scale-flat** across 5→250M (**0.35 → 0.94 ms**, MEASURED) — that is the interactive Wp-cell keyboard path. CH batch append inverts: at 250M / **156k** rows, PG **31,989 ms** vs CH **13 ms** ⇒ ~**2,500×** (MEASURED) — so bulk apply / reload belongs to CH.
-
-**Design decision:** hybrid per surface, not a swap. Render grid / rollup / contribution-% from CH MergeTree sorted on pivot keys; authoritative cell write-back is keyed PG UPDATE; keep CH fresh via version-append into ReplacingMergeTree; after edit, either `argMax`/`FINAL` on CH or read just-edited cells from PG. Working POC: `GET /pivot` from CH, `POST /cell` → PG then mirror to CH RMT (MEASURED design, live against 250M harness).
-
-**Tradeoffs:** two stores ⇒ sync lag + freshness window; CH pays **~4× FINAL** dedup tax when reading its own fresh parts (MEASURED). Storage first-pass **50–138×** was synthetic-modulo artifact; realistic high-entropy collapses to **~1.6–2.6×**, expect low-single-digits to **~10×** (MEASURED adversarial / ESTIMATED production band). Cheapest independent win: flatten JSONB fact — **2.06×** penalty on PG alone (**2,779 ms** flat vs **5,719 ms** JSONB, MEASURED); live Briscoes pivot **11.3 s** is mostly modeling, not PG's ceiling (MEASURED anchor).
-
-**Why not "stay on Postgres"?** At Briscoes today **~5M**, selective screens still win on PG (MEASURED). At **250M** the heavy grid is **3m9s** and unusable for interactive planning (MEASURED). The recommendation must survive growth to multi-tenant **50–250M+**, not today's comfort zone. Decision rule: aggregates many rows → CH; mutates few cells with instant RYW → PG.
-
----
-
-### 2. Why not wholesale ClickHouse for mtp-assort
-
-**Interviewer Q:** You just proved CH wins big reads. Why did POC 4 still say "No to ClickHouse now" for the shipping mtp-assort app? Isn't that inconsistent with adopting CH for agentic clustering?
-
-**Candidate A:** Consistent once you separate *surface* from *product*. mtp-assort's edit model is OLTP-mutable: keyed UPDATE, JSONB `||` merge, scoped delete-where-`plan_code` + reinsert, upsert, soft-delete. ClickHouse is append-first; its mutation queue is the wrong hammer for that write model. The analytical scans *look* CH-shaped, but the live cost drivers we measured are BigQuery hygiene problems, not "wrong OLAP engine": one job billed **38.8 TiB** via `SELECT *` / LIMIT with no date filter (MEASURED live BQ evidence, briscoes-01082024 / australia-southeast1); recurring full-category rollups re-scan **~2.9 TiB** (MEASURED). Fix tiers inside BQ: (1) kill `SELECT *`, force `require_partition_filter=TRUE`; (2) point heavy reads at already-clustered `_assort` (~**3×** cheaper, MEASURED free win); (3) materialize one store × category × fiscal-week rollup → MB instead of **2.9 TiB** (~**284×** less, MEASURED/ESTIMATED from that rollup sizing). Adding CH now creates a **third** engine (BQ + CH + PG) plus sync + dialect translation, replacing neither SoR nor the batch plane.
-
-**Contrast — agentic clustering (POC 5):** greenfield read plane, new dedicated CH instance, writes still land in PG (cluster results must join strategy-flow tables). Decision dated **2026-07-06** (MEASURED design). Same hybrid principle applied forward: CH where determinism + interactive probes matter; PG remains SoR. Wholesale swap of mtp-assort fails the "replace neither" test; gated CH for a new module passes it.
-
-**Tradeoff I own:** saying "no" to CH on the legacy app while saying "yes" to CH on the copilot looks political. The defense is workload shape: mutate-heavy legacy vs read-only analytical probes with insert-only BQ→CH feed.
-
----
-
-### 3. Line-planning: why not materialize 12B store-week; aggregate + explode; partition of unity
-
-**Interviewer Q:** KiK needs store-week. Your team already has `line_arch_store_week`. Why refuse to materialize **~12B** rows/plan? Isn't "derive on demand" just kicking the can — and won't explode latency kill allocation export?
-
-**Candidate A:** **~12B** = **4,800** stores × final-levels × choices × **52** weeks per plan (MEASURED anchors / ESTIMATED combinatorial product for KiK). With **~50** plans, flat PG at rest is **~70 TB** (ESTIMATED from per-plan **~1.4 TB** × 50); even CH flat is **~1.1 TB** at 50 plans (ESTIMATED). Per operation: month view SUMs billions; a choice edit fires a **249,600**-row UPDATE on the flat path at the 10M-scale harness shape (MEASURED). At **100M** flat: month PG **2,923 ms** / CH **1,335 ms**; edit-one-choice PG **1,454 ms** / CH mutation **1,823 ms** (MEASURED). Projected to **12B**: flat month **~380 s** PG / **~160 s** CH; edits minutes (ESTIMATED linear projection — tagged PROJ in the POC).
-
-**What we store instead:** editable truth at choice × cluster × week ≈ **~25M** for a 12B-flat plan (~**427×** smaller; MEASURED at 1B: flat PG **115 GB** vs agg **276 MB**). Formula (verbatim from `SCALE_LINE_ARCH_FROM_CHOICE_LAUNCH`):
+*Step 1: the deterministic score `s_det`.* Each KPI is mapped to 0-to-1 with a piecewise ramp that has three knobs: low, target and high.
 
 ```text
-store_week = choice × flow_cluster_perc × cluster_store_perc × store_week_perc
+x <= low              -> 0
+low < x < target      -> target_score * (x - low) / (target - low)
+target <= x < high    -> target_score + (1 - target_score) * (x - target) / (high - target)
+x >= high             -> 1
 ```
 
-Each percentage is a **partition of unity** (sums to 1 on its dimension), so `SUM(store-week) ≡ choice aggregate`. We reconciled `SUM(flat)==SUM(agg)` **to the cent** at **10M / 100M / 1B** on both engines (MEASURED). Explode one choice to store-week on demand in **~25 ms** (MEASURED). Month view on the **25M** aggregate: PG **690 ms** / CH **512 ms** (MEASURED at 25M = 12B-plan equivalent). Single-cell edit on aggregate PG **0.35–0.44 ms** (MEASURED) — scale-flat.
+| Signal | Weight | Low | Target | High | Target score |
+|---|---|---|---|---|---|
+| Sell-through (end of period) | 0.55 | 50 | 85 | 98 | 0.6 |
+| Rate of sale | 0.45 | 0.5 | 1.0 | 1.5 | 0.6 |
 
-**Product reality check:** users never edit a dense store-week grid. Backend `update_line_arch_store_week_cluster_data` writes at cluster × choice × delivery; `line_arch_store_week` is 100% re-derived. Finer edits are **sparse overrides** (base + exception). Effective = `COALESCE(override, derived)`; rollup = aggregate_rollup + Σ(override deltas) — never scan 12B. Override point-upsert PG **0.15 ms** flat from **1M→50M** overrides (MEASURED); correction rollup at **1M** overrides: CH **5 ms** / PG **98 ms** (MEASURED). At **50M** overrides (0.4% of 12B — stress, not typical): PG correction **15.5 s** vs CH **52 ms** (MEASURED) — then AMT/SummingMergeTree earns its keep because deltas are additive.
+Worked example: sell-through 84 gives `0.6 x (84 - 50) / (85 - 50) = 0.583`. ROS 1.168 gives `0.6 + 0.4 x (1.168 - 1.0) / 0.5 = 0.734`. So `s_det = 0.55 x 0.583 + 0.45 x 0.734 = 0.65`. Lifecycle staples have a floor (Basics at least 0.85, never-out-of-stock items at least 0.90), so the rule layer never drops a staple on a soft season. The rule layer on its own says Keep at `s_det >= 0.65`.
 
-**Tradeoffs:** if a downstream truly needs full store-week, materialize a **slice for export**, not the SoR. Trying to load **998M** flat into CH on the **3.3 GB** VM OOM-killed the container (MEASURED) — even columnar engines punish explosions you do not need. Schema first: flat→aggregate is **~140–200×** at 100M on read/edit (MEASURED), larger than any engine swap (**100–450×** band across scales, MEASURED/ESTIMATED). Multi-plan: partition by `plan_code`; single-plan month with 10 plans resident stays constant (PG **725 ms** / CH **33 ms**, MEASURED). Clone-plan: aggregate PG **67.7 s** / CH **0.85 s** vs flat ~**12 min** (MEASURED / ESTIMATED from 1B copy **60 s** ×12).
+*Step 2: the agent score `s_agent`.* Seven lenses are active. Each one answers one question:
 
----
-
-### 4. ClickHouse edit techniques: why not AMT for set-a-cell; RMT vs lightweight UPDATE vs EmbeddedRocksDB
-
-**Interviewer Q:** ClickHouse 26.5 has lightweight UPDATE and AggregatingMergeTree. Why is your editable layer ReplacingMergeTree — and when would you actually use AMT or RocksDB?
-
-**Candidate A:** Because a planner edit is **SET cell = X**, not **ADD delta**. AggregatingMergeTree / SummingMergeTree merge by summing states — the right tool for additive accumulation (override-delta rollups, pre-agg month views), the wrong tool for set-a-cell. Modelling SET as AMT forces compensating deltas — fragile under concurrent editors and undo.
-
-**Measured bake-off at ~1B granular (MEASURED, CH 26.5):**
-
-| Technique | Latency / behavior | Verdict |
+| Lens | Question it answers | Runs only if |
 |---|---|---|
-| Heavyweight `ALTER UPDATE` (274M MT) | **1,618 ms** p50, consistent | Never for point edits — rewrites the part |
-| Lightweight UPDATE (patch parts, experimental) | **4.4 ms** issue, RYW correct only **~11–22%** (consolidated) / ~**20%** (lineplan) | Unsafe for interactive write-back in 26.5 |
-| ReplacingMergeTree append + `argMax`/`FINAL` | **~4.9–6.3 ms** tuned, consistent | Best MergeTree-family option for set-a-cell |
-| EmbeddedRocksDB upsert + point get | **4.9 ms**, consistent, no parts/FINAL | Most PG-like KV editable layer; not for analytic scans |
-| Postgres keyed UPDATE (reference) | **0.15–0.35 ms**, consistent | Nothing in CH family beats it |
-| AMT as editable layer | — | ✗ wrong semantics (models "add") |
-| AMT / Projection for *read* rollup over 1B | AMT **2 ms** (build **2 s**); Projection **4 ms** (build **30 s**) vs plain GROUP BY **2,058 ms** | Right when granular SoR must stay; ~**1000×** read win |
+| trend_velocity | Is weekly demand accelerating or dying? | 3 or more weeks on sale |
+| size_curve | Is the size distribution healthy or broken? | 2 or more sizes |
+| colour_cannibalization | Do sibling colours steal this one's demand? | 2 or more colours |
+| channel_divergence | Does it behave differently online and in store? | 2 or more channels |
+| multi_season_consistency | Does it perform across seasons or was it a one-off? | 2 or more seasons |
+| discount_dependency | Does it only sell on markdown? | any discount present |
+| margin_resilience | How good is the margin? It cannot force a Drop alone. | always |
 
-**CH floor:** ~**5 ms** is mostly HTTP round-trip + part creation (MEASURED / ESTIMATED split). So: interactive typing stays on PG (or EmbeddedRocksDB if you insist CH-native KV); pair RocksDB editable with MergeTree analytics. For editable aggregate in CH use **RMT(version)** — never AMT, never heavyweight mutation, avoid lightweight UPDATE until RYW is reliable. AMT belongs on **additive override-delta** MVs once override counts leave the human thousands–low-millions band where PG alone is already sub-100 ms (MEASURED design rule).
+A cheap Python gate runs before any LLM call, so a single-colour, single-size sock sold for two weeks only gets the margin lens. No tokens are wasted on lenses with nothing to compare. The decider builds 4 to 5 weighted lens mixes per article: two fixed anchors computed in Python (demand, and risk or cannibalisation) plus two or three adaptive mixes proposed by the LLM. A mix only counts if at least 75% of its planned lens weight actually came back, so a missing lens cannot quietly make a mix look optimistic. `s_agent` is the mean of the valid mixes.
 
-**Deeper point:** if you already stored the **~2M–25M** aggregate, plain GROUP BY is **~17 ms** (MEASURED on RMT aggregate) and you may not need AMT/projections at all. They earn keep when someone forces the 1B granular to remain SoR — which we refuse.
+*Step 3: the blend.*
+
+```python
+s_final = 0.4 * s_det + 0.6 * s_agent      # weights normalised
+outcome = "keep" if s_final >= 0.55 else "drop"
+```
+
+*Step 4: structured output.* Every lens returns the same JSON shape, validated against a schema:
+
+```json
+{"article": "A1", "lens": "trend_velocity", "score": 0.72,
+ "outcome": "keep", "confidence": 0.64,
+ "signal": "rising, peaking near week 9",
+ "reason_codes": ["TREND_RISING"]}
+```
+
+**Why this design.** LLMs are bad at arithmetic and good at pattern judgement. Sell-through and rate of sale must be financially exact and auditable, so they are hard-coded math in one `domain/` module that both the SQL generator and the tests call. That means the number a planner sees and the number a test checks cannot drift apart. The lenses do the qualitative work rules cannot: is this trend starting or already peaked, is the size curve broken. The rule layer alone over-keeps, so the agentic layer does most of the real cutting on borderline items.
+
+**Alternatives considered and why not.**
+- *Let the LLM compute KPIs with a Python or SQL tool.* Rejected. At 88k items that is a latency and prompt-injection surface, and math accuracy would depend on the model.
+- *One big prompt per article with every signal.* Rejected. Prompts get huge and the model loses focus. Small lens prompts with only the fields they need (and only the last 12 weeks for trend lenses) stay cheap and sharp.
+- *Pure rules.* Rejected. Too coarse, and they over-keep.
+- *Let the LLM decide the whole ensemble.* Rejected. The fixed anchors are pure Python and add no LLM calls, so one bad LLM response cannot own the decision.
+
+**Trade-off.** More moving parts than a single model call, and a weights choice (0.4 and 0.6) that has to be governed. That governance is A5.
+
+**What I would do differently.** Get planner-labelled gold cases earlier. Proxy labels from next-season sales tell you "did demand hold up", which is not quite "was this the right range decision".
+
+**The numbers.**
+
+| Number | What it measures | Where it comes from | How to say it | Do not say |
+|---|---|---|---|---|
+| **348k article-seasons** (PDF) | Article-season combinations the engine scored | Scoring run outputs | "We score about 348 thousand article-seasons." | "1.6 million." That is the catalog (VERBAL), not the scored set. |
+| **88k items per pass** (PDF) | Size of one batch run of the engine | Run configuration and outputs | "One pass processes about 88 thousand items." | An exact count of passes for 348k unless you know it. The full set takes several passes. |
+| **7 AI lenses** (PDF) | Active lens count in the config | `decision.json` lens list. An eighth lens (spatial variance) exists but is switched off | "Seven analytical lenses, gated per article." | "Seven LLM calls per article always." The gate skips lenses with no data. |
+| **0.4 / 0.6, keep at 0.55** (MEASURED config) | Blend weights and final cut line | Config, chosen in an architecture benchmark and then frozen (A5) | "40% rules, 60% agent, keep at 0.55." | That the weights were tuned on production outcomes. |
+| **$100 per pass** (VERBAL) | Token spend for one pass | Run telemetry | Only if asked about cost: "roughly a hundred dollars of tokens per pass." | Put it on the resume line or present it as a monthly bill. |
+
+Why the numbers matter to the business: 348k is the scale at which manual Keep/Drop review is impossible, so consistency and explainability are the product.
+
+**Questions they will ask.**
+
+**Q: Why not let the LLM calculate KPIs with tools?**
+I deliberately kept math out of the model. Sell-through and rate of sale are pre-computed in Python and SQL and passed in as JSON. A scoring agent with a code or SQL tool, running over 88k items, is a latency risk and an injection surface, and the math would depend on the model's mood. This way the KPI is identical every run and the LLM only judges patterns. *Follow-up they may ask:* "Then what does the LLM add?" Answer: the lenses read trend shape, size curves, colour cannibalisation and discount dependency, which rules handle badly.
+
+**Q: How did you handle provider rate limits at 88k items?**
+Articles are batched (up to 64 per LLM call) and run with bounded parallelism under a global cap on in-flight LLM calls. Each call has a hard timeout that scales with batch size, with retries and backoff. If a provider keeps failing, the circuit breaker in the registry trips. Checkpoints mean a throttle does not wipe the run: a restart skips finished work and never recomputes the deterministic scores.
+
+**Q: Is this a multi-agent system?**
+Not in the "agents talking to each other" sense. The batch order is fixed in code: peer, decider, lenses, blend, explain. Run-level oversight is a deterministic run controller, not an LLM. I chose that on purpose because a decision engine that touches money should be predictable. The interactive multi-step agent is Ask Iris, which is a separate bullet.
+
+**Q: What are the three pipelines and how do they differ?**
+Keep/Drop is the binary decision per article-season. Top Style ranks the strongest styles and gives Keep articles a short tagline. Missed Opportunities surfaces demand the plan missed. All three share the same registry, guardrails and JSON-payload pattern, which is why I call it a multi-pipeline engine. If asked for Missed Opportunities' exact rules, keep it qualitative.
+
+**Q: Why seven lenses and not one?**
+Each lens answers one question with a short prompt and only the fields it needs, so prompts stay small and the model stays focused. The gate means an article only pays for lenses that have data. And multiple mixes give a mini-ensemble, so their agreement feeds the confidence score.
 
 ---
 
-### 5. Agentic architecture: why FastAPI owns chat, Go is doing layer, dual Path A vs Path M
+### A2. JSON payloads instead of database access, ReplacingMergeTree, deterministic fallback
 
-**Interviewer Q:** Why is chat FE → FastAPI directly? Why not put Go in front of everything like a normal BFF? And what are Path A and Path M actually for?
+> **PDF:** Decoupled AI inference from a 2.11B-row ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via ReplacingMergeTree that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.
 
-**Candidate A:** From the Jul 2026 Agentic HLD: **chat is FE → FastAPI directly; Go is not the chat gateway.** Two paths, one doing layer.
+**In plain words.** The LLM is never allowed to query the big database. Deterministic code reads ClickHouse, prepares a small JSON summary per article, and hands that to the model. Results are written in a way that tolerates retries and duplicates. If the model is slow or down, the article simply gets its deterministic score so the run keeps going.
 
-**Path A — agent chat (FastAPI Agent Service):**
-1. **A1** Chat UI → `POST /chat` (routing, reasoning, tool selection).
-2. **A2** Agent ↔ LLM (OpenAI / etc.) for reason / plan.
-3. **A3** Tool call → Go doing layer when an action needs product APIs / deterministic compute.
-4. **A4** Reply → Chat UI.
+**How it works.**
 
-**Path M — manual work:** Manual screens → Go REST (`create` / `update` / `delete`) → same doing modules (Manual/REST, Hindsight, Clustering, Strategy) → ClickHouse / GCS. No LLM in the loop.
+*Context in, as JSON.* A feature query aggregates the weekly table into one row per article. Then a compactor trims it to only the fields a given lens needs. An illustrative payload:
 
-**WHY FastAPI owns chat:** agentic workflows are LLM-latency-shaped (LangGraph / MCP / prompt+tool loops, streaming tokens, run trees). Python owns that ecosystem; putting Go as a dumb chat proxy adds a hop without buying throughput. **WHY Go is the doing layer:** non-agentic work is throughput-shaped I/O — plan lifecycle, bulk saves, clustering/hindsight/strategy engines, CH/GCS access. Goroutine-per-request, static binary, boring code many engineers touch. Manual UI and agent tools **converge on the same Go APIs** (M1 and A3), so authorization, validation, and audit logic are not duplicated in the LLM path.
+```json
+{
+  "article": "A1", "season_code": 74,
+  "kpis": {"sell_thru_eop_pct": 84.0, "ros": 1.168, "gm_pct": 52.1},
+  "counts": {"size_count": 5, "style_color_count": 1, "weeks_on_sale": 12},
+  "sales_momentum": {"direction": "rising", "phase": "peaking", "peak_week_index": 9},
+  "week_series": [{"w": 1, "qty": 40, "disc": 0.0}, {"w": 2, "qty": 55, "disc": 0.0}]
+}
+```
 
-**Design decisions / tradeoffs:**
-- Dual language is a real tax; accepted because the service boundary already existed (agent tier vs core backend).
-- Agent never bypasses Go for mutations — tools call Go; DB profiles for agent probes stay read-only. Failure mode if skipped: prompt-drifted `INSERT` into cluster master.
-- Notification service sits beside FE for core-api hits; not on the chat critical path.
-- Do not claim MEASURED production RPS for this split — it is **MEASURED design / stack direction**. Scale story: agent replicas scale with LLM concurrency; Go replicas scale with request volume — independent axes.
+`sales_momentum` is computed in Python, not written by the LLM. The lenses must cite it.
 
-**Adversarial push — "why not one Python monolith?"** Because Path M traffic (grid saves, strategy CRUD) should not share a GIL/async pool with multi-second LLM turns. Separating chat ownership from doing ownership is the load and blast-radius decision, not a fashion choice.
+*Writes out, eventually consistent.* Results go to ReplacingMergeTree tables keyed on `(season_code, article)` with `computed_at` as the version. A retry or an overlapping wave can land the same article twice. That is fine. Readers pick the latest version per key instead of relying on a background merge or `OPTIMIZE ... FINAL` at runtime:
+
+```sql
+SELECT season_code, article,
+       argMax(outcome, computed_at) AS outcome,
+       argMax(s_final, computed_at) AS s_final
+FROM reco_final_score
+WHERE season_code = 74
+GROUP BY season_code, article;
+-- or: ORDER BY computed_at DESC LIMIT 1 BY season_code, article
+```
+
+In practice the scoring stages rows to files first, and an operator step loads them into ClickHouse. So a bad prompt shows up in a diff before it reaches a table planners read, and republishing costs seconds instead of another round of LLM spend.
+
+*Fallback on timeout.*
+
+```python
+try:
+    lens_rows = await asyncio.wait_for(call_lenses(batch), timeout=batch_timeout)
+except (asyncio.TimeoutError, ProviderError):
+    telemetry.batch_fallback(batch.id)
+    lens_rows = None
+for art in batch:
+    if lens_rows is None:
+        art.s_final, art.status = art.s_det, "det_fallback"   # deterministic baseline
+    else:
+        art.s_final = 0.4 * art.s_det + 0.6 * agent_score(lens_rows[art.id])
+```
+
+*(Illustrative sketch of the pattern, not the production code.)* The timeout scales with batch size: a base plus a per-article allowance, under a hard ceiling.
+
+**What "asynchronously" means here.** It describes how batches execute: many batches in flight under a concurrency cap. It does **not** mean "the LLM queries ClickHouse, just asynchronously". The model never gets a SQL tool on the scoring path. If an interviewer says "so the LLM still queries ClickHouse, just async?", correct them politely.
+
+**Why this design.** Letting an LLM write SQL against a 2.11B-row production table invites runaway scans, connection pool exhaustion, prompt injection and accidental writes. JSON payloads make the model's input small, reviewable and reproducible. ReplacingMergeTree fits ClickHouse's strength: it is append-first, and in-place updates (mutations) are slow and heavy. Versioned inserts make retries safe. The fallback means availability does not depend on an LLM vendor.
+
+**Alternatives considered and why not.**
+- *Give the agent a read-only SQL tool.* Rejected for the scoring path. Even read-only queries can scan billions of rows and starve planners' pivots.
+- *Plain MergeTree with delete-then-insert.* Rejected as the default. Deletes are mutations in ClickHouse, and thousands of them during a long run are expensive.
+- *Fail the run on LLM timeout.* Rejected. One vendor 504 should not stall 88k items.
+- *Exactly-once writes with a transaction.* Not available across an LLM provider and ClickHouse. Versioned idempotent writes are the honest answer.
+
+**Trade-off.** Readers must dedupe (argMax or LIMIT 1 BY) until merges collapse duplicates. And an article that fell back is decided by rules alone, so telemetry has to show how many fell back.
+
+**What I would do differently.** Make the "fell back" status more visible to planners in the UI, so they know which decisions had no agent input.
+
+**The numbers.**
+
+| Number | What it measures | Source | How to say it | Do not say |
+|---|---|---|---|---|
+| **2.11B rows** (PDF) | Size of the ClickHouse master fact table the engine reads from | Table row count | "a 2.11-billion-row ClickHouse master" | Confuse it with 4.09B (the attr weekly copy, C5) or 250M (the pivot harness, C4). |
+
+**Questions they will ask.**
+
+**Q: Why ReplacingMergeTree instead of MergeTree?**
+Because retries and overlapping waves can write the same article twice. ReplacingMergeTree keeps the latest version per key once parts merge, so duplicates are harmless. Readers do not wait for the merge. They use argMax on `computed_at` or LIMIT 1 BY to pick the newest row. I avoid `FINAL` as a runtime requirement because it forces a merge on every read.
+
+**Q: What exactly happens on an LLM timeout?**
+The in-flight batch has a hard timeout. If it fires, or the provider errors after retries, the batch is marked as a fallback in telemetry and each article keeps its precomputed deterministic score. The rest of the run continues. The row records that it fell back, so we can count and re-run those later with resume.
+
+**Q: Isn't eventual consistency risky for business decisions?**
+The window is short and bounded, and the risk is only duplicate versions of the same article, never a mixed or half-written decision. Readers always pick the latest version. Decisions are batch outputs a planner reviews, not a bank balance, so seconds of convergence do not change any outcome.
+
+**Q: Did you build the CDC pipeline into ClickHouse?**
+No. There is a Postgres-to-ClickHouse CDC tool at IA, but a colleague (Ashvin Sharma) authored it, and it is not part of this bullet. This bullet is about how the agent plane reads and writes.
 
 ---
 
-### 6. Observability split: LangSmith vs Datadog vs PostHog; shared OTEL `trace_id`
+### A3. Shared orchestration registry: timeouts, breakers, checkpoints, config_hash, telemetry
 
-**Interviewer Q:** Three observability products is vendor sprawl. Why not one Datadog for everything? How do you debug "agent said X but Go returned Y"?
+> **PDF:** Engineered a shared orchestration registry to guarantee 88k-article batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.
 
-**Candidate A:** They answer three different questions; collapsing them loses signal.
+**In plain words.** All three pipelines run on one harness. It makes a long batch run survive an LLM provider outage, restart without redoing the expensive or already-finished work, and leave a fingerprint on every result so we always know which prompts and settings produced it.
 
-| Layer | Tool | Owns | Emits from |
+**How it works.**
+
+1. **Freeze the config.** At run start the registry computes `config_hash`, a SHA-256 over the guardrails, parameters, prompt files and catalog. Editing any prompt changes the hash.
+
+```python
+import hashlib, json
+def config_hash(cfg: dict, prompt_paths: list[str]) -> str:
+    h = hashlib.sha256(json.dumps(cfg, sort_keys=True).encode())
+    for p in sorted(prompt_paths):
+        h.update(open(p, "rb").read())
+    return h.hexdigest()      # 64 hex chars, stored as FixedString(64)
+```
+
+2. **Hard timeouts** on every LLM call, scaled by batch size with a ceiling.
+3. **Circuit breaker.** If failures pile up (about 5 consecutive failures, or the failure fraction passes a threshold), the step stops instead of burning tokens on a dead provider. An adaptive pool also halves parallelism after a failure streak and dials back up after successes.
+4. **Durable checkpoints.** Deterministic results land first in `det.json`. As LLM chunks finish, per-article progress is appended to `agent_progress.json`. A restart with `--resume` reloads the deterministic results, skips finished articles, and continues the LLM phase. That is what "bypass redundant deterministic scoring" means.
+
+```text
+run 1: det for 88k done -> det.json
+       LLM progress 41k articles -> agent_progress.json
+       provider outage -> breaker trips, run stops cleanly
+run 2 (--resume): load det.json (no det recompute)
+       skip 41k finished, continue LLM for the rest
+```
+
+5. **Telemetry.** Each run writes JSON telemetry: tokens, USD cost, step duration, and batch fallbacks. So "how much did this run cost and where did it fail" has a file-level answer.
+6. **Stamp every row** with `config_hash` and `computed_at`.
+
+**Why this design.** A provider 502 or 504 halfway through 88k items must not force a full deterministic recompute or double the LLM bill. And when a planner asks "why did this article flip from Keep to Drop between two runs?", `config_hash` tells you immediately whether the prompts or settings changed.
+
+**Alternatives considered and why not.**
+- *Airflow or Temporal.* Both are good orchestrators. I did not use them because this workload needed application-native resume tightly coupled to ClickHouse inserts, config hashing and per-run token and USD telemetry. Adding a separate orchestration platform was extra infrastructure for a batch CLI and HTTP start path we already owned. If the number of pipelines or cross-team dependencies grew, I would revisit Temporal.
+- *Ad-hoc scripts per pipeline.* Rejected. Three copies of retry logic drift apart.
+- *A library like Hystrix as the product.* Not the point. The breaker is a small run-level control.
+
+**Trade-off.** We own the harness code and its tests. In return we get exactly the resume semantics the data model needs.
+
+**What I would do differently.** Ship the telemetry into a dashboard sooner instead of reading JSON files per run.
+
+**The numbers.** 88k (PDF) is the same pass size as A1. "About 5 consecutive failures" is the default breaker threshold (MEASURED config, VERBAL).
+
+**Questions they will ask.**
+
+**Q: How do checkpoints work?**
+The deterministic results land first and are saved. As each LLM chunk completes, we append per-article progress. On restart with resume, we reload the deterministic file, skip every article already finished, and continue the LLM phase. So an outage costs us only the in-flight batch, never the deterministic pass and never the finished LLM work.
+
+**Q: What is in the config hash and why stamp every row?**
+It is a SHA-256 over the frozen guardrails, parameters, prompt text and catalog. Every output row carries it. If two runs disagree on an article, I compare hashes first. Different hash means a config or prompt change explains it. Same hash means look at the data or the model.
+
+**Q: Why not Airflow or Temporal?**
+I needed resume semantics that are coupled to how we write ClickHouse and how we hash config, plus per-run cost telemetry. An external orchestrator would still need all that code, plus its own infrastructure. For three pipelines owned by one team, the in-app registry was the smaller system.
+
+**Q: Is LangSmith used here?**
+Not on this bullet. On the resume, LangSmith is for Ask Iris. Batch observability here is the custom JSON telemetry and `config_hash`.
+
+**Q: Is there a human review queue for low-confidence scores?**
+No. There is no human-in-the-loop queue in this pipeline. Earlier online critic and evaluator agents only nudged confidence and almost never changed a decision, so we turned them off and replaced them with offline evaluations (A5).
+
+---
+
+### A4. Ask Iris: JWT-secured WebSocket copilot
+
+> **PDF:** Shipped "Ask Iris," a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a LangGraph supervisor with a 3-attempt evaluator loop, utilizing LangSmith for observability, and strictly freezing hierarchy access on the initial socket handshake.
+
+**In plain words.** Ask Iris is a chat panel inside AssortSmart. A planner can ask "why did we drop article A1?" or "what was sell-through for kids' footwear last season?" and get an answer grounded in the real data. Two things could go wrong with a chat like that: the model could loop forever burning tokens, or a user could talk it into showing another team's or another retailer's data. The design blocks both.
+
+**How it works.**
+
+1. **Handshake.** The browser opens a WebSocket with a JWT (in the `Authorization: Bearer` header or a `?token=` query parameter). The server verifies it once.
+2. **Freeze scope.** From the verified claims we resolve tenant and hierarchy access into a `plan_scope` and freeze it for the life of the socket. Every tool call inherits that frozen scope. A later chat message cannot widen it.
+
+```python
+@app.websocket("/ask-iris")
+async def ask_iris(ws: WebSocket):
+    claims = verify_jwt(ws.headers.get("authorization") or ws.query_params.get("token"))
+    if claims is None:
+        await ws.close(code=4401); return
+    plan_scope = freeze(resolve_scope(claims))   # immutable for this socket
+    await ws.accept()
+    async for msg in ws.iter_text():
+        answer = await graph.ainvoke({"question": msg, "scope": plan_scope})
+        await ws.send_json(answer)
+```
+
+*(Illustrative sketch.)*
+
+3. **Supervisor.** A LangGraph supervisor node routes the question to the right worker (KPI lookup, decision inspection and so on).
+4. **Evaluator loop.** An evaluator checks the draft answer. If it is not good enough it asks for another attempt, up to `MAX_ATTEMPTS = 3`. After that it fails closed with a graceful answer instead of another tool hop. The graph also has a recursion limit.
+
+```python
+MAX_ATTEMPTS = 3
+def route_after_eval(state):
+    if state["verdict"] == "ok":
+        return "respond"
+    if state["attempts"] >= MAX_ATTEMPTS:
+        return "graceful_fail"
+    return "supervisor"            # retry with feedback
+```
+
+5. **LangSmith.** Every run is traced: which node ran, which prompt, which tool, tokens and cost. That is how we debug "Iris said something odd".
+
+**Why this design.** Chat is the riskiest surface in the product. It takes free text from users, it can loop, and it touches multi-billion-row data. Freezing scope at the handshake means tenant isolation does not depend on the model behaving. Capping the evaluator at 3 attempts puts a hard ceiling on tokens and latency per question.
+
+**Alternatives considered and why not.**
+- *Re-check scope from each message.* Rejected. It invites "pretend I am the admin" style prompt attacks and adds a round trip per message.
+- *Plain function-calling loop in FastAPI.* Fine for one-shot tool use, but control flow ends up in ad-hoc while loops. LangGraph makes nodes, edges, state and loop limits explicit.
+- *No evaluator.* Cheaper, but wrong answers go straight to the planner.
+- *Unbounded self-correction.* That is exactly the infinite loop we are preventing.
+
+**Trade-off.** More framework surface (LangGraph) and an extra LLM call for evaluation. A planner who needs a different scope opens a new session.
+
+**What I would do differently.** Build a small offline eval set for Ask Iris questions, the way A5 does for Keep/Drop, so prompt changes to Iris also go through a gate.
+
+**The numbers.** **3 attempts** (PDF) is the evaluator cap (`MAX_ATTEMPTS = 3`). "Multi-billion-row database" (PDF) describes the ClickHouse data behind it. There are **no** usage, latency or SLA numbers for Ask Iris. It is a shipped capability. Do not invent questions per week, response times or tenant counts.
+
+**Questions they will ask.**
+
+**Q: How do you prevent multi-tenant leaks in a chat?**
+Scope is decided once, at the JWT handshake, and frozen for the whole socket. Every tool call inherits that frozen `plan_scope`. So even if a user types "show me the other region's data", there is no code path that widens the scope mid-session. Isolation is enforced by code, not by asking the model nicely.
+
+**Q: How do you stop infinite LangGraph loops?**
+Two limits. The evaluator loop is capped at 3 attempts, after which it returns a graceful "I couldn't answer that reliably" instead of trying again. And the graph has a recursion limit. Both are hard caps, so cost per question is bounded.
+
+**Q: Why WebSocket instead of REST?**
+Chat is conversational and benefits from one authenticated, long-lived connection where the scope is fixed once. With REST every call would need to re-establish identity and scope, which is exactly where drift creeps in.
+
+**Q: Is Ask Iris live? What is its SLA?**
+It shipped as a capability planners use. I don't quote an SLA or usage numbers for it, because I don't have published ones I can stand behind.
+
+**Q: Can Iris change a decision?**
+It is for querying KPIs and inspecting decisions. The Keep/Drop package follows the same principle in its "dig deeper" Q&A path: it is read-only, and its answer schema echoes the locked scores, so explaining a decision can never change it.
+
+*Follow-up they may ask:* "Why LangSmith and not just Datadog?" Datadog tells you an HTTP call was slow. LangSmith tells you which prompt version, which tool and how many tokens a particular answer used, and lets you replay it. They answer different questions.
+
+---
+
+### A5. 300-case proxy evaluation harness and 80% CI gate
+
+> **PDF:** Built a 300-case proxy evaluation harness and an 80% accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by 73% at 100% coverage by benchmarking models against a 74% deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.
+
+**In plain words.** LLMs are non-deterministic and the outcome is money, so a prompt or model change must prove it made decisions better, not just different. I built an offline test set of 300 labelled cases and a gate: a new config is only promoted if it gets at least 80% right. Separately, I benchmarked candidate models on a 200-case set. We picked a model that was 73% cheaper and completed every case. On that same benchmark the plain deterministic rule scored 74%, and the blended LLM scored lower than that, so we froze the blend weights instead of retuning them on a small set.
+
+**How it works.**
+
+*The 300-case proxy gold set.* We had no planner-labelled cases at first, so labels come from what actually happened next season. The engine scores season A (74). Truth comes only from season B (76).
+
+- **Drop** label: weak in season B (low sell-through **and** low rate of sale).
+- **Keep** label: strong in season B (high sell-through **and** high rate of sale).
+- Anything in between is ambiguous and deliberately skipped.
+- Balanced: 150 Keep and 150 Drop, capped per category.
+
+Two traps had to be designed out, or the accuracy number would mean nothing:
+
+| Trap | Why it breaks the eval | Fix |
+|---|---|---|
+| **Circularity** | Season-A rate of sale is 45% of `s_det`. Labelling on it would grade the engine against its own input. | Labels use only season-B numbers, which the engine never sees when scoring season A. |
+| **Treatment leakage** | An article the planner already dropped sells zero in season B by construction. Its "Drop" label would encode a past human decision, not dead demand. | Require the article to be present in both seasons and stocked in enough store-weeks in season B, so zero sales means "stocked and didn't sell". |
+
+We also filtered dirty data: placeholder SKUs (colour dummies, unmapped articles) and negative quantities from returns.
+
+*The gate.*
+
+```json
+{
+  "use_proxy_golden": true,
+  "gold_proxy_file": "cases.json",
+  "gold_min_accuracy": 0.8,
+  "gold_min_drop_recall": 0.0,
+  "promote_requires_suite_pass": true
+}
+```
+
+The suite also checks two invariants: ramps are monotonic (a higher KPI never scores lower), and margin alone cannot force a Drop (`s_det = 0.9, s_agent = 0.4` must still be Keep). If the gate fails, the pipeline exits non-zero and the config is not promoted.
+
+*The 200-case model benchmark (separate).* We ran candidate models on a 200-case gold set. The chosen model completed 200 of 200 cases with full lens coverage, at 73% lower cost than the model it replaced. A cheaper "nano" option left rows pending (incomplete), so completion reliability won. On that set the deterministic rule at its production threshold (0.65) scored 74%. The blended LLM scored about 63%, below the free rule. So we did not retune the 0.4 and 0.6 weights to chase a small proxy set. We froze them.
+
+**Why this design.** A gate turns "I think the new prompt is better" into a pass or fail. Benchmarking against a free deterministic rule keeps us honest: if the model cannot beat simple math, it should not get more weight. Freezing weights avoids overfitting to 200 or 300 cases.
+
+**Alternatives considered and why not.**
+- *LLM-as-judge online critic.* We had online critic and evaluator agents. They only multiplied confidence and almost never changed a decision. Offline evals are cheaper and actually gate changes.
+- *Accuracy only.* Accuracy alone hides over-keeping. A set that is mostly Keeps can clear 80% while missing half the Drops. The gate has drop-recall and keep-recall knobs so we can tighten it.
+- *Human review queue.* Not built. Offline evals replaced it.
+- *Wait for planner labels.* We designed for them (a planner gold file with minimum size and per-class balance) but did not wait. The proxy set stays as the cheap baseline.
+
+**Trade-off.** Proxy labels measure "did demand hold up", not "was this the right range decision". About a hundred merchant-labelled articles would outrank the whole proxy set.
+
+**What I would do differently.** Raise the drop-recall gate from day one. The first real gold run showed the pipeline almost never missed a true winner but kept too many weak articles. That over-keep pattern is the main thing to move. If asked for exact figures from that run, keep it qualitative.
+
+**The numbers.**
+
+| Number | What it measures | How it was derived | Why it mattered | How to say it | Do not say |
+|---|---|---|---|---|---|
+| **300 cases** (PDF) | Size of the proxy gold set | 150 Keep plus 150 Drop, labels from season-76 sales for season-74 scores | Big enough to gate changes, cheap to rebuild every season | "a 300-case proxy evaluation set" | That it is planner-labelled. |
+| **80%** (PDF) | Minimum accuracy to promote a config | `gold_min_accuracy: 0.8` in `eval.json` | Blocks regressions before planners see them | "an 80% accuracy CI gate for promotion" | "We run at 80% accuracy live for all tenants." |
+| **73%** (PDF) | Cost reduction per run from the model switch | Same 200 cases, cost of the chosen model versus the previous one | Live execution cost is token spend at 88k items per pass | "73% cheaper per run, with all 200 cases completing" | That the 300-case file measured it. |
+| **100% coverage** (PDF) | Every case completed with full lens output | 200 of 200 complete, nothing left pending | A cheaper model that leaves rows pending is not cheaper | "at 100% coverage, nothing pending" | That 100% means 100% accuracy. |
+| **74%** (PDF) | Accuracy of the deterministic rule alone | Rule threshold 0.65 on the same 200 cases | The free baseline any model must beat | "a 74% deterministic baseline" | That 74% is the engine's live accuracy. |
+| **~63%** (VERBAL) | Accuracy of the blended LLM on that 200-case set | Same benchmark | Below 74%, so we froze weights | "the blend came in below the rule, so we froze weights" | That the LLM is "worse" in general. It lost on a small proxy set. |
+
+Model names (the chosen and replaced models) are VERBAL. They are not on the PDF.
+
+**Questions they will ask.**
+
+**Q: What did you do when the LLM scored below the deterministic baseline?**
+We froze the blend weights at 0.4 and 0.6 instead of retuning them. Retuning on a 200-case proxy set would be overfitting, and a model that loses to a free rule on that set has not earned more weight. Promotion still requires the 80% gate on the 300-case set, so nothing ships just because it is new.
+
+**Q: How did you choose the cheaper model?**
+On the 200-case benchmark it completed 200 of 200 cases with full lens coverage at 73% lower cost than the model it replaced. A cheaper option left rows pending, and an incomplete row falls back to the rule anyway, so completion reliability won over raw price.
+
+**Q: How do you avoid grading the model against its own inputs?**
+Labels come only from the next season's sales, which the engine never sees when it scores the current season. We also require the article to be stocked in the next season, so a zero means it really didn't sell and not that a planner already dropped it.
+
+**Q: Is 80% your production accuracy?**
+No. 80% is the bar a new config must clear to be promoted. It is a gate, not a claim that every tenant sees 80% accuracy live.
+
+**Q: Why is accuracy not enough?**
+Because the pipeline tends to over-keep. A mostly-Keep set can clear 80% accuracy while catching only a fraction of the Drops. The gate has drop-recall and keep-recall thresholds for exactly that reason, and raising drop recall is the next lever.
+
+*Follow-up they may ask:* "How would you move from proxy to planner labels?" Collect 50 to 300 obvious Keep and Drop labels from merchants, validate size and balance (at least 50 rows, at least 20 per class), flip `use_proxy_golden` to false, raise the drop-recall gate, and keep the proxy set for CI as a fallback.
+
+---
+
+## 6. Core Infrastructure & Pipeline (C1 to C5)
+
+### C1. Multi-tenant Go/Gin platform at 10k peak RPS
+
+> **PDF:** Architected a multi-tenant Go/Gin platform scaling to 10k peak RPS, utilizing Google Wire for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native h2c, nested timeouts, and Datadog distributed tracing.
+
+**In plain words.** The main AssortSmart API is a Go service built on Gin. It serves many retailers at once and peaks at about 10,000 requests per second. It is the HTTP edge itself: there is no nginx or Envoy layer we operate in front, so the Go process protects itself with its own timeouts and limits. Dependencies are wired at compile time, and every request is traced in Datadog.
+
+**How it works.**
+
+*Compile-time dependency injection with Wire.* You declare providers (functions that build a thing), and Wire generates the plain Go code that calls them in the right order.
+
+```go
+//go:build wireinject
+func InitServer(cfg Config) (*http.Server, error) {
+    wire.Build(
+        NewRedis, NewPostgres, NewClickHouse,
+        NewAuthService, NewKPICompiler, NewPivotHandler,
+        NewRouter, NewHTTPServer,
+    )
+    return nil, nil
+}
+// `wire` generates wire_gen.go. A missing provider is a build error, not a 3 a.m. nil pointer.
+```
+
+*h2c and server-level timeouts.* Illustrative setup:
+
+```go
+h2s := &http2.Server{}
+srv := &http.Server{
+    Addr:              ":8080",
+    Handler:           h2c.NewHandler(router, h2s), // HTTP/2 without TLS
+    ReadHeaderTimeout: 5 * time.Second,             // slow-header (Slowloris) guard
+    ReadTimeout:       30 * time.Second,
+    WriteTimeout:      60 * time.Second,
+    IdleTimeout:       120 * time.Second,
+}
+```
+
+*Nested timeouts.* The outer server timeout bounds the whole connection. Inside, each handler sets a context deadline, and each downstream call (Redis, Postgres, ClickHouse) gets a shorter deadline derived from that context. A slow ClickHouse query is cancelled before the request deadline fires, so the handler can still return a clean error.
+
+```go
+func (h *PivotHandler) Get(c *gin.Context) {
+    ctx, cancel := context.WithTimeout(c.Request.Context(), 25*time.Second)
+    defer cancel()
+    rows, err := h.ch.Query(ctx, sql, args...)   // inherits the deadline
+    if errors.Is(err, context.DeadlineExceeded) {
+        c.JSON(http.StatusGatewayTimeout, gin.H{"error": "pivot timed out"}); return
+    }
+    // ...
+}
+```
+
+*(Timeout values are illustrative. If asked for the real values, keep it qualitative.)*
+
+*Self-protection.* Because there is no proxy in front that we run, the process itself owns body size caps, header timeouts, and graceful shutdown on SIGTERM (stop accepting, drain in-flight requests, then exit).
+
+*Datadog tracing.* Middleware starts a span per request. Database clients create child spans. One trace shows "this pivot spent 9 of its 11 seconds in ClickHouse".
+
+**Why this design.** Go gives cheap concurrency (a goroutine per request), a single static binary, and predictable memory, which suits a throughput-shaped API. Wire moves wiring errors to build time with no runtime reflection. Owning timeouts in the process removes one hop and one more system to operate, and puts the timeout logic next to the code that knows how long each query should take.
+
+**Alternatives considered and why not.**
+- *Uber Fx or Dig (runtime DI).* They use reflection at startup, so wiring mistakes show up when the service boots or when a path runs. Wire fails the build instead.
+- *nginx or Envoy as the timeout layer.* Workable, but it is another layer to operate, and it cannot know per-query budgets. We kept protection in the process.
+- *Python (FastAPI) as the public edge.* Python stays where it shines, the agent plane. The high-throughput edge is Go.
+- *Fiber instead of Gin.* Fiber is built on fasthttp, which does not use the standard `net/http` interfaces, so standard middleware and h2c support do not just plug in. Gin sits on `net/http`.
+
+**Trade-off.** We own timeouts, body caps and shutdown draining ourselves instead of inheriting them from a proxy. That is more code to get right, and it must be tested.
+
+**What I would do differently.** Write load-shedding (rejecting work early under overload) as an explicit, tested middleware from the start.
+
+**The numbers.**
+
+| Number | What it measures | Source | How to say it | Do not say |
+|---|---|---|---|---|
+| **10k peak RPS** (PDF) | Peak requests per second at the Go edge | Resume claim from platform metrics | "The edge peaks at about ten thousand requests per second." | An SLA (like 99.9%), a p99, tenant counts, or anything about multi-region. None of those are on the resume. |
+
+**Questions they will ask.**
+
+**Q: Why Wire over Fx or Dig?**
+Wire is compile-time. It generates ordinary Go code, so a missing or mismatched dependency fails the build rather than a request. There is no reflection at runtime and the generated file is readable. For a platform many engineers touch, catching wiring mistakes in CI is worth a bit of codegen.
+
+**Q: No reverse proxy, isn't that risky?**
+It means the Go process has to do what a proxy would: header and body timeouts, body size caps, graceful shutdown. We do those explicitly, with nested timeouts down to each database call. The benefit is one less hop and one less system, and the timeouts live in the code that knows each query's budget.
+
+**Q: What is h2c and why use it?**
+h2c is HTTP/2 over plain TCP. You get HTTP/2 multiplexing (many requests over one connection) without TLS inside a trusted network. Go's `h2c` handler wraps the router so the same server speaks HTTP/1.1 and HTTP/2.
+
+**Q: Did you run the Kubernetes cluster?**
+No. I don't claim Kubernetes cluster operations. My ownership is the Go service, its wiring, timeouts and tracing.
+
+**Q: How would you handle bulk saves in Go without melting ClickHouse?** (design discussion)
+A bounded worker pool: a channel and a fixed number of workers, so a burst of saves cannot spawn unbounded goroutines. Each worker sends a large batch insert, every handler has a context timeout, and each batch carries an id plus a content hash so a retry is safe. The failure modes to watch are goroutine leaks on missing cancel paths, and too many small inserts creating merge pressure on ClickHouse parts.
+
+---
+
+### C2. Dynamic KPI configurator and custom formula parser
+
+> **PDF:** Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into parameterized ClickHouse SQL fragments with native division-by-zero protection, decoupling business logic from code releases.
+
+**In plain words.** Every retailer defines some KPIs slightly differently. Before, changing a KPI formula meant changing code and waiting for a release. Now an operator writes the formula as text, and a small compiler in Go turns it into safe ClickHouse SQL on the fly. It cannot be used to inject SQL, and dividing by zero yields 0 instead of breaking the screen.
+
+**How it works.**
+
+1. **Tokenize.** Split the text into tokens: identifiers, numbers, operators, parentheses, function names.
+2. **Parse.** Build an expression tree with normal operator precedence (multiply and divide before add and subtract).
+3. **Resolve names.** Logical names an operator understands (`units`, `eop`) map to physical columns or expressions through a catalog. Unknown names fail.
+4. **Allowlist functions.** Only approved functions are accepted. Anything else fails closed.
+5. **Parameterize.** Literal numbers become bound parameters, not pasted text.
+6. **Wrap.** The final expression is wrapped in `ifNotFinite(toFloat64(expr), 0)`, so division by zero (which gives Inf or NaN in ClickHouse) becomes 0.
+
+Worked example. The operator writes:
+
+```text
+sell_through = units / (units + eop) * 100
+```
+
+Tokens:
+
+```text
+IDENT(units) SLASH LPAREN IDENT(units) PLUS IDENT(eop) RPAREN STAR NUMBER(100)
+```
+
+Catalog: `units -> sum(qty)`, `eop -> sum(eop_units)`. Output fragment:
+
+```sql
+ifNotFinite(toFloat64(sum(qty) / (sum(qty) + sum(eop_units)) * {p0:Float64}), 0) AS sell_through
+-- params: p0 = 100
+```
+
+A tiny tokenizer sketch (illustrative):
+
+```go
+func tokenize(s string) ([]Token, error) {
+    var out []Token
+    for i := 0; i < len(s); {
+        switch c := s[i]; {
+        case c == ' ':
+            i++
+        case strings.ContainsRune("+-*/()", rune(c)):
+            out = append(out, Token{Kind: Op, Text: string(c)}); i++
+        case unicode.IsDigit(rune(c)):
+            j := i; for j < len(s) && (unicode.IsDigit(rune(s[j])) || s[j] == '.') { j++ }
+            out = append(out, Token{Kind: Number, Text: s[i:j]}); i = j
+        case unicode.IsLetter(rune(c)) || c == '_':
+            j := i; for j < len(s) && (unicode.IsLetter(rune(s[j])) || unicode.IsDigit(rune(s[j])) || s[j] == '_') { j++ }
+            out = append(out, Token{Kind: Ident, Text: s[i:j]}); i = j
+        default:
+            return nil, fmt.Errorf("unexpected character %q at %d", c, i) // fail closed
+        }
+    }
+    return out, nil
+}
+```
+
+An attack like `units; DROP TABLE x` fails at the tokenizer (`;` is not a legal character). `sleep(10)` fails at the function allowlist. `secret_col` fails at name resolution.
+
+**Why this design.** KPI definitions are business logic that changes far more often than code. Moving them into data removes the release train from the loop. Compiling into SQL fragments (instead of computing in Go) keeps the heavy math inside ClickHouse, next to the data. The guard against injection is structural: parse, allowlist, resolve. It is not string escaping.
+
+**Alternatives considered and why not.**
+- *Hard-coded SQL per KPI.* That was the bottleneck. Every change needed a deploy.
+- *Let operators paste raw SQL.* Injection risk, and no way to enforce division-by-zero safety or column mapping.
+- *Evaluate formulas in Go after fetching rows.* Would pull far too much data out of ClickHouse.
+- *A general expression library.* Possible, but we needed tight control of the allowed grammar and the exact SQL emitted.
+
+**Trade-off.** The grammar is intentionally small. A new kind of function needs a code change to the allowlist. That is the point.
+
+**What I would do differently.** Add a "dry run" preview so operators see the compiled SQL and a sample result before saving.
+
+**The numbers.** None on this bullet. Do not invent a "deploys saved" count.
+
+**Questions they will ask.**
+
+**Q: How do you prevent SQL injection?**
+We never concatenate operator text into SQL. The formula has to tokenize and parse under a small grammar, functions must be on an allowlist, and every identifier resolves through the catalog to a known column. Literals are bound as parameters. Anything unknown fails closed with an error to the operator.
+
+**Q: What does division-by-zero protection mean here?**
+In ClickHouse, dividing by zero in floating point gives Inf or NaN, which then poisons JSON and charts. The compiler wraps every KPI expression in `ifNotFinite(toFloat64(expr), 0)`, so a zero denominator yields 0. It is applied once at compile time, so no formula can forget it.
+
+**Q: Is this a prepared statement?**
+Partly. Literals are bound parameters. But the main guard is that the SQL structure itself is generated from a parse tree with allowlisted pieces. A prepared statement around free-form SQL would not be safe.
+
+**Q: What does "real-time compilation" mean?**
+The formula is compiled when it is used or saved, at request time. There is no build or deploy step between an operator changing a formula and planners seeing the new KPI.
+
+---
+
+### C3. Multi-tenant isolation and UAM-scoped access across PostgreSQL and ClickHouse
+
+> **PDF:** Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.
+
+**In plain words.** Many retailers share the platform, and within one retailer each user may only see part of the product hierarchy. Every request is authenticated through a chain of identity providers with a Redis cache in front, and every query (in both Postgres and ClickHouse) is limited to the user's tenant and hierarchy scope. This is access control. It is not an encryption product.
+
+**How it works.**
+
+```mermaid
+sequenceDiagram
+  participant U as Client
+  participant G as Go edge
+  participant R as Redis
+  participant F as Firebase Admin
+  participant J as JWT or Google OIDC
+  participant P as PostgreSQL
+  U->>G: request with bearer token or API key
+  G->>R: verified identity cached?
+  alt cache hit
+    R-->>G: identity
+  else cache miss
+    G->>F: verify Firebase token
+    F-->>G: valid or not a Firebase token
+    G->>J: verify JWT or Google OIDC token
+    J-->>G: identity
+    G->>R: cache identity with TTL
+  end
+  G->>P: resolve roles and UAM scope
+  P-->>G: tenant, roles, hierarchy scope
+  G->>G: run handler under that scope
+```
+
+*What to notice: a Redis miss falls through to real verification. The system never "fails open".*
+
+1. **Waterfall.** Try the cache first. On a miss, try Firebase Admin verification, then JWT or Google OIDC. The first verifier that succeeds wins. Then cache the result.
+2. **API keys** for service-to-service calls are compared in constant time:
+
+```go
+import "crypto/subtle"
+func keyMatches(given, stored []byte) bool {
+    return subtle.ConstantTimeCompare(given, stored) == 1
+}
+```
+
+Normal `==` stops at the first different byte, so response time leaks how many leading bytes were right. Constant-time compare always takes the same time.
+
+3. **Roles and UAM in Postgres.** Postgres holds tenants, users, roles and hierarchy scopes. It is small, transactional and must be correct, which is what Postgres is good at.
+4. **Scope on every query.** The same tenant id lives in Postgres (identity) and in ClickHouse (facts). Handlers add tenant and hierarchy predicates to every ClickHouse query. UAM scope intersects with the product and store hierarchy, for example "only L2 = kids footwear, region North".
+
+**Why this design.** Tenant data bleed is the worst bug a SaaS can ship. Putting scope in middleware and query builders means a handler author cannot forget it. The Redis front keeps identity verification off the hot path for every request. The waterfall exists because different callers arrive with different identity types (Firebase users, Google identities, service tokens).
+
+**Alternatives considered and why not.**
+- *Verify against the identity provider on every call.* Too slow and too dependent on an external service.
+- *Fail open on cache or provider trouble.* Never. A miss falls through to Postgres and the verifiers.
+- *Separate databases per tenant for everything.* Heavier to operate. Logical isolation with enforced scope was the chosen model. If asked about per-tenant databases, keep the answer qualitative.
+- *A homegrown auth server.* No reason to rebuild what Firebase and OIDC already do well.
+
+**Trade-off.** A cached identity is valid until its TTL expires, so revocation is not instant. The TTL is the knob that trades latency for revocation speed.
+
+**What I would do differently.** Add automated cross-tenant "canary" tests that try to read another tenant's data on every release.
+
+**The numbers.** None. Do not quote auth latency as a published number. Say "Redis-fronted" and keep it qualitative.
+
+**Questions they will ask.**
+
+**Q: Isolation or encryption?**
+Isolation and access control. Every request is bound to one tenant and a hierarchy scope, and every query in Postgres and ClickHouse is filtered by it. I don't claim encryption-at-rest work or a privacy program on this bullet.
+
+**Q: Why constant-time comparison for API keys?**
+A normal string compare returns as soon as it hits a different byte, so an attacker can measure response times and guess a key byte by byte. Constant-time compare always walks the full length, so timing leaks nothing.
+
+**Q: What happens when Redis is down or the cache misses?**
+We fall through to real verification (Firebase, then JWT or OIDC) and to Postgres for roles. It gets slower, but it never lets a request through unverified.
+
+**Q: Why both Postgres and ClickHouse?**
+Postgres is the transactional store for identity, UAM and roles, where correctness and constraints matter. ClickHouse is the analytical store for the facts planners pivot over. The same tenant id is the join key across both, and scope is applied on both.
+
+*Follow-up they may ask:* "Is Milvus part of this?" No. Milvus is in my Uber Eats Menu work (RAG embeddings), not at Impact Analytics.
+
+---
+
+### C4. 15.5x faster planner pivots, and the 170 GB OOM fix
+
+> **PDF:** Reduced planner pivot latency by 15.5x (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.
+
+**In plain words.** Two separate wins in one bullet. **Query time:** heavy planner pivots used to take minutes on PostgreSQL. On a 250M-row benchmark the heavy pivot went from 189 seconds to about 12 seconds on ClickHouse, and the production design serves those screens from pre-computed rollup tables. **Load time:** building the weekly rollups crashed with an out-of-memory error, because one insert tried to aggregate a whole season at weekly grain (about 170 GB of state). I sliced the build to one fiscal week per insert and capped memory and spill. The two are not cause and effect.
+
+**How it works: the six rollup tables.** Raw data is SKU by store by date. Planners cannot GROUP BY that on every click. So we pay once at load time and keep six MergeTree tables, all `PARTITION BY season_code`:
+
+| Grain | Product (keeps SKU dimensions) | Store (no SKU) | Attribute (unpivoted product attributes) |
 |---|---|---|---|
-| L1 Agent quality | **LangSmith** | run trees, replay, evals, tokens, cost | FastAPI Agent Service (Agent → L1) |
-| L2 Platform health | **Datadog** | HTTP/DB latency, errors, infra, Go doing-layer SLOs | Agent → L2 **and** Go → L2 (HTTP/DB) |
-| Product analytics | **PostHog** | user behaviour (chat vs manual screens, funnel) | Frontend |
+| Season | product_season | store_season | attr_season |
+| Weekly | product_weekly | store_weekly | attr_weekly |
 
-**Shared OTEL `trace_id`** stitches L1 ↔ L2: one planner utterance → LangSmith run tree (which tool, which prompt version, token/cost) ↔ Datadog spans (Go REST timing, CH query, GCS I/O). Without shared trace IDs you get two timelines that cannot be joined when the LLM "succeeded" but the tool timed out.
+The attribute tables unpivot product attributes (one row per attribute pair, using `ARRAY JOIN`), which is why `attr_weekly` is the largest object, roughly 5 times product weekly on the Briscoes seasons we measured. Store totals are re-weighted so the sum of stores matches the sum of SKUs, and we validate `sum(product)` against `sum(store)` against `sum(attr)` at the same filters.
 
-**WHY not Datadog-only for agents:** Datadog sees HTTP and infra; it does not natively give prompt replay, dataset evals, or token attribution the way LangSmith does for LangGraph runs. **WHY not LangSmith-only:** it will not page you on Go p99 or CH part merges. **WHY PostHog:** product questions ("did planners abandon chat for manual?") are neither span metrics nor prompt traces.
+Illustrative DDL:
 
-**Tradeoffs:** three bills, three UIs, discipline required to propagate `trace_id` on A3 tool calls into Go. Mitigation: OTEL middleware on FastAPI and Gin; reject tools that drop context. Alerting: Datadog pages on SLO burn; LangSmith feeds offline eval / regression; PostHog informs UX, not paging. This split is **MEASURED design** from the HLD — do not invent production MTTR numbers.
+```sql
+CREATE TABLE product_weekly
+(
+  season_code Int64, fiscal_year_week Int32,
+  article String, l0_name String, l1_name String, l2_name String,
+  qty Float64, revenue Float64, margin Float64
+)
+ENGINE = MergeTree
+PARTITION BY season_code
+ORDER BY (l0_name, l1_name, l2_name, article, fiscal_year_week);
+```
+
+A pivot then reads one partition, only the needed columns, and already-summed rows.
+
+**How it works: the OOM fix.** Weekly rollups carry many aggregate states (on the order of a hundred `any()` states plus `argMax` and `argMin` over wide strings). A whole-season weekly `INSERT ... SELECT` was estimated at about 170 GB of aggregation state, and it failed with `MEMORY_LIMIT_EXCEEDED` even at 80 GB and 200 GB caps. Raising RAM was not the fix. Shrinking the unit of work was.
+
+```sql
+INSERT INTO product_weekly
+SELECT ...
+FROM daily_facts
+WHERE season_code = 74 AND fiscal_year_week = 202614   -- one fiscal week per insert
+GROUP BY season_code, fiscal_year_week, article, ...
+SETTINGS
+  max_threads = 8,
+  max_memory_usage = 55000000000,                  -- ~55 GB cap
+  max_bytes_before_external_group_by = 16000000000; -- spill to disk past ~16 GB
+```
+
+The generator ran with up to 4 weeks in flight. After slicing, a product week peaked around 11 GB, and an attribute week went over 40 GB (a 40 GB cap was too low for attribute weeks). One rule we learned: do not raise season parallelism and week parallelism together on the same box.
+
+**Why this design.** Columnar storage plus pre-aggregation is the standard answer for interactive analytics over hundreds of millions of rows. Partitioning by season matches how planners filter, and lets us rebuild or drop one season at a time. For the OOM, the unit of work was simply too big. One fiscal week is small, bounded and restartable.
+
+**Alternatives considered and why not.**
+- *Stay on Postgres and tune.* Postgres is a row store. Wide multi-column pivots scan whole rows, and grouped distinct counts do not parallelise well and spill. Our POCs (section 9) showed ClickHouse winning large analytical reads.
+- *Query raw daily facts in ClickHouse on every request.* Too many aggregate states per click. And `FINAL` on ReplacingMergeTree does not use projections.
+- *Materialized views only.* Useful for incremental updates, but the full rebuild still had to be bounded, and the incremental design was written but not executed.
+- *Just buy more RAM.* It failed at 200 GB. The unit was wrong, not the box.
+- *Snowflake or BigQuery for the interactive pivots.* Slot or warehouse latency variance and cost for an interactive UI. BigQuery stays upstream.
+
+**Trade-off.** Rollups are a second copy of the data that must be rebuilt and validated, and freshness depends on the load schedule. Slicing by week means more, smaller inserts, so total build time is longer, but every insert finishes.
+
+**What I would do differently.** Profile the memory per unit of work (per week, per table type) before the first full build, instead of discovering the limit by crashing.
+
+**The numbers.**
+
+| Number | What it measures | How it was derived | Why it mattered | How to say it | Do not say |
+|---|---|---|---|---|---|
+| **189s** (PDF, MEASURED) | Heavy planner pivot on the PostgreSQL path, 250M-row harness | Benchmark run, about 189.4 seconds | Planners waited three minutes per screen | "189 seconds on Postgres" | That this was measured on every tenant in production. |
+| **12s** (PDF, MEASURED) | Same pivot on ClickHouse | About 12.3 seconds, rounded to 12 | Usable for interactive planning | "about 12 seconds" | "Sub-second pivots." |
+| **15.5x** (PDF) | Speed-up ratio | 189.4 divided by 12.3 is about 15.4. 189 divided by 12 is 15.75. The resume says 15.5x. | Headline for the query-time win | "about fifteen and a half times, from 189 seconds to 12 seconds" | That the OOM fix caused it. |
+| **250M rows** (PDF) | Size of the benchmark harness | Row-identical dataset built for the pivot benchmark | Shows behaviour at multi-tenant growth scale | "on a 250-million-row harness" | Confuse it with 2.11B (A2) or 4.09B (C5). |
+| **170 GB** (PDF) | Estimated aggregation state for one whole-season weekly insert | Query memory estimate, failed at 80 GB and 200 GB caps | Weekly grain could not be built at all | "about 170 GB of aggregation state, which OOM'd" | That it is the size of the table. |
+| **55 GB, 16 GB, 8 threads, 4 weeks** (VERBAL) | Memory cap, spill threshold, threads, weeks in flight | Generated insert settings | The knobs that made weekly builds finish | Only if asked for the knobs | Present them as the PDF wording. The PDF says "temporal chunks" and "memory and disk-spill caps". |
+| **~11 GB, over 40 GB** (VERBAL) | Peak memory for one product week, one attribute week | Measured per week after slicing | Shows why attribute weeks were the memory hog | "a product week peaked around 11 GB, an attribute week over 40" | |
+
+**Say this carefully about the 15.5x.** A later re-measure showed that most of the 189-to-12 gap comes from distinct counts (option counts) on the heavy grid. Postgres's grouped `COUNT(DISTINCT)` cannot parallelise and spills to disk, while ClickHouse runs `uniqExact` in parallel. On typical aggregates without distinct counts, the ClickHouse lead was more like 2 to 3 times. So 15.5x is the honest number for the heavy distinct-count pivot, which is the planner screen that hurt. If an expert pushes, volunteer this.
+
+**Questions they will ask.**
+
+**Q: Did fixing the OOM cause the 15.5x?**
+No, they are separate. The 15.5x is query time, measured on the 250M-row pivot benchmark. The 170 GB OOM was load time, when building the weekly rollups. Fixing the OOM is what let weekly rollups exist at all, but it is not what made the pivot faster.
+
+**Q: Why did it OOM and how did you fix it?**
+ClickHouse holds aggregation state in memory, and a whole-season weekly GROUP BY over wide rows with many aggregate states needed about 170 GB. It failed at 80 GB and again at 200 GB caps. I changed the unit of work to one fiscal week per insert, capped memory at about 55 GB, let GROUP BY spill to disk past about 16 GB, and bounded threads and weeks in flight. Product weeks then peaked around 11 GB and attribute weeks over 40 GB.
+
+**Q: Why six tables and not one?**
+Planners look at three different cuts (product, store, attribute) at two time grains (season, week). Each cut needs different dimensions. The store tables drop SKU attributes, and the attribute tables unpivot. One wide table would either explode in size or force heavy aggregation at query time.
+
+**Q: Why ClickHouse over Postgres, BigQuery or Snowflake?**
+Postgres is a row store built for transactions, so multi-column pivots over hundreds of millions of rows scan whole rows and spill. ClickHouse reads only the needed columns, compresses well and vectorises aggregation. BigQuery and Snowflake are good warehouses, but for an interactive planner UI we wanted predictable latency and cost on an engine we control. BigQuery stays as upstream history.
+
+**Q: How do you keep rollups consistent with the facts?**
+We validate sums across the three cuts at the same filters, and store totals are re-weighted so they match SKU totals. Earlier season-grain parity checks on Briscoes matched product and store revenue against the weekly spine.
+
+*Follow-up they may ask:* "Is the pivot sub-second now?" No. Say 12 seconds. That is the measured number.
 
 ---
 
-### 7. Slot-determinism: why dedicated CH vs BigQuery for agent probes
+### C5. Cross-cluster ClickHouse migration with a Go native-TLS data pump
 
-**Interviewer Q:** BigQuery is already your historical truth and you already pay for slots. Why stand up a dedicated ClickHouse just so an agent can run `SELECT`s?
+> **PDF:** Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.
 
-**Candidate A:** Because interactive copilots need **deterministic** probe latency, and shared BQ STANDARD-edition slots make latency a function of **org-wide** load. Live audit of agent data-probe latency on shared BQ: **1–20 s+** with uncontrolled variance (MEASURED). Interactive UX + platform NFRs need agent probe **p95 < 500 ms** on a dedicated CH read plane (TARGET). Nightly precompute aims to move **≥80%** of sessions cold→warm (TARGET). Cube reconciliation within **0.1%** of BigQuery (TARGET). Feed = existing BQ→CH ingestion lane (ItemSmart-proven pattern, MEASURED design reuse). BQ stays historical truth; agent load is isolated so ad-hoc probes do not burn shared slots or surprise finance with another **TiB**-scanned job.
+**In plain words.** We had to copy the rollup tables from one ClickHouse Cloud cluster to another. The normal approach (one cluster pulling from the other) was blocked, because each cluster only accepted connections from allowlisted IP addresses. So I wrote a Go program that runs from an allowed machine, reads from the source over ClickHouse's native protocol with TLS, and writes to the target the same way. It moved about 344k rows per second across two parallel streams, on tables with partitions up to 4.09 billion rows. It is also careful never to leave half-written partitions looking complete.
 
-**WHY this is not a contradiction of "no CH for mtp-assort":** Phase 1 FRD non-goal — do **not** move transactional/plan data to CH for this module. Read plane only; PG remains editable SoR for cluster write-back after human gates. Greenfield schema + new instance ≠ swapping the mutation-heavy legacy app.
+**How it works.**
 
-**Tradeoffs / failure modes:** derived copy can rot → owned ingestion, freshness sentinel, **data-as-of** stamped on every recommendation. If load test on real kik extract misses p95, revisit precompute and concurrency quotas before claiming the TARGET. Slot-determinism is the buying criterion; raw CH-vs-BQ scan benchmarks are secondary.
+```text
+source CH Cloud  --native TLS 9440-->  Go pump on allowlisted host  --native TLS 9440-->  target CH Cloud
+                     SELECT stream          buffer A fills next 500k          INSERT Send()
+                     500k columnar          while buffer B is sending         checkpoint per season
+```
 
-**One-liner under pressure:** "BQ is truth with shared-slot variance; dedicated CH is a deterministic probe cache for the agent — hybrid again, not a religion."
+*What to notice: the pump sits in the middle because neither cluster could reach the other directly.*
+
+1. **Unit of work = one season partition** (`season_code`) of one table.
+2. **Columnar batches of 500k rows.** Values are appended into typed column buffers (`[]T`) and sent with `batch.Column(i).Append(...)` and `Send()`. There is no per-row reflection.
+3. **Double buffering.** Two buffer sets. While batch N is being sent to the target, the reader fills batch N+1 from the source. This overlap also fixed an "unexpected EOF" problem we saw when a SELECT stream sat idle during a long INSERT.
+
+```go
+bufs := [2]*Batch{newBatch(500_000), newBatch(500_000)}
+sendDone := make(chan error, 1)
+sendDone <- nil
+for i := 0; ; i++ {
+    cur := bufs[i%2]
+    n, err := fill(src, cur)            // read next 500k while the other buffer sends
+    if err != nil { return err }
+    if err := <-sendDone; err != nil {  // wait for the previous Send
+        return err                      // never retry a spent batch; restart the season
+    }
+    if n == 0 { return nil }
+    go func(b *Batch) { sendDone <- b.Send(ctx) }(cur)
+}
+```
+
+*(Illustrative sketch of the overlap, not the production code.)*
+
+4. **Workers.** `-workers N` copies N seasons in parallel, each with its own source and target connections. Memory and thread caps are per process, so two terminals running two workers each double the budget. A per-table file lock stops two terminals from copying the same table.
+5. **Checkpoints.** When a season finishes, the copier writes `migrate-checkpoints/<table>.done`. SIGINT finishes the in-flight batch but does **not** checkpoint that season.
+6. **Rollback.** If a season is incomplete and the target already has rows for it, the pump issues `DROP PARTITION` for that season and recopies it from scratch. That is what "atomic partition rollback" means on the PDF.
+7. **TSV ledger.** The weekly rollup *loader* (the job that builds weekly partitions) keeps a TSV ledger of finished `(kind, season_code)` units. A unit not in the ledger is dropped and rebuilt. Completion is confirmed from `system.query_log`, not from the HTTP client's exit code.
+
+**Why ghost rows happen.** A failed ClickHouse insert can still have committed some blocks. So "the partition has rows" (`count() > 0`) is a lie as a success check. We once had a half-loaded partition of about 64.1M rows that passed a "skip if it has rows" check in the loader. That is why success is recorded explicitly in a ledger and anything else is dropped and rebuilt.
+
+**Why this design.** The allowlists were the hard constraint. The operator machine's IP was allowed, cluster-to-cluster was not. Native protocol with columnar batches is far faster than HTTP row formats for bulk data. Partition-level units make failure handling simple: a season either finished or gets dropped and redone.
+
+**Alternatives considered and why not.**
+- *Cluster-to-cluster pull (`remoteSecure` or similar).* Blocked by the IP allowlists. That is the whole reason for the pump. The PDF names the allowlist, not the function.
+- *Export to object storage and re-import.* A valid path, and what I would prefer for a large production move if allowlisting could not be changed. It needs storage credentials on both sides and extra steps.
+- *HTTP interface with row formats.* Slower, and idle SELECT streams hit EOF during long inserts.
+- *Retry a failed `Send`.* Rejected. A spent batch may be partly committed, so a retry risks duplicates. Drop the season and restart it.
+- *Open-source the copier.* No. It is internal. Whiteboard the design instead.
+
+**Trade-off.** DROP PARTITION then recopy is **not** an atomic swap. While a season is being recopied, readers of the target can see a partial or missing season. An incremental design using `REPLACE PARTITION` from scratch tables (which would give readers an atomic switch) was written but not executed. Routing production data through a single host is a workaround, not an ideal design.
+
+**What I would do differently.** Get the allowlist changed or use object storage so the clusters copy directly, and use `REPLACE PARTITION` from a staging table so readers never see partial seasons.
+
+**The numbers.**
+
+| Number | What it measures | How it was derived | How to say it | Do not say |
+|---|---|---|---|---|
+| **~344k rows/s** (PDF, MEASURED) | Combined ingest rate of the pump | Two season streams at about 150k to 190k rows per second each, summed at a live snapshot (dual workers, 500k batches). Cross-check: about 0.3 to 0.4 `Send()` calls per second per worker, times 500k rows, is 150k to 200k rows per second per worker. | "about 344 thousand rows per second, combined across two streams" | "344k RPS" or "344k TPS". It is rows copied, not requests. |
+| **4.09B rows** (PDF, MEASURED) | Largest source object being copied: attr weekly, two seasons | 2,779,317,472 plus 1,311,108,195 = 4,090,425,667 rows | "partitions up to 4.09 billion rows, measured while the copy was in flight" | "I migrated 4.09 billion rows" as a finished cutover. |
+| **500k rows** (PDF) | Rows per columnar batch | `batchSize = 500_000` | "500-thousand-row double-buffered batches" | |
+| **64.1M** (VERBAL) | The half-loaded partition that fooled a row-count check | Loader incident | Only in the ghost-rows story | Attribute it to the copier. It was the loader. |
+
+**Status at the measurement snapshot (say this if asked "did it finish?").** Product season and attribute season tables had several seasons done. Store weekly had two seasons done. Product weekly had failed mid-copy with dirty partitions. Attribute weekly (the 4.09B object) was in flight. So say "measured on a 4.09B-row set", never "migrated 4.09B".
+
+**Questions they will ask.**
+
+**Q: Is 344k requests per second?**
+No. It is rows per second copied over ClickHouse's native protocol, from two season streams of about 150 to 190 thousand rows per second each. There is no REST API in this path.
+
+**Q: Why write a pump instead of using ClickHouse's built-in remote copy?**
+The clusters had strict IP allowlists, so neither could connect to the other. The machine I ran the pump on was allowlisted on both. A Go process on native TLS was the fastest safe way through that constraint.
+
+**Q: How did you get 344k rows per second in Go?**
+Columnar typed buffers instead of per-row reflection, 500k-row batches, and double buffering so reading the next batch overlaps sending the previous one. Two workers ran two seasons in parallel, each with its own connections.
+
+**Q: How do you avoid ghost rows?**
+Never trust row counts. A failed insert can leave committed blocks behind. Success is recorded explicitly: `.done` checkpoint files per table for the copier, and a TSV ledger for the weekly loader. Anything not recorded as done gets `DROP PARTITION` and a full recopy of that season. We never retry a spent batch.
+
+**Q: Is the rollback atomic for readers?**
+No, and I say so. DROP PARTITION then recopy means readers can briefly see a missing or partial season on the target. A `REPLACE PARTITION` design from staging tables would fix that. It was written but not executed.
+
+**Q: Did the 4.09B copy finish?**
+It was measured in flight. At the snapshot, the attribute weekly copy for those two seasons was still running. So I say "processed partitions up to 4.09B rows", not "completed the migration".
+
+<div class="callout note">
+<b>Off the PDF but true (LinkedIn and verbal):</b> 100% Go statement coverage in CI with race and atomic checks, across 1,200+ Go tests, plus lint and security scans. Mention it if asked about testing. Do not put it on this bullet.
+</div>
 
 ---
 
-### Cross-cutting adversarial closes (use if they chain topics)
+## 7. Tech used in this project and why
 
-**Q: Your Jul 2026 stack note said ClickHouse end-to-end with insert-only versions. The POC report says hybrid PG writes. Which is it?**  
-**A:** Both, at different scopes. The **POC consolidated verdict** is hybrid for *legacy assortment surfaces* and classic OLTP-mutable edits — and **no wholesale CH** for shipping mtp-assort (fix BQ first). The **agentic-assort** build follows the Jul 2026 stack directive + HLD: planning data on **ClickHouse/GCS end-to-end** because we changed the write model to insert-only versions (`mutations_used=0`). Thin Postgres metadata (auth/tenant/workflow) is fine to admit. I will not pretend CH beats PG at keyed UPDATE without that write-model unlock — that is exactly the mistake the adversarial pass prevents.
-
-**Q: Give me the corrected number card only.**  
-**A:** CH reads **~2–3×** typical; **~13–15×** on DISTINCT grids (MEASURED adversarial). PG single-cell **<1 ms** (**0.35–0.94 ms**, MEASURED). PG vs tuned CH write **~14×** (MEASURED). Schema flat→agg **100–450×** (MEASURED/ESTIMATED). Agent probes BQ **1–20 s+** MEASURED → CH **p95 <500 ms** TARGET. Storage real-world low-single-digits–**~10×**, not 50–138× (MEASURED adversarial).
-
----
-
-## Confidence audit
-
-| Resume bullet | Verdict | If pushed, say exactly |
-|---|---|---|
-| 1. Building AssortSmart (what-to-buy / how-much / which-stores) via copilot — TARGET under 1h and ≥20 configs/plan | **NEEDS CARE** | Product-first. under 1h / ≥20 = TARGET. Say **building** (load test pending). |
-| 2. 8.5% (37/437 kik) → under 2% (target) via 14 tools + 3 gates | **SOLID with care** | 8.5% MEASURED. under 2% TARGET. |
-| 3. 12B→~25M with sub-second rollup + ~0.4ms cell edit | **SOLID with care** | 12B PROJECTED; ~0.4ms / sub-second MEASURED on aggregate. |
-| 4. ONE CH bullet: 63/8 + 250M 189s→12.3s (~15.5×, measured) | **SOLID with care** | Store = design. Pivot = MEASURED. Verbal: typical aggs ~2–3×. |
-| Tech | **SOLID** | Kafka on IA/Menu/Masters; Flink on Menu |
+| Tech | What it is in one line | Why here | Alternative considered |
+|---|---|---|---|
+| **Go + Gin** | Compiled language with cheap goroutines, plus a `net/http` router and middleware framework | High-throughput multi-tenant edge at 10k peak RPS, static binary | FastAPI as edge (kept for agents), Fiber (fasthttp breaks `net/http` compatibility) |
+| **Google Wire** | Compile-time dependency injection by code generation | Wiring errors fail the build, no runtime reflection | Uber Fx or Dig (runtime reflection) |
+| **Python + FastAPI** | Async Python web framework | The agent plane and Ask Iris WebSocket, where the LLM ecosystem lives | Go for agents (weaker LLM tooling) |
+| **LangGraph** | Explicit graphs of LLM steps with state and loop limits | Ask Iris supervisor and 3-attempt evaluator, tool loops in batch | Hand-written while loops around function calling |
+| **LangSmith** | LLM tracing, replay and evaluation | Debugging Ask Iris runs: prompts, tools, tokens, cost | Datadog alone (no prompt replay or token attribution) |
+| **ClickHouse** | Column-oriented analytical database | 2.11B-row master, six rollups, planner pivots | Staying on Postgres, BigQuery or Snowflake for interactive pivots |
+| **BigQuery** | Serverless data warehouse | Upstream history that feeds ClickHouse | Querying it directly from screens (slot latency variance) |
+| **PostgreSQL** | Transactional relational database | Tenants, UAM, roles, thin metadata | ClickHouse (weak at keyed transactional updates) |
+| **Redis** | In-memory key-value store | Fronts the auth waterfall with cached verified identities | Calling the identity provider on every request |
+| **Firebase Admin, JWT, Google OIDC** | Identity verification paths | Different callers carry different identity types | A homegrown auth server |
+| **Datadog** | Metrics and distributed tracing | Per-request traces across Go and its database calls | Logs only |
+| **GCP + Docker** | Cloud platform and containers | Where the platform runs, reproducible builds | Not claiming Kubernetes cluster operations |
 
 ---
 
-## Order Batching 60× (prep depth — replaced on resume headline)
+## 8. Hard problems and failure stories
 
-Still MEASURED and interview-ready: 23.7M join rows, CH **3.86 s** vs PG **3m40s–7m48s**, insert **5.9M vs 250K rows/s**. Prefer leading with the Jul 2026 hybrid pivot/line-plan story on the resume; keep Order Batching as deeper evidence when asked "what else did you measure?"
+**1. The 170 GB weekly rollup OOM (best "hardest problem" story).**
+- *What broke:* a whole-season weekly `INSERT ... SELECT` needed about 170 GB of aggregation state and failed with `MEMORY_LIMIT_EXCEEDED`, even at 80 GB and 200 GB caps.
+- *How I found it:* profiled memory by grain and table type. A product week was about 11 GB. An attribute week was over 40 GB.
+- *Fix:* one fiscal week per insert, about 55 GB memory cap, about 16 GB spill to disk, 8 threads, up to 4 weeks in flight. Spill settings are emitted by the SQL generator, so no one can forget them.
+- *Lesson:* when a job OOMs, shrink the unit of work before you buy RAM. And never raise two kinds of parallelism at once on the same box.
+
+**2. Ghost rows: a half-loaded partition that looked complete.**
+- *What broke:* a weekly insert failed, but some blocks had already committed. A partition of about 64.1M rows passed the loader's "skip if the partition has rows" check.
+- *How I found it:* totals did not reconcile across the rollup cuts.
+- *Fix:* an explicit TSV ledger of finished units. Anything not in the ledger is dropped and rebuilt. Success is confirmed from `system.query_log` (`QueryFinish`), not from the HTTP client's exit code.
+- *Lesson:* `count() > 0` is not a success signal. Record success explicitly.
+
+**3. HTTP EOF during long copies.**
+- *What broke:* a SELECT stream that sat idle while a long INSERT ran would drop with "unexpected EOF".
+- *Fix:* double buffering (keep reading while sending) and moving to the native protocol.
+- *Lesson:* overlap I/O, and do not retry a spent batch. Restart the season.
+
+**4. The LLM blend lost to the free rule.**
+- *What happened:* on the 200-case benchmark the blended LLM scored about 63%, below the 74% deterministic rule.
+- *What I did:* froze the 0.4 and 0.6 weights rather than retune on a small proxy set, kept the 80% gate, and picked the cheaper model that completed every case.
+- *Lesson:* a gate that can say "no" to the agent is working as designed.
+
+**5. Over-keep in the first real gold run.**
+- *What happened:* the pipeline almost never missed a true winner but kept too many articles that went on to sell poorly.
+- *What I did:* treated it as the number to move. The levers are the keep threshold, the blend weights, the sell-through ramp, and how assertive lenses are about dropping. Each change is a new config version, re-run and re-evaluated. Drop recall is a gate knob for this reason.
+- *Lesson:* accuracy alone hides the failure that costs money. If asked for figures from that run, keep it qualitative.
+
+**6. Sell-through that read 100% for everything.**
+- *What broke:* in the kik feed the end-of-period inventory columns were all zero, so naive sell-through came out at 100% for almost every article. That signal carried no information.
+- *Fix:* use ending on-hand stock as the residual, clamped at zero. A signal-quality gate now computes each KPI fresh and disables any signal that is mostly at one boundary value for that run, loudly.
+- *Lesson:* check that a signal varies before you give it weight. And the gate must read the freshly computed KPI, not a stored column, or a formula change is invisible to it.
+
+**7. Lens features disagreeing with the rule layer.**
+- *What broke:* lens features once used the naive sell-through formula while the rules used the on-hand fallback, so lenses "saw" about 100% sell-through when rules saw the real number.
+- *Fix:* both now call the same KPI functions in the shared `domain/` module.
+- *Lesson:* define every formula once.
+
+---
+
+## 9. Verbal depth, not PDF bullets
+
+<div class="callout warn">
+<b>Everything in this section is off the resume.</b> Use it only when an interviewer asks a deeper or adjacent question ("how did you decide on ClickHouse?", "what else did you measure?", "what are you designing next?"). Never present it as a resume bullet. Cluster Recommendation Copilot, Hindsight, the 14 tools and MCP are verbal depth only. There is no Kafka, Flink, CDC ownership, Kubernetes operations, Milvus, human-in-the-loop queue or sub-second ClickHouse claim at Impact Analytics.
+</div>
+
+### 9.1 Why ClickHouse: the Postgres versus ClickHouse POCs
+
+**Context.** Planner pivots were slow on PostgreSQL. Before committing, the team ran POCs that ported real workloads (not synthetic benchmarks) from Postgres to ClickHouse. ClickHouse won the large analytical reads. Postgres kept the thin metadata, UAM and roles. These are MEASURED POC results from older benchmark runs. They are directional evidence, not a production cutover.
+
+**Say the hardware caveat first if challenged.** In the Order Batching and insert POCs, Postgres ran on tuned hardware with 32 vCPU and 256 GB RAM. ClickHouse ran untuned on 16 vCPU and 64 GB. ClickHouse often had the weaker box and still won, which makes the result more persuasive, but it is not a lab-perfect A/B. In the later pivot harness, the setup was deliberately Postgres-favourable (Postgres on a 48 GB native host, ClickHouse in a small Docker VM).
+
+| Workload | PostgreSQL | ClickHouse | Ratio |
+|---|---|---|---|
+| Order Batching metric over 23,749,263 joined rows | 3 min 40 s (UTC), 7 min 48 s (Melbourne time zone) | about 3.86 s | about 60x (the range depends on the time-zone path) |
+| Small Order Batching join, about 57K rows | 2.043 s | 2.803 s | Parity. Postgres was slightly faster |
+| Bulk insert, about 3.9B rows across 30 parallel promo loads | 250K rows/s raw, about 417K rows/s with detach/attach | about 5.9M rows/s (3.9B rows in 660.184 s) | about 24x versus raw, about 14x versus detach/attach |
+| Connections used for that insert | 280 | about 30 | far fewer client connections |
+| Query plus CSV export | 541 s, 607 rows/s (328,692 rows) | about 38 s, 26,442 rows/s (1M rows) | about 43x throughput |
+| Incremental view after a 100K insert | full REFRESH about 4.0 s over about 1.69M rows | insert plus materialized view about 0.65 s | about 85% faster, and fresh on insert |
+| Fact compression, 17.15M rows | 3.31 GiB raw | 432.81 MiB | about 7.8x |
+
+How the insert rate was measured: effective rows per second = total expected rows divided by (latest finish minus earliest start) across successful parallel jobs. It is wall-clock throughput, not the sum of per-job times.
+
+*Caveats to own.* The export runs had different row counts, so defend rows per second and method, not identical dumps. The time-zone conversion alone roughly doubled the Postgres time, so we measured both paths. Older notes label the insert run "30 promos x 10M", which does not multiply to 3.9B. If asked, describe it as about 3.9B rows across 30 parallel promo loads and do not recite "30 x 10M".
+
+**The update bake-off (why ClickHouse is insert-first).** On a fact table of about 29M rows, applying 10K updates by rewriting the whole table took about 36 to 39 seconds and read about 24 GB. Scoping the same merge to one day partition (about 3.8M rows) took about 7.3 seconds. A delta-join on one partition took about 6.7 seconds with a peak of 2.39 GiB, but a full-table delta join ran out of memory at 14.40 GiB. An "exploded" query shape over 133.7M rows in one partition crashed the server. The lesson is the same as C4: bound the working set with partitions, prefer insert-only versioned writes (ReplacingMergeTree), and never assume a join that works at 5M rows survives being exploded 20 times.
+
+**The pivot harness re-measure (the honest version of 15.5x).** The harness ran at 5M, 50M and 250M rows. At 250M, Postgres took 189.4 s (with about 42 GB spilled to disk) and ClickHouse 12.3 s. A later adversarial re-measure found that about 90% of that gap came from distinct counts. Without them, ClickHouse led by about 2 to 3 times on typical aggregates. With option counts, the honest figure is about 13 to 15 times. That is why C4 says "heavy pivot" when pressed.
+
+**Writes went the other way.** Postgres single-cell edits stayed under a millisecond and flat across scale (about 0.35 to 0.94 ms from 5M to 250M rows). ClickHouse's untuned cell edit was about 82 times slower, mostly due to its default async insert buffer. With durability parity it was still about 14 times slower than Postgres. For large batch appends the picture inverted: at 250M rows, a 156k-row append took Postgres about 32 seconds, far slower than ClickHouse. So the design rule became: **aggregate many rows in ClickHouse, mutate a few cells with instant read-your-writes in Postgres.**
+
+*Smaller findings worth knowing.* Flattening a JSONB fact table alone made Postgres about 2.06 times faster (2,779 ms flat versus 5,719 ms JSONB). First-pass storage savings of 50 to 138 times were an artifact of synthetic data. Realistic high-entropy data gave about 1.6 to 2.6 times, so expect low single digits to about 10 times in production.
+
+**Q: Why not Druid or Pinot?**
+Both are strong real-time OLAP engines, especially for very high query concurrency on streaming ingest. For us, ClickHouse fitted better: SQL close enough to port Postgres logic, the MergeTree family (including ReplacingMergeTree) for versioned inserts, and existing ClickHouse investment at the company. A second OLAP engine would have been complexity without a workload that needed it. *(Older prep said "Pinot I have used elsewhere". That is not on the resume. Do not claim it.)*
+
+### 9.2 Line planning: why we refused to materialise 12B rows
+
+Line planning needs numbers at store by week. For a large tenant like kik, a fully flat store-week table would be about 12B rows per plan. That is ESTIMATED as a combinatorial product: about 4,800 stores, times product levels, times choices, times 52 weeks. With about 50 plans, flat Postgres at rest would be about 70 TB (ESTIMATED, about 1.4 TB per plan times 50). Even flat ClickHouse would be about 1.1 TB (ESTIMATED).
+
+The design stores editable truth at a coarser grain (choice by cluster by week), about 25M rows for a plan that would be 12B flat. Store-week values are derived on demand:
+
+```text
+store_week = choice x flow_cluster_perc x cluster_store_perc x store_week_perc
+```
+
+Each percentage sums to 1 on its dimension (a "partition of unity"), so the sum of the derived store-week values always equals the choice total. We reconciled `SUM(flat) = SUM(aggregate)` to the cent at 10M, 100M and 1B rows on both engines (MEASURED). At 1B rows, flat Postgres was about 115 GB versus 276 MB for the aggregate, about 427 times smaller (MEASURED). On the flat path one choice edit fired a 249,600-row UPDATE. On the aggregate, a single-cell edit in Postgres stayed at about 0.35 to 0.44 ms. Finer edits are sparse overrides: effective value = override if present, else derived.
+
+*Say this carefully:* this is POC and design depth. The ClickHouse millisecond timings from this POC are deliberately left off this page so they do not turn into a "sub-second ClickHouse" claim. The full extract is in the [line planning benchmark source](../../../prep/20_ia_lineplanning_benchmark_source.md) and the [pivot benchmark source](../../../prep/21_ia_pivot_benchmark_source.md).
+
+### 9.3 ClickHouse edit techniques (why ReplacingMergeTree for "set a cell")
+
+A planner edit is "SET cell = X", not "ADD delta". That decides the engine.
+
+| Technique | Verdict |
+|---|---|
+| Heavyweight `ALTER UPDATE` mutation | Never for point edits. It rewrites the part (about 1.6 s per edit at about 1B rows). |
+| Lightweight UPDATE (experimental patch parts) | Unsafe for interactive write-back in that version. Read-your-writes was correct only about 11 to 22% of the time. |
+| ReplacingMergeTree append plus argMax | Best MergeTree-family option for set-a-cell. Consistent. |
+| EmbeddedRocksDB upsert plus point get | The most Postgres-like key-value option inside ClickHouse. Not for analytic scans. |
+| AggregatingMergeTree or SummingMergeTree as the editable layer | Wrong semantics. It models "add", so a SET needs fragile compensating deltas. Right tool for additive override rollups. |
+| PostgreSQL keyed UPDATE | The reference. Nothing in the ClickHouse family matched it for a single cell. |
+
+### 9.4 Keeping Postgres and ClickHouse in sync (Order Batching design study)
+
+<div class="callout note">
+<b>Ownership first.</b> Older prep put an "Order Batching CQRS migration with CDC mirrors" on the IA resume. The current resume has no CDC. IA's Postgres-to-ClickHouse CDC tool (pg2ch) was authored by a colleague, Ashvin Sharma. If this comes up, say it was a design study that assumed his tool, and do not quote CDC service levels as your numbers.
+</div>
+
+The idea, in general terms, is useful when asked "how would you move reads to ClickHouse without breaking saves?"
+
+- **One writer.** All writes (saves, locks, finalise) stay on Postgres, which has the transactions and lock semantics.
+- **Async projection.** High-churn fact tables are mirrored to ClickHouse continuously. Low-churn dimension tables are fully refreshed daily.
+- **Read routing.** Reads default to ClickHouse. After a user saves, a short-lived Redis flag (for example `ob:ryw:{l0_name}` with a 30-second TTL) routes that user's reads to Postgres, so they see their own save immediately (read-your-writes). Everyone else, and the same user after the TTL, reads ClickHouse.
+- **Why not dual-write?** Writing Postgres and ClickHouse in one request splits the failure domain. One side succeeds, the other fails, and retries create duplicates.
+- **Gotchas.** On the ClickHouse side an update becomes a new version row, so readers must dedupe until merge. Truncates should not propagate by default. Apply to ClickHouse before advancing the replication position, which gives at-least-once delivery plus deduplication, not exactly-once.
+
+### 9.5 Cluster Recommendation Copilot (design, not shipped, not on the PDF)
+
+**What it is.** Store clustering groups a retailer's stores into clusters that get similar assortments. Today a planner makes four expert choices up front and runs exactly one configuration. The Copilot design flips that: the planner states intent (hierarchy plus reference period), an LLM agent proposes scope and features, a deterministic engine explores many configurations in batch, and the planner approves a winner before anything is written.
+
+**Measured baselines (MEASURED on the kik tenant).** Run failures were 8.5% (37 of 437), mostly avoidable input mistakes at the data boundary. Median clustering job time was about 20 seconds over 370 live runs, so compute is not the bottleneck. Reproducibility was 0%, because the winning algorithm, parameters and seed were never saved. About 1 in 5 finalised plans had zero stores attached.
+
+**Targets (TARGET, say "targeting").** Hierarchy to finalised plan from days to under 1 hour. At least 20 configurations evaluated per plan (from 1), with a batch design of 20 to 100. Failures under 2%. 100% reproducibility through content-addressed configs (a hash of the recipe plus a data watermark). Cube reconciliation within 0.1% of BigQuery.
+
+**Design.**
+- The LLM (LangGraph, with MCP as the tool contract) plans and explains. A deterministic engine computes features, picks k with the elbow method plus silhouette score inside client min/max limits and a child-cluster cap (default 10), clusters and scores.
+- The agent calls a fixed registry of 14 audited tools. It cannot write SQL and cannot write at all. Its database profile is read-only.
+- The UI presents 3 to 5 distinct scenarios, always including the previous plan as a baseline.
+- Engine `is_optimal` never overwrites human `is_final`.
+- The design includes confirm steps before write-back. That is a product design that was never built. Do not describe Impact Analytics as having human-in-the-loop review queues. Keep/Drop has none.
+
+**Status.** Phase 1 design passed four internal adversarial reviews and an external review ("approve to bring-up"). The bring-up load test was pending. Say "designed" or "building", never "shipped".
+
+*Older prep listed a sub-second ClickHouse read-plane target and a 500 ms agent-probe target for this design. Those are dropped from this page because sub-second ClickHouse claims are off-limits.* The measured reason for a dedicated read plane still stands: agent probes on shared BigQuery slots took 1 to 20+ seconds with uncontrolled variance (MEASURED).
+
+**Why not a wholesale ClickHouse move for the existing assortment app?** Its edit model is mutable (keyed updates, JSONB merges, delete and reinsert), which is the wrong shape for ClickHouse. Its biggest live cost drivers were BigQuery hygiene: one job billed 38.8 TiB through `SELECT *` with no date filter, and recurring category rollups re-scanned about 2.9 TiB (MEASURED). The cheaper fixes were inside BigQuery (forbid `SELECT *`, require partition filters, read the already-clustered table, materialise one compact rollup). A new read-only module with an insert-only feed passes the "does this replace something" test. A third engine bolted onto the legacy app does not.
+
+**Agentic HLD (design).** Two paths, one "doing" layer. Chat goes from the UI straight to the FastAPI agent service (LangGraph), which calls Go APIs when it needs product actions. Manual screens call the same Go REST APIs with no LLM in the loop. So authorization, validation and audit live once, in Go. The observability design paired LangSmith (agent runs), Datadog (platform health) and PostHog (product analytics), joined by a shared OpenTelemetry trace id. That is design. On the resume, LangSmith belongs to Ask Iris.
+
+More: [agent read tools defense](01c_agent_read_tools_defense.md), [agentic evals and guardrails flow](01d_agentic_evals_guardrails_flow.md).
+
+### 9.6 Agentic ClickHouse schema (Phase 1 DDL design)
+
+The Copilot's ClickHouse schema design has 63 tables in 8 layers (including 7 stage twins), 5 dictionaries and 19 argMax views, with one database per tenant. It was syntax-validated with `formatQuery` on ClickHouse 25.12. There is **no runtime evidence** for it yet. The doctrine is "never erase on the hot path", with four physical patterns:
+
+1. Partition-swapped MergeTree: build a stage twin, then `REPLACE PARTITION`. No mutations, no `FINAL` on hot paths.
+2. ReplacingMergeTree with `FINAL`, only for tiny dimensions and caches.
+3. Append-only event streams for status, intent and approvals. Latest state comes from argMax views.
+4. Ledgers, immutable snapshots and telemetry.
+
+The agent profile is `readonly=1`. Service roles are INSERT-only on the tables they own, so "no update path" is a grant, not a convention. The feed is a slim extract (about 10^8 rows per tenant), not the raw BigQuery spine (about 46.9B rows, 43 TB). Do not recite a column count. Full source: [DDL Phase 1 source](../../../prep/29_ia_ch_ddl_phase1_source.md).
+
+### 9.7 Hindsight (design, verbal only)
+
+Hindsight is the first stage of planning: what worked and what failed last season, before buying for next season. The design covers carry-forward and underperformance flags, the existing Keep/Shop/Drop recommendation on the item grid, overnight narration checked against computed metrics (fail closed to a template sentence), deterministic visuals the model cannot redesign, and a tenant metric catalog that goes live without a code deploy. Say "building against the FRD", not "shipped". Details: [Hindsight defense](01b_hindsight_defense.md).
+
+---
+
+## 10. Say this, don't say this
+
+| Say this | Don't say this |
+|---|---|
+| "348k article-seasons scored, 88k items per pass, 7 lenses." | "1.6 million article-seasons scored." |
+| "300-case proxy set and an 80% CI promotion gate." | "We run at 80% accuracy live for all tenants." |
+| "73% cheaper at 100% coverage, from a separate 200-case model benchmark." | "The 300-case suite measured 73%." |
+| "The deterministic baseline was 74%, and the blend came in under it, so we froze weights." | "The LLM beat the rules." |
+| "The LLM never gets a SQL tool. JSON in, engine writes out." | "The agent queries ClickHouse asynchronously." |
+| "Ask Iris shipped as a capability." | Any Ask Iris SLA, latency or usage number. |
+| "LangSmith is how we trace Ask Iris." | "LangSmith traces the Keep/Drop batch." |
+| "No human review queue. Offline evals replaced critic agents." | "Human-in-the-loop review of low-confidence scores." |
+| "The Go edge peaks at about 10k requests per second." | An SLA, a p99, multi-region, or "I ran the Kubernetes cluster." |
+| "15.5x is query time, 170 GB is load time." | "Fixing the OOM made pivots 15.5x faster." |
+| "189 seconds to about 12 seconds on a 250M-row harness." | "Sub-second ClickHouse pivots." |
+| "About 344k rows per second, combined." | "344k RPS" or "344k TPS." |
+| "Partitions up to 4.09B rows, measured in flight." | "I migrated 4.09 billion rows." |
+| "Rollback is DROP PARTITION, then recopy that season." | "Atomic swap with no reader impact." |
+| "The TSV ledger is the weekly loader. The copier uses .done files." | "TSV was the copier ledger." |
+| "Isolation and access control." | "Encryption" or "a privacy program." |
+| "A colleague authored the CDC tool." | "I built the CDC pipeline." |
+| "Cluster Copilot and Hindsight are designs I can talk about." | Presenting either as a resume bullet or as shipped. |
+| "Kafka and Flink are my Uber Eats Menu work." | Kafka, Flink, Milvus or CDC at Impact Analytics. |
+
+### Older prep versus the current resume
+
+| Older prep said | Current resume says |
+|---|---|
+| Resume bullets for Cluster Copilot (14 tools, 3 gates, 8.5% to under 2%), CQRS migration, update strategies and Order Batching benchmarks | IA bullets are A1 to A5 and C1 to C5 only. The rest is verbal depth (section 9). |
+| Order Batching read path built on CDC mirrors, with CDC service levels | No CDC on IA. The CDC tool is a colleague's. Kept only as a design study. |
+| "CH read plane sub-second", "agent probe p95 under 500 ms", grid p95 targets | No sub-second ClickHouse claims. The pivot number is 189 s to 12 s. |
+| Human approval gates as part of the IA story | No human-in-the-loop at IA. Gates were a Copilot design that was never built. |
+| "Pinot I have used elsewhere" | Not on the resume. Do not claim it. |
+| Observability "LangSmith + Datadog + PostHog" as IA claims | LangSmith is tied to Ask Iris. PostHog is not on the tech line. |
+| Pivot speed-up framed as a "Hindsight grid" | It is planner pivots, served from the rollup layer. |
+| "Tech: Kafka on IA" in an old audit table | Kafka is Menu (Uber Eats) and Masters India. Flink is Menu only. |
+
+---
+
+## 11. Numbers cheat sheet
+
+| Number | Bullet | Meaning | Tag |
+|---|---|---|---|
+| 348k article-seasons | A1 | Scored Keep/Drop volume | PDF |
+| 88k items per pass | A1, A3 | One batch run | PDF |
+| 7 lenses | A1 | Active analytical lenses | PDF |
+| 0.4 / 0.6, keep at 0.55 | A1 | Blend weights and final cut line | MEASURED config |
+| $100 per pass | A1 | Token spend | VERBAL |
+| 1.6M article-seasons | A1 | Catalog, not scored set | VERBAL |
+| 2.11B rows | A2 | ClickHouse master the engine reads | PDF |
+| about 5 consecutive failures | A3 | Circuit breaker default | VERBAL |
+| 3 attempts | A4 | Ask Iris evaluator cap | PDF |
+| 300 cases, 80% | A5 | Proxy gold set and CI gate | PDF |
+| 73% cheaper, 100% coverage | A5 | 200-case model benchmark, 200 of 200 complete | PDF |
+| 74% | A5 | Deterministic rule on that 200-case set | PDF |
+| about 63% | A5 | Blended LLM on that set, so weights froze | VERBAL |
+| 10k peak RPS | C1 | Go edge peak request rate | PDF |
+| 189 s to 12 s, 15.5x | C4 | Heavy planner pivot, 250M-row harness | PDF, MEASURED |
+| 2 to 3x | C4 | Typical aggregates without distinct counts | VERBAL, MEASURED |
+| 170 GB | C4 | Whole-season weekly aggregation state that OOM'd | PDF |
+| 55 GB, 16 GB, 8 threads, 4 weeks | C4 | Weekly build knobs | VERBAL |
+| six tables | C4 | product, store, attr times season, weekly | PDF |
+| about 344k rows/s | C5 | Combined copy rate, two streams | PDF, MEASURED |
+| 4.09B rows | C5 | Attr weekly, two seasons, in flight | PDF, MEASURED |
+| 500k rows | C5 | Batch size | PDF |
+| 1,200+ tests, 100% coverage | testing | Go CI | VERBAL |
+| 8.5% (37 of 437) | Copilot | Clustering failure baseline | VERBAL, MEASURED |
+| under 1 hour, 20+ configs, under 2% | Copilot | Design goals | VERBAL, TARGET |
+
+---
+
+## 12. Practice drill
+
+1. **What is an article-season?** One product in one selling season. It is the unit the engine scores. The same T-shirt in two seasons is two article-seasons.
+2. **Give the Keep/Drop formula.** `s_final = 0.4 x s_det + 0.6 x s_agent`. Keep if `s_final` is 0.55 or more. `s_det` comes from sell-through and rate of sale. `s_agent` comes from lens mixes chosen by the decider.
+3. **Why does the LLM not query the database?** Hallucinated or runaway SQL against a 2.11B-row table risks scans, pool exhaustion and injection. Deterministic code reads ClickHouse and passes JSON. The model only returns structured scores.
+4. **What happens on an LLM timeout?** The batch falls back to deterministic scores, telemetry records a fallback, and the run continues. Resume can retry those later.
+5. **What does the config hash contain?** A SHA-256 over frozen guardrails, parameters, prompt text and catalog. It is stamped on every row so any change in output can be traced to a config change or ruled out.
+6. **How does resume avoid redundant work?** Deterministic results are saved first, LLM progress is appended per article, and a restart reloads both and continues only unfinished articles.
+7. **How does Ask Iris prevent tenant leaks?** JWT verified at the WebSocket handshake, `plan_scope` frozen for the session, and every tool call inherits it.
+8. **How does Ask Iris stop loops?** The evaluator caps retries at 3 attempts, and the graph has a recursion limit. After that it fails closed with a graceful answer.
+9. **Is 80% your live accuracy?** No. It is the CI promotion gate. 73% and 74% come from a separate 200-case benchmark.
+10. **Why did you freeze the blend weights?** The blended LLM scored below the 74% deterministic baseline on a small proxy set. Retuning would overfit, and the model had not earned more weight.
+11. **Why Wire?** Compile-time dependency injection. Wiring errors fail the build, with no runtime reflection.
+12. **How is the KPI parser safe?** Tokenize, parse, allowlist functions, resolve names through the catalog, bind literals, and wrap in `ifNotFinite(toFloat64(expr), 0)`. Unknown tokens fail closed.
+13. **Did the OOM fix cause the 15.5x?** No. 15.5x is query time on the pivot benchmark. The OOM was load time for weekly rollups.
+14. **Is 344k requests per second?** No. It is rows per second copied, combined across two season streams.
+15. **What does "atomic partition rollback" mean?** DROP PARTITION for an incomplete season, then recopy it. Readers can see a partial season during that window. It is not an atomic swap.
+
+---
+
+## 13. Three-minute whiteboard script
+
+1. **Draw first (30 seconds): the users and the edge.** Planner UI on the left. Arrow to the Go/Gin edge. Write "Wire, h2c, nested timeouts, Datadog, 10k peak RPS". Say: "Every normal API call lands on a Go service that is its own HTTP edge."
+2. **Draw second (45 seconds): the two stores.** Postgres box ("tenants, UAM, roles") and ClickHouse box ("2.11B master, six rollups, PARTITION BY season"). Redis in front of auth. Say: "Postgres for identity and correctness, ClickHouse for the big reads. Pivots went from 189 seconds to about 12 on a 250M-row benchmark. Weekly rollups are built one fiscal week at a time after a 170 GB OOM."
+3. **Draw third (60 seconds): the agent plane.** Deterministic engine reads ClickHouse, then a "JSON" arrow to LLM lenses, then blend, then staged rows back into ClickHouse. Cross out any arrow from the LLM to ClickHouse. Write the formula. Say: "348k article-seasons, 88k per pass, 7 lenses. The model never touches the database. Timeouts fall back to the rule score. The registry gives breakers, checkpoints and a config hash on every row."
+4. **Draw fourth (30 seconds): Ask Iris.** A WebSocket arrow from the UI to a FastAPI box with "supervisor, evaluator x3, frozen plan_scope, LangSmith". Say: "Scope is frozen at the handshake, loops are capped at three attempts."
+5. **Close (15 seconds): the gate.** Write "300 cases, 80% gate" next to the agent plane. Say: "Nothing is promoted unless it clears the gate, and when the blend lost to the 74% rule on our model benchmark, we froze the weights."
+6. **If time remains:** draw the copier (source cluster, Go pump on an allowlisted host, target cluster) and say "about 344k rows per second, 500k double-buffered batches, DROP PARTITION and recopy on failure".
+
+---
+
+## 14. Suggested 45-minute study session
+
+1. Read sections 1 and 2 aloud, then explain the business to an imaginary friend in two minutes (5 min).
+2. Draw the architecture from memory and compare with section 4 (5 min).
+3. Work the Keep/Drop example in A1 by hand: ramps, `s_det`, blend (5 min).
+4. Recite the "split these numbers" box, then check it (5 min).
+5. Answer every A-bullet question in section 5 out loud (10 min).
+6. Answer every C-bullet question in section 6 out loud (10 min).
+7. Run the practice drill in section 12 with the answers covered (5 min).
+
+**Related pages:** [IA interview pack](../../../prep/23a_ia_interview_pack.md), [IA bullet defense](../../../prep/43_ia_bullet_defense.md), [ClickHouse rollup migration](../../../prep/42_clickhouse_rollup_migration.md), [Impact Analytics pack](01_impact_analytics.md), [Keep/Drop pipeline reference](../../../../docs/assort_kd_flow/PIPELINE.md), [ClickHouse tech depth](../tech_depth/clickhouse.md), [Go and Gin tech depth](../tech_depth/go_gin.md), [auth and tenancy](../tech_depth/auth_tenancy_rate_limits.md), [LangGraph tech depth](../tech_depth/langgraph_mcp_rag.md), [Postgres vs ClickHouse POC source](../../../prep/19_ia_ch_pg_poc_source.md).

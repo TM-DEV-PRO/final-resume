@@ -42,13 +42,23 @@ strong{color:#fff}
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#03-dsa-hub-patterns-how-to-recognize-them-what-to-practice">03. DSA hub: patterns, how to recognize them, what to practice</a>
 <a class="lvl2" href="#topic-files">Topic files</a>
-<a class="lvl2" href="#the-45-minute-coding-round-step-by-step">The 45 minute coding round, step by step</a>
-<a class="lvl2" href="#pattern-recognition-table">Pattern recognition table</a>
+<a class="lvl2" href="#words-you-need-for-every-dsa-page">Words you need for every DSA page</a>
+<a class="lvl2" href="#the-45-minute-coding-round-step-by-step">The 45-minute coding round, step by step</a>
+<a class="lvl2" href="#pattern-recognition">Pattern recognition</a>
 <a class="lvl2" href="#complexity-cheat-sheet">Complexity cheat sheet</a>
 <a class="lvl2" href="#python-tools-you-should-use-without-thinking">Python tools you should use without thinking</a>
 <a class="lvl2" href="#top-100-list-do-in-this-order-grouped">Top 100 list (do in this order, grouped)</a></nav>
 <main><h1 id="03-dsa-hub-patterns-how-to-recognize-them-what-to-practice">03. DSA hub: patterns, how to recognize them, what to practice</h1>
-<p>Language for solutions: <strong>Python</strong> (fastest to write in interviews). Go is fine too. Tell the interviewer which you're using. OCI coding rounds are usually LeetCode medium, sometimes a hard, often with a follow-up ("what if the input doesn't fit in memory?", "make it thread safe").</p>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> how a 45-minute OCI coding round runs, how to spot which pattern a problem wants, a complexity cheat sheet, the Python tools you should reach for without thinking, and the practice list.</li>
+<li><b>When to read it:</b> first, before any topic file, and again the morning of a coding round as a warm-up.</li>
+<li><b>What to memorise:</b> the eight steps of the round, the "if the problem says X, think Y" table, and the "n versus allowed complexity" table.</li>
+<li><b>How the topic files work:</b> every pattern has a plain-English idea, the signals that point to it, a hand-traced example, a template, complexity and common mistakes. Every problem has a one-line restatement, the key insight, a dry run, code, complexity and a 60-second "say it out loud" script.</li>
+</ul>
+</div>
+<p><strong>Language for solutions: Python.</strong> It is the fastest language to write correctly under time pressure. Go is fine too. Tell the interviewer which one you are using in the first minute. OCI (Oracle Cloud Infrastructure) coding rounds are usually LeetCode medium, sometimes a hard, and often come with a follow-up such as "what if the input doesn't fit in memory?" or "make it thread safe". The thread-safety follow-ups are covered in <a href="06_concurrency.html">concurrency</a>.</p>
 <h2 id="topic-files">Topic files</h2>
 <ol>
 <li><a href="03_dsa_1_arrays_hashing_search.html">Arrays, strings, hashing, two pointers, sliding window, prefix sums, binary search</a></li>
@@ -59,19 +69,57 @@ strong{color:#fff}
 <li><a href="03_dsa_6_backtracking_greedy_intervals_matrix_bits.html">Backtracking, greedy, intervals, matrix, bit manipulation, math</a></li>
 </ol>
 <hr>
-<h2 id="the-45-minute-coding-round-step-by-step">The 45 minute coding round, step by step</h2>
-<ol>
-<li><strong>Clarify (3 min).</strong> Input size? Negative numbers? Duplicates? Sorted? Empty input? Return what, if there's no answer? Can I modify the input?</li>
-<li><strong>Examples (2 min).</strong> Walk one normal and one edge case by hand.</li>
-<li><strong>Brute force out loud (2 min).</strong> State its complexity. That shows you can always get <em>an</em> answer.</li>
-<li><strong>Optimize (5 min).</strong> Name the pattern. "This is a sliding window because we want the longest contiguous subarray with a property that is monotonic as the window grows."</li>
-<li><strong>Code (15 min).</strong> Clean names, helper functions, no clever one-liners.</li>
-<li><strong>Test (5 min).</strong> Trace your example through the code. Then edge cases: empty, one element, all same, max size.</li>
-<li><strong>Complexity (1 min).</strong> Time and space, with the reason.</li>
-<li><strong>Follow-ups.</strong> Scale, streaming, concurrency, memory.</li>
-</ol>
+<h2 id="words-you-need-for-every-dsa-page">Words you need for every DSA page</h2>
+<ul>
+<li><strong>Big-O (time complexity)</strong> describes how the running time grows as the input grows, ignoring constant factors. O(n) means "double the input, roughly double the time". Think of it as the shape of the cost curve, not the exact seconds.</li>
+<li><strong>Space complexity</strong> is the same idea for extra memory you allocate, not counting the input itself.</li>
+<li><strong>Amortized O(1)</strong> means a single operation is occasionally expensive, but averaged over many operations it is constant. A Python list append is like a suitcase that is sometimes repacked into a bigger suitcase. The repack is slow, but it happens so rarely that the average append is cheap.</li>
+<li><strong>Brute force</strong> is the obvious solution that tries everything. You always state it first because it proves you can get some answer.</li>
+<li><strong>Invariant</strong> is a fact that stays true at every step of your loop, such as "everything left of <code>l</code> is already processed". Saying your invariant out loud is the fastest way to convince an interviewer the code is correct.</li>
+<li><strong>Dry run</strong> means tracing your code by hand on a tiny input, writing down the variables after each step.</li>
+<li><strong>Edge case</strong> is an unusual input that often breaks code: empty input, one element, all elements equal, negative numbers, the maximum size.</li>
+</ul>
 <hr>
-<h2 id="pattern-recognition-table">Pattern recognition table</h2>
+<h2 id="the-45-minute-coding-round-step-by-step">The 45-minute coding round, step by step</h2>
+<p>The interviewer is scoring four things: did you understand the problem, can you reason about a better solution, can you write clean working code, and can you test it. The steps below make each of those visible.</p>
+<ol>
+<li><strong>Clarify (3 minutes).</strong> Ask about input size, negative numbers, duplicates, whether the input is sorted, what to return if there is no answer, and whether you may modify the input. Example: "Can the array be empty? If there is no valid window, should I return 0 or -1?"</li>
+<li><strong>Examples (2 minutes).</strong> Walk one normal case and one edge case by hand. Write them as comments at the top of your code so you can test against them later.</li>
+<li><strong>Brute force out loud (2 minutes).</strong> State it and its complexity. Example: "The brute force checks every pair, which is O(n²). With n up to 10⁵ that is 10¹⁰ operations, too slow, so I need O(n log n) or better."</li>
+<li><strong>Optimize (5 minutes).</strong> Name the pattern and say why it fits. Example: "This is a sliding window because we want the longest contiguous subarray, and once a window becomes invalid, making it bigger can never make it valid again."</li>
+<li><strong>Code (15 minutes).</strong> Use clear names and small helper functions. Avoid clever one-liners. Talk while you type, but keep it short: "Now I shrink from the left until the window is valid again."</li>
+<li><strong>Test (5 minutes).</strong> Trace your example through the actual code, line by line. Then try the edge cases: empty, one element, all the same, maximum size.</li>
+<li><strong>Complexity (1 minute).</strong> Give time and space with the reason. Example: "O(n) time because each index enters and leaves the window once. O(k) space for the counts."</li>
+<li><strong>Follow-ups.</strong> Be ready for scale ("the data is 1 TB"), streaming ("numbers arrive one at a time"), concurrency ("two threads call this") and memory limits.</li>
+</ol>
+<div class="callout highlight">
+<p><b>The 60-second explanation template</b> (use it for every problem in the topic files):</p>
+<ol>
+<li>"The problem is really asking..." (one sentence in your own words).</li>
+<li>"The brute force is ..., which costs ..."</li>
+<li>"The key observation is ..." (the one insight that removes the wasted work).</li>
+<li>"So I ..." (the algorithm in two or three sentences, naming the data structure).</li>
+<li>"That's O(...) time because ..., and O(...) space for ..."</li>
+<li>"Edge cases I handle: ..."</li>
+</ol>
+</div>
+<hr>
+<h2 id="pattern-recognition">Pattern recognition</h2>
+<p>Most interview problems are a known pattern wearing a costume. The skill is reading the problem statement for <strong>signals</strong>: specific words that point to a pattern. The diagram below is the rough order of questions to ask yourself. Notice that the first question is always about the shape of the input.</p>
+<div class="mermaid">flowchart TD
+    A["Read the problem"] --&gt; B{"Input is a grid, graph, or has dependencies?"}
+    B --&gt;|yes| G["Graph file: BFS, DFS, topo sort, Dijkstra, DSU"]
+    B --&gt;|no| C{"Asks for all combinations or arrangements?"}
+    C --&gt;|yes| BT["Backtracking"]
+    C --&gt;|no| D{"Count ways or min or max over choices, with repeated subproblems?"}
+    D --&gt;|yes| DP["Dynamic programming"]
+    D --&gt;|no| E{"Contiguous subarray or substring?"}
+    E --&gt;|yes| SW["Sliding window or prefix sums"]
+    E --&gt;|no| F{"Sorted input or a yes/no feasibility test?"}
+    F --&gt;|yes| BS["Two pointers or binary search"]
+    F --&gt;|no| H["Hashmap, stack, heap, or tree, by the table below"]
+</div>
+<p>The table maps signal words to a pattern and to the file that teaches it.</p>
 <table>
 <thead>
 <tr>
@@ -198,46 +246,58 @@ strong{color:#fff}
 </tr>
 </tbody>
 </table>
+<p>A quick worked example of reading signals: "Given an array of integers and k, return the number of contiguous subarrays whose sum equals k. Values can be negative." The word "contiguous" suggests sliding window. But "values can be negative" breaks sliding window, because adding a number can make the sum smaller, so the window is no longer monotonic. "Count subarrays with sum k" is the prefix-sum signal. So the answer is prefix sums plus a hashmap (file 1, section B1).</p>
 <hr>
 <h2 id="complexity-cheat-sheet">Complexity cheat sheet</h2>
+<p>A typical judge runs roughly 10⁷ to 10⁸ simple operations per second in compiled languages, and fewer in Python. So the input size tells you which complexity the interviewer expects. Use this table to work backwards from the constraints.</p>
 <table>
 <thead>
 <tr>
 <th>n</th>
 <th>Allowed complexity (~1 second)</th>
+<th>Typical technique</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>≤ 10</td>
 <td>O(n!)</td>
+<td>Permutations, brute force</td>
 </tr>
 <tr>
 <td>≤ 20</td>
 <td>O(2^n)</td>
+<td>Subsets, bitmask DP</td>
 </tr>
 <tr>
 <td>≤ 500</td>
 <td>O(n^3)</td>
+<td>Interval DP, Floyd-Warshall</td>
 </tr>
 <tr>
 <td>≤ 5,000</td>
 <td>O(n^2)</td>
+<td>Two-sequence DP, all pairs</td>
 </tr>
 <tr>
 <td>≤ 10^6</td>
 <td>O(n log n)</td>
+<td>Sorting, heap, binary search</td>
 </tr>
 <tr>
 <td>≤ 10^8</td>
 <td>O(n)</td>
+<td>One pass, hashmap, two pointers</td>
 </tr>
 <tr>
 <td>larger</td>
 <td>O(log n) or O(1)</td>
+<td>Binary search, math formula</td>
 </tr>
 </tbody>
 </table>
+<p>Example: "n is up to 10⁵" means O(n²) is 10¹⁰ operations, which is far too slow. You should aim for O(n log n) or O(n).</p>
+<p>Costs of the core data structures. "Avg" means average case. Hash tables can degrade when many keys collide, but that is rare with a good hash.</p>
 <table>
 <thead>
 <tr>
@@ -300,7 +360,8 @@ strong{color:#fff}
 </tr>
 </tbody>
 </table>
-<p>Sorting: O(n log n) (Python's Timsort is stable). Heap building: O(n). BFS/DFS: O(V + E). Dijkstra: O((V + E) log V).</p>
+<p>L is the length of the word. α(n) is the inverse Ackermann function, which grows so slowly that it is at most 4 for any input that fits in the universe, so treat it as a constant.</p>
+<p>Other costs to say from memory: sorting is O(n log n), and Python's sort (Timsort) is <strong>stable</strong>, meaning equal items keep their original order. Building a heap from a list with <code>heapify</code> is O(n), not O(n log n). BFS and DFS are O(V + E), where V is the number of vertices (nodes) and E is the number of edges. Dijkstra with a heap is O((V + E) log V).</p>
 <hr>
 <h2 id="python-tools-you-should-use-without-thinking">Python tools you should use without thinking</h2>
 <pre><code class="language-python">from collections import Counter, defaultdict, deque, OrderedDict
@@ -310,14 +371,26 @@ from functools import lru_cache, cache
 from itertools import accumulate, combinations, permutations, product
 import math           # math.inf, math.gcd, math.isqrt
 </code></pre>
+<p>What each one is for, in one line:</p>
 <ul>
-<li><code>heapq.heappush(h, (priority, tiebreak, item))</code>: add a tiebreak counter if items aren't comparable.</li>
-<li><code>deque.popleft()</code> is O(1); <code>list.pop(0)</code> is O(n).</li>
-<li>Recursion limit: use <code>sys.setrecursionlimit(10**6)</code> or convert to an iterative loop for deep DFS.</li>
-<li><code>@cache</code> on a nested function is the fastest way to write top-down DP.</li>
+<li><code>Counter(s)</code> counts items, like a tally sheet. <code>Counter("aab")</code> gives <code>{'a': 2, 'b': 1}</code>.</li>
+<li><code>defaultdict(list)</code> is a dict that creates an empty list the first time you touch a missing key, so you never write "if key not in d".</li>
+<li><code>deque</code> is a double-ended queue. <code>popleft()</code> is O(1), while <code>list.pop(0)</code> is O(n) because every other element shifts left.</li>
+<li><code>heapq</code> turns a plain list into a min-heap (smallest item always at index 0).</li>
+<li><code>bisect_left(a, x)</code> returns the first index where <code>x</code> could be inserted into sorted list <code>a</code> and keep it sorted. <code>bisect_right</code> returns the index after any existing copies of <code>x</code>.</li>
+<li><code>@cache</code> remembers the result of a function for each argument, which turns plain recursion into top-down dynamic programming.</li>
+<li><code>accumulate([1, 2, 3])</code> gives running totals <code>[1, 3, 6]</code>, which is a prefix sum.</li>
+</ul>
+<p>Habits that avoid common bugs:</p>
+<ul>
+<li><code>heapq.heappush(h, (priority, tiebreak, item))</code>. Add a tiebreak counter if items aren't comparable. Without it, two equal priorities make Python compare the items, and a <code>ListNode</code> cannot be compared, so it raises <code>TypeError</code>.</li>
+<li><code>deque.popleft()</code> is O(1); <code>list.pop(0)</code> is O(n). Using <code>pop(0)</code> inside a loop silently turns O(n) into O(n²).</li>
+<li>Recursion limit: Python stops at about 1,000 nested calls by default. Use <code>sys.setrecursionlimit(10**6)</code> or convert to an iterative loop for deep DFS, such as a linked-list-shaped tree with 10⁵ nodes.</li>
+<li><code>@cache</code> on a nested function is the fastest way to write top-down DP. Define it inside the solving function so the cache is cleared for every new test case.</li>
 </ul>
 <hr>
 <h2 id="top-100-list-do-in-this-order-grouped">Top 100 list (do in this order, grouped)</h2>
+<p>Work through these by group, because doing five problems of one pattern in a row trains the recognition reflex. For each problem, try 20 minutes on your own, then read the solution in the topic file, then redo it the next day without looking.</p>
 <p><strong>Arrays and hashing:</strong> Two Sum, Group Anagrams, Top K Frequent, Product of Array Except Self, Longest Consecutive Sequence, Valid Sudoku, Encode/Decode Strings, Subarray Sum Equals K.</p>
 <p><strong>Two pointers:</strong> Valid Palindrome, 3Sum, Container With Most Water, Trapping Rain Water, Sort Colors.</p>
 <p><strong>Sliding window:</strong> Best Time to Buy/Sell Stock, Longest Substring Without Repeating, Longest Repeating Character Replacement, Permutation in String, Minimum Window Substring, Sliding Window Maximum.</p>
@@ -332,7 +405,8 @@ import math           # math.inf, math.gcd, math.isqrt
 <p><strong>Backtracking:</strong> Subsets, Combination Sum, Permutations, Subsets II, Word Search, Palindrome Partitioning, Letter Combinations, N-Queens.</p>
 <p><strong>Intervals and greedy:</strong> Merge Intervals, Insert Interval, Non-overlapping Intervals, Meeting Rooms II, Jump Game I/II, Gas Station, Hand of Straights, Partition Labels.</p>
 <p><strong>Bits:</strong> Single Number, Number of 1 Bits, Counting Bits, Reverse Bits, Missing Number, Sum of Two Integers.</p>
-<p><strong>OCI-flavored (seen in cloud interviews):</strong> LRU/LFU Cache, Design Hit Counter, Rate Limiter, Time Based Key-Value Store, Merge K Sorted (log merge), Top K Frequent (logs), Meeting Rooms II (resource allocation), Course Schedule (dependency resolution), Word Ladder, Network Delay Time, Snapshot Array, File System design, Logger Rate Limiter.</p></main>
+<p><strong>OCI-flavored (seen in cloud interviews):</strong> LRU/LFU Cache, Design Hit Counter, Rate Limiter, Time Based Key-Value Store, Merge K Sorted (log merge), Top K Frequent (logs), Meeting Rooms II (resource allocation), Course Schedule (dependency resolution), Word Ladder, Network Delay Time, Snapshot Array, File System design, Logger Rate Limiter.</p>
+<p>Why these are "cloud-flavored": each one maps to a real infrastructure task. Merge K Sorted is how you merge log files from many machines in time order. Meeting Rooms II is "how many servers do I need so no job waits". Course Schedule is "in what order do I deploy services that depend on each other". Rate limiters and hit counters protect APIs. If you solve one of these, add one sentence connecting it to the real system, because OCI interviewers like hearing that you see the link. The design versions (LRU, rate limiter, file system) are in <a href="05_lld_problems.html">LLD problems</a>.</p></main>
 </div>
 
 <script type="module">

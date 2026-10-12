@@ -40,281 +40,404 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/07_behavioral_star_stories.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#behavioral-star-stories-final-java-ai">Behavioral / STAR stories — Final Java + AI</a>
-<a class="lvl2" href="#1-the-reconciled-database-verdict-disagreement-between-two-expert-camps">1. The reconciled database verdict (disagreement between two expert camps)</a>
-<a class="lvl2" href="#2-the-bigqueryclickhouse-ingestion-lane-freshness-as-a-feature">2. The BigQuery→ClickHouse ingestion lane (freshness as a feature)</a>
-<a class="lvl2" href="#3-fixing-the-1-llm-planner-failure-malformed-plans">3. Fixing the #1 LLM-planner failure (malformed plans)</a>
-<a class="lvl2" href="#4-inverting-the-clustering-workflow-customer-obsession-think-big">4. Inverting the clustering workflow (customer obsession + think big)</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#behavioral-and-managerial-rounds-my-star-stories">Behavioral and managerial rounds: my STAR stories</a>
+<a class="lvl2" href="#before-you-start">Before you start</a>
+<a class="lvl2" href="#which-story-covers-what">Which story covers what</a>
+<a class="lvl2" href="#1-the-clickhouse-decision-between-two-expert-camps">1. The ClickHouse decision between two expert camps</a>
+<a class="lvl2" href="#2-the-bigquery-to-clickhouse-ingestion-lane-freshness-as-a-feature">2. The BigQuery to ClickHouse ingestion lane (freshness as a feature)</a>
+<a class="lvl2" href="#3-fixing-the-top-failure-in-an-llm-planner-malformed-plans">3. Fixing the top failure in an LLM planner (malformed plans)</a>
+<a class="lvl2" href="#4-inverting-the-clustering-workflow">4. Inverting the clustering workflow</a>
 <a class="lvl2" href="#5-the-pure-refactor-that-wasnt-owning-a-mistake">5. The "pure refactor" that wasn't (owning a mistake)</a>
 <a class="lvl2" href="#6-coverage-that-lied-dive-deep">6. Coverage that lied (dive deep)</a>
-<a class="lvl2" href="#7-disagreeing-with-the-architecture-rulebook-backbone-commit">7. Disagreeing with the architecture rulebook (backbone + commit)</a>
+<a class="lvl2" href="#7-disagreeing-with-the-architecture-rulebook-backbone-then-commit">7. Disagreeing with the architecture rulebook (backbone, then commit)</a>
 <a class="lvl2" href="#8-the-migration-nobody-could-pause-the-business-for-deliver-results">8. The migration nobody could pause the business for (deliver results)</a>
 <a class="lvl2" href="#9-the-anti-bot-arms-race-learn-and-be-curious">9. The anti-bot arms race (learn and be curious)</a>
-<a class="lvl2" href="#10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust / do the right thing)</a>
-<a class="lvl2" href="#11-oom-connection-leak-packet-star-not-a-pdf-bullet">11. OOM / connection leak (packet STAR — not a PDF bullet)</a>
-<a class="lvl2" href="#12-clickhouse-rfc-migration-bias-for-action-technical-leadership">12. ClickHouse RFC migration (Bias for Action / technical leadership)</a>
-<a class="lvl2" href="#12b-weekly-rollup-oom-hardest-technical-hurdle">12b. Weekly rollup OOM (hardest technical hurdle)</a>
-<a class="lvl2" href="#rapid-fire-answers-30-seconds-each">Rapid-fire answers (30 seconds each)</a>
-<a class="lvl2" href="#stack-wording-quick-answers-say-these-on-this-track">Stack-wording quick answers (say these on this track)</a></nav>
-<main><h1 id="behavioral-star-stories-final-java-ai">Behavioral / STAR stories — Final Java + AI</h1>
-<blockquote>
-<p><strong>PDF IA (Sep 2026):</strong> Core Infrastructure &amp; Pipeline + Agentic Flows &amp; Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, 300-case / 80% gate). <strong>Verbal only / not on PDF:</strong> Cluster Recommendation Copilot · Hindsight. Canonical: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
-</blockquote>
-<p>On this track Uber FRM and Masters India are <strong>Spring Boot</strong>; AssortSmart platform APIs on the PDF are still <strong>Go / Gin</strong> (identical IA bullets across tracks); the agent plane stays <strong>Python</strong>. Do <strong>not</strong> claim Spring Boot write APIs at IA — that framing is obsolete.</p>
-<p><strong>Self-contained</strong> behavioral bank — the full 10 stories are below, so you never leave this track
-to prep. Outcomes, Amazon Leadership Principle mapping, and Googliness signals are identical across
-every resume track; only the <strong>stack wording</strong> differs. On this track the AssortSmart write plane is framed as <strong>Spring Boot</strong>; the agent plane (planner, RAG, evals) stays <strong>Python</strong>.</p>
-<p>Tell each in 60–90 seconds: one line of Situation, one of Task, 3–4 concrete Actions, a quantified
-Result, and a one-line Lesson. Never tell the same story twice in one loop — this bank gives you
-coverage. Company-by-company LP mapping (Amazon, Google, Microsoft, LinkedIn, Apple, Netflix,
-Atlassian, Salesforce) lives in <code>../campaign_extras/behavioral/company_behavior_guides.md</code>.</p>
-<p><strong>Coverage matrix</strong></p>
+<a class="lvl2" href="#10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust, do the right thing)</a>
+<a class="lvl2" href="#11-the-connection-leak-that-caused-out-of-memory-errors">11. The connection leak that caused out-of-memory errors</a>
+<a class="lvl2" href="#12-leading-the-clickhouse-rfc-and-migration-bias-for-action-technical-leadership">12. Leading the ClickHouse RFC and migration (bias for action, technical leadership)</a>
+<a class="lvl2" href="#12b-the-weekly-rollup-out-of-memory-problem-hardest-technical-hurdle">12b. The weekly rollup out-of-memory problem (hardest technical hurdle)</a>
+<a class="lvl2" href="#rapid-fire-answers-about-30-seconds-each">Rapid-fire answers (about 30 seconds each)</a></nav>
+<main><h1 id="behavioral-and-managerial-rounds-my-star-stories">Behavioral and managerial rounds: my STAR stories</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li>This is my bank of 13 behavioral stories (numbered 1 to 12, plus 12b), written the way I would actually say them out loud.</li>
+<li>Read it the night before any behavioral, hiring-manager or "culture" round. Pick 2 or 3 stories per loop and never tell the same story twice to the same company.</li>
+<li>Memorise the numbers in bold and the "Say this carefully" notes. Everything else I can say in my own words.</li>
+<li>To find the right story for a question fast, use the <a href="40_behavioral_prep_grid.html">prep grid</a>.</li>
+</ul>
+</div>
+<h2 id="before-you-start">Before you start</h2>
+<p><strong>What a STAR story is.</strong> STAR stands for Situation, Task, Action, Result. Interviewers use it to check that I did something real, that I know why I did it, and that I can measure what happened. I add a fifth part, <strong>What I learned</strong>, because senior interviewers almost always ask for it.</p>
+<p><strong>How long.</strong> Aim for 60 to 90 seconds. That is one or two sentences of Situation, one sentence of Task, three or four concrete Actions, a Result with a number, and one sentence of learning. Then stop and let them ask follow-ups. The follow-ups are where the real interview happens.</p>
+<p><strong>Amazon Leadership Principles (LPs)</strong> are the 16 values Amazon interviewers score against, such as Ownership, Dive Deep and Earn Trust. <strong>Googliness</strong> is Google's word for how I work with people: intellectual humility, bias to action, collaboration, comfort with ambiguity, and doing the right thing. Most other companies ask the same kinds of questions with different labels, so this mapping works everywhere.</p>
+<p><strong>What the tags mean.</strong> MEASURED means there is a log, document or code behind the number. TARGET means a design goal, so I say "targeting". ESTIMATED means arithmetic I can show. HISTORICAL means it comes from my past work records. "On the PDF" means it is a bullet on my current resume (<code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>). "Verbal only" means I can talk about it if asked, but it is not a resume bullet.</p>
+<p><strong>Stack wording on this track.</strong> On this resume, Uber FRM uses Java with Spring Boot, Spring Data JPA and Hibernate, and Masters India uses Spring Boot microservices. At Impact Analytics, the platform APIs are written in Go with the Gin web framework, and the AI agent side is Python (FastAPI and LangGraph). Never say Spring Boot for Impact Analytics.</p>
+<p><strong>What is on the Impact Analytics PDF.</strong> Two groups of bullets: Core Infrastructure and Pipeline, and Agentic Flows and Orchestration (Keep/Drop, Missed Opportunities, Top Style, Ask Iris, the 300-case harness and the 80% gate). The Cluster Recommendation Copilot and Hindsight are verbal only. The source of truth for the Impact Analytics wording is <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
+<p><strong>Company names.</strong> I always say "Uber via EPAM" once per story, because I was employed by EPAM Systems and worked on Uber's teams.</p>
+<h2 id="which-story-covers-what">Which story covers what</h2>
 <table>
 <thead>
 <tr>
+<th>#</th>
 <th>Story</th>
+<th>Company</th>
+<th>On the PDF?</th>
 <th>Amazon LPs</th>
 <th>Googliness</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>1. Reconciled ClickHouse verdict</td>
-<td>Are Right, A Lot · Have Backbone; Disagree &amp; Commit · Dive Deep</td>
-<td>Intellectual humility · ambiguity</td>
+<td>1</td>
+<td>The ClickHouse decision between two expert camps</td>
+<td>Impact Analytics</td>
+<td>Background to the ClickHouse bullets</td>
+<td>Are Right, A Lot. Have Backbone, Disagree and Commit. Dive Deep</td>
+<td>Intellectual humility, ambiguity</td>
 </tr>
 <tr>
-<td>2. BQ→CH ingestion lane (freshness as a feature)</td>
-<td>Ownership · Invent &amp; Simplify · Insist on Highest Standards</td>
+<td>2</td>
+<td>BigQuery to ClickHouse ingestion lane (freshness as a feature)</td>
+<td>Impact Analytics</td>
+<td>Verbal only, design written but not executed</td>
+<td>Ownership. Invent and Simplify. Insist on the Highest Standards</td>
 <td>Bias to action</td>
 </tr>
 <tr>
-<td>3. Malformed-plan validator</td>
-<td>Customer Obsession · Insist on Highest Standards</td>
+<td>3</td>
+<td>The validator for malformed LLM plans</td>
+<td>Not tied to a named product, see note</td>
+<td>Verbal only</td>
+<td>Customer Obsession. Insist on the Highest Standards</td>
 <td>Problem-first thinking</td>
 </tr>
 <tr>
-<td>4. Clustering copilot inversion (<strong>verbal / not on PDF</strong>)</td>
-<td>Think Big · Customer Obsession · Deliver Results</td>
-<td>Ambiguity · user empathy</td>
+<td>4</td>
+<td>Inverting the clustering workflow</td>
+<td>Impact Analytics</td>
+<td>Verbal only (Cluster Copilot)</td>
+<td>Think Big. Customer Obsession. Deliver Results</td>
+<td>Ambiguity, user empathy</td>
 </tr>
 <tr>
-<td>11. OOM / connection leak (<strong>packet; not PDF</strong>)</td>
-<td>Ownership · Dive Deep</td>
-<td>Ambiguity</td>
+<td>5</td>
+<td>The "pure refactor" that wasn't</td>
+<td>Uber via EPAM (FRM)</td>
+<td>Supports the Spring Data JPA / Hibernate migration bullet</td>
+<td>Insist on the Highest Standards. Earn Trust</td>
+<td>Humility, owning mistakes</td>
 </tr>
 <tr>
-<td>12. ClickHouse RFC migration</td>
-<td>Bias for Action · technical leadership</td>
-<td>Measurement</td>
-</tr>
-<tr>
-<td>5. Constants-refactor regression</td>
-<td>Insist on Highest Standards · Earn Trust</td>
-<td>Humility · owning mistakes</td>
-</tr>
-<tr>
-<td>6. Coverage-gap fix (test where code lives)</td>
-<td>Dive Deep · Learn &amp; Be Curious</td>
+<td>6</td>
+<td>Coverage that lied</td>
+<td>Uber via EPAM (FRM)</td>
+<td>Supports the 100% coverage bullet</td>
+<td>Dive Deep. Learn and Be Curious</td>
 <td>Rigor</td>
 </tr>
 <tr>
-<td>7. ORM-vs-repository disagreement</td>
-<td>Have Backbone; Disagree &amp; Commit · Earn Trust</td>
+<td>7</td>
+<td>Disagreeing with the architecture rulebook</td>
+<td>Uber via EPAM (FRM)</td>
+<td>Supports the Spring Data JPA / Hibernate migration bullet</td>
+<td>Have Backbone, Disagree and Commit. Earn Trust</td>
 <td>Healthy conflict</td>
 </tr>
 <tr>
-<td>8. Masters India migration under deadline</td>
-<td>Deliver Results · Ownership · Bias for Action</td>
+<td>8</td>
+<td>The migration nobody could pause the business for</td>
+<td>Masters India</td>
+<td>Yes</td>
+<td>Deliver Results. Ownership. Bias for Action</td>
 <td>Execution under pressure</td>
 </tr>
 <tr>
-<td>9. Anti-bot arms race</td>
-<td>Learn &amp; Be Curious · Invent &amp; Simplify</td>
+<td>9</td>
+<td>The anti-bot arms race</td>
+<td>Uber via EPAM (Menu)</td>
+<td>Yes</td>
+<td>Learn and Be Curious. Invent and Simplify</td>
 <td>Persistence</td>
 </tr>
 <tr>
-<td>10. Double-filing near-miss / idempotency</td>
-<td>Earn Trust · Insist on Highest Standards</td>
+<td>10</td>
+<td>The double-filing near-miss</td>
+<td>Masters India</td>
+<td>Supports the idempotency bullet</td>
+<td>Earn Trust. Insist on the Highest Standards</td>
 <td>Doing the right thing</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Connection leak causing out-of-memory</td>
+<td>Impact Analytics</td>
+<td>No, prep story only</td>
+<td>Ownership. Dive Deep</td>
+<td>Ambiguity</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Leading the ClickHouse RFC and migration</td>
+<td>Impact Analytics</td>
+<td>Yes</td>
+<td>Bias for Action. Technical leadership</td>
+<td>Measurement</td>
+</tr>
+<tr>
+<td>12b</td>
+<td>The weekly rollup out-of-memory problem</td>
+<td>Impact Analytics</td>
+<td>Yes</td>
+<td>Dive Deep. Deliver Results</td>
+<td>Rigor</td>
 </tr>
 </tbody>
 </table>
+<p>Stories 1 and 12 cover the same ClickHouse decision from two angles. Story 1 is about the disagreement. Story 12 is about leading the work. Use only one of them per loop.</p>
 <hr>
-<h2 id="1-the-reconciled-database-verdict-disagreement-between-two-expert-camps">1. The reconciled database verdict (disagreement between two expert camps)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Decision process and PoC gates stay identical. Implementation plane on this track: the agentic planner is a <strong>Python</strong> service; the AssortSmart write APIs it calls are <strong>Spring Boot</strong>; the ClickHouse client and staging jobs sit behind them.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Tell me about a time you disagreed with your team / made a decision with incomplete data / influenced without authority."</p>
-<ul>
-<li><strong>S:</strong> At Impact Analytics, the org was split on adopting ClickHouse for the new agentic planner. A live audit of the legacy backend concluded "no ClickHouse"; senior SMEs pushed "yes, unified OLAP." Both sides had evidence; a wrong call was expensive either way.</li>
-<li><strong>T:</strong> Produce a recommendation the org could commit to, without discarding either side's evidence.</li>
-<li><strong>A:</strong> Separated <em>facts</em> from <em>conclusions</em>: accepted every measured fact in the audit, then showed its "no" conclusion was a property of the legacy in-place-UPDATE write model, not of planning workloads. Designed an insert-only/versioned write model that sidesteps ClickHouse's mutation weakness, and proposed a 3-gate path: in-stack BigQuery fixes first, Postgres discipline second, a versioned-write PoC third — each gate measurable.</li>
-<li><strong>R:</strong> Both camps agreed to the staged path. The PoC held the mutation queue at zero at 10× scale; in July 2026 the org committed to ClickHouse end-to-end. No premature infra spend, no camp "lost."</li>
-<li><strong>Lesson:</strong> disagreements between competent people are usually about hidden assumptions, not facts — make the assumptions explicit and the decision often resolves itself.</li>
-</ul>
-<h2 id="2-the-bigqueryclickhouse-ingestion-lane-freshness-as-a-feature">2. The BigQuery→ClickHouse ingestion lane (freshness as a feature)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Freshness design (atomic <code>REPLACE PARTITION</code>, reconciliation, staleness sentinel) is language-agnostic. If asked <em>who runs the load</em>, it is a scheduled <strong>Spring Boot</strong> job on this track, not a Python cron.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Design decision you're proud of / handling hidden failure modes / raising the bar."</p>
-<ul>
-<li><strong>S:</strong> The copilot's agent probes needed deterministic low latency (design target p95 &lt;500 ms), but our historical data lives in BigQuery, where shared-slot variance means the same query can take 1 to 20 seconds. The obvious fix — copy the data into ClickHouse — has a known trap: derived copies rot silently, and a planner making buy decisions on stale data is worse than a slow query.</li>
-<li><strong>T:</strong> Build the ingestion lane from BigQuery into ClickHouse so the agent read plane is both fast <em>and</em> provably fresh.</li>
-<li><strong>A:</strong> Designed the lane in three parts: scheduled exports land in ClickHouse staging tables and get promoted with atomic <code>REPLACE PARTITION</code>, so readers never see a half-loaded night; per-partition row-count and sum reconciliation against the BigQuery source with 0.1% tolerance blocks promotion on mismatch; and a freshness sentinel stamps <em>data-as-of</em> into every agent recommendation, so staleness is visible in the product instead of discovered in an incident. Added nightly precompute of attribute significance for hierarchies with active plans so most copilot sessions start warm.</li>
-<li><strong>R:</strong> The read plane serves agent probes against its p95 &lt;500 ms design target, and the failure mode everyone fears with derived data — silent rot — is structurally impossible: loads are atomic, mismatches block promotion, and staleness is printed on the answer.</li>
-<li><strong>Lesson:</strong> when you copy data for speed, freshness and reconciliation are product features, not ops chores — design them in on day one.</li>
-</ul>
-<h2 id="3-fixing-the-1-llm-planner-failure-malformed-plans">3. Fixing the #1 LLM-planner failure (malformed plans)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> The planner is a <strong>Python / LangGraph</strong> service, so keep the story as-is. The transferable principle — a deterministic contract around a probabilistic component — is exactly how you use <strong>Bean Validation / schema checks</strong> before a commit in a Spring service.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Hardest technical problem / quality bar / working with non-deterministic systems."</p>
-<ul>
-<li><strong>S:</strong> Our multi-agent planner let an LLM decompose questions into execution plans; malformed plans (unknown agents, forward references, over-wide stages) were the top failure class — structural correctness was 0.54 on our eval set.</li>
-<li><strong>T:</strong> Make plans safe to execute without giving up LLM flexibility.</li>
-<li><strong>A:</strong> Wrote a hard structural validator over the plan schema (domains, duplicate ids, stage widths, forward references in dependency placeholders) that runs before anything executes; on failure, one self-repair pass re-prompts the LLM with the specific validation errors; made every agent's <code>answer()</code> non-throwing so a single agent failure produces a labeled partial answer instead of a crash.</li>
-<li><strong>R:</strong> Structural correctness 0.54 → 0.99 on the offline eval; failures became explicit and recoverable.</li>
-<li><strong>Lesson:</strong> with LLMs, don't chase a perfect prompt — put a deterministic contract around a probabilistic component.</li>
-</ul>
-<h2 id="4-inverting-the-clustering-workflow-customer-obsession-think-big">4. Inverting the clustering workflow (customer obsession + think big)</h2>
-<blockquote>
-<p><strong>Verbal only / not on PDF.</strong> Cluster Recommendation Copilot is not a current resume bullet. Use if they ask about clustering-agent roadmap.</p>
-<p><strong>final_java_ai wording:</strong> Product/workflow content is unchanged; the copilot is a <strong>Python FastAPI + LangGraph</strong> microservice. The write-back into existing product tables goes through the <strong>Spring Boot</strong> APIs.</p>
-</blockquote>
-<p><strong>Use for:</strong> "A time you challenged the status quo / product thinking / ambiguity."</p>
-<ul>
-<li><strong>S:</strong> Store clustering is the foundation of every assortment plan, yet it was the least-assisted step: the system computed attribute significance and then made humans choose from raw score lists. Live audits: users tried exactly 1 configuration per plan (search space: 12 algorithms × k=3–10 × any attribute subset), 8.5% of runs failed (37/437, &gt;80% on input mistakes), and nothing was reproducible.</li>
-<li><strong>T:</strong> Define the module's agentic rebuild — with adoption risk as the main constraint.</li>
-<li><strong>A:</strong> Inverted the workflow: the user states intent (hierarchy + reference period — the only non-derivable inputs); the agent grounds the request into concrete scopes, selects features by statistical significance, batch-evaluates <strong>~100 candidate clusterings</strong> scored on silhouette, and presents the <strong>top 3 with evidence</strong> (a baseline scenario mimicking the client's legacy configuration always included) with plain-English rationale — the human approves at explicit gates. Kept the manual wizard alive as a legacy path per client so adoption is opt-in, not forced.</li>
-<li><strong>R:</strong> Committed targets: &lt;1 h to a finalized plan (from days), top 3 of ~100 batch-evaluated candidates presented (from 1 config ever tried), &lt;2% failures, agent-selected features and k fully visible to the planner — with write-back into existing product tables unchanged.</li>
-<li><strong>Lesson:</strong> the highest-leverage AI feature is often workflow inversion, not model quality.</li>
-</ul>
+<h2 id="1-the-clickhouse-decision-between-two-expert-camps">1. The ClickHouse decision between two expert camps</h2>
+<p><strong>Status:</strong> Impact Analytics. This is the background to my ClickHouse bullets. The details of the two camps come from my own notes, not the PDF.</p>
+<p><strong>Questions this answers:</strong> "Tell me about a time you disagreed with your team." "Tell me about a decision you made with incomplete data." "How do you influence people when you have no authority over them?" "What are you most proud of?"</p>
+<p><strong>Words to know.</strong> ClickHouse is a database built for analytics. It stores data by column, so it can scan and sum billions of rows quickly, a bit like reading one column of a huge spreadsheet instead of every row. Its weak spot is editing existing rows in place, because each edit (called a "mutation") rewrites whole chunks of data in the background. OLAP means analytical processing: big read queries that summarise lots of rows.</p>
+<p><strong>Situation.</strong> When I joined Impact Analytics in May 2026, our planners' pivot screens were slow on PostgreSQL. A pivot is the grid where a planner slices sales by product, store and week. The organisation was split on whether to adopt ClickHouse for the new AI planning product. One group had run a live audit of the legacy backend and concluded "no ClickHouse". Senior subject-matter experts were pushing "yes, one unified analytics store". Both sides had real evidence, and a wrong call would be expensive either way.</p>
+<p><strong>Task.</strong> My job was to produce a recommendation the whole organisation could commit to, without throwing away either side's evidence.</p>
+<p><strong>Action.</strong>
+- I separated facts from conclusions. I accepted every measured fact in the audit.
+- Then I showed that the audit's "no" came from the legacy system's write pattern, which edited rows in place. That is exactly what ClickHouse is bad at. It was not a property of planning workloads themselves.
+- I designed an insert-only, versioned write model. Instead of editing a row, you write a new version, and the database keeps only the newest one. That sidesteps ClickHouse's weak spot.
+- I proposed a path with three gates, each one measurable. First, fix what we could inside the existing BigQuery stack. Second, tighten how we used Postgres. Third, run a proof of concept (PoC) of the versioned write model in ClickHouse.</p>
+<p><strong>Result.</strong> Both camps agreed to the staged path. In the PoC, the mutation queue (the backlog of pending background rewrites) stayed at zero at 10 times our scale. In July 2026 the organisation committed to ClickHouse end to end. We spent no money on infrastructure before we had evidence, and neither camp "lost".</p>
+<p><strong>What I learned.</strong> When two competent groups disagree, they usually disagree about a hidden assumption, not about the facts. If you make the assumption explicit, the decision often resolves itself.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"What was in the audit?"</em> "It measured how the legacy backend behaved, and I accepted all of it. Where I differed was the conclusion. Its pain came from editing rows in place, and the new design didn't do that." If they push for specifics, keep it qualitative.
+- <em>"What would you have done if the PoC failed?"</em> "That was the point of the gates. If the third gate failed, we would have kept the improvements from gates one and two and stayed on BigQuery and Postgres. Nobody would have spent money on a migration that didn't work."
+- <em>"What stayed in Postgres?"</em> "Thin metadata, user access management (who can see which part of the product hierarchy) and roles. ClickHouse took the large analytical reads."
+- <em>"You'd only been there two months. How did you get people to listen?"</em> "I didn't ask anyone to trust me. I wrote it down, accepted their facts, and proposed gates that anyone could check. The evidence carried the decision."</p>
+<p><strong>Say this carefully.</strong> The "10 times scale" and the July 2026 commitment come from my notes, not the PDF. The PDF numbers that came later (from 189 seconds to 12 seconds) are a separate measurement. That story is in Story 12.</p>
+<hr>
+<h2 id="2-the-bigquery-to-clickhouse-ingestion-lane-freshness-as-a-feature">2. The BigQuery to ClickHouse ingestion lane (freshness as a feature)</h2>
+<p><strong>Status:</strong> Impact Analytics, verbal only. This is a <strong>design I wrote, not something that was executed</strong>. It was meant for the Cluster Recommendation Copilot, which is also verbal only. The p95 under 500 ms and the 0.1% tolerance are TARGETS in the design, not measured results.</p>
+<p><strong>Questions this answers:</strong> "Tell me about a design decision you're proud of." "How do you handle failure modes nobody else is thinking about?" "Tell me about a time you raised the bar."</p>
+<p><strong>Words to know.</strong> BigQuery is Google's cloud data warehouse. Its compute is shared across users, so the same query can take 1 second one minute and 20 seconds the next. p95 latency means 95 out of 100 requests finish faster than that time. A partition is a slice of a table, for example one season of data. <code>REPLACE PARTITION</code> is a ClickHouse command that swaps a whole slice in from a staging table in one step, so readers see either the old slice or the new one, never half of each. Reconciliation means comparing row counts and totals between the source and the copy.</p>
+<p><strong>Situation.</strong> The copilot's design had agents asking many small data questions ("probes") while a planner waited, so they needed fast, predictable answers. The design target was p95 under 500 milliseconds. But our historical data lives in BigQuery, where the same query can take anywhere from 1 to 20 seconds. The obvious fix is to copy the data into ClickHouse. That has a known trap: copies go stale silently. A planner making buying decisions on stale data is worse off than one waiting for a slow query.</p>
+<p><strong>Task.</strong> Design the ingestion lane from BigQuery into ClickHouse so the agents' read path is both fast and provably fresh.</p>
+<p><strong>Action.</strong> I designed it in three parts.
+- <strong>Atomic loads.</strong> Scheduled exports land in ClickHouse staging tables first. They get promoted to the live table with <code>REPLACE PARTITION</code>, so nobody ever reads a half-loaded night.
+- <strong>Reconciliation that blocks.</strong> Before promotion, each partition's row count and sums are compared with the BigQuery source. If they differ by more than 0.1%, promotion is blocked.
+- <strong>Freshness on the answer.</strong> A "freshness sentinel" stamps the data-as-of date onto every agent recommendation. If data is stale, the planner sees it in the product instead of us discovering it in an incident.</p>
+<p>I also added a nightly precompute of attribute significance (which store attributes actually explain sales differences) for product hierarchies with active plans. That way most copilot sessions would start with that work already done.</p>
+<p><strong>Result.</strong> The design was written but not executed. What I can honestly claim is the design's property: silent staleness is structurally hard. Loads are atomic, mismatches block promotion, and the as-of date is printed on every answer. The latency number is a target, not a measurement.</p>
+<p><strong>What I learned.</strong> When you copy data for speed, freshness and reconciliation are product features, not operations chores. Design them in on day one.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why not just query BigQuery directly?"</em> "Because shared compute makes its latency unpredictable, from 1 to 20 seconds for the same query. An agent making many small probes would feel that every time."
+- <em>"Did this ship?"</em> "No. I wrote the design and it wasn't executed. What we actually ran for ClickHouse migrations was simpler. If a season's copy went wrong, we dropped that partition and recopied it."
+- <em>"Why 0.1%?"</em> "It was the tolerance in the design, tight enough to catch a broken load but loose enough to ignore rounding. I'd tune it with real data."</p>
+<p><strong>Say this carefully.</strong> Never say "the read plane serves p95 under 500 ms". Say "the design targeted p95 under 500 ms". Never say <code>REPLACE PARTITION</code> ran in production. The rollback we actually used was DROP PARTITION, then recopy that season. That is not an atomic swap with live readers.</p>
+<hr>
+<h2 id="3-fixing-the-top-failure-in-an-llm-planner-malformed-plans">3. Fixing the top failure in an LLM planner (malformed plans)</h2>
+<p><strong>Status:</strong> Verbal only, not on the PDF. Older prep does not name which system this was. Confirm the project in my own records before using this story. Never attach it to Keep/Drop, because Keep/Drop has no LLM orchestrator. Its batch order is fixed. The 0.54 and 0.99 numbers come from an offline evaluation in my prep notes.</p>
+<p><strong>Questions this answers:</strong> "What's the hardest technical problem you've solved?" "How do you keep quality high with non-deterministic systems like LLMs?"</p>
+<p><strong>Words to know.</strong> An LLM (large language model) planner is a setup where the model breaks a user's question into a list of steps, called an execution plan, that other agents then run. A validator is ordinary code that checks the plan before anything runs. A forward reference is when step 2 tries to use the result of step 4, which hasn't happened yet.</p>
+<p><strong>Situation.</strong> We had a multi-agent planner where an LLM broke questions into execution plans. Malformed plans were our top failure class. They called agents that didn't exist, they had forward references, or a stage tried to run too many things at once. On our evaluation set, only 0.54 of plans were structurally correct.</p>
+<p><strong>Task.</strong> Make plans safe to execute without giving up the flexibility of the LLM.</p>
+<p><strong>Action.</strong>
+- I wrote a strict structural validator over the plan's schema. It checked for unknown agent names, duplicate step ids, stages that were too wide, and forward references. It runs before anything executes.
+- If validation fails, the system does one self-repair pass. It sends the LLM the specific errors and asks for a fixed plan.
+- I made every agent's <code>answer()</code> function non-throwing. If one agent fails, the user gets a clearly labelled partial answer instead of a crash.</p>
+<p><strong>Result.</strong> Structural correctness went from 0.54 to 0.99 on the offline evaluation. Failures became explicit and recoverable instead of mysterious.</p>
+<p><strong>What I learned.</strong> With LLMs, don't chase a perfect prompt. Put a deterministic contract around a probabilistic component.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why only one repair pass?"</em> "To keep cost and latency bounded. If the model can't fix a plan when it's told exactly what's wrong, a second or third try rarely helps, and an endless loop is worse than a clear failure."
+- <em>"What does 0.99 mean exactly?"</em> "99 out of 100 plans in the evaluation set passed the structural validator. It's structure, not whether the final answer was right."</p>
+<hr>
+<h2 id="4-inverting-the-clustering-workflow">4. Inverting the clustering workflow</h2>
+<p><strong>Status:</strong> Impact Analytics, <strong>verbal only, not on the PDF.</strong> This is the Cluster Recommendation Copilot. Use it only if they ask about product thinking or a clustering roadmap. The "before" numbers came from live audits in my notes. The "after" numbers are TARGETS, not results.</p>
+<p><strong>Questions this answers:</strong> "Tell me about a time you challenged the status quo." "Show me some product thinking." "How do you handle ambiguity?"</p>
+<p><strong>Words to know.</strong> Store clustering means grouping stores that behave alike, so each group gets an assortment that fits it. For example, small urban stores in one group and large suburban stores in another. "k" is the number of groups. A silhouette score measures how cleanly separated the groups are. Higher is better.</p>
+<p><strong>Situation.</strong> Store clustering is the foundation of every assortment plan, but it was the least-assisted step. The system computed which store attributes mattered and then made people choose from raw score lists. Our live audits showed users tried exactly 1 configuration per plan, out of a huge search space (12 algorithms, k from 3 to 10, and any subset of attributes). 8.5% of runs failed (37 out of 437), and more than 80% of those failures were input mistakes. Nothing was reproducible.</p>
+<p><strong>Task.</strong> Define how to rebuild the module with an AI agent, with adoption risk as the main constraint.</p>
+<p><strong>Action.</strong>
+- I inverted the workflow. The user states only what the system can't work out alone: the product hierarchy and the reference time period.
+- The agent turns that into concrete scopes and picks features by statistical significance. It evaluates about 100 candidate clusterings in a batch and scores them on silhouette.
+- It shows the <strong>top 3 with evidence</strong> and a plain-English rationale. One of the three is always a baseline that mimics the client's old configuration, so the planner can compare against what they know.
+- The planner confirms the choice at clear checkpoints before anything is written back.
+- I kept the old manual wizard alive per client, so adoption is opt-in, not forced.</p>
+<p><strong>Result.</strong> The design committed to these targets: under 1 hour to a finalised plan, down from days. Top 3 of about 100 evaluated candidates, up from 1 configuration ever tried. Failures under 2%. Features and k fully visible to the planner. Results write back into the existing product tables unchanged.</p>
+<p><strong>What I learned.</strong> The highest-leverage AI feature is often turning the workflow around, not a better model.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Did this ship?"</em> "No, it's a design with committed targets, and it isn't a resume bullet. I can walk you through the design and the audit numbers that motivated it."
+- <em>"Why keep the old wizard?"</em> "Because adoption was the biggest risk. Planners trust what they know. Letting each client opt in costs a bit of maintenance, but it means nobody gets forced onto a tool they don't trust yet."</p>
+<p><strong>Say this carefully.</strong> These are targets, so say "targeting under 1 hour", not "cut it to under 1 hour". Don't describe the checkpoints as a human review queue or a "human-in-the-loop system". My resume makes no human-in-the-loop claim. One more thing: another prep doc phrases the candidate target as "at least 20 configurations". This story says "about 100". Check my design notes and use one number consistently.</p>
+<hr>
 <h2 id="5-the-pure-refactor-that-wasnt-owning-a-mistake">5. The "pure refactor" that wasn't (owning a mistake)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Owning-the-mistake content is unchanged (it happened on the Uber Python codebase). On this track, describe the guardrail as a <strong>JUnit</strong> gate — "the test that would have caught it".</p>
-</blockquote>
-<p><strong>Use for:</strong> "Tell me about a mistake / a bug you caused / quality standards."</p>
-<ul>
-<li><strong>S:</strong> At Uber, PR 2 of my 3-PR stacked refactor — supposedly a constants-only consolidation across 31 files — had a downstream test failing.</li>
-<li><strong>T:</strong> Find why a test asserting "preserve COMPONENT strategy when selection is empty" now saw AGGREGATE.</li>
-<li><strong>A:</strong> Diffed my own PR ruthlessly: I had slipped in a <code>_resolve_strategy</code> helper that silently downgraded the strategy — a behavioral change smuggled into a refactor. Removed it, restored the pass-through, and added "pure refactor ⇒ zero test diff" to the team's stacked-PR checklist so the class of error is caught by process, not vigilance.</li>
-<li><strong>R:</strong> Shipped as a true refactor; the checklist caught a similar issue for a teammate weeks later.</li>
-<li><strong>Lesson:</strong> call your own fouls fast and convert them into process — credibility compounds.</li>
-</ul>
+<p><strong>Status:</strong> Uber via EPAM, FRM (Financial Risk Management) scoping platform. Supports the Spring Data JPA / Hibernate migration bullet.</p>
+<p><strong>Questions this answers:</strong> "Tell me about a mistake you made." "Tell me about a bug you caused." "How do you hold your own quality bar?" "Tell me about a time you failed."</p>
+<p><strong>Words to know.</strong> A refactor is a change that tidies code without changing what it does. Stacked PRs are a chain of small pull requests, each one built on the one before, so reviewers see one small step at a time. In this codebase, a scoping "strategy" decides whether scoping is done at the component level (COMPONENT) or rolled up (AGGREGATE).</p>
+<p><strong>Situation.</strong> At Uber via EPAM, I was running a 3-PR stacked refactor. PR 2 was supposed to be constants only: moving repeated fixed values into one place across 31 files. A downstream test started failing.</p>
+<p><strong>Task.</strong> Find out why a test that asserts "keep the COMPONENT strategy when the selection is empty" was now getting AGGREGATE.</p>
+<p><strong>Action.</strong>
+- I diffed my own PR line by line, assuming the bug was mine until proven otherwise.
+- I found it. I had slipped in a small <code>resolveStrategy</code> helper that silently downgraded the strategy. That was a behaviour change hidden inside a refactor.
+- I removed it and restored the simple pass-through.
+- I added a rule to the team's stacked-PR checklist: "a pure refactor means zero test changes". That way this kind of mistake gets caught by process, not by someone happening to notice.</p>
+<p><strong>Result.</strong> The PR shipped as a true refactor. A few weeks later the checklist caught a similar issue in a teammate's PR.</p>
+<p><strong>What I learned.</strong> Call your own fouls fast and turn them into process. Credibility compounds.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why did you add the helper in the first place?"</em> "It felt like a harmless clean-up while I was in the file. That's exactly the trap. Any behaviour change, however small, belongs in its own PR with its own tests."
+- <em>"How did you tell the team?"</em> "I raised it myself, with the fix and the checklist item ready at the same time, so the conversation was about prevention, not blame."</p>
+<hr>
 <h2 id="6-coverage-that-lied-dive-deep">6. Coverage that lied (dive deep)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Test-where-the-code-lives principle is unchanged. Java wording: <strong>JUnit + Mockito</strong>, changed-module coverage in CI, <strong>Testcontainers</strong> for DB-backed tests.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Tell me about debugging something non-obvious / testing philosophy."</p>
-<ul>
-<li><strong>S:</strong> My Uber ORM migration failed CI at 34.6% new-line coverage despite the code paths being exercised.</li>
-<li><strong>T:</strong> Understand how tested code could be "uncovered."</li>
-<li><strong>A:</strong> Dug into the coverage mechanics: repository-layer tests stubbed the new ORM classmethods via mock chains, so the model package's lines never executed — mocking had shifted the coverage to the wrong layer. Wrote 12 direct model-layer unit tests including rejection paths (empty updates, unknown columns).</li>
-<li><strong>R:</strong> 100% on the changed module; the pattern ("test where the code lives, not where it's called") went into the team's testing notes.</li>
-<li><strong>Lesson:</strong> a metric you don't understand is a metric that will lie to you.</li>
-</ul>
-<h2 id="7-disagreeing-with-the-architecture-rulebook-backbone-commit">7. Disagreeing with the architecture rulebook (backbone + commit)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Disagree-and-commit content is unchanged. Java framing: the boundary is <strong>Hibernate / JPA</strong> repositories vs. raw SQL — keep query mapping next to the entity so a rename fails the compiler, keep the repository a thin session wrapper.</p>
-</blockquote>
-<p><strong>Use for:</strong> "A time you disagreed with a standard / with a senior engineer."</p>
-<ul>
-<li><strong>S:</strong> Uber's team architecture rules said all data access lives in <code>repository/</code>. For the ORM migration, I put query classmethods on the ORM model instead.</li>
-<li><strong>T:</strong> Either follow the rule mechanically or argue the exception.</li>
-<li><strong>A:</strong> Made the engineering case: classmethods keep SQL adjacent to column definitions so renames fail the type checker immediately; the repository stays a thin session wrapper; no business logic leaks. Heard the counter-argument (consistency of the rulebook), documented the deviation explicitly, and committed to free repository functions for dynamic queries that don't naturally belong to one model.</li>
-<li><strong>R:</strong> Exception accepted and documented; the latent column-aliasing bug that motivated the migration (raw SQL reading income-statement rows with balance-sheet column lists) could not recur.</li>
-<li><strong>Lesson:</strong> disagree with a written rationale, commit visibly, and leave the decision auditable.</li>
-</ul>
+<p><strong>Status:</strong> Uber via EPAM, FRM. Supports the bullet on raising module statement coverage to 100%.</p>
+<p><strong>Questions this answers:</strong> "Tell me about debugging something non-obvious." "What's your testing philosophy?"</p>
+<p><strong>Words to know.</strong> Statement coverage is the percentage of code lines that actually run during tests. Mocking means replacing a real piece of code with a fake one in a test, so you can test the caller in isolation. In Java the usual mocking library is Mockito, and the tests themselves run on JUnit 5.</p>
+<p><strong>Situation.</strong> My Spring Data JPA / Hibernate migration at Uber via EPAM failed the CI (continuous integration) coverage check at 34.6% on new lines, even though I knew those code paths were being exercised by tests.</p>
+<p><strong>Task.</strong> Understand how tested code could show up as "uncovered".</p>
+<p><strong>Action.</strong>
+- I dug into how coverage was being measured.
+- The repository-layer tests were replacing the new entity methods with Mockito mocks. So the entity code never actually ran during tests. The mocks had moved coverage to the wrong layer.
+- I wrote 12 direct JUnit tests at the entity layer, including the rejection paths: empty updates and unknown column names.</p>
+<p><strong>Result.</strong> The changed module reached 100% statement coverage. The pattern "test where the code lives, not where it's called" went into the team's testing notes.</p>
+<p><strong>What I learned.</strong> A metric you don't understand is a metric that will lie to you.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Is 100% coverage worth it?"</em> "On a small, critical module that handles financial data, yes. Here the point wasn't the number. The number was hiding the fact that the real code never ran."
+- <em>"How many tests overall?"</em> "The platform had over 1,100 tests." (This is verbal, not on the PDF.)</p>
+<hr>
+<h2 id="7-disagreeing-with-the-architecture-rulebook-backbone-then-commit">7. Disagreeing with the architecture rulebook (backbone, then commit)</h2>
+<p><strong>Status:</strong> Uber via EPAM, FRM. Supports the Spring Data JPA / Hibernate migration bullet.</p>
+<p><strong>Questions this answers:</strong> "Tell me about a time you disagreed with a standard." "Tell me about a disagreement with a senior engineer or manager." "Tell me about a conflict with your manager." For the manager version, frame it upward: I made the case to the people who owned the rules.</p>
+<p><strong>Words to know.</strong> An ORM (object-relational mapper, here Hibernate used through Spring Data JPA) lets code work with database rows as Java objects called entities. A repository layer is a folder of code whose only job is talking to the database. A <code>@NamedQuery</code> is a JPQL query declared on the entity class itself, right next to the fields that define the table's columns.</p>
+<p><strong>Situation.</strong> The team's architecture rules said all data access lives in the <code>repository/</code> folder. For the Spring Data JPA / Hibernate migration, I put the query definitions on the entity classes instead.</p>
+<p><strong>Task.</strong> Either follow the rule mechanically or make an honest case for the exception.</p>
+<p><strong>Action.</strong>
+- I made the engineering case in writing. With the queries next to the field definitions, renaming a field breaks immediately, because Hibernate validates named queries when the application starts, instead of failing at runtime on a real request. The repository stays a thin Spring Data interface. No business logic leaks into the entity.
+- I listened to the counter-argument, which was consistency of the rulebook, and took it seriously.
+- I documented the deviation explicitly. I also committed to using plain repository methods for dynamic queries that don't belong to one entity.</p>
+<p><strong>Result.</strong> The exception was accepted and documented. The latent column-aliasing bug that had motivated the migration could no longer recur. That bug was raw SQL that joined tables with duplicate column names, so rows got silently mapped to the wrong id. In one case, income-statement rows were read with the balance-sheet column list.</p>
+<p><strong>What I learned.</strong> Disagree with a written rationale, commit visibly, and leave the decision auditable.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"What if they had said no?"</em> "I would have followed the rule and kept the queries in the repository. I'd still have used explicit, aliased column names to kill the bug. The disagreement was about where code lives, not about whether to fix the bug."
+- <em>"How did you fix the aliasing bug itself?"</em> "Aliased selects with explicit labels, so every column has one unambiguous name, and then the JPA entity mappings, so column lists come from the entity, not hand-typed SQL."</p>
+<hr>
 <h2 id="8-the-migration-nobody-could-pause-the-business-for-deliver-results">8. The migration nobody could pause the business for (deliver results)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Deadline, sequencing, and every number stay identical. Java wording: <strong>Spring Boot</strong> strangler per endpoint, <strong>Spring Batch</strong> for the bulk IRP path, <strong>Kafka + PostgreSQL</strong> quarter sharding.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Delivering under pressure / leading a project end-to-end."</p>
-<ul>
-<li><strong>S:</strong> Masters India's PHP monolith was collapsing during monthly GST deadline peaks — worker pools exhausted by blocking government-portal calls — while <strong>1,500+</strong> enterprise clients kept filing.</li>
-<li><strong>T:</strong> Lead the migration to Spring Boot microservices with zero downtime tolerance during deadline windows.</li>
-<li><strong>A:</strong> Strangler pattern per endpoint behind the gateway; shadow traffic on read paths first; moved bulk/async Kafka paths before interactive filing; kept data in place (PostgreSQL quarter sharding) to avoid a risky data migration during cutover; froze cutovers during deadline weeks; hardened bulk IRP with idempotency keys, retries, and DLQ.</li>
-<li><strong>R:</strong> p95 <strong>1.2 s → 300 ms</strong>, <strong>1M+ IRP submissions/day</strong>, <strong>100K+/import</strong>, throughput <strong>700 → 4,000 requests/min</strong>, no deadline-window outage during the migration.</li>
-<li><strong>Lesson:</strong> sequencing is the risk-management tool — the migration plan mattered more than the target architecture.</li>
-</ul>
+<p><strong>Status:</strong> Masters India. On the PDF.</p>
+<p><strong>Questions this answers:</strong> "Tell me about delivering under pressure." "Tell me about leading a project end to end." "Tell me about a disagreement over sequencing or priorities."</p>
+<p><strong>Words to know.</strong> Masters India sells GST (India's Goods and Services Tax) compliance software. Businesses send us invoices, and we register them with the government's IRP (Invoice Registration Portal). A monolith is one big application. The strangler pattern means replacing it one route at a time behind the same front door, until the old system can be switched off. Shadow traffic means copying real requests to the new service and comparing answers, without showing users the new answer yet. A DLQ (dead-letter queue) is a holding area for messages that keep failing, so they can be inspected and replayed later.</p>
+<p><strong>Situation.</strong> Masters India's PHP monolith was struggling during the monthly GST filing peaks. Its worker pools ran out because they sat blocked, waiting on slow government portal calls. Meanwhile, <strong>1,500+ enterprise clients</strong> kept filing.</p>
+<p><strong>Task.</strong> Lead the migration to Spring Boot microservices, with non-blocking calls to the government portal, with zero tolerance for downtime during filing deadlines. I was also mentoring two engineers through it.</p>
+<p><strong>Action.</strong>
+- I used the strangler pattern, moving one endpoint at a time behind the gateway.
+- I sent shadow traffic to read paths first, so we could compare answers safely.
+- I moved the bulk, Kafka-driven background paths before the interactive filing paths. Kafka is a message queue that lets work be processed in the background.
+- I kept the data where it was, in PostgreSQL sharded by tax quarter, to avoid a risky data migration during cutover.
+- I froze cutovers during deadline weeks.
+- I hardened bulk submissions to the IRP with idempotency keys, bounded retries and a DLQ. An idempotency key is a unique id per job, so a retry can never file the same invoice twice.</p>
+<p><strong>Result.</strong>
+- p95 latency went from <strong>1.2 seconds to 300 milliseconds</strong>, a 75% cut.
+- The system handles <strong>1M+ government submissions a day</strong> and <strong>100K+ concurrent imports</strong>.
+- Throughput went from <strong>700 to 4,000 requests per minute</strong>, roughly 12 to 67 per second.
+- We had no outage in a deadline window during the migration.</p>
+<p><strong>What I learned.</strong> Sequencing is the risk-management tool. The migration plan mattered more than the target architecture.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Where did the latency win actually come from?"</em> "Mostly non-blocking calls to the government portal, using Spring WebClient and bounded thread pools, so request threads weren't blocked waiting. Then HikariCP connection pooling, query and index fixes, and Redis for frequent reads."
+- <em>"What was your role versus the two engineers?"</em> "I led the migration and mentored them. I paired on the first cutover, wrote the shared retry and idempotency helpers, and then let them own full services."
+- <em>"Why not migrate the data too?"</em> "It would have added a second risky change at the same time. Keeping data in place meant each cutover was only a code change, which we could roll back by routing traffic back."</p>
+<p><strong>Say this carefully.</strong> 1M+ a day averages about 12 per second (1,000,000 divided by 86,400 seconds). Peaks around filing deadlines were roughly 8 to 10 times that, which is ESTIMATED. I "mentored 2" here. Don't mix that with "led 3" at Uber.</p>
+<hr>
 <h2 id="9-the-anti-bot-arms-race-learn-and-be-curious">9. The anti-bot arms race (learn and be curious)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Unchanged — this is <strong>Selenium</strong> acquisition with proxy pools and a measurement loop, regardless of the service language.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Working against a moving target / persistence."</p>
-<ul>
-<li><strong>S:</strong> Uber menu scrapers were being blocked — success rates dropped as source platforms rotated their bot defenses.</li>
-<li><strong>T:</strong> Get ingestion reliability up without an unbounded proxy budget.</li>
-<li><strong>A:</strong> Treated it as an experiment loop, not a one-off fix: instrumented per-source block signatures, iterated countermeasures (IP rotation, user-agent/fingerprint management, dynamic proxy pools), set retry budgets per source, and fed block-rate metrics into the same ops dashboards as parse failures so regressions surfaced in minutes.</li>
-<li><strong>R:</strong> Successful ingestions up to <strong>95%+</strong>; the measurement loop meant new defenses were detected and countered in days, not weeks.</li>
-<li><strong>Lesson:</strong> against an adversarial moving target, the asset is the feedback loop, not any single countermeasure.</li>
-</ul>
-<h2 id="10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust / do the right thing)</h2>
-<blockquote>
-<p><strong>final_java_ai wording:</strong> Integrity content is unchanged. Java wording: idempotency key (<code>clientId + fileHash + batchIndex</code>) enforced in the <strong>Spring Batch</strong> writers and a DB unique constraint, plus a dead-letter replay path.</p>
-</blockquote>
-<p><strong>Use for:</strong> "Integrity / a time you raised a problem you could have hidden."</p>
-<ul>
-<li><strong>S:</strong> At Masters India, a retried bulk import came close to filing duplicate e-invoices with the government portal — a compliance-grade error for the client. It hadn't caused customer damage yet, and nobody outside the team would have known.</li>
-<li><strong>T:</strong> Decide between quietly patching the retry and treating it as the systemic risk it was.</li>
-<li><strong>A:</strong> Flagged it to leadership as a near-miss, wrote the incident review myself, and retrofitted idempotency keys (client + file hash + batch index) across the entire bulk pipeline plus a dead-letter replay path — not just the endpoint that almost failed.</li>
-<li><strong>R:</strong> Zero duplicate filings after rollout; the near-miss review became the template the team used for later incidents.</li>
-<li><strong>Lesson:</strong> trust is built in the moments where you could have stayed quiet.</li>
-</ul>
+<p><strong>Status:</strong> Uber via EPAM, Uber Eats menu ingestion. On the PDF (95%+ extraction success).</p>
+<p><strong>Questions this answers:</strong> "Tell me about working against a moving target." "Tell me about a time you had to persist." "Tell me about an early failure you turned around."</p>
+<p><strong>Words to know.</strong> The pipeline used Selenium, a tool that drives a real web browser automatically, to collect restaurant menus from source platforms. Those platforms run bot defences that block automated traffic. A proxy pool is a set of different network addresses to send requests from. A retry budget is a cap on how many times you retry a source before you stop.</p>
+<p><strong>Situation.</strong> At Uber via EPAM, our menu scrapers were getting blocked. Success rates kept dropping as the source platforms rotated their bot defences. Before my work, success was an estimated 60 to 65%.</p>
+<p><strong>Task.</strong> Get ingestion reliability up without an unbounded proxy budget.</p>
+<p><strong>Action.</strong>
+- I treated it as an experiment loop, not a one-off fix.
+- I instrumented each source's block signatures, meaning what a block looks like for that site.
+- I iterated on countermeasures: IP rotation, browser fingerprint and user-agent management, and dynamic proxy pools.
+- I set adaptive retry budgets per source, so a hostile source couldn't burn the whole budget.
+- I put block-rate metrics on the same dashboards as parse failures, so regressions showed up in minutes.</p>
+<p><strong>Result.</strong> Successful extractions rose to <strong>95%+</strong>, from an estimated 60 to 65%. Because of the measurement loop, we detected and countered new defences in days instead of weeks.</p>
+<p><strong>What I learned.</strong> Against an adversarial, moving target, the asset is the feedback loop, not any single countermeasure.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"What happened after a menu was scraped?"</em> "It went into a Kafka and Apache Flink pipeline. Flink is a stream-processing engine. It removed duplicates per vendor and menu using a content hash, normalised the schema, and did idempotent upserts into the catalog."
+- <em>"How did this connect to the business result?"</em> "It fed the bigger outcome. Restaurant onboarding went from 24 hours to 2 hours, saving about $600K a year across 30K+ menus a month."</p>
+<p><strong>Say this carefully.</strong> 60 to 65% is an estimate. The "exactly-once" catalog upserts are really at-least-once delivery plus idempotent writes. Don't claim zero message loss.</p>
 <hr>
-<h2 id="11-oom-connection-leak-packet-star-not-a-pdf-bullet">11. OOM / connection leak (packet STAR — not a PDF bullet)</h2>
-<blockquote>
-<p><strong>Tag:</strong> Impact Analytics · Python/FastAPI worker · DESIGN/packet for any Kubernetes-pod wording. Do <strong>not</strong> claim cluster-ops ownership. Not on the resume.</p>
-</blockquote>
-<p><strong>Use for:</strong> production bug / cascading failure / Dive Deep.</p>
-<ul>
-<li><strong>S:</strong> Peak traffic, 504s, memory climbing on an async ingestion/agent worker.</li>
-<li><strong>T:</strong> Diagnose without a local repro.</li>
-<li><strong>A:</strong> Correlated APM + heap: DB/HTTP clients and cursors created inside a long-lived async loop without context managers. Patched with <code>async with</code>, pool limits/timeouts, and consumer backpressure so the worker could not outrun downstream.</li>
-<li><strong>R:</strong> Memory stabilized; 504s cleared. Follow-up: 3x-peak load test in CI and pool metrics.</li>
-<li><strong>Lesson:</strong> In async Python, resource lifetime is a correctness bug, not an infra ticket.</li>
-</ul>
-<h2 id="12-clickhouse-rfc-migration-bias-for-action-technical-leadership">12. ClickHouse RFC migration (Bias for Action / technical leadership)</h2>
-<p><strong>Use for:</strong> driving a migration / incomplete information / Are Right, A Lot.</p>
-<ul>
-<li><strong>S:</strong> Planner pivots on Postgres blew past 30s and toward <strong>189s</strong> at <strong>250M</strong> rows.</li>
-<li><strong>T:</strong> RFC + PoC + adoption without pretending CH is a generic PG replacement.</li>
-<li><strong>A:</strong> Wrote the RFC (hybrid vs insert-only agentic store). Ran row-identical POC. Chose CH for analytical reads (PDF: <strong>189s to 12s</strong> on <strong>250M</strong>, six rollup tables, weekly grain after a <strong>170 GB</strong> OOM). Kept PG for roles/OLTP cells. Air-gapped LLM from the <strong>2.11B</strong> fact table.</li>
-<li><strong>R:</strong> Org committed to CH for planning analytics; KPI parser + RMT two-phase landed on the PDF. Six rollup tables and the 170 GB weekly OOM story are now P2. The Go pump is P5.</li>
-<li><strong>Lesson:</strong> Measure first; split write-models; do not dual-write a religion.</li>
-</ul>
-<h2 id="12b-weekly-rollup-oom-hardest-technical-hurdle">12b. Weekly rollup OOM (hardest technical hurdle)</h2>
-<p><strong>Use for:</strong> technical hurdle / failure / how you debug memory at scale. Full pack: <code>42_clickhouse_rollup_migration.md</code>.</p>
-<ul>
-<li><strong>S:</strong> Whole-season weekly INSERT SELECT sat around 170 GB of aggregator state and failed MEMORY_LIMIT_EXCEEDED at 80 GB and 200 GB.</li>
-<li><strong>T:</strong> Keep weekly grain without melting a ~59 core / 236 GiB replica.</li>
-<li><strong>A:</strong> Slice to one fiscal week. Cap 55 GB, 16 GB spill, 4 weeks in flight. Attr weeks peaked over 40 GB. Product weeks around 11 GB.</li>
-<li><strong>R:</strong> Weekly grain builds. Do not say this caused the 15.5x pivot. That is a 250M request-time harness.</li>
-<li><strong>Lesson:</strong> Shrink the unit of work before you buy RAM.</li>
-</ul>
-<h2 id="rapid-fire-answers-30-seconds-each">Rapid-fire answers (30 seconds each)</h2>
-<ul>
-<li><strong>"Why are you leaving / why big tech?"</strong> "I've now built and owned systems end-to-end — an agentic platform, streaming pipelines, a finance-grade audit tool. I want the scale ceiling removed: harder distributed-systems problems, deeper peer bench, and infrastructure where a 1% improvement matters."</li>
-<li><strong>"Biggest weakness?"</strong> "I over-invest in written artifacts — decision docs, playbooks. I've learned to time-box them and lead with a one-page summary, because a 20-page analysis nobody reads is a failure mode too." (Real, specific, shows self-correction.)</li>
-<li><strong>"Conflict with a manager?"</strong> Use story 7 (rulebook disagreement), framed upward.</li>
-<li><strong>"A time you failed?"</strong> Story 5 (refactor regression) or story 10 (near-miss) — both end in process fixes.</li>
-<li><strong>"What are you most proud of?"</strong> Story 1 — turning an org-level disagreement into a gated, evidence-based decision that later became the committed direction.</li>
-</ul>
+<h2 id="10-the-double-filing-near-miss-earn-trust-do-the-right-thing">10. The double-filing near-miss (earn trust, do the right thing)</h2>
+<p><strong>Status:</strong> Masters India. Supports the idempotency and dead-letter-queue bullet.</p>
+<p><strong>Questions this answers:</strong> "Tell me about your integrity." "Tell me about a problem you raised that you could have hidden." "Tell me about a time you failed."</p>
+<p><strong>Words to know.</strong> An e-invoice registered with the government gets a unique IRN (Invoice Reference Number). Filing the same invoice twice is a compliance error for the client. A retry is an automatic second attempt after a failure.</p>
+<p><strong>Situation.</strong> At Masters India, a retried bulk import came close to filing duplicate e-invoices with the government portal. It hadn't hurt any customer yet, and nobody outside the team would have known.</p>
+<p><strong>Task.</strong> Decide between quietly patching that one retry and treating it as the systemic risk it really was.</p>
+<p><strong>Action.</strong>
+- I flagged it to leadership as a near-miss.
+- I wrote the incident review myself.
+- I retrofitted idempotency keys across the whole bulk pipeline, not just the endpoint that almost failed. Each key was built from client, file hash and batch index, so a retried batch is recognised as the same batch.
+- I added a dead-letter replay path, so failed batches could be fixed and replayed safely.</p>
+<p><strong>Result.</strong> We had zero duplicate filings after the rollout. The near-miss review became the template the team used for later incidents.</p>
+<p><strong>What I learned.</strong> Trust is built in the moments where you could have stayed quiet.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why build the key from client, file hash and batch index?"</em> "That combination uniquely identifies a piece of work. The same client re-uploading the same file gets the same keys, so the system knows it already processed those batches."
+- <em>"Wasn't it embarrassing to raise it?"</em> "A little, but a duplicate filing would have been far worse for the client. Raising it early was cheap compared to that."</p>
 <hr>
-<h2 id="stack-wording-quick-answers-say-these-on-this-track">Stack-wording quick answers (say these on this track)</h2>
-<ul>
-<li><strong>CI gating:</strong> the pipeline blocks a merge if <strong>JUnit</strong> fails or changed-module coverage drops;
-  <strong>Testcontainers</strong> for DB-backed tests. (JUnit is on the FRM experience Tech line, not in Skills.)</li>
-<li><strong>Testability:</strong> constructor-injected ports (repositories, clients), pure domain functions for
-  tax/dedup rules, DTO validation at the boundary.</li>
-<li><strong>Idempotent retries:</strong> <code>clientId + fileHash + batchIndex</code> recognized on replay — same guarantee
-  as the main track, enforced in the <strong>Spring Batch</strong> writers plus a DB unique constraint.</li>
-<li><strong>Observability:</strong> <strong>Actuator + Micrometer</strong> metrics, ELK correlation IDs, New Relic APM — the
-  Masters India "triage 70% faster" story is unchanged.</li>
-</ul>
+<h2 id="11-the-connection-leak-that-caused-out-of-memory-errors">11. The connection leak that caused out-of-memory errors</h2>
+<p><strong>Status:</strong> Impact Analytics, Python/FastAPI worker. <strong>Not a resume bullet. It is a prep ("packet") story.</strong> If it comes up in a Kubernetes context, say the service ran in containers. Do not claim I operated clusters.</p>
+<p><strong>Questions this answers:</strong> "Tell me about a production bug." "Tell me about a cascading failure." "Tell me about diving deep into a problem you couldn't reproduce."</p>
+<p><strong>Words to know.</strong> A 504 is the error a gateway returns when the service behind it takes too long. APM (application performance monitoring) is tooling that shows where time and memory go in a live service. The heap is the memory a program allocates as it runs. In Python, <code>async with</code> is a context manager: it guarantees a connection gets closed when the block ends, even after an error. Backpressure means slowing down intake when the downstream system can't keep up.</p>
+<p><strong>Situation.</strong> During peak traffic, an async ingestion and agent worker started returning 504s, and its memory kept climbing.</p>
+<p><strong>Task.</strong> Diagnose it without being able to reproduce it locally.</p>
+<p><strong>Action.</strong>
+- I lined up the APM traces against heap snapshots.
+- The cause was database and HTTP clients and cursors being created inside a long-lived async loop without context managers. They were never released.
+- I fixed it with <code>async with</code> blocks, pool limits and timeouts. I added consumer backpressure so the worker could not outrun the systems downstream of it.</p>
+<p><strong>Result.</strong> Memory stabilised and the 504s cleared. As follow-ups, I added a load test at 3 times peak to CI and added connection-pool metrics.</p>
+<p><strong>What I learned.</strong> In async Python, how long a resource lives is a correctness bug, not an infrastructure ticket.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why didn't it show up in testing?"</em> "Tests ran short loops, so leaked connections never piled up. Only a long-running worker under peak load accumulated enough to matter. That's why I added the 3-times-peak load test."</p>
 <hr>
-<p><strong>Also study:</strong> <a href="39_behavioral_question_bank.html"><code>39_behavioral_question_bank.md</code></a> (all ~43 common questions → which story) · <a href="40_behavioral_prep_grid.html"><code>40_behavioral_prep_grid.md</code></a> (project × question drill sheet).</p></main>
+<h2 id="12-leading-the-clickhouse-rfc-and-migration-bias-for-action-technical-leadership">12. Leading the ClickHouse RFC and migration (bias for action, technical leadership)</h2>
+<p><strong>Status:</strong> Impact Analytics. On the PDF: 15.5 times faster pivots (from 189 seconds to 12 seconds on a 250M-row harness), the KPI formula parser, versioned writes with ReplacingMergeTree, keeping the LLM away from the 2.11B-row table, and the 170GB out-of-memory story (Story 12b).</p>
+<p><strong>Questions this answers:</strong> "Tell me about driving a migration." "Tell me about acting on incomplete information." "Tell me about a time you were right when others doubted." "Tell me about technical leadership."</p>
+<p><strong>Words to know.</strong> An RFC (request for comments) is a written design proposal that others review before work starts. A row-identical PoC means loading exactly the same rows into both databases, so the comparison is fair. A rollup table is a pre-summarised table, like a monthly total kept ready so you don't add up every daily row each time. ReplacingMergeTree is a ClickHouse table type that keeps only the newest version of a row with the same key. Think of a notebook where you never erase: you write the new value below, and a cleaner later crosses out the old lines.</p>
+<p><strong>Situation.</strong> Planner pivots on Postgres were blowing past 30 seconds. On our 250M-row test harness, one heavy pivot took <strong>189 seconds</strong>.</p>
+<p><strong>Task.</strong> Write the RFC, run a proof of concept, and drive adoption, without pretending ClickHouse is a general replacement for Postgres.</p>
+<p><strong>Action.</strong>
+- I wrote the RFC. It compared a hybrid store with an insert-only store for the agent workloads.
+- I ran a row-identical PoC comparing Postgres and ClickHouse.
+- I chose ClickHouse for analytical reads and built a pre-aggregation layer of <strong>six rollup tables</strong> (product, store and attribute, each at season and weekly level).
+- I kept Postgres for roles and transactional edits.
+- I kept the LLM away from the <strong>2.11B-row</strong> fact table entirely. It gets context as JSON payloads and never a database query tool.</p>
+<p><strong>Result.</strong> The organisation committed to ClickHouse for planning analytics. Pivots went from <strong>189 seconds to 12 seconds</strong> (12.3, rounded), which is <strong>15.5 times faster</strong>, on the 250M-row harness. Several related pieces are now on my resume: the KPI formula parser, the versioned writes with ReplacingMergeTree, the six rollup tables, and the Go data pump that copied rollups between ClickHouse clusters.</p>
+<p><strong>What I learned.</strong> Measure first. Separate how you write data from how you read it. Don't choose a database out of loyalty.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why not just tune Postgres?"</em> "Postgres stores data by row. A pivot across many columns and hundreds of millions of rows makes it read far more than it needs. Tightening Postgres was one of the gates, but the row-identical benchmark showed the gap was structural."
+- <em>"Why keep the LLM away from the database?"</em> "Safety and predictability. A model writing its own SQL against 2.11 billion rows can run something huge or wrong. Giving it a prepared JSON context means it reasons over exactly what we chose to show it."</p>
+<p><strong>Say this carefully.</strong> 15.5 times is query time on a benchmark harness. The 170GB out-of-memory fix was about load time for weekly builds. They are separate. One did not cause the other.</p>
+<hr>
+<h2 id="12b-the-weekly-rollup-out-of-memory-problem-hardest-technical-hurdle">12b. The weekly rollup out-of-memory problem (hardest technical hurdle)</h2>
+<p><strong>Status:</strong> Impact Analytics. On the PDF (prevented a 170GB out-of-memory failure on weekly rollup builds). Full technical pack: <a href="42_clickhouse_rollup_migration.html"><code>42_clickhouse_rollup_migration.md</code></a>.</p>
+<p><strong>Questions this answers:</strong> "What's the hardest technical hurdle you've faced?" "Tell me about a failure." "How do you debug memory problems at scale?"</p>
+<p><strong>Words to know.</strong> <code>INSERT SELECT</code> builds a table by running a query and inserting its results. While aggregating, ClickHouse keeps running totals per group in memory. That is the "aggregator state". Spilling means writing overflow to disk when memory runs out. OOM means out of memory.</p>
+<p><strong>Situation.</strong> Building the weekly rollup for a whole season in one <code>INSERT SELECT</code> needed about <strong>170GB</strong> of aggregator state. It failed with a memory-limit error even when we set the cap to 80GB, and again at 200GB.</p>
+<p><strong>Task.</strong> Keep the weekly level of detail, without overwhelming a replica with about 59 cores and 236 GiB of memory.</p>
+<p><strong>Action.</strong>
+- I sliced the work into one fiscal week per insert instead of a whole season.
+- I set explicit caps: 55GB of memory, 16GB of spill to disk, 8 threads, and at most 4 weeks in flight at once.
+- I measured the slices. An attribute-level week peaked above 40GB. A product-level week was around 11GB. Both fit under the cap.</p>
+<p><strong>Result.</strong> The weekly rollups build reliably at full weekly detail.</p>
+<p><strong>What I learned.</strong> Shrink the unit of work before you buy more RAM.</p>
+<p><strong>Follow-ups they may ask.</strong>
+- <em>"Why not just get a bigger machine?"</em> "It failed even at a 200GB cap, and season sizes grow. Slicing by week makes memory use bounded and predictable no matter how big the season gets."
+- <em>"Did this make the pivots faster?"</em> "No, that's a separate result. This fixed how we load the rollups. The 15.5 times speed-up was about query time on the benchmark."</p>
+<hr>
+<h2 id="rapid-fire-answers-about-30-seconds-each">Rapid-fire answers (about 30 seconds each)</h2>
+<p><strong>"Why are you leaving? Why big tech?"</strong> "I've built and owned systems end to end: an AI decision platform, a streaming ingestion pipeline and a finance-grade audit tool. Now I want bigger problems. I'm after harder distributed-systems work, a deeper bench of peers to learn from, and infrastructure where a 1% improvement really matters." For the full answer on why I'm moving after joining Impact Analytics in May 2026, see <a href="13_behavioral_why_switch.html">why switch</a>.</p>
+<p><strong>"What's your biggest weakness?"</strong> "I over-invest in written artifacts like decision docs and playbooks. I've learned to time-box them and lead with a one-page summary, because a 20-page analysis nobody reads is a failure too." This works because it's real, specific and shows I've corrected it.</p>
+<p><strong>"Tell me about a conflict with a manager."</strong> Use Story 7 (the rulebook disagreement), framed upward.</p>
+<p><strong>"Tell me about a time you failed."</strong> Use Story 5 (the refactor regression) or Story 10 (the near-miss). Both end in a process fix.</p>
+<p><strong>"What are you most proud of?"</strong> Use Story 1. I turned an organisation-level disagreement into a gated, evidence-based decision that became the committed direction.</p>
+<hr>
+<p><strong>Also study:</strong> <a href="39_behavioral_question_bank.html"><code>39_behavioral_question_bank.md</code></a> maps about 43 common questions to stories. <a href="40_behavioral_prep_grid.html"><code>40_behavioral_prep_grid.md</code></a> is the one-page drill sheet of question types by project. <a href="13_behavioral_why_switch.html"><code>13_behavioral_why_switch.md</code></a> has intros and why-switch answers.</p></main>
 </div>
 
 <script type="module">

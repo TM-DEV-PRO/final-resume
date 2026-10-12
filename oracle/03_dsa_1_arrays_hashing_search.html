@@ -48,14 +48,68 @@ strong{color:#fff}
 <a class="lvl2" href="#e-binary-search">E. Binary search</a>
 <a class="lvl2" href="#f-string-essentials">F. String essentials</a>
 <a class="lvl2" href="#g-kadane-max-subarray-and-friends">G. Kadane (max subarray) and friends</a>
-<a class="lvl2" href="#common-mistakes">Common mistakes</a></nav>
+<a class="lvl2" href="#common-mistakes-the-whole-page">Common mistakes (the whole page)</a></nav>
 <main><h1 id="031-arrays-strings-hashing-two-pointers-sliding-window-prefix-sums-binary-search">03.1 Arrays, strings, hashing, two pointers, sliding window, prefix sums, binary search</h1>
-<p>Each section has the <strong>intuition</strong>, a <strong>template</strong>, and <strong>top problems</strong> with steps, code, and complexity.</p>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> the seven patterns that solve most array and string problems: hashing, prefix sums, two pointers, sliding window, binary search, string tricks and Kadane's algorithm.</li>
+<li><b>When to read it:</b> first among the topic files. These patterns show up inside harder problems in every other file.</li>
+<li><b>What to memorise:</b> the sliding-window template, the binary-search "first true" template, the prefix-sum-plus-hashmap trick, and the rule "negative numbers break sliding window".</li>
+<li><b>How each section is laid out:</b> the idea with an analogy, the signals that point to it, a hand-traced example, the template, complexity, common mistakes, then the problems. Each problem has a one-line restatement, the key insight, a dry run, code, complexity and a 60-second spoken version.</li>
+</ul>
+</div>
+<p>Imports assumed by every snippet on this page:</p>
+<pre><code class="language-python">from collections import Counter, defaultdict
+import bisect
+</code></pre>
 <hr>
 <h2 id="a-hashing">A. Hashing</h2>
-<p><strong>Intuition:</strong> trade memory for time. "Have I seen X?" or "how many times?" goes from O(n) search to O(1).</p>
+<h3 id="the-idea">The idea</h3>
+<p>A <strong>hashmap</strong> (a Python <code>dict</code>) stores key-value pairs and finds any key in O(1) time on average. A <strong>hash set</strong> (a Python <code>set</code>) is the same thing with keys only. The trick is to trade memory for time: instead of searching the whole array to answer "have I seen X before?" or "how many times has X appeared?", you keep a record as you go and look it up instantly.</p>
+<p><strong>Analogy:</strong> a coat check. You don't search every hook for your coat. You hand over a ticket number and the attendant goes straight to the right hook. The hash function is the rule that turns your key into a hook number.</p>
+<h3 id="when-to-recognise-it">When to recognise it</h3>
+<ul>
+<li>The problem says "seen before", "duplicate", "frequency", "count", "anagram" or "group by".</li>
+<li>The brute force has a nested loop where the inner loop is only searching for one value.</li>
+<li>You need to remember something about earlier elements while scanning once.</li>
+</ul>
+<h3 id="hand-traced-example">Hand-traced example</h3>
+<p>Find whether any two numbers in <code>[3, 8, 5, 1]</code> add up to 9. Keep a set of numbers already seen, and for each new number check whether its partner (9 minus it) is already in the set.</p>
+<pre><code class="language-text">step  x   partner = 9 - x   seen before step   partner in seen?
+1     3   6                 {}                 no, add 3
+2     8   1                 {3}                no, add 8
+3     5   4                 {3, 8}             no, add 5
+4     1   8                 {3, 8, 5}          yes -&gt; answer (8, 1)
+</code></pre>
+<h3 id="template">Template</h3>
+<pre><code class="language-python">def scan_with_memory(items):
+    seen = {}                       # key -&gt; whatever you need later (index, count, ...)
+    for i, x in enumerate(items):
+        key = f(x)                  # what you would search for
+        if key in seen:
+            ...                     # found it in O(1)
+        seen[x] = i                 # record x for future elements
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, because each element does a constant amount of work. O(n) space, because the map can hold every element.</p>
+<h3 id="common-mistakes">Common mistakes</h3>
+<ul>
+<li>Inserting the current element <strong>before</strong> checking for its partner, which lets an element pair with itself (target 6 and a single 3).</li>
+<li>Using a mutable <code>list</code> as a dict key. Lists can't be hashed. Convert to a <code>tuple</code> first.</li>
+<li>Forgetting that hashing is O(1) only on average. If asked, say worst case is O(n) per lookup with adversarial collisions, which is why some languages randomise their hash seed.</li>
+</ul>
+<hr>
 <h3 id="a1-two-sum">A1. Two Sum</h3>
+<p><strong>Problem in one sentence:</strong> given a list of numbers and a target, return the indices of the two numbers that add up to the target.</p>
+<p><strong>Key insight:</strong> for each number <code>x</code>, the only number that can complete it is <code>target - x</code>. So instead of trying every pair, ask a hashmap "have I already seen <code>target - x</code>?"</p>
 <p><strong>Steps:</strong> walk once. For each <code>x</code>, check whether <code>target - x</code> is already in the map. If not, store <code>x → index</code>.</p>
+<p><strong>Dry run</strong> on <code>nums = [3, 2, 4]</code>, <code>target = 6</code>:</p>
+<pre><code class="language-text">i  x  need = 6 - x  seen (before)    action
+0  3  3             {}               3 not seen, store {3: 0}
+1  2  4             {3: 0}           4 not seen, store {3: 0, 2: 1}
+2  4  2             {3: 0, 2: 1}     2 seen at index 1 -&gt; return [1, 2]
+</code></pre>
+<p>Notice step 0: <code>need</code> is 3 and <code>x</code> is 3, but the map is still empty, so we don't wrongly pair index 0 with itself.</p>
 <pre><code class="language-python">def two_sum(nums, target):
     seen = {}
     for i, x in enumerate(nums):
@@ -64,9 +118,24 @@ strong{color:#fff}
         seen[x] = i
     return []
 </code></pre>
-<p>Time O(n), space O(n). Follow-up, sorted input: two pointers with O(1) space.</p>
+<p><strong>Complexity:</strong> O(n) time, one pass with O(1) lookups. O(n) space for the map.</p>
+<p><strong>Follow-up, sorted input:</strong> use two pointers with O(1) space (section C).</p>
+<p><strong>Say it in 60 seconds:</strong> "The brute force tries every pair, which is O(n²). The observation is that for each number there is exactly one partner that works, <code>target - x</code>. So I walk the array once and keep a map from value to index. Before inserting the current number, I check whether its partner is already in the map. If it is, I return both indices. Checking before inserting stops a number pairing with itself. That's O(n) time and O(n) space. If the input were sorted, I'd switch to two pointers for O(1) space."</p>
+<hr>
 <h3 id="a2-group-anagrams">A2. Group Anagrams</h3>
-<p><strong>Steps:</strong> the key is the sorted string (O(k log k)) or a 26-count tuple (O(k)).</p>
+<p><strong>Problem in one sentence:</strong> given a list of words, group together the words that are rearrangements of each other ("eat", "tea", "ate").</p>
+<p><strong>Key insight:</strong> two words are anagrams exactly when they have the same letter counts. So compute a <strong>signature</strong> for each word and use it as a hashmap key. Words with the same signature land in the same bucket.</p>
+<p><strong>Steps:</strong> the key is the sorted string (O(k log k)) or a 26-count tuple (O(k)), where k is the word length.</p>
+<p><strong>Dry run</strong> on <code>["eat", "tea", "tan", "ate", "nat", "bat"]</code>, writing the signature as letter counts:</p>
+<pre><code class="language-text">word  signature (non-zero counts)  bucket after this word
+eat   a1 e1 t1                     {aet: [eat]}
+tea   a1 e1 t1                     {aet: [eat, tea]}
+tan   a1 n1 t1                     {aet: [...], ant: [tan]}
+ate   a1 e1 t1                     aet bucket gets ate
+nat   a1 n1 t1                     ant bucket gets nat
+bat   a1 b1 t1                     new bucket abt: [bat]
+result: [[eat, tea, ate], [tan, nat], [bat]]
+</code></pre>
 <pre><code class="language-python">def group_anagrams(strs):
     groups = defaultdict(list)
     for s in strs:
@@ -76,9 +145,20 @@ strong{color:#fff}
         groups[tuple(count)].append(s)
     return list(groups.values())
 </code></pre>
-<p>Time O(n·k), space O(n·k).</p>
+<p><strong>Complexity:</strong> O(n·k) time for n words of length k. O(n·k) space to store the groups. The count array assumes lowercase a to z. For Unicode, use <code>tuple(sorted(s))</code> or a <code>Counter</code> frozen into a sorted tuple.</p>
+<p><strong>Say it in 60 seconds:</strong> "Anagrams have identical letter counts, so I turn each word into a signature and group by it. I use a 26-length count tuple rather than sorting each word, which makes each signature O(k) instead of O(k log k). A defaultdict from signature to list collects the groups, and I return its values. Total time is O(n·k). The tuple is needed because lists can't be dict keys."</p>
+<hr>
 <h3 id="a3-top-k-frequent-elements">A3. Top K Frequent Elements</h3>
-<p><strong>Steps:</strong> count, then <strong>bucket sort</strong> by frequency (frequency ≤ n), then walk buckets from high to low. The heap alternative is O(n log k).</p>
+<p><strong>Problem in one sentence:</strong> return the k values that appear most often in an array.</p>
+<p><strong>Key insight:</strong> a frequency can never exceed n, the length of the array. So instead of sorting by frequency (O(n log n)), drop each value into a bucket numbered by its frequency, then read buckets from highest to lowest. That is <strong>bucket sort</strong>, and it is O(n).</p>
+<p><strong>Steps:</strong> count, then bucket sort by frequency, then walk buckets from high to low. The heap alternative is O(n log k).</p>
+<p><strong>Dry run</strong> on <code>nums = [1, 1, 1, 2, 2, 3]</code>, <code>k = 2</code>:</p>
+<pre><code class="language-text">count    = {1: 3, 2: 2, 3: 1}
+buckets  = index 0:[]  1:[3]  2:[2]  3:[1]  4:[]  5:[]  6:[]
+walk f = 6, 5, 4: empty
+f = 3: take 1   -&gt; out = [1]
+f = 2: take 2   -&gt; out = [1, 2], length is k, return
+</code></pre>
 <pre><code class="language-python">def top_k_frequent(nums, k):
     count = Counter(nums)
     buckets = [[] for _ in range(len(nums) + 1)]
@@ -92,9 +172,23 @@ strong{color:#fff}
                 return out
     return out
 </code></pre>
-<p>Time O(n). Follow-up at scale (logs across machines): count per machine, merge counts, then a heap; or approximate with Count-Min Sketch + heap.</p>
+<p><strong>Complexity:</strong> O(n) time, because counting is one pass and the buckets have n + 1 slots. O(n) space.</p>
+<p><strong>Follow-up at scale (logs across machines):</strong> count per machine, merge counts, then use a heap. Or approximate with a <strong>Count-Min Sketch</strong> (a small fixed-size table of counters that over-estimates but never under-estimates frequencies) plus a heap of the current top k.</p>
+<p><strong>Say it in 60 seconds:</strong> "First I count frequencies with a Counter. Sorting by count would be O(n log n), but frequencies are bounded by n, so I can bucket sort: bucket i holds the values that appear i times. Then I walk buckets from n down to 1 and collect values until I have k. That's O(n) time and space. A min-heap of size k is the alternative at O(n log k), and it's the better choice when the data is streaming and I can't hold all buckets."</p>
+<hr>
 <h3 id="a4-longest-consecutive-sequence">A4. Longest Consecutive Sequence</h3>
-<p><strong>Steps:</strong> put everything in a set. Only start counting from <code>x</code> if <code>x - 1</code> is not in the set (start of a run). Each number is visited at most twice.</p>
+<p><strong>Problem in one sentence:</strong> in an unsorted array, find the length of the longest run of consecutive integers (like 1, 2, 3, 4), in O(n).</p>
+<p><strong>Key insight:</strong> only start counting from a number that is the <strong>beginning</strong> of a run, meaning <code>x - 1</code> is not present. That way each run is walked exactly once, from its start.</p>
+<p><strong>Steps:</strong> put everything in a set. Only start counting from <code>x</code> if <code>x - 1</code> is not in the set. Each number is visited at most twice: once in the outer loop and once while extending a run.</p>
+<p><strong>Dry run</strong> on <code>[100, 4, 200, 1, 3, 2]</code>:</p>
+<pre><code class="language-text">x     x - 1 in set?   action                     best
+100   99: no          count 100 -&gt; length 1      1
+4     3: yes          skip (not a run start)     1
+200   199: no         length 1                   1
+1     0: no           1, 2, 3, 4 -&gt; length 4     4
+3     2: yes          skip                       4
+2     1: yes          skip                       4
+</code></pre>
 <pre><code class="language-python">def longest_consecutive(nums):
     s = set(nums)
     best = 0
@@ -106,9 +200,30 @@ strong{color:#fff}
             best = max(best, y - x + 1)
     return best
 </code></pre>
-<p>Time O(n), space O(n).</p>
+<p><strong>Complexity:</strong> O(n) time. The inner <code>while</code> looks like it makes this O(n²), but it only runs from run starts, so across the whole loop it advances at most n times in total. O(n) space for the set.</p>
+<p><strong>Say it in 60 seconds:</strong> "Sorting would give O(n log n), but they want O(n). I put all numbers in a set. Then for each number I check if <code>x - 1</code> exists. If it does, x is in the middle of a run and I skip it. If not, x starts a run, and I walk <code>x + 1</code>, <code>x + 2</code> while they exist. Each number is touched at most twice, once as a candidate and once while extending, so it's O(n) overall."</p>
+<hr>
 <h3 id="a5-product-of-array-except-self-no-division">A5. Product of Array Except Self (no division)</h3>
+<p><strong>Problem in one sentence:</strong> return an array where each position holds the product of every other element, without using division.</p>
+<p><strong>Key insight:</strong> the answer at i is (product of everything to the left of i) × (product of everything to the right of i). Both can be built with running products in two passes.</p>
 <p><strong>Steps:</strong> <code>out[i]</code> = product of prefix before i × product of suffix after i. Two passes, reusing the output array.</p>
+<p><strong>Dry run</strong> on <code>[1, 2, 3, 4]</code>:</p>
+<pre><code class="language-text">forward pass (out[i] = product of everything left of i)
+i  out[i] = pre  then pre *= nums[i]
+0  1             pre = 1
+1  1             pre = 2
+2  2             pre = 6
+3  6             pre = 24
+out = [1, 1, 2, 6]
+
+backward pass (multiply by product of everything right of i)
+i  out[i] *= suf      then suf *= nums[i]
+3  6 * 1  = 6         suf = 4
+2  2 * 4  = 8         suf = 12
+1  1 * 12 = 12        suf = 24
+0  1 * 24 = 24        suf = 24
+out = [24, 12, 8, 6]
+</code></pre>
 <pre><code class="language-python">def product_except_self(nums):
     n = len(nums)
     out = [1] * n
@@ -122,11 +237,54 @@ strong{color:#fff}
         suf *= nums[i]
     return out
 </code></pre>
-<p>Time O(n), space O(1) extra.</p>
+<p><strong>Complexity:</strong> O(n) time for two passes. O(1) extra space, because the output array doesn't count.</p>
+<p><strong>Say it in 60 seconds:</strong> "Division fails when there's a zero, and they ban it anyway. The value at i is the left product times the right product. In a forward pass I write the running product of everything before i into the output. In a backward pass I keep a running product of everything after i and multiply it in. Two passes, O(n) time, and no extra array besides the output."</p>
 <hr>
 <h2 id="b-prefix-sums">B. Prefix sums</h2>
-<p><strong>Intuition:</strong> <code>sum(i..j) = P[j+1] - P[i]</code>. If you need "count of subarrays with sum k," then <code>P[j] - P[i] = k</code> means you look up <code>P[j] - k</code> in a map of prefix counts.</p>
+<h3 id="the-idea_1">The idea</h3>
+<p>A <strong>prefix sum</strong> array <code>P</code> stores the running total: <code>P[0] = 0</code>, <code>P[1] = a[0]</code>, <code>P[2] = a[0] + a[1]</code>, and so on. Then the sum of any range is one subtraction: <code>sum(i..j) = P[j+1] - P[i]</code>.</p>
+<p><strong>Analogy:</strong> a car's odometer. To know how far you drove between Delhi and Agra, you don't add up every kilometre. You subtract the odometer reading at Delhi from the reading at Agra.</p>
+<p>The powerful extension: if you need to count subarrays with sum k, then a subarray ending at j has sum k exactly when some earlier prefix equals <code>P[j] - k</code>. So keep a hashmap of "how many times have I seen each prefix sum" and look up <code>P[j] - k</code>.</p>
+<h3 id="when-to-recognise-it_1">When to recognise it</h3>
+<ul>
+<li>"Sum of subarray equals k", "count subarrays", "range sum query".</li>
+<li>The array has <strong>negative numbers</strong>, so sliding window doesn't work.</li>
+<li>"Longest subarray with equal 0s and 1s" (turn it into a sum problem).</li>
+<li>Many range-sum queries on an array that doesn't change.</li>
+</ul>
+<h3 id="hand-traced-example_1">Hand-traced example</h3>
+<p>Array <code>[2, -1, 3, 1]</code>. Prefix sums: <code>P = [0, 2, 1, 4, 5]</code>. Sum of indices 1 to 3 is <code>P[4] - P[1] = 5 - 2 = 3</code>, which matches <code>-1 + 3 + 1 = 3</code>.</p>
+<h3 id="template_1">Template</h3>
+<pre><code class="language-python">def count_subarrays_with_sum(nums, k):
+    seen = defaultdict(int)
+    seen[0] = 1            # the empty prefix, so a subarray starting at index 0 is counted
+    total = ans = 0
+    for x in nums:
+        total += x
+        ans += seen[total - k]
+        seen[total] += 1
+    return ans
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, one pass with O(1) map operations. O(n) space for the map.</p>
+<h3 id="common-mistakes_1">Common mistakes</h3>
+<ul>
+<li>Forgetting <code>seen[0] = 1</code>. Without it, subarrays that start at index 0 are never counted.</li>
+<li>Updating the map <strong>before</strong> looking up, which can count an empty subarray when k is 0.</li>
+<li>For "longest subarray" variants, overwriting the stored index. Store only the <strong>first</strong> index for each prefix so the subarray is as long as possible.</li>
+</ul>
+<hr>
 <h3 id="b1-subarray-sum-equals-k-works-with-negatives-so-no-sliding-window">B1. Subarray Sum Equals K (works with negatives, so no sliding window)</h3>
+<p><strong>Problem in one sentence:</strong> count how many contiguous subarrays add up to exactly k, where numbers may be negative.</p>
+<p><strong>Key insight:</strong> a subarray from i+1 to j has sum k exactly when <code>prefix[j] - prefix[i] = k</code>, which means <code>prefix[i] = prefix[j] - k</code>. So at each step, the number of good subarrays ending here equals how many earlier prefixes equalled <code>total - k</code>.</p>
+<p><strong>Dry run</strong> on <code>nums = [1, -1, 1]</code>, <code>k = 1</code>:</p>
+<pre><code class="language-text">x    total  look up count[total - k]   ans  count after update
+                                             {0: 1} (start)
+1    1      count[0] = 1               1    {0: 1, 1: 1}
+-1   0      count[-1] = 0              1    {0: 2, 1: 1}
+1    1      count[0] = 2               3    {0: 2, 1: 2}
+answer 3: [1], [1, -1, 1], and the last [1]
+</code></pre>
+<p>The negative number made the running total go down, which is exactly the case where sliding window fails.</p>
 <pre><code class="language-python">def subarray_sum(nums, k):
     count = defaultdict(int)
     count[0] = 1           # empty prefix
@@ -137,11 +295,48 @@ strong{color:#fff}
         count[total] += 1
     return ans
 </code></pre>
-<p>Time O(n), space O(n). Variants: "divisible by k" uses <code>total % k</code> as the key. "Longest subarray with sum k" stores the <em>first</em> index of each prefix.</p>
+<p><strong>Complexity:</strong> O(n) time, O(n) space.</p>
+<p><strong>Variants:</strong> "divisible by k" uses <code>total % k</code> as the key. "Longest subarray with sum k" stores the <em>first</em> index of each prefix.</p>
+<p><strong>Say it in 60 seconds:</strong> "Sliding window doesn't work because negatives mean the sum isn't monotonic as the window grows. Instead I use prefix sums. A subarray ending at j sums to k when an earlier prefix equals the current prefix minus k. So I keep a map from prefix sum to how many times I've seen it, seeded with 0 seen once for the empty prefix. At each element I add <code>count[total - k]</code> to the answer, then record the current total. One pass, O(n) time and space."</p>
+<hr>
 <h3 id="b2-range-sum-query-2d-immutable">B2. Range Sum Query 2D (immutable)</h3>
-<p><code>P[r+1][c+1] = grid[r][c] + P[r][c+1] + P[r+1][c] - P[r][c]</code>. Query <code>(r1,c1,r2,c2) = P[r2+1][c2+1] - P[r1][c2+1] - P[r2+1][c1] + P[r1][c1]</code>. Build O(mn), query O(1).</p>
+<p><strong>Problem in one sentence:</strong> given a fixed grid of numbers, answer many queries "what is the sum of this rectangle?" in O(1) each.</p>
+<p><strong>Key insight:</strong> build a 2D prefix sum where <code>P[r][c]</code> is the sum of the rectangle from the top-left corner to just before <code>(r, c)</code>. Any rectangle is then four lookups, using inclusion-exclusion: take the big rectangle, subtract the strip above and the strip to the left, and add back the corner you subtracted twice.</p>
+<p>Build: <code>P[r+1][c+1] = grid[r][c] + P[r][c+1] + P[r+1][c] - P[r][c]</code>. Query <code>(r1, c1, r2, c2) = P[r2+1][c2+1] - P[r1][c2+1] - P[r2+1][c1] + P[r1][c1]</code>.</p>
+<p><strong>Dry run</strong> on <code>grid = [[1, 2], [3, 4]]</code>:</p>
+<pre><code class="language-text">P (3 x 3, row 0 and column 0 are zeros)
+      c=0  c=1  c=2
+r=0   0    0    0
+r=1   0    1    3        P[1][2] = 2 + 0 + 1 - 0 = 3
+r=2   0    4    10       P[2][2] = 4 + 3 + 4 - 1 = 10
+query the single cell (1, 1): P[2][2] - P[1][2] - P[2][1] + P[1][1] = 10 - 3 - 4 + 1 = 4
+</code></pre>
+<pre><code class="language-python">class NumMatrix:
+    def __init__(self, grid):
+        R, C = len(grid), len(grid[0])
+        self.P = [[0] * (C + 1) for _ in range(R + 1)]
+        for r in range(R):
+            for c in range(C):
+                self.P[r + 1][c + 1] = grid[r][c] + self.P[r][c + 1] + self.P[r + 1][c] - self.P[r][c]
+
+    def sum_region(self, r1, c1, r2, c2):
+        P = self.P
+        return P[r2 + 1][c2 + 1] - P[r1][c2 + 1] - P[r2 + 1][c1] + P[r1][c1]
+</code></pre>
+<p><strong>Complexity:</strong> build O(m·n), each query O(1). O(m·n) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Because the grid never changes, I precompute a 2D prefix sum with one extra row and column of zeros so I never go out of bounds. Each cell of P is the sum of the rectangle above-left of it. A query takes the big rectangle, subtracts the part above and the part to the left, and adds back the top-left corner that was subtracted twice. Build is O(m·n) once, then every query is O(1). If the grid could change, I'd switch to a 2D Fenwick tree."</p>
+<hr>
 <h3 id="b3-contiguous-array-equal-0s-and-1s">B3. Contiguous Array (equal 0s and 1s)</h3>
-<p>Map 0 to -1. Find the longest subarray with sum 0, storing the first index of each prefix sum.</p>
+<p><strong>Problem in one sentence:</strong> in a binary array, find the longest contiguous subarray with equal numbers of 0s and 1s.</p>
+<p><strong>Key insight:</strong> replace every 0 with -1. Now "equal counts" means "sum is 0". A subarray has sum 0 when the prefix sum at its end equals the prefix sum just before its start. So remember the <strong>first</strong> index where each prefix sum appeared.</p>
+<p><strong>Dry run</strong> on <code>[0, 1, 0]</code>:</p>
+<pre><code class="language-text">i  x  total (0 counts as -1)  first index seen?        best
+                               first = {0: -1}
+0  0  -1                       new, first[-1] = 0       0
+1  1  0                        seen at -1 -&gt; 1-(-1)=2   2
+2  0  -1                       seen at 0  -&gt; 2-0=2      2
+answer 2
+</code></pre>
 <pre><code class="language-python">def find_max_length(nums):
     first = {0: -1}
     total = best = 0
@@ -153,11 +348,63 @@ strong{color:#fff}
             first[total] = i
     return best
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(n) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I map 0 to -1 so equal counts becomes sum zero. Then it's 'longest subarray with sum zero', which is a prefix-sum problem. I keep the first index where each running total appeared, seeded with total 0 at index -1. When I see a total again, the stretch between the two positions sums to zero, so I measure it. I never overwrite the first index, because the earliest one gives the longest subarray. O(n) time and space."</p>
 <hr>
 <h2 id="c-two-pointers">C. Two pointers</h2>
-<p><strong>Intuition:</strong> on sorted data (or for in-place compaction), two indices moving toward each other or in the same direction replace a nested loop.</p>
+<h3 id="the-idea_2">The idea</h3>
+<p>Use two indices into the same array instead of a nested loop. Either they start at both ends and move <strong>toward each other</strong>, or they both start at the left and move in the <strong>same direction</strong> at different speeds. Each step moves at least one pointer, so the total work is O(n).</p>
+<p><strong>Analogy:</strong> two people searching a sorted bookshelf for two books whose page counts add to 500. One starts at the thin end, one at the thick end. If the total is too small, the thin-end person steps toward thicker books. If too big, the thick-end person steps toward thinner ones. Neither ever needs to go back.</p>
+<h3 id="when-to-recognise-it_2">When to recognise it</h3>
+<ul>
+<li>The array is <strong>sorted</strong>, or sorting it doesn't break the problem.</li>
+<li>"Pair (or triple) with a given sum", "closest sum".</li>
+<li>"In place", "remove duplicates", "partition", "move zeros".</li>
+<li>Comparing from both ends: palindromes, container or water problems.</li>
+</ul>
+<h3 id="hand-traced-example_2">Hand-traced example</h3>
+<p>Sorted <code>[1, 3, 4, 6, 9]</code>, find a pair summing to 10.</p>
+<pre><code class="language-text">l  r  a[l] + a[r]   decision
+0  4  1 + 9 = 10    found (1, 9)
+</code></pre>
+<p>Target 7 instead:</p>
+<pre><code class="language-text">l  r  sum          decision
+0  4  1 + 9 = 10   too big, r -= 1
+0  3  1 + 6 = 7    found (1, 6)
+</code></pre>
+<h3 id="template_2">Template</h3>
+<pre><code class="language-python">def pair_with_sum(a, target):           # a is sorted
+    l, r = 0, len(a) - 1
+    while l &lt; r:
+        s = a[l] + a[r]
+        if s == target:
+            return l, r
+        if s &lt; target:
+            l += 1                      # need bigger, so move the small side up
+        else:
+            r -= 1                      # need smaller, so move the big side down
+    return None
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, because each step moves a pointer and they meet after at most n steps. O(1) space. Add O(n log n) if you have to sort first.</p>
+<h3 id="common-mistakes_2">Common mistakes</h3>
+<ul>
+<li>Using two pointers on unsorted data when the logic depends on order.</li>
+<li>Forgetting to skip duplicates, which produces repeated answers in 3Sum.</li>
+<li>Off-by-one in the loop condition: <code>l &lt; r</code> for pairs (two different elements), <code>l &lt;= r</code> when a single middle element matters.</li>
+</ul>
+<hr>
 <h3 id="c1-3sum">C1. 3Sum</h3>
+<p><strong>Problem in one sentence:</strong> find all unique triples in an array that add up to zero.</p>
+<p><strong>Key insight:</strong> sort the array, fix the first number, and the remaining problem is "find pairs summing to minus that number" in a sorted range, which is two pointers. Sorting also puts duplicates next to each other so they are easy to skip.</p>
 <p><strong>Steps:</strong> sort. Fix <code>i</code>, then two pointers <code>l, r</code> on the rest. Skip duplicates for <code>i</code> and after each found triple.</p>
+<p><strong>Dry run</strong> on <code>[-1, 0, 1, 2, -1, -4]</code>, sorted to <code>[-4, -1, -1, 0, 1, 2]</code>:</p>
+<pre><code class="language-text">i=0 (-4): best pair sum reachable is 1 + 2 = 3, never reaches 4, no triples
+i=1 (-1): l=2 (-1), r=5 (2): -1 - 1 + 2 = 0  -&gt; record [-1, -1, 2], l=3, r=4
+          l=3 (0),  r=4 (1): -1 + 0 + 1 = 0  -&gt; record [-1, 0, 1],  l=4, r=3, stop
+i=2 (-1): same value as i=1, skip
+i=3 (0):  l=4, r=5: 0 + 1 + 2 = 3 &gt; 0, r=4, stop
+result [[-1, -1, 2], [-1, 0, 1]]
+</code></pre>
 <pre><code class="language-python">def three_sum(nums):
     nums.sort()
     res = []
@@ -181,9 +428,20 @@ strong{color:#fff}
                 r -= 1
     return res
 </code></pre>
-<p>Time O(n²), space O(1) besides the output.</p>
+<p><strong>Complexity:</strong> O(n²) time, because each of n choices of <code>i</code> runs an O(n) two-pointer scan. Sorting is O(n log n), which is smaller. O(1) space besides the output.</p>
+<p><strong>Say it in 60 seconds:</strong> "Brute force is O(n³) over all triples. I sort first, which lets me fix one number and then find the other two with two pointers in linear time, so O(n²) total. If the sum is too small I move the left pointer right, if too big I move the right pointer left. For uniqueness, I skip an <code>i</code> equal to the previous one, and after recording a triple I advance <code>l</code> past equal values. I also break early once <code>nums[i]</code> is positive, because three positives can't sum to zero."</p>
+<hr>
 <h3 id="c2-container-with-most-water">C2. Container With Most Water</h3>
-<p><strong>Intuition:</strong> area is bounded by the shorter line. Moving the taller one can never help, so move the shorter one.</p>
+<p><strong>Problem in one sentence:</strong> given vertical lines of different heights, pick two that, together with the x-axis, hold the most water.</p>
+<p><strong>Key insight:</strong> the water level is limited by the <strong>shorter</strong> line. If you move the taller line inward, the width shrinks and the height can't go up (it's still capped by the shorter line), so the area can only get worse. So always move the shorter line.</p>
+<p><strong>Dry run</strong> on <code>h = [1, 8, 6, 2, 5, 4, 8, 3, 7]</code> (first few steps):</p>
+<pre><code class="language-text">l  r  width  min height  area  best  move
+0  8  8      1           8     8     h[0]=1 &lt; h[8]=7, l += 1
+1  8  7      7           49    49    h[1]=8 &gt; 7, r -= 1
+1  7  6      3           18    49    r -= 1
+1  6  5      8           40    49    equal heights, r -= 1
+... continues, best stays 49
+</code></pre>
 <pre><code class="language-python">def max_area(h):
     l, r, best = 0, len(h) - 1, 0
     while l &lt; r:
@@ -194,9 +452,20 @@ strong{color:#fff}
             r -= 1
     return best
 </code></pre>
-<p>O(n).</p>
+<p><strong>Complexity:</strong> O(n) time, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Brute force checks all pairs in O(n²). I start with the widest container, both ends. The area is width times the shorter height. Moving the taller side inward can never help, because the width shrinks and the height is still capped by the shorter side. So I always move the shorter side and track the best area. Each step discards one line for good, so it's O(n)."</p>
+<hr>
 <h3 id="c3-trapping-rain-water">C3. Trapping Rain Water</h3>
-<p><strong>Intuition:</strong> water at i = <code>min(maxLeft, maxRight) - h[i]</code>. With two pointers, the side with the smaller max is decided, so process it.</p>
+<p><strong>Problem in one sentence:</strong> given bar heights, compute how much rain water gets trapped between the bars.</p>
+<p><strong>Key insight:</strong> the water above bar i is <code>min(tallest on the left, tallest on the right) - h[i]</code>. With two pointers, whichever side currently has the smaller maximum is the limiting side, so its water amount is already decided and you can process it.</p>
+<p><strong>Dry run</strong> on <code>h = [3, 0, 2, 0, 4]</code>:</p>
+<pre><code class="language-text">l  r  h[l] &lt; h[r]?  update               water
+0  4  3 &lt; 4 yes     lmax = 3, +0         0
+1  4  0 &lt; 4 yes     lmax = 3, +3         3
+2  4  2 &lt; 4 yes     lmax = 3, +1         4
+3  4  0 &lt; 4 yes     lmax = 3, +3         7
+l == r, stop. answer 7
+</code></pre>
 <pre><code class="language-python">def trap(h):
     l, r = 0, len(h) - 1
     lmax = rmax = water = 0
@@ -211,9 +480,20 @@ strong{color:#fff}
             r -= 1
     return water
 </code></pre>
-<p>O(n) time, O(1) space.</p>
+<p><strong>Complexity:</strong> O(n) time, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Water above a bar is the smaller of the tallest bar to its left and the tallest to its right, minus its own height. The simple version precomputes left-max and right-max arrays in O(n) space. To get O(1) space I use two pointers. If the left bar is shorter than the right bar, then the right side has something at least as tall as the left max, so the left max is the limit, and I can add <code>lmax - h[l]</code> and move left. Otherwise I do the mirror on the right."</p>
+<hr>
 <h3 id="c4-sort-colors-dutch-national-flag">C4. Sort Colors (Dutch national flag)</h3>
-<p>Three pointers: <code>lo</code> (next 0 slot), <code>mid</code> (scan), <code>hi</code> (next 2 slot). Don't advance <code>mid</code> after swapping with <code>hi</code>.</p>
+<p><strong>Problem in one sentence:</strong> sort an array that contains only 0s, 1s and 2s, in place, in one pass.</p>
+<p><strong>Key insight:</strong> keep three regions: everything before <code>lo</code> is 0, everything after <code>hi</code> is 2, and <code>mid</code> scans the unknown middle. A 0 goes to the front, a 2 goes to the back, a 1 stays.</p>
+<p>Three pointers: <code>lo</code> (next 0 slot), <code>mid</code> (scan), <code>hi</code> (next 2 slot). Don't advance <code>mid</code> after swapping with <code>hi</code>, because the value that came from <code>hi</code> hasn't been examined yet.</p>
+<p><strong>Dry run</strong> on <code>[2, 0, 1]</code>:</p>
+<pre><code class="language-text">array      lo mid hi  a[mid]  action
+[2, 0, 1]  0  0   2   2       swap with hi -&gt; [1, 0, 2], hi = 1 (mid stays)
+[1, 0, 2]  0  0   1   1       mid = 1
+[1, 0, 2]  0  1   1   0       swap with lo -&gt; [0, 1, 2], lo = 1, mid = 2
+mid &gt; hi, stop. result [0, 1, 2]
+</code></pre>
 <pre><code class="language-python">def sort_colors(a):
     lo = mid = 0
     hi = len(a) - 1
@@ -225,12 +505,58 @@ strong{color:#fff}
         else:
             a[mid], a[hi] = a[hi], a[mid]; hi -= 1
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time in one pass, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Counting sort works in two passes, but one pass is the classic ask. I keep three regions: zeros before <code>lo</code>, twos after <code>hi</code>, and an unknown middle scanned by <code>mid</code>. A zero swaps to <code>lo</code> and both advance. A one just advances <code>mid</code>. A two swaps with <code>hi</code> and <code>hi</code> shrinks, but <code>mid</code> stays because the swapped-in value is still unknown. The loop ends when <code>mid</code> passes <code>hi</code>."</p>
+<hr>
 <h3 id="c5-remove-duplicates-in-place-same-direction-pointers">C5. Remove duplicates in place (same-direction pointers)</h3>
-<p><code>write</code> is where the next unique element goes. <code>read</code> scans.</p>
+<p><strong>Problem in one sentence:</strong> in a sorted array, remove duplicates in place and return how many unique values remain at the front.</p>
+<p><strong>Key insight:</strong> <code>write</code> is where the next unique element goes. <code>read</code> scans. Because the array is sorted, a value is new exactly when it differs from the last value written.</p>
+<p><strong>Dry run</strong> on <code>[1, 1, 2, 3, 3]</code>:</p>
+<pre><code class="language-text">read  nums[read]  last written  action               write  array front
+                                                     1      [1]
+1     1           1             duplicate, skip      1      [1]
+2     2           1             copy to index 1      2      [1, 2]
+3     3           2             copy to index 2      3      [1, 2, 3]
+4     3           3             duplicate, skip      3      [1, 2, 3]
+return 3
+</code></pre>
+<pre><code class="language-python">def remove_duplicates(nums):
+    if not nums:
+        return 0
+    write = 1
+    for read in range(1, len(nums)):
+        if nums[read] != nums[write - 1]:
+            nums[write] = nums[read]
+            write += 1
+    return write
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Since the array is sorted, duplicates are adjacent. I keep a slow <code>write</code> pointer for where the next unique value goes and a fast <code>read</code> pointer that scans. When <code>read</code> finds a value different from the last one written, I copy it to <code>write</code> and advance. At the end, <code>write</code> is the count of unique values. This same shape solves 'move zeros' and 'remove element'."</p>
 <hr>
 <h2 id="d-sliding-window">D. Sliding window</h2>
-<p><strong>Intuition:</strong> for contiguous ranges where the condition is <strong>monotonic</strong> (if a window is invalid, growing it stays invalid), expand the right side and shrink the left side while invalid. Each element enters and leaves once, so O(n).</p>
-<p><strong>Template (variable window, longest valid):</strong></p>
+<h3 id="the-idea_3">The idea</h3>
+<p>A <strong>window</strong> is a contiguous stretch <code>[l, r]</code> of the array or string. You grow it by moving <code>r</code> right, and shrink it by moving <code>l</code> right. You never move either pointer backwards, so each element enters the window once and leaves once, giving O(n).</p>
+<p>This only works when the condition is <strong>monotonic</strong>: if a window is invalid, making it bigger keeps it invalid (or, for "shortest" problems, if a window is valid, making it bigger keeps it valid). That property lets you safely discard the left side.</p>
+<p><strong>Analogy:</strong> a caterpillar crawling along a branch. The head stretches forward to eat. When the body gets too long (the window breaks the rule), the tail pulls in. The caterpillar never walks backwards.</p>
+<h3 id="when-to-recognise-it_3">When to recognise it</h3>
+<ul>
+<li>"Longest / shortest / count of <strong>contiguous</strong> subarray or substring" with a condition.</li>
+<li>"At most k distinct", "without repeating", "at most k replacements".</li>
+<li>Fixed size: "every window of size k" (permutation in string, moving average).</li>
+<li><strong>Not</strong> when numbers can be negative and the condition is a sum. Use prefix sums then.</li>
+</ul>
+<h3 id="hand-traced-example_3">Hand-traced example</h3>
+<p>Longest substring of <code>"eceba"</code> with at most 2 distinct characters. The state is a count of characters in the window, and "valid" means at most 2 characters have a non-zero count.</p>
+<pre><code class="language-text">r  char  counts after adding   valid?  shrink                     window   best
+0  e     e1                    yes                                &quot;e&quot;      1
+1  c     e1 c1                 yes                                &quot;ec&quot;     2
+2  e     e2 c1                 yes                                &quot;ece&quot;    3
+3  b     e2 c1 b1              no      drop e (l=1), still 3 keys
+                                       drop c (l=2), now e1 b1     &quot;eb&quot;     3
+4  a     e1 b1 a1              no      drop e (l=3)                &quot;ba&quot;     3
+answer 3 (&quot;ece&quot;)
+</code></pre>
+<h3 id="template-variable-window-longest-valid">Template (variable window, longest valid)</h3>
 <pre><code class="language-python">def longest_valid(s):
     state = defaultdict(int)
     l = best = 0
@@ -242,7 +568,28 @@ strong{color:#fff}
         best = max(best, r - l + 1)
     return best
 </code></pre>
+<p>For "shortest valid window", flip it: expand until valid, then shrink <strong>while still valid</strong>, recording the minimum inside the loop.</p>
+<p><strong>Complexity:</strong> O(n) time, because <code>l</code> and <code>r</code> each move at most n times. O(alphabet) or O(k) space for the counts.</p>
+<h3 id="common-mistakes_3">Common mistakes</h3>
+<ul>
+<li>Using sliding window on sums with negative numbers. The window sum can drop when you add an element, so shrinking is not safe.</li>
+<li>Recording the answer in the wrong place: for "longest", record after the shrink loop. For "shortest", record inside it.</li>
+<li>Counting distinct keys with <code>len(state)</code> but never deleting keys whose count drops to 0.</li>
+<li>Off-by-one in window length. It is <code>r - l + 1</code>.</li>
+</ul>
+<hr>
 <h3 id="d1-longest-substring-without-repeating-characters">D1. Longest Substring Without Repeating Characters</h3>
+<p><strong>Problem in one sentence:</strong> find the length of the longest substring with no repeated character.</p>
+<p><strong>Key insight:</strong> remember the last index where each character appeared. When you see a character that is already inside the current window, jump <code>l</code> to just past its previous position, in one move instead of shrinking one step at a time.</p>
+<p><strong>Dry run</strong> on <code>"abba"</code> (the tricky case):</p>
+<pre><code class="language-text">r  c  last[c] before  inside window?          l  last after       best
+0  a  none            no                      0  {a:0}            1
+1  b  none            no                      0  {a:0, b:1}       2
+2  b  1               1 &gt;= l=0 yes, l = 2     2  {a:0, b:2}       2
+3  a  0               0 &gt;= l=2? no, keep l    2  {a:3, b:2}       2
+answer 2
+</code></pre>
+<p>At r = 3, the old <code>a</code> at index 0 is outside the window already. Without the <code>last[c] &gt;= l</code> check, <code>l</code> would jump <strong>backwards</strong> to 1, which is wrong.</p>
 <pre><code class="language-python">def length_of_longest_substring(s):
     last = {}
     l = best = 0
@@ -253,9 +600,23 @@ strong{color:#fff}
         best = max(best, r - l + 1)
     return best
 </code></pre>
-<p>O(n) time, O(alphabet) space.</p>
+<p><strong>Complexity:</strong> O(n) time, O(alphabet) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "This is a sliding window where the window must contain distinct characters. I store the last index of each character. When the new character was last seen inside the window, I jump the left edge to one past that index. The <code>&gt;= l</code> check matters: if the earlier occurrence is already outside the window, I must not move <code>l</code> backwards. I update the best length at every step. One pass, O(n)."</p>
+<hr>
 <h3 id="d2-longest-repeating-character-replacement-at-most-k-changes">D2. Longest Repeating Character Replacement (at most k changes)</h3>
-<p><strong>Intuition:</strong> window is valid if <code>len - maxFreq ≤ k</code>. <code>maxFreq</code> never has to decrease (a stale max only keeps the window from growing, never gives a wrong larger answer).</p>
+<p><strong>Problem in one sentence:</strong> you may change up to k characters in a string. Find the longest substring that can be made of one repeated letter.</p>
+<p><strong>Key insight:</strong> in a window, keep the most common letter and change the rest. The window is valid if <code>length - maxFreq ≤ k</code>. <code>maxFreq</code> never has to decrease, because a stale (too high) maximum only stops the window from growing. It can never produce a wrong, larger answer, since the best answer only improves when a real higher frequency appears.</p>
+<p><strong>Dry run</strong> on <code>s = "AABABBA"</code>, <code>k = 1</code>:</p>
+<pre><code class="language-text">r  c  counts       maxf  len  len - maxf  action          best
+0  A  A1           1     1    0           ok              1
+1  A  A2           2     2    0           ok              2
+2  B  A2 B1        2     3    1           ok              3
+3  A  A3 B1        3     4    1           ok              4
+4  B  A3 B2        3     5    2 &gt; 1       drop A, l=1     4
+5  B  A2 B3        3     5    2 &gt; 1       drop A, l=2     4
+6  A  A2 B3        3     5    2 &gt; 1       drop B, l=3     4
+answer 4
+</code></pre>
 <pre><code class="language-python">def character_replacement(s, k):
     count = defaultdict(int)
     l = maxf = best = 0
@@ -268,8 +629,25 @@ strong{color:#fff}
         best = max(best, r - l + 1)
     return best
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(26) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "In any window I'd keep the most frequent letter and replace the others, so the window is valid when its length minus the max frequency is at most k. I grow the right side and shrink the left while it's invalid. The subtle part is that I never decrease <code>maxf</code> when shrinking. That's safe because a stale max only stops the window from growing, and the answer only gets bigger when a genuinely larger frequency shows up. It's O(n)."</p>
+<hr>
 <h3 id="d3-minimum-window-substring">D3. Minimum Window Substring</h3>
+<p><strong>Problem in one sentence:</strong> find the shortest substring of s that contains every character of t, including repeats.</p>
+<p><strong>Key insight:</strong> track how many distinct characters of t are fully satisfied (<code>have</code>) versus how many need to be (<code>required</code>). Expand right until all are satisfied, then shrink left as far as possible while still satisfied, recording the shortest window.</p>
 <p><strong>Steps:</strong> <code>need</code> counts of t. Track <code>have</code> = number of chars whose need is met. Expand right; when all are met, shrink left while still valid, recording the minimum.</p>
+<p><strong>Dry run</strong> on <code>s = "ADOBECODEBANC"</code>, <code>t = "ABC"</code> (key moments only; need is A1 B1 C1, required 3):</p>
+<pre><code class="language-text">r   char  event                                          best
+5   C     first time have = 3, window &quot;ADOBEC&quot; (len 6)   6
+          shrink: dropping A breaks it, have = 2, l = 1
+10  A     have = 3 again, window [1..10] (len 10)
+          shrink past D, O, B (B still 1), E -&gt; &quot;CODEBA&quot; (len 6, not better)
+          dropping C breaks it, l = 6
+12  C     have = 3, window [6..12] &quot;ODEBANC&quot; (len 7)
+          shrink: &quot;DEBANC&quot; 6, &quot;EBANC&quot; 5 -&gt; best 5, &quot;BANC&quot; 4 -&gt; best 4
+          dropping B breaks it
+answer &quot;BANC&quot;
+</code></pre>
 <pre><code class="language-python">def min_window(s, t):
     if not t:
         return &quot;&quot;
@@ -291,11 +669,61 @@ strong{color:#fff}
             l += 1
     return &quot;&quot; if best[0] == float(&quot;inf&quot;) else s[best[1]:best[2] + 1]
 </code></pre>
-<p>O(|s| + |t|).</p>
+<p><strong>Complexity:</strong> O(|s| + |t|) time, because each pointer crosses s once and building <code>need</code> is O(|t|). O(alphabet) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I count what t needs. While scanning s with the right pointer, I count what the window has, and I keep a single number <code>have</code> for how many distinct characters are fully satisfied. When <code>have</code> equals the number of distinct characters in t, the window is valid, so I record it if it's the shortest and then shrink from the left. The moment a needed count drops below its requirement, <code>have</code> goes down and I resume expanding. Tracking <code>have</code> avoids comparing two whole maps every step, so it's linear."</p>
+<hr>
 <h3 id="d4-permutation-in-string-fixed-window">D4. Permutation in String (fixed window)</h3>
-<p>Fixed window of <code>len(p)</code>. Compare 26-count arrays, or track the number of matching counts for O(n).</p>
+<p><strong>Problem in one sentence:</strong> does s contain any rearrangement of p as a contiguous substring?</p>
+<p><strong>Key insight:</strong> a permutation of p has exactly p's letter counts and exactly p's length. So slide a window of fixed size <code>len(p)</code> over s and compare 26-count arrays. Or track the number of matching counts for O(n).</p>
+<p><strong>Dry run</strong> on <code>p = "ab"</code>, <code>s = "eidbaooo"</code>:</p>
+<pre><code class="language-text">window  counts       equals need {a1, b1}?
+&quot;ei&quot;    e1 i1        no
+&quot;id&quot;    i1 d1        no
+&quot;db&quot;    d1 b1        no
+&quot;ba&quot;    b1 a1        yes -&gt; True
+</code></pre>
+<pre><code class="language-python">def check_inclusion(p, s):
+    if len(p) &gt; len(s):
+        return False
+    need = [0] * 26
+    window = [0] * 26
+    for c in p:
+        need[ord(c) - 97] += 1
+    for r, c in enumerate(s):
+        window[ord(c) - 97] += 1
+        if r &gt;= len(p):
+            window[ord(s[r - len(p)]) - 97] -= 1
+        if window == need:
+            return True
+    return False
+</code></pre>
+<p><strong>Complexity:</strong> O(26·n) time, which is O(n), because each comparison is 26 entries. O(1) space. The "matches counter" version avoids the 26-entry compare and is strictly O(n).</p>
+<p><strong>Say it in 60 seconds:</strong> "Any permutation of p has p's length and p's letter counts. So I slide a window of exactly <code>len(p)</code> over s, adding the new character on the right and removing the one that falls off the left. After each step I compare the window's 26 counts with p's counts. Comparing 26 numbers is constant, so the whole thing is O(n). For a tighter version I keep a count of how many letters currently match and update it incrementally."</p>
+<hr>
 <h3 id="d5-max-consecutive-ones-iii-fruit-into-baskets-subarrays-with-k-distinct">D5. Max Consecutive Ones III, Fruit Into Baskets, Subarrays with K distinct</h3>
-<p>"Exactly K" = <code>atMost(K) - atMost(K - 1)</code>. That's a key trick.</p>
+<p><strong>Problem in one sentence (the hard one):</strong> count subarrays that contain <strong>exactly</strong> k distinct numbers.</p>
+<p><strong>Key insight:</strong> "exactly K" is hard to slide directly, because adding an element can move you from too few to just right to too many. But "at most K" is easy to slide. And <code>exactly(K) = atMost(K) - atMost(K - 1)</code>. That's a key trick worth memorising.</p>
+<p>Inside <code>at_most</code>, <code>res += r - l + 1</code> counts every valid subarray <strong>ending at r</strong>: they start at <code>l</code>, <code>l + 1</code>, ..., <code>r</code>.</p>
+<p>The two easier relatives use the plain template. <strong>Max Consecutive Ones III</strong> is "longest window with at most k zeros". <strong>Fruit Into Baskets</strong> is "longest window with at most 2 distinct values".</p>
+<p><strong>Dry run</strong> on <code>nums = [1, 2, 1, 2, 3]</code>, <code>k = 2</code>:</p>
+<pre><code class="language-text">at_most(2):
+r  x  window after shrink  subarrays ending at r  running total
+0  1  [1]                  1                      1
+1  2  [1,2]                2                      3
+2  1  [1,2,1]              3                      6
+3  2  [1,2,1,2]            4                      10
+4  3  3 distinct, shrink to [2,3]   2             12
+
+at_most(1):
+r  window   count  total
+0  [1]      1      1
+1  [2]      1      2
+2  [1]      1      3
+3  [2]      1      4
+4  [3]      1      5
+
+exactly(2) = 12 - 5 = 7
+</code></pre>
 <pre><code class="language-python">def subarrays_with_k_distinct(nums, k):
     def at_most(k):
         count = defaultdict(int)
@@ -313,11 +741,31 @@ strong{color:#fff}
         return res
     return at_most(k) - at_most(k - 1)
 </code></pre>
+<p>Here <code>k</code> inside <code>at_most</code> is used as "distinct slots still free". It goes negative when the window holds too many distinct values.</p>
+<p><strong>Complexity:</strong> O(n) time, two linear passes. O(n) space for counts.</p>
+<p><strong>Say it in 60 seconds:</strong> "Counting windows with exactly k distinct values doesn't slide cleanly, but 'at most k' does. So I compute atMost(k) minus atMost(k-1). In atMost, I grow the window, shrink while it has more than k distinct values, and then add <code>r - l + 1</code>, because every subarray ending at r and starting anywhere from l to r is valid. Two linear passes, O(n)."</p>
 <p><strong>When sliding window fails:</strong> negative numbers with a sum target. Use prefix sums + hashmap (B1).</p>
 <hr>
 <h2 id="e-binary-search">E. Binary search</h2>
-<p><strong>Intuition:</strong> whenever there's a <strong>monotonic predicate</strong> over a range (false false false true true), binary search finds the boundary in O(log n). That works on an index, on an answer value ("minimum capacity such that feasible"), or on a rotated array.</p>
-<p><strong>Template (first index where <code>ok(i)</code> is true):</strong></p>
+<h3 id="the-idea_4">The idea</h3>
+<p>Binary search finds a boundary by halving the search range each step. It works whenever there is a <strong>monotonic predicate</strong>: a yes/no question whose answers, in order, look like <code>false false false true true true</code>. You want the first <code>true</code>.</p>
+<p>That predicate can be about an <strong>index</strong> ("is <code>a[i] &gt;= target</code>?"), about an <strong>answer value</strong> ("can we ship everything in D days with capacity X?"), or about a rotated array ("is this half sorted?").</p>
+<p><strong>Analogy:</strong> guessing a number between 1 and 100 when the other person says "higher" or "lower". You always guess the middle, and you never need more than 7 guesses, because 2⁷ = 128 &gt; 100.</p>
+<h3 id="when-to-recognise-it_4">When to recognise it</h3>
+<ul>
+<li>The input is sorted, or "rotated sorted".</li>
+<li>"Find the minimum X such that ...", "maximize the minimum", "minimize the maximum".</li>
+<li>The constraints allow a value range up to 10⁹, too big to try each value, but checking one value is cheap.</li>
+<li>The expected complexity contains a log.</li>
+</ul>
+<h3 id="hand-traced-example_4">Hand-traced example</h3>
+<p>Find the first index in <code>[1, 3, 5, 7, 9]</code> where the value is at least 5. The predicate <code>a[i] &gt;= 5</code> reads <code>F F T T T</code>.</p>
+<pre><code class="language-text">lo  hi  mid  a[mid]  ok?   update
+0   5   2    5       yes   hi = 2
+0   2   1    3       no    lo = 2
+lo == hi == 2 -&gt; answer index 2
+</code></pre>
+<h3 id="template-first-index-where-oki-is-true">Template (first index where <code>ok(i)</code> is true)</h3>
 <pre><code class="language-python">def first_true(lo, hi, ok):     # search in [lo, hi); returns hi if none
     while lo &lt; hi:
         mid = (lo + hi) // 2
@@ -327,9 +775,25 @@ strong{color:#fff}
             lo = mid + 1
     return lo
 </code></pre>
-<p>Always ask: is my range inclusive or exclusive? Does <code>mid</code> move toward both ends so the loop ends?</p>
+<p>Always ask: is my range inclusive or exclusive? Does <code>mid</code> move toward both ends so the loop ends? In this template <code>hi</code> is exclusive, <code>ok(mid)</code> true keeps <code>mid</code> as a candidate (<code>hi = mid</code>), and false discards it (<code>lo = mid + 1</code>). Since <code>mid</code> rounds down, <code>hi = mid</code> always shrinks the range, so the loop can't get stuck.</p>
+<p><strong>Complexity:</strong> O(log n) calls to <code>ok</code>. If <code>ok</code> costs O(n) (as in "binary search on the answer"), the total is O(n log range).</p>
+<h3 id="common-mistakes_4">Common mistakes</h3>
+<ul>
+<li>Infinite loops from writing <code>lo = mid</code> while <code>mid</code> rounds down. When <code>hi = lo + 1</code>, <code>mid</code> equals <code>lo</code> forever.</li>
+<li>Mixing inclusive and exclusive bounds in the same function.</li>
+<li>Choosing a search range that doesn't contain the answer, such as starting capacity at 1 when it must be at least the heaviest package.</li>
+<li>Forgetting the predicate must be monotonic. If it isn't, binary search gives nonsense.</li>
+</ul>
+<hr>
 <h3 id="e1-search-in-rotated-sorted-array">E1. Search in Rotated Sorted Array</h3>
-<p><strong>Steps:</strong> one half is always sorted. Check whether the target lies inside the sorted half; if yes go there, else go to the other.</p>
+<p><strong>Problem in one sentence:</strong> a sorted array was rotated at an unknown point (for example <code>[4, 5, 6, 7, 0, 1, 2]</code>). Find a target's index in O(log n).</p>
+<p><strong>Key insight:</strong> when you cut a rotated array in the middle, at least one half is always properly sorted. You can tell which by comparing the ends. Then check whether the target lies inside the sorted half's range. If it does, search there. If not, search the other half.</p>
+<p><strong>Dry run</strong> on <code>nums = [4, 5, 6, 7, 0, 1, 2]</code>, <code>target = 0</code>:</p>
+<pre><code class="language-text">lo  hi  mid  nums[mid]  sorted half          target in it?        move
+0   6   3    7          left [4..7]          4 &lt;= 0 &lt; 7? no       lo = 4
+4   6   5    1          left [0..1]          0 &lt;= 0 &lt; 1? yes      hi = 4
+4   4   4    0          found                                     return 4
+</code></pre>
 <pre><code class="language-python">def search_rotated(nums, target):
     lo, hi = 0, len(nums) - 1
     while lo &lt;= hi:
@@ -348,8 +812,19 @@ strong{color:#fff}
                 hi = mid - 1
     return -1
 </code></pre>
-<p>O(log n).</p>
+<p><strong>Complexity:</strong> O(log n) time, O(1) space. With duplicates allowed, the worst case becomes O(n), because <code>nums[lo] == nums[mid]</code> can't tell you which half is sorted.</p>
+<p><strong>Say it in 60 seconds:</strong> "Even after rotation, splitting at the middle leaves at least one sorted half. If <code>nums[lo] &lt;= nums[mid]</code>, the left half is sorted, otherwise the right half is. I check whether the target falls within the sorted half's range using its two endpoints. If yes, I discard the other half. If no, I discard the sorted half. Each step halves the range, so O(log n)."</p>
+<hr>
 <h3 id="e2-find-minimum-in-rotated-sorted-array">E2. Find Minimum in Rotated Sorted Array</h3>
+<p><strong>Problem in one sentence:</strong> find the smallest element of a rotated sorted array (no duplicates) in O(log n).</p>
+<p><strong>Key insight:</strong> compare the middle with the <strong>right end</strong>. If <code>nums[mid] &gt; nums[hi]</code>, the drop (where the minimum lives) is to the right of mid. Otherwise the minimum is at mid or to its left.</p>
+<p><strong>Dry run</strong> on <code>[4, 5, 6, 7, 0, 1, 2]</code>:</p>
+<pre><code class="language-text">lo  hi  mid  nums[mid] vs nums[hi]  move
+0   6   3    7 &gt; 2                  lo = 4
+4   6   5    1 &gt; 2? no              hi = 5
+4   5   4    0 &gt; 1? no              hi = 4
+lo == hi = 4 -&gt; minimum is 0
+</code></pre>
 <pre><code class="language-python">def find_min(nums):
     lo, hi = 0, len(nums) - 1
     while lo &lt; hi:
@@ -360,8 +835,21 @@ strong{color:#fff}
             hi = mid
     return nums[lo]
 </code></pre>
+<p><strong>Complexity:</strong> O(log n) time, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "The minimum is where the rotation 'drops'. If the middle is bigger than the last element, the drop must be to the right, so I move <code>lo</code> past mid. Otherwise mid could itself be the minimum, so I set <code>hi = mid</code> and keep it. When the range collapses to one index, that's the minimum. I compare with the right end rather than the left because the left comparison can't distinguish an unrotated array."</p>
+<hr>
 <h3 id="e3-binary-search-on-the-answer-koko-eating-bananas-capacity-to-ship-packages">E3. Binary search on the answer: Koko Eating Bananas / Capacity to Ship Packages</h3>
-<p><strong>Steps:</strong> the answer space is <code>[1, max]</code> (or <code>[max(w), sum(w)]</code> for shipping). <code>feasible(x)</code> is monotonic, so find the smallest feasible x.</p>
+<p><strong>Problem in one sentence (shipping):</strong> packages must ship in order within D days. Find the smallest ship capacity that makes it possible.</p>
+<p><strong>Key insight:</strong> you can't easily compute the answer directly, but you can easily <strong>check</strong> a guess: "with capacity X, how many days do I need?" Bigger capacity never needs more days, so "feasible(X)" is monotonic (<code>F F F T T T</code>). Binary search the smallest feasible X.</p>
+<p><strong>Steps:</strong> the answer space is <code>[1, max]</code> (Koko) or <code>[max(w), sum(w)]</code> (shipping). The lower bound is the heaviest package, because a ship smaller than that can never carry it. The upper bound ships everything in one day.</p>
+<p><strong>Dry run</strong> on <code>weights = [3, 2, 2, 4, 1, 4]</code>, <code>days = 3</code>:</p>
+<pre><code class="language-text">lo  hi  mid  greedy loading with cap = mid       days  feasible?  move
+4   16  10   [3,2,2] [4,1,4]                     2     yes        hi = 10
+4   10  7    [3,2,2] [4,1] [4]                   3     yes        hi = 7
+4   7   5    [3,2] [2] [4,1] [4]                 4     no         lo = 6
+6   7   6    [3,2] [2,4] [1,4]                   3     yes        hi = 6
+lo == hi -&gt; answer 6
+</code></pre>
 <pre><code class="language-python">def ship_within_days(weights, days):
     def feasible(cap):
         need, cur = 1, 0
@@ -380,9 +868,20 @@ strong{color:#fff}
             lo = mid + 1
     return lo
 </code></pre>
-<p>O(n log(sum)). Same shape: Split Array Largest Sum, Minimum Days to Make Bouquets, Magnetic Force Between Balls (maximize the minimum).</p>
+<p><strong>Complexity:</strong> O(n log(sum)) time: each feasibility check is O(n), and there are O(log(sum - max)) checks. O(1) space.</p>
+<p><strong>Same shape:</strong> Split Array Largest Sum, Minimum Days to Make Bouquets, Magnetic Force Between Balls (maximize the minimum, so you search for the <strong>last</strong> true instead of the first).</p>
+<p><strong>Say it in 60 seconds:</strong> "Computing the capacity directly is hard, but checking a given capacity is easy: load packages greedily and count days. More capacity never needs more days, so feasibility is monotonic and I can binary search the smallest feasible capacity. The range starts at the heaviest package, since anything smaller can't carry it, and ends at the total weight, which ships in one day. Each check is O(n) and there are log(sum) checks."</p>
+<hr>
 <h3 id="e4-time-based-key-value-store-oci-favorite">E4. Time Based Key-Value Store (OCI favorite)</h3>
-<p><code>set(key, value, ts)</code> with increasing timestamps; <code>get(key, ts)</code> returns the value with the largest <code>ts' ≤ ts</code>.</p>
+<p><strong>Problem in one sentence:</strong> build a store where <code>set(key, value, ts)</code> records a value at a time, and <code>get(key, ts)</code> returns the value set at the latest time not after <code>ts</code>.</p>
+<p><strong>Key insight:</strong> timestamps for a key arrive in increasing order, so each key's list is already sorted by time. <code>get</code> becomes "find the last entry with timestamp ≤ ts", which is <code>bisect_right</code> minus one.</p>
+<p><strong>Dry run:</strong></p>
+<pre><code class="language-text">set(&quot;foo&quot;, &quot;bar&quot;, 1)      store[&quot;foo&quot;] = [(1, &quot;bar&quot;)]
+get(&quot;foo&quot;, 3)             last ts &lt;= 3 is 1 -&gt; &quot;bar&quot;
+set(&quot;foo&quot;, &quot;bar2&quot;, 4)     store[&quot;foo&quot;] = [(1, &quot;bar&quot;), (4, &quot;bar2&quot;)]
+get(&quot;foo&quot;, 4)             bisect_right(ts=4) = 2, minus 1 -&gt; index 1 -&gt; &quot;bar2&quot;
+get(&quot;foo&quot;, 0)             bisect_right(ts=0) = 0, minus 1 = -1 -&gt; &quot;&quot;
+</code></pre>
 <pre><code class="language-python">class TimeMap:
     def __init__(self):
         self.store = defaultdict(list)   # key -&gt; [(ts, value)] sorted by ts
@@ -392,12 +891,24 @@ strong{color:#fff}
 
     def get(self, key, ts):
         arr = self.store.get(key, [])
-        i = bisect.bisect_right(arr, (ts, chr(127))) - 1
+        i = bisect.bisect_right(arr, ts, key=lambda p: p[0]) - 1   # key= needs Python 3.10+
         return arr[i][1] if i &gt;= 0 else &quot;&quot;
 </code></pre>
-<p>set O(1), get O(log n). Follow-ups: thread safety (lock per key or RW lock); unsorted timestamps (insort, or a sorted container); persistence (append-only log).</p>
+<p>An older version of this page searched with <code>bisect_right(arr, (ts, chr(127)))</code>. That compares values as strings and breaks when a value sorts above <code>chr(127)</code> (any non-ASCII text, for example), so the lookup now compares only the timestamp. On Python older than 3.10, keep a separate list of timestamps per key and bisect that.</p>
+<p><strong>Complexity:</strong> <code>set</code> O(1), <code>get</code> O(log n) for n versions of that key. O(total entries) space.</p>
+<p><strong>Follow-ups:</strong> thread safety (a lock per key, or a read-write lock, see <a href="06_concurrency.html">concurrency</a>). Unsorted timestamps (insert in sorted position with <code>insort</code>, or use a sorted container). Persistence (an append-only log, replayed on restart).</p>
+<p><strong>Say it in 60 seconds:</strong> "Each key maps to a list of (timestamp, value) pairs. Because the problem guarantees increasing timestamps, appending keeps each list sorted, so <code>set</code> is O(1). For <code>get</code>, I binary search for the first timestamp greater than the query and step back one, which gives the latest version at or before that time. If that index is negative, nothing existed yet and I return an empty string. That's O(log n) per get. It's essentially how a multi-version store answers 'what was the value at time T'."</p>
+<hr>
 <h3 id="e5-median-of-two-sorted-arrays-hard-olog-minm-n">E5. Median of Two Sorted Arrays (hard, O(log min(m, n)))</h3>
-<p><strong>Intuition:</strong> partition both arrays so the left halves together hold <code>(m+n+1)//2</code> elements and every left element ≤ every right element. Binary search the cut in the smaller array.</p>
+<p><strong>Problem in one sentence:</strong> find the median of two sorted arrays combined, in logarithmic time.</p>
+<p><strong>Key insight:</strong> the median splits the combined data into a left half and a right half of equal size. Choose how many elements <code>i</code> to take from the smaller array; then the number from the other array is forced: <code>j = half - i</code>. The split is correct when everything on the left is ≤ everything on the right, which you check with just the four elements at the cut. Binary search <code>i</code>.</p>
+<p><strong>Intuition, stated precisely:</strong> partition both arrays so the left halves together hold <code>(m+n+1)//2</code> elements and every left element ≤ every right element. Binary search the cut in the smaller array.</p>
+<p><strong>Dry run</strong> on <code>a = [1, 3]</code>, <code>b = [2]</code> (swapped so <code>a</code> is the shorter: <code>a = [2]</code>, <code>b = [1, 3]</code>, half = 2):</p>
+<pre><code class="language-text">i  j  a_left  a_right  b_left  b_right  valid cut?                     move
+0  2  -inf    2        3       +inf     b_left 3 &lt;= a_right 2? no      lo = 1
+1  1  2       +inf     1       3        2 &lt;= 3 and 1 &lt;= inf, yes
+total 3 is odd -&gt; median = max(a_left, b_left) = max(2, 1) = 2
+</code></pre>
 <pre><code class="language-python">def find_median_sorted_arrays(a, b):
     if len(a) &gt; len(b):
         a, b = b, a
@@ -420,14 +931,27 @@ strong{color:#fff}
         else:
             lo = i + 1
 </code></pre>
+<p><strong>Complexity:</strong> O(log min(m, n)) time, because we binary search the shorter array. O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Merging is O(m + n), but they want logarithmic. The median is defined by a cut that puts half the elements on the left. If I take i from the shorter array, I must take <code>half - i</code> from the other. The cut is right when the largest left element of each array is no bigger than the smallest right element of the other. If a's left side is too big, I move i left; otherwise right. Infinity sentinels handle cuts at the edges. Once valid, the median is the max of the lefts for odd totals, or the average of max-left and min-right for even."</p>
 <hr>
 <h2 id="f-string-essentials">F. String essentials</h2>
+<p>These are ideas to know by name and explain in one or two sentences. Only Encode/Decode is commonly coded in full.</p>
 <ul>
-<li><strong>Palindromes:</strong> expand around center (2n - 1 centers), O(n²). Manacher's is O(n) but rarely required.</li>
-<li><strong>KMP / prefix function:</strong> pattern search in O(n + m). Know the idea: longest proper prefix that is also a suffix.</li>
-<li><strong>Rabin-Karp rolling hash:</strong> substring matching, duplicate substrings. Watch for collisions (double hash or verify).</li>
-<li><strong>Encode/Decode strings:</strong> length-prefix each string <code>len#str</code>. Never use a delimiter that can appear in the data.</li>
+<li><strong>Palindromes:</strong> a palindrome reads the same forwards and backwards. Expand around each center (there are 2n - 1 centers: every character and every gap between characters), which is O(n²). Manacher's algorithm is O(n) but rarely required. Full code is in the <a href="03_dsa_5_dynamic_programming.html">DP file</a>, section F1.</li>
+<li><strong>KMP / prefix function:</strong> pattern search in O(n + m). The idea: for each position in the pattern, precompute the longest proper prefix that is also a suffix. On a mismatch you jump back to that length instead of restarting, so the text pointer never moves backwards. Analogy: if you were reading "ABAB" and hit a mismatch, you already know the last "AB" could be the start of a new match.</li>
+<li><strong>Rabin-Karp rolling hash:</strong> turn each window of the text into a number, and update it in O(1) as the window slides (remove the left character's contribution, add the right one). Used for substring matching and finding duplicate substrings. Watch for collisions: two different strings can share a hash, so use a double hash or verify the match.</li>
+<li><strong>Encode/Decode strings:</strong> length-prefix each string as <code>len#str</code>. Never use a delimiter that can appear in the data.</li>
 </ul>
+<h3 id="f1-encode-and-decode-strings">F1. Encode and Decode Strings</h3>
+<p><strong>Problem in one sentence:</strong> turn a list of strings into one string and back, where the strings may contain any character.</p>
+<p><strong>Key insight:</strong> a delimiter alone fails because the data can contain it. Writing the <strong>length</strong> first tells the decoder exactly how many characters to read, so a <code>#</code> inside the data is harmless. This is how many network protocols frame messages.</p>
+<p><strong>Dry run</strong> on <code>["ab", "c#d"]</code>:</p>
+<pre><code class="language-text">encode -&gt; &quot;2#ab3#c#d&quot;
+decode:
+i=0: next '#' at 1, length = &quot;2&quot; -&gt; read s[2:4] = &quot;ab&quot;, i = 4
+i=4: next '#' at 5, length = &quot;3&quot; -&gt; read s[6:9] = &quot;c#d&quot;, i = 9
+i = 9 = len, done -&gt; [&quot;ab&quot;, &quot;c#d&quot;]
+</code></pre>
 <pre><code class="language-python">def encode(strs):
     return &quot;&quot;.join(f&quot;{len(s)}#{s}&quot; for s in strs)
 
@@ -440,8 +964,35 @@ def decode(s):
         i = j + 1 + n
     return out
 </code></pre>
+<p><strong>Complexity:</strong> O(total characters) for both directions.</p>
+<p><strong>Say it in 60 seconds:</strong> "Any delimiter can appear inside the data, so I use length-prefixing. Each string becomes its length, a hash sign, then the string. The decoder reads digits up to the first hash, parses the length, and slices exactly that many characters, so a hash inside the payload is never misread. Then it continues from just after the slice. It's linear in the total size, and it's the same framing idea used by many wire protocols."</p>
 <hr>
 <h2 id="g-kadane-max-subarray-and-friends">G. Kadane (max subarray) and friends</h2>
+<h3 id="the-idea_5">The idea</h3>
+<p><strong>Kadane's algorithm</strong> finds the contiguous subarray with the largest sum. At each element you make one decision: extend the best subarray ending at the previous element, or start fresh here. You start fresh when the running sum has become a burden (negative).</p>
+<p><strong>Analogy:</strong> walking with a backpack of coins, some of them debts. If the backpack's total value becomes negative, you're better off dropping it and starting with an empty one at the next step.</p>
+<h3 id="when-to-recognise-it_5">When to recognise it</h3>
+<ul>
+<li>"Maximum (or minimum) sum contiguous subarray".</li>
+<li>"Best time to buy and sell once" is the same idea on price differences.</li>
+<li>Variants: maximum product subarray, circular maximum subarray.</li>
+</ul>
+<h3 id="g1-maximum-subarray">G1. Maximum Subarray</h3>
+<p><strong>Problem in one sentence:</strong> find the largest sum of any non-empty contiguous subarray.</p>
+<p><strong>Key insight:</strong> the best subarray ending at position i is either just <code>x</code> or the best ending at i-1 plus <code>x</code>. Keep the better one, and track the best seen overall.</p>
+<p><strong>Dry run</strong> on <code>[-2, 1, -3, 4, -1, 2, 1, -5, 4]</code>:</p>
+<pre><code class="language-text">x    cur = max(x, cur + x)   best
+-2   -2 (start)              -2
+1    max(1, -1) = 1          1
+-3   max(-3, -2) = -2        1
+4    max(4, 2) = 4           4
+-1   3                       4
+2    5                       5
+1    6                       6
+-5   1                       6
+4    5                       6
+answer 6 (subarray [4, -1, 2, 1])
+</code></pre>
 <pre><code class="language-python">def max_subarray(nums):
     best = cur = nums[0]
     for x in nums[1:]:
@@ -449,15 +1000,21 @@ def decode(s):
         best = max(best, cur)
     return best
 </code></pre>
-<p>Max product subarray: track both <code>max</code> and <code>min</code> (a negative flips them). Circular: <code>max(kadane, total - min_subarray)</code> unless all are negative.</p>
+<p><strong>Complexity:</strong> O(n) time, O(1) space.</p>
+<p><strong>Friends:</strong>
+- <strong>Max product subarray:</strong> track both <code>max</code> and <code>min</code> ending here, because multiplying by a negative number turns the smallest product into the largest. Full code idea is in the <a href="03_dsa_5_dynamic_programming.html">DP file</a>, section B7.
+- <strong>Circular:</strong> the answer is <code>max(kadane, total - min_subarray)</code> unless all numbers are negative (then <code>total - min_subarray</code> would be an empty subarray, so just return kadane). The wrap-around subarray is "everything except a middle chunk", and removing the most negative middle chunk maximises it.</p>
+<p><strong>Say it in 60 seconds:</strong> "At each element, the best subarray ending here is either the element alone or the element added to the best subarray ending just before. If the previous running sum is negative, it only hurts, so I restart. I keep the overall best as I go. I initialise with the first element rather than zero so an all-negative array returns its largest element. O(n) time, O(1) space."</p>
 <hr>
-<h2 id="common-mistakes">Common mistakes</h2>
+<h2 id="common-mistakes-the-whole-page">Common mistakes (the whole page)</h2>
 <ul>
-<li>Sliding window with negative numbers (wrong pattern).</li>
+<li>Sliding window with negative numbers (wrong pattern). Use prefix sums and a hashmap.</li>
 <li>Binary search infinite loops: <code>lo = mid</code> with <code>mid = (lo + hi) // 2</code> when <code>hi = lo + 1</code>.</li>
-<li>Mutating a dict while iterating it.</li>
+<li>Mutating a dict while iterating it. Python raises <code>RuntimeError: dictionary changed size during iteration</code>. Iterate over <code>list(d.items())</code> if you must modify.</li>
 <li>Forgetting <code>count[0] = 1</code> in prefix-sum counting.</li>
-<li>Using <code>list.pop(0)</code> in a loop (O(n²)).</li>
+<li>Using <code>list.pop(0)</code> in a loop (O(n²)). Use <code>collections.deque</code>.</li>
+<li>Forgetting to skip duplicates in 3Sum-style problems.</li>
+<li>Recording the window answer in the wrong place (after the shrink loop for "longest", inside it for "shortest").</li>
 </ul></main>
 </div>
 

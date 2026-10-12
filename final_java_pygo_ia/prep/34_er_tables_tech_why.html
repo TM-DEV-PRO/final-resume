@@ -40,40 +40,351 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+PyGo IA</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/prep/34_er_tables_tech_why.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#er-diagrams-table-design-why-each-tech-all-resume-projects">ER diagrams · table design · why each tech (all resume projects)</a>
-<a class="lvl2" href="#how-to-answer-in-interviews">How to answer in interviews</a>
-<a class="lvl1" href="#1-impact-analytics-assortsmart-clickhouse-thin-pg">1. Impact Analytics — AssortSmart (ClickHouse + thin PG)</a>
-<a class="lvl1" href="#2-uber-frm-mysql-scoping-service-11-models">2. Uber FRM — MySQL scoping service (11 models)</a>
-<a class="lvl1" href="#3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu (+ ANZ Mobility separate)</a>
-<a class="lvl1" href="#4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#er-diagrams-table-design-and-why-each-tech-all-resume-projects">ER diagrams, table design and why each tech (all resume projects)</a>
+<a class="lvl2" href="#reading-the-tags-on-this-page">Reading the tags on this page</a>
+<a class="lvl2" href="#words-you-need-on-this-page">Words you need on this page</a>
+<a class="lvl2" href="#how-to-answer-schema-questions-in-interviews">How to answer schema questions in interviews</a>
+<a class="lvl1" href="#1-impact-analytics-assortsmart-clickhouse-plus-thin-postgresql">1. Impact Analytics: AssortSmart (ClickHouse plus thin PostgreSQL)</a>
+<a class="lvl1" href="#2-uber-frm-mysql-scoping-service-on-soadb">2. Uber FRM: MySQL scoping service on SOADB</a>
+<a class="lvl1" href="#3-uber-eats-menu-ingestion-and-anz-mobility-separately">3. Uber Eats Menu ingestion (and ANZ Mobility, separately)</a>
+<a class="lvl1" href="#4-masters-india-gst-e-invoicing">4. Masters India: GST e-invoicing</a>
 <a class="lvl1" href="#5-geeksforgeeks">5. GeeksforGeeks</a>
-<a class="lvl2" href="#cheat-sheet-one-problem-per-project">Cheat sheet — one problem per project</a>
+<a class="lvl2" href="#cheat-sheet-one-data-problem-per-project">Cheat sheet: one data problem per project</a>
+<a class="lvl2" href="#practice-drill">Practice drill</a>
 <a class="lvl2" href="#study-checklist">Study checklist</a></nav>
-<main><h1 id="er-diagrams-table-design-why-each-tech-all-resume-projects">ER diagrams · table design · why each tech (all resume projects)</h1>
-<p>One place to whiteboard <strong>database shape</strong> and <strong>tech justification</strong> for every project on the current PDFs.<br>
-Honesty: MEASURED design / MEASURED code / HISTORICAL / DESIGN. Do not invent IA TPS.</p>
-<p><strong>Need columns + API contracts?</strong> → <a href="35_table_schemas_api_design.html"><code>35_table_schemas_api_design.md</code></a> (IA CH DDL columns, FRM ORM/routes, Menu/Masters/GFG payloads).</p>
-<p><strong>Sources:</strong> FRM ORM (<code>11_uber_frm_deep_dive</code>), CH DDL Phase-1 (<code>29_…</code>), Masters/GFG packs, Menu packs.<br>
-<strong>Industry alignment (not your metrics):</strong> ClickHouse docs on ReplacingMergeTree / partition swaps; Flink keyed-state dedupe + Kafka ingest (common production pattern).</p>
-<p>HTML: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.html</code></a></p>
+<main><h1 id="er-diagrams-table-design-and-why-each-tech-all-resume-projects">ER diagrams, table design and why each tech (all resume projects)</h1>
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> for every project on the Java + Python + Go resume, the shape of the data (which stores, which tables, how they join) and why each technology fits that shape, with the alternative we did not pick.</li>
+<li><b>When to read it:</b> before any system design, "walk me through your schema", or "why ClickHouse / MySQL / Kafka?" round.</li>
+<li><b>What to memorise:</b> one ER sketch per project (IA rollups and decision outputs, FRM <code>level_mapping</code> spine, Masters invoice to IRP registration, Menu Kafka to Flink to catalog, GFG votes), and one "problem, why this tech, what we rejected" sentence per technology.</li>
+<li><b>Column-level detail and API contracts</b> live in the companion page <a href="35_table_schemas_api_design.html">35_table_schemas_api_design.md</a>.</li>
+</ul>
+</div>
+<p>HTML version: <a href="34_er_tables_tech_why.html"><code>34_er_tables_tech_why.html</code></a></p>
+<p><strong>Sources behind this page:</strong> FRM ORM models and deep dive (<a href="11_uber_frm_deep_dive.html"><code>11_uber_frm_deep_dive.md</code></a>), the IA ClickHouse DDL Phase-1 notes (<a href="29_ia_ch_ddl_phase1_source.html"><code>29_ia_ch_ddl_phase1_source.md</code></a>), the IA rollup and copier notes (<a href="42_clickhouse_rollup_migration.html"><code>42_clickhouse_rollup_migration.md</code></a>), the IA bullet defense (<a href="43_ia_bullet_defense.html"><code>43_ia_bullet_defense.md</code></a>), the Masters / GFG deep dive (<a href="12_masters_gfg_deep_dive.html"><code>12_masters_gfg_deep_dive.md</code></a>) and the Menu deep dive (<a href="14_uber_menu_deep_dive.html"><code>14_uber_menu_deep_dive.md</code></a>). Industry notes (ClickHouse docs on ReplacingMergeTree and partition operations, the common Flink keyed-state dedupe pattern) are general teaching, not my metrics.</p>
 <hr>
-<h2 id="how-to-answer-in-interviews">How to answer in interviews</h2>
+<h2 id="reading-the-tags-on-this-page">Reading the tags on this page</h2>
+<p>Every schema and number here carries a tag so you know how hard you can lean on it.</p>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>What it means</th>
+<th>How to say it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MEASURED</strong></td>
+<td>There is a log, a document or code behind it (for schemas: the ORM models or a validated DDL file).</td>
+<td>State it plainly.</td>
+</tr>
+<tr>
+<td><strong>MEASURED design</strong></td>
+<td>A written, validated design document exists, but it has not run under production load.</td>
+<td>"The design specifies..."</td>
+</tr>
+<tr>
+<td><strong>TARGET</strong></td>
+<td>A design goal.</td>
+<td>"We were targeting..."</td>
+</tr>
+<tr>
+<td><strong>ESTIMATED</strong></td>
+<td>Arithmetic I can show.</td>
+<td>"Roughly, derived from..."</td>
+</tr>
+<tr>
+<td><strong>HISTORICAL</strong></td>
+<td>From my past work records, no artifact in this repo.</td>
+<td>State it, keep it qualitative if pushed for raw data.</td>
+</tr>
+<tr>
+<td><strong>LOGICAL</strong></td>
+<td>The shape of the data as I would draw it on a whiteboard. Not the literal production table names.</td>
+<td>"Logically, the data looked like..."</td>
+</tr>
+<tr>
+<td><strong>ILLUSTRATIVE</strong></td>
+<td>A teaching example I wrote to explain a mechanism. Column names and sample values are made up.</td>
+<td>"To illustrate..." Never present it as the production schema.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="words-you-need-on-this-page">Words you need on this page</h2>
+<ul>
+<li><strong>ER diagram (entity-relationship diagram).</strong> A drawing of the things a system stores (entities, usually tables) and how they connect. Think of a family tree for data: boxes are tables, lines say "one of these has many of those".</li>
+<li><strong>Primary key (PK).</strong> The column that uniquely identifies a row, like a passport number for that row.</li>
+<li><strong>Natural key.</strong> A key built from the real-world content itself (for example a hash of the question text) instead of a random number. The same input always produces the same key, so re-inserting the same thing finds the existing row instead of making a duplicate.</li>
+<li><strong>Foreign key (FK).</strong> A column that points at another table's primary key. Some systems enforce it in the database. Others, like the FRM scoping service, keep it as a "logical join" that the application respects.</li>
+<li><strong>Index.</strong> A sorted lookup structure that lets the database find rows without reading the whole table, like the index at the back of a book.</li>
+<li><strong>OLTP vs OLAP.</strong> OLTP (online transaction processing) is many small reads and writes of individual rows, like a bank ledger. OLAP (online analytical processing) is a few huge reads that scan and summarise millions of rows, like a quarterly sales report.</li>
+<li><strong>Row store vs columnar store.</strong> A row store (MySQL, PostgreSQL) keeps each row together on disk, which is great for "fetch or update this one invoice". A columnar store (ClickHouse, BigQuery) keeps each column together, which is great for "sum revenue over 250 million rows" because it only reads the columns it needs.</li>
+<li><strong>Partition.</strong> A physical slice of a table, usually by time (a month, a season, a tax quarter). Queries that filter on the partition key skip every other slice. You can also drop or replace one slice without touching the others.</li>
+<li><strong>MergeTree.</strong> ClickHouse's main table engine. Data is written in sorted chunks ("parts") that a background process merges together, like shuffling small sorted piles of cards into bigger sorted piles.</li>
+<li><strong>ReplacingMergeTree (RMT).</strong> A ClickHouse table type that keeps only the newest version of rows that share the same sort key. Think of a notebook where you never erase. You write the new value below, and a cleaner later crosses out the old lines. Until the cleaner runs, you read with <code>argMax</code> or <code>FINAL</code> to see only the newest line.</li>
+<li><strong>argMax.</strong> A ClickHouse function: "give me the value of column X from the row where column Y is largest". <code>argMax(status, event_seq)</code> returns the latest status.</li>
+<li><strong>Append-only / insert-only.</strong> You never update or delete a row in place. A change is a new row. Current state is computed by a view over the history.</li>
+<li><strong>Sharding.</strong> Splitting one logical dataset across separate physical tables, schemas or databases by a key (tenant, tax quarter). Each shard is smaller and hotter or colder independently.</li>
+<li><strong>Idempotency.</strong> Doing the same operation twice has the same effect as doing it once. A pressed-twice lift button still takes you to one floor.</li>
+</ul>
+<hr>
+<h2 id="how-to-answer-schema-questions-in-interviews">How to answer schema questions in interviews</h2>
 <ol>
-<li>Draw the <strong>ER / store map</strong> first (boxes + join keys).  </li>
-<li>Name <strong>2–3 critical tables</strong> and their PK / natural key.  </li>
-<li>For each major tech: <strong>problem → why this tech → rejected alternative</strong>.  </li>
-<li>Tag numbers MEASURED / TARGET / HISTORICAL.</li>
+<li><strong>Draw the store map first.</strong> Boxes for each store (MySQL, ClickHouse, Kafka, Redis) and arrows for who writes and who reads.</li>
+<li><strong>Name 2-3 critical tables</strong> and say their primary key or natural key out loud.</li>
+<li><strong>For each major technology, say one sentence:</strong> the problem, why this tech fits the data shape, and what we rejected.</li>
+<li><strong>Tag numbers</strong> MEASURED, TARGET, ESTIMATED or HISTORICAL as you say them.</li>
 </ol>
 <hr>
-<h1 id="1-impact-analytics-assortsmart-clickhouse-thin-pg">1. Impact Analytics — AssortSmart (ClickHouse + thin PG)</h1>
-<p><strong>Status:</strong> building (load test pending). Schema = MEASURED design (DDL Phase-1).</p>
-<h3 id="problem-we-faced">Problem we faced</h3>
+<h1 id="1-impact-analytics-assortsmart-clickhouse-plus-thin-postgresql">1. Impact Analytics: AssortSmart (ClickHouse plus thin PostgreSQL)</h1>
+<p><strong>In plain English.</strong> AssortSmart is a retail merchandise planning product. Planners at a retailer decide which articles (products) to keep, drop or add each season. They look at huge pivot tables of sales, inventory and forecasts, and the AI engine scores every article-season (one product in one selling season) to recommend Keep or Drop. The data problem has two halves. The read side is enormous analytical scans, so it belongs in a columnar database. The control side (users, roles, which hierarchy a user may see) is small and must be transactional, so it belongs in PostgreSQL.</p>
+<p>There are two different schema stories at IA. Keep them apart in an interview.</p>
+<ol>
+<li><strong>The resume-level stores</strong> (what the PDF bullets rest on): the 2.11B-row ClickHouse master that agents never query directly, the six ClickHouse rollup tables that made planner pivots fast, the AI decision outputs written through ReplacingMergeTree with a <code>config_hash</code> on every row, and PostgreSQL for identity, UAM (User Access Management) and roles, fronted by Redis for auth.</li>
+<li><strong>The Agentic Cluster Module Phase-1 DDL design</strong> (63 tables, 8 layers). This is a validated design document for the Cluster Recommendation Copilot. It is verbal depth only, not a resume bullet, and it has no runtime evidence yet (load test planned at bring-up). Older prep treated it as "the one resume ClickHouse bullet". The current PDF does not, so present it as "a design I wrote and validated", not as production.</li>
+</ol>
+<h3 id="the-problem-we-faced">The problem we faced</h3>
 <ul>
-<li>Planner probes on shared BigQuery: <strong>1–20s+</strong> variance — too jittery for agent tools.  </li>
-<li>Incumbent product <strong>updates/deletes in place</strong>; ClickHouse <strong>mutations</strong> are async and degrade under many small UPDATEs (industry: CH mutations are not OLTP).  </li>
-<li>Need version history / undo semantics for planning without mutation queues.</li>
+<li><strong>Planner pivots were slow on PostgreSQL.</strong> We ran proof-of-concept comparisons of PostgreSQL vs ClickHouse. ClickHouse won the large analytical reads. PostgreSQL kept the thin metadata, UAM and roles.</li>
+<li><strong>Agent probes on shared BigQuery were jittery.</strong> The Phase-1 design notes record planner probes on shared BigQuery varying from about 1 second to 20+ seconds, which is too unpredictable for an AI agent tool loop. BigQuery stays the upstream company warehouse, not the runtime store for agents.</li>
+<li><strong>The incumbent product updates and deletes rows in place.</strong> ClickHouse "mutations" (its <code>ALTER TABLE ... UPDATE / DELETE</code>) run asynchronously and rewrite whole data parts, so they degrade under many small updates. ClickHouse is not an OLTP database. We needed a way to correct data without a mutation queue.</li>
+<li><strong>LLMs must not touch the database.</strong> A model that can write SQL against a 2.11B-row table is a runaway-query, connection-pool and prompt-injection risk.</li>
 </ul>
-<h3 id="why-each-tech">Why each tech</h3>
+<h3 id="resume-level-store-map-draw-this-first">Resume-level store map (draw this first)</h3>
+<div class="mermaid">erDiagram
+  TENANT ||--o{ APP_USER : "has members"
+  APP_USER ||--o{ ROLE_ASSIGNMENT : "resolved in Postgres"
+  ROLE_ASSIGNMENT }o--|| HIERARCHY_SCOPE : "UAM grants"
+  CH_MASTER ||--o{ ROLLUP_TABLE : "pre-aggregated into six"
+  CH_MASTER ||--o{ JSON_PAYLOAD : "context packed for LLM"
+  JSON_PAYLOAD ||--o{ DECISION_OUTPUT : "scored rows"
+  RUN_CONFIG ||--o{ DECISION_OUTPUT : "config_hash stamped"
+  HIERARCHY_SCOPE ||--o{ ROLLUP_TABLE : "filters reads"
+</div>
+<p><em>What to notice:</em> PostgreSQL entities (tenant, user, role, hierarchy scope) are small and relational. ClickHouse entities (master, rollups, decision outputs) are huge and append-friendly. The LLM only ever sees <code>JSON_PAYLOAD</code>, never <code>CH_MASTER</code>. Entity names here are logical (ILLUSTRATIVE), not physical table names, except the six rollups below which are real.</p>
+<p><strong>Walking through it.</strong> The ClickHouse master holds the large fact data (2.11 billion rows, MEASURED). Planner screens never group that table on every request. Instead a load job pre-aggregates it into six rollup tables, and screens read those. The AI batch reads the master once per pass, packs per-article context into JSON payloads, and sends the payloads to the model. Scored rows come back and are inserted into a ReplacingMergeTree table with the frozen <code>config_hash</code> of the run. Every request is first authenticated (Redis cache in front of Firebase Admin, then JWT / Google OIDC), and the user's roles and hierarchy scope are resolved from PostgreSQL. That scope filters what ClickHouse rows the user may see.</p>
+<h3 id="the-six-rollup-tables-measured-names">The six rollup tables (MEASURED names)</h3>
+<p>All six are ClickHouse MergeTree tables, all <code>PARTITION BY season_code</code>. The daily source grain is SKU by store by date, which planners cannot group on every chart.</p>
+<table>
+<thead>
+<tr>
+<th>Grain</th>
+<th>Product (keeps SKU dimensions)</th>
+<th>Store (no SKU, two-pass totals)</th>
+<th>Attr (attribute unpivot, about 5x product weekly)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Season</td>
+<td><code>product_season</code></td>
+<td><code>store_season</code></td>
+<td><code>attr_season</code></td>
+</tr>
+<tr>
+<td>Weekly</td>
+<td><code>product_weekly</code></td>
+<td><code>store_weekly</code></td>
+<td><code>attr_weekly</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Why partition by season.</strong> Planners almost always look at one season. Partition pruning means a season filter skips every other season. A season is also the unit of rebuild and of copy: the Go copier checkpoints per season, and a failed season is fixed by <code>DROP PARTITION</code> then recopy (not an atomic swap with live readers).</li>
+<li><strong>Why attr weekly is the biggest.</strong> "Attr" is an unpivot: each product row becomes one row per attribute pair (via <code>ARRAY JOIN</code>). Attr weekly for two seasons is 4.09B rows (2,779,317,472 + 1,311,108,195). Product weekly for the same two seasons is about 839M.</li>
+<li><strong>Why store totals still match.</strong> Store and attr tables drop SKU-level leftovers and re-weight with two-pass sums, so the store total equals the sum of SKUs. The team validated product vs store vs attr sums at the same filters.</li>
+</ul>
+<h3 id="decision-outputs-a2-and-a3">Decision outputs (A2 and A3)</h3>
+<p>The Keep/Drop, Missed Opportunities and Top Style pipelines write scored rows through the engine's insert path onto a ReplacingMergeTree table. A version column means a retried or overlapping batch that lands twice collapses to one row per article. Reads use <code>argMax</code> or <code>LIMIT 1 BY</code>, not <code>OPTIMIZE FINAL</code> at runtime. Every output row carries the frozen <code>config_hash</code> (SHA-256 of guardrails, parameters, prompts and catalog), so any number can be traced to the exact configuration that produced it. Say this carefully: Keep/Drop defaults to CSV output first, and the ClickHouse publish is a separate operations step.</p>
+<h3 id="why-each-tech-resume-level">Why each tech (resume level)</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>The problem</th>
+<th>Why it fits the data shape</th>
+<th>Alternative and why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ClickHouse</strong></td>
+<td>Huge planner pivots and per-pass AI context reads over billions of rows</td>
+<td>Columnar OLAP. Only reads the columns a pivot needs, compresses well, scans fast. The 250M-row pivot POC went from 189 seconds to 12.3 seconds (PDF rounds to 12s, about 15.5x, MEASURED).</td>
+<td>PostgreSQL for the heavy grids (it lost the POC on large analytical reads).</td>
+</tr>
+<tr>
+<td><strong>Six MergeTree rollups</strong></td>
+<td>Grouping SKU by store by date on every chart is the wrong cost model</td>
+<td>Pay once at load time, read cheap at query time. Partition by season matches how planners filter.</td>
+<td>Querying daily facts with <code>FINAL</code> on every request (<code>FINAL</code> also cannot use projections).</td>
+</tr>
+<tr>
+<td><strong>ReplacingMergeTree for AI outputs</strong></td>
+<td>Retries and overlapping batches can write the same article twice</td>
+<td>Keeps the newest version per key, so writes are eventually consistent and retry-safe without UPDATEs</td>
+<td>Plain MergeTree (duplicates). ClickHouse <code>ALTER UPDATE</code> per row (mutation storm).</td>
+</tr>
+<tr>
+<td><strong>JSON payloads instead of a SQL tool</strong></td>
+<td>LLM querying a 2.11B-row master</td>
+<td>Model gets pre-computed context. Math stays deterministic. No injection or runaway query surface.</td>
+<td>Giving the agent a database tool.</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL (thin)</strong></td>
+<td>Identity, UAM, roles need real ACID transactions</td>
+<td>Small, relational, transactional. Exactly what a row store is for.</td>
+<td>Putting identity in ClickHouse (no transactions, eventual consistency). Putting planner facts in Postgres forever (lost the POC).</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>Hitting Firebase / OIDC on every API call is slow</td>
+<td>Caches verified tokens in front of the auth waterfall. A miss falls through to the real check. It does not fail open.</td>
+<td>Calling the identity provider on every request.</td>
+</tr>
+<tr>
+<td><strong>BigQuery</strong></td>
+<td>Company historical truth</td>
+<td>Upstream feed into ClickHouse</td>
+<td>Using BigQuery as the runtime agent store (1 to 20+ second jitter).</td>
+</tr>
+<tr>
+<td><strong>Go / Gin</strong></td>
+<td>Multi-tenant HTTP platform at 10k peak RPS</td>
+<td>Compiled, cheap goroutines, Wire compile-time dependency injection, native h2c (HTTP/2 without TLS inside the trust boundary)</td>
+<td>A reverse proxy plus a slower runtime.</td>
+</tr>
+<tr>
+<td><strong>Python / FastAPI / LangGraph</strong></td>
+<td>Agent plane (Ask Iris, batch scoring)</td>
+<td>Python is where the LLM ecosystem lives. LangGraph gives an explicit state machine for the supervisor and the 3-attempt evaluator.</td>
+<td>One opaque prompt chain.</td>
+</tr>
+<tr>
+<td><strong>Datadog / LangSmith</strong></td>
+<td>Different debugging questions</td>
+<td>Datadog for platform traces. LangSmith for Ask Iris agent traces (LangSmith is Ask Iris only on the resume, not the Keep/Drop batch).</td>
+<td>One tool for everything.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="design-decisions-explained">Design decisions, explained</h3>
+<p><strong>Decision 1: ClickHouse for reads, PostgreSQL for control data.</strong>
+- <em>What:</em> Large analytical facts and rollups live in ClickHouse. Users, roles, hierarchy access and metadata live in PostgreSQL.
+- <em>Why:</em> The two halves have opposite data shapes. Pivots scan hundreds of millions of rows and touch a few columns. Role checks touch one row and must be transactionally correct.
+- <em>How:</em> POCs compared both. ClickHouse won large reads. PostgreSQL kept UAM and roles. Redis fronts the auth path.
+- <em>Alternatives:</em> All-PostgreSQL (lost the pivot POC). All-ClickHouse (no real transactions for permission changes).
+- <em>Trade-off:</em> Two databases to keep consistent. Tenant isolation has to be enforced across both (C3 on the resume). Isolation is access control, not encryption.
+- <em>What I'd do differently:</em> Write down the cross-store consistency rules (which side is the source of truth for each entity) on day one instead of discovering them during migration.</p>
+<p><strong>Decision 2: Pre-aggregate into six rollups instead of grouping on request.</strong>
+- <em>What:</em> Six MergeTree tables (product, store, attr by season and weekly).
+- <em>Why:</em> The 250M-row pivot went from 189 seconds to 12 seconds (15.5x, query time).
+- <em>How:</em> Generated load SQL. Weekly builds are sliced one fiscal week per <code>INSERT SELECT</code> with memory and disk-spill caps, because a whole-season weekly aggregate needed about 170GB of memory and failed even at 80GB and 200GB caps.
+- <em>Alternatives:</em> Materialized views on every insert (harder to rebuild at a known watermark). Querying raw daily facts (too slow).
+- <em>Trade-off:</em> Rollups are only as fresh as the last build. Load cost moves from query time to build time.
+- <em>What I'd do differently:</em> Execute the incremental <code>REPLACE PARTITION</code> design (written, not run) so a rebuild never exposes a half-loaded season to readers.</p>
+<p>Say this carefully: 15.5x is query time (pivots). The 170GB OOM fix is load time (weekly builds). One did not cause the other.</p>
+<p><strong>Decision 3: AI outputs on ReplacingMergeTree, never UPDATE.</strong>
+- <em>What:</em> Scored rows are inserted. Corrections and retries are new versions.
+- <em>Why:</em> ClickHouse mutations are slow and asynchronous. Batches can land twice.
+- <em>How:</em> Version column. Read latest with <code>argMax</code> or <code>LIMIT 1 BY</code>. On an LLM timeout the precomputed deterministic score is written instead, so the run keeps going.
+- <em>Alternatives:</em> MergeTree plus a dedupe job. A transactional database for outputs (cannot join cheaply with the analytical data).
+- <em>Trade-off:</em> Until background merges run, raw reads can see two versions, so every reader must use the latest-version pattern.
+- <em>What I'd do differently:</em> Wrap the latest-version read in a named view from the start so no reader forgets it.</p>
+<h3 id="agentic-cluster-module-phase-1-ddl-design-verbal-depth-only">Agentic Cluster Module, Phase-1 DDL design (verbal depth only)</h3>
+<div class="callout warn">
+<p><b>Say this carefully.</b> This 63-table design is for the Cluster Recommendation Copilot, which is verbal depth and not a resume bullet. It is MEASURED design: syntax-validated on ClickHouse 25.12, four adversarial review passes, 58 named SQL operations mapped. It has <b>zero runtime evidence</b> (load test at bring-up). Do not quote production latency from it. The approval and write-back flow in this design is not a shipped human-review queue, and the IA resume makes no HITL (human-in-the-loop) claim. Omit the old "624 columns" figure: it is not on the source page. If someone says "60 tables", the overview abbreviated it; the DDL creates 63 including 7 stage twins.</p>
+</div>
+<p><strong>The one idea: never erase.</strong> The incumbent product updates rows in place. This design bans that on the hot path. Facts and cubes arrive as whole-partition swaps (build a "stage twin" table, then <code>REPLACE PARTITION</code>). Decisions arrive as append-only events. Approvals mint immutable snapshots. "Current state" is always a view over history. A stage twin is a copy of a table with the same structure where you build the new version of a partition offline before swapping it in, like rehearsing on a spare stage before moving the set onto the main one.</p>
+<p><strong>Inventory (MEASURED design):</strong> 63 tables including 7 stage twins, 8 layers, 5 dictionaries (store, hierarchy, fiscal, channel, sister-store, plus <code>dict_user</code> at bring-up), 19 views, 4 roles / 3 profiles / 2 quotas. The agent database profile is <code>readonly=1</code>, so the exploring surface physically cannot write. Service roles are INSERT-only on the tables they own.</p>
+<p>The design uses four storage patterns, named P1 to P4 in the notes:</p>
+<ul>
+<li><strong>P1, partition swap:</strong> MergeTree plus stage twin plus <code>REPLACE PARTITION</code>. Used for facts and cubes.</li>
+<li><strong>P2, ReplacingMergeTree plus dictionaries:</strong> used for slowly changing dimensions (stores, hierarchy, fiscal calendar).</li>
+<li><strong>P3, append-only status events:</strong> status is a stream of events, and the latest status is <code>argMax(event_seq)</code> in a view.</li>
+<li><strong>P4, immutable ledger / snapshot:</strong> written once, never changed. Used for watermarks, approvals, outcomes, telemetry.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Pattern</th>
+<th>What it holds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>L0 facts plus ledger</td>
+<td>P1 partition swap, P4 ledger</td>
+<td>Ingested facts (sales, inventory, forecast) and sync watermarks</td>
+</tr>
+<tr>
+<td>Grounding dimensions</td>
+<td>P2 RMT plus dictionaries</td>
+<td>Store, hierarchy, fiscal calendar</td>
+</tr>
+<tr>
+<td>L1 cubes plus caches</td>
+<td>P1 / P2</td>
+<td>Planner rollups, significance caches</td>
+</tr>
+<tr>
+<td>PostgreSQL mirrors (transitional)</td>
+<td>EXCHANGE / swap</td>
+<td>Read models bridging from the incumbent while migrating</td>
+</tr>
+<tr>
+<td>Decision plane</td>
+<td>P2 / P3 / P4</td>
+<td>Cluster configs, runs, status events, approvals</td>
+</tr>
+<tr>
+<td>Outcome loop</td>
+<td>P4 / P1</td>
+<td>Immutable outcomes</td>
+</tr>
+<tr>
+<td>Write-back (transitional)</td>
+<td>P3 status</td>
+<td>Wire back to the incumbent product</td>
+</tr>
+<tr>
+<td>Telemetry</td>
+<td>P4</td>
+<td>Probe logs</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-text"> tenant_db (one ClickHouse database per retailer)
+   |
+   +-- fact_* / cube_*   --P1--  stage twin, then REPLACE PARTITION
+   +-- dim_* / dict_*    --P2--  ReplacingMergeTree(version), read with FINAL / argMax
+   +-- decision_event_*  --P3--  append-only, v_* views = argMax(event_seq)
+   +-- approval_snapshot --P4--  immutable
+   +-- telemetry_*       --P4--  append-only
+
+ thin Postgres (separate):
+   user &gt;--&lt; membership &gt;--&lt; tenant
+   tenant --&lt; workflow_state / feature_flags
+</code></pre>
+<p><em>What to notice:</em> nothing in the ClickHouse half is ever updated in place. Every arrow into a table is an INSERT.</p>
+<div class="mermaid">erDiagram
+  TENANT ||--o{ CH_DATABASE : "one DB per tenant"
+  CH_DATABASE ||--|{ FACT_LAYER : "P1 swap"
+  CH_DATABASE ||--|{ DIM_LAYER : "P2 RMT"
+  CH_DATABASE ||--|{ DECISION_EVENTS : "P3 append"
+  DECISION_EVENTS ||--o{ ARGMAX_VIEW : "latest state"
+  PG_META ||--o{ APP_USER : "identity"
+  PG_META ||--o{ WORKFLOW : "ACID metadata"
+</div>
+<p><em>What to notice:</em> the conceptual layers, not physical tables. Use this when asked "how would you model mutable planning data in an append-only engine?"</p>
+<p><strong>Industry note (general teaching).</strong> ReplacingMergeTree deduplicates rows with the same <code>ORDER BY</code> key during background merges. Correctness at query time needs <code>FINAL</code> or <code>argMax</code>. That matches the "views over history" doctrine (<a href="https://clickhouse.com/docs/guides/replacing-merge-tree">ClickHouse ReplacingMergeTree guide</a>).</p>
+<p><strong>Why each tech in the Cluster Module design</strong> (design reasoning, not shipped claims):</p>
 <table>
 <thead>
 <tr>
@@ -85,286 +396,193 @@ Honesty: MEASURED design / MEASURED code / HISTORICAL / DESIGN. Do not invent IA
 </thead>
 <tbody>
 <tr>
-<td><strong>ClickHouse</strong> (per-tenant)</td>
-<td>Slow / variance-heavy agent reads; huge pivots</td>
-<td>Columnar OLAP; pivot POC <strong>250M 189s→12.3s</strong> (~15.5× MEASURED)</td>
-<td>PG-only for heavy grids; CH <code>ALTER UPDATE</code> per cell</td>
+<td>ClickHouse per tenant</td>
+<td>Slow, jittery agent reads and huge pivots</td>
+<td>Columnar OLAP. One database per retailer makes isolation a database boundary.</td>
+<td>PostgreSQL-only for heavy grids. ClickHouse <code>ALTER UPDATE</code> per cell.</td>
 </tr>
 <tr>
-<td><strong>Insert-only + partition swap</strong></td>
+<td>Insert-only plus partition swap</td>
 <td>Mutations pile up</td>
-<td>Facts/cubes: stage twin → <code>REPLACE PARTITION</code>; decisions append-only; latest via <strong>argMax views</strong></td>
-<td>Row UPDATE / DELETE on hot path</td>
+<td>Facts restate by stage twin plus <code>REPLACE PARTITION</code>. Decisions append. Latest via <code>argMax</code> views.</td>
+<td>Row UPDATE / DELETE on the hot path.</td>
 </tr>
 <tr>
-<td><strong>Agent <code>readonly=1</code></strong></td>
-<td>LLM inventing SQL / silent writes</td>
-<td>DB profile physically SELECT-only; <strong>14</strong> audited tools</td>
-<td>Prompt-only “don’t write”</td>
+<td>Agent <code>readonly=1</code></td>
+<td>An LLM inventing SQL or writing silently</td>
+<td>The database profile is physically SELECT-only. 14 audited, templated tools (the verbal Cluster Copilot design).</td>
+<td>A prompt saying "please don't write".</td>
 </tr>
 <tr>
-<td><strong>Go Gin write APIs</strong></td>
-<td>Agent and Manual UI diverging auth</td>
-<td>One doing layer for Clustering / Hindsight / Strategy</td>
-<td>Agent-owned writes</td>
+<td>Go / Gin write APIs</td>
+<td>Agent and manual UI diverging on auth and rules</td>
+<td>One "doing layer" owns writes for clustering (and, in the design, Hindsight and Strategy, which are also verbal only)</td>
+<td>Agent-owned writes.</td>
 </tr>
 <tr>
-<td><strong>FastAPI + LangGraph + MCP</strong></td>
-<td>Multi-step explore needs a state machine</td>
-<td>Explicit graph + typed tools</td>
-<td>Single opaque prompt chain</td>
+<td>FastAPI plus LangGraph plus MCP</td>
+<td>Multi-step exploration needs a state machine</td>
+<td>Explicit graph plus typed tools. MCP (Model Context Protocol) is skills-level on the resume.</td>
+<td>A single opaque prompt chain.</td>
 </tr>
 <tr>
-<td><strong>BigQuery</strong></td>
-<td>Company historical truth</td>
-<td>Upstream feed into CH; <strong>not</strong> runtime agent SoR</td>
-<td>CH as sole company warehouse</td>
-</tr>
-<tr>
-<td><strong>Thin PostgreSQL</strong></td>
-<td>Need real ACID for identity/UAM</td>
+<td>Thin PostgreSQL</td>
+<td>Real ACID for identity and UAM</td>
 <td>Auth, tenant, workflow metadata</td>
-<td>Putting all planner facts in PG forever</td>
+<td>All planner facts in PostgreSQL.</td>
 </tr>
 <tr>
-<td><strong>LangSmith / Datadog / PostHog</strong></td>
+<td>LangSmith / Datadog / PostHog</td>
 <td>Different debug questions</td>
-<td>Agent quality vs platform vs product</td>
-<td>One tool for everything</td>
+<td>Agent quality vs platform vs product analytics, in the design notes. On the resume, LangSmith is tied to Ask Iris only, and PostHog is not on the resume at all.</td>
+<td>One tool for everything.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="store-design-8-layers-draw-this">Store design (8 layers — draw this)</h3>
-<table>
-<thead>
-<tr>
-<th>Layer</th>
-<th>Pattern</th>
-<th>Role</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>L0 facts + ledger</td>
-<td>P1 partition-swap + P4 ledger</td>
-<td>Ingested facts, watermarks</td>
-</tr>
-<tr>
-<td>Grounding dims</td>
-<td>P2 RMT + dictionaries</td>
-<td>Store / hierarchy / fiscal</td>
-</tr>
-<tr>
-<td>L1 cubes + caches</td>
-<td>P1 / P2</td>
-<td>Planner rollups</td>
-</tr>
-<tr>
-<td>PG mirrors (transitional)</td>
-<td>EXCHANGE / swap</td>
-<td>Bridge while migrating</td>
-</tr>
-<tr>
-<td>Decision plane</td>
-<td>P2/P3/P4</td>
-<td>Cluster configs, approvals (append events)</td>
-</tr>
-<tr>
-<td>Outcome loop</td>
-<td>P4 / P1</td>
-<td>Immutable outcomes</td>
-</tr>
-<tr>
-<td>Write-back (transitional)</td>
-<td>P3 status</td>
-<td>Wire to incumbent</td>
-</tr>
-<tr>
-<td>Telemetry</td>
-<td>P4</td>
-<td>Probe logs</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Inventory (MEASURED design):</strong> <strong>63</strong> tables (incl. 7 stage twins) · <strong>8</strong> layers · <strong>5</strong> dictionaries · <strong>19</strong> views · agent R/O · services INSERT-only. Omit <strong>624 columns</strong>.</p>
-<h3 id="er-relationship-sketch-logical">ER / relationship sketch (logical)</h3>
-<pre><code> tenant_db (one CH database per retailer)
-   │
-   ├─ fact_* / cube_*  ──P1──  stage twin → REPLACE PARTITION
-   ├─ dim_* / dict_*   ──P2──  ReplacingMergeTree(version) + FINAL/argMax
-   ├─ decision_event_* ──P3──  append-only; v_* views = argMax(event_seq)
-   ├─ approval_snapshot──P4──  immutable
-   └─ telemetry_*      ──P4──  append-only
-
- thin Postgres (separate):
-   user ──&lt; membership &gt;── tenant
-   tenant ──&lt; workflow_state / feature_flags
-</code></pre>
-<h3 id="mermaid-er-conceptual">Mermaid ER (conceptual)</h3>
-<div class="mermaid">erDiagram
-  TENANT ||--o{ CH_DATABASE : "one DB per tenant"
-  CH_DATABASE ||--|{ FACT_LAYER : "P1 swap"
-  CH_DATABASE ||--|{ DIM_LAYER : "P2 RMT"
-  CH_DATABASE ||--|{ DECISION_EVENTS : "P3 append"
-  DECISION_EVENTS ||--o{ ARGMAX_VIEW : "latest state"
-  PG_META ||--o{ USER : "identity"
-  PG_META ||--o{ WORKFLOW : "ACID metadata"
-</div>
-<p><strong>Industry note (web):</strong> ReplacingMergeTree dedupes on <code>ORDER BY</code> during merges; correctness at query time needs <code>FINAL</code> or <code>argMax</code> — matches our “views over history” doctrine (<a href="https://clickhouse.com/docs/guides/replacing-merge-tree">ClickHouse RMT guide</a>).</p>
 <hr>
-<h1 id="2-uber-frm-mysql-scoping-service-11-models">2. Uber FRM — MySQL scoping service (11 models)</h1>
-<p><strong>Status:</strong> shipped platform work. Schema = MEASURED from ORM code.</p>
-<h3 id="problem-we-faced_1">Problem we faced</h3>
+<h1 id="2-uber-frm-mysql-scoping-service-on-soadb">2. Uber FRM: MySQL scoping service on SOADB</h1>
+<p><strong>In plain English.</strong> FRM (Financial Risk Management) scoping is how Uber Finance decides, every quarter, which financial statement lines and which entities are material enough to be in scope for audit testing. Before this tool it lived in Google Sheets. I owned the backend (via EPAM): Spring Boot with Spring Data JPA and Hibernate on MySQL, running on Uber's SOADB (the service-owned MySQL standard). Reconciliation time went from 14 days to 3 days (70%) against a $340M materiality threshold.</p>
+<p><strong>Resume facts this schema backs (PDF):</strong> 36 Spring Boot endpoints, Sheets-to-MySQL migration across 19M raw GL (general ledger) rows, a nested 4-level FSLI (Financial Statement Line Item) hierarchy L1 to L4 with dynamic quarter-annualization, an <strong>8-table normalized MySQL schema on SOADB</strong>, a polymorphic review-status model, optimistic row-locking, atomic cross-table syncs and deterministic SHA-256 natural keys.</p>
+<div class="callout note">
+<p><b>8 tables vs 11 models.</b> The PDF says an 8-table normalized schema. The scoping service code has 11 ORM models, mapped as JPA entities (listed below), and the full physical schema file has 16+ tables because the collaboration service (comments, notifications) lives in the same schema. Lead with the PDF number. If someone counts the models, say "the core normalized schema is 8 tables. The scoping service code has 11 ORM models once you include the recon v2 leaves and the configuration tables." The notes do not record an exact 8-of-11 mapping, so do not improvise one. Older versions of this page said "say 11 models, 30+ APIs". The current PDF says 8-table SOADB and 36 endpoints.</p>
+</div>
+<h3 id="the-problem-we-faced_1">The problem we faced</h3>
 <ul>
-<li>Quarterly scoping lived in <strong>Google Sheets</strong>: no stable line IDs, no audit trail, overwrite risk, cannot attach comments.  </li>
-<li>SOX-adjacent / <strong>PwC</strong> work papers need durable identity.  </li>
-<li>Join bug: shared column names → silent wrong UUID (column-aliasing).</li>
+<li>Quarterly scoping lived in <strong>Google Sheets</strong>: no stable line IDs, no audit trail, managers overwriting each other, nowhere to attach comments.</li>
+<li>The work feeds SOX-adjacent, <strong>PwC</strong>-audited work papers, which need durable identity for every line.</li>
+<li>ETL loads during financial close were contending for locks with people editing.</li>
+<li>A join bug: two joined tables both had a column called <code>uuid</code>, so raw SQL results mapped rows to the wrong <code>uuid</code> silently (the column-aliasing bug).</li>
 </ul>
-<h3 id="why-each-tech_1">Why each tech</h3>
+<h3 id="why-each-tech">Why each tech</h3>
 <table>
 <thead>
 <tr>
 <th>Tech</th>
-<th>Problem</th>
-<th>Why</th>
-<th>Rejected</th>
+<th>The problem</th>
+<th>Why it fits</th>
+<th>Alternative and why not</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>MySQL</strong></td>
-<td>Sheets not SoR</td>
-<td>Durable UUIDs, period keys, audit columns</td>
-<td>Keep Sheets; move straight to warehouse-only</td>
+<td><strong>MySQL on SOADB (InnoDB)</strong></td>
+<td>Sheets is not a system of record</td>
+<td>Uber's standard for service-owned relational data. ACID multi-user edits during close. The data is small and highly relational (individual quarterly GL extracts were about 38K-95K rows, about 1.7K-1.8K accounts, about 400 entities), so a row store with composite indexes on the fiscal period is the right shape.</td>
+<td>Keep Sheets. Go straight to a warehouse (no transactional edit semantics). PostgreSQL (would have meant fighting the platform standard for no product gain, and we did not need recursive CTEs because the hierarchy is flattened by ETL).</td>
 </tr>
 <tr>
-<td><strong>FastAPI + SQLAlchemy 2.0</strong></td>
-<td>Need typed APIs + nested trees</td>
-<td>Uber Python service norms; <code>Mapped</code> + <code>.label()</code></td>
-<td>Flask ad-hoc; raw SQL everywhere</td>
+<td><strong>Spring Boot plus Spring Data JPA / Hibernate</strong></td>
+<td>Typed APIs, nested trees, raw-SQL bugs</td>
+<td>A mature, strongly typed service stack with built-in transaction management (<code>@Transactional</code>) and first-class MySQL support. Hibernate entities (<code>@Entity</code>) give typed columns, and JPQL or native queries with explicit column aliases removed the aliasing bug class. DTOs with Bean Validation (<code>@Valid</code>, <code>@NotNull</code>) give typed, validated request and response bodies.</td>
+<td>Hand-written JDBC with ad-hoc row mapping everywhere (the source of the aliasing bug). Raw SQL strings in controllers.</td>
 </tr>
 <tr>
-<td><strong>Handler / service / repository</strong></td>
-<td>Parallelize 3 engineers</td>
-<td>Clean seams for PR ownership</td>
-<td>Fat handlers</td>
+<td><strong>Controller / service / repository layers</strong></td>
+<td>Three engineers working in parallel</td>
+<td>Clean seams so each PR owns one layer: <code>@RestController</code>, <code>@Service</code>, Spring Data repository</td>
+<td>Fat controllers that mix HTTP, math and SQL.</td>
 </tr>
 <tr>
 <td><strong>React</strong></td>
-<td>Finance interactive grids</td>
-<td>8 screens over REST</td>
-<td>Server-rendered only</td>
+<td>Finance needs interactive grids</td>
+<td>8 screens over REST (frontend was not mine to claim)</td>
+<td>Server-rendered only.</td>
 </tr>
 <tr>
-<td><strong>Bazel + pytest</strong></td>
-<td>Gate PwC-facing merges</td>
-<td>Monorepo CI; <strong>1,100+</strong> tests</td>
-<td>Ad-hoc scripts</td>
+<td><strong>Bazel plus JUnit</strong></td>
+<td>PwC-facing merges need a real gate</td>
+<td>Monorepo CI, five layer targets must pass. JUnit 5 with Mockito for services and MockMvc for controllers, 1,100+ tests (verbal), module statement coverage to 100% (PDF)</td>
+<td>Ad-hoc test scripts.</td>
 </tr>
 <tr>
 <td><strong>Header auth</strong> (<code>x-auth-params-email</code>)</td>
-<td>Edge already authenticates</td>
-<td>Audit <code>created_by</code> / <code>updated_by</code></td>
-<td>Re-implement SSO in service</td>
+<td>The edge already authenticates</td>
+<td>A Spring filter / interceptor reads the authenticated email, and the service writes it to <code>created_by</code> / <code>updated_by</code> for audit</td>
+<td>Re-implementing SSO inside the service.</td>
 </tr>
 </tbody>
 </table>
-<h3 id="table-catalog-11-sqlalchemy-models-scoping-service-only">Table catalog (11 SQLAlchemy models — scoping service only)</h3>
+<h3 id="table-catalog-the-11-orm-models-in-the-scoping-service-measured-from-code">Table catalog: the 11 ORM models in the scoping service (MEASURED from code)</h3>
 <table>
 <thead>
 <tr>
 <th>#</th>
 <th>Table</th>
-<th>Purpose</th>
-<th>Keys / joins</th>
+<th>What it stores, in plain words</th>
+<th>Keys and joins</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>1</td>
 <td><code>balance_sheet</code></td>
-<td>BS FSLI facts + significance</td>
-<td>PK <code>uuid</code>; <code>level_id</code> → <code>level_mapping</code></td>
+<td>One row per balance-sheet FSLI line per quarter: HFM amount, significance conclusions, scope, residual risk, review statuses</td>
+<td>PK <code>uuid</code>. <code>level_id</code> joins to <code>level_mapping.uuid</code>.</td>
 </tr>
 <tr>
 <td>2</td>
 <td><code>income_statement</code></td>
-<td>IS FSLI facts</td>
-<td>same</td>
+<td>Same shape for income-statement lines</td>
+<td>Same</td>
 </tr>
 <tr>
 <td>3</td>
 <td><code>emi_data</code></td>
-<td>Equity-method investees</td>
+<td>Equity-method investees (minority stakes Uber does not consolidate), one row per investee</td>
 <td>PK <code>uuid</code></td>
 </tr>
 <tr>
 <td>4</td>
-<td><code>frm_metrics_table</code></td>
-<td>materiality / benchmarks</td>
-<td><code>metric_key</code> (e.g. materiality <strong>$340M</strong>)</td>
+<td><code>frm_metrics_table</code> (class <code>ScopingMetrics</code>)</td>
+<td>Key-value metrics such as materiality and benchmarks</td>
+<td><code>metric_key</code>, for example materiality $340M</td>
 </tr>
 <tr>
 <td>5</td>
 <td><code>scoping_questions</code></td>
-<td>qualitative questions</td>
-<td>deterministic uuid from text+page</td>
+<td>Qualitative scoping questions shown on each screen</td>
+<td>Deterministic <code>uuid</code> from question text plus page name (SHA-256)</td>
 </tr>
 <tr>
 <td>6</td>
 <td><code>scoping_assessments</code></td>
-<td>answers per line</td>
-<td><code>line_id</code>, <code>question_id</code></td>
+<td>Answers to those questions for a specific line</td>
+<td><code>line_id</code> (fact <code>uuid</code>) and <code>question_id</code></td>
 </tr>
 <tr>
 <td>7</td>
-<td><code>threshold_table_v2</code></td>
-<td>legal-entity significance</td>
+<td><code>threshold_table_v2</code> (class <code>ThresholdSetup</code>)</td>
+<td>Per legal entity significance: assets, revenue, percentages, conclusion</td>
 <td><code>legal_entity</code></td>
 </tr>
 <tr>
 <td>8</td>
 <td><code>level_mapping</code></td>
-<td>FSLI hierarchy spine</td>
-<td>PK <code>uuid</code> = join target <code>level_id</code></td>
+<td>The FSLI hierarchy spine: one row per L1-L4 path per quarter</td>
+<td>PK <code>uuid</code>, which is the <code>level_id</code> every fact joins to</td>
 </tr>
 <tr>
 <td>9</td>
 <td><code>component_entity</code></td>
-<td>component amounts</td>
+<td>Amounts per scoping component</td>
 <td><code>level_id</code></td>
 </tr>
 <tr>
 <td>10</td>
 <td><code>recon_balance_sheet</code></td>
-<td>HFM vs 10-Q BS</td>
-<td><code>difference = HFM − filed</code></td>
+<td>HFM vs filed 10-Q balance sheet, per leaf</td>
+<td><code>difference = HFM minus filed</code></td>
 </tr>
 <tr>
 <td>11</td>
 <td><code>recon_income_statement</code></td>
-<td>HFM vs 10-Q IS</td>
-<td>same</td>
+<td>Same for the income statement</td>
+<td>Same</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Say:</strong> “<strong>11 models in the scoping service</strong>” — collaboration/comments live elsewhere (16+ in full <code>schema.uql</code>).</p>
-<h3 id="ascii-er">ASCII ER</h3>
-<pre><code>                    level_mapping (uuid = level_id)
-                         ▲              ▲
-         level_id+period │              │ level_id+period
-                         │              │
-              balance_sheet /     component_entity
-              income_statement
-                         │
-              line_id = fact.uuid
-                         ▼
-              scoping_assessments ──question_id──► scoping_questions
-
- frm_metrics_table     threshold_table_v2     emi_data
- recon_balance_sheet / recon_income_statement  (HFM vs 10-Q leaves)
-</code></pre>
-<h3 id="mermaid-er">Mermaid ER</h3>
+<p>Name traps worth saying out loud: the threshold table is physically <code>threshold_table_v2</code> (class <code>ThresholdSetup</code>), and the materiality store is <code>frm_metrics_table</code> (class <code>ScopingMetrics</code>).</p>
+<h3 id="er-diagram">ER diagram</h3>
 <div class="mermaid">erDiagram
   LEVEL_MAPPING ||--o{ BALANCE_SHEET : "level_id"
   LEVEL_MAPPING ||--o{ INCOME_STATEMENT : "level_id"
@@ -374,280 +592,374 @@ Honesty: MEASURED design / MEASURED code / HISTORICAL / DESIGN. Do not invent IA
   SCOPING_QUESTIONS ||--o{ SCOPING_ASSESSMENTS : "question_id"
   LEVEL_MAPPING ||--o{ RECON_BALANCE_SHEET : "level_id"
   LEVEL_MAPPING ||--o{ RECON_INCOME_STATEMENT : "level_id"
+  LEVEL_MAPPING {
+    string uuid PK
+    string level1
+    string level4
+    string fiscal_quarter
+    string fiscal_year
+  }
+  BALANCE_SHEET {
+    string uuid PK
+    string level_id
+    decimal hfm_amount
+    string group_status
+  }
+  SCOPING_QUESTIONS {
+    string uuid PK "SHA-256 natural key"
+    string page_name
+  }
 </div>
-<p>Period key on facts: <code>(fiscal_quarter, fiscal_year)</code>. Joins AND active flags.</p>
+<p><em>What to notice:</em> <code>level_mapping</code> is the spine. Every financial fact hangs off it by <code>level_id</code> plus the fiscal period. Assessments hang off a fact line. <code>frm_metrics_table</code>, <code>threshold_table_v2</code> and <code>emi_data</code> stand alone and are joined by period, not by key.</p>
+<pre><code class="language-text">                    level_mapping (uuid = level_id)
+                         ^              ^
+         level_id+period |              | level_id+period
+                         |              |
+              balance_sheet /     component_entity
+              income_statement
+                         |
+              line_id = fact.uuid
+                         v
+              scoping_assessments --question_id--&gt; scoping_questions
+
+ frm_metrics_table     threshold_table_v2     emi_data
+ recon_balance_sheet / recon_income_statement  (HFM vs 10-Q leaves)
+</code></pre>
+<p><em>What to notice:</em> the same picture in ASCII, which is faster to draw on a whiteboard.</p>
+<p><strong>Period key.</strong> Almost every row carries <code>(fiscal_quarter, fiscal_year)</code>. Joins match on <code>level_id</code> plus period plus active flags. There are <strong>no database-enforced foreign keys</strong>. Joins are logical and enforced by the application.</p>
+<h3 id="design-decisions-explained_1">Design decisions, explained</h3>
+<p><strong>Decision 1: A flattened hierarchy spine (<code>level_mapping</code>) instead of a recursive parent-child table.</strong>
+- <em>What:</em> ETL flattens the recursive FSLI tree into one row per L1-L4 path with a stable <code>uuid</code>. Facts store that <code>uuid</code> as <code>level_id</code>.
+- <em>Why:</em> The API needs a nested L1-L4 tree per quarter, fast and predictable. Resolving recursion at query time is slower and harder to test.
+- <em>How:</em> The service joins facts to <code>level_mapping</code> by <code>level_id</code> plus period and builds the nested JSON tree in the Java service layer. Fact rows also carry denormalized <code>level_1</code> to <code>level_4</code> labels for the UI tree.
+- <em>Alternatives:</em> An adjacency list (<code>parent_id</code>) resolved with recursive CTEs. That is a PostgreSQL-style answer and unnecessary here.
+- <em>Trade-off:</em> A hierarchy change means re-running the flattening for that quarter. Denormalized labels must stay in sync with the spine.
+- <em>What I'd do differently:</em> Add a validation job that checks every fact's denormalized labels against its spine row each quarter.</p>
+<p><strong>Decision 2: Deterministic SHA-256 natural keys.</strong>
+- <em>What:</em> <code>scoping_questions.uuid</code> is SHA-256 of <code>question_text</code> plus normalized <code>page_name</code>, truncated to 32 hex characters.
+- <em>Why:</em> Questions are re-seeded every quarter. A random UUID would create a duplicate question each time and break quarter-over-quarter audit trails.
+- <em>How:</em> The bulk endpoint computes the hash and upserts, so re-sending the same payload updates in place.
+- <em>Alternatives:</em> Auto-increment IDs plus a unique constraint on text (fragile to whitespace and case changes, which is why the page name is normalized first).
+- <em>Trade-off:</em> Editing the question text produces a new key. That is intended: a changed question is a different audit item.
+- <em>What I'd do differently:</em> Document the normalization rules next to the hash function so nobody "fixes" the normalization and silently re-keys every question.</p>
+<p><strong>Decision 3: Polymorphic review status.</strong>
+- <em>What:</em> One status model (Draft, Review, ReOpen, Closed) reused across screens through columns like <code>group_status</code>, <code>component_status</code> and <code>residual_status</code>.
+- <em>Why:</em> Eight screens each need a review workflow. One allowlisted status vocabulary means one set of transition rules and one test suite.
+- <em>How:</em> PATCH endpoints accept a status only from the allowlist. Automated FSM (finite state machine) gates, including the 50% delta-variance checks for SOX, decide whether a transition is allowed.
+- <em>Alternatives:</em> A separate status table per screen (eight copies of the same logic).
+- <em>Trade-off:</em> Screens with slightly different needs have to fit the shared vocabulary.</p>
+<p><strong>Decision 4: Concurrency through transactional, per-uuid writes plus version checks.</strong>
+- <em>What:</em> The PDF says optimistic row-locking. Optimistic locking means you read a row with its version, and the update only succeeds if the version has not changed since you read it. If someone else edited first, you get a conflict and retry instead of overwriting them.
+- <em>How it is split in practice:</em> In the scoping service, every write targets one <code>uuid</code> with an explicit column set inside one committed transaction, and records <code>updated_by</code>. Cross-table syncs (for example an assessment answer updating the balance sheet's qualitative fields) happen in the same <code>@Transactional</code> service method, so they commit or roll back together. In JPA the standard version check is a <code>@Version</code> field, which Hibernate adds to every UPDATE.
+- Say this carefully, only if pressed on exactly where the version check lives: the TDD places version-number concurrency control in the separate collaboration service and its MySQL, plus the frontend. Real-time sync and Slack notifications were not mine.</p>
 <hr>
-<h1 id="3-uber-eats-menu-anz-mobility-separate">3. Uber Eats Menu (+ ANZ Mobility separate)</h1>
-<h3 id="problem-we-faced_2">Problem we faced</h3>
+<h1 id="3-uber-eats-menu-ingestion-and-anz-mobility-separately">3. Uber Eats Menu ingestion (and ANZ Mobility, separately)</h1>
+<p><strong>In plain English.</strong> When a restaurant joins Uber Eats, its menu has to become a clean catalog: items, prices, modifiers. Menus arrive as messy websites, PDFs and images in many languages. I owned the ingestion pipeline (via EPAM): a Selenium scraper fleet, Kafka plus Apache Flink for large-scale processing, and Gemini 2.5 Pro with LangChain RAG over Milvus for extraction. Onboarding went from 24 hours to 2 hours, saving $600K per year at 30K+ menus per month, with 98% field fidelity on offline evaluation.</p>
+<p>This is not a single relational database. It is a pipeline of stores, each chosen for one job.</p>
+<h3 id="the-problem-we-faced_2">The problem we faced</h3>
 <ul>
-<li>Manual / third-party menu onboarding slow and expensive (~<strong>$2/menu</strong>, <strong>24h</strong>).  </li>
-<li>Scrapers are <strong>bursty and flaky</strong>; anti-bot blocks.  </li>
-<li>Unstructured <strong>PDF/image</strong> menus defeat regex.  </li>
-<li>Need replay when parsers break.</li>
+<li>Manual or third-party onboarding was slow and expensive (about $2 per menu, 24 hours).</li>
+<li>Scrapers are bursty and flaky, and partner sites block bots.</li>
+<li>Unstructured PDF and image menus defeat regex.</li>
+<li>When a parser breaks, we need to replay the raw input.</li>
 </ul>
-<h3 id="why-each-tech_2">Why each tech</h3>
+<h3 id="why-each-tech_1">Why each tech</h3>
 <table>
 <thead>
 <tr>
 <th>Tech</th>
-<th>Problem</th>
-<th>Why</th>
-<th>Rejected</th>
+<th>The problem</th>
+<th>Why it fits</th>
+<th>Alternative and why not</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Selenium</strong></td>
-<td>JS-heavy partner sites</td>
-<td>Real browser fetch</td>
-<td>Static curl-only</td>
+<td>JavaScript-heavy partner sites</td>
+<td>A real browser renders the page</td>
+<td>Static <code>curl</code> fetches (miss JS-rendered content)</td>
 </tr>
 <tr>
 <td><strong>Kafka</strong></td>
-<td>Burst + need replay</td>
-<td>Ordered per vendor key; durable log</td>
-<td>Sync HTTP into catalog</td>
+<td>Bursty input, need replay</td>
+<td>A durable, ordered log. Partitioned by vendor key, so one vendor's events stay in order. Consumers can rewind.</td>
+<td>Synchronous HTTP straight into the catalog (no buffer, no replay)</td>
 </tr>
 <tr>
-<td><strong>Flink</strong></td>
-<td>Per-event validate/dedupe/route</td>
-<td>Keyed state + event-time; hot path</td>
-<td>Spark micro-batch for every page</td>
+<td><strong>Apache Flink</strong></td>
+<td>Per-event validate, dedupe, route</td>
+<td>Keyed state (remembers what each vendor already sent) and event-time handling on the hot path</td>
+<td>Spark micro-batch for every page (Spark is not on the PDF, only a verbal backfill option)</td>
 </tr>
 <tr>
-<td><strong>Milvus + LangChain RAG + Gemini</strong></td>
-<td>Multilingual PDF/image</td>
-<td>Retrieve similar labeled menus → generate → schema gate</td>
-<td>Pure OCR/regex; inventing Pinecone</td>
+<td><strong>Milvus plus LangChain RAG plus Gemini 2.5 Pro</strong></td>
+<td>Multilingual PDFs and images</td>
+<td>Retrieve similar labeled menus from Milvus embeddings, generate structured output with Gemini, then gate it through a JSON schema</td>
+<td>Pure OCR plus regex. Do not say Pinecone.</td>
 </tr>
 <tr>
-<td><strong>IP rotation / proxies / retries</strong></td>
-<td>Anti-bot</td>
-<td>Lift success to <strong>95%+</strong></td>
-<td>Fixed IP fleet</td>
+<td><strong>Proxy pools, IP rotation, adaptive retries</strong></td>
+<td>Anti-bot blocks</td>
+<td>Lifted extraction success to 95%+ from an estimated 60-65%</td>
+<td>A fixed IP fleet</td>
 </tr>
 <tr>
-<td><strong>GCP / Docker</strong></td>
-<td>Host scrapers/workers</td>
-<td>Org footprint</td>
-<td></td>
+<td><strong>GCP, Docker</strong></td>
+<td>Hosting scrapers and workers</td>
+<td>The org's footprint</td>
+<td>(no alternative discussed)</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Industry note (web):</strong> Flink keyed state + TTL for dedupe, Kafka as ingest bus, idempotent sink upsert is a standard stream pattern (aligns with our keyed menu-hash dedupe story).</p>
-<h3 id="logical-data-design-not-a-single-rdbms-er">Logical data design (not a single RDBMS ER)</h3>
+<p><strong>Industry note (general teaching).</strong> Flink keyed state with a TTL for dedupe, Kafka as the ingest bus and an idempotent upsert at the sink is a standard streaming pattern. It matches the keyed menu-hash dedupe story.</p>
+<h3 id="logical-data-design-logical-not-uber-table-names">Logical data design (LOGICAL, not Uber table names)</h3>
 <table>
 <thead>
 <tr>
 <th>Store</th>
-<th>Contents</th>
+<th>What it holds</th>
 <th>Key</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Kafka topics</td>
-<td>raw scrape events, retries, health</td>
-<td>vendor / menu key</td>
+<td>Raw scrape events, retries, health signals</td>
+<td>Vendor / menu key</td>
 </tr>
 <tr>
 <td>Flink keyed state</td>
-<td>seen content hashes</td>
-<td>vendor+hash</td>
+<td>Content hashes already seen</td>
+<td>Vendor plus content hash</td>
 </tr>
 <tr>
 <td>Object storage</td>
-<td>raw HTML/PDF/image</td>
-<td>content hash</td>
+<td>Raw HTML, PDF, image bytes</td>
+<td>Content hash</td>
 </tr>
 <tr>
 <td><strong>Milvus</strong></td>
-<td>chunk embeddings of labeled menus</td>
-<td>vector + menu_id metadata</td>
+<td>Embeddings of labeled menu chunks</td>
+<td>Vector plus <code>menu_id</code> metadata</td>
 </tr>
 <tr>
 <td>Catalog records</td>
-<td>normalized items/prices/modifiers</td>
-<td>vendor+item (upsert)</td>
+<td>Normalized items, prices, modifiers</td>
+<td>Vendor plus item (upsert)</td>
 </tr>
 <tr>
 <td>Eval fixtures</td>
-<td>offline fidelity/schema cases</td>
-<td>HISTORICAL <strong>98%/100%</strong></td>
+<td>Offline fidelity and schema cases</td>
+<td>98% fidelity, 100% schema consistency (offline, HISTORICAL)</td>
 </tr>
 </tbody>
 </table>
-<h3 id="flow-er-style">Flow ER-style</h3>
-<pre><code>site ──► scrape_event ──► kafka ──► flink_state(dedupe)
-                              │
-                    ┌─────────┴─────────┐
-                    ▼                   ▼
-              catalog_row         rag_chunk ──► milvus
-                                      │
-                                      ▼
-                              extracted_menu ──schema──► catalog_row
-</code></pre>
-<h3 id="anz-mobility-separate-product">ANZ (Mobility — separate product)</h3>
-<p>Logical entities: <code>driver</code>, <code>vehicle</code>, <code>document</code>, <code>compliance_check</code>, <code>authority_rule</code>.<br>
-Outcome HISTORICAL: <strong>99.9%</strong>, <strong>~20h/week</strong>. Do <strong>not</strong> mix into Eats Kafka/Flink ER.</p>
+<div class="mermaid">flowchart LR
+  S["Partner site or PDF"] --&gt; E["Selenium scrape_event"]
+  E --&gt; K["Kafka topic keyed by vendor"]
+  K --&gt; F["Flink keyed dedupe state"]
+  F --&gt; C["Catalog upsert"]
+  F --&gt; R["RAG chunk"]
+  R --&gt; M["Milvus embeddings"]
+  M --&gt; X["Gemini extracted menu"]
+  X --&gt; V["JSON schema gate"]
+  V --&gt; C
+</div>
+<p><em>What to notice:</em> there are two paths into the catalog. Structured pages go straight through Flink. Unstructured PDFs and images go through retrieval, generation and a schema gate first. Both end in an idempotent upsert.</p>
+<p><strong>Exactly-once, said honestly.</strong> The PDF says exactly-once catalog upserts. In practice that is at-least-once delivery from Kafka plus idempotent upserts keyed by vendor and menu version, so a redelivered event rewrites the same row. Do not claim zero message loss or two-phase commit across third parties. Peak load of about 200-500 events per second is an ESTIMATE, prep-only.</p>
+<h3 id="anz-document-compliance-uber-mobility-a-separate-product">ANZ document compliance (Uber Mobility, a separate product)</h3>
+<p>Logical entities: <code>driver</code>, <code>vehicle</code>, <code>document</code>, <code>compliance_check</code>, <code>authority_rule</code>. A deterministic validation backend checks each driver and vehicle document against local authority rules. Outcomes are HISTORICAL: 99.9% regulatory compliance and about 20 hours per week of manual effort removed. Do not mix it into the Eats Kafka / Flink ER, and do not invent Selenium or RAG here.</p>
 <hr>
-<h1 id="4-masters-india-gst-e-invoicing">4. Masters India — GST / E-Invoicing</h1>
-<h3 id="problem-we-faced_3">Problem we faced</h3>
+<h1 id="4-masters-india-gst-e-invoicing">4. Masters India: GST e-invoicing</h1>
+<p><strong>In plain English.</strong> Masters India is a GST compliance and e-invoicing SaaS for Indian enterprises. Clients send invoices. We validate them and register them with the government IRP (Invoice Registration Portal), which returns an IRN (Invoice Reference Number) and a signed QR code. I led the move from a PHP monolith to Spring Boot microservices and built the bulk e-invoicing pipeline: 1M+ daily government submissions, Kafka, PostgreSQL sharded by tax quarter, idempotent processing for 100K+ concurrent imports.</p>
+<h3 id="the-problem-we-faced_3">The problem we faced</h3>
 <ul>
-<li>PHP Laravel <strong>sync IRP</strong> blocked workers on filing spikes.  </li>
-<li>Big-bang rewrite risk on compliance product.  </li>
-<li>Double IRP registration is <strong>not recoverable</strong>.  </li>
-<li>Hot quarter writes vs cold history.</li>
+<li>The PHP (Laravel) monolith called the IRP <strong>synchronously</strong>, so workers blocked during filing-deadline spikes.</li>
+<li>A big-bang rewrite of a compliance product was too risky.</li>
+<li>Registering the same invoice twice with the government is <strong>not recoverable</strong>.</li>
+<li>Hot current-quarter writes were competing with cold history.</li>
+</ul>
+<h3 id="why-each-tech_2">Why each tech</h3>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>The problem</th>
+<th>Why it fits</th>
+<th>Alternative and why not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Spring Boot microservices (with Hibernate)</strong></td>
+<td>Monolith deploy and scale pain</td>
+<td>Non-blocking IRP calls (Spring WebClient) and bounded thread pools, HikariCP connection pooling, Hibernate for the PostgreSQL mapping. Strangler pattern with a canary per route.</td>
+<td>Big-bang rewrite</td>
+</tr>
+<tr>
+<td><strong>Kafka</strong></td>
+<td>Ordering, replay, fan-out</td>
+<td>Per-GSTIN ordering (GSTIN is the business's tax ID), dead-letter queues, multiple consumers</td>
+<td>Synchronous only. RabbitMQ alone (honestly, it would have been fine for simple dispatch, but we wanted replay and fan-out).</td>
+</tr>
+<tr>
+<td><strong>PostgreSQL sharded by tax quarter</strong></td>
+<td>GST is quarter-scoped. Hot writes vs cold history.</td>
+<td>Current quarter is isolated and hot. Older quarters can be archived.</td>
+<td>One fat table forever</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>IRN / QR responses vary in shape</td>
+<td>Snapshot the signed responses as flexible documents</td>
+<td>Forcing every response into rigid relational columns</td>
+</tr>
+<tr>
+<td><strong>Redis</strong></td>
+<td>The same GSTIN and client config looked up on every bulk row</td>
+<td>Cache-aside, DB read load down 30% (MI3 on the PDF)</td>
+<td>Hitting PostgreSQL for every row</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>Searching invoices</td>
+<td>Optional search backend for invoice lookup</td>
+<td>SQL <code>LIKE</code></td>
+</tr>
+<tr>
+<td><strong>Kafka consumers, <code>@Async</code> and Spring Batch</strong></td>
+<td>Background work (IRP calls, PDFs, webhooks, email) must not block request threads</td>
+<td>IRP work runs in Kafka consumers (<code>@KafkaListener</code>) inside the Spring Boot services. <code>@Async</code> and scheduled jobs cover small background tasks. Spring Batch fits chunked bulk imports because it restarts from the last finished chunk. The prep notes do not detail exactly which job ran where, so keep that split qualitative if asked.</td>
+<td>Calling the IRP on the request thread (blocks under filing-deadline spikes, which is what hurt the PHP monolith)</td>
+</tr>
+<tr>
+<td><strong>Idempotency plus bounded retries plus DLQ</strong></td>
+<td>Poison batches and retries against volatile IRP portals</td>
+<td>Key <code>client + fileHash + batchIndex</code> so a re-run never double-registers</td>
+<td>Fire-and-forget</td>
+</tr>
+<tr>
+<td><strong>ELK plus New Relic</strong></td>
+<td>Triage by SSH and grep</td>
+<td>Request-id correlation. Incident triage down 70% on the PDF (the minute values, about 30 minutes to under 10, are ESTIMATED).</td>
+<td>(no alternative discussed)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="logical-er-logical-historical">Logical ER (LOGICAL / HISTORICAL)</h3>
+<div class="mermaid">erDiagram
+  CLIENT ||--o{ INVOICE_HEADER : "GSTIN"
+  INVOICE_HEADER ||--|{ INVOICE_LINE : "lines"
+  INVOICE_HEADER ||--o| IRP_REGISTRATION : "IRN and QR"
+  BULK_IMPORT ||--|{ BULK_CHUNK : "chunks"
+  BULK_CHUNK ||--o{ IRP_JOB : "submit"
+  IRP_JOB ||--o| DLQ_MESSAGE : "poison"
+  INVOICE_HEADER {
+    bigint invoice_id PK
+    string gstin
+    date invoice_date
+    string period_quarter
+    string idempotency_key
+  }
+</div>
+<p><em>What to notice:</em> an invoice has at most one IRP registration (<code>||--o|</code>). That "at most one" is the business rule the idempotency key protects.</p>
+<pre><code class="language-text"> client (GSTIN) 1--* invoice_header (period_quarter, invoice_date)
+ invoice_header 1--* invoice_line
+ invoice_header 1--0..1 irp_registration (irn, qr, status)
+ bulk_import 1--* bulk_chunk (file_hash, batch_index) --idempotency--&gt; irp_job
+ irp_job *--&gt; dlq_message (poison)
+ mongo: invoice_payload_snapshot (flexible IRP response)
+ redis: gstin_master, client_config, irp_token (TTL)
+</code></pre>
+<h3 id="design-decision-shard-postgresql-by-tax-quarter">Design decision: shard PostgreSQL by tax quarter</h3>
+<ul>
+<li><em>What:</em> Invoice data is split by GST tax quarter (physically quarter tables or schemas, HISTORICAL narrative).</li>
+<li><em>Why:</em> Every GST question is quarter-scoped. Filing-deadline traffic hits the current quarter. History is read rarely.</li>
+<li><em>How:</em> The API derives the quarter from <code>invoice_date</code> and rejects a mismatch, then routes to that quarter's table.</li>
+<li><em>Alternatives:</em> One table forever (indexes and vacuum grow without bound). Sharding by client (spreads load, but every quarter-close report fans out across all shards).</li>
+<li><em>Trade-off:</em> Cross-quarter queries need a union or a reporting path. An invoice dated in the wrong quarter must be caught at the edge.</li>
+<li><em>What I'd do differently:</em> Use PostgreSQL native declarative partitioning so the routing lives in the database rather than application code.</li>
+</ul>
+<p>The throughput numbers: 1M+ daily submissions is about 12 TPS on average (1,000,000 / 86,400). Peaks around filing deadlines were ESTIMATED at 8-10x.</p>
+<hr>
+<h1 id="5-geeksforgeeks">5. GeeksforGeeks</h1>
+<p><strong>In plain English.</strong> GeeksforGeeks runs courses and a doubt-support forum where learners ask questions during live coding contests. I migrated the PHP backend to Django and built REST APIs for voting, pinning and locking threads. The platform was stabilised for 10K+ daily queries and 10x traffic spikes during contests, and the growth team attributed a 20% lift in premium subscriptions. Separately, I built an influencer analytics and earnings dashboard (course sales +30%) and asynchronous scheduled workflows for video processing, reminders and cleanup (engineering ops efficiency +70%). For business numbers: "I owned the engineering. The business team attributed the lift."</p>
+<h3 id="the-problem-we-faced_4">The problem we faced</h3>
+<ul>
+<li>The PHP backend struggled under 10K+ daily doubt queries and 10x contest spikes.</li>
+<li>Votes, pins and locks needed to work without melting hot rows.</li>
+<li>Search and flexible content shapes.</li>
 </ul>
 <h3 id="why-each-tech_3">Why each tech</h3>
 <table>
 <thead>
 <tr>
 <th>Tech</th>
-<th>Problem</th>
-<th>Why</th>
-<th>Rejected</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>FastAPI microservices</strong></td>
-<td>Monolith deploy/scale</td>
-<td>Async IRP; canary cutover</td>
-<td>Big-bang rewrite</td>
-</tr>
-<tr>
-<td><strong>Kafka</strong></td>
-<td>Ordering + replay + fan-out</td>
-<td>Per-GSTIN order; DLQ; multi consumers</td>
-<td>Sync-only; Rabbit alone (admit possible for dispatch)</td>
-</tr>
-<tr>
-<td><strong>PostgreSQL by tax quarter</strong></td>
-<td>GST is quarter-scoped</td>
-<td>Hot writes isolated; archive cold</td>
-<td>One fat table forever</td>
-</tr>
-<tr>
-<td><strong>MongoDB</strong></td>
-<td>IRN/QR payloads vary</td>
-<td>Snapshot signed responses</td>
-<td>Force all into rigid PG JSON only</td>
-</tr>
-<tr>
-<td><strong>Redis</strong></td>
-<td>Same GSTIN/config on every bulk row</td>
-<td>Cache-aside; <strong>−30%</strong> reads HISTORICAL</td>
-<td>Hit DB every row</td>
-</tr>
-<tr>
-<td><strong>Idempotency + retries + DLQ</strong></td>
-<td>Poison batches / retries</td>
-<td>Key <code>client+fileHash+batchIndex</code></td>
-<td>Fire-and-forget</td>
-</tr>
-<tr>
-<td><strong>ELK + New Relic</strong></td>
-<td>SSH/grep triage</td>
-<td>Request-id correlation; <strong>−70%</strong> triage HISTORICAL</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-<h3 id="logical-er-tables">Logical ER / tables</h3>
-<pre><code> client (GSTIN) 1──* invoice_header (period_quarter, invoice_date)
- invoice_header 1──* invoice_line
- invoice_header 1──0..1 irp_registration (irn, qr, status)
- bulk_import 1──* bulk_chunk (file_hash, batch_index) ──idempotency──► irp_job
- irp_job *──► dlq_message (poison)
- mongo: invoice_payload_snapshot (flexible IRP response)
- redis: gstin_master, client_config, irp_token (TTL)
-</code></pre>
-<p>Quarter routing: derive quarter from <code>invoice_date</code> at API; reject mismatch. Physical: quarter tables/schemas (HISTORICAL narrative).</p>
-<h3 id="mermaid-er_1">Mermaid ER</h3>
-<div class="mermaid">erDiagram
-  CLIENT ||--o{ INVOICE_HEADER : "GSTIN"
-  INVOICE_HEADER ||--|{ INVOICE_LINE : "lines"
-  INVOICE_HEADER ||--o| IRP_REGISTRATION : "IRN/QR"
-  BULK_IMPORT ||--|{ BULK_CHUNK : "chunks"
-  BULK_CHUNK ||--o{ IRP_JOB : "submit"
-  IRP_JOB ||--o| DLQ : "poison"
-</div>
-<hr>
-<h1 id="5-geeksforgeeks">5. GeeksforGeeks</h1>
-<h3 id="problem-we-faced_4">Problem we faced</h3>
-<ul>
-<li>PHP backend struggled under <strong>10K+</strong> daily doubts and <strong>10×</strong> contest spikes.  </li>
-<li>Need votes/pins/locks without melting hot rows.  </li>
-<li>Search and flexible content shapes.</li>
-</ul>
-<h3 id="why-each-tech_4">Why each tech</h3>
-<table>
-<thead>
-<tr>
-<th>Tech</th>
-<th>Problem</th>
-<th>Why</th>
-<th>Rejected</th>
+<th>The problem</th>
+<th>Why it fits</th>
+<th>Alternative and why not</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Django</strong></td>
-<td>PHP velocity/reliability</td>
-<td>ORM, auth, faster features</td>
+<td>PHP velocity and reliability</td>
+<td>ORM, auth and admin out of the box. Faster features.</td>
 <td>Keep PHP forever</td>
 </tr>
 <tr>
 <td><strong>MySQL</strong></td>
 <td>Relational truth</td>
-<td>Users, votes, subscriptions</td>
-<td>Everything in Mongo</td>
+<td>Users, votes, subscriptions, with unique constraints</td>
+<td>Everything in MongoDB</td>
 </tr>
 <tr>
 <td><strong>MongoDB</strong></td>
 <td>Variable content payloads</td>
-<td>Flexible docs</td>
-<td>Rigid migrations for every field</td>
+<td>Flexible documents for doubt and article bodies</td>
+<td>A schema migration for every new field</td>
 </tr>
 <tr>
 <td><strong>Redis</strong></td>
-<td>Contest spikes / hot counters</td>
-<td>Cache + async reconcile votes</td>
-<td>Sync MySQL increment only</td>
+<td>Contest spikes and hot counters</td>
+<td>Cache plus buffered vote counts reconciled to MySQL asynchronously</td>
+<td>A synchronous MySQL increment on every vote (hot-row contention)</td>
 </tr>
 <tr>
 <td><strong>Elasticsearch</strong></td>
 <td>Findability</td>
-<td>Full-text beyond <code>LIKE</code></td>
+<td>Full-text search beyond <code>LIKE</code></td>
 <td>SQL only</td>
 </tr>
 <tr>
-<td><strong>Crons</strong></td>
-<td>Video/reminder ops</td>
-<td>Batch efficiency <strong>+70%</strong> HISTORICAL</td>
+<td><strong>Scheduled jobs (crons)</strong></td>
+<td>Video, reminder and cleanup ops</td>
+<td>Asynchronous batch workflows (ops efficiency +70%, HISTORICAL)</td>
 <td>Manual ops</td>
 </tr>
 </tbody>
 </table>
-<h3 id="logical-er">Logical ER</h3>
-<pre><code> user 1──* vote (unique user_id+content_id)
- user 1──* subscription
- content 1──* pin / lock
- content ── indexed ──► elasticsearch_doc
- influencer_account 1──* earning_txn / coupon  (dashboard → +30% course sales HISTORICAL)
- cron_job → video_asset / reminder / cleanup
-</code></pre>
-<h3 id="mermaid-er_2">Mermaid ER</h3>
+<h3 id="logical-er-logical-historical_1">Logical ER (LOGICAL / HISTORICAL)</h3>
 <div class="mermaid">erDiagram
-  USER ||--o{ VOTE : "casts"
+  APP_USER ||--o{ VOTE : "casts"
   CONTENT ||--o{ VOTE : "receives"
-  USER ||--o{ SUBSCRIPTION : "premium"
+  APP_USER ||--o{ SUBSCRIPTION : "premium"
   CONTENT ||--o{ PIN : "pinned"
+  CONTENT ||--o| THREAD_LOCK : "locked"
   INFLUENCER ||--o{ EARNING : "dashboard"
+  INFLUENCER ||--o{ COUPON : "affiliate"
 </div>
+<p><em>What to notice:</em> a vote sits between a user and a piece of content, with a unique <code>(user_id, content_id)</code> pair. That one constraint is what makes "vote twice" impossible and makes the vote API idempotent.</p>
+<pre><code class="language-text"> user 1--* vote (unique user_id+content_id)
+ user 1--* subscription
+ content 1--* pin / lock
+ content -- indexed --&gt; elasticsearch_doc
+ influencer_account 1--* earning_txn / coupon   (dashboard, +30% course sales HISTORICAL)
+ cron_job --&gt; video_asset / reminder / cleanup
+</code></pre>
 <hr>
-<h2 id="cheat-sheet-one-problem-per-project">Cheat sheet — one problem per project</h2>
+<h2 id="cheat-sheet-one-data-problem-per-project">Cheat sheet: one data problem per project</h2>
 <table>
 <thead>
 <tr>
@@ -659,40 +971,59 @@ Outcome HISTORICAL: <strong>99.9%</strong>, <strong>~20h/week</strong>. Do <stro
 <tbody>
 <tr>
 <td>IA</td>
-<td>Mutation-hostile planner scale + agent safety</td>
-<td>CH insert-only 63/8 + R/O agent + Go writes</td>
+<td>Planner-scale analytical reads, mutation-hostile engine, LLM safety</td>
+<td>ClickHouse six rollups by season, ReplacingMergeTree outputs with <code>config_hash</code>, JSON payloads (no SQL tool), thin PostgreSQL for UAM. Verbal extra: the 63-table, 8-layer insert-only Cluster Module design.</td>
 </tr>
 <tr>
 <td>FRM</td>
-<td>Sheets not audit-safe</td>
-<td>11-table MySQL SSOT + labeled joins</td>
+<td>Sheets is not audit-safe</td>
+<td>8-table normalized MySQL on SOADB (11 ORM models in code), <code>level_mapping</code> spine, SHA-256 natural keys, explicitly aliased JPA queries</td>
 </tr>
 <tr>
 <td>Menu</td>
-<td>Burst scrape + unstructured menus</td>
-<td>Kafka→Flink + RAG/Milvus/Gemini</td>
+<td>Bursty scraping plus unstructured menus</td>
+<td>Kafka plus Flink keyed dedupe plus RAG over Milvus with Gemini, idempotent upserts</td>
 </tr>
 <tr>
 <td>Masters</td>
-<td>Filing-day IRP + no double file</td>
-<td>Kafka + quarter PG + idempotency/DLQ</td>
+<td>Filing-day IRP spikes, no double registration</td>
+<td>Kafka plus PostgreSQL sharded by tax quarter plus idempotency key plus DLQ</td>
 </tr>
 <tr>
 <td>GFG</td>
-<td>Spikes + engagement features</td>
-<td>Django + MySQL/Mongo/Redis/ES</td>
+<td>Contest spikes plus engagement features</td>
+<td>Django plus MySQL / MongoDB / Redis / Elasticsearch</td>
 </tr>
 </tbody>
 </table>
 <hr>
+<h2 id="practice-drill">Practice drill</h2>
+<ol>
+<li><strong>Why ClickHouse and not PostgreSQL for AssortSmart?</strong> Planner pivots scan hundreds of millions of rows and touch a few columns, which is a columnar workload. We ran POCs and ClickHouse won large analytical reads. A 250M-row pivot went from 189 seconds to 12 seconds once we read from pre-aggregated rollups. PostgreSQL still holds users, roles and UAM, because those need transactions.</li>
+<li><strong>Why ReplacingMergeTree for AI outputs?</strong> Batches can retry or overlap and write the same article twice. ReplacingMergeTree keeps the newest version per key, so the write is eventually consistent and retry-safe without UPDATEs. Readers take the latest with <code>argMax</code> or <code>LIMIT 1 BY</code>.</li>
+<li><strong>Is the 63-table design in production?</strong> No. It is a validated design for the Cluster Recommendation Copilot, which is verbal depth. It passed syntax validation and review but has no runtime evidence yet.</li>
+<li><strong>Why partition the rollups by season?</strong> Planners filter by season, so pruning skips everything else. A season is also the unit of rebuild and copy, and a failed season is fixed by dropping that partition and recopying.</li>
+<li><strong>FRM: why MySQL?</strong> It is Uber's SOADB standard for service-owned data, and it fits: small, relational, multi-user edits during close. We flattened the hierarchy so we never needed recursive SQL.</li>
+<li><strong>FRM: 8 tables or 11?</strong> The PDF's normalized core is 8 tables. The scoping service code has 11 ORM models including recon v2 leaves and configuration tables.</li>
+<li><strong>FRM: what is <code>level_mapping</code>?</strong> It is the flattened FSLI hierarchy, one row per L1-L4 path per quarter. Its <code>uuid</code> is the <code>level_id</code> that every fact row joins to.</li>
+<li><strong>FRM: why SHA-256 keys?</strong> So re-seeding the same question every quarter updates the existing row instead of creating a duplicate. Same input, same key.</li>
+<li><strong>Menu: is it really exactly-once?</strong> End to end it is at-least-once delivery plus idempotent upserts keyed by vendor and menu version. A replayed event rewrites the same row, so the catalog effect is exactly once.</li>
+<li><strong>Masters: why shard by tax quarter?</strong> GST is quarter-scoped, so the current quarter is hot and history is cold. Quarter shards keep the hot working set small and let us archive old quarters.</li>
+<li><strong>Masters: how do you avoid double registration?</strong> Every bulk chunk carries an idempotency key built from client, file hash and batch index. A replay finds the existing record and does not call the IRP again.</li>
+<li><strong>GFG: how do you make voting idempotent?</strong> A unique constraint on <code>(user_id, content_id)</code>. Casting the same vote again is an upsert. Redis buffers the counts during contest spikes.</li>
+</ol>
+<hr>
 <h2 id="study-checklist">Study checklist</h2>
 <ul>
-<li>[ ] Draw FRM <code>level_mapping</code> spine and name all 11 tables  </li>
-<li>[ ] Draw IA 8 layers and say P1 vs P3 in one sentence each  </li>
-<li>[ ] Draw Masters invoice → IRP → Mongo snapshot with idempotency key  </li>
-<li>[ ] Draw Menu Kafka→Flink branches; say ANZ ≠ Eats  </li>
-<li>[ ] For any tech on the PDF: problem → why → rejected  </li>
-</ul></main>
+<li>[ ] Draw the IA store map: ClickHouse master, six rollups, decision outputs with <code>config_hash</code>, PostgreSQL UAM, Redis auth cache. Say where the LLM is not allowed.</li>
+<li>[ ] Say the six rollup table names and why they are partitioned by season.</li>
+<li>[ ] Draw the Cluster Module 8 layers and say P1 vs P3 in one sentence each, and say "design, verbal only".</li>
+<li>[ ] Draw the FRM <code>level_mapping</code> spine. Say "8-table SOADB on the PDF, 11 ORM models in code".</li>
+<li>[ ] Draw Masters invoice to IRP registration to Mongo snapshot, with the idempotency key.</li>
+<li>[ ] Draw the Menu Kafka to Flink branches. Say ANZ is a separate Mobility product.</li>
+<li>[ ] For any tech on the PDF: problem, why it fits, what we rejected.</li>
+</ul>
+<p>Column-level schemas, sample rows and API contracts: <a href="35_table_schemas_api_design.html"><code>35_table_schemas_api_design.md</code></a>. Architecture diagrams: <a href="33_architecture_diagrams.html"><code>33_architecture_diagrams.md</code></a>.</p></main>
 </div>
 
 <script type="module">

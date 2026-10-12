@@ -40,48 +40,265 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final Java+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/projects/03_uber_menu_ingestion.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#uber-menu-ingestion-java-track-note">Uber Menu Ingestion (Java track note)</a>
-<a class="lvl2" href="#elevator-pitch">Elevator pitch</a>
-<a class="lvl2" href="#why-flink-spark-here-not-masters-ia">Why Flink + Spark here (not Masters / IA)</a>
-<a class="lvl2" href="#money-math">Money math</a></nav>
-<main><h1 id="uber-menu-ingestion-java-track-note">Uber Menu Ingestion (Java track note)</h1>
-<p><strong>Resume tech (matches the PDF Tech line exactly):</strong> Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker</p>
-<p><strong>Not on the PDF — do not claim:</strong> Spark and SFT/fine-tuning. Spark backfills are study-only depth; the extraction path is RAG over Milvus embeddings into Gemini, not a fine-tuned model.</p>
-<p><strong>No Spring claim.</strong> Same stack as v2.</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#uber-via-epam-menu-ingestion-automation-uber-eats">Uber (via EPAM): Menu Ingestion &amp; Automation, Uber Eats</a>
+<a class="lvl2" href="#1-the-one-minute-version">1. The one-minute version</a>
+<a class="lvl2" href="#2-the-business-in-plain-english">2. The business in plain English</a>
+<a class="lvl2" href="#3-words-you-need">3. Words you need</a>
+<a class="lvl2" href="#4-architecture">4. Architecture</a>
+<a class="lvl2" href="#5-one-job-step-by-step">5. One job, step by step</a>
+<a class="lvl2" href="#6-each-resume-bullet-decoded">6. Each resume bullet decoded</a>
+<a class="lvl2" href="#7-tech-used-and-why">7. Tech used and why</a>
+<a class="lvl2" href="#8-questions-they-will-ask">8. Questions they will ask</a>
+<a class="lvl2" href="#9-related-project-anz-document-compliance-uber-mobility">9. Related project: ANZ Document Compliance (Uber Mobility)</a>
+<a class="lvl2" href="#10-what-not-to-say">10. What not to say</a></nav>
+<main><h1 id="uber-via-epam-menu-ingestion-automation-uber-eats">Uber (via EPAM): Menu Ingestion &amp; Automation, Uber Eats</h1>
+<p><strong>Role:</strong> Software Development Engineer 2 · July 2024 to May 2026 · Bangalore · always say "Uber via EPAM"<br>
+<strong>Resume tech line (exact):</strong> Python, Selenium, Kafka, Flink, LangChain, Gemini, RAG, Milvus, GCP, Docker</p>
+<p>This project stays Python on every resume track. There is no Spring or Java claim here.</p>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
+<ul>
+<li><strong>What it covers:</strong> how restaurant menus get from messy websites and PDFs into the Uber Eats catalog, through a hardened Selenium fleet, Kafka, Apache Flink and a Gemini RAG extractor over Milvus. A short box at the end covers the separate ANZ document-compliance project.</li>
+<li><strong>When to read it:</strong> before questions on streaming, scraping, RAG or LLM systems, deduplication, idempotency or "an AI system you shipped".</li>
+<li><strong>What to memorise:</strong> from 24 hours to 2 hours, $600K a year and its derivation, 30K+ menus a month, 98% field fidelity in offline evaluation, 95%+ extraction success, and the honest meaning of "exactly-once".</li>
+</ul>
+</div>
+<p><strong>Tags on this page.</strong> HISTORICAL means it comes from my past work records. ESTIMATED means arithmetic I can show. MEASURED means a log or document. The menu outcomes are HISTORICAL, and 98% is an <strong>offline evaluation</strong> number.</p>
+<p>Longer version: <a href="../../handbook/06_uber_menu_and_anz.html">Handbook chapter 6, Menu and ANZ</a>. Older notes: <a href="../14_uber_menu_deep_dive.html">Menu deep dive</a>, <a href="../03_uber_menu_streaming_numbers.html">Menu streaming numbers</a> and <a href="../30_panel_menu_anz_milvus.html">Menu, ANZ and Milvus panel</a>. Older notes also mention Spark, Pinot and fine-tuning. None of those is on the current resume, so treat them as study-only.</p>
+<hr>
+<h2 id="1-the-one-minute-version">1. The one-minute version</h2>
 <blockquote>
-<p>Full defense: <code>../../resume_v2/prep/14_uber_menu_deep_dive.md</code>.</p>
+<p>"At Uber Eats, through EPAM, I worked on menu ingestion, which gets a new restaurant's menu into the catalog so it can take orders. Menus arrive as JavaScript-heavy sites, PDFs and images in many languages. I architected an automated pipeline. A Selenium fleet, which I hardened with dynamic proxy pools and adaptive retries, took extraction success to 95% plus from an estimated 60 to 65%. Scrapes flow through Kafka into a Flink job that deduplicates per vendor by content hash, normalizes to one schema and does idempotent catalog upserts. For messy PDFs we used RAG: retrieve similar labelled menus from Milvus and give them to Gemini 2.5 Pro, which returns JSON that must pass schema validation. That reached 98% field fidelity in offline evaluation. Onboarding went from 24 hours to 2 hours at 30,000+ menus a month, and replacing a roughly $2 per menu manual and third-party cost saved about $600K a year."</p>
 </blockquote>
-<h2 id="elevator-pitch">Elevator pitch</h2>
-<p>"Uber Eats menu onboarding used Selenium scrapers on GCP publishing into Kafka (~200–500 peak events/sec estimated during fleet runs). Flink normalized, deduped, and routed online; Spark handled backfills and reprocess windows. RAG + Gemini covered PDF/image menus. Onboarding fell from 24h to 2h at 30K+ menus/month. Killing a ~$2/menu tool saved $600K+/yr ($720K list). Offline eval hit 98% fidelity and 100% schema consistency."</p>
-<h2 id="why-flink-spark-here-not-masters-ia">Why Flink + Spark here (not Masters / IA)</h2>
-<p>Menu has bursty scrape ingress and both online freshness and historical rewrite shapes. Masters already claims Kafka for e-invoice. IA is ClickHouse POC.</p>
-<h2 id="money-math">Money math</h2>
+<h2 id="2-the-business-in-plain-english">2. The business in plain English</h2>
+<p>A restaurant on Uber Eats earns nothing until its menu is in the <strong>catalog</strong>, Uber's strict structured store of dishes, prices, sizes and add-ons. Getting it there is <strong>onboarding</strong>. Menus are hard because many pages only show items after JavaScript runs, many menus are scanned PDFs or photos, prices look like "8,50 €" or "¥1,200", sites block bots, and the same menu gets scraped repeatedly. Before this work onboarding took about 24 hours and cost about $2 per menu in manual and third-party processing. At 30K+ menus a month, that was slow and expensive.</p>
+<h2 id="3-words-you-need">3. Words you need</h2>
+<ul>
+<li><strong>Selenium.</strong> Drives a real browser from code, so you see the page as a person does. <strong>Headless</strong> means no visible window.</li>
+<li><strong>Proxy pool.</strong> A set of middleman servers you rotate through, so the site sees their IP, not yours. A <strong>dynamic</strong> pool evicts banned or slow proxies automatically. Like a team of couriers: if one is turned away, send another.</li>
+<li><strong>Adaptive retries.</strong> Retry differently by failure type. A ban means switch proxy, a timeout means wait longer (backoff plus random jitter), a broken page means stop. A <strong>retry budget</strong> caps how much one hostile site can consume.</li>
+<li><strong>Kafka.</strong> A durable message log. We keyed messages by <code>vendor_id</code>, so each restaurant's events stay in order on one partition and can be replayed.</li>
+<li><strong>Apache Flink.</strong> A stream processor that keeps memory per key (<strong>keyed state</strong>). A <strong>watermark</strong> is Flink saying "I believe I have seen everything up to time T". A <strong>checkpoint</strong> is a consistent snapshot of state plus Kafka offsets, used to recover after a crash.</li>
+<li><strong>Content hash.</strong> A fingerprint (for example SHA-256) of the normalized menu. Same content, same hash.</li>
+<li><strong>RAG (Retrieval-Augmented Generation).</strong> Retrieve relevant examples first and put them in the prompt. Like an open-book exam.</li>
+<li><strong>Embedding and Milvus.</strong> An embedding is a list of numbers that captures meaning, so similar text lands close together. Milvus is an open-source vector database that finds the nearest embeddings fast.</li>
+<li><strong>Field fidelity.</strong> The share of extracted fields (name, price, description, modifiers) that exactly match the human label.</li>
+<li><strong>Idempotent upsert.</strong> Insert if missing, update if present, keyed by a stable ID, so doing it twice changes nothing.</li>
+</ul>
+<h2 id="4-architecture">4. Architecture</h2>
+<div class="mermaid">flowchart LR
+  SRC["Partner sites, PDFs, images"] --&gt; SEL["Selenium fleet on GCP"]
+  SEL --&gt;|raw files| RAW["Object storage"]
+  SEL --&gt;|scrape events| K["Kafka keyed by vendor_id"]
+  K --&gt; F["Flink: keyed dedup, normalize, route"]
+  F --&gt;|structured| CAT["Idempotent catalog upsert"]
+  F --&gt;|PDF or image| RAG["LangChain RAG extractor"]
+  RAG --&gt;|similar menus| MV["Milvus"]
+  RAG --&gt;|prompt| GEM["Gemini 2.5 Pro"]
+  GEM --&gt;|JSON| VAL["JSON Schema gate"]
+  VAL --&gt;|valid| CAT
+  VAL --&gt;|invalid or low confidence| HR["Human review"]
+  CAT --&gt; APP["Uber Eats catalog"]
+</div>
+<p><em>What to notice: acquisition, transport, processing and AI extraction are separate stages. Nothing reaches the catalog without passing Flink's normalization or the schema gate.</em></p>
+<p>Box by box. The <strong>Selenium fleet</strong>, packaged with Docker on GCP, loads each source through the proxy pool and stores the raw file, so the event only carries a pointer. <strong>Kafka</strong> lets scrapers write and move on without waiting for the catalog. <strong>Flink</strong> drops duplicate menu versions per vendor, normalizes fields, and routes structured content straight to the catalog and unstructured content to RAG. The <strong>RAG extractor</strong> chunks the document, finds similar labelled menus in <strong>Milvus</strong>, and asks <strong>Gemini 2.5 Pro</strong> for JSON. The <strong>schema gate</strong> blocks anything malformed.</p>
+<h2 id="5-one-job-step-by-step">5. One job, step by step</h2>
+<p>Illustrative data: café <code>v_48213</code> in Lisbon has a scanned Portuguese PDF menu.</p>
+<ol>
+<li>A Selenium worker downloads the PDF, stores it, and publishes <code>{"vendor_id": "v_48213", "content_type": "pdf", "content_hash": "9f2c...", "locale": "pt"}</code>.</li>
+<li>Flink sees a hash it has not stored for this vendor, saves <code>9f2c</code>, and routes the PDF to RAG.</li>
+<li>The extractor retrieves three already-labelled Portuguese café menus from Milvus.</li>
+<li>Gemini receives the chunk ("Tosta mista ..... 4,50 €"), the examples and the schema, and returns <code>{"name": "Tosta mista", "price_amount": 4.50, "currency": "EUR"}</code>.</li>
+<li>The JSON passes schema validation and is upserted keyed by vendor, menu version and item key.</li>
+<li>Ten minutes later the same PDF is scraped again. Same hash, so Flink drops it. No LLM cost and no catalog write.</li>
+</ol>
+<h2 id="6-each-resume-bullet-decoded">6. Each resume bullet decoded</h2>
+<h3 id="bullet-1-24-hours-to-2-hours-600k-30k-menus-98-fidelity">Bullet 1: 24 hours to 2 hours, $600K, 30K+ menus, 98% fidelity</h3>
+<p><strong>In plain words.</strong> I architected the automated pipeline that gets menus into Uber Eats. For the hardest inputs, messy multilingual PDFs, we used an LLM grounded on similar labelled menus.</p>
+<p><strong>How it works.</strong></p>
+<pre><code class="language-python">def extract_menu(chunk_text: str, locale: str) -&gt; dict:
+    examples = milvus_search(embed(chunk_text), top_k=3, filter={&quot;locale&quot;: locale})
+    prompt = build_prompt(chunk=chunk_text, examples=examples, schema=CATALOG_SCHEMA)
+    raw = gemini_generate(prompt)                 # Gemini 2.5 Pro, JSON only
+    menu = json.loads(raw)
+    jsonschema.validate(menu, CATALOG_SCHEMA)     # raises if the shape is wrong
+    return menu
+</code></pre>
+<p><em>Simplified sketch. Function names and <code>top_k</code> are illustrative.</em> Without examples, an LLM guesses at layout, may invent a dish, or drifts from the schema. Two or three labelled examples of similar menus show it which number is the price and how sizes become modifiers.</p>
+<p><strong>Why this design, and alternatives.</strong> Regex or template parsers break on every new layout and language. OCR plus rules gets the text but not the structure. A bare prompt is less consistent across cuisines. Training a custom model needs a big labelled set and retraining whenever the schema changes, while with retrieval a newly labelled menu helps the very next extraction. pgvector or a managed vector service would also work, and Milvus is what we used. <em>Trade-off:</em> LLM calls cost money, and offline evaluation is not live monitoring. <em>What I'd do differently:</em> sample live extractions for human spot checks to track fidelity in production.</p>
+<p><strong>The numbers.</strong></p>
 <table>
 <thead>
 <tr>
-<th>Step</th>
 <th>Number</th>
+<th>What it measures</th>
+<th>How derived</th>
+<th>How to say it</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Unit cost</td>
-<td>~$2 / menu</td>
+<td>24 hours to 2 hours</td>
+<td>Onboarding cycle time (HISTORICAL)</td>
+<td>(24 − 2) / 24 is about 92%</td>
+<td>"Onboarding went from 24 hours to 2 hours."</td>
 </tr>
 <tr>
-<td>Volume</td>
-<td>30,000+ / month</td>
+<td>$600K a year</td>
+<td>Cost removed</td>
+<td>About $2 per menu × 30,000 × 12 = $720K list, floored to $600K to be conservative</td>
+<td>"About $2 a menu at 30K a month is $720K. I quote $600K conservatively."</td>
 </tr>
 <tr>
-<td>Annual list</td>
-<td>$720,000</td>
+<td>30K+ a month</td>
+<td>Menus processed (HISTORICAL)</td>
+<td>30,000 / 30 is about 1,000 a day</td>
+<td>"More than 30,000 menus a month."</td>
 </tr>
 <tr>
-<td>Resume</td>
-<td><strong>$600K+</strong> floor</td>
+<td>98%</td>
+<td>Field fidelity on an offline labelled set</td>
+<td>Example: 196 of 200 fields match labels</td>
+<td>"98% field fidelity in offline evaluation."</td>
 </tr>
 </tbody>
-</table></main>
+</table>
+<p>Why it mattered: restaurants go live the same day instead of the next, and the per-menu saving grows with volume.</p>
+<h3 id="bullet-2-95-success-selenium-hardening-kafka-and-flink-exactly-once-upserts">Bullet 2: 95%+ success, Selenium hardening, Kafka and Flink, exactly-once upserts</h3>
+<p><strong>Hardening the fleet.</strong></p>
+<pre><code class="language-python">def scrape_with_retries(url, source, max_attempts=4):
+    for attempt in range(1, max_attempts + 1):
+        proxy = proxy_pool.get_healthy(source)
+        try:
+            page = selenium_fetch(url, proxy=proxy)
+            if looks_blocked(page):              # CAPTCHA wall or soft 403
+                proxy_pool.mark_banned(proxy)
+                continue
+            if item_count(page) == 0:
+                raise EmptyMenuError(url)        # never green-light an empty menu
+            return page
+        except TimeoutError:
+            if not retry_budget.allow(source):
+                break
+            time.sleep(min(2 ** attempt, 30) + random.uniform(0, 1))
+    raise ScrapeFailed(url)
+</code></pre>
+<p><em>Simplified sketch with illustrative thresholds.</em></p>
+<p><strong>Flink keyed dedup.</strong> The stream is keyed by <code>vendor_id</code>, and state holds the last content hash.</p>
+<table>
+<thead>
+<tr>
+<th>Event time</th>
+<th>Hash</th>
+<th>State before</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10:15</td>
+<td>9f2c</td>
+<td>empty</td>
+<td>keep, state becomes 9f2c</td>
+</tr>
+<tr>
+<td>10:25</td>
+<td>9f2c</td>
+<td>9f2c</td>
+<td>drop, duplicate scrape</td>
+</tr>
+<tr>
+<td>next day</td>
+<td>a71d</td>
+<td>9f2c</td>
+<td>keep, the menu changed</td>
+</tr>
+</tbody>
+</table>
+<p>A time-to-live on state stops it growing forever. Event-time watermarks with bounded lateness stop a late page from an older version overwriting a newer one.</p>
+<p><strong>Exactly-once, the honest version.</strong> Delivery through Selenium, Kafka and Flink is <strong>at-least-once</strong>. After a crash, Flink restores the last checkpoint and reprocesses some events. The catalog write is an <strong>idempotent upsert</strong> keyed by vendor, menu version and item key, so a replay writes the same row again. The catalog sees exactly-once <strong>effects</strong>. It is not a two-phase commit across Gemini, partner sites and the catalog.</p>
+<p><strong>Why Kafka and Flink at about 1,000 menus a day?</strong> Not for average volume. For the shape of the load: bursts and retries, repeated scrapes needing per-vendor state, late pages needing event time, and replay after a parser bug. A simple worker queue would mean rebuilding those by hand. Kafka Streams could work at this rate, and Flink gave richer event-time support. Spark is not on the resume. If asked, it is a reasonable batch backfill option, as study-level talk only.</p>
+<p><strong>The number.</strong> 95%+ extraction success is HISTORICAL. The 60 to 65% starting point is ESTIMATED. Say: "Success went to 95% plus, from roughly 60 to 65% before hardening."</p>
+<h2 id="7-tech-used-and-why">7. Tech used and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Why here</th>
+<th>Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>Scrapers, workers, LLM glue</td>
+<td>Go, less natural for browser automation and LLM tooling</td>
+</tr>
+<tr>
+<td>Selenium</td>
+<td>JavaScript-rendered pages</td>
+<td>Plain HTTP, which misses rendered items</td>
+</tr>
+<tr>
+<td>Kafka</td>
+<td>Buffer bursts, per-vendor order, replay</td>
+<td>Scrapers calling the catalog directly</td>
+</tr>
+<tr>
+<td>Flink</td>
+<td>Keyed dedup state, event time</td>
+<td>Kafka Streams</td>
+</tr>
+<tr>
+<td>LangChain + Gemini 2.5 Pro + RAG</td>
+<td>Chunk, retrieve, prompt, parse multilingual menus</td>
+<td>Templates and regex</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>Similarity search over labelled menus</td>
+<td>pgvector, managed services</td>
+</tr>
+<tr>
+<td>GCP + Docker</td>
+<td>Where the fleet ran, packaged repeatably</td>
+<td>Bare VMs</td>
+</tr>
+</tbody>
+</table>
+<h2 id="8-questions-they-will-ask">8. Questions they will ask</h2>
+<p><strong>"Is 98% a production number?"</strong><br>
+No. It is offline evaluation on a labelled set, measuring the share of fields that exactly match the human label. In production the protection is the schema gate plus human review for low-confidence output.<br>
+<em>Follow-up they may ask:</em> "How would you monitor it live?" Sample a small share of live extractions for spot checks and alert on spikes in gate rejections.</p>
+<p><strong>"Do you really have exactly-once?"</strong><br>
+Exactly-once effects, not exactly-once delivery. Delivery is at-least-once, and the upsert keyed by vendor, menu version and item key makes reprocessing harmless. I would not claim zero message loss.</p>
+<p><strong>"What stops the LLM inventing a dish?"</strong><br>
+Three layers. Retrieval grounds it on real labelled examples, the schema gate rejects malformed output, and low-confidence output goes to a person instead of the catalog.</p>
+<p><strong>"How do you know a scraper broke silently?"</strong><br>
+The dangerous case is a page that loads fine with no menu, after a layout change or CAPTCHA. We count an empty or suspiciously small menu as a failure and watch per-vendor item counts.</p>
+<p><strong>"What happens when a Flink job crashes?"</strong><br>
+It restores the last checkpoint, Kafka offsets rewind to match, events since then are reprocessed, and idempotent upserts prevent duplicates. Consumer lag rises and alerts until it catches up.</p>
+<p><strong>"How did you get to $600K?"</strong><br>
+About $2 per menu, times 30,000 menus a month, times 12, is $720K. I quote $600K as a conservative floor.</p>
+<h2 id="9-related-project-anz-document-compliance-uber-mobility">9. Related project: ANZ Document Compliance (Uber Mobility)</h2>
+<div class="callout highlight">
+<p><strong>Keep this separate from Menu.</strong> ANZ is Uber Mobility (rides), not Eats, and it is HISTORICAL. I automated driver and vehicle document verification in Australia and New Zealand against local authority rules with a <strong>deterministic validation backend</strong>, a rules engine where the same document always gets the same verdict with the failing reason (for example "expired" or "does not match the vehicle record"). That reached <strong>99.9% regulatory compliance</strong> and removed <strong>20 hours a week</strong> of manual review queues. Rules beat ML here because regulators need explainable, repeatable decisions. Do not attach Selenium, Kafka, Flink or RAG to it, and do not invent driver or document counts.</p>
+</div>
+<h2 id="10-what-not-to-say">10. What not to say</h2>
+<div class="callout warn">
+<ul>
+<li>"98% accuracy in production" or "98% SLA". It is offline evaluation.</li>
+<li>"Zero message loss" or "two-phase commit end to end".</li>
+<li>The 60 to 65% baseline as measured. It is ESTIMATED.</li>
+<li>$720K as the saving. The resume says $600K.</li>
+<li>Spark, Pinot or fine-tuning as resume claims. None is on the PDF.</li>
+<li>ClickHouse on Menu. ClickHouse belongs to Impact Analytics.</li>
+<li>Milvus anywhere except Menu.</li>
+<li>"I owned all of Uber Eats' catalog platform."</li>
+<li>Peak 200 to 500 events per second unless asked, and then only as an ESTIMATED order of magnitude.</li>
+<li>Merging the Menu Kafka story with the Masters India Kafka story. They are different products.</li>
+</ul>
+</div></main>
 </div>
 
 <script type="module">

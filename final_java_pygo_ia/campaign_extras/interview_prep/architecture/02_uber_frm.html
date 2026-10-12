@@ -40,186 +40,574 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/architecture/02_uber_frm.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-uber-frm-risk-scoping-campaign-pdf-sync">Architecture — Uber FRM Risk Scoping (campaign PDF sync)</a>
-<a class="lvl2" href="#resume-bullets-current">Resume bullets (current)</a>
-<a class="lvl2" href="#1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</a>
-<a class="lvl2" href="#2-domain-model-say-this-instead-of-11-tables">2. Domain model (say this instead of “11 tables”)</a>
-<a class="lvl2" href="#3-architecture-diagram">3. Architecture diagram</a>
-<a class="lvl2" href="#4-end-to-end-quarterly-flow">4. End-to-end quarterly flow</a>
-<a class="lvl2" href="#5-verbal-depth-not-on-pdf">5. Verbal depth (not on PDF)</a></nav>
-<main><h1 id="architecture-uber-frm-risk-scoping-campaign-pdf-sync">Architecture — Uber FRM Risk Scoping (campaign PDF sync)</h1>
-<h2 id="resume-bullets-current">Resume bullets (current)</h2>
-<ol>
-<li>Owned design/architecture — 8 screens, 30+ APIs, $340M materiality, targeting 70% recon cut.</li>
-<li>Replaced Sheets close with MySQL SSOT tying HFM to 10-Q for PwC line-level audit trail.</li>
-<li>Automated group/component scoping + residual-risk + EMI auto-flags across 55 FSLIs / 14 entities ($340M / $170M sample).</li>
-<li>Led 3 engineers + Bazel pytest suite to 1,100+ tests for PwC-facing releases.</li>
-</ol>
-<p><strong>Removed from PDF (still defend verbally):</strong> 11-table schema list, Sheets→MySQL “18 files” migration wording, column-aliasing bug as a standalone bullet.</p>
-<h2 id="1-where-each-tech-is-used-and-why">1. Where each tech is used (and why)</h2>
-<table>
-<thead>
-<tr>
-<th>Tech</th>
-<th>Where</th>
-<th>Why</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Python / FastAPI</strong></td>
-<td>30+ REST APIs for 8 screens</td>
-<td>Uber/EPAM Python service norms; async handlers with <code>asyncio.to_thread</code> for sync SQLAlchemy</td>
-</tr>
-<tr>
-<td><strong>SQLAlchemy 2.0 / Pydantic</strong></td>
-<td>ORM + response trees (L1→L2→L3)</td>
-<td>Typed models, explicit <code>.label()</code> joins, nested recon/scoping payloads</td>
-</tr>
-<tr>
-<td><strong>MySQL</strong></td>
-<td>System of record for scoping + recon leaves</td>
-<td>SSOT vs Sheets; durable IDs for audit comments/history</td>
-</tr>
-<tr>
-<td><strong>React (Fusion.js)</strong></td>
-<td>8 UI screens</td>
-<td>Finance interactive grids</td>
-</tr>
-<tr>
-<td><strong>Handler / service / repository</strong></td>
-<td>Layered backend</td>
-<td>Parallelize pod work; testable boundaries</td>
-</tr>
-<tr>
-<td><strong>Bazel + pytest</strong></td>
-<td><code>uber_py_test</code> CI gates</td>
-<td>~1,100+ tests before merge</td>
-</tr>
-<tr>
-<td><strong>Docker</strong></td>
-<td>Local/CI packaging</td>
-<td>Reproducible runs</td>
-</tr>
-<tr>
-<td><strong>Header auth</strong></td>
-<td><code>x-auth-params-email</code></td>
-<td>Gateway-injected identity for <code>created_by</code> / <code>updated_by</code> audit columns</td>
-</tr>
-</tbody>
-</table>
-<h2 id="2-domain-model-say-this-instead-of-11-tables">2. Domain model (say this instead of “11 tables”)</h2>
-<p>Scoping service owns the financial close decision graph:</p>
-<table>
-<thead>
-<tr>
-<th>Area</th>
-<th>What it stores</th>
-<th>Screen / outcome</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Balance sheet / income statement facts</td>
-<td>FSLI hierarchies by fiscal quarter/year</td>
-<td>Group + component scoping</td>
-</tr>
-<tr>
-<td>EMI</td>
-<td>Equity-method investees (ownership %, balances, auditor)</td>
-<td>EMI scoping</td>
-</tr>
-<tr>
-<td>Metrics / thresholds</td>
-<td>Materiality, residual threshold, benchmarks</td>
-<td>Materiality + Threshold Setup</td>
-</tr>
-<tr>
-<td>Assessments / questions</td>
-<td>Scoping questionnaire state</td>
-<td>Assessments</td>
-</tr>
-<tr>
-<td>Level mapping / component entity</td>
-<td>Hierarchy links</td>
-<td>Component scoping</td>
-</tr>
-<tr>
-<td>Recon leaves</td>
-<td>HFM vs filed 10-Q amounts + difference</td>
-<td>Reconciliation</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Q4 2025 sample (MEASURED):</strong> group materiality <strong>$340M</strong>, residual <strong>$170M</strong>, ~<strong>55</strong> line items, <strong>14</strong> entities.</p>
-<p>If asked “how many tables?”: “About <strong>11 SQLAlchemy models</strong> in the scoping service; collaboration/comments live in a separate service — I do not claim those.”</p>
-<h2 id="3-architecture-diagram">3. Architecture diagram</h2>
-<h3 id="ascii-whiteboard">ASCII (whiteboard)</h3>
-<pre><code> React 8 screens ──30+ REST──► FastAPI (handler → service → repository)
-                                      │
-                                      ▼
-                               MySQL system of record
-                               (~11 models · 55 lines · 14 entities)
-                                      ▲
-                    Oracle HFM ───────┤
-                    public 10-Q ──────┘  (recon validate)
-                                      │
-                                      ▼
-                               PwC audit work papers
-</code></pre>
-<h3 id="mermaid">Mermaid</h3>
-<div class="mermaid">flowchart LR
-  subgraph UI[React 8 screens]
-    Rec[Reconciliation]
-    Mat[Materiality]
-    EMI[EMI]
-    Grp[Group Scoping]
-    Cmp[Component Scoping]
-    Res[Residual Risk]
-    Sum[Summary]
-  end
-
-  subgraph API[FastAPI scoping service]
-    H[Handlers]
-    S[Services]
-    R[Repositories]
-  end
-
-  subgraph DB[MySQL SSOT]
-    Facts[BS / IS / EMI / metrics]
-    Recon[recon leaves HFM vs 10-Q]
-  end
-
-  subgraph Ext[Inputs / consumers]
-    HFM[Oracle HFM extracts]
-    TQ[Public 10-Q]
-    PwC[PwC audit work papers]
-  end
-
-  UI --> H --> S --> R --> Facts
-  R --> Recon
-  HFM --> S
-  S --> TQ
-  Facts --> PwC
-  Recon --> PwC
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-uber-frm-scoping-platform-uber-via-epam">Architecture: Uber FRM Scoping Platform (Uber via EPAM)</a>
+<a class="lvl2" href="#1-the-one-paragraph-version">1. The one-paragraph version</a>
+<a class="lvl2" href="#2-words-you-need">2. Words you need</a>
+<a class="lvl2" href="#3-the-architecture-diagram">3. The architecture diagram</a>
+<a class="lvl2" href="#4-box-by-box-walkthrough">4. Box-by-box walkthrough</a>
+<a class="lvl2" href="#5-one-request-step-by-step-a-manager-moves-a-line-to-review">5. One request, step by step: a manager moves a line to Review</a>
+<a class="lvl2" href="#6-design-decisions">6. Design decisions</a>
+<a class="lvl2" href="#7-the-numbers-on-this-diagram">7. The numbers on this diagram</a>
+<a class="lvl2" href="#8-failure-modes-and-what-the-system-does">8. Failure modes and what the system does</a>
+<a class="lvl2" href="#9-verbal-depth-not-on-the-pdf-true">9. Verbal depth (not on the PDF, true)</a>
+<a class="lvl2" href="#10-say-this-not-that">10. Say this, not that</a>
+<a class="lvl2" href="#11-how-to-draw-it-in-3-minutes">11. How to draw it in 3 minutes</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="architecture-uber-frm-scoping-platform-uber-via-epam">Architecture: Uber FRM Scoping Platform (Uber via EPAM)</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> the FRM (Financial Risk Management) scoping backend I owned at Uber Finance via EPAM. That means the Java Spring Boot service, the MySQL schema, how one edit flows through it, and how the quarterly close runs.</li>
+<li><b>When to read it:</b> before system design rounds that touch data modelling, concurrency or correctness, and before any "tell me about Uber" question.</li>
+<li><b>What to memorise:</b> the six-box diagram, the PATCH request with the version check, and the three numbers: 70% (from 14 days to 3 days), $340M materiality, 36 endpoints.</li>
+</ul>
 </div>
-<h2 id="4-end-to-end-quarterly-flow">4. End-to-end quarterly flow</h2>
+<p><strong>Tags on this page.</strong> MEASURED means there is a log, a doc or code. ESTIMATED means arithmetic I can show. TARGET means a design goal (say "targeting"). HISTORICAL means from past work records.</p>
+<p><strong>Stack on this track (Java + AI, IA = Py/Go):</strong> Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel, Docker. Request validation uses Bean Validation. Tests use JUnit 5, Mockito and MockMvc.</p>
+<hr>
+<h2 id="1-the-one-paragraph-version">1. The one-paragraph version</h2>
+<p>Every quarter, Uber's finance team must decide which accounts and which legal entities the auditors (PwC) need to test. That decision is called <strong>scoping</strong>. Before this project it lived in a large Google Sheets workbook with manual formulas, no stable row IDs, no audit trail, and people overwriting each other during the close. I owned the backend that replaced it: a Java Spring Boot service with <strong>36 endpoints</strong> on a normalized MySQL schema, migrating <strong>19M raw GL rows</strong> off Sheets. It automates the financial math, models a 4-level account hierarchy, and keeps an auditable history. The close-related reconciliation work went <strong>from 14 days to 3 days, a 70% cut</strong>, against a <strong>$340M materiality threshold</strong>.</p>
+<hr>
+<h2 id="2-words-you-need">2. Words you need</h2>
+<h3 id="the-finance-words">The finance words</h3>
+<ul>
+<li><strong>FRM (Financial Risk Management).</strong> The finance function that decides where the risk of a misstatement in the financial statements is, and therefore what auditors should test.</li>
+<li><strong>Scoping.</strong> Choosing which accounts and entities are "in scope" for audit testing. Like a teacher deciding which chapters will be on the exam.</li>
+<li><strong>Materiality.</strong> The size of error that would matter to someone reading the financial statements. Here it was <strong>$340M</strong> for the Q4 2025 close. Anything bigger than that cannot be ignored.</li>
+<li><strong>Residual risk.</strong> The part of the balance that is not covered by the in-scope items. On the Q4 2025 close the residual threshold was <strong>$170M</strong>.</li>
+<li><strong>GL (general ledger).</strong> The master list of every accounting entry, by account and entity. Think of the company's full bank statement for every account.</li>
+<li><strong>FSLI (Financial Statement Line Item).</strong> A line on the balance sheet or income statement, such as "Cash" or "Accounts receivable". FSLIs nest in a hierarchy, here <strong>4 levels, L1 to L4</strong> (for example L1 "Current assets", L2 "Cash and equivalents", down to more detailed lines).</li>
+<li><strong>HFM (Oracle Hyperion Financial Management).</strong> The consolidation system where entity trial balances are loaded, converted to one currency and combined into group numbers.</li>
+<li><strong>10-Q.</strong> The quarterly report a US public company files with the SEC (Securities and Exchange Commission). Its numbers are the publicly attested truth.</li>
+<li><strong>Reconciliation.</strong> Checking that two sources agree, here HFM numbers against the filed 10-Q, line by line. <code>difference = HFM amount − filed amount</code>. Like matching your own budget spreadsheet to your bank statement.</li>
+<li><strong>SOX (Sarbanes-Oxley).</strong> US law that requires companies to have controls over financial reporting. Practically: every change must be traceable and controlled.</li>
+<li><strong>EMI (Equity Method Investment).</strong> A company Uber partly owns and accounts for by its share of profit or loss. It has its own scoping screen.</li>
+<li><strong>Quarter-annualization.</strong> Converting a figure for part of a year into an annual figure so it can be compared with annual thresholds. The general idea: a year-to-date number after two quarters is scaled up to a full-year equivalent. "Dynamic" means the scaling depends on which quarter you are in.</li>
+</ul>
+<h3 id="the-data-and-design-words">The data and design words</h3>
+<ul>
+<li><strong>SOADB.</strong> Uber's standard for service-owned relational databases: MySQL on InnoDB. InnoDB gives ACID transactions (all-or-nothing writes that stay consistent).</li>
+<li><strong>Normalized schema.</strong> Each fact stored once, in its own table, linked by keys, instead of copying the same data into many places. Like keeping one contacts list instead of writing a friend's number in every notebook.</li>
+<li><strong>Natural key.</strong> An ID derived from the data itself rather than a random number. Here, a <strong>SHA-256</strong> hash of meaningful fields, so the same question on the same page always gets the same ID.</li>
+<li><strong>Optimistic row-locking.</strong> Each row has a version number. An update only succeeds if the version is still what you read. If someone else saved first, your update affects zero rows and you get a conflict instead of silently overwriting. Like a shared document that warns "this was changed since you opened it".</li>
+<li><strong>Polymorphic review-status model.</strong> One status model reused across many screens. Every screen's rows move through the same states: <strong>Draft, Review, ReOpen, Closed</strong>.</li>
+<li><strong>FSM (finite state machine).</strong> A fixed set of states and allowed transitions. "Draft can go to Review, Review can go to Closed or ReOpen", and nothing else.</li>
+<li><strong>Bazel.</strong> Uber's monorepo build and test system. <strong>Stacked PRs</strong> are a chain of small pull requests, each building on the previous, so each can be reviewed and shipped safely.</li>
+<li><strong>Statement coverage.</strong> The percentage of code lines executed by tests.</li>
+</ul>
+<h3 id="the-java-and-spring-words">The Java and Spring words</h3>
+<ul>
+<li><strong>Spring Boot.</strong> A Java framework that starts a web service with sensible defaults already wired: an embedded web server (Tomcat), JSON handling, database connection pool, configuration and health checks. Think of a furnished flat: you move in and only change what you need.</li>
+<li><strong>Spring MVC and <code>@RestController</code>.</strong> Spring MVC is the web layer inside Spring Boot. A class marked <code>@RestController</code> holds HTTP handlers, and annotations such as <code>@GetMapping</code> and <code>@PatchMapping</code> map a URL and HTTP verb to a Java method. The return value is turned into JSON automatically.</li>
+<li><strong>Dependency injection and beans.</strong> Spring creates the controller, service and repository objects (called <strong>beans</strong>) and passes each one the others it needs through its constructor. You never write <code>new GroupScopingService(...)</code> yourself. Like a stage manager who hands each actor their props before the scene.</li>
+<li><strong>Thread-per-request.</strong> Spring MVC on Tomcat gives each incoming request its own thread from a pool. Blocking database calls are normal in this model, so there is no event loop to protect.</li>
+<li><strong>JPA (Jakarta Persistence API).</strong> The standard Java API for mapping database rows to Java objects. It is a specification, not a library.</li>
+<li><strong>Hibernate.</strong> The library that implements JPA. It turns object changes into SQL, tracks which objects changed, and writes them at commit. Hibernate is the <strong>ORM (object-relational mapper)</strong> here.</li>
+<li><strong>Entity.</strong> A Java class marked <code>@Entity</code> that maps to one table. One object is one row.</li>
+<li><strong>Spring Data JPA repository.</strong> An interface such as <code>GroupLineRepository extends JpaRepository&lt;GroupLine, String&gt;</code>. Spring generates the implementation, so <code>findById</code>, <code>save</code> and custom <code>@Query</code> methods work without hand-written data access code.</li>
+<li><strong>JPQL and native queries.</strong> JPQL (Jakarta Persistence Query Language) is SQL-like but written against entity and field names. A <strong>native query</strong> is plain MySQL SQL run through JPA. Both can return a <strong>projection</strong>, which is a small read-only shape (an interface or a record) holding only the selected columns.</li>
+<li><strong><code>@Version</code>.</strong> A JPA annotation on a numeric field. Hibernate adds <code>AND version = ?</code> to every UPDATE and increments the number. If zero rows change, it throws an <strong><code>OptimisticLockException</code></strong> (Spring wraps it as <code>ObjectOptimisticLockingFailureException</code>). This is how optimistic row-locking is implemented.</li>
+<li><strong><code>@Transactional</code>.</strong> Put on a service method, it opens one database transaction when the method starts and commits when it returns. If an exception escapes, everything in the method rolls back. This is how atomic cross-table syncs work.</li>
+<li><strong>Bean Validation.</strong> Annotations such as <code>@NotNull</code> and <code>@NotBlank</code> on request fields. <code>@Valid</code> on the request body makes Spring check them before the method runs. A failed check never reaches the business code.</li>
+<li><strong>DTO (data transfer object).</strong> A plain class or Java <code>record</code> that defines the JSON shape of a request or response, kept separate from the entity so the API does not leak database internals.</li>
+<li><strong><code>@RestControllerAdvice</code>.</strong> One class that turns exceptions into HTTP responses for the whole service, for example a stale version into a 409 and a validation failure into a 400 with an error body.</li>
+<li><strong>HikariCP.</strong> The database connection pool Spring Boot uses by default. It keeps a fixed number of MySQL connections open and lends one to each request thread for the length of its transaction.</li>
+<li><strong>JUnit 5, Mockito, MockMvc.</strong> JUnit 5 is the Java test runner. Mockito creates fake versions of dependencies so a service can be tested alone. MockMvc sends fake HTTP requests to a controller without starting a real server, so you can assert status codes and JSON.</li>
+</ul>
+<hr>
+<h2 id="3-the-architecture-diagram">3. The architecture diagram</h2>
+<div class="mermaid">flowchart LR
+  UI["React finance screens, 8 pages"]
+  GW["Uber gateway, injects user identity header"]
+  H["Spring Boot REST controllers, 36 endpoints"]
+  S["Service layer: scoping math, FSM gates, @Transactional"]
+  R["Repository layer: Spring Data JPA on Hibernate"]
+  DB["MySQL on SOADB: 8-table normalized schema"]
+  ETL["Shared ETL from Oracle HFM"]
+  TENQ["Filed 10-Q figures"]
+  COL["Separate collaboration service, not mine"]
+  PWC["PwC audit work papers"]
+
+  UI --&gt;|"HTTPS JSON"| GW
+  GW --&gt;|"request plus user email header"| H
+  H --&gt;|"validated DTO"| S
+  S --&gt;|"entity reads and writes"| R
+  R --&gt;|"SQL over HikariCP pool"| DB
+  ETL --&gt;|"period extracts"| DB
+  TENQ --&gt;|"filed line amounts"| S
+  UI -.-&gt;|"comments and alerts"| COL
+  DB --&gt;|"stable row IDs and history"| PWC
+</div>
+<p><em>What to notice: a classic three-layer service (controller, service, repository) on one transactional database. The ETL from HFM and the collaboration service are shared or separate pieces. I owned the scoping service in the middle.</em></p>
+<hr>
+<h2 id="4-box-by-box-walkthrough">4. Box-by-box walkthrough</h2>
+<h3 id="react-finance-screens-8-pages">React finance screens (8 pages)</h3>
+<p>The UI finance managers use. The 8 screens are Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk and Summary. Each screen reads and edits rows through the API. I describe the UI as context; my ownership is the backend.</p>
+<h3 id="uber-gateway">Uber gateway</h3>
+<p>Authenticates the user and injects their identity as a header (for example <code>x-auth-params-email</code>). The controller reads it with <code>@RequestHeader</code>, and the service writes that email into <code>created_by</code> and <code>updated_by</code> columns, so every change is attributable. That matters for SOX.</p>
+<h3 id="spring-boot-rest-controllers-36-endpoints">Spring Boot REST controllers (36 endpoints)</h3>
+<p>The HTTP layer. Each controller method takes a request DTO checked by Bean Validation, calls the service layer, and returns a typed response DTO, including nested trees for the L1 to L4 hierarchy. If asked for the breakdown: about 31 functional routes live in the scoping service controllers, and the comment and notification APIs specified in the technical design doc (TDD) for the collaboration service make up the rest of the 36.</p>
+<p><strong>Why Spring Boot.</strong> It gives a mature, opinionated stack for a correctness-heavy CRUD service: Spring MVC for the endpoints, Bean Validation at the boundary, Spring Data JPA for data access, declarative transactions, and first-class testing with MockMvc. JPA calls are blocking, and Spring MVC's thread-per-request model handles that naturally, so no extra offloading is needed. Each request thread borrows a MySQL connection from HikariCP for the length of its transaction.</p>
+<p>A short controller, so the shape is concrete (teaching sketch, names illustrative):</p>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/group-scoping/lines&quot;)
+class GroupScopingController {
+    private final GroupScopingService service;
+
+    GroupScopingController(GroupScopingService service) { this.service = service; }
+
+    @PatchMapping(&quot;/{uuid}&quot;)
+    LineResponse updateStatus(@PathVariable String uuid,
+                              @Valid @RequestBody StatusUpdateRequest body,
+                              @RequestHeader(&quot;x-auth-params-email&quot;) String email) {
+        return service.updateStatus(uuid, body, email);
+    }
+}
+
+enum ReviewStatus { DRAFT, REVIEW, REOPEN, CLOSED }
+
+record StatusUpdateRequest(@NotNull ReviewStatus status,
+                           @NotBlank String conclusionScope,
+                           @NotNull Long expectedVersion) {}
+</code></pre>
+<h3 id="service-layer">Service layer</h3>
+<p>Where the finance logic lives:
+- Group scoping: a line is significant if it passes the quantitative test (compared with materiality) or a qualitative test.
+- Component scoping: drills into entities under each FSLI, using a 5% significance threshold.
+- Residual risk: computes the balance not covered by in-scope items and compares it with the residual threshold.
+- Quarter-annualization for comparisons against annual thresholds.
+- <strong>FSM gates</strong>: allowed status transitions only, plus a <strong>50% delta-variance check</strong>. If a line moves by more than half compared with the prior period, the automatic transition is blocked and the line is flagged. This is a SOX control.</p>
+<p>Service methods that change data are marked <code>@Transactional</code>, so every write inside one method commits together or rolls back together. One Spring detail worth knowing: <code>@Transactional</code> works through a proxy (a wrapper object Spring puts around the bean), so calling a transactional method from another method in the same class skips the wrapper. Keep transactional entry points public and call them from the controller.</p>
+<h3 id="repository-layer-spring-data-jpa-on-hibernate">Repository layer (Spring Data JPA on Hibernate)</h3>
+<p>All database access goes through Spring Data JPA repositories, with Hibernate underneath. The <strong>Spring Data JPA / Hibernate migration</strong> I led (with 3 engineers) moved this layer to entities, repositories and explicitly aliased JPQL or native projections. That removed a class of column-aliasing bugs (explained below) and brought module statement coverage to <strong>100%</strong>.</p>
+<p><strong>Reporting SQL allowlists:</strong> reporting queries can only run from an approved list, so nobody ships an ad hoc query against financial tables. In practice the approved queries are named repository methods, and nothing else can reach the financial tables.</p>
+<h3 id="mysql-on-soadb-8-table-normalized-schema">MySQL on SOADB (8-table normalized schema)</h3>
+<p>The system of record. The schema stores the hierarchy, the per-quarter balances, the reconciliation leaves, thresholds, questionnaires and assessments. Key properties:
+- <strong>Fiscal period keys</strong> on every fact row (<code>fiscal_quarter</code>, <code>fiscal_year</code>) with composite indexes.
+- The ETL flattens the recursive FSLI tree into a stable <code>level_id</code> in a mapping table, so the API joins facts to a level ID instead of walking a tree in SQL.
+- <strong>Optimistic row-locking</strong> through a <code>@Version</code> column checked on every update.
+- <strong>Atomic cross-table syncs:</strong> when one edit must change rows in several tables, it happens in one <code>@Transactional</code> method. Either all change or none.
+- <strong>SHA-256 natural keys</strong> so re-imported data updates in place instead of duplicating.</p>
+<p>If someone has seen the code and asks why there are 11 ORM models (entities): the resume number is the 8-table normalized schema in the bullet. Keep the answer at that level and do not invent a table-by-table mapping.</p>
+<h3 id="shared-etl-from-oracle-hfm">Shared ETL from Oracle HFM</h3>
+<p>HFM extracts land in MySQL for each fiscal period. The ETL was a shared pipeline responsibility. Do not claim you built it alone.</p>
+<h3 id="filed-10-q-figures">Filed 10-Q figures</h3>
+<p>The reconciliation screen compares HFM amounts with the public 10-Q line amounts, so scoping is built on numbers that match what went to the SEC.</p>
+<h3 id="separate-collaboration-service">Separate collaboration service</h3>
+<p>Comments, notifications and Slack alerts live in a separate service. I did not build it. Scope your ownership to the scoping service.</p>
+<h3 id="pwc-audit-work-papers">PwC audit work papers</h3>
+<p>The Summary screen and the stored history feed the auditors. Stable row IDs mean an auditor's comment points at the same line every quarter.</p>
+<hr>
+<h2 id="5-one-request-step-by-step-a-manager-moves-a-line-to-review">5. One request, step by step: a manager moves a line to Review</h2>
+<p><strong>Example.</strong> A finance manager on the Group Scoping screen marks the "Cash and equivalents" line for Q4 2025 as in scope and moves it from Draft to Review.</p>
+<div class="mermaid">sequenceDiagram
+  participant UI as Group Scoping screen
+  participant H as Spring REST controller
+  participant S as Transactional service
+  participant DB as MySQL
+  UI-&gt;&gt;H: PATCH group line, status REVIEW, expectedVersion 3
+  H-&gt;&gt;H: Bean Validation checks body, reads user email header
+  H-&gt;&gt;S: updateStatus call
+  S-&gt;&gt;DB: BEGIN, SELECT line by uuid
+  S-&gt;&gt;S: version still 3, FSM allows Draft to Review
+  S-&gt;&gt;S: delta check against prior quarter, under 50 percent
+  S-&gt;&gt;DB: UPDATE where uuid and version 3, audit columns, COMMIT
+  DB--&gt;&gt;S: 1 row updated, version now 4
+  S--&gt;&gt;H: response DTO
+  H--&gt;&gt;UI: 200 with new state
+</div>
 <ol>
-<li>HFM extracts land in MySQL fact tables for the fiscal period.</li>
-<li>Recon screen ties HFM amounts to public <strong>10-Q</strong> line amounts (<code>difference = HFM − filed</code>).</li>
-<li>Materiality / thresholds set group materiality (<strong>$340M</strong> sample) and residual (<strong>$170M</strong>).</li>
-<li>Group scoping marks significant FSLIs; component scoping drills entities under each FSLI.</li>
-<li>Residual risk computes uncovered balance vs materiality; EMI scopes equity-method investees.</li>
-<li>Summary feeds <strong>PwC</strong> work papers.</li>
-<li>Platform <strong>targets</strong> <strong>70%</strong> less manual ingestion/recon time (TDD) — say <strong>targeting</strong>.</li>
+<li>The browser sends a PATCH with the new status, the scoping conclusion and the version it last read (3):</li>
 </ol>
-<h2 id="5-verbal-depth-not-on-pdf">5. Verbal depth (not on PDF)</h2>
-<h3 id="sheets-mysql-recon-owned">Sheets → MySQL recon (owned)</h3>
-<p>Parallel v2 endpoints beside v1; 18 files / +1268 LOC; stable UUIDs unlock comments. Cutover after staging parity.</p>
-<h3 id="column-aliasing-bug">Column-aliasing bug</h3>
-<p>Joined fact + <code>level_mapping</code> shared column names; <code>dict(zip(keys, row))</code> kept last write → wrong UUID. Fix: SQLAlchemy <code>aliased()</code> + explicit <code>.label()</code> on every projected column.</p>
-<h3 id="why-not-claim-collaboration-service">Why not claim collaboration service</h3>
-<p>Comments/Slack live in <code>frm-collaboration-service</code>. Scope your ownership to the <strong>scoping service</strong>.</p></main>
+<pre><code class="language-json">{ &quot;status&quot;: &quot;REVIEW&quot;, &quot;conclusionScope&quot;: &quot;In scope&quot;, &quot;expectedVersion&quot;: 3 }
+</code></pre>
+<ol start="2">
+<li>Bean Validation checks the body before the controller method runs. A missing field fails <code>@NotNull</code> or <code>@NotBlank</code>, and a status that is not one of Draft, Review, ReOpen, Closed cannot be read into the enum. Either way the API returns <strong>400</strong> with an error body, and the service is never called:</li>
+</ol>
+<pre><code class="language-json">{ &quot;code&quot;: &quot;VALIDATION_FAILED&quot;, &quot;message&quot;: &quot;expectedVersion must not be null&quot; }
+</code></pre>
+<ol start="3">
+<li>The service loads the line and compares its version with <code>expectedVersion</code>. Then it checks the FSM: Draft to Review is allowed. Closed straight back to Draft would not be.</li>
+<li>The service runs the delta-variance check. Illustrative numbers: last quarter $1,000M, this quarter $1,200M, a 20% move. That is under 50%, so the gate passes.</li>
+<li>The service sets the new fields on the entity. At flush, Hibernate writes one UPDATE that includes the version check. This is the SQL it generates, in plain form:</li>
+</ol>
+<pre><code class="language-sql">UPDATE group_balance_sheet
+SET group_status = 'REVIEW', conclusion_scope = 'In scope',
+    version = 4, updated_by = :email, updated_at = NOW()
+WHERE uuid = :uuid AND version = 3;
+</code></pre>
+<ol start="6">
+<li>One row changed, so it commits. If another manager had saved first, the version would already be 4. Either the version comparison in step 3 catches it, or, if the other save landed between our read and our write, the UPDATE matches zero rows and Hibernate throws <code>OptimisticLockException</code>. Both paths become <strong>409 Conflict</strong> instead of silently overwriting.</li>
+<li>The UI shows the new state, and the audit columns record who did it.</li>
+</ol>
+<p>The entity and the service behind those steps (teaching sketch, names illustrative):</p>
+<pre><code class="language-java">@Entity
+@Table(name = &quot;group_balance_sheet&quot;)
+class GroupLine {
+    @Id private String uuid;
+    @Enumerated(EnumType.STRING) private ReviewStatus groupStatus;
+    private String conclusionScope;
+    @Version private Long version;
+    private String updatedBy;
+    private Instant updatedAt;
+    // getters and setters omitted
+}
+
+@Service
+class GroupScopingService {
+    private final GroupLineRepository lines;
+    private final ScopingGates gates;
+
+    GroupScopingService(GroupLineRepository lines, ScopingGates gates) {
+        this.lines = lines;
+        this.gates = gates;
+    }
+
+    @Transactional
+    public LineResponse updateStatus(String uuid, StatusUpdateRequest req, String email) {
+        GroupLine line = lines.findById(uuid)
+            .orElseThrow(() -&gt; new LineNotFoundException(uuid));
+        if (!line.getVersion().equals(req.expectedVersion())) {
+            throw new ObjectOptimisticLockingFailureException(GroupLine.class, uuid);
+        }
+        gates.requireAllowedTransition(line.getGroupStatus(), req.status());
+        gates.requireDeltaUnderThreshold(line);   // the 50% delta-variance check
+        line.setGroupStatus(req.status());
+        line.setConclusionScope(req.conclusionScope());
+        line.setUpdatedBy(email);
+        line.setUpdatedAt(Instant.now());
+        return LineResponse.from(lines.saveAndFlush(line));
+    }
+}
+</code></pre>
+<p>And the one place that maps exceptions to HTTP responses:</p>
+<pre><code class="language-java">@RestControllerAdvice
+class ApiErrors {
+    @ExceptionHandler({OptimisticLockingFailureException.class, OptimisticLockException.class})
+    ResponseEntity&lt;ErrorBody&gt; staleVersion(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(new ErrorBody(&quot;STALE_VERSION&quot;, &quot;This line changed since you opened it. Reload and retry.&quot;));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    ResponseEntity&lt;ErrorBody&gt; invalidBody(MethodArgumentNotValidException e) {
+        String msg = e.getBindingResult().getFieldErrors().stream()
+            .map(f -&gt; f.getField() + &quot; &quot; + f.getDefaultMessage())
+            .collect(Collectors.joining(&quot;, &quot;));
+        return ResponseEntity.badRequest().body(new ErrorBody(&quot;VALIDATION_FAILED&quot;, msg));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    ResponseEntity&lt;ErrorBody&gt; unreadableBody(HttpMessageNotReadableException e) {
+        return ResponseEntity.badRequest().body(new ErrorBody(&quot;VALIDATION_FAILED&quot;, &quot;Malformed body or unknown status&quot;));
+    }
+}
+
+record ErrorBody(String code, String message) {}
+</code></pre>
+<h3 id="the-quarterly-close-as-one-job">The quarterly close, as one job</h3>
+<ol>
+<li>HFM extracts land in MySQL for the fiscal period (shared ETL).</li>
+<li>Reconciliation ties HFM to the 10-Q line by line and shows every non-zero difference.</li>
+<li>Materiality and thresholds are set: <strong>$340M</strong> materiality, <strong>$170M</strong> residual for Q4 2025.</li>
+<li>Group scoping marks significant FSLIs. Component scoping drills into entities under each.</li>
+<li>Residual risk computes what is still uncovered. EMI scoping handles part-owned investees.</li>
+<li>Summary rolls up coverage for PwC.</li>
+</ol>
+<hr>
+<h2 id="6-design-decisions">6. Design decisions</h2>
+<h3 id="decision-1-move-the-close-off-google-sheets-into-a-normalized-mysql-schema">Decision 1: move the close off Google Sheets into a normalized MySQL schema</h3>
+<ul>
+<li><strong>What:</strong> an 8-table normalized schema on SOADB replaces the workbook.</li>
+<li><strong>Why:</strong> Sheets has no stable row IDs (so no comments or audit history per line), no concurrency control, and no way to model a recursive hierarchy safely. Versions drift between copies. Finance had ETL lock contention during the close.</li>
+<li><strong>Alternatives:</strong> keep Sheets with Apps Script (no real concurrency control), or use a columnar warehouse (built for scans, not transactional edits).</li>
+<li><strong>Trade-off:</strong> more upfront schema design, and a migration with a parallel run.</li>
+<li><strong>What I'd do differently:</strong> build the parallel-run comparison report as a first-class feature from day one, not as a side script.</li>
+</ul>
+<h3 id="decision-2-optimistic-row-locking-instead-of-pessimistic-locks">Decision 2: optimistic row-locking instead of pessimistic locks</h3>
+<ul>
+<li><strong>What:</strong> a JPA <code>@Version</code> column on every editable entity, checked on every update.</li>
+<li><strong>Why:</strong> many managers read and few collide on the same line. Holding row locks while someone thinks in the UI would block others.</li>
+<li><strong>How:</strong> Hibernate adds the version to the UPDATE's WHERE clause. Zero rows changed means <code>OptimisticLockException</code>, and the controller advice turns that into a 409.</li>
+<li><strong>Alternatives:</strong> <code>SELECT ... FOR UPDATE</code> (pessimistic, <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code> in JPA). Safe, but locks pile up during the close.</li>
+<li><strong>Trade-off:</strong> the UI must handle a conflict response and ask the user to reload.</li>
+<li><strong>What I'd do differently:</strong> return the current row with the 409 so the UI can show a diff.</li>
+</ul>
+<h3 id="decision-3-sha-256-natural-keys">Decision 3: SHA-256 natural keys</h3>
+<ul>
+<li><strong>What:</strong> for example <code>uuid = SHA-256(question_text + normalized page_name)</code> for scoping questions.</li>
+<li><strong>Why:</strong> quarterly re-imports of the same data must update rows, not create duplicates across audit trails.</li>
+<li><strong>Alternatives:</strong> random UUIDs plus a uniqueness constraint on several columns. That works, but the ID is not reproducible from the data.</li>
+<li><strong>Trade-off:</strong> if the source text changes (even a typo fix), the key changes. Normalising the inputs first reduces that.</li>
+</ul>
+<p>Tiny example (teaching sketch). <code>MessageDigest</code> is Java's built-in hashing class, and <code>HexFormat</code> turns the bytes into a hex string:</p>
+<pre><code class="language-java">static String questionUuid(String questionText, String pageName) {
+    String key = questionText.strip() + &quot;|&quot; + pageName.strip().toLowerCase(Locale.ROOT);
+    try {
+        byte[] hash = MessageDigest.getInstance(&quot;SHA-256&quot;)
+            .digest(key.getBytes(StandardCharsets.UTF_8));
+        return HexFormat.of().formatHex(hash);
+    } catch (NoSuchAlgorithmException e) {
+        throw new IllegalStateException(&quot;SHA-256 not available&quot;, e);
+    }
+}
+
+// questionUuid(&quot;Is the balance subject to significant estimates?&quot;, &quot;Group Scoping&quot;)
+// gives the same id next quarter, so the upsert updates in place
+</code></pre>
+<h3 id="decision-4-one-polymorphic-review-status-model-across-screens">Decision 4: one polymorphic review-status model across screens</h3>
+<ul>
+<li><strong>What:</strong> Draft, Review, ReOpen, Closed, shared by every screen. In Java this is one <code>ReviewStatus</code> enum and one set of transition rules that every screen's service calls.</li>
+<li><strong>Why:</strong> one set of FSM rules, one set of tests, one audit format.</li>
+<li><strong>Alternatives:</strong> a separate status column and rules per screen. Faster to start, but rules drift.</li>
+<li><strong>Trade-off:</strong> a screen with special needs has to fit the shared model.</li>
+</ul>
+<h3 id="decision-5-lead-a-spring-data-jpa-hibernate-migration">Decision 5: lead a Spring Data JPA / Hibernate migration</h3>
+<ul>
+<li><strong>What:</strong> move the repository layer to JPA entities and Spring Data repositories, with every multi-table read written as an explicitly aliased JPQL or native projection.</li>
+<li><strong>Why:</strong> a real bug. A raw SQL join returned two columns with the same name. The code built a map from column names, so the second value silently overwrote the first, and some rows were mapped to the wrong uuid.</li>
+<li><strong>Alternatives:</strong> patch each raw query by hand. Fixes today's bug, not the class of bugs.</li>
+<li><strong>Trade-off:</strong> a migration across many modules, which needed tests first. That is why coverage reached 100% for the module.</li>
+<li><strong>What I'd do differently:</strong> add a lint rule that rejects raw SQL with unaliased duplicate column names.</li>
+</ul>
+<p>The fix in code (teaching sketch, names illustrative). Every projected column gets its own alias, and Spring Data maps each alias to one getter, so two <code>uuid</code> columns can never collide:</p>
+<pre><code class="language-java">interface LevelBalanceRow {
+    String getBalanceUuid();
+    String getLevelUuid();
+    BigDecimal getAmount();
+}
+
+interface GlBalanceRepository extends JpaRepository&lt;GlBalance, String&gt; {
+    @Query(value = &quot;&quot;&quot;
+        SELECT b.uuid AS balanceUuid, m.uuid AS levelUuid, b.amount AS amount
+        FROM gl_balance b
+        JOIN fsli_level_map m ON m.level_id = b.level_id
+        WHERE b.fiscal_year = :fy AND b.fiscal_quarter = :fq
+        &quot;&quot;&quot;, nativeQuery = true)
+    List&lt;LevelBalanceRow&gt; findQuarterBalances(@Param(&quot;fy&quot;) int fy, @Param(&quot;fq&quot;) int fq);
+}
+</code></pre>
+<p>The JPQL version works the same way with a constructor expression, for example <code>SELECT new com.example.frm.LevelBalance(b.uuid, m.uuid, b.amount) FROM GlBalance b JOIN b.level m</code>, where each value goes into a named constructor parameter instead of a name-keyed map.</p>
+<h3 id="decision-6-zero-downtime-releases-through-stacked-bazel-prs">Decision 6: zero-downtime releases through stacked Bazel PRs</h3>
+<ul>
+<li><strong>What:</strong> each change is a small PR in a stack. Schema changes ship before code that depends on them.</li>
+<li><strong>Why:</strong> finance cannot have the tool down during the close.</li>
+<li><strong>Trade-off:</strong> more PRs to coordinate and review.</li>
+</ul>
+<hr>
+<h2 id="7-the-numbers-on-this-diagram">7. The numbers on this diagram</h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>70%, from 14 days to 3 days</td>
+<td>Quarterly reconciliation time</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>$340M</td>
+<td>Group materiality threshold, Q4 2025 close</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>19M</td>
+<td>Raw GL rows migrated off Sheets</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>36</td>
+<td>Spring Boot API endpoints</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>4 levels, L1 to L4</td>
+<td>FSLI hierarchy depth</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Tables in the normalized schema</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>3 engineers</td>
+<td>People I led on the Spring Data JPA / Hibernate migration</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>100%</td>
+<td>Module statement coverage after the migration</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>Delta-variance threshold in the FSM gates</td>
+<td>On PDF</td>
+</tr>
+<tr>
+<td>$170M, 5%</td>
+<td>Residual threshold and component significance threshold</td>
+<td>Verbal</td>
+</tr>
+<tr>
+<td>1,100+</td>
+<td>Tests in the suite</td>
+<td>Verbal</td>
+</tr>
+</tbody>
+</table>
+<p><strong>70% (from 14 days to 3 days).</strong> It measures how long the quarterly reconciliation took before and after. It mattered because the close is time-boxed, and every day spent on manual tie-outs is a day not spent on analysis. Say it as "we cut quarterly reconciliation from 14 days to 3 days, about 70%". If someone does the arithmetic: 14 to 3 is actually about a 79% cut, because (14 − 3) / 14 ≈ 0.79. The 70% headline is the figure the technical design doc framed, so the resume understates rather than overstates. If pressed on source, say "the technical design doc framed that cut and that is what the platform delivered for the close". Do not walk it back unprompted.</p>
+<p><strong>$340M materiality.</strong> It is not a volume metric. It is the threshold that drives the scoping rules. Say "against a $340 million materiality threshold".</p>
+<p><strong>19M raw GL rows.</strong> It is the total migrated off Sheets. Individual quarterly GL extracts were about 38K to 95K rows, about 1.7K to 1.8K accounts and about 400 entities. If asked, say "the value was correctness, hierarchy and auditability, not big-data throughput". Do not invent a breakdown of where 19M comes from beyond "raw GL rows migrated off Sheets".</p>
+<p><strong>36 endpoints.</strong> About 31 functional routes in the scoping service plus the comment and notification APIs from the TDD. Say "36 Spring Boot endpoints". Older prep said "30+ endpoints, do not say 36". That guidance is obsolete. The current resume says 36.</p>
+<p><strong>3 engineers.</strong> I was tech lead of an EPAM pod, not a people manager. Never add this to "mentored 2" from Masters India.</p>
+<hr>
+<h2 id="8-failure-modes-and-what-the-system-does">8. Failure modes and what the system does</h2>
+<table>
+<thead>
+<tr>
+<th>What breaks</th>
+<th>How you notice</th>
+<th>What happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Two managers edit the same line</td>
+<td>Version mismatch or UPDATE affects 0 rows</td>
+<td><code>OptimisticLockException</code>, API returns 409, nobody's change is silently lost.</td>
+</tr>
+<tr>
+<td>Request body is missing a field or has an unknown status</td>
+<td>Bean Validation or JSON parsing fails</td>
+<td>API returns 400 with an error body. The service never runs.</td>
+</tr>
+<tr>
+<td>An edit must touch several tables and one write fails</td>
+<td>Exception inside the <code>@Transactional</code> method</td>
+<td>Whole transaction rolls back. No half-applied edit.</td>
+</tr>
+<tr>
+<td>Same data re-imported next quarter</td>
+<td>Same SHA-256 key</td>
+<td>Upsert updates in place, no duplicates.</td>
+</tr>
+<tr>
+<td>Large unexpected swing in a line</td>
+<td>Delta over 50%</td>
+<td>FSM gate blocks the automatic transition and flags the line.</td>
+</tr>
+<tr>
+<td>Joined raw SQL with duplicate column names</td>
+<td>Wrong uuid on rows (the real bug)</td>
+<td>Fixed by the Spring Data JPA / Hibernate migration: explicitly aliased projections.</td>
+</tr>
+<tr>
+<td>HFM and 10-Q do not tie</td>
+<td>Non-zero difference on Reconciliation</td>
+<td>Shown and commentable on every line. Managers clear breaks before sign-off. The tool makes breaks visible. Humans do the sign-off.</td>
+</tr>
+<tr>
+<td>Ad hoc reporting query</td>
+<td>Not in allowlist</td>
+<td>Rejected.</td>
+</tr>
+<tr>
+<td>Request threads waiting on the database</td>
+<td>HikariCP pool exhausted, requests time out waiting for a connection</td>
+<td>Keep transactions short, never hold one open across a slow call, and size the pool to what the database allows.</td>
+</tr>
+<tr>
+<td>Bad release during close</td>
+<td>Tests and staged PRs</td>
+<td>Small stacked PRs, 100% module coverage, rollback is one small PR.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="9-verbal-depth-not-on-the-pdf-true">9. Verbal depth (not on the PDF, true)</h2>
+<ul>
+<li><strong>Sheets to MySQL reconciliation, v1 to v2.</strong> Version 2 endpoints ran in parallel beside version 1. The change touched 18 files, +1,268 lines of code. Stable IDs unlocked per-line comments. Cutover happened after staging parity.</li>
+<li><strong>The column-aliasing bug.</strong> A join of the fact table and the level mapping table returned columns with the same name. The code zipped column names to values, so the last one won, and rows got the wrong uuid. Fix: an explicit <code>AS</code> alias on every projected column, read through a Spring Data projection interface or a JPQL constructor expression, so each value has exactly one named home.</li>
+<li><strong>Q4 2025 sample:</strong> about 55 line items and 14 entities in scope (MEASURED in older prep).</li>
+<li><strong>Tests:</strong> the suite grew past 1,100 tests because every PR had to add or update tests in the matching folder. CI ran five layer targets (database, schema, repository, service, controller). Service tests used JUnit 5 with Mockito fakes for repositories. Controller tests used MockMvc to assert status codes and JSON, including the 400 and 409 paths. As a general practice, repository tests can run against a real MySQL in a throwaway Docker container (Testcontainers).</li>
+</ul>
+<p>A MockMvc test for the conflict path, so the testing style is concrete (teaching sketch):</p>
+<pre><code class="language-java">@WebMvcTest(GroupScopingController.class)
+class GroupScopingControllerTest {
+    @Autowired MockMvc mvc;
+    @MockitoBean GroupScopingService service;
+
+    @Test
+    void staleVersionReturns409() throws Exception {
+        when(service.updateStatus(eq(&quot;abc&quot;), any(), any()))
+            .thenThrow(new ObjectOptimisticLockingFailureException(GroupLine.class, &quot;abc&quot;));
+
+        mvc.perform(patch(&quot;/group-scoping/lines/abc&quot;)
+                .header(&quot;x-auth-params-email&quot;, &quot;manager@example.com&quot;)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(&quot;{\&quot;status\&quot;:\&quot;REVIEW\&quot;,\&quot;conclusionScope\&quot;:\&quot;In scope\&quot;,\&quot;expectedVersion\&quot;:3}&quot;))
+           .andExpect(status().isConflict())
+           .andExpect(jsonPath(&quot;$.code&quot;).value(&quot;STALE_VERSION&quot;));
+    }
+}
+</code></pre>
+<hr>
+<h2 id="10-say-this-not-that">10. Say this, not that</h2>
+<table>
+<thead>
+<tr>
+<th>Say this</th>
+<th>Not this</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Uber via EPAM."</td>
+<td>"I worked at Uber" without EPAM.</td>
+</tr>
+<tr>
+<td>"I owned the scoping backend."</td>
+<td>"I built the collaboration and Slack service."</td>
+</tr>
+<tr>
+<td>"The HFM ETL was a shared pipeline."</td>
+<td>"I built the whole data pipeline."</td>
+</tr>
+<tr>
+<td>"Led 3 engineers as tech lead of an EPAM pod."</td>
+<td>"I managed a team" or "led 5".</td>
+</tr>
+<tr>
+<td>"36 Spring Boot endpoints."</td>
+<td>"30+ endpoints" (obsolete prep).</td>
+</tr>
+<tr>
+<td>"Value was correctness and auditability."</td>
+<td>"Big data at 19M rows per quarter."</td>
+</tr>
+</tbody>
+</table>
+<p>Say this carefully about optimistic locking. Older prep notes said version-check concurrency lived in the collaboration service. The current resume claims optimistic row-locking in the schema. If pressed, explain the mechanism (a <code>@Version</code> column, the conditional UPDATE Hibernate generates, a 409 on zero rows) and keep the scope to the scoping tables.</p>
+<hr>
+<h2 id="11-how-to-draw-it-in-3-minutes">11. How to draw it in 3 minutes</h2>
+<p><strong>Minute 1: the problem and the spine.</strong> Write "Google Sheets close, 14 days" on the left and cross it out. Draw UI, gateway, Spring Boot service, MySQL left to right. Say: "Uber's quarterly scoping lived in Sheets: no stable IDs, no audit trail, people overwriting each other. I owned the Spring Boot backend that replaced it, 36 endpoints on MySQL on Uber's SOADB standard, and we migrated 19 million raw GL rows off Sheets."</p>
+<p><strong>Minute 2: inside the service.</strong> Split the Spring Boot box into controller, service, repository. Say: "Controllers validate request DTOs with Bean Validation and return 400 on bad input. The service holds the finance math: materiality at $340 million, the L1 to L4 FSLI hierarchy, quarter-annualization, and a state machine with a 50% delta-variance gate for SOX. The repository is Spring Data JPA on Hibernate. I led 3 engineers on that migration, which killed a column-aliasing bug and took module coverage to 100%."</p>
+<p><strong>Minute 3: the data guarantees.</strong> Draw the 8 tables as a stack under MySQL and write three words next to them: "@Version", "@Transactional", "SHA-256". Say: "Every update checks a version, so two managers cannot overwrite each other. A stale save gets a 409. Cross-table edits run in one transaction. Natural keys are SHA-256 of the meaningful fields, so re-imports never duplicate. The result was reconciliation from 14 days to 3 days." Add HFM and 10-Q arrows into reconciliation and a PwC arrow out of Summary to finish.</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li>Full FRM deep dive: <a href="../projects/02_frm_deep_dive.html">../projects/02_frm_deep_dive.md</a></li>
+<li>Uber FRM and Menu interview pack: <a href="../projects/02_03_uber_frm_menu.html">../projects/02_03_uber_frm_menu.md</a></li>
+<li>FRM handbook chapter: <a href="../../../handbook/05_uber_frm.html">../../../handbook/05_uber_frm.md</a></li>
+<li>Postgres, MySQL and Redis depth: <a href="../tech_depth/postgres_mysql_redis.html">../tech_depth/postgres_mysql_redis.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

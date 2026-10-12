@@ -40,17 +40,37 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/tech_depth/kafka_flink_scale_defense.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#kafka-flink-where-why-at-high-numbers-how-to-defend">Kafka + Flink — where, why at high numbers, how to defend</a>
-<a class="lvl2" href="#1-where-each-tech-is-used-map">1. Where each tech is used (map)</a>
-<a class="lvl2" href="#2-why-these-tech-at-high-numbers-the-defense">2. Why these tech at “high numbers” (the defense)</a>
-<a class="lvl2" href="#3-attack-answer-memorize">3. Attack → answer (memorize)</a>
-<a class="lvl2" href="#4-scale-cheat-sheet-say-tags-out-loud">4. Scale cheat sheet (say tags out loud)</a>
-<a class="lvl2" href="#5-20-second-stories">5. 20-second stories</a>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#kafka-and-flink-where-they-are-used-why-at-these-numbers-and-how-to-defend-them">Kafka and Flink: where they are used, why at these numbers, and how to defend them</a>
+<a class="lvl2" href="#1-where-each-technology-is-used">1. Where each technology is used</a>
+<a class="lvl2" href="#2-uber-menu-why-not-just-call-the-catalog-api-from-the-scraper">2. Uber Menu: why not "just call the catalog API from the scraper"?</a>
+<a class="lvl2" href="#3-masters-india-why-kafka-at-1m-a-day-and-4000-requests-per-minute">3. Masters India: why Kafka at 1M+ a day and 4,000 requests per minute</a>
+<a class="lvl2" href="#4-rate-cheat-sheet-say-the-tag-out-loud">4. Rate cheat sheet (say the tag out loud)</a>
+<a class="lvl2" href="#5-attack-and-answer-memorise-these">5. Attack and answer (memorise these)</a>
+<a class="lvl2" href="#6-twenty-second-stories">6. Twenty-second stories</a>
+<a class="lvl2" href="#7-practice-drill">7. Practice drill</a>
 <a class="lvl2" href="#related">Related</a></nav>
-<main><h1 id="kafka-flink-where-why-at-high-numbers-how-to-defend">Kafka + Flink — where, why at high numbers, how to defend</h1>
-<p>Interview sheet. Numbers are HISTORICAL / ESTIMATED peaks where noted. Do not invent TPS you never measured.</p>
+<main><h1 id="kafka-and-flink-where-they-are-used-why-at-these-numbers-and-how-to-defend-them">Kafka and Flink: where they are used, why at these numbers, and how to defend them</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
+<ul>
+<li><strong>What it covers:</strong> the attack-and-defense sheet for Kafka and Flink. It shows where each technology sits on my resume, the numbers behind each project, the arithmetic, and speakable answers to the hard pushback ("30K a month is tiny", "prove you needed Flink", "what was your peak TPS?").</li>
+<li><strong>When to read it:</strong> right after <a href="kafka_streaming.html">kafka_streaming.md</a> and <a href="flink.html">flink.md</a>, and again the night before any streaming or system design round.</li>
+<li><strong>What to memorise:</strong> the map (Menu has Kafka and Flink, Masters has Kafka only, IA has neither), the four rate derivations in section 4, and the line "we chose Kafka and Flink for burst, replay and keyed state, not for vanity throughput".</li>
+</ul>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. ESTIMATED means arithmetic I can show; say "roughly, derived from...". HISTORICAL means it comes from my past work records; state it plainly as the outcome. TARGET means a design goal. STUDY means study-only or verbal, not a resume claim.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
+<ul>
+<li>Do not invent a throughput number you never measured. Menu peak events per second and Masters peak per second are <strong>ESTIMATED</strong>.</li>
+<li><strong>No Kafka or Flink at Impact Analytics.</strong> Older versions of this sheet said IA used Kafka for async embedding jobs. The current resume says no. IA's data story is ClickHouse.</li>
+<li><strong>Masters Kafka is a different product from Menu Kafka.</strong> No Flink at Masters.</li>
+<li><strong>Spark and Pinot are not on the resume.</strong> Study only.</li>
+<li>"Exactly-once" means at-least-once delivery plus idempotent writes. No zero-loss claims.</li>
+</ul>
+</div>
 <hr>
-<h2 id="1-where-each-tech-is-used-map">1. Where each tech is used (map)</h2>
+<h2 id="1-where-each-technology-is-used">1. Where each technology is used</h2>
 <table>
 <thead>
 <tr>
@@ -58,220 +78,272 @@ strong{color:#fff}
 <th>Kafka?</th>
 <th>Flink?</th>
 <th>Job</th>
+<th>Headline numbers</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Uber Menu</strong></td>
-<td>Yes — ingest bus after Selenium</td>
-<td>Yes — hot-path validate / keyed dedupe / route</td>
-<td>30K+ menus/mo, 24h→2h, 95%+ success</td>
+<td><strong>Uber Menu</strong> (Uber via EPAM)</td>
+<td>Yes. Ingest bus after Selenium</td>
+<td>Yes. Validate, keyed dedupe, normalize, route</td>
+<td>Menus into the Uber Eats catalog</td>
+<td>30K+ menus a month, from 24 hours to 2 hours, 95%+ extraction success, $600K a year</td>
 </tr>
 <tr>
-<td><strong>Masters India GST</strong></td>
-<td>Yes — bulk IRP / e-invoice pipeline</td>
+<td><strong>Masters India</strong></td>
+<td>Yes. Bulk IRP e-invoice pipeline</td>
 <td><strong>No</strong></td>
-<td>1M+/day, 100K+/import, 700→4,000 req/min</td>
+<td>Register invoices with the government portal</td>
+<td>1M+ submissions a day, 100K+ concurrent imports, from 700 to 4,000 requests per minute</td>
 </tr>
 <tr>
 <td><strong>Impact Analytics</strong></td>
-<td>Yes — async jobs (embeddings etc.) on Tech</td>
 <td><strong>No</strong></td>
-<td>Not the CH OLAP path</td>
+<td><strong>No</strong></td>
+<td>ClickHouse rollups and a Python batch pipeline</td>
+<td>Not a streaming story</td>
 </tr>
 <tr>
-<td><strong>FRM / GFG</strong></td>
+<td><strong>Uber FRM, GeeksforGeeks</strong></td>
 <td>No</td>
 <td>No</td>
-<td>—</td>
+<td>n/a</td>
+<td>n/a</td>
 </tr>
 </tbody>
 </table>
-<p><strong>One-liner:</strong> Kafka absorbs bursts and enables replay. Flink adds <strong>stateful</strong> stream logic on Menu only. Masters stays Kafka + idempotent workers + PG shards.</p>
+<p><strong>One-liner to say:</strong> "Kafka absorbs bursts and lets us replay. Flink adds stateful stream logic, and I only needed that at Uber Menu. Masters stayed on Kafka plus idempotent workers plus quarter-sharded Postgres."</p>
+<div class="mermaid">flowchart TB
+    subgraph MENU["Uber Menu"]
+        M1["Selenium fleet"] --&gt; M2["Kafka"] --&gt; M3["Flink"] --&gt; M4["Catalog upsert and RAG path"]
+    end
+    subgraph MI["Masters India"]
+        A1["Upload API"] --&gt; A2["Kafka"] --&gt; A3["Workers with idempotency keys"] --&gt; A4["IRP and PostgreSQL"]
+    end
+    subgraph IA["Impact Analytics"]
+        I1["Go/Gin API"] --&gt; I2["ClickHouse rollups"]
+    end
+</div>
+<p><em>What to notice: only one box has Flink, and the IA box has no streaming at all.</em></p>
 <hr>
-<h2 id="2-why-these-tech-at-high-numbers-the-defense">2. Why these tech at “high numbers” (the defense)</h2>
-<h3 id="uber-menu-why-not-just-call-the-catalog-api-from-the-scraper">Uber Menu — why not “just call the catalog API from the scraper”</h3>
+<h2 id="2-uber-menu-why-not-just-call-the-catalog-api-from-the-scraper">2. Uber Menu: why not "just call the catalog API from the scraper"?</h2>
 <table>
 <thead>
 <tr>
 <th>Pressure</th>
-<th>Number / shape</th>
-<th>Why sync HTTP dies</th>
-<th>Why Kafka</th>
-<th>Why Flink</th>
+<th>Number or shape</th>
+<th>Why synchronous HTTP breaks</th>
+<th>Why Kafka helps</th>
+<th>Why Flink helps</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Volume</td>
-<td><strong>30K+ menus/month</strong> (~1K+/day average; spikes when vendors refresh)</td>
+<td>30K+ menus a month, about 1,000 a day, with spikes when vendors refresh</td>
 <td>Scrapers block on slow catalog writes</td>
-<td>Buffer + multiple consumers</td>
-<td>Continuous process without waiting for batch windows</td>
+<td>Buffers and allows several consumers</td>
+<td>Processes continuously without waiting for batch windows</td>
 </tr>
 <tr>
 <td>Latency goal</td>
-<td>Onboarding <strong>24h → 2h</strong></td>
-<td>Retry storms amplify latency</td>
-<td>Decouple scrape success from catalog success</td>
+<td>Onboarding from 24 hours to 2 hours</td>
+<td>Retry storms amplify delay</td>
+<td>Decouples scrape success from catalog success</td>
 <td>Stateful dedupe avoids redoing work</td>
 </tr>
 <tr>
 <td>Burstiness</td>
 <td>Scrape waves, anti-bot backoff, retries</td>
-<td>Thread pool meltdown</td>
-<td>Partitioned log absorbs spikes</td>
-<td>Backpressure into Kafka lag, not scraper crashes</td>
+<td>Thread pools melt down</td>
+<td>The partitioned log absorbs spikes</td>
+<td>Backpressure shows as Kafka lag, not scraper crashes</td>
 </tr>
 <tr>
-<td>Failure / bad deploy</td>
-<td>Parser bug ships</td>
-<td>Cannot replay HTTP</td>
-<td><strong>Rewind offsets</strong>, reprocess</td>
-<td>Keyed state + watermark rewind</td>
+<td>Bad deploy</td>
+<td>A parser bug ships</td>
+<td>You cannot replay HTTP calls</td>
+<td>Rewind offsets and reprocess</td>
+<td>Restore state from a checkpoint before the bug</td>
 </tr>
 <tr>
 <td>Fan-out</td>
-<td>Structured path + RAG path + health</td>
+<td>Structured path, RAG path, health signals</td>
 <td>One HTTP call cannot fan out cleanly</td>
 <td>Many consumer groups</td>
-<td>Route in-stream after validate</td>
+<td>Routes in-stream after validation</td>
 </tr>
 <tr>
 <td>Ordering</td>
 <td>Per-vendor menu updates</td>
-<td>Race overwrites</td>
-<td>Key by vendor/menu id</td>
+<td>Races overwrite newer data</td>
+<td>Key by vendor id</td>
 <td>Keyed state matches that key</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Rough rate talk (ESTIMATED, say so):</strong><br>
-30K menus/mo ≈ <strong>~0.4–1 event/s average</strong> if one event per menu, but scrape retries, page chunks, and re-scrapes make the <strong>bus</strong> busier than “30K messages.” Peaks are bursty (vendor batches), not a flat TPS. Defend <strong>burst + replay + fan-out</strong>, not “we ran Flink because we had a million TPS.”</p>
-<p><strong>If interviewer says “30K/month is tiny for Kafka”:</strong><br>
-Agree averages are modest. Kafka is there for <strong>operational properties</strong> (replay, decoupling, multi-consumer, ordered keys under scrape failure), not because we needed LinkedIn-scale throughput. Flink is there for <strong>keyed dedupe + event-time</strong>, not vanity TPS.</p>
-<h3 id="masters-india-why-kafka-at-1mday-and-4k-reqmin">Masters India — why Kafka at 1M+/day and 4k req/min</h3>
+<h3 id="the-rate-arithmetic-done-correctly">The rate arithmetic, done correctly</h3>
+<p>30,000 menus a month divided by about 2,592,000 seconds in a 30-day month is about <strong>0.012 menus per second</strong>, or one menu every 80 to 90 seconds on average. That is tiny, and I say so.</p>
+<p>But the bus does not carry one event per menu. Each menu emits many item-level events, plus retries, page chunks and health events, and fleet runs concentrate work into short windows. Older prep estimates the <strong>peak bus rate at about 200 to 500 events per second</strong> during fleet runs (ESTIMATED, prep only). Steady state is much lower.</p>
+<p>Older versions of this sheet said "about 0.4 to 1 event per second average if one event per menu". That arithmetic was wrong. One event per menu is about 0.012 per second. Use the corrected figure.</p>
+<p>Say it: "On average it's about a thousand menus a day, which is modest. The design driver was bursts, retries, duplicates and replay, not average throughput."</p>
+<hr>
+<h2 id="3-masters-india-why-kafka-at-1m-a-day-and-4000-requests-per-minute">3. Masters India: why Kafka at 1M+ a day and 4,000 requests per minute</h2>
 <table>
 <thead>
 <tr>
 <th>Pressure</th>
 <th>Number</th>
-<th>Why sync PHP/Laravel workers die</th>
-<th>Why Kafka</th>
+<th>Why the synchronous PHP monolith struggled</th>
+<th>Why Kafka helps</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Daily IRP</td>
-<td><strong>1M+ submissions/day</strong> (~12 TPS avg; <strong>100+ TPS peak ESTIMATED</strong> at filing deadlines)</td>
-<td>One slow IRP blocks a worker</td>
-<td>Queue absorbs deadline spikes</td>
+<td>Daily IRP submissions</td>
+<td>1M+ a day, about 12 per second average, peaks roughly 90 to 120 per second (ESTIMATED)</td>
+<td>One slow IRP call holds a worker hostage</td>
+<td>The queue absorbs deadline spikes</td>
 </tr>
 <tr>
 <td>Bulk import</td>
-<td><strong>100K+/import</strong></td>
-<td>Memory + request timeout</td>
-<td>Chunk → topics → consumers</td>
+<td>100K+ concurrent imports</td>
+<td>Memory pressure and request timeouts</td>
+<td>Chunk the file, publish chunks, let consumers process them</td>
 </tr>
 <tr>
 <td>API throughput</td>
-<td><strong>700 → 4,000 req/min</strong> (~12 → ~67 RPS)</td>
-<td>Monolith scaled as one unit</td>
-<td>Microservices + async bulk path</td>
+<td>From 700 to 4,000 requests per minute (about 12 to 67 per second)</td>
+<td>The monolith scaled as one unit</td>
+<td>Microservices plus an async bulk path</td>
 </tr>
 <tr>
 <td>Safety</td>
-<td>Double-file risk</td>
-<td>Retries without idempotency</td>
-<td>Idempotency keys + DLQ + replay</td>
+<td>Risk of double filing with the government</td>
+<td>Retries without idempotency double-register</td>
+<td>Idempotency keys, DLQ and replay</td>
 </tr>
 <tr>
 <td>Ordering</td>
 <td>Per taxpayer</td>
-<td>Race on same GSTIN</td>
-<td>Partition key = client GSTIN</td>
+<td>Races on the same GSTIN</td>
+<td>Partition key is the client GSTIN</td>
 </tr>
 </tbody>
 </table>
-<p><strong>Why no Flink at Masters:</strong><br>
-Consumers + Celery/workers + <strong>idempotent DB writes</strong> were enough. Adding Flink would duplicate the pipeline without a stateful windowing/dedupe requirement like Menu’s late scrape pages.</p>
-<h3 id="ia-why-kafka-on-tech-light-claim">IA — why Kafka on Tech (light claim)</h3>
-<p>Async embedding / background jobs off the request path. <strong>Do not</strong> claim Menu- or Masters-scale Kafka ownership at IA. ClickHouse is the OLAP story.</p>
+<p><strong>Why no Flink at Masters:</strong> consumers, Celery workers and idempotent database writes were enough. Each message is processed independently, with an idempotency check. There was no stateful windowing or dedupe-by-event-time requirement like Menu's late scrape pages. Adding Flink would duplicate the pipeline for no gain.</p>
 <hr>
-<h2 id="3-attack-answer-memorize">3. Attack → answer (memorize)</h2>
-<h3 id="kafka-and-flink-for-only-30k-menus-a-month-overkill">“Kafka and Flink for only 30K menus a month — overkill?”</h3>
-<p><strong>A:</strong> Average rate is not the design driver. Scrapers are <strong>bursty and flaky</strong> (anti-bot, retries). Catalog writes and RAG extraction have different latency profiles. Kafka lets scrape succeed even when downstream is slow, and lets us <strong>replay</strong> after a bad parser. Flink owns <strong>keyed dedupe and routing</strong> so we do not double-apply the same vendor menu when late pages arrive. If we only had Celery sync chains, a bad deploy meant re-scrape the internet instead of rewind the log.</p>
-<h3 id="prove-you-needed-flink-not-just-kafka-consumers">“Prove you needed Flink, not just Kafka consumers.”</h3>
-<p><strong>A:</strong> Plain consumers are fine for fire-and-forget transforms. We needed <strong>keyed state</strong> (per vendor/menu), <strong>event-time</strong> for late HTML, and a single job that <strong>validates → dedupes → routes</strong> structured vs unstructured before catalog/RAG. That is Flink’s sweet spot. Spark is worse for the hot path (micro-batch delay); we keep Spark as <strong>verbal backfill</strong>.</p>
-<h3 id="what-was-the-peak-eventssec-on-menu">“What was the peak events/sec on Menu?”</h3>
-<p><strong>A:</strong> I do not claim a measured Flink peak TPS on the resume. What is HISTORICAL is <strong>30K+ menus/month</strong>, <strong>24h→2h</strong>, <strong>95%+</strong> successful ingestions. Peak bus rate is <strong>ESTIMATED</strong> from scrape fan-out and retries — I will not invent a vanity number. I defend architecture under burst + failure, not a fake million-TPS slide.</p>
-<h3 id="masters-1mday-was-that-kafka-or-the-api">“Masters 1M+/day — was that Kafka or the API?”</h3>
-<p><strong>A:</strong> Both. Interactive API path hit <strong>4,000 req/min</strong> after the FastAPI strangler. Bulk IRP submissions (<strong>1M+/day</strong>, <strong>100K+/import</strong>) ride <strong>Kafka</strong> so filing-deadline spikes do not melt Postgres. Idempotency keys stop double filing on replay.</p>
-<h3 id="how-do-you-get-exactly-once">“How do you get exactly-once?”</h3>
-<p><strong>A:</strong> End-to-end exactly-once is a slogan. Practical recipe: Kafka at-least-once + <strong>idempotent sink</strong> (Menu: catalog upsert keyed by vendor/menu version; Masters: <code>client + fileHash + batchIndex</code>). Flink can use transactional sinks into Kafka; the catalog still needs idempotent writes. DLQ for poison messages; never infinite retry on bad payload.</p>
-<h3 id="bad-flinkparser-deploy-recovery">“Bad Flink/parser deploy — recovery?”</h3>
-<p><strong>A:</strong> Stop the job → fix → <strong>rewind Kafka</strong> to offsets before the bad watermark → reprocess. Gaps that need heavy history → Spark/batch backfill (verbal). Scrapers do not re-hit the open web for every repair if the raw payload is still in object storage / log.</p>
-<h3 id="why-kafka-not-rabbitmq-sqs-only-celery">“Why Kafka not RabbitMQ / SQS / only Celery?”</h3>
-<p><strong>A:</strong> We needed a <strong>replayable, partitioned, multi-consumer log</strong> with per-key ordering. Celery is a task queue (good for jobs); it is a weaker audit/replay bus for “reprocess last Tuesday’s scrapes.” SQS lacks the same ordered multi-subscriber log story we used. Kafka matched Menu fan-out and Masters IRP consumers.</p>
-<hr>
-<h2 id="4-scale-cheat-sheet-say-tags-out-loud">4. Scale cheat sheet (say tags out loud)</h2>
+<h2 id="4-rate-cheat-sheet-say-the-tag-out-loud">4. Rate cheat sheet (say the tag out loud)</h2>
 <table>
 <thead>
 <tr>
 <th>Claim</th>
+<th>Arithmetic</th>
 <th>Tag</th>
-<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>30K+ menus/month, 24h→2h, $600K+, 95%+</td>
+<td>30K+ menus a month</td>
+<td>30,000 / 30 is about 1,000 a day, about 0.012 a second</td>
+<td>HISTORICAL, rate ESTIMATED</td>
+</tr>
+<tr>
+<td>Menu peak about 200 to 500 events per second</td>
+<td>Items, retries and health events per menu, concentrated in fleet windows</td>
+<td>ESTIMATED, prep only, not on the resume</td>
+</tr>
+<tr>
+<td>From 24 hours to 2 hours</td>
+<td>24 / 2 = 12 times faster, about a 92% cut</td>
 <td>HISTORICAL</td>
-<td>Menu outcomes</td>
 </tr>
 <tr>
-<td>Kafka + Flink on Menu</td>
-<td>HISTORICAL architecture</td>
-<td>On campaign PDF</td>
+<td>$600K a year saved</td>
+<td>About $2 per menu x 30,000 x 12 = $720K list, floored to $600K</td>
+<td>ESTIMATED on HISTORICAL inputs</td>
 </tr>
 <tr>
-<td>Menu peak events/sec</td>
-<td>ESTIMATED if discussed</td>
-<td>Do not put on PDF</td>
+<td>95%+ extraction success</td>
+<td>From an estimated 60 to 65%</td>
+<td>HISTORICAL, baseline ESTIMATED</td>
 </tr>
 <tr>
-<td>1M+ IRP/day, 100K+/import</td>
+<td>1M+ IRP submissions a day</td>
+<td>1,000,000 / 86,400 is about 11.6, so about 12 a second</td>
+<td>HISTORICAL, rate ESTIMATED</td>
+</tr>
+<tr>
+<td>Masters peaks</td>
+<td>8 to 10 times the average, so roughly 90 to 120 a second</td>
+<td>ESTIMATED</td>
+</tr>
+<tr>
+<td>From 700 to 4,000 requests per minute</td>
+<td>700 / 60 is about 12 a second, 4,000 / 60 is about 67 a second, about 5.7 times more</td>
+<td>HISTORICAL, per second ESTIMATED</td>
+</tr>
+<tr>
+<td>100K+ concurrent imports</td>
+<td>Bulk imports processed idempotently</td>
 <td>HISTORICAL</td>
-<td>Masters</td>
 </tr>
 <tr>
-<td>~12 TPS avg / 100+ TPS peak</td>
-<td>ESTIMATED from 1M+/day</td>
-<td>Say estimated</td>
-</tr>
-<tr>
-<td>700 → 4,000 req/min</td>
+<td>Kafka and Flink on Menu</td>
+<td>Architecture on the resume</td>
 <td>HISTORICAL</td>
-<td>Masters API</td>
 </tr>
 <tr>
-<td>Spark / Pinot</td>
-<td>STUDY / verbal</td>
-<td>Not on PDF</td>
+<td>Spark, Pinot</td>
+<td>Not on the resume</td>
+<td>STUDY, verbal only</td>
 </tr>
 </tbody>
 </table>
 <hr>
-<h2 id="5-20-second-stories">5. 20-second stories</h2>
-<p><strong>Menu:</strong> “Scrapers are bursty. Kafka is the replayable bus. Flink does keyed dedupe and routes structured vs RAG paths so catalog freshness stays hours not a day. That is how 30K+ menus/month moved from 24h to 2h onboarding.”</p>
-<p><strong>Masters:</strong> “Filing deadlines spike IRP traffic. Kafka plus idempotent consumers and PG quarter shards took us to 1M+ submissions/day and 4,000 req/min without double-filing on replay. No Flink — workers were enough.”</p>
+<h2 id="5-attack-and-answer-memorise-these">5. Attack and answer (memorise these)</h2>
+<p><strong>"Kafka and Flink for only 30K menus a month? Isn't that overkill?"</strong>
+Average rate was not the design driver, and I agree the average is small: about a thousand menus a day. Scrapers are bursty and flaky because of anti-bot blocks and retries, and the catalog and RAG extraction have very different latency. Kafka lets a scrape succeed even when downstream is slow, and lets us replay after a bad parser. Flink owns keyed dedupe and routing, so we never double-apply the same vendor's menu when late or retried pages arrive. With only synchronous chains, a bad deploy meant re-scraping instead of rewinding the log.</p>
+<p><strong>"Prove you needed Flink and not just Kafka consumers."</strong>
+Plain consumers are fine for fire-and-forget transforms. We needed keyed state per vendor, event-time handling for late pages, and a single job that validates, dedupes, normalizes and routes before the catalog or the RAG path. That is Flink's core strength, and it gives checkpointed state so I am not hand-building fault tolerance. I will also say that Kafka Streams or a careful consumer could have worked at this event rate. Flink was the stronger fit for state and event time.</p>
+<p><strong>"What was your peak events per second on Menu?"</strong>
+I don't claim a measured Flink peak. What I can state is the outcome: 30K+ menus a month, onboarding from 24 hours to 2 hours, and 95%+ extraction success. If you want an order of magnitude, my estimate is a few hundred events per second during fleet runs, because each menu fans out into many item, retry and health events. That is an estimate, not a dashboard number.</p>
+<p><strong>"Masters 1M+ a day: was that Kafka or the API?"</strong>
+Both, and they are different paths. The interactive API went from 700 to 4,000 requests per minute after the strangler migration to FastAPI. Bulk submissions, 1M+ a day and 100K+ concurrent imports, went through Kafka so deadline spikes did not melt Postgres or overload the IRP. Idempotency keys stopped double filing on replay.</p>
+<p><strong>"How do you get exactly-once?"</strong>
+End-to-end exactly-once delivery is a slogan. The practical recipe is at-least-once from Kafka plus an idempotent sink. At Menu the catalog upsert is keyed by vendor, menu and version. At Masters the key is client plus file hash plus batch index. Flink can write transactionally into Kafka, but the external catalog still needs idempotent writes. Poison messages go to a DLQ, never infinite retry.</p>
+<p><strong>"A bad Flink or parser deploy shipped. How do you recover?"</strong>
+Stop the job, fix it, and restart from a checkpoint or savepoint from before the bad deploy, which rewinds Kafka offsets too. Then reprocess, and idempotent upserts make the re-run safe. If the gap is longer than Kafka retention, a batch backfill from stored raw payloads repairs it. Spark would be my tool for that, as a verbal option. We do not re-hit the open web for every repair if the raw payload is still stored.</p>
+<p><strong>"Why Kafka and not RabbitMQ, SQS or just Celery?"</strong>
+We needed a replayable, partitioned, multi-consumer log with per-key ordering. Celery is a task queue, good for jobs, but weak for "reprocess last Tuesday's events". SQS deletes on acknowledgement and does not give the same ordered multi-subscriber replay. RabbitMQ could have handled Masters' task dispatch at our scale, and I say that honestly. Kafka matched Menu's fan-out and Masters' replay needs.</p>
+<p><strong>"Why not put Kafka at Impact Analytics too?"</strong>
+There was no streaming requirement in my scope there. The IA work is interactive analytics on ClickHouse rollups and batch AI scoring with checkpoints. Adding a bus would add infrastructure without a problem to solve. I also don't claim the CDC pipeline there, because a colleague built it.</p>
+<hr>
+<h2 id="6-twenty-second-stories">6. Twenty-second stories</h2>
+<p><strong>Menu:</strong> "Scrapers are bursty. Kafka is the replayable bus. Flink does keyed dedupe and normalization and routes structured menus straight to the catalog and messy PDFs to the RAG path. That pipeline is how 30K+ menus a month went from 24-hour to 2-hour onboarding."</p>
+<p><strong>Masters:</strong> "Filing deadlines spike IRP traffic. Kafka plus idempotent consumers and quarter-sharded Postgres handled 1M+ submissions a day without double filing on replay, and the API went from 700 to 4,000 requests per minute. No Flink, because workers were enough."</p>
+<hr>
+<h2 id="7-practice-drill">7. Practice drill</h2>
+<ol>
+<li><strong>What is the average menu rate per second?</strong> About 0.012 a second, one menu every 80 to 90 seconds. The bus is busier because each menu fans out into many events.</li>
+<li><strong>Average Masters submission rate?</strong> About 12 a second, from 1,000,000 / 86,400.</li>
+<li><strong>Masters peak?</strong> Estimated 8 to 10 times average, roughly 90 to 120 a second.</li>
+<li><strong>700 to 4,000 requests per minute in per second?</strong> About 12 to 67.</li>
+<li><strong>Where is Flink?</strong> Uber Menu only.</li>
+<li><strong>Where is Kafka?</strong> Uber Menu and Masters India, two different products.</li>
+<li><strong>What does exactly-once mean on my resume?</strong> At-least-once delivery plus idempotent upserts.</li>
+<li><strong>Menu partition key?</strong> Vendor id. <strong>Masters partition key?</strong> Client GSTIN, sometimes plus document type.</li>
+<li><strong>Is Spark on the resume?</strong> No. Verbal backfill option only.</li>
+<li><strong>Is the Menu peak rate measured?</strong> No, estimated and prep only.</li>
+</ol>
 <hr>
 <h2 id="related">Related</h2>
 <ul>
-<li><a href="flink.html">flink.md</a> · <a href="kafka_streaming.html">kafka_streaming.md</a></li>
+<li><a href="flink.html">flink.md</a> and <a href="kafka_streaming.html">kafka_streaming.md</a></li>
 <li><a href="../architecture/03_uber_menu.html">../architecture/03_uber_menu.md</a></li>
 <li><a href="../architecture/04_masters_gst.html">../architecture/04_masters_gst.md</a></li>
 <li><a href="../deployment_and_scale.html">../deployment_and_scale.md</a></li>
+<li><a href="../numbers_defense.html">../numbers_defense.md</a></li>
 </ul></main>
 </div>
 

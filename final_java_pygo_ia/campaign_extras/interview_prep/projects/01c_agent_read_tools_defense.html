@@ -40,30 +40,246 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/projects/01c_agent_read_tools_defense.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#agent-tools-that-only-read-planning-data-not-never-writes-sql">Agent tools that only read planning data (not "never writes SQL")</a>
-<a class="lvl2" href="#what-the-resume-means">What the resume means</a>
-<a class="lvl2" href="#why-we-do-not-say-never-writes-sql-on-the-pdf">Why we do not say "never writes SQL" on the PDF</a>
-<a class="lvl2" href="#how-to-defend-in-interview">How to defend in interview</a>
-<a class="lvl2" href="#tags">Tags</a></nav>
-<main><blockquote>
-<p><strong>PDF sync (Sep 2026):</strong> Cluster Recommendation Copilot and Hindsight are <strong>verbal only / not on PDF</strong>.
-Defend the live resume from <code>docs/ASSORTSMART_TAB_RESUME.md</code> (Platform + Agentic: 10k RPS, CH 189s to 12s / six tables / 170 GB OOM, Ask Iris shipped, 300-case / 80% promotion gate).
-This file is interview <strong>depth</strong>, not a PDF bullet map.</p>
-</blockquote>
-<h1 id="agent-tools-that-only-read-planning-data-not-never-writes-sql">Agent tools that only read planning data (not "never writes SQL")</h1>
-<h2 id="what-the-resume-means">What the resume means</h2>
-<p>The clustering copilot exposes <strong>14 audited tools</strong>. Those tools <strong>only read</strong> planning / clustering data. The LLM does <strong>not</strong> get a raw SQL shell. Any change to plans or clusters goes through <strong>3 human confirm gates</strong> and then a controlled write-back path (Go doing layer / existing product APIs), not free-form model-generated SQL.</p>
-<h2 id="why-we-do-not-say-never-writes-sql-on-the-pdf">Why we do not say "never writes SQL" on the PDF</h2>
-<p>That phrase sounds absolute and confusing (engineers write SQL all the time). The accurate claim is <strong>tool permissioning</strong>: agent tools are read-scoped; writes are gated and go through the product write path.</p>
-<h2 id="how-to-defend-in-interview">How to defend in interview</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#agent-tools-that-only-read-planning-data-verbal-only-depth">Agent Tools That Only Read Planning Data (verbal-only depth)</a>
+<a class="lvl2" href="#1-the-problem-in-plain-english">1. The problem in plain English</a>
+<a class="lvl2" href="#2-words-you-need">2. Words you need</a>
+<a class="lvl2" href="#3-the-claim-stated-precisely">3. The claim, stated precisely</a>
+<a class="lvl2" href="#4-the-design-in-one-picture">4. The design in one picture</a>
+<a class="lvl2" href="#5-one-tool-call-step-by-step-illustrative">5. One tool call, step by step (illustrative)</a>
+<a class="lvl2" href="#6-why-we-do-not-say-the-agent-never-writes-sql">6. Why we do not say "the agent never writes SQL"</a>
+<a class="lvl2" href="#7-how-the-same-principle-shows-up-in-shipped-code">7. How the same principle shows up in shipped code</a>
+<a class="lvl2" href="#8-design-decisions">8. Design decisions</a>
+<a class="lvl2" href="#9-the-numbers">9. The numbers</a>
+<a class="lvl2" href="#10-how-to-defend-it-in-an-interview">10. How to defend it in an interview</a>
+<a class="lvl2" href="#11-say-this-not-that">11. Say this, not that</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="agent-tools-that-only-read-planning-data-verbal-only-depth">Agent Tools That Only Read Planning Data (verbal-only depth)</h1>
+<div class="callout warn">
+<p><b>Verbal-only. Not a resume bullet.</b></p>
+<ul>
+<li>This page is about the <b>Cluster Recommendation Copilot</b> design at Impact Analytics. It is <b>not on the PDF</b>. Older prep wrote "what the resume means" here. That is obsolete. The current resume does not mention the copilot or its 14 tools.</li>
+<li>Status: <b>design</b>. The Phase 1 design passed internal and external review. The bring-up load test is <b>pending</b>. Say "designing" or "building", never "shipped".</li>
+<li><b>MCP and tool calling are skills-level</b> on my resume. The 14-tool design is something I can explain verbally. It is not an Impact Analytics bullet.</li>
+<li>Do not call the confirm steps "HITL" or a "human review queue". Impact Analytics has no human review queue in shipped code. The design has planner confirmation clicks, which is a different thing (explained below).</li>
+<li>Defend the live resume from <code>docs/ASSORTSMART_TAB_RESUME.md</code>: 10k RPS, 189s to 12s with six rollup tables, the 170GB OOM fix, Ask Iris shipped, the 300-case / 80% promotion gate.</li>
+</ul>
+</div>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> what "the agent's tools only read data" means, why we phrase it that way instead of "the agent never writes SQL", and how the design keeps writes safe.</li>
+<li><b>When to read it:</b> before a GenAI or agent-design round, after you know the main Impact Analytics pack.</li>
+<li><b>What to memorise:</b> the one-sentence principle ("the LLM proposes and reads, the engine computes, the planner confirms, writes go through product APIs"), the 8.5% (37 of 437) measured baseline, and that under 2% is a target.</li>
+</ul>
+</div>
+<p><strong>Tags on this page.</strong> MEASURED means there is a log, a doc or code. ESTIMATED means arithmetic I can show. TARGET means a design goal (say "targeting"). HISTORICAL means from past work records. DESIGN means it is specified in a design document but not built or measured in production.</p>
+<hr>
+<h2 id="1-the-problem-in-plain-english">1. The problem in plain English</h2>
+<p>Before planners can decide which products go to which stores, they group stores into <strong>clusters</strong>: stores that behave alike (similar customers, similar sales patterns) get a similar assortment. Today a planner makes four expert choices more or less blind (attributes, time window, store scope and number of clusters), runs <strong>one</strong> configuration, and takes what comes out. The system even computes significance scores and then ignores them. On one live tenant's data, <strong>8.5% of runs fail (37 of 437)</strong>, and most of those failures are avoidable input mistakes. The winning settings are not saved, so a result cannot be reproduced.</p>
+<p>The Cluster Recommendation Copilot is the design that fixes this. A planner says what they want in chat. An LLM agent plans the search and calls tools to read data. A deterministic engine (normal code, not the LLM) computes the clusters across many configurations. The planner confirms. Only then is anything saved.</p>
+<hr>
+<h2 id="2-words-you-need">2. Words you need</h2>
+<ul>
+<li><strong>Agent.</strong> An LLM in a loop that can decide to call tools, read the results and decide the next step. Like an assistant who can look things up, not just answer from memory.</li>
+<li><strong>Tool.</strong> A function the agent is allowed to call, with a fixed name, typed inputs and typed outputs. The agent never writes the code inside the tool. It only chooses which tool and which arguments.</li>
+<li><strong>Tool calling.</strong> The LLM returns a structured request like <code>{"tool": "get_store_attributes", "args": {...}}</code>. Our code runs the tool and gives back the result.</li>
+<li><strong>MCP (Model Context Protocol).</strong> A standard way to describe tools so different LLM clients can call them. In this design it is the tool protocol. On my resume MCP is skills-level.</li>
+<li><strong>Allowlist.</strong> The fixed list of the only tools that exist. If a tool is not on the list, the agent cannot call it.</li>
+<li><strong>Audited tool.</strong> A tool whose code has been reviewed, whose inputs are validated, and whose every call is logged.</li>
+<li><strong>Read-scoped.</strong> The tool can only read data, inside the user's tenant and permission scope.</li>
+<li><strong>Write path.</strong> The only code route allowed to change plans or clusters. Here, the existing product APIs in the Go service.</li>
+<li><strong>Doing layer.</strong> The Go (Gin) services that actually perform product operations: clustering, Hindsight, strategy. The agent asks. The doing layer does.</li>
+<li><strong>Input boundary.</strong> The point where user input enters the system. "Input-boundary mistakes" are things like a wrong season code, a hierarchy node that does not exist, or a store set too small to cluster.</li>
+<li><strong>Grounding.</strong> Checking the agent's understanding against real data before acting, for example confirming the hierarchy node exists in the catalog and the season exists in the fiscal calendar.</li>
+<li><strong>k.</strong> The number of clusters.</li>
+</ul>
+<hr>
+<h2 id="3-the-claim-stated-precisely">3. The claim, stated precisely</h2>
+<p>"The copilot design exposes <strong>14 audited tools</strong>. Those tools <strong>only read</strong> planning and clustering data. The LLM never gets a raw SQL shell. Any change to plans or clusters happens only after <strong>three planner confirmation steps</strong>, and then goes through the existing product write path in the Go services, never through model-generated SQL."</p>
+<p>The three confirmation steps in the design are:
+1. The planner approves the <strong>search plan</strong> (which attributes, and how many configurations to explore).
+2. The planner approves the <strong>winning recommendation</strong>.
+3. <strong>Governance sign-off</strong> where the tenant requires it.</p>
+<p>These are confirm buttons in the product flow, the same way you confirm a bank transfer. They are not a review queue where someone else checks the AI's work. And none of it is shipped yet.</p>
+<hr>
+<h2 id="4-the-design-in-one-picture">4. The design in one picture</h2>
+<div class="mermaid">flowchart LR
+  PL["Planner in chat"]
+  AG["FastAPI agent service, LangGraph"]
+  TOOLS["14 audited read-only tools"]
+  ENG["Deterministic clustering engine"]
+  CONF["Planner confirmation steps"]
+  GO["Go/Gin doing layer, product write APIs"]
+  CH["ClickHouse planning store"]
+
+  PL --&gt; AG
+  AG --&gt;|"choose tool and args"| TOOLS
+  TOOLS --&gt;|"read, scoped"| CH
+  AG --&gt;|"run configs"| ENG
+  ENG --&gt; CH
+  AG --&gt; CONF
+  PL --&gt; CONF
+  CONF --&gt;|"approved config only"| GO
+  GO --&gt; CH
+</div>
+<p><em>What to notice: there is no arrow from the agent to a write. The only write arrow starts at the Go doing layer, and only after confirmation.</em></p>
+<hr>
+<h2 id="5-one-tool-call-step-by-step-illustrative">5. One tool call, step by step (illustrative)</h2>
+<p>Tool names below are <strong>illustrative</strong>, to show the shape. They are not the real tool registry.</p>
 <ol>
-<li>LLM plans which tool to call (LangGraph / MCP).</li>
-<li>Tool implementations are audited allow-listed functions (filters, metrics, cluster evals) that query via controlled interfaces.</li>
-<li>Human confirms scenarios before write-back.</li>
-<li>Failure baseline on kik: <strong>8.5% (37/437)</strong>, mostly input-boundary mistakes; target <strong>under 2%</strong>.</li>
+<li>The planner types: "Cluster my Womenswear stores for Summer 2026, I care about size mix."</li>
+<li>The agent calls a grounding tool:</li>
 </ol>
-<h2 id="tags">Tags</h2>
-<p>14 tools + 3 gates: DESIGN (Overview + Copilot FRD). Failure 8.5%: MEASURED. Under 2%: TARGET.</p></main>
+<pre><code class="language-json">{ &quot;tool&quot;: &quot;resolve_hierarchy_node&quot;, &quot;args&quot;: { &quot;text&quot;: &quot;Womenswear&quot; } }
+</code></pre>
+<p>The tool looks the name up in the product catalog and returns <code>{"node_id": "L1_204", "found": true}</code>. If it did not exist, the agent would ask the planner instead of guessing. This is exactly the class of input mistake behind most of the 8.5% failures.</p>
+<ol start="3">
+<li>The agent calls a read tool for the fiscal calendar to confirm "Summer 2026" maps to a real season code.</li>
+<li>The agent calls a read tool that checks sample size: enough stores with enough history to cluster.</li>
+<li>The agent proposes a search plan: attributes including size mix, a range of k within the client's minimum and maximum, and a batch of configurations. <strong>Confirmation step 1:</strong> the planner approves.</li>
+<li>The deterministic engine runs the configurations. The LLM does not compute clusters.</li>
+<li>The agent presents 3 to 5 distinct scenarios with evidence. <strong>Confirmation step 2:</strong> the planner picks one.</li>
+<li>The approved configuration (recipe, data watermark, seed) is saved, and the Go doing layer writes the clusters through the existing product API.</li>
+</ol>
+<p>At no point can the agent issue <code>INSERT</code>, <code>UPDATE</code> or <code>DELETE</code>. It has no tool that does.</p>
+<hr>
+<h2 id="6-why-we-do-not-say-the-agent-never-writes-sql">6. Why we do not say "the agent never writes SQL"</h2>
+<p>That phrase sounds absolute and confusing. Engineers write SQL all the time, the services write to databases all the time, and an interviewer will poke holes in "never". The accurate claim is about <strong>tool permissioning</strong>:
+- Agent tools are read-scoped.
+- The agent cannot author SQL. It can only call fixed tools with validated arguments.
+- Writes happen only through the product write path, after confirmation.</p>
+<p>That is precise, testable and defensible.</p>
+<hr>
+<h2 id="7-how-the-same-principle-shows-up-in-shipped-code">7. How the same principle shows up in shipped code</h2>
+<p>If an interviewer asks "is any of this real?", anchor on what is shipped, carefully.</p>
+<ul>
+<li><strong>Keep/Drop (on the resume):</strong> the scoring lenses receive JSON context only. The LLM never gets a SQL tool. In the current package, a small peer-context step can call two fixed, batch-level read functions (at most 2 per batch). They are SELECT-only, restricted to an allowlist of tables, have a 15-second query timeout, and any write or DDL statement is rejected. No agent has a write path. Engines write staging files, and an operator command publishes them.</li>
+<li><strong>The dig-deeper Q&amp;A agent on locked decisions:</strong> <code>allow_writes</code> is false and locked. It cannot change a decision.</li>
+<li><strong>Ask Iris (on the resume):</strong> hierarchy scope frozen at the WebSocket handshake, and a 3-attempt evaluator cap.</li>
+</ul>
+<p>So the copilot design extends a principle the team already runs: the model reads and proposes, code computes, and writes go through controlled paths.</p>
+<hr>
+<h2 id="8-design-decisions">8. Design decisions</h2>
+<h3 id="read-only-tools-instead-of-a-guarded-sql-tool">Read-only tools instead of a guarded SQL tool</h3>
+<ul>
+<li><strong>Why:</strong> a guarded SQL tool still lets the model write a query that scans billions of rows or slips past a filter. A fixed tool has a known cost and a known scope.</li>
+<li><strong>Alternative:</strong> an LLM SQL tool with a read-only database user. Safer than nothing, but cost and scope are still open-ended, and testing it is hard.</li>
+<li><strong>Trade-off:</strong> every new question the agent should answer needs a new tool, written and reviewed.</li>
+</ul>
+<h3 id="grounding-tools-before-compute">Grounding tools before compute</h3>
+<ul>
+<li><strong>Why:</strong> over 80% of the measured failures were input-boundary mistakes. Resolving hierarchy, season and sample size first removes that class before the engine runs.</li>
+<li><strong>Trade-off:</strong> a few more tool calls per session.</li>
+</ul>
+<h3 id="deterministic-engine-for-the-clusters">Deterministic engine for the clusters</h3>
+<ul>
+<li><strong>Why:</strong> clustering math must be reproducible and explainable. The LLM chooses what to explore. Code computes.</li>
+<li><strong>Trade-off:</strong> the agent's creativity is limited to the search plan, which is the point.</li>
+</ul>
+<h3 id="confirmation-before-write-back">Confirmation before write-back</h3>
+<ul>
+<li><strong>Why:</strong> clusters drive buying decisions worth real money. A planner owns that decision.</li>
+<li><strong>Trade-off:</strong> one or two extra clicks per session.</li>
+</ul>
+<hr>
+<h2 id="9-the-numbers">9. The numbers</h2>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>14</td>
+<td>Audited read-only tools in the copilot design</td>
+<td>DESIGN</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Planner confirmation steps before write-back</td>
+<td>DESIGN</td>
+</tr>
+<tr>
+<td>8.5% (37 of 437)</td>
+<td>Clustering runs that failed on one live tenant's data</td>
+<td>MEASURED baseline</td>
+</tr>
+<tr>
+<td>Over 80% of those</td>
+<td>Failures that were input-boundary mistakes</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>~20 seconds</td>
+<td>Median clustering job time over 370 live runs (engine only, not the full chat)</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>0%</td>
+<td>Reproducibility, because winning settings were never saved</td>
+<td>MEASURED baseline</td>
+</tr>
+<tr>
+<td>Under 2%</td>
+<td>Failure rate the design targets</td>
+<td>TARGET</td>
+</tr>
+</tbody>
+</table>
+<p><strong>8.5%.</strong> 37 divided by 437 is 0.0847, about 8.5%. Say "on live data, about 8.5 percent of clustering runs failed, 37 out of 437, mostly avoidable input mistakes". Never say "we cut it to under 2%". Say "the design targets under 2%".</p>
+<hr>
+<h2 id="10-how-to-defend-it-in-an-interview">10. How to defend it in an interview</h2>
+<p><strong>"Can your agent write to the database?"</strong>
+"No. In the design, the agent only has 14 audited tools, and they only read planning data within the user's scope. It cannot write SQL at all. It picks a tool and arguments, and our code runs the tool. Any change goes through the existing Go product APIs, and only after the planner confirms the plan and the recommendation."</p>
+<p><strong>"What failure rate do you see?"</strong>
+"On one live tenant, about 8.5% of clustering runs failed, 37 out of 437, and more than 80% of those were input-boundary mistakes like a wrong season or a hierarchy node that did not exist. The design adds grounding tools that resolve those before anything runs. Under 2% is the target. I will not claim it until the load test is done."</p>
+<p><strong>"Is this shipped?"</strong>
+"No. It is a Phase 1 design that passed review, with the bring-up load test pending. It is not on my resume. The same read-only principle is already shipped in the Keep/Drop engine and in Ask Iris."</p>
+<p><strong>"Why not just give the model a read-only SQL user?"</strong>
+"Read-only stops writes, but not a query that scans billions of rows or forgets a tenant filter. Fixed tools give me known cost, known scope and something I can unit test."</p>
+<hr>
+<h2 id="11-say-this-not-that">11. Say this, not that</h2>
+<table>
+<thead>
+<tr>
+<th>Say this</th>
+<th>Not this</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Tools are read-scoped. Writes go through product APIs after confirmation."</td>
+<td>"The agent never writes SQL."</td>
+</tr>
+<tr>
+<td>"Measured 8.5%, targeting under 2%."</td>
+<td>"We reduced failures to under 2%."</td>
+</tr>
+<tr>
+<td>"Planner confirmation steps in the design."</td>
+<td>"HITL" or "human review queue".</td>
+</tr>
+<tr>
+<td>"Design, load test pending."</td>
+<td>"Shipped copilot."</td>
+</tr>
+<tr>
+<td>"MCP is skills-level for me."</td>
+<td>MCP as an Impact Analytics resume bullet.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li>Evals, guardrails and the copilot flow: <a href="01d_agentic_evals_guardrails_flow.html">01d_agentic_evals_guardrails_flow.md</a></li>
+<li>Main Impact Analytics pack: <a href="01_impact_analytics.html">01_impact_analytics.md</a></li>
+<li>Hindsight (also verbal-only): <a href="01b_hindsight_defense.html">01b_hindsight_defense.md</a></li>
+<li>LangGraph, MCP and RAG depth: <a href="../tech_depth/langgraph_mcp_rag.html">../tech_depth/langgraph_mcp_rag.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

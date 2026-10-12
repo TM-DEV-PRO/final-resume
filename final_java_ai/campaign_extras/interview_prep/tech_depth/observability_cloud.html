@@ -40,25 +40,298 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/tech_depth/observability_cloud.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#observability-cloud-docker-gcp-aws">Observability + Cloud (Docker GCP AWS)</a>
-<a class="lvl2" href="#what">What</a>
-<a class="lvl2" href="#how-used-here">How used here</a>
-<a class="lvl2" href="#tradeoffs">Tradeoffs</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a></nav>
-<main><h1 id="observability-cloud-docker-gcp-aws">Observability + Cloud (Docker GCP AWS)</h1>
-<h2 id="what">What</h2>
-<p>Datadog, <strong>LangSmith</strong>, PostHog at IA. ELK + New Relic on-call at Masters (ELK may be off skills list — still on Masters bullet). Docker everywhere. GCP (IA, Menu) AWS (Masters). Kubernetes = skill literacy (no cluster-admin claim).</p>
-<p><strong>LangSmith also appears on the AI &amp; Agents skills line</strong> — defend as agent traces + offline eval/regression (see <code>prep/36_skills_ai_agents_defense.md</code>).</p>
-<h2 id="how-used-here">How used here</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#observability-and-cloud-datadog-langsmith-elk-new-relic-docker-gcp-aws-kubernetes-bazel-cicd">Observability and cloud: Datadog, LangSmith, ELK, New Relic, Docker, GCP, AWS, Kubernetes, Bazel, CI/CD</a>
+<a class="lvl2" href="#1-observability-in-plain-english">1. Observability in plain English</a>
+<a class="lvl2" href="#2-datadog-at-impact-analytics-bullet-c1">2. Datadog at Impact Analytics (bullet C1)</a>
+<a class="lvl2" href="#3-langsmith-on-ask-iris-bullet-a4">3. LangSmith on Ask Iris (bullet A4)</a>
+<a class="lvl2" href="#4-custom-json-telemetry-on-the-keepdrop-batch-bullet-a3">4. Custom JSON telemetry on the Keep/Drop batch (bullet A3)</a>
+<a class="lvl2" href="#5-elk-and-new-relic-at-masters-india-bullet-mi3">5. ELK and New Relic at Masters India (bullet MI3)</a>
+<a class="lvl2" href="#6-docker">6. Docker</a>
+<a class="lvl2" href="#7-gcp-and-aws">7. GCP and AWS</a>
+<a class="lvl2" href="#8-kubernetes-literacy-only">8. Kubernetes (literacy only)</a>
+<a class="lvl2" href="#9-bazel-uber-frm">9. Bazel (Uber FRM)</a>
+<a class="lvl2" href="#10-cicd">10. CI/CD</a>
+<a class="lvl2" href="#11-debugging-end-to-end-a-worked-example">11. Debugging end to end: a worked example</a>
+<a class="lvl2" href="#12-interview-questions-with-speakable-answers">12. Interview questions with speakable answers</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="observability-and-cloud-datadog-langsmith-elk-new-relic-docker-gcp-aws-kubernetes-bazel-cicd">Observability and cloud: Datadog, LangSmith, ELK, New Relic, Docker, GCP, AWS, Kubernetes, Bazel, CI/CD</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li>IA: LangSmith for agent quality; Datadog for platform SLOs; PostHog for product — stitched by trace ids.</li>
-<li>Masters: on-call alerting cut triage 70%; coverage 35→82%; 98% deploy success.</li>
-<li>Honesty: do not claim sole ownership of Datadog/LangSmith org-wide. No Terraform production ownership.</li>
+<li><strong>What it covers:</strong> the observability tools (logs, metrics, traces, LLM traces) and the cloud and DevOps items on my resume. That means Datadog on the Impact Analytics Go edge, LangSmith on Ask Iris, custom JSON telemetry on the Keep/Drop batch, ELK and New Relic at Masters India, plus Docker, GCP, AWS, Bazel, CI/CD and Kubernetes (literacy only).</li>
+<li><strong>When to read it:</strong> before any "how do you debug production", on-call, reliability or DevOps question.</li>
+<li><strong>What to memorise:</strong> which tool lives where (Datadog is the IA Go edge, LangSmith is Ask Iris, ELK and New Relic are Masters). The Masters numbers: triage down 70% (roughly 30 minutes to under 10, estimated baseline), test coverage from 35% to 82%, and 98% deployment success. And that Kubernetes is literacy, not cluster operations.</li>
 </ul>
-<h2 id="tradeoffs">Tradeoffs</h2>
-<p>Three obs tools vs one. Prefer domain-right tool with shared <code>trace_id</code> over forcing one vendor.</p>
-<h2 id="likely-questions">Likely questions</h2>
-<p>How do you debug a bad agent answer end to end? What is your on-call loop? What does 98% deployment success mean? Offline eval vs production monitoring?</p></main>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. STATED means printed on the resume from the project source. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. TARGET means a design goal.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
+<ul>
+<li><strong>LangSmith is Ask Iris only.</strong> The Keep/Drop batch uses custom JSON telemetry, not LangSmith.</li>
+<li><strong>Datadog is the IA Go edge.</strong> No invented SLA, p99 or uptime number.</li>
+<li><strong>ELK and New Relic are Masters India.</strong> They are both on the current skills line too. Older prep said ELK might be off the skills list. It is on it now.</li>
+<li><strong>Kubernetes is literacy only.</strong> No "I operated clusters". No Terraform production ownership. Do not claim org-wide ownership of Datadog or LangSmith.</li>
+<li>The <strong>70% triage</strong> cut is HISTORICAL. Its <strong>30-minute baseline is ESTIMATED</strong>. I claim on-call <strong>alerting</strong> and faster triage, not a formal pager rotation title.</li>
+<li>PostHog appeared in older IA prep as product analytics. It is not on the resume. Do not lead with it.</li>
+</ul>
+</div>
+<hr>
+<h2 id="1-observability-in-plain-english">1. Observability in plain English</h2>
+<p><strong>Observability</strong> is how well you can tell what a running system is doing from the outside, using the signals it emits. It answers "what is broken, where, and why" without SSH-ing into boxes and guessing.</p>
+<p>The three classic signals:</p>
+<table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>What it is</th>
+<th>Analogy</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Logs</strong></td>
+<td>Timestamped records of events</td>
+<td>A ship's logbook</td>
+<td><code>{"level":"error","request_id":"r-91","msg":"IRP timeout","client":"c-12"}</code></td>
+</tr>
+<tr>
+<td><strong>Metrics</strong></td>
+<td>Numbers over time</td>
+<td>The car dashboard</td>
+<td>Request rate, error rate, p95 latency, consumer lag</td>
+</tr>
+<tr>
+<td><strong>Traces</strong></td>
+<td>One request's path across services, as timed steps</td>
+<td>A parcel tracking history</td>
+<td>API span, then Redis span, then ClickHouse span</td>
+</tr>
+</tbody>
+</table>
+<p>More terms you need:</p>
+<ul>
+<li><strong>Span:</strong> one timed step in a trace (an HTTP handler, a database query).</li>
+<li><strong>Trace id or correlation id:</strong> an id carried through every service and log line for one request, so you can stitch them together.</li>
+<li><strong>APM</strong> (Application Performance Monitoring): tools that auto-instrument services to produce traces and latency breakdowns.</li>
+<li><strong>Structured logs:</strong> JSON fields instead of free text, so you can filter by <code>client_id</code> or <code>request_id</code>.</li>
+<li><strong>SLI, SLO, SLA:</strong> an SLI (Service Level Indicator) is a measured signal like p95 latency. An SLO (Service Level Objective) is the target for it. An SLA (Service Level Agreement) is a contractual promise. I quote none of these for IA.</li>
+</ul>
+<hr>
+<h2 id="2-datadog-at-impact-analytics-bullet-c1">2. Datadog at Impact Analytics (bullet C1)</h2>
+<blockquote>
+<p>Architected a multi-tenant <strong>Go/Gin</strong> platform scaling to <strong>10k peak RPS</strong>, utilizing <strong>Google Wire</strong> for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native <strong>h2c</strong>, nested timeouts, and <strong>Datadog</strong> distributed tracing.</p>
+</blockquote>
+<p><strong>Datadog</strong> is a hosted monitoring platform for metrics, logs and APM traces. Its Go tracer instruments Gin, HTTP clients and database calls, so each request becomes a trace with spans.</p>
+<p>Why it matters for this design: with no reverse proxy, there is no proxy access log or proxy dashboard to lean on. The Go process's own traces are the main view into latency. When a pivot is slow, the trace waterfall shows whether the time went to the auth waterfall on a Redis miss, to Postgres role resolution, or to a ClickHouse query.</p>
+<div class="mermaid">flowchart LR
+    REQ["Request"] --&gt; S1["Span: Gin handler"]
+    S1 --&gt; S2["Span: Redis auth cache"]
+    S1 --&gt; S3["Span: Postgres roles"]
+    S1 --&gt; S4["Span: ClickHouse query"]
+    S1 --&gt; DD["Datadog APM: one trace id"]
+</div>
+<p><em>What to notice: one trace id ties every downstream call to the request, so the slowest span is obvious.</em></p>
+<p>Say it: "Datadog distributed tracing on the Go edge, so every request is a trace across Redis, Postgres and ClickHouse." Do NOT add an SLA or a p99.</p>
+<hr>
+<h2 id="3-langsmith-on-ask-iris-bullet-a4">3. LangSmith on Ask Iris (bullet A4)</h2>
+<p><strong>LangSmith</strong> is the LangChain team's tracing and evaluation platform for LLM apps. Each graph run is a trace tree: nodes, prompts, model responses, token counts, latency and errors.</p>
+<p>For Ask Iris it answers questions Datadog can't: which worker did the supervisor route to, why did the evaluator reject the first draft, how many attempts (at most 3) did it take, how many tokens did it cost. See <a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a>.</p>
+<hr>
+<h2 id="4-custom-json-telemetry-on-the-keepdrop-batch-bullet-a3">4. Custom JSON telemetry on the Keep/Drop batch (bullet A3)</h2>
+<blockquote>
+<p>Engineered a shared orchestration registry to guarantee <strong>88k-article</strong> batch runs survive provider failures by implementing hard timeouts, circuit breakers, and durable checkpoints that bypass redundant deterministic scoring. Ensured full observability by stamping every output row with a frozen config hash and custom JSON telemetry tracking tokens, USD cost, step duration, and batch fallbacks.</p>
+</blockquote>
+<p>For a batch job, the questions are different: what did this run cost, how long did each step take, how many batches fell back to deterministic scores, and which configuration produced each row. So each run emits JSON telemetry (tokens, USD cost, step duration, batch fallbacks), and every output row carries <code>config_hash</code>, a SHA-256 of guardrails, parameters, prompts and catalog.</p>
+<pre><code class="language-json">{&quot;run_id&quot;: &quot;kd-2026-09-08-a&quot;, &quot;config_hash&quot;: &quot;9f2c...&quot;, &quot;step&quot;: &quot;lenses&quot;,
+ &quot;items&quot;: 88000, &quot;tokens_in&quot;: 0, &quot;tokens_out&quot;: 0, &quot;usd_cost&quot;: 0.0,
+ &quot;duration_s&quot;: 0, &quot;batches_fallback&quot;: 0}
+</code></pre>
+<p><em>(Field names are illustrative and the values are zeroed on purpose. About $100 per pass is true but off the PDF.)</em></p>
+<p>Why not LangSmith here: we needed per-run cost accounting and fallback counts tied to output rows and to the config hash, inside our own batch CLI. A fallback spike is visible in the telemetry, so fallbacks don't silently hide problems.</p>
+<hr>
+<h2 id="5-elk-and-new-relic-at-masters-india-bullet-mi3">5. ELK and New Relic at Masters India (bullet MI3)</h2>
+<blockquote>
+<p>Decreased incident triage time by <strong>70%</strong> and lowered database read load by <strong>30%</strong> by instrumenting <strong>ELK</strong> and <strong>New Relic</strong> distributed tracing alongside a Redis caching layer. Hardened the CI/CD release cycle by driving test coverage from <strong>35% to 82%</strong>, achieving a <strong>98%</strong> deployment success rate across the microservices ecosystem.</p>
+</blockquote>
+<h3 id="51-what-the-tools-are">5.1 What the tools are</h3>
+<ul>
+<li><strong>ELK</strong> is <strong>Elasticsearch</strong> (search and storage), <strong>Logstash</strong> (ingest and transform logs) and <strong>Kibana</strong> (search UI and dashboards). Services ship structured logs, and you search them by any field.</li>
+<li><strong>New Relic</strong> is a hosted APM platform for traces, latency breakdowns, error rates and alerting.</li>
+</ul>
+<h3 id="52-before-and-after">5.2 Before and after</h3>
+<ul>
+<li><strong>Before:</strong> SSH into boxes and grep log files, with no way to follow one request across services.</li>
+<li><strong>After:</strong> structured JSON logs carrying a <strong>request id</strong> shipped to ELK, New Relic APM traces, and alert rules on error rate and latency. One request id follows a transaction across the API, the Kafka consumer and the IRP worker.</li>
+<li><strong>How the id travels in Spring Boot:</strong> a servlet filter (a class that runs before every controller) reads or creates the id and puts it in the <strong>MDC</strong> (Mapped Diagnostic Context), a per-thread map that the JSON log encoder adds to every log line. The producer copies the id into a Kafka header, and the <code>@KafkaListener</code> puts it back into the MDC before doing any work. The New Relic Java agent instruments Spring MVC, JDBC and Kafka calls automatically.</li>
+</ul>
+<div class="mermaid">flowchart LR
+    API["Spring Boot services"] --&gt; LOG["JSON logs with request_id"]
+    W["Spring Kafka consumers"] --&gt; LOG
+    LOG --&gt; ELK["ELK: search by request_id"]
+    API --&gt; NR["New Relic APM traces"]
+    W --&gt; NR
+    NR --&gt; AL["Alerts on error rate and latency"]
+    ELK --&gt; TRI["On-call triage"]
+    AL --&gt; TRI
+</div>
+<p><em>What to notice: the win is correlation. One id joins the logs and traces from every hop.</em></p>
+<h3 id="53-the-numbers">5.3 The numbers</h3>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>How derived</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>70% triage cut</td>
+<td>Time from alert to knowing which service and request caused it</td>
+<td>Roughly 30 minutes to under 10 minutes. 30 to 9 is a 70% cut</td>
+<td>HISTORICAL, baseline ESTIMATED</td>
+</tr>
+<tr>
+<td>30% read load cut</td>
+<td>Read queries hitting PostgreSQL</td>
+<td>Redis cache-aside layer. It is load, not latency</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>From 35% to 82%</td>
+<td>Test coverage, with JUnit and Mockito tests as a CI gate on money paths first (registration, reconciliation, imports)</td>
+<td>Coverage reports</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>98%</td>
+<td>Deployments that went out without rollback</td>
+<td>Release records</td>
+<td>HISTORICAL</td>
+</tr>
+</tbody>
+</table>
+<p>Say it: "Incident triage time fell about 70%, roughly from half an hour to under ten minutes, thanks to ELK and New Relic tracing." Do NOT present the 30-minute baseline as measured, or say "zero downtime" here (that phrase belongs to the FRM stacked Bazel PRs).</p>
+<hr>
+<h2 id="6-docker">6. Docker</h2>
+<p><strong>Docker</strong> packages an application and its dependencies into an <strong>image</strong>. An image is a layered, read-only filesystem snapshot. A running image is a <strong>container</strong>. Containers share the host's kernel, so they are much lighter than virtual machines. Analogy: a shipping container. Whatever is inside, the crane and the ship handle it the same way.</p>
+<p>Key ideas: layers are cached (put rarely changing steps first), images should be small and pinned to versions, and a container should run one process.</p>
+<pre><code class="language-dockerfile"># Teaching sketch.
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD [&quot;uvicorn&quot;, &quot;app.main:app&quot;, &quot;--host&quot;, &quot;0.0.0.0&quot;, &quot;--port&quot;, &quot;8080&quot;]
+</code></pre>
+<p>The sketch above is a Python service such as the IA agent plane. For the Spring Boot services the idea is the same with a JRE base image (for example <code>eclipse-temurin:17-jre</code>) and <code>CMD ["java", "-jar", "app.jar"]</code> running the service's single executable JAR.</p>
+<p>Where: on the tech line for Impact Analytics, Uber FRM, Uber Menu and Masters India. At Menu it pinned browser and driver versions for the Selenium fleet.</p>
+<hr>
+<h2 id="7-gcp-and-aws">7. GCP and AWS</h2>
+<table>
+<thead>
+<tr>
+<th>Cloud</th>
+<th>Where</th>
+<th>What to say</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GCP</strong> (Google Cloud Platform)</td>
+<td>Impact Analytics (with BigQuery on the tech line, and ClickHouse Cloud clusters), Uber Menu</td>
+<td>Services ran on GCP. Keep product-level detail qualitative unless you are sure</td>
+</tr>
+<tr>
+<td><strong>AWS</strong> (Amazon Web Services)</td>
+<td>Masters India</td>
+<td>Bulk import files landed in object storage (Amazon S3). Secrets used AWS KMS (HISTORICAL framing)</td>
+</tr>
+</tbody>
+</table>
+<p>When asked "which services?", name only what you know, and describe patterns instead: object storage for files, managed databases, container deploys, secrets management.</p>
+<hr>
+<h2 id="8-kubernetes-literacy-only">8. Kubernetes (literacy only)</h2>
+<p><strong>Kubernetes</strong> is a system that runs containers across a cluster of machines and keeps them in the desired state. Words to know:</p>
+<ul>
+<li><strong>Pod:</strong> the smallest unit, one or more containers scheduled together.</li>
+<li><strong>Deployment:</strong> declares "run N replicas of this pod" and handles rolling updates.</li>
+<li><strong>Service:</strong> a stable network name and load balancing in front of pods.</li>
+<li><strong>Ingress:</strong> HTTP routing from outside the cluster.</li>
+<li><strong>HPA</strong> (Horizontal Pod Autoscaler): scales replicas on CPU or custom metrics.</li>
+<li><strong>Liveness and readiness probes:</strong> "restart me if dead" and "don't send me traffic yet".</li>
+</ul>
+<p>Why it matters for my Go edge: graceful shutdown on SIGTERM is exactly what a rolling deploy on Kubernetes or any orchestrator needs.</p>
+<p>Say it: "I understand how Kubernetes deploys and scales services, and I write services that behave well on it, with graceful shutdown, health checks and stateless replicas. I haven't operated clusters, so I don't claim that." No cluster operations claims, no Terraform claims.</p>
+<hr>
+<h2 id="9-bazel-uber-frm">9. Bazel (Uber FRM)</h2>
+<p><strong>Bazel</strong> is Google's open-source build system, used in large monorepos. Builds are <strong>hermetic</strong> (same inputs give the same outputs) and <strong>incremental</strong> (only rebuild and retest what changed), with explicit dependency graphs in <code>BUILD.bazel</code> files.</p>
+<p>At Uber FRM it was the monorepo environment, not a choice. Each layer (entity, repository, service, controller) had a Java test target running JUnit 5 tests, and all had to pass before merge. <strong>Stacked PRs</strong> are a chain of small dependent pull requests, each reviewable and shippable on its own. They let the Spring Data JPA / Hibernate migration go out in steps with zero downtime.</p>
+<hr>
+<h2 id="10-cicd">10. CI/CD</h2>
+<p><strong>CI</strong> (Continuous Integration) runs automated checks on every change. <strong>CD</strong> (Continuous Delivery or Deployment) automates releasing it. My CI/CD stories:</p>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Gate</th>
+<th>Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Masters India</td>
+<td>JUnit and Mockito coverage as a CI gate, money paths first</td>
+<td>Coverage from 35% to 82%, 98% deployment success (HISTORICAL)</td>
+</tr>
+<tr>
+<td>Uber FRM</td>
+<td>Bazel test targets per layer (JUnit 5, Mockito, MockMvc), tests required with every PR, stacked PRs</td>
+<td>100% module statement coverage (STATED), 1,100+ tests (verbal)</td>
+</tr>
+<tr>
+<td>Impact Analytics</td>
+<td>Offline eval as a promotion gate: at least 80% on the 300-case proxy set</td>
+<td>80% gate (MEASURED config). Not live accuracy</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="11-debugging-end-to-end-a-worked-example">11. Debugging end to end: a worked example</h2>
+<p>"A planner says Ask Iris gave a wrong answer about a dropped article."</p>
+<ol>
+<li>Find the Ask Iris run in <strong>LangSmith</strong>. Which worker did the supervisor choose? What did the evaluator say on each attempt?</li>
+<li>Check the data the worker had. If it came from the platform, follow the request into <strong>Datadog</strong> traces on the Go edge and see the ClickHouse query and its result.</li>
+<li>Check the decision itself in the Keep/Drop output. Its <code>config_hash</code> says which prompts and parameters produced it, and the run's JSON telemetry says whether that batch fell back to the deterministic score.</li>
+<li>Decide whether it is a routing problem (Ask Iris), a data problem (platform), or a scoring problem (Keep/Drop). Fix it there, and add the case to the relevant eval set.</li>
+</ol>
+<hr>
+<h2 id="12-interview-questions-with-speakable-answers">12. Interview questions with speakable answers</h2>
+<p><strong>Q1. How do you debug a bad agent answer end to end?</strong>
+I start in LangSmith for the Ask Iris run: routing, evaluator attempts, tokens. If the problem is the data the worker read, I follow it into Datadog traces on the Go edge to see the exact ClickHouse call. If it's the underlying Keep/Drop decision, the output row's config hash tells me which prompts and parameters produced it, and the run telemetry tells me if that batch fell back. Then I fix it at the right layer and add the case to the eval set.</p>
+<p><strong>Q2. What was your on-call improvement at Masters?</strong>
+Before, triage meant SSH and grep with no way to follow a request. I instrumented structured JSON logs with request ids into ELK and New Relic APM traces, with alerts on error rate and latency. Now one id follows a transaction through the API, the Kafka consumer and the IRP worker. Triage time dropped about 70%, roughly from half an hour to under ten minutes, where the baseline is my estimate.</p>
+<p><strong>Q3. What does 98% deployment success mean?</strong>
+98% of deployments went out without needing a rollback. It came with raising test coverage from 35% to 82% as a CI gate, money paths first, plus canary releases per route during the migration. It is a release-quality number, not uptime.</p>
+<p><strong>Q4. Why three observability tools instead of one?</strong>
+Each layer asks different questions. Datadog answers "where did this HTTP request spend its time". LangSmith answers "what did the LLM graph do and why". Custom JSON telemetry answers "what did this 88k-item batch cost and how often did it fall back". Forcing one tool to do all three gives you a worse version of each. The shared request or run id is what ties them together.</p>
+<p><strong>Q5. Offline evaluation versus production monitoring?</strong>
+Offline evaluation gates changes before they ship: the 300-case set with an 80% promotion threshold. Production monitoring tells you what happens after: fallback rates, costs, traces. Neither replaces the other. A model can pass offline and still drift live, which is why fallbacks and cost are tracked per run.</p>
+<p><strong>Q6. Have you used Kubernetes?</strong>
+At literacy level. I understand pods, deployments, services, autoscaling and probes, and I build services that behave well on an orchestrator: stateless, with health checks and graceful SIGTERM handling. I haven't operated clusters, and I don't claim that.</p>
+<p><strong>Q7. What is Bazel and why did Uber use it?</strong>
+It's a hermetic, incremental build system for large monorepos. It only rebuilds and retests what a change affects, and builds are reproducible. At FRM every layer had a test target that had to pass before merge, and we used stacked PRs so the ORM migration shipped in small steps with zero downtime.</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="go_gin.html">go_gin.md</a> for the Datadog-traced Go edge</li>
+<li><a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a> for LangSmith and offline eval</li>
+<li><a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a> for the Redis read-load cut</li>
+<li><a href="../deployment_and_scale.html">../deployment_and_scale.md</a></li>
+<li><a href="../../../prep/36_skills_ai_agents_defense.html">../../../prep/36_skills_ai_agents_defense.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

@@ -236,29 +236,29 @@ as residual stock, clamped ≥ 0. See §6.</p>
 <hr>
 <h2 id="4-endtoend-flow">4. End‑to‑end flow</h2>
 <div class="mermaid">flowchart TD
-  A[master_input_imputed_assort_*] -->|fill SELECT rollup<br/>checkpoint resume| Wcsv[staging/.../reco_article_store_week_bake/*.csv]
-  Wcsv -->|OPERATOR load_csv_to_ch bake| Wbake[reco_article_store_week_bake]
-  Wbake -->|det SELECT KPI + ramps| Dcsv[staging/.../reco_deterministic_score_bake/*.csv]
-  Dcsv -->|OPERATOR load_csv_to_ch bake| Dbake[reco_deterministic_score_bake]
-  Wbake -->|agentic feature SQL| Dfeat[features per article]
-  Dbake -->|s_det join| E
-  Dfeat --> E
+  A[master_input_imputed_assort_*] --&gt;|fill SELECT rollup&lt;br/&gt;checkpoint resume| Wcsv[staging/.../reco_article_store_week_bake/*.csv]
+  Wcsv --&gt;|OPERATOR load_csv_to_ch bake| Wbake[reco_article_store_week_bake]
+  Wbake --&gt;|det SELECT KPI + ramps| Dcsv[staging/.../reco_deterministic_score_bake/*.csv]
+  Dcsv --&gt;|OPERATOR load_csv_to_ch bake| Dbake[reco_deterministic_score_bake]
+  Wbake --&gt;|agentic feature SQL| Dfeat[features per article]
+  Dbake --&gt;|s_det join| E
+  Dfeat --&gt; E
   subgraph E [Per-batch agentic - LLM, NO DB writes]
-    P[PeerBenchmark agent] --> DEC[Decider: lens mixes]
-    DEC --> L[Lenses run in parallel]
-    L --> MIX[score mixes -> s_agent]
-    MIX --> BL[blend s_det+s_agent -> s_final]
-    BL --> CONF[confidence]
-    BL --> EXP[Explain + TopN taglines]
+    P[PeerBenchmark agent] --&gt; DEC[Decider: lens mixes]
+    DEC --&gt; L[Lenses run in parallel]
+    L --&gt; MIX[score mixes -&gt; s_agent]
+    MIX --&gt; BL[blend s_det+s_agent -&gt; s_final]
+    BL --&gt; CONF[confidence]
+    BL --&gt; EXP[Explain + TopN taglines]
   end
-  E --> F[staging/.../reco_agentic_score_bake/*.csv]
-  E --> G[staging/.../reco_final_score_bake/*.csv]
-  F -->|OPERATOR load_csv_to_ch bake| Abake[reco_agentic_score_bake]
-  G -->|OPERATOR load_csv_to_ch bake| Fbake[reco_final_score_bake]
-  Wbake -->|OPERATOR migrate_bake| Wmain[reco_article_store_week]
-  Dbake -->|OPERATOR migrate_bake| Dmain[reco_deterministic_score]
-  Abake -->|OPERATOR migrate_bake| Amain[reco_agentic_score]
-  Fbake -->|OPERATOR migrate_bake| Fmain[reco_final_score]
+  E --&gt; F[staging/.../reco_agentic_score_bake/*.csv]
+  E --&gt; G[staging/.../reco_final_score_bake/*.csv]
+  F --&gt;|OPERATOR load_csv_to_ch bake| Abake[reco_agentic_score_bake]
+  G --&gt;|OPERATOR load_csv_to_ch bake| Fbake[reco_final_score_bake]
+  Wbake --&gt;|OPERATOR migrate_bake| Wmain[reco_article_store_week]
+  Dbake --&gt;|OPERATOR migrate_bake| Dmain[reco_deterministic_score]
+  Abake --&gt;|OPERATOR migrate_bake| Amain[reco_agentic_score]
+  Fbake --&gt;|OPERATOR migrate_bake| Fmain[reco_final_score]
 </div>
 <p>Fixed order: <strong>fill → deterministic → agentic → (ensemble optional) → evals.</strong>
 <code>--steps auto|all</code> expands to <code>fill, deterministic, agentic, evals</code>.</p>
@@ -635,14 +635,14 @@ Anything beyond this (external fashion trends) needs the Trends provider.
   participant Le as Lenses (parallel)
   participant Sc as Scoring
   participant Ex as Explain + TopN
-  B->>Pe: features + ≤max_peer_tool_calls batch tools -> sibling/scope context (all articles)
-  B->>De: features + allowlisted lenses -> adaptive mixes/article
-  De->>Le: 2 fixed anchors + 2-3 adaptive mixes; unique gate-eligible lenses
-  Le-->>Sc: per-lens score/outcome/confidence
-  Sc->>Sc: validate mix coverage -> configured aggregate -> s_agent
-  Sc->>Sc: blend s_det -> s_final; compute confidence
-  Sc->>Ex: rows -> explanation + explanation_topN (LLM on)
-  B-->>CSV: staging reco_agentic_score_bake + reco_final_score_bake (ch_load_status=pending)
+  B-&gt;&gt;Pe: features + ≤max_peer_tool_calls batch tools -&gt; sibling/scope context (all articles)
+  B-&gt;&gt;De: features + allowlisted lenses -&gt; adaptive mixes/article
+  De-&gt;&gt;Le: 2 fixed anchors + 2-3 adaptive mixes; unique gate-eligible lenses
+  Le--&gt;&gt;Sc: per-lens score/outcome/confidence
+  Sc-&gt;&gt;Sc: validate mix coverage -&gt; configured aggregate -&gt; s_agent
+  Sc-&gt;&gt;Sc: blend s_det -&gt; s_final; compute confidence
+  Sc-&gt;&gt;Ex: rows -&gt; explanation + explanation_topN (LLM on)
+  B--&gt;&gt;CSV: staging reco_agentic_score_bake + reco_final_score_bake (ch_load_status=pending)
 </div>
 <p>The batch writes <strong>CSV only</strong> (no direct DB write). Publish is the operator
 <code>load_csv_to_ch</code> step (§16); direct CH bake needs ops <code>--dangerous-write-ch</code> (§18.3).</p>
@@ -1102,13 +1102,13 @@ tanking <code>keep</code> recall. <strong>This baseline is the pre‑bake yardst
 planner gold passes size/balance checks. Full stepwise playbook with spreadsheet →
 JSON examples: <strong><code>evals/gold/README.md</code></strong>.</p>
 <div class="mermaid">flowchart LR
-  A[eval.json use_proxy_golden] -->|true| B[cases.json proxy]
-  A -->|false| C[cases_planner.json planner]
-  B --> D[evals suite gold_outcomes]
-  C --> D
-  D -->|blend if s_det+s_agent| E[domain.scoring offline]
-  D -->|else vs_final| F[SELECT latest outcome from final table]
-  D --> G[promote_config gate]
+  A[eval.json use_proxy_golden] --&gt;|true| B[cases.json proxy]
+  A --&gt;|false| C[cases_planner.json planner]
+  B --&gt; D[evals suite gold_outcomes]
+  C --&gt; D
+  D --&gt;|blend if s_det+s_agent| E[domain.scoring offline]
+  D --&gt;|else vs_final| F[SELECT latest outcome from final table]
+  D --&gt; G[promote_config gate]
 </div>
 <p><strong>Production practices (companies):</strong> gold is an offline / promote gate and shadow
 metric — not a live retrieval key for agents. Split holdout vs tuning labels;

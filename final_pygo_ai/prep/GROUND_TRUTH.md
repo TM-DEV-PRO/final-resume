@@ -36,7 +36,7 @@ Project title on PDF: **AssortSmart — Senior Software Engineer (Platform & AI)
 4. Reduced planner pivot latency by **15.5×** (**189s to 12s** on **250M-row** operations) via ClickHouse season/weekly rollups. Prevented **170GB** OOM by slicing inserts into temporal chunks and enforcing distributed memory + disk-spill caps. Verbal knobs: one fiscal week, **55GB** / **16GB**. Six tables stay the interview drawing. **1.6M** catalog article-seasons still true, off PDF.
 5. Migrated ClickHouse rollups across Cloud clusters at **~344k rows/s** with a custom Go native-TLS data pump (allowlist bypass). Partitions up to **4.09B**, **500k-row** double-buffered batches, TSV ledgers, atomic **partition rollbacks** (`DROP PARTITION` then recopy — not a live reader swap). Copy of 4.09B was in flight. **100% / 1,200+ tests** off PDF (LinkedIn / verbal).
 
-**Stack:** agent plane = Python, FastAPI, LangGraph; platform / write APIs = **Go / Gin**. MCP is **not** on this PDF.
+**Stack:** agent plane = Python, FastAPI, LangGraph; platform / write APIs = **Go / Gin**. MCP and Tool Calling appear on the **Skills** line only (skills-level). They are not an IA experience bullet; IA tool design is verbal depth.
 
 ## Uber FRM (via EPAM)
 

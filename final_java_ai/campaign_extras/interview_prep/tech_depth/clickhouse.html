@@ -41,26 +41,582 @@ strong{color:#fff}
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/tech_depth/clickhouse.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#clickhouse">ClickHouse</a>
-<a class="lvl2" href="#what">What</a>
-<a class="lvl2" href="#how-used-here">How used here</a>
-<a class="lvl2" href="#tradeoffs">Tradeoffs</a>
-<a class="lvl2" href="#failure-modes">Failure modes</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a></nav>
+<a class="lvl2" href="#1-what-clickhouse-is-in-plain-english">1. What ClickHouse is, in plain English</a>
+<a class="lvl2" href="#2-how-clickhouse-works-the-ideas-interviewers-probe">2. How ClickHouse works: the ideas interviewers probe</a>
+<a class="lvl2" href="#3-bullet-c4-the-rollup-layer-and-the-155x-pivot-win">3. Bullet C4: the rollup layer and the 15.5x pivot win</a>
+<a class="lvl2" href="#4-bullet-c4-continued-the-170gb-oom-on-weekly-builds">4. Bullet C4 continued: the 170GB OOM on weekly builds</a>
+<a class="lvl2" href="#5-bullet-c5-the-go-native-tls-copier">5. Bullet C5: the Go native-TLS copier</a>
+<a class="lvl2" href="#6-bullet-a2-the-211b-row-master-and-why-the-llm-never-queries-it">6. Bullet A2: the 2.11B-row master and why the LLM never queries it</a>
+<a class="lvl2" href="#7-tenancy-and-the-kpi-compiler-bullets-c2-and-c3-briefly">7. Tenancy and the KPI compiler (bullets C2 and C3), briefly</a>
+<a class="lvl2" href="#8-verbal-only-clickhouse-material-not-on-the-resume">8. Verbal-only ClickHouse material (not on the resume)</a>
+<a class="lvl2" href="#9-clickhouse-versus-the-alternatives">9. ClickHouse versus the alternatives</a>
+<a class="lvl2" href="#10-interview-questions-with-speakable-answers">10. Interview questions with speakable answers</a>
+<a class="lvl2" href="#related">Related</a></nav>
 <main><h1 id="clickhouse">ClickHouse</h1>
-<h2 id="what">What</h2>
-<p>Columnar OLAP store. Per-tenant AssortSmart planning store design: 63 tables / 8 layers, insert-only / partition-swapped, agent <code>readonly=1</code> (DDL Phase-1).</p>
-<h2 id="how-used-here">How used here</h2>
-<p>Pivot POC at 250M rows cut heavy grid 189s→12.3s (~15.5× MEASURED). Replaces high-variance shared BigQuery probes for agent p95 targets.</p>
-<h2 id="tradeoffs">Tradeoffs</h2>
-<p>OLAP speed vs mutation pain. Chose INSERT-only services + partition swap (P1) / append-only events (P3), not in-place updates. Agent <code>readonly=1</code>. Copying from BQ requires freshness reconciliation. Omit 624 columns.</p>
-<h2 id="failure-modes">Failure modes</h2>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li>Mutations and small updates</li>
-<li>Silent stale copies</li>
-<li>COUNT(DISTINCT) heavy plans (be honest ~2–3× if stripped)</li>
+<li><strong>What it covers:</strong> what ClickHouse is, how MergeTree tables, partitions and ReplacingMergeTree work, and exactly how I used it at Impact Analytics (AssortSmart). That includes the rollup layer, the 170GB OOM fix, the Go copier and the 2.11B-row agentic master.</li>
+<li><strong>When to read it:</strong> before any IA deep dive, any data-platform or analytics round, or any "hardest technical problem" question.</li>
+<li><strong>What to memorise:</strong> from 189 seconds to 12 seconds (15.5x) on a 250M-row harness, 170GB OOM fixed by one-week inserts, about 344k rows per second, partitions up to 4.09B rows, the 2.11B-row master. Also memorise the two traps: 15.5x is query time and 170GB is load time, and 344k is rows per second, not requests.</li>
 </ul>
-<h2 id="likely-questions">Likely questions</h2>
-<p>Why not Postgres for everything? How do you ingest from BigQuery? What is your consistency story? Explain MergeTree / partitions at a high level.</p></main>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. ESTIMATED means arithmetic I can show. HISTORICAL means it comes from my past work records. TARGET means a design goal (say "targeting"). "Verbal" means true and safe to say if asked, but not printed on the resume.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
+<ul>
+<li><strong>15.5x is query time</strong> (planner pivots). <strong>170GB OOM is load time</strong> (weekly rollup builds). One did not cause the other.</li>
+<li><strong>344k is rows per second</strong> of copy throughput. It is not requests per second or transactions per second.</li>
+<li><strong>4.09B was measured in flight.</strong> Say "measured on a partition set of up to 4.09B rows". Do not say "I finished migrating 4.09B rows".</li>
+<li><strong>"Atomic partition rollback" means DROP PARTITION, then recopy that season.</strong> It is not an atomic swap with live readers. The REPLACE PARTITION incremental design was written but not executed.</li>
+<li>ClickHouse is an <strong>Impact Analytics</strong> story only. No Kafka, Flink or CDC on IA. The CDC pipeline (pg2ch) was written by a colleague, Ashvin Sharma. Do not claim it.</li>
+<li>No sub-second ClickHouse claims. The number is 12 seconds.</li>
+</ul>
+</div>
+<hr>
+<h2 id="1-what-clickhouse-is-in-plain-english">1. What ClickHouse is, in plain English</h2>
+<p>ClickHouse is an open-source database built for analytics. It answers questions like "total sales by store and week for this season" over hundreds of millions or billions of rows. It is not built for "update this one customer's email address". It is called an <strong>OLAP</strong> database (Online Analytical Processing), which means it is tuned for big reads that scan, filter and aggregate many rows. The opposite is <strong>OLTP</strong> (Online Transaction Processing), like PostgreSQL or MySQL, which is tuned for many small reads and writes of single rows.</p>
+<p><strong>Columnar storage</strong> is the core idea. A normal database stores a row together: product, store, date, units, revenue, all side by side. ClickHouse stores each column separately. Think of a filing cabinet where each drawer holds one column for every record. If you want total revenue, you open only the revenue drawer and the date drawer. You never touch the 100 other columns. That is why a column store can scan billions of values per second on one machine. Values in one column also look alike, so they compress very well.</p>
+<p>Who uses it: product analytics teams, observability platforms, ad-tech, and in my case a retail planning SaaS where merchandise planners pivot sales data on screen.</p>
+<h3 id="where-it-sits-in-my-work">Where it sits in my work</h3>
+<table>
+<thead>
+<tr>
+<th>Where</th>
+<th>What ClickHouse did</th>
+<th>Resume bullet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Impact Analytics, Core</td>
+<td>Six rollup tables that cut planner pivots from 189 seconds to 12 seconds</td>
+<td>C4</td>
+</tr>
+<tr>
+<td>Impact Analytics, Core</td>
+<td>Weekly rollup builds that stopped hitting a 170GB OOM</td>
+<td>C4</td>
+</tr>
+<tr>
+<td>Impact Analytics, Core</td>
+<td>A Go native-TLS copier that moved rollups between ClickHouse Cloud clusters at about 344k rows per second</td>
+<td>C5</td>
+</tr>
+<tr>
+<td>Impact Analytics, Core</td>
+<td>Tenant-scoped analytics store next to PostgreSQL metadata</td>
+<td>C3</td>
+</tr>
+<tr>
+<td>Impact Analytics, Core</td>
+<td>Target of the KPI formula compiler (<code>ifNotFinite</code> wrapped SQL)</td>
+<td>C2</td>
+</tr>
+<tr>
+<td>Impact Analytics, Agentic</td>
+<td>The 2.11B-row master that the LLM is never allowed to query, and the ReplacingMergeTree that stores scores</td>
+<td>A2</td>
+</tr>
+</tbody>
+</table>
+<p>Nowhere else. Uber Menu used Kafka and Flink into a catalog, not ClickHouse. Masters India used PostgreSQL.</p>
+<hr>
+<h2 id="2-how-clickhouse-works-the-ideas-interviewers-probe">2. How ClickHouse works: the ideas interviewers probe</h2>
+<h3 id="21-mergetree-the-default-table-engine">2.1 MergeTree: the default table engine</h3>
+<p>A <strong>table engine</strong> in ClickHouse decides how data is stored on disk. <strong>MergeTree</strong> is the main family.</p>
+<ul>
+<li>Every INSERT writes a new immutable chunk called a <strong>part</strong>. The rows inside a part are sorted by the table's <code>ORDER BY</code> key.</li>
+<li>In the background, ClickHouse <strong>merges</strong> small parts into bigger sorted parts. Think of sorting index cards in small piles as they arrive, then a clerk later merges the small sorted piles into one big sorted pile.</li>
+<li>Because parts never change in place, updates and deletes are expensive. ClickHouse prefers you to insert new rows rather than edit old ones.</li>
+</ul>
+<pre><code class="language-sql">-- Teaching sketch. Column names are illustrative, not the production schema.
+CREATE TABLE product_season
+(
+    tenant_id     String,
+    season_code   String,
+    product_id    String,
+    store_count   UInt32,
+    sales_units   Float64,
+    sales_revenue Float64
+)
+ENGINE = MergeTree
+PARTITION BY season_code
+ORDER BY (tenant_id, product_id);
+</code></pre>
+<h3 id="22-the-sparse-primary-index">2.2 The sparse primary index</h3>
+<p>The <code>ORDER BY</code> key doubles as a <strong>sparse primary index</strong>. ClickHouse does not index every row. By default it keeps one index entry (a "mark") for every 8,192 rows. When you filter on the leading columns of the key, it uses the marks to skip whole blocks it knows cannot match. Analogy: a phone book with only the first name on each page printed in the corner. You can jump to the right page quickly without an entry for every person.</p>
+<p>Lesson for design: put the columns you filter on most at the front of <code>ORDER BY</code>.</p>
+<h3 id="23-partitions">2.3 Partitions</h3>
+<p><code>PARTITION BY season_code</code> splits the table into separate folders, one per season. Two big benefits:</p>
+<ol>
+<li><strong>Pruning.</strong> A query for season 7 only opens the season-7 folder.</li>
+<li><strong>Operations by unit.</strong> You can <code>DROP PARTITION '7'</code> and reload just that season. That was the basis of our recovery story for the copier and the weekly loader.</li>
+</ol>
+<p>Do not over-partition. Thousands of tiny partitions create too many parts and slow merges. Season is a coarse, natural unit for retail planning.</p>
+<h3 id="24-replacingmergetree">2.4 ReplacingMergeTree</h3>
+<p><strong>ReplacingMergeTree</strong> is a MergeTree variant that keeps only the newest version of rows that share the same <code>ORDER BY</code> key. Think of a notebook where you never erase. You write the new value on a new line, and a cleaner later crosses out the old lines with the same key.</p>
+<pre><code class="language-sql">-- Teaching sketch.
+CREATE TABLE article_scores
+(
+    tenant_id   String,
+    article_id  String,
+    season_code String,
+    s_final     Float64,
+    source      String,     -- e.g. 'blend' or 'det_fallback'
+    config_hash String,
+    updated_at  DateTime
+)
+ENGINE = ReplacingMergeTree(updated_at)
+ORDER BY (tenant_id, season_code, article_id);
+</code></pre>
+<p>Two things interviewers check:</p>
+<ul>
+<li><strong>Deduplication happens at merge time, not at insert time.</strong> Until a merge runs, a query can see two versions of the same key. That is why we call it <strong>eventually consistent</strong>: it becomes correct after the background merge.</li>
+<li>To read only the latest version right now, you either add <code>FINAL</code> to the query (slower, and older prep notes it does not use projections) or use an aggregate such as <code>argMax(s_final, updated_at)</code> grouped by the key.</li>
+</ul>
+<h3 id="25-aggregate-functions-that-matter-in-my-story">2.5 Aggregate functions that matter in my story</h3>
+<ul>
+<li><code>any(x)</code> keeps some value of <code>x</code> for the group. It is cheap and is used for "carry this attribute along" columns.</li>
+<li><code>argMax(value, time)</code> returns the value that has the largest <code>time</code>. It is used for "latest attribute wins".</li>
+<li><code>ARRAY JOIN</code> turns one row with an array into many rows. We used it to <strong>unpivot</strong> attribute pairs, which is why the attribute rollup is so much bigger than the product rollup.</li>
+</ul>
+<h3 id="26-memory-and-spill-settings">2.6 Memory and spill settings</h3>
+<p>A <code>GROUP BY</code> keeps one in-memory state per group. With many groups and many <code>any()</code> / <code>argMax</code> states on wide strings, memory explodes. ClickHouse gives you knobs:</p>
+<table>
+<thead>
+<tr>
+<th>Setting</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>max_memory_usage</code></td>
+<td>Hard cap on memory for one query. Over the cap, the query fails with <code>MEMORY_LIMIT_EXCEEDED</code>.</td>
+</tr>
+<tr>
+<td><code>max_bytes_before_external_group_by</code></td>
+<td>When the GROUP BY state passes this size, spill partial results to disk instead of failing.</td>
+</tr>
+<tr>
+<td><code>max_threads</code></td>
+<td>How many threads one query may use. More threads means more parallel state in memory.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-bullet-c4-the-rollup-layer-and-the-155x-pivot-win">3. Bullet C4: the rollup layer and the 15.5x pivot win</h2>
+<blockquote>
+<p>Reduced planner pivot latency by <strong>15.5x</strong> (<strong>189s to 12s</strong> on <strong>250M-row</strong> operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented <strong>170GB</strong> OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
+</blockquote>
+<h3 id="31-in-plain-words">3.1 In plain words</h3>
+<p>Planners look at sales grids (pivots) such as "units by product by store for this season". A <strong>pivot</strong> is the spreadsheet-like grid: rows by product hierarchy, columns by week or store, cells aggregated. On PostgreSQL the heavy pivot grid took 189 seconds on a 250M-row benchmark harness. On ClickHouse the same query on the same 250M rows took about 12 seconds (12.3 seconds, rounded on the resume). That engine comparison is where 15.5x comes from. In production, the grids are served from a <strong>pre-aggregation layer</strong>: six rollup tables, so most of the summing happens once at load time and the screen reads small summarised tables.</p>
+<p>Say this carefully: the 189-to-12 measurement is PostgreSQL versus ClickHouse on the same heavy query. The rollup layer is how production serves those grids on ClickHouse. If an interviewer asks "was 189 seconds the daily table and 12 seconds the rollup?", the honest answer is no. It was the engine comparison that justified moving the grids to ClickHouse, and the rollups are the production design built on that decision.</p>
+<h3 id="32-how-it-works">3.2 How it works</h3>
+<div class="mermaid">flowchart LR
+    RAW["Daily facts: SKU x store x date"] --&gt; BUILD["Rollup build job: INSERT SELECT with GROUP BY"]
+    BUILD --&gt; PS["product_season"]
+    BUILD --&gt; SS["store_season"]
+    BUILD --&gt; AS["attr_season"]
+    BUILD --&gt; PW["product_weekly"]
+    BUILD --&gt; SW["store_weekly"]
+    BUILD --&gt; AW["attr_weekly"]
+    PS --&gt; API["Go/Gin planner API"]
+    SW --&gt; API
+    AW --&gt; API
+    API --&gt; UI["Planner pivot grid"]
+</div>
+<p><em>What to notice: all the heavy GROUP BY work moves to the left (load time). The planner screen on the right only reads small tables.</em></p>
+<p>Six MergeTree tables, all <code>PARTITION BY season_code</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Grain</th>
+<th>Product (keeps SKU dimensions)</th>
+<th>Store (no SKU)</th>
+<th>Attribute (unpivoted with ARRAY JOIN)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Season</td>
+<td>product_season</td>
+<td>store_season</td>
+<td>attr_season</td>
+</tr>
+<tr>
+<td>Weekly</td>
+<td>product_weekly</td>
+<td>store_weekly</td>
+<td>attr_weekly</td>
+</tr>
+</tbody>
+</table>
+<p>A worked example. Suppose the daily table has these rows for one product in one store:</p>
+<table>
+<thead>
+<tr>
+<th>product</th>
+<th>store</th>
+<th>date</th>
+<th>units</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>S1</td>
+<td>2026-03-02</td>
+<td>4</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>S1</td>
+<td>2026-03-03</td>
+<td>6</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>S1</td>
+<td>2026-03-09</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<p>The weekly rollup stores two rows (week 10: 10 units, week 11: 5 units). The season rollup stores one row (15 units). Multiply this by every day of a season and every store, and the planner reads a table that is orders of magnitude smaller.</p>
+<pre><code class="language-sql">-- Teaching sketch of a season rollup build.
+INSERT INTO product_season
+SELECT tenant_id, season_code, product_id,
+       uniqExact(store_id)   AS store_count,
+       sum(units)            AS sales_units,
+       sum(revenue)          AS sales_revenue
+FROM daily_facts
+WHERE season_code = '7'
+GROUP BY tenant_id, season_code, product_id;
+</code></pre>
+<p>Two design details worth saying:</p>
+<ul>
+<li><strong>Store and attribute totals must match the SKU totals.</strong> Older prep describes two-pass weighted sums with re-weighting, then validating <code>sum(product)</code> against <code>sum(store)</code> against <code>sum(attr)</code> at the same filters. Earlier season-grain parity checks showed 0% difference on revenue across seasons 1 to 7 (verbal).</li>
+<li><strong>The attribute table is an unpivot.</strong> One product with several attribute pairs becomes several rows. That is why attr weekly is roughly 5 times the size of product weekly on the same seasons (verbal).</li>
+</ul>
+<h3 id="33-why-this-design">3.3 Why this design</h3>
+<ul>
+<li><strong>What:</strong> pay once at load, read cheap at query time.</li>
+<li><strong>Why:</strong> planners click through grids all day. Waiting minutes per pivot kills the product. A GROUP BY over a wide daily table with many <code>any()</code> / <code>argMax</code> states is the wrong thing to run per click.</li>
+<li><strong>How:</strong> six rollup tables, partitioned by season, generated load SQL, build order product then store then attribute per grain.</li>
+<li><strong>Alternatives considered:</strong></li>
+<li><em>Stay on PostgreSQL.</em> Planner pivots were slow on PostgreSQL. We ran POCs comparing Postgres and ClickHouse at 5M, 50M and 250M rows. ClickHouse won the heavy grid at every size (13.8x at 5M, 13.0x at 50M, 15.5x at 250M), and Postgres also spilled about 42 GB of sort files to disk on the 250M run. The harness was not tilted toward ClickHouse: Postgres ran natively on a 48 GB host with 8 parallel workers, while ClickHouse ran in a 10-CPU, 3.3 GB Docker VM. The same POCs showed Postgres much faster for single-cell write-back (POC history, verbal only), which is why the verdict was hybrid. Postgres stays for thin metadata, UAM (User Access Management), roles and writes.</li>
+<li><em>Query BigQuery directly.</em> BigQuery is on the IA tech line. Older Copilot design notes compared against BigQuery's variable interactive latency (roughly 1 to 20+ seconds). That comparison is verbal only. The simple point is that a serverless warehouse billed per bytes scanned is a poor fit for a click-heavy grid.</li>
+<li><em>Snowflake.</em> Older prep lists cost and latency for this interactive UI as the reasons against.</li>
+<li><em>Materialized views in ClickHouse.</em> They update on insert, which is great for simple sums. Our rollups carry many attribute states and need controlled rebuilds, so explicit build jobs were easier to reason about and to recover.</li>
+<li><strong>Trade-off:</strong> data in rollups is only as fresh as the last build. Rollups also take disk and build time. And rollups do not help every query shape (see the caveat below).</li>
+<li><strong>What I'd do differently:</strong> design the incremental path (only rebuild changed partitions, with REPLACE PARTITION from scratch tables) from day one. That design exists on paper. It was not executed.</li>
+</ul>
+<h3 id="34-the-numbers">3.4 The numbers</h3>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>How derived</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>189s to 12s</td>
+<td>Wall time of the heavy pivot grid query (group-by plus contribution percent plus option count) on PostgreSQL, then on ClickHouse</td>
+<td>Benchmark harness: Postgres 189,408 ms, ClickHouse 12,256 ms on the same query and the same 250M rows. 12.3s rounds to 12s</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>15.5x</td>
+<td>Speed ratio of the two</td>
+<td>189,408 / 12,256 is about 15.45, which rounds to 15.5x</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>250M rows</td>
+<td>Size of the benchmark dataset</td>
+<td>Built at 5M, 50M and 250M. The largest client was around 5M at the time, so 250M tested growth. It is not the production table size (the master is 2.11B)</td>
+<td>MEASURED</td>
+</tr>
+</tbody>
+</table>
+<p>Why it mattered: at 189 seconds the grid is unusable, because planners wait three minutes per click. At about 12 seconds it becomes workable.</p>
+<p>Say it out loud: "Planner pivots got about fifteen and a half times faster, from 189 seconds to 12 seconds on 250 million rows. We benchmarked at 250 million so the decision would survive growth."</p>
+<p>Do NOT say: "sub-second", "every query is 15x faster", "our production table is 250M rows", or "the OOM fix made it 15x faster".</p>
+<p>Caveat to keep in your pocket: 15.5x is the heavy grid query. The benchmark's own adversarial review said typical aggregates are closer to 2 to 3 times faster. If asked whether every query got 15x faster, say no and give that number.</p>
+<hr>
+<h2 id="4-bullet-c4-continued-the-170gb-oom-on-weekly-builds">4. Bullet C4 continued: the 170GB OOM on weekly builds</h2>
+<p>This is my best "hardest technical problem" story. <strong>OOM</strong> means out of memory: the database killed the query because it needed more RAM than it was allowed.</p>
+<h3 id="41-what-broke">4.1 What broke</h3>
+<p>Weekly rollups need about 110 <code>any()</code> states plus <code>argMax</code> / <code>argMin</code> over wide string columns. A whole-season weekly <code>INSERT SELECT</code> was estimated at around <strong>170GB</strong> of aggregation state. It failed with <code>MEMORY_LIMIT_EXCEEDED</code> even at an 80GB cap, and again at a 200GB cap. The replica had about 59 cores and about 234 to 236 GiB of RAM (verbal).</p>
+<h3 id="42-how-i-fixed-it">4.2 How I fixed it</h3>
+<p>The unit of work became <strong>one fiscal week per INSERT</strong>, not one season. Then I capped each insert.</p>
+<table>
+<thead>
+<tr>
+<th>Knob (verbal, off PDF)</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory cap per insert</td>
+<td>55 GB</td>
+</tr>
+<tr>
+<td>Disk spill threshold</td>
+<td>16 GB</td>
+</tr>
+<tr>
+<td>Threads per insert</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Weeks in flight at once</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Observed peak, product week</td>
+<td>about 11 GB</td>
+</tr>
+<tr>
+<td>Observed peak, attribute week</td>
+<td>over 40 GB (a 40GB cap was too low)</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="language-sql">-- Teaching sketch: one fiscal week per insert, with caps.
+INSERT INTO attr_weekly
+SELECT ...
+FROM daily_facts
+WHERE season_code = '7' AND fiscal_year_week = 202611
+GROUP BY ...
+SETTINGS max_memory_usage = 55000000000,
+         max_bytes_before_external_group_by = 16000000000,
+         max_threads = 8;
+</code></pre>
+<div class="mermaid">flowchart LR
+    S["Whole season weekly insert"] --&gt; F["About 170GB of state. Fails at 80GB and 200GB caps"]
+    W["One fiscal week per insert"] --&gt; C["Caps: 55GB memory, 16GB spill, 8 threads"]
+    C --&gt; P["4 weeks in flight. Product week about 11GB. Attr week over 40GB"]
+    P --&gt; OK["Weekly grain builds succeed"]
+</div>
+<p><em>What to notice: I made the work unit smaller before I touched the memory limit. Raising RAM had already failed twice.</em></p>
+<h3 id="43-lessons-to-say">4.3 Lessons to say</h3>
+<ul>
+<li>Profile by grain first. Attribute weeks were the memory hog.</li>
+<li>Shrink the unit before raising the cap.</li>
+<li>Do not raise season parallelism and week parallelism together on the same box, because caps are per query and they add up.</li>
+</ul>
+<h3 id="44-ghost-rows-on-the-weekly-loader">4.4 Ghost rows on the weekly loader</h3>
+<p>A <strong>ghost row</strong> here means rows left behind by a half-finished load that look like a complete load. A failed HTTP INSERT in ClickHouse can still commit some blocks. Once, a half-loaded partition of 64.1M rows passed a naive "skip this season if the partition already has rows" check (verbal). The fix:</p>
+<ul>
+<li>Keep a <strong>TSV ledger</strong> (a simple tab-separated file) of finished <code>(kind, season_code)</code> pairs. Resume only skips entries in the ledger.</li>
+<li>If a season is not in the ledger, <code>DROP PARTITION</code> for that season and rebuild it.</li>
+<li>Treat an insert as finished only when <code>system.query_log</code> shows it completed (<code>QueryFinish</code> for that query id), not when the HTTP client exits.</li>
+</ul>
+<hr>
+<h2 id="5-bullet-c5-the-go-native-tls-copier">5. Bullet C5: the Go native-TLS copier</h2>
+<blockquote>
+<p>Migrated ClickHouse rollups across Cloud clusters at <strong>~344k rows/s</strong> by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to <strong>4.09B</strong> rows using <strong>500k-row</strong> double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
+</blockquote>
+<h3 id="51-in-plain-words">5.1 In plain words</h3>
+<p>We had to move rollup tables from one ClickHouse Cloud cluster to another. The normal approach is to have the target cluster pull from the source directly. That was blocked: each cluster only accepted connections from an <strong>IP allowlist</strong> (a list of approved network addresses), and cluster-to-cluster pulls were not on it. An operator machine was allowlisted on both sides. So I wrote a Go program that reads from the source and writes to the target over ClickHouse's <strong>native protocol</strong> with TLS (port 9440), streaming columnar batches through that machine.</p>
+<h3 id="52-how-it-works">5.2 How it works</h3>
+<pre><code class="language-text">source ClickHouse Cloud  --native TLS--&gt;  Go copier  --native TLS--&gt;  target ClickHouse Cloud
+        SELECT stream                     buffer A fills              INSERT Send() of buffer B
+        500k rows, columnar               while B sends               checkpoint per season
+</code></pre>
+<p><em>What to notice: reading the next batch overlaps with sending the previous one. That overlap is "double buffering".</em></p>
+<ul>
+<li><strong>Native protocol, not HTTP.</strong> It sends data in columnar blocks, which is cheaper than text formats. Older prep notes HTTP SELECT streams also hit "unexpected EOF" while sitting idle during a long INSERT.</li>
+<li><strong>Columnar 500k batches.</strong> <code>batchSize = 500_000</code>. Values go into typed slices per column (<code>batch.Column(i).Append</code>), then <code>Send()</code>. No per-row reflection.</li>
+<li><strong>Double buffering.</strong> Two buffer sets. While batch N is being sent, batch N+1 is being read.</li>
+<li><strong>Partition unit is <code>season_code</code>.</strong> <code>-workers N</code> copies N seasons in parallel, each with its own source and target connections.</li>
+<li><strong>Checkpoints.</strong> A finished season is recorded in <code>migrate-checkpoints/&lt;table&gt;.done</code>. A per-table file lock stops two terminals copying the same table.</li>
+<li><strong>Failure handling.</strong> On SIGINT the copier finishes the in-flight batch but does not mark that season done. Never retry <code>Send()</code> on a spent batch, because that risks duplicates. An incomplete season gets <code>DROP PARTITION</code>, then a recopy.</li>
+</ul>
+<pre><code class="language-go">// Teaching sketch of double buffering. Not the production code.
+next := make(chan *Batch, 1)
+go func() {
+    for rows.Next() {
+        b := readBatch(rows, 500_000) // fill buffer while the other one sends
+        next &lt;- b
+    }
+    close(next)
+}()
+for b := range next {
+    if err := b.Send(ctx); err != nil {
+        return err // do not retry a spent batch; season is not checkpointed
+    }
+}
+markDone(table, season) // writes migrate-checkpoints/&lt;table&gt;.done
+</code></pre>
+<h3 id="53-why-this-design-and-alternatives">5.3 Why this design and alternatives</h3>
+<ul>
+<li><strong>Why:</strong> the allowlists made the simple path impossible. The pump is a workaround for a network constraint, not an architecture goal.</li>
+<li><strong>Alternatives:</strong></li>
+<li><em>Use ClickHouse's built-in cluster-to-cluster copy (INSERT SELECT with the <code>remoteSecure</code> table function).</em> This is the right answer when the clusters can reach each other. The allowlists blocked it.</li>
+<li><em>Export to object storage and re-import.</em> This is a valid approach for frozen data. It adds a staging hop and storage cost.</li>
+<li><em>Write CSV over HTTP.</em> Slower, and it hit the EOF problem.</li>
+<li><strong>Trade-off:</strong> copying through one operator machine means its network and CPU are the ceiling, and a connection reset crashes the run. Checkpointing only finished seasons limits the blast radius.</li>
+<li><strong>What I'd do differently:</strong> for production cutovers, push for the allowlist change or an object-storage freeze, and run the REPLACE PARTITION design so readers never see a partial season.</li>
+</ul>
+<h3 id="54-the-numbers">5.4 The numbers</h3>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>What it measures</th>
+<th>How derived</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>~344k rows/s</td>
+<td>Combined copy throughput of two season streams</td>
+<td>Each stream sends a 500k-row batch about 0.3 to 0.4 times a second, so 0.3 x 500,000 = 150k and 0.4 x 500,000 = 200k rows per second per stream. Observed about 150k to 190k each at a live snapshot about 34 minutes in. Two streams combined gave about 344k</td>
+<td>MEASURED snapshot</td>
+</tr>
+<tr>
+<td>4.09B</td>
+<td>Largest object copied: attr weekly, two seasons</td>
+<td>2,779,317,472 + 1,311,108,195</td>
+<td>MEASURED, copy in flight</td>
+</tr>
+<tr>
+<td>500k</td>
+<td>Rows per batch</td>
+<td>Code constant</td>
+<td>MEASURED</td>
+</tr>
+</tbody>
+</table>
+<p>Say it out loud: "The copier ran two season streams at about 150 to 190 thousand rows a second each, so about 344 thousand rows a second combined. I measured that on the largest object, an attribute weekly table of about 4.09 billion rows across two seasons."</p>
+<p>For scale only: 4.09B rows at 344k rows per second would take roughly 11,900 seconds, a bit over 3 hours, and 4.09B / 500k is about 8,180 batches. That is arithmetic, not a measured duration.</p>
+<p>Do NOT say "344k RPS", "344k TPS", or "migrated 4.09 billion rows" as if it finished. If asked "did it finish?", say: "At the snapshot, some tables were done and attr weekly was still in flight. So I say measured on, not migrated."</p>
+<hr>
+<h2 id="6-bullet-a2-the-211b-row-master-and-why-the-llm-never-queries-it">6. Bullet A2: the 2.11B-row master and why the LLM never queries it</h2>
+<blockquote>
+<p>Decoupled AI inference from a <strong>2.11B-row</strong> ClickHouse master by asynchronously serving context via JSON payloads rather than direct database querying. Engineered an eventually consistent write pattern via ReplacingMergeTree that guaranteed system availability by gracefully falling back to deterministic baselines during LLM timeouts.</p>
+</blockquote>
+<p>In plain words: the Keep/Drop engine needs facts about each article-season (an article-season is one product in one selling season). Instead of giving the LLM a database tool, our code queries ClickHouse, builds a small <strong>JSON payload</strong> of the facts for each item, and sends that to the LLM. The LLM returns a structured score. Our code writes the result back as a new row version into a ReplacingMergeTree table. If the LLM times out, we write the deterministic baseline score instead, so every item still gets a decision.</p>
+<div class="mermaid">sequenceDiagram
+    participant Batch as Python batch
+    participant CH as ClickHouse 2.11B master
+    participant LLM as LLM lens call
+    participant RMT as ReplacingMergeTree scores
+    Batch-&gt;&gt;CH: SQL written by our code
+    CH--&gt;&gt;Batch: Facts for 88k items
+    Batch-&gt;&gt;LLM: JSON payload per item, no SQL tool
+    alt LLM answers in time
+        LLM--&gt;&gt;Batch: Structured score
+        Batch-&gt;&gt;RMT: INSERT blended score with config_hash
+    else LLM timeout
+        Batch-&gt;&gt;RMT: INSERT deterministic baseline score
+    end
+</div>
+<p><em>What to notice: the LLM only ever sees JSON. It has no way to run a query against 2.11 billion rows.</em></p>
+<ul>
+<li><strong>Why:</strong> a 2.11B-row master cannot take hallucinated queries, and the model must never write. "Async" describes how batches run. The isolation rule is that the model has no SQL tool.</li>
+<li><strong>Why ReplacingMergeTree:</strong> a re-run or a fallback simply inserts a newer version. No UPDATE statements on a column store. Readers converge on the latest version after merges.</li>
+<li><strong>Trade-off:</strong> an extra hop to build payloads, and readers may briefly see two versions until a merge, unless they read with <code>argMax</code> or <code>FINAL</code>.</li>
+<li><strong>Different table:</strong> the 2.11B master is the agentic fact table. It is not the 4.09B attr weekly rollup and not the 250M harness. Keep the three numbers apart.</li>
+</ul>
+<hr>
+<h2 id="7-tenancy-and-the-kpi-compiler-bullets-c2-and-c3-briefly">7. Tenancy and the KPI compiler (bullets C2 and C3), briefly</h2>
+<ul>
+<li><strong>C3:</strong> every ClickHouse read is scoped to the caller's tenant and their UAM hierarchy. The same tenant id lives in PostgreSQL (identity, UAM, roles) and in ClickHouse (facts). Isolation is access control, not encryption. Details: <a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a>.</li>
+<li><strong>C2:</strong> operators write KPI formulas such as <code>sales_units / (sales_units + eoh_units)</code>. A Go tokenizer and parser turn them into parameterized ClickHouse SQL fragments with allowlisted functions, map logical names to physical columns, and wrap the result in <code>ifNotFinite(toFloat64(expr), 0)</code>. A divide by zero produces 0 instead of <code>inf</code> or <code>nan</code>, so bad values never reach the planner's JSON. Unknown tokens fail closed. Details: <a href="go_gin.html">go_gin.md</a>.</li>
+</ul>
+<pre><code class="language-sql">-- Illustrative output of the KPI compiler for &quot;sell-through&quot;.
+ifNotFinite(toFloat64(sum(sales_units) / (sum(sales_units) + sum(eoh_units))), 0) AS sell_through
+</code></pre>
+<hr>
+<h2 id="8-verbal-only-clickhouse-material-not-on-the-resume">8. Verbal-only ClickHouse material (not on the resume)</h2>
+<p>Use only if the interviewer goes deeper and you are comfortable.</p>
+<ul>
+<li>Older prep described a per-tenant planning-store DDL design of <strong>63 tables across 8 layers</strong>, insert-only, with partition swaps, and an agent connection set to <code>readonly=1</code>. That belongs to the Cluster Recommendation Copilot and Hindsight designs, which are <strong>verbal only and not resume bullets</strong>. Present it as design work, not as shipped tables.</li>
+<li>Older prep also said not to quote a "624 columns" figure. Leave it out.</li>
+<li>The catalog is about <strong>1.6M article-seasons</strong> (off PDF). That is different from the <strong>348k</strong> article-seasons scored by the Keep/Drop engine.</li>
+<li>Product weekly for seasons 6 and 7 is about 839M rows (569.4M + 269.8M). This is verbal scale context.</li>
+<li>Older prep quoted "2.4B weekly rollups". The current resume uses 4.09B (attr weekly, two seasons). Do not quote 2.4B.</li>
+<li>POC history behind the hybrid verdict ("Order Batching 60x", "Postgres single-cell edit about 82x faster") is background, not a resume claim.</li>
+</ul>
+<hr>
+<h2 id="9-clickhouse-versus-the-alternatives">9. ClickHouse versus the alternatives</h2>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Best at</th>
+<th>Why not for planner pivots</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PostgreSQL</td>
+<td>Transactions, joins, row updates, metadata</td>
+<td>Row store. The heavy grid took 189 seconds at 250M rows in our benchmark</td>
+</tr>
+<tr>
+<td>BigQuery</td>
+<td>Serverless warehouse, ad hoc analysis</td>
+<td>Variable interactive latency, cost per bytes scanned</td>
+</tr>
+<tr>
+<td>Snowflake</td>
+<td>Managed warehouse</td>
+<td>Cost and latency for a click-heavy UI (older prep)</td>
+</tr>
+<tr>
+<td>Apache Druid / Pinot</td>
+<td>Real-time OLAP from streams</td>
+<td>Not used. More moving parts. Do not claim</td>
+</tr>
+<tr>
+<td>ClickHouse</td>
+<td>Fast columnar scans and aggregation, cheap compression</td>
+<td>Painful updates and deletes, eventual dedupe, needs care with memory</td>
+</tr>
+</tbody>
+</table>
+<p>When I would pick something else: if the workload is mostly single-row updates with strict transactions, PostgreSQL. If the team has no ops capacity and queries are ad hoc and rare, a managed warehouse.</p>
+<hr>
+<h2 id="10-interview-questions-with-speakable-answers">10. Interview questions with speakable answers</h2>
+<p><strong>Q1. Why ClickHouse and not PostgreSQL for everything?</strong>
+Postgres is a row store built for transactions. Planner pivots scan and aggregate hundreds of millions of rows, which is a columnar workload. We benchmarked both at 5M, 50M and 250M rows, and on the heavy grid ClickHouse took about 12 seconds where Postgres took 189 seconds at 250M. Postgres was still better at single-cell write-back, so the answer was hybrid: Postgres keeps thin metadata, UAM, roles and writes, and ClickHouse serves the facts and rollups.
+<em>Follow-up they may ask:</em> "How do you keep the two consistent?" The same tenant id and hierarchy keys exist in both, and the access layer applies scope to both. Postgres is not replicating facts into ClickHouse in my story.</p>
+<p><strong>Q2. Explain MergeTree and partitions.</strong>
+Every insert writes an immutable sorted part, and background merges combine parts. The ORDER BY key is also a sparse index, one mark per block of rows, so filters on the key skip whole blocks. Partitions split the table by a coarse key. We used season, so queries prune to one season and we can drop and reload a single season. That made recovery simple: if a season load was incomplete, drop that partition and rebuild it.</p>
+<p><strong>Q3. Tell me about the 170GB OOM.</strong>
+Weekly rollups carry about 110 <code>any()</code> states plus argMax over wide strings. A whole-season weekly insert needed about 170GB of aggregation state, and it failed even at 80GB and 200GB caps. I changed the unit of work to one fiscal week per insert, capped each insert at 55GB with a 16GB disk spill and 8 threads, and ran 4 weeks in flight. A product week peaked around 11GB and an attribute week over 40GB, and the weekly grain built cleanly.
+<em>Follow-up:</em> "Did that cause the 15.5x?" No. The OOM was load time. 15.5x is query time on a separate harness.</p>
+<p><strong>Q4. How did you get about 344k rows per second?</strong>
+It is copy throughput, not request rate. Two season streams over the native protocol with TLS, each about 150 to 190 thousand rows a second. The copier uses 500k-row columnar batches with typed buffers and double buffering, so the read of the next batch overlaps the send of the previous one. I measured it on the largest object, about 4.09 billion rows of attribute weekly data, while that copy was in flight.</p>
+<p><strong>Q5. How did you make billion-row copies safe to restart?</strong>
+The unit is one season partition. A season is marked done in a checkpoint file only after every batch is sent. If a run dies mid-season, I drop that partition on the target and recopy it. I never retry a spent batch, because that is how you get duplicates. I am careful to say this is not an atomic swap: readers can see a partial season until the recopy finishes. The REPLACE PARTITION design that fixes that was written but not run.</p>
+<p><strong>Q6. What is ReplacingMergeTree and why use it for AI scores?</strong>
+It keeps the latest version of rows with the same key, using a version column, and it deduplicates during background merges. For scores, that means a re-run or a fallback just inserts a newer version, with no UPDATE on a column store. If the LLM times out, we insert the deterministic baseline so every article still has a decision. The trade-off is that until a merge runs, a reader can see two versions, so reads use argMax or FINAL when they need exactly one.</p>
+<p><strong>Q7. Why did you not let the LLM query ClickHouse directly?</strong>
+Because a hallucinated query against a 2.11-billion-row master is a cost and safety risk, and the model must never write. Our code runs known SQL, builds a JSON payload per item and sends that to the model. The model returns a structured score that our code validates and inserts. It is one extra hop, and it is the isolation guarantee.</p>
+<p><strong>Q8. What are ClickHouse's weaknesses?</strong>
+Updates and deletes are expensive mutations. Deduplication is eventual. Joins on very large right-hand tables need care. And memory blows up on high-cardinality GROUP BYs, which is exactly what bit us on weekly builds. I design around those by inserting new versions instead of updating, partitioning by a coarse unit, and slicing heavy builds.</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="go_gin.html">go_gin.md</a> for the KPI compiler and the Go edge</li>
+<li><a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a> for tenant scoping</li>
+<li><a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a> for the PostgreSQL side</li>
+<li><a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a></li>
+<li><a href="../../../prep/42_clickhouse_rollup_migration.html">../../../prep/42_clickhouse_rollup_migration.md</a> for the full rollup and copier defense</li>
+<li><a href="../../../handbook/09_tech_glossary.html">../../../handbook/09_tech_glossary.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

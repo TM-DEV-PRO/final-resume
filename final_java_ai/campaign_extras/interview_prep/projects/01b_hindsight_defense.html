@@ -40,109 +40,246 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/projects/01b_hindsight_defense.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#hindsight-module-defense-resume-bullet">Hindsight Module Defense (resume bullet)</a>
-<a class="lvl2" href="#resume-claim-campaign-pdf">Resume claim (campaign PDF)</a>
-<a class="lvl2" href="#why-this-is-impactful-say-this-first">Why this is impactful (say this first)</a>
-<a class="lvl2" href="#product-surface-frd-v12">Product surface (FRD v1.2)</a>
-<a class="lvl2" href="#fr-mapping-to-resume-words">FR mapping to resume words</a>
-<a class="lvl2" href="#engineering-judgment-to-defend">Engineering judgment to defend</a>
-<a class="lvl2" href="#honesty">Honesty</a>
-<a class="lvl2" href="#60-second-talk-track">60-second talk track</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a></nav>
-<main><blockquote>
-<p><strong>PDF sync (Sep 2026):</strong> Cluster Recommendation Copilot and Hindsight are <strong>verbal only / not on PDF</strong>.
-Defend the live resume from <code>docs/ASSORTSMART_TAB_RESUME.md</code> (Platform + Agentic: 10k RPS, CH 189s to 12s / six tables / 170 GB OOM, Ask Iris shipped, 300-case / 80% promotion gate).
-This file is interview <strong>depth</strong>, not a PDF bullet map.</p>
-</blockquote>
-<h1 id="hindsight-module-defense-resume-bullet">Hindsight Module Defense (resume bullet)</h1>
-<p><strong>Source:</strong> <code>KNOWLEDGE-MATERIAL/Impact-Analytics-work/PRD'S/Hindsight_Module_Functional_Requirements-2.docx</code> (v1.2)</p>
-<h2 id="resume-claim-campaign-pdf">Resume claim (campaign PDF)</h2>
-<p>Building <strong>Hindsight</strong> as the prior-season decision layer with carry-forward and underperformance flags plus Keep/Shop/Drop recommendations, overnight narration checked against computed metrics, and tenant metric catalogs that go live without a code deploy.</p>
-<h2 id="why-this-is-impactful-say-this-first">Why this is impactful (say this first)</h2>
-<p>Hindsight is the <strong>first stage</strong> of AssortSmart planning (hindsight → strategy → clustering → line plan → buy). Planners do not invent next season blind — they see <strong>what worked / what failed last season</strong>, which styles to <strong>Keep / Shop / Drop</strong>, and what to <strong>carry forward</strong>. That is buying-decision support, not a dashboard vanity project.</p>
-<h2 id="product-surface-frd-v12">Product surface (FRD v1.2)</h2>
-<p>Scorecard (TY vs LY / Optimised LY), contribution charts, store performance map, configurable bar charts, top performers, By Item grid, By Attribute heatmap, <strong>Carry-Forward / What Didn't Work</strong> panel, agent narration.</p>
-<h2 id="fr-mapping-to-resume-words">FR mapping to resume words</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#hindsight-module-defense-verbal-only-depth">Hindsight Module Defense (verbal-only depth)</a>
+<a class="lvl2" href="#1-what-hindsight-is-in-plain-english">1. What Hindsight is, in plain English</a>
+<a class="lvl2" href="#2-words-you-need">2. Words you need</a>
+<a class="lvl2" href="#3-what-is-on-the-screen-frd-v12">3. What is on the screen (FRD v1.2)</a>
+<a class="lvl2" href="#4-how-it-is-designed">4. How it is designed</a>
+<a class="lvl2" href="#5-requirement-mapping-explained">5. Requirement mapping, explained</a>
+<a class="lvl2" href="#6-engineering-judgement-to-defend">6. Engineering judgement to defend</a>
+<a class="lvl2" href="#7-honesty">7. Honesty</a>
+<a class="lvl2" href="#8-60-second-talk-track">8. 60-second talk track</a>
+<a class="lvl2" href="#9-likely-questions">9. Likely questions</a>
+<a class="lvl2" href="#10-practice-drill">10. Practice drill</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="hindsight-module-defense-verbal-only-depth">Hindsight Module Defense (verbal-only depth)</h1>
+<div class="callout warn">
+<p><b>Verbal-only. Not a resume bullet.</b></p>
+<ul>
+<li>Hindsight is <b>not on the PDF</b>. Older prep called this a "resume claim". That is obsolete. The current resume does not mention Hindsight.</li>
+<li>Use this page only when an interviewer asks "what else are you working on?" or "how do planners use last season's data?". Say "this is in progress and not on my resume".</li>
+<li>Status: <b>building</b> against a functional requirements document. Do not say shipped or live for all tenants.</li>
+<li>There is no dollar, latency or adoption number for Hindsight. Do not invent one. Speed numbers stay with the ClickHouse rollup bullet.</li>
+<li>Defend the live resume from <code>docs/ASSORTSMART_TAB_RESUME.md</code>: 10k RPS, 189s to 12s with six rollup tables, the 170GB OOM fix, Ask Iris shipped, the 300-case / 80% promotion gate.</li>
+</ul>
+</div>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> what Hindsight is, how it is designed, and the engineering judgement behind it, mapped to the requirement numbers in the source document.</li>
+<li><b>When to read it:</b> after you know the main Impact Analytics pack, as extra depth for a long technical round.</li>
+<li><b>What to memorise:</b> the 60-second talk track, the four design principles (the AI is not the chart designer, not the calculator, runs overnight, and config beats code), and the honesty lines.</li>
+</ul>
+</div>
+<p><strong>Source:</strong> <code>KNOWLEDGE-MATERIAL/Impact-Analytics-work/PRD'S/Hindsight_Module_Functional_Requirements-2.docx</code> (version 1.2).</p>
+<p><strong>Tags on this page.</strong> MEASURED means there is a log, a doc or code. ESTIMATED means arithmetic I can show. TARGET means a design goal (say "targeting"). HISTORICAL means from past work records. Most of this page is DESIGN: what the requirements document specifies.</p>
+<hr>
+<h2 id="1-what-hindsight-is-in-plain-english">1. What Hindsight is, in plain English</h2>
+<p>AssortSmart's planning cycle runs in stages: <strong>hindsight, then strategy, then clustering, then line plan, then buy</strong>. Hindsight is the first stage. Before planners decide what to buy next season, they look back at last season: what sold, what did not, which styles deserve to come back, and which should be dropped.</p>
+<p>Without it, planners start next season half blind, piecing together last season from spreadsheets. Hindsight puts that review on one screen, with numbers, charts and short AI-written summaries, all limited to the part of the business each planner is allowed to see.</p>
+<p>So the honest pitch is: <strong>Hindsight is buying-decision support, not a vanity dashboard.</strong> It feeds the decisions that cost real money in the next stages.</p>
+<hr>
+<h2 id="2-words-you-need">2. Words you need</h2>
+<ul>
+<li><strong>FRD (functional requirements document).</strong> The product spec that lists what the system must do. Each requirement has a number, like FR-6.1.</li>
+<li><strong>TY vs LY.</strong> This year compared with last year. The scorecard also offers an "Optimised LY" comparison defined in the FRD. If asked for its exact definition, keep it qualitative.</li>
+<li><strong>Scorecard.</strong> A row of headline KPI tiles, such as sales, margin and sell-through, each compared with last year.</li>
+<li><strong>Contribution chart.</strong> Shows how much each category or store contributed to the total.</li>
+<li><strong>Carry-forward.</strong> Styles recommended to bring back next season.</li>
+<li><strong>Underperformance flag.</strong> A marker on items that did worse than a threshold.</li>
+<li><strong>Keep / Shop / Drop.</strong> The recommendation labels on the item grid in the FRD. (The Keep/Drop engine on my resume outputs binary Keep or Drop. See the honesty section.)</li>
+<li><strong>Narration.</strong> Short sentences written by an LLM that describe what happened, for example "Dresses grew 12% while Knitwear fell".</li>
+<li><strong>Grounding check.</strong> Before a narration sentence is saved, every number in it is compared with the computed metric. If they do not match, the sentence is rejected. Like a fact-checker reading a news article before it is printed.</li>
+<li><strong>Template fallback.</strong> A pre-written sentence with blanks filled from computed metrics, used when narration fails the check. Boring but always correct.</li>
+<li><strong>Template library and metric metadata.</strong> A shared set of sentence patterns, chosen based on each metric's description (is higher better, is it a percentage, and so on).</li>
+<li><strong>Metric catalog.</strong> One list per tenant of every metric, its formula and its display rules, shared by every widget.</li>
+<li><strong>Config vs code.</strong> A new metric or chart for a retailer is added as configuration data, not as a software release.</li>
+<li><strong>Permission scope.</strong> The part of the product and store hierarchy a user is allowed to see.</li>
+<li><strong>Virtualized scrolling.</strong> A grid that only renders the rows currently on screen, so 1,000+ items stay smooth. Like a train window: you only see the stretch of track you are passing.</li>
+</ul>
+<hr>
+<h2 id="3-what-is-on-the-screen-frd-v12">3. What is on the screen (FRD v1.2)</h2>
+<ul>
+<li>A <strong>scorecard</strong>: this year against last year, or against the "Optimised LY" baseline.</li>
+<li><strong>Contribution charts</strong>.</li>
+<li>A <strong>store performance map</strong>.</li>
+<li><strong>Configurable bar charts</strong>.</li>
+<li><strong>Top performers</strong>.</li>
+<li>A <strong>By Item grid</strong> with Keep/Shop/Drop recommendations and a per-item note.</li>
+<li>A <strong>By Attribute heatmap</strong> (for example colour by size).</li>
+<li>A <strong>Carry-Forward / What Didn't Work panel</strong>.</li>
+<li><strong>Agent narration</strong> on the widgets.</li>
+</ul>
+<hr>
+<h2 id="4-how-it-is-designed">4. How it is designed</h2>
+<div class="mermaid">flowchart LR
+  FILTER["Global filter: product, location, season"]
+  SCOPE["Permission scope check"]
+  CAT["Tenant metric catalog"]
+  CH["ClickHouse planning reads"]
+  MET["Computed metrics"]
+  VIS["Charts from config only"]
+  NARR["Overnight narration batch"]
+  CHECK["Grounding check"]
+  TMPL["Template sentence"]
+  SAVE["Saved narration"]
+  UI["Hindsight screen"]
+
+  FILTER --&gt; SCOPE
+  SCOPE --&gt; CH
+  CAT --&gt; CH
+  CH --&gt; MET
+  MET --&gt; VIS
+  MET --&gt; NARR
+  NARR --&gt; CHECK
+  CHECK --&gt;|"numbers match"| SAVE
+  CHECK --&gt;|"mismatch"| TMPL
+  TMPL --&gt; SAVE
+  SAVE --&gt; UI
+  VIS --&gt; UI
+</div>
+<p><em>What to notice: metrics are computed by code. Charts are chosen by configuration. The LLM only writes sentences, overnight, and every sentence is fact-checked against the computed numbers before it is saved.</em></p>
+<h3 id="one-narration-step-by-step-illustrative">One narration, step by step (illustrative)</h3>
+<ol>
+<li>Overnight, the batch computes metrics for each tenant and scope. For example, "Dresses, season 74: sales up 12% against last year, sell-through 81%".</li>
+<li>The narration step picks a template family from the metric metadata (a growth metric, higher is better) and asks the LLM for one sentence.</li>
+<li>The LLM returns: "Dresses grew 12% year on year with strong sell-through of 81%."</li>
+<li>The grounding check extracts 12% and 81% and compares them with the computed values. Both match, so the sentence is saved.</li>
+<li>If the LLM had written "grew 15%", the check would fail and the template would be saved instead: "Dresses sales changed by +12% versus last year. Sell-through: 81%."</li>
+<li>In the morning, the planner opens Hindsight. Charts render from config, and the narration is read from storage. No LLM call happens on the page.</li>
+</ol>
+<hr>
+<h2 id="5-requirement-mapping-explained">5. Requirement mapping, explained</h2>
 <table>
 <thead>
 <tr>
-<th>Resume phrase</th>
-<th>FR</th>
-<th>Why it matters</th>
+<th>What I say</th>
+<th>FRD reference</th>
+<th>What it means in practice</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Prior-season decision layer</td>
-<td>Overview + pipeline position</td>
-<td>Hindsight exists so next-season buys are evidence-based</td>
+<td>"Prior-season decision layer"</td>
+<td>Overview and pipeline position</td>
+<td>Hindsight exists so next-season buys are based on evidence.</td>
 </tr>
 <tr>
-<td>Carry-forward and underperformance flags</td>
-<td><strong>FR-6.1</strong></td>
-<td>Surfaces candidates and underperformers with <strong>metric values beside narration</strong> — never narration alone. Threshold user-personalizable within tenant bounds</td>
+<td>"Carry-forward and underperformance flags"</td>
+<td>FR-6.1</td>
+<td>The panel shows candidates and underperformers with the metric values beside any narration, never narration alone. The threshold can be personalised by the user within tenant bounds.</td>
 </tr>
 <tr>
-<td>Keep/Shop/Drop recommendations</td>
-<td><strong>FR-16.5</strong></td>
-<td>Item grid keeps existing Keep/Shop/Drop recommendation + per-item note; same grounding/fallback as other narration</td>
+<td>"Keep/Shop/Drop recommendations"</td>
+<td>FR-16.5</td>
+<td>The item grid keeps the existing recommendation plus a per-item note, with the same grounding and fallback as other narration.</td>
 </tr>
 <tr>
-<td>Overnight narration checked against computed metrics</td>
-<td><strong>FR-2.3, FR-4.3, FR-5.3, FR-8.1</strong></td>
-<td>Batch overnight (not live). Shared <strong>template library</strong> driven by metric metadata. <strong>Numbers checked before save</strong>; fail → templated sentence. No invented KPIs</td>
+<td>"Overnight narration checked against computed metrics"</td>
+<td>FR-2.3, FR-4.3, FR-5.3, FR-8.1</td>
+<td>Batch, not live. Shared template library driven by metric metadata. Numbers checked before save. On failure, a templated sentence. No invented KPIs.</td>
 </tr>
 <tr>
-<td>Deterministic visuals (verbal depth)</td>
-<td><strong>FR-9.1</strong></td>
-<td>Chart type/color/icons from config only — <strong>narration agent never chooses layout</strong></td>
+<td>"Deterministic visuals"</td>
+<td>FR-9.1</td>
+<td>Chart type, colours and icons come from configuration only. The narration agent never chooses layout.</td>
 </tr>
 <tr>
-<td>Permission-scoped filters (verbal)</td>
-<td><strong>FR-0.1–0.5</strong></td>
-<td>One global product/location/season filter; "select all" never leaks outside permission scope</td>
+<td>"Permission-scoped filters"</td>
+<td>FR-0.1 to FR-0.5</td>
+<td>One global product, location and season filter. "Select all" never reaches outside the user's permission scope.</td>
 </tr>
 <tr>
-<td>Shared metric catalog (verbal)</td>
-<td><strong>§1.2, FR-1.1</strong></td>
-<td>One catalog for scorecard, bars, item, attribute — no per-widget metric lists</td>
+<td>"Shared metric catalog"</td>
+<td>Section 1.2, FR-1.1</td>
+<td>One catalog for scorecard, bars, item grid and attribute heatmap. No per-widget metric lists that drift apart.</td>
 </tr>
 <tr>
-<td>Tenant catalogs without a code deploy</td>
-<td><strong>FR-1.3</strong></td>
-<td>Onboarding config (catalog + chart instances) applies to all tenant users <strong>without a code deployment</strong>; changes versioned with last-updated</td>
+<td>"Tenant catalogs without a code deploy"</td>
+<td>FR-1.3</td>
+<td>Onboarding configuration (catalog and chart instances) applies to all tenant users without a code deployment. Changes are versioned with a last-updated stamp.</td>
 </tr>
 <tr>
-<td>Item grid at scale (verbal)</td>
-<td><strong>FR-16.6</strong></td>
-<td>Stay fast at <strong>1,000+ items</strong> via pagination / virtualized scrolling</td>
+<td>"Item grid at scale"</td>
+<td>FR-16.6</td>
+<td>Stays fast at 1,000+ items through pagination or virtualized scrolling.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="engineering-judgment-to-defend">Engineering judgment to defend</h2>
-<ol>
-<li><strong>LLM is not the visual designer</strong> (FR-9.1) and <strong>not the metric calculator</strong> (grounding check).</li>
-<li><strong>Batch overnight narration</strong> avoids latency/cost spikes on every filter change (live narration is Phase 2 only for special cases).</li>
-<li><strong>Config vs code</strong> — new retailer metrics/charts = data/config, not a release train.</li>
-<li><strong>Multi-tenant safety</strong> — permission scope on every widget including map and item grid.</li>
-</ol>
-<h2 id="honesty">Honesty</h2>
+<hr>
+<h2 id="6-engineering-judgement-to-defend">6. Engineering judgement to defend</h2>
+<h3 id="principle-1-the-llm-is-not-the-chart-designer-and-not-the-calculator">Principle 1: the LLM is not the chart designer and not the calculator</h3>
 <ul>
-<li>Status: <strong>building</strong> against FRD (AssortSmart Phase-1 posture). Do not claim fully shipped to all tenants.</li>
-<li>Keep/Shop/Drop is <strong>retained existing</strong> recommendation behavior per FR-16.5 — you are hardening/shipping it inside the Hindsight module surface, not inventing a brand-new model claim without evidence.</li>
-<li>No $ or latency KPI in FRD for Hindsight alone — do not invent. Pivot/CH speed numbers stay on the ClickHouse bullet.</li>
+<li><strong>What:</strong> charts come from config (FR-9.1). Metrics come from code. The LLM only writes sentences, which are checked.</li>
+<li><strong>Why:</strong> an LLM that picks charts makes every tenant's screen unpredictable. An LLM that computes numbers will sometimes compute them wrong. Both destroy trust.</li>
+<li><strong>Alternative:</strong> let the agent generate the whole dashboard. Impressive in a demo, unreliable in front of a buyer.</li>
+<li><strong>Trade-off:</strong> less "magic". The AI's job is small and boring, which is exactly what makes it safe.</li>
 </ul>
-<h2 id="60-second-talk-track">60-second talk track</h2>
-<p>"Hindsight is how planners learn from last season before they buy this season. I am building it as a decision layer — carry-forward and underperformance flags, Keep/Shop/Drop on the item grid, scorecard and contribution views — with permission-scoped filters and a shared tenant metric catalog that goes live without a code deploy. Agent narration runs overnight from a shared template library and is checked against computed numbers before save, and chart visuals stay deterministic so the model cannot invent layout or KPIs."</p>
-<h2 id="likely-questions">Likely questions</h2>
-<p><strong>Q: Does the agent invent metrics?</strong><br>
-A: No. Narration is checked against computed numbers before save (FR-2.3). Fail closed to a template sentence.</p>
-<p><strong>Q: Why overnight not live?</strong><br>
-A: v1 deliberately batches narration (Section 13). Live/on-demand is Phase 2 for narrow cases (FR-11.1) with the same grounding check.</p>
-<p><strong>Q: What is Keep/Shop/Drop?</strong><br>
-A: Per-item recommendation retained on the By Item grid (FR-16.5) with a note, grounded like other narration — guides assortment actions for the next plan.</p>
-<p><strong>Q: How does this relate to ClickHouse?</strong><br>
-A: Hindsight/pivot-style reads are scan-heavy; the CH planning store and pivot POC defend the read latency. Hindsight FRD is the product contract; CH is the serving engine.</p></main>
+<h3 id="principle-2-narration-runs-overnight-in-batch">Principle 2: narration runs overnight in batch</h3>
+<ul>
+<li><strong>What:</strong> narration is generated once a night (FRD section 13). Live, on-demand narration is Phase 2, for narrow cases only (FR-11.1), with the same grounding check.</li>
+<li><strong>Why:</strong> planners change filters constantly. A live LLM call on every filter change would add seconds of latency and real cost, for sentences that barely change.</li>
+<li><strong>Trade-off:</strong> narration can be up to a day old. For last-season review, that is fine, because last season does not change.</li>
+</ul>
+<h3 id="principle-3-config-not-code">Principle 3: config, not code</h3>
+<ul>
+<li><strong>What:</strong> new retailer metrics and charts are data (FR-1.3), versioned.</li>
+<li><strong>Why:</strong> onboarding a retailer should not wait for a release train.</li>
+<li><strong>Trade-off:</strong> configuration needs its own validation, versioning and review, or a bad config breaks a tenant just like bad code.</li>
+</ul>
+<h3 id="principle-4-multi-tenant-safety-on-every-widget">Principle 4: multi-tenant safety on every widget</h3>
+<ul>
+<li><strong>What:</strong> permission scope applies to every widget, including the store map and the item grid.</li>
+<li><strong>Why:</strong> "select all" is the classic leak. It must mean "all that I am allowed to see".</li>
+<li><strong>Trade-off:</strong> every query path must carry the scope, which needs tests per widget.</li>
+</ul>
+<hr>
+<h2 id="7-honesty">7. Honesty</h2>
+<ul>
+<li><strong>Status is "building".</strong> It is in AssortSmart's Phase 1 posture. Do not claim it is fully shipped to all tenants.</li>
+<li><strong>Keep/Shop/Drop is existing behaviour</strong> that the FRD keeps on the item grid (FR-16.5). I am hardening and shipping it inside the Hindsight surface. I am not claiming a brand-new model.</li>
+<li><strong>Keep/Shop/Drop versus Keep/Drop.</strong> The FRD's item grid uses three labels. The Keep/Drop engine on my resume outputs binary Keep or Drop only. If an interviewer connects the two, say: "the resume engine is binary. The three labels are the item-grid language in the Hindsight spec."</li>
+<li><strong>No Hindsight numbers.</strong> No dollars, latency or adoption figures exist for Hindsight alone. The pivot speed numbers belong to the ClickHouse bullet.</li>
+<li><strong>No human review queue.</strong> Narration falls back to a template automatically. Nothing is queued for a human to approve.</li>
+</ul>
+<hr>
+<h2 id="8-60-second-talk-track">8. 60-second talk track</h2>
+<p>"Something I am building that is not on my resume is Hindsight. It is how planners learn from last season before they buy for the next one. It is a decision layer: carry-forward and underperformance flags, Keep/Shop/Drop on the item grid, a scorecard and contribution views, all behind permission-scoped filters and a shared tenant metric catalog that goes live without a code deploy. The AI part is deliberately small. Narration runs overnight from a shared template library, and every number in a sentence is checked against the computed metric before it is saved. If it does not match, we save a template sentence instead. Charts are chosen by configuration, so the model can never invent a layout or a KPI."</p>
+<hr>
+<h2 id="9-likely-questions">9. Likely questions</h2>
+<p><strong>"Does the agent ever invent metrics?"</strong>
+"No. Every number in a narration sentence is checked against the computed value before save, which is FR-2.3. If anything does not match, we fall back to a template sentence built from the computed metrics. It fails closed, so the planner sees a plain but correct sentence rather than a confident wrong one."</p>
+<p><strong>"Why overnight and not live?"</strong>
+"Because planners change filters constantly, and last season's data does not change. Generating narration live on every filter change would add latency and cost for nearly identical sentences. Version 1 batches overnight. Live narration is a Phase 2 option for narrow cases, with the same grounding check."</p>
+<p><strong>"What is Keep/Shop/Drop?"</strong>
+"It is the per-item recommendation on the By Item grid, with a short note, grounded like the other narration. It guides the planner on what to carry into the next plan. The Keep/Drop engine on my resume is the binary version that scores articles. The three labels are the item-grid language in the Hindsight spec."</p>
+<p><strong>"How does this relate to ClickHouse?"</strong>
+"Hindsight reads are scan-heavy, like pivots: sums over many rows sliced by product, store and week. Those reads sit on the ClickHouse planning store and rollups. The FRD is the product contract. ClickHouse is the serving engine. The measured speed numbers belong to the rollup work, not to Hindsight."</p>
+<p><strong>"How do you add a new metric for a retailer?"</strong>
+"Through the tenant metric catalog. It is configuration, versioned, and it applies to all of that tenant's users without a code deploy. That is FR-1.3."</p>
+<p><strong>"What stops a planner seeing another region?"</strong>
+"The global filter is permission-scoped, FR-0.1 to FR-0.5. Select-all means all within your scope, on every widget including the map and the item grid."</p>
+<hr>
+<h2 id="10-practice-drill">10. Practice drill</h2>
+<ol>
+<li><strong>Where does Hindsight sit in the planning cycle?</strong> First: hindsight, strategy, clustering, line plan, buy.</li>
+<li><strong>Is it on your resume?</strong> No. It is in progress. I mention it only if asked.</li>
+<li><strong>What does the LLM do in Hindsight?</strong> Writes short narration sentences overnight. Nothing else.</li>
+<li><strong>What happens if a narration number is wrong?</strong> The grounding check fails and a template sentence is saved instead.</li>
+<li><strong>Who picks the chart type?</strong> Configuration. Never the model (FR-9.1).</li>
+<li><strong>How does a new tenant get its metrics?</strong> Through the versioned metric catalog, without a code deploy (FR-1.3).</li>
+<li><strong>How does the item grid stay fast?</strong> Pagination or virtualized scrolling at 1,000+ items (FR-16.6).</li>
+<li><strong>Is there a Hindsight latency number?</strong> No. Do not invent one.</li>
+<li><strong>Is there a human approval step?</strong> No. Fallback is automatic.</li>
+<li><strong>Is Keep/Shop/Drop new?</strong> No. It is existing behaviour kept on the item grid.</li>
+</ol>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li>Architecture page (Hindsight section at the end): <a href="../architecture/01_ia_assortsmart_hindsight.html">../architecture/01_ia_assortsmart_hindsight.md</a></li>
+<li>Main Impact Analytics pack: <a href="01_impact_analytics.html">01_impact_analytics.md</a></li>
+<li>Agent read tools (also verbal-only): <a href="01c_agent_read_tools_defense.html">01c_agent_read_tools_defense.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

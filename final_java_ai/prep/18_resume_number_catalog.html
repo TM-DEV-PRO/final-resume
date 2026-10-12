@@ -41,249 +41,469 @@ strong{color:#fff}
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/18_resume_number_catalog.html</span></div>
 <div class="layout">
 <nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#resume-number-catalog-every-pdf-metric">Resume Number Catalog (every PDF metric)</a>
-<a class="lvl2" href="#impact-analytics-on-pdf">Impact Analytics — on PDF</a>
-<a class="lvl2" href="#impact-analytics-verbal-only-not-on-pdf">Impact Analytics — verbal only (not on PDF)</a>
-<a class="lvl2" href="#uber-frm-pdf">Uber FRM (PDF)</a>
-<a class="lvl2" href="#uber-menu-anz">Uber Menu / ANZ</a>
-<a class="lvl2" href="#masters-gfg">Masters / GFG</a></nav>
+<a class="lvl2" href="#impact-analytics-assortsmart-on-the-pdf">Impact Analytics, AssortSmart (on the PDF)</a>
+<a class="lvl2" href="#impact-analytics-verbal-only-not-on-the-pdf">Impact Analytics, verbal only (not on the PDF)</a>
+<a class="lvl2" href="#uber-via-epam-frm-scoping-platform">Uber via EPAM, FRM Scoping Platform</a>
+<a class="lvl2" href="#uber-via-epam-menu-ingestion-uber-eats-and-document-compliance-mobility-anz">Uber via EPAM, Menu Ingestion (Uber Eats) and Document Compliance (Mobility ANZ)</a>
+<a class="lvl2" href="#masters-india-gst-e-invoicing">Masters India, GST E-Invoicing</a>
+<a class="lvl2" href="#geeksforgeeks">GeeksforGeeks</a>
+<a class="lvl2" href="#achievements">Achievements</a></nav>
 <main><h1 id="resume-number-catalog-every-pdf-metric">Resume Number Catalog (every PDF metric)</h1>
-<p>Single interview sheet for <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>. Cross-links: <code>GROUND_TRUTH.md</code>, <code>09_metrics_derivations.md</code>, <code>23a</code>/<code>11</code>/<code>14</code>.
-Source for new IA scale numbers: <strong>AssortSmart tab / PDF</strong>.</p>
-<h2 id="impact-analytics-on-pdf">Impact Analytics — on PDF</h2>
+<div class="callout highlight">
+<p><b>How to use this page</b></p>
+<ul>
+<li>This is the one-screen list of every number on <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>, with one plain sentence saying what each number means.</li>
+<li>Read it five minutes before a call. If a number needs a longer explanation, follow the link to <a href="09_metrics_derivations.html">Metrics Derivations</a>, which has the arithmetic and the "say it / do not say it" lines.</li>
+<li>Memorise the warning box and the off-PDF table. Those are where candidates usually slip.</li>
+</ul>
+</div>
+<p><strong>Tags in one line each.</strong> MEASURED means there is a log, benchmark, config or doc. STATED means it is printed on the PDF from the project source, with no extra arithmetic in prep. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. TARGET means a design goal.</p>
+<p>Other sources: <a href="GROUND_TRUTH.html">GROUND_TRUTH</a>, <a href="43_ia_bullet_defense.html">IA bullet defense</a>, <a href="23a_ia_interview_pack.html">IA interview pack</a>, <a href="11_uber_frm_deep_dive.html">FRM deep dive</a>, <a href="14_uber_menu_deep_dive.html">Menu deep dive</a>, <a href="12_masters_gfg_deep_dive.html">Masters and GFG deep dive</a>.</p>
+<div class="callout warn">
+<p><b>Numbers people mix up.</b> 348k article-seasons were scored. 1.6M is the catalog (off PDF). The 80% gate and the 300 cases are one benchmark. The 73% cost cut, 100% coverage and 74% baseline are a different 200-case benchmark. 15.5× is query time. 170 GB is load time. 344k is rows per second, not requests per second. The 4.09B copy was measured while running, not finished. "Led 3" is Uber FRM. "Mentored 2" is Masters India.</p>
+</div>
+<hr>
+<h2 id="impact-analytics-assortsmart-on-the-pdf">Impact Analytics, AssortSmart (on the PDF)</h2>
+<p>AssortSmart helps retailers decide which products to keep, drop or add each season. An article-season is one product in one season.</p>
+<h3 id="agentic-flows-and-orchestration">Agentic Flows and Orchestration</h3>
 <table>
 <thead>
 <tr>
-<th>Resume number</th>
-<th>Why / how</th>
+<th>PDF number</th>
+<th>What it means in plain English</th>
 <th>Tag</th>
-<th>Defense</th>
+<th>Defend in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>348k article-seasons</strong></td>
+<td>The total number of product-season combinations the three decision pipelines (Keep/Drop, Missed Opportunities, Top Style) scored.</td>
+<td>MEASURED</td>
+<td><a href="43_ia_bullet_defense.html">43</a> A1</td>
+</tr>
+<tr>
+<td><strong>88k items per pass</strong></td>
+<td>How many articles one batch run processes end to end. The same 88k appears as "88k-article batch runs" in the registry bullet.</td>
+<td>MEASURED</td>
+<td>43 A1, A3</td>
+</tr>
+<tr>
+<td><strong>7 AI lenses</strong></td>
+<td>Seven focused questions the LLM answers about each article. A decider picks which apply, and their scores are blended with rule-based KPI math.</td>
+<td>MEASURED</td>
+<td>43 A1</td>
+</tr>
+<tr>
+<td><strong>2.11B-row ClickHouse master</strong></td>
+<td>The main planning fact table has about 2.1 billion rows, so the LLM never queries it. It gets JSON payloads instead.</td>
+<td>MEASURED</td>
+<td>43 A2</td>
+</tr>
+<tr>
+<td><strong>3-attempt evaluator loop</strong></td>
+<td>In Ask Iris, the evaluator can send an answer back for a retry at most three times. This stops infinite loops.</td>
+<td>MEASURED (code constant)</td>
+<td>43 A4</td>
+</tr>
+<tr>
+<td><strong>300-case proxy harness</strong></td>
+<td>An offline test set of 300 labelled cases that every model or prompt change must pass before promotion.</td>
+<td>MEASURED</td>
+<td>43 A5</td>
+</tr>
+<tr>
+<td><strong>80% accuracy CI gate</strong></td>
+<td>The minimum score on the 300 cases to promote a change. It is a gate, not live accuracy.</td>
+<td>MEASURED (config)</td>
+<td>43 A5</td>
+</tr>
+<tr>
+<td><strong>73% lower live execution cost</strong></td>
+<td>On a separate 200-case benchmark, the chosen model cost about 73% less than the previous one for the same work.</td>
+<td>MEASURED</td>
+<td>43 A5</td>
+</tr>
+<tr>
+<td><strong>100% coverage</strong></td>
+<td>On that same 200-case benchmark, the cheaper model answered all 200 cases. This is answer completeness, not test coverage.</td>
+<td>MEASURED</td>
+<td>43 A5</td>
+</tr>
+<tr>
+<td><strong>74% deterministic baseline</strong></td>
+<td>The rule-only score (no LLM) got 74% on the 200 cases. The blended model scored lower, so we froze the blend weights.</td>
+<td>MEASURED</td>
+<td>43 A5</td>
+</tr>
+</tbody>
+</table>
+<h3 id="core-infrastructure-and-pipeline">Core Infrastructure and Pipeline</h3>
+<table>
+<thead>
+<tr>
+<th>PDF number</th>
+<th>What it means in plain English</th>
+<th>Tag</th>
+<th>Defend in</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>10k peak RPS</strong></td>
-<td>Go/Gin HTTP edge</td>
-<td>PDF</td>
-<td><code>43</code> C1 · <code>23a</code></td>
+<td>The multi-tenant Go/Gin platform handles about 10 thousand HTTP requests per second at peak, with no reverse proxy in front.</td>
+<td>STATED</td>
+<td>43 C1</td>
 </tr>
 <tr>
-<td>Wire · h2c · Datadog · no reverse proxy</td>
-<td>Self-protecting edge</td>
-<td>PDF</td>
-<td><code>43</code> C1</td>
+<td><strong>15.5×</strong></td>
+<td>The heavy planner pivot query ran about 15.5 times faster on ClickHouse than on Postgres. 189,408 ms ÷ 12,256 ms ≈ 15.45.</td>
+<td>MEASURED</td>
+<td><a href="21_ia_pivot_benchmark_source.html">21</a>, 43 C4</td>
 </tr>
 <tr>
-<td><strong>189s → 12s</strong> (~15.5×) on <strong>250M-row</strong> ops</td>
-<td>Row-identical PG vs CH POC (PDF rounds 12.3→12)</td>
-<td>MEASURED POC</td>
-<td><code>21</code> · <code>43</code> C4</td>
+<td><strong>189s to 12s</strong></td>
+<td>The same pivot took 189 seconds before and about 12 seconds after (12.3, rounded on the PDF).</td>
+<td>MEASURED</td>
+<td>21, 43 C4</td>
 </tr>
 <tr>
-<td><strong>170GB</strong> OOM · temporal chunks · memory/spill caps</td>
-<td>Write-time weekly GROUP BY</td>
-<td>PDF. 55GB/16GB verbal</td>
-<td><code>42</code> · <code>43</code> C4</td>
+<td><strong>250M-row operations</strong></td>
+<td>The benchmark dataset size. It was chosen to test future growth, not to describe today's largest client.</td>
+<td>MEASURED</td>
+<td>21</td>
 </tr>
 <tr>
-<td><strong>348k article-seasons</strong> · Keep/Drop + Missed Opp + Top Style</td>
-<td>Scored volume</td>
-<td>PDF</td>
-<td><code>43</code> A1</td>
+<td><strong>170GB OOM</strong></td>
+<td>A whole-season weekly rollup build needed about 170 GB of RAM and crashed. Slicing it into one fiscal week per insert with memory and spill caps fixed it.</td>
+<td>MEASURED</td>
+<td><a href="42_clickhouse_rollup_migration.html">42</a>, 43 C4</td>
 </tr>
 <tr>
-<td><strong>88k</strong> items/pass · <strong>7</strong> AI lenses</td>
-<td>Batch inference</td>
-<td>PDF. $100/pass off PDF</td>
-<td><code>43</code> A1</td>
+<td><strong>~344k rows/s</strong></td>
+<td>The custom Go copier moved about 344 thousand rows per second between ClickHouse Cloud clusters, across two parallel streams.</td>
+<td>MEASURED</td>
+<td>42, 43 C5</td>
 </tr>
 <tr>
-<td><strong>2.11B-row</strong> CH master · JSON payloads · RMT · timeout fallback</td>
-<td>Isolation</td>
-<td>PDF</td>
-<td><code>43</code> A2</td>
+<td><strong>4.09B rows</strong></td>
+<td>The largest partition set copied: attribute-weekly rollups for two seasons (2,779,317,472 + 1,311,108,195). Measured in flight.</td>
+<td>MEASURED</td>
+<td>42, 43 C5</td>
 </tr>
 <tr>
-<td>Registry · breakers · checkpoints skip det · config_hash</td>
-<td>Orchestration</td>
-<td>PDF</td>
-<td><code>43</code> A3</td>
-</tr>
-<tr>
-<td>Ask Iris JWT WS · 3-attempt evaluator · handshake freeze · LangSmith</td>
-<td>Copilot</td>
-<td>PDF shipped capability</td>
-<td><code>43</code> A4</td>
-</tr>
-<tr>
-<td><strong>300-case</strong> · <strong>80%</strong> CI gate</td>
-<td>Proxy gold <code>eval.json</code></td>
-<td>promotion gate ≠ all tenants live</td>
-<td><code>43</code> A5</td>
-</tr>
-<tr>
-<td><strong>73%</strong> cost · <strong>100%</strong> coverage</td>
-<td>gold-200 Luna vs mini</td>
-<td><strong>not</strong> the 300-case file</td>
-<td><code>43</code> A5</td>
-</tr>
-<tr>
-<td><strong>74%</strong> det baseline · freeze weights</td>
-<td>Production det threshold 0.65 on gold-200</td>
-<td>PDF</td>
-<td><code>43</code> A5</td>
-</tr>
-<tr>
-<td>~<strong>344k rows/s</strong> · <strong>4.09B</strong> · 500k double-buffer · partition rollbacks</td>
-<td>Go native-TLS pump</td>
-<td>PDF. Copy in flight</td>
-<td><code>43</code> C5 · <code>42</code></td>
-</tr>
-<tr>
-<td>KPI tokenizer · division-by-zero</td>
-<td><code>ifNotFinite</code> wrap</td>
-<td>PDF</td>
-<td><code>43</code> C2</td>
-</tr>
-<tr>
-<td>Firebase → JWT/OIDC · Redis · Postgres roles</td>
-<td>Auth waterfall + UAM</td>
-<td>PDF</td>
-<td><code>43</code> C3</td>
+<td><strong>500k-row batches</strong></td>
+<td>The copier reads and sends half-million-row batches, reading the next while sending the previous (double-buffering).</td>
+<td>MEASURED</td>
+<td>42</td>
 </tr>
 </tbody>
 </table>
-<h2 id="impact-analytics-verbal-only-not-on-pdf">Impact Analytics — verbal only (not on PDF)</h2>
+<p>Mechanisms on the PDF with no number, still worth knowing: Google Wire (compile-time dependency injection), h2c (HTTP/2 without TLS), Datadog tracing, the KPI formula parser with <code>ifNotFinite</code> division-by-zero protection, the Firebase Admin then JWT / Google OIDC auth waterfall, constant-time API key comparison, ReplacingMergeTree writes, frozen config hash on every output row, TSV ledgers and partition rollback (drop the season partition, then recopy).</p>
+<hr>
+<h2 id="impact-analytics-verbal-only-not-on-the-pdf">Impact Analytics, verbal only (not on the PDF)</h2>
 <table>
 <thead>
 <tr>
 <th>Number</th>
+<th>What it means in plain English</th>
 <th>Tag</th>
-<th>Notes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>$100</strong>/pass token spend</td>
+<td><strong>1.6M article-seasons</strong></td>
+<td>The full catalog. Not the same as the 348k scored.</td>
 <td>MEASURED, off PDF</td>
-<td>Dropped from this PDF for space</td>
 </tr>
 <tr>
-<td><strong>1.6M</strong> article-seasons (catalog)</td>
-<td>verbal</td>
-<td>Do not mix with 348k scored</td>
+<td><strong>About $100 per pass</strong></td>
+<td>LLM token spend for one 88k-item pass, about a tenth of a cent per item.</td>
+<td>MEASURED, off PDF</td>
 </tr>
 <tr>
-<td><strong>55GB</strong> cap / <strong>16GB</strong> spill / one fiscal week</td>
-<td>verbal OOM knobs</td>
-<td>PDF says temporal chunks</td>
+<td><strong>0.4 / 0.6 blend, keep at 0.55</strong></td>
+<td>Final score = 0.4 × rule score + 0.6 × LLM score. Keep if 0.55 or higher.</td>
+<td>MEASURED (config)</td>
 </tr>
 <tr>
-<td><strong>100.0%</strong> coverage · <strong>1,200+</strong> Go tests</td>
-<td>LinkedIn / verbal</td>
-<td>Off PDF</td>
+<td><strong>55 GB cap, 16 GB spill, one fiscal week</strong></td>
+<td>The settings that stopped the 170 GB crash. Also 8 threads and 4 weeks in flight.</td>
+<td>MEASURED</td>
 </tr>
 <tr>
-<td>≥20 configs / under 1h / 8.5% (37/437) → under 2% / 14 tools / 3 gates</td>
-<td>TARGET / DESIGN / MEASURED baseline</td>
-<td>Cluster Copilot — not a PDF bullet</td>
+<td><strong>Six rollup tables</strong></td>
+<td>Product, store and attribute, each at season and weekly grain.</td>
+<td>MEASURED (design)</td>
 </tr>
 <tr>
-<td>63/8 DDL · ~12B → ~25M · ~0.4 ms cell</td>
-<td>DESIGN / PROJECTED / MEASURED agg</td>
-<td>Interview depth</td>
+<td><strong>839M product weekly</strong></td>
+<td>Product-weekly rollup rows for two seasons.</td>
+<td>MEASURED</td>
 </tr>
 <tr>
-<td>p95 probes &lt;500ms vs 1–20s BQ</td>
-<td>TARGET / MEASURED BQ variance</td>
-<td>Verbal</td>
-</tr>
-</tbody>
-</table>
-<p>Do <strong>not</strong> invent extra IA TPS beyond PDF <strong>10k peak RPS</strong>.</p>
-<h2 id="uber-frm-pdf">Uber FRM (PDF)</h2>
-<table>
-<thead>
-<tr>
-<th>Resume number</th>
-<th>Tag</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>70%</strong> · <strong>14 days → 3 days</strong></td>
-<td>PDF outcome</td>
-<td>Older prep said TARGET; defend PDF</td>
+<td><strong>~150k to 190k rows/s per stream</strong></td>
+<td>Each copier stream. Two together make ~344k.</td>
+<td>MEASURED</td>
 </tr>
 <tr>
-<td><strong>$340M</strong> materiality · <strong>19M</strong> raw GL rows</td>
-<td>PDF</td>
-<td></td>
+<td><strong>100% Go statement coverage, 1,200+ Go tests</strong></td>
+<td>On LinkedIn, not the PDF.</td>
+<td>MEASURED, off PDF</td>
 </tr>
 <tr>
-<td><strong>36 Spring Boot endpoints</strong> · L1–L4 FSLI · quarter-annualization</td>
-<td>PDF</td>
-<td>8 screens remain verbal product depth</td>
+<td><strong>8.5% (37 / 437) to under 2%, 14 tools, 3 gates, under 1 hour, 20+ configs</strong></td>
+<td>Cluster Recommendation Copilot. Measured baseline, design targets. Not a resume bullet. Say "building".</td>
+<td>MEASURED baseline, TARGET, DESIGN</td>
 </tr>
 <tr>
-<td><strong>8-table</strong> MySQL SOADB · SHA-256 keys · optimistic locking</td>
-<td>PDF</td>
-<td>11 ORM models = verbal schema depth</td>
-</tr>
-<tr>
-<td>Led <strong>3</strong> · <strong>100%</strong> statement coverage · SOX <strong>50%</strong> delta-variance</td>
-<td>PDF</td>
-<td></td>
+<td><strong>63/8 DDL, ~12B to ~25M</strong></td>
+<td>ClickHouse schema and line-planning lesson. Interview depth only.</td>
+<td>DESIGN</td>
 </tr>
 </tbody>
 </table>
-<h2 id="uber-menu-anz">Uber Menu / ANZ</h2>
+<p>Do not invent any Impact Analytics throughput number beyond 10k peak RPS.</p>
+<hr>
+<h2 id="uber-via-epam-frm-scoping-platform">Uber via EPAM, FRM Scoping Platform</h2>
+<p>FRM scoping decides each quarter which financial line items and entities are material enough to need audit testing. It replaced Google Sheets.</p>
 <table>
 <thead>
 <tr>
-<th>Resume number</th>
+<th>PDF number</th>
+<th>What it means in plain English</th>
 <th>Tag</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>24h→2h · $600K/yr · 30K+/mo · 95%+</td>
+<td><strong>70%</strong></td>
+<td>Quarterly reconciliation time went down by about 70%.</td>
+<td>STATED (framed in the design doc)</td>
+</tr>
+<tr>
+<td><strong>14 days to 3 days</strong></td>
+<td>The same cut in calendar time. The arithmetic gives about 79%, so 70% is the conservative figure.</td>
+<td>STATED</td>
+</tr>
+<tr>
+<td><strong>$340M materiality</strong></td>
+<td>The dollar threshold every significance decision is compared against on the Q4 2025 close.</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>19M raw GL rows</strong></td>
+<td>General ledger rows migrated from Sheets into MySQL. The value was correctness and auditability, not big-data speed.</td>
+<td>STATED</td>
+</tr>
+<tr>
+<td><strong>36 Spring Boot endpoints</strong></td>
+<td>About 31 scoping routes plus the collaboration-service APIs from the design doc.</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>4-level FSLI (L1 to L4)</strong></td>
+<td>Financial statement line items are a four-level tree, and the math rolls up and down it with quarter annualization.</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>8-table schema</strong></td>
+<td>The normalized MySQL schema on SOADB (Uber's service-owned MySQL). The code has 11 ORM models, which is verbal depth.</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td><strong>3 engineers</strong></td>
+<td>I was tech lead of an EPAM pod of three on the Spring Data JPA / Hibernate migration. Not a people manager.</td>
 <td>HISTORICAL</td>
 </tr>
 <tr>
-<td>98% field fidelity Gemini+LangChain+Milvus</td>
-<td><strong>offline eval</strong></td>
+<td><strong>100% statement coverage</strong></td>
+<td>Every statement in the migrated module was executed by tests.</td>
+<td>STATED</td>
 </tr>
 <tr>
-<td>Kafka + Flink keyed dedupe · exactly-once upserts</td>
-<td>PDF</td>
-</tr>
-<tr>
-<td>Spark</td>
-<td><strong>not on PDF</strong> — verbal backfill only</td>
-</tr>
-<tr>
-<td>ANZ 99.9% · 20h/week</td>
-<td>HISTORICAL Mobility</td>
+<td><strong>50% delta-variance</strong></td>
+<td>The review state machine flags a 50% change between periods at an automated gate, for SOX controls.</td>
+<td>STATED</td>
 </tr>
 </tbody>
 </table>
-<h2 id="masters-gfg">Masters / GFG</h2>
+<p>Older prep said "30+ endpoints, do not say 36", "do not say 19M" and "70% is a target". All three are obsolete. Defend the PDF.</p>
+<hr>
+<h2 id="uber-via-epam-menu-ingestion-uber-eats-and-document-compliance-mobility-anz">Uber via EPAM, Menu Ingestion (Uber Eats) and Document Compliance (Mobility ANZ)</h2>
 <table>
 <thead>
 <tr>
-<th>Resume number</th>
+<th>PDF number</th>
+<th>What it means in plain English</th>
 <th>Tag</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>p95 1.2s→300ms (75%) · 1,500+ · 700→4,000 rpm · 1M+/day · 100K+ · Redis −30% · coverage 35→82% · 98% deploy</td>
-<td>HISTORICAL · Spring Boot</td>
+<td><strong>24 hours to 2 hours</strong></td>
+<td>Time to get a restaurant's menu live dropped from a day to two hours.</td>
+<td>HISTORICAL</td>
 </tr>
 <tr>
-<td>GFG 10K+ · 10x · 20% premium · 30% sales · 70% ops</td>
-<td>HISTORICAL Django</td>
+<td><strong>$600K annually</strong></td>
+<td>About $2 per menu × 30K per month × 12 = $720K, floored to $600K.</td>
+<td>ESTIMATED on HISTORICAL inputs</td>
+</tr>
+<tr>
+<td><strong>30K+ menus monthly</strong></td>
+<td>About 1,000 menus a day on average.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>98% field fidelity</strong></td>
+<td>98% of extracted fields matched labelled truth in offline evaluation. Gemini 2.5 Pro, LangChain RAG, Milvus.</td>
+<td>HISTORICAL, offline evaluation</td>
+</tr>
+<tr>
+<td><strong>95%+ extraction success</strong></td>
+<td>Scrapes that produced a usable menu, up from an estimated 60% to 65%.</td>
+<td>HISTORICAL, ESTIMATED baseline</td>
+</tr>
+<tr>
+<td><strong>99.9% compliance (ANZ)</strong></td>
+<td>Driver and vehicle documents meeting local authority rules after automation. Mobility, not Eats.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>20 hours per week (ANZ)</strong></td>
+<td>Manual review time removed each week.</td>
+<td>HISTORICAL</td>
+</tr>
+</tbody>
+</table>
+<p>Kafka plus Flink with keyed deduplication and exactly-once catalog upserts is on the PDF. In practice that is at-least-once delivery plus idempotent upserts. Spark is not on the PDF.</p>
+<hr>
+<h2 id="masters-india-gst-e-invoicing">Masters India, GST E-Invoicing</h2>
+<table>
+<thead>
+<tr>
+<th>PDF number</th>
+<th>What it means in plain English</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>75%</strong></td>
+<td>p95 latency (the slow tail) fell by three quarters.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>1.2s to 300ms</strong></td>
+<td>The p95 before and after the PHP to Spring Boot migration.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>1,500+ enterprise clients</strong></td>
+<td>Customers on the platform.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>Two engineers</strong></td>
+<td>I mentored two engineers through the migration.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>700 to 4,000 requests per minute</strong></td>
+<td>About 12 to 67 requests per second.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>1M+ daily submissions</strong></td>
+<td>E-invoices sent to the government portal per day, about 12 per second on average.</td>
+<td>HISTORICAL, rate ESTIMATED</td>
+</tr>
+<tr>
+<td><strong>100K+ concurrent imports</strong></td>
+<td>Bulk imports processed idempotently, so retries never duplicate an invoice.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>70% triage</strong></td>
+<td>Time to locate the cause of an incident, roughly from 30 minutes to under 10.</td>
+<td>HISTORICAL, ESTIMATED baseline</td>
+</tr>
+<tr>
+<td><strong>30% lower DB read load</strong></td>
+<td>Redis cache-aside took repeat reads off PostgreSQL.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>35% to 82% coverage</strong></td>
+<td>Automated test coverage before and after.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>98% deployment success</strong></td>
+<td>Deployments that went out without rollback.</td>
+<td>HISTORICAL</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="geeksforgeeks">GeeksforGeeks</h2>
+<table>
+<thead>
+<tr>
+<th>PDF number</th>
+<th>What it means in plain English</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>10K+ daily queries</strong></td>
+<td>Student doubts handled per day on the doubt-support platform.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>10x spikes</strong></td>
+<td>Contest traffic reached about ten times normal.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>20% premium lift</strong></td>
+<td>Relative lift in premium subscriptions, attributed by the growth team.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>30% course sales</strong></td>
+<td>Growth after the influencer analytics dashboard, attributed by the business team.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>70% ops efficiency</strong></td>
+<td>Less manual operations work after scheduled background workflows.</td>
+<td>HISTORICAL</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="achievements">Achievements</h2>
+<table>
+<thead>
+<tr>
+<th>PDF number</th>
+<th>What it means in plain English</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2260 / 37,000+</strong></td>
+<td>Google Code Jam Qualifier 2021 rank, roughly the top 6%.</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td><strong>Top 3 nationally</strong></td>
+<td>Smart India Hackathon 2020 (MHRD) finalist.</td>
+<td>HISTORICAL</td>
 </tr>
 </tbody>
 </table></main>

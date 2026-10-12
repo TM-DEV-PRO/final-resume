@@ -40,288 +40,597 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final PyGo+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_pygo_ai/campaign_extras/interview_prep/tech_depth/skills_fundamentals_map.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#skills-on-the-final-pdf-fundamentals-where-used">Skills on the final PDF → fundamentals + where used</a>
-<a class="lvl2" href="#languages">Languages</a>
-<a class="lvl2" href="#backend-and-apis">Backend and APIs</a>
-<a class="lvl2" href="#ai-and-agents">AI and Agents</a>
-<a class="lvl2" href="#streaming-and-data">Streaming and Data</a>
-<a class="lvl2" href="#databases-and-storage">Databases and Storage</a>
-<a class="lvl2" href="#cloud-and-infrastructure">Cloud and Infrastructure</a>
-<a class="lvl2" href="#core-engineering">Core Engineering</a>
-<a class="lvl2" href="#anti-patterns">Anti-patterns</a></nav>
-<main><h1 id="skills-on-the-final-pdf-fundamentals-where-used">Skills on the final PDF → fundamentals + where used</h1>
-<p>Maps every skill on <code>final_*/sections/skills.tex</code> (synced skeleton). If you cannot place it, do not emphasize it in interviews.</p>
-<p><strong>AI line deep defense:</strong> open <code>prep/36_skills_ai_agents_defense.md</code> in this final folder.</p>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#skills-on-the-resume-fundamentals-where-i-used-each-and-how-strongly-to-claim-it">Skills on the resume: fundamentals, where I used each, and how strongly to claim it</a>
+<a class="lvl2" href="#1-languages">1. Languages</a>
+<a class="lvl2" href="#2-backend-and-apis">2. Backend and APIs</a>
+<a class="lvl2" href="#3-generative-ai">3. Generative AI</a>
+<a class="lvl2" href="#4-data-and-streaming">4. Data and Streaming</a>
+<a class="lvl2" href="#5-databases-and-storage">5. Databases and Storage</a>
+<a class="lvl2" href="#6-cloud-and-devops">6. Cloud and DevOps</a>
+<a class="lvl2" href="#7-architecture-and-core-concepts">7. Architecture and Core Concepts</a>
+<a class="lvl2" href="#8-java-tracks-for-reference-only">8. Java tracks (for reference only)</a>
+<a class="lvl2" href="#9-anti-patterns-what-not-to-claim">9. Anti-patterns: what not to claim</a>
+<a class="lvl2" href="#10-rapid-fire-drill">10. Rapid-fire drill</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="skills-on-the-resume-fundamentals-where-i-used-each-and-how-strongly-to-claim-it">Skills on the resume: fundamentals, where I used each, and how strongly to claim it</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
+<ul>
+<li><strong>What it covers:</strong> every item on the Skills section of <code>Tarun_Mittal_SSE_5yr.pdf</code> (the PyGo track), plus the extra technologies that appear on project Tech lines. For each item: what it is in one line, the fundamentals an interviewer will probe, where it appears on my resume, and how strongly I can claim it.</li>
+<li><strong>When to read it:</strong> when a job description names a technology and you want to know in 30 seconds what to say, or when an interviewer points at your skills list and says "tell me about X".</li>
+<li><strong>What to memorise:</strong> the <strong>claim strength</strong> column. "Production" means I can tell a project story. "Skills-level" means I can explain it well but there is no resume bullet. "Literacy" means I know the concepts and must say so plainly. If you cannot place a skill, do not emphasise it.</li>
+</ul>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. STATED means printed on the resume from the project source. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. TARGET means a design goal.</p>
+<p><strong>Claim strength key</strong></p>
+<table>
+<thead>
+<tr>
+<th>Strength</th>
+<th>Meaning</th>
+<th>How to talk about it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Production</strong></td>
+<td>I used it in shipped work that is on the resume</td>
+<td>Tell the project story with numbers</td>
+</tr>
+<tr>
+<td><strong>Production (historical)</strong></td>
+<td>Used in past roles, from work records</td>
+<td>State the outcome plainly. Some baselines are estimates</td>
+</tr>
+<tr>
+<td><strong>Skills-level</strong></td>
+<td>I can explain and design with it. It is not a resume bullet</td>
+<td>"I know it well and have designed with it, but it's not one of my shipped bullets"</td>
+</tr>
+<tr>
+<td><strong>Literacy</strong></td>
+<td>I know the concepts</td>
+<td>"I understand how it works. I haven't owned it in production"</td>
+</tr>
+</tbody>
+</table>
+<div class="callout warn">
+<p><strong>Placement rules that interviewers check</strong></p>
+<ul>
+<li><strong>Kafka:</strong> Uber Menu and Masters India (two different products). <strong>Flink:</strong> Uber Menu only. <strong>Neither at Impact Analytics.</strong></li>
+<li><strong>ClickHouse, Go/Gin, LangGraph, LangSmith, Datadog:</strong> Impact Analytics. LangSmith is Ask Iris only.</li>
+<li><strong>RAG, Milvus, LangChain, Selenium, Gemini 2.5 Pro:</strong> Uber Menu.</li>
+<li><strong>ELK, New Relic, Celery:</strong> Masters India.</li>
+<li><strong>MCP, tool calling:</strong> skills-level. IA tool design (Cluster Recommendation Copilot, 14 tools) is verbal only.</li>
+<li><strong>C, C++, pgvector, DynamoDB, Kubernetes, gRPC:</strong> literacy. No production ownership claims.</li>
+</ul>
+</div>
 <hr>
-<h2 id="languages">Languages</h2>
+<h2 id="1-languages">1. Languages</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
-<th>Where on resume</th>
+<th>What it is</th>
+<th>Fundamentals to know</th>
+<th>Where on the resume</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><strong>Python</strong></td>
-<td>GIL vs I/O, asyncio, typing, packaging</td>
-<td>IA agent, Menu, Masters (PyGo) / IA agents + Menu (Java track)</td>
+<td>General-purpose language, the main one in my career</td>
+<td>GIL and I/O versus CPU work, asyncio event loop, typing with Pydantic, packaging</td>
+<td>IA agent plane (Keep/Drop, Ask Iris). Uber FRM (FastAPI). Uber Menu (Selenium, RAG). Masters India (FastAPI, Celery). GeeksforGeeks (Django)</td>
+<td>Production</td>
 </tr>
 <tr>
 <td><strong>Go</strong></td>
-<td>goroutines, channels, static binary, Gin</td>
-<td>IA doing layer (PyGo)</td>
-</tr>
-<tr>
-<td><strong>Java</strong></td>
-<td>JVM, concurrency, Spring ecosystem</td>
-<td>FRM / Masters / GFG (Java track)</td>
+<td>Compiled language with cheap concurrency</td>
+<td>Goroutines, channels, <code>context</code> deadlines, interfaces, error values, GC</td>
+<td>IA: Gin platform (10k peak RPS), KPI parser, auth waterfall, native-TLS ClickHouse copier</td>
+<td>Production</td>
 </tr>
 <tr>
 <td><strong>SQL</strong></td>
-<td>joins, indexes, EXPLAIN, transactions</td>
-<td>All data stores</td>
+<td>Query language for relational and analytical databases</td>
+<td>Joins, indexes, <code>EXPLAIN</code>, transactions and isolation, window functions, GROUP BY</td>
+<td>Everywhere: MySQL (FRM, GFG), PostgreSQL (Masters, IA), ClickHouse (IA)</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>C / C++</strong></td>
-<td>memory, systems literacy</td>
-<td>Listed as literacy — no production ownership claim</td>
+<td><strong>C, C++</strong></td>
+<td>Systems languages</td>
+<td>Memory and pointers, stack versus heap, compilation, STL basics</td>
+<td>On the skills line for fundamentals</td>
+<td>Literacy. No production ownership claim</td>
 </tr>
 </tbody>
 </table>
-<h2 id="backend-and-apis">Backend and APIs</h2>
+<p>Deep pages: <a href="python_fastapi.html">python_fastapi.md</a>, <a href="go_gin.html">go_gin.md</a>.</p>
+<hr>
+<h2 id="2-backend-and-apis">2. Backend and APIs</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
+<th>What it is</th>
+<th>Fundamentals to know</th>
 <th>Where</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>FastAPI / Gin / Django / Pydantic</strong> (PyGo)</td>
-<td>ASGI, validation, handlers</td>
-<td>IA, FRM, Masters, GFG</td>
+<td><strong>FastAPI</strong></td>
+<td>Async Python web framework on Starlette and Pydantic</td>
+<td>ASGI, <code>Depends</code> injection, <code>async def</code> versus <code>def</code>, OpenAPI, WebSockets</td>
+<td>Uber FRM (36 endpoints). Masters India (strangler migration, p95 from 1.2s to 300ms). IA Ask Iris WebSocket</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>Spring Boot / MVC / Security / Data JPA / Hibernate / Batch</strong> (Java)</td>
-<td>controllers, security, ORM, batch</td>
-<td>FRM, Masters, GFG, IA write APIs</td>
+<td><strong>Gin</strong></td>
+<td>Lightweight Go HTTP framework</td>
+<td>Router, middleware chain, binding and validation, recovery</td>
+<td>IA platform (C1)</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>REST / gRPC</strong></td>
-<td>idempotency, versioning; protobuf literacy</td>
-<td>REST primary</td>
+<td><strong>Django</strong></td>
+<td>Batteries-included Python web framework</td>
+<td>ORM, migrations, admin, auth, DRF</td>
+<td>GeeksforGeeks doubt platform (10K+ daily queries, 10x contest spikes)</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
-<td><strong>Celery / asyncio</strong> (PyGo)</td>
-<td>workers, event loop</td>
-<td>Masters / agent I/O</td>
+<td><strong>REST</strong></td>
+<td>Resource-oriented HTTP APIs</td>
+<td>Verbs and status codes, idempotent methods, pagination, versioning, 202 with polling</td>
+<td>Every project</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>Design Patterns</strong> <em>(off Skills since Aug 2026 — verbal only)</em></td>
-<td>strangler, layered services</td>
-<td>Masters, FRM</td>
+<td><strong>gRPC</strong></td>
+<td>RPC framework over HTTP/2 with Protocol Buffers</td>
+<td>Protobuf schemas and codegen, unary versus streaming calls, deadlines</td>
+<td>Not used in a resume bullet. REST was primary</td>
+<td>Literacy</td>
+</tr>
+<tr>
+<td><strong>Pydantic</strong></td>
+<td>Data validation from Python type hints</td>
+<td>Models, validators, JSON schema, strict types</td>
+<td>FRM and Masters request and response models. IA structured LLM outputs</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Celery</strong></td>
+<td>Python distributed task queue</td>
+<td>Broker, workers, retries with backoff, rate limits, chains</td>
+<td>Masters India: validation chains, PDFs, webhooks</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td><strong>asyncio</strong></td>
+<td>Python's cooperative concurrency</td>
+<td>Event loop, <code>await</code>, <code>gather</code>, never block the loop, <code>to_thread</code></td>
+<td>Masters (async IRP calls). FRM (<code>asyncio.to_thread</code> around sync ORM). IA agent plane</td>
+<td>Production</td>
 </tr>
 </tbody>
 </table>
-<h2 id="ai-and-agents">AI and Agents</h2>
+<p>Not on the PyGo skills line but on a Tech line: <strong>SQLAlchemy 2.0</strong> (Uber FRM; typed <code>Mapped</code> models, <code>select()</code> with <code>aliased()</code> and <code>.label()</code>), <strong>Google Wire</strong> and <strong>h2c</strong> (IA C1 bullet). See <a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a> and <a href="go_gin.html">go_gin.md</a>.</p>
+<hr>
+<h2 id="3-generative-ai">3. Generative AI</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
+<th>What it is</th>
+<th>Fundamentals to know</th>
 <th>Where</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><strong>LLM agents</strong></td>
-<td>multi-step loops, cost/latency, non-determinism</td>
-<td>IA copilot</td>
-</tr>
 <tr>
 <td><strong>LangGraph</strong></td>
-<td>stateful graphs, checkpoints</td>
-<td>IA</td>
+<td>Library for LLM apps as stateful graphs</td>
+<td>Nodes, edges, conditional edges, shared state, checkpointing, recursion limit</td>
+<td>IA Ask Iris: supervisor plus 3-attempt evaluator (A4)</td>
+<td>Production</td>
 </tr>
 <tr>
 <td><strong>LangChain</strong></td>
-<td>chains/retrievers glue</td>
-<td>IA / Menu RAG</td>
-</tr>
-<tr>
-<td><strong>MCP</strong></td>
-<td>tool protocol / host</td>
-<td>IA tools</td>
-</tr>
-<tr>
-<td><strong>tool calling</strong></td>
-<td>typed tools, arg validation, no free-form SQL writes</td>
-<td>IA (14 tools / 3 gates verbal)</td>
-</tr>
-<tr>
-<td><strong>prompt engineering</strong></td>
-<td>system/tool prompts, structured outputs</td>
-<td>IA + Menu extraction</td>
+<td>Building blocks for LLM apps</td>
+<td>Loaders, splitters, embeddings, retrievers, prompt templates</td>
+<td>Uber Menu RAG pipeline (M1)</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
 <td><strong>RAG</strong></td>
-<td>chunk, embed, retrieve, generate, validate</td>
-<td>Menu extraction</td>
-</tr>
-<tr>
-<td><strong>embeddings</strong></td>
-<td>vectorize corpus; index freshness</td>
-<td>Menu Milvus; IA async embed jobs</td>
+<td>Retrieve relevant context, then generate</td>
+<td>Chunking, embeddings, ANN retrieval, prompt assembly, schema validation, offline eval</td>
+<td>Uber Menu: 98% field fidelity (offline) with Gemini 2.5 Pro over Milvus</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
 <td><strong>Milvus</strong></td>
-<td>vector DB for menu RAG</td>
-<td>Menu</td>
+<td>Vector database</td>
+<td>ANN indexes (HNSW, IVF), collections, similarity metrics</td>
+<td>Uber Menu only</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
 <td><strong>pgvector</strong></td>
-<td>Postgres ANN literacy</td>
-<td>Skills literacy</td>
+<td>Postgres extension for vector search</td>
+<td>Vector column, HNSW and IVFFlat indexes, joins with relational data</td>
+<td>None</td>
+<td>Literacy</td>
 </tr>
 <tr>
-<td><strong>offline eval</strong></td>
-<td>golden sets; not live SLA</td>
-<td>Menu 98%/100%; LangSmith regression</td>
+<td><strong>LLM agents (OpenAI, Gemini, Claude)</strong></td>
+<td>Programs that use LLMs to decide steps</td>
+<td>Structured outputs, loops and caps, cost and latency, non-determinism, provider selection</td>
+<td>IA Keep/Drop lenses (OpenAI models, names off PDF) and Ask Iris. Uber Menu Gemini 2.5 Pro. Claude has no named project</td>
+<td>Production (Claude: skills-level)</td>
+</tr>
+<tr>
+<td><strong>Tool calling</strong></td>
+<td>Model requests a function call, code runs it</td>
+<td>JSON schemas for tools, argument validation, read-only defaults, scope from session</td>
+<td>Skills line. IA scoring deliberately has no tools. Copilot design is verbal</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td><strong>MCP</strong></td>
+<td>Open protocol connecting LLM apps to tools and data</td>
+<td>Host, client, server. Tools, resources, prompts. JSON-RPC over stdio or HTTP</td>
+<td>Skills line only</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td><strong>Prompt engineering</strong></td>
+<td>Designing instructions, context and output format</td>
+<td>Narrow prompts, schemas, data separated from instructions, versioning</td>
+<td>IA lens prompts (inside <code>config_hash</code>). Menu extraction prompts</td>
+<td>Production</td>
 </tr>
 <tr>
 <td><strong>LangSmith</strong></td>
-<td>agent traces, eval/regression</td>
-<td>IA (with Datadog/PostHog)</td>
+<td>Tracing and eval platform for LLM apps</td>
+<td>Trace trees, token and latency per step, datasets</td>
+<td>IA Ask Iris only</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Offline evaluation</strong></td>
+<td>Testing models on labelled sets before shipping</td>
+<td>Proxy versus gold sets, promotion gates, baselines, leakage</td>
+<td>IA: 300-case set with 80% CI gate. Gold-200: 73% cheaper at 100% coverage, 74% deterministic baseline. Menu: 98% offline</td>
+<td>Production</td>
 </tr>
 </tbody>
 </table>
-<p>See also: <a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a>.</p>
-<h2 id="streaming-and-data">Streaming and Data</h2>
+<p>Deep page: <a href="langgraph_mcp_rag.html">langgraph_mcp_rag.md</a>. Generative AI defense table: <a href="../../../prep/36_skills_ai_agents_defense.html">../../../prep/36_skills_ai_agents_defense.md</a>.</p>
+<p><strong>Watch out:</strong> 80% is a promotion gate, not live accuracy. 73% and 74% come from gold-200, not the 300-case file. Keep/Drop has a fixed step order with no LLM orchestrator.</p>
+<hr>
+<h2 id="4-data-and-streaming">4. Data and Streaming</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
+<th>What it is</th>
+<th>Fundamentals to know</th>
 <th>Where</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Kafka / Flink</strong></td>
-<td>partitions, keyed state, lag</td>
-<td>Menu, Masters IRP</td>
+<td><strong>Apache Kafka</strong></td>
+<td>Partitioned, replayable event log</td>
+<td>Topics, partitions, keys and ordering, consumer groups, offsets, at-least-once, DLQ, lag</td>
+<td>Uber Menu (keyed by vendor, feeds Flink). Masters India (keyed by GSTIN, idempotent workers, 1M+ a day)</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
-<td><strong>ClickHouse / BigQuery</strong></td>
-<td>OLAP pivots; warehouse</td>
-<td>IA</td>
+<td><strong>Apache Flink</strong></td>
+<td>Stateful stream processor</td>
+<td>keyBy and keyed state, event time and watermarks, checkpoints, backpressure, exactly-once state</td>
+<td>Uber Menu only: keyed dedupe, normalization, routing</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
-<td><strong>Batch Processing / ETL</strong></td>
-<td>bulk paths</td>
-<td>Masters, Menu, IA jobs</td>
+<td><strong>ClickHouse</strong></td>
+<td>Columnar OLAP database</td>
+<td>MergeTree parts and merges, sparse index, partitions, ReplacingMergeTree, memory and spill settings</td>
+<td>IA: six rollup tables (15.5x, from 189s to 12s), 170GB OOM fix, copier at about 344k rows per second, 2.11B master</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>BigQuery</strong></td>
+<td>Google's serverless data warehouse</td>
+<td>Columnar storage, pricing by bytes scanned, partitioned and clustered tables</td>
+<td>IA tech line. Keep qualitative</td>
+<td>Production (light). Keep claims qualitative</td>
+</tr>
+<tr>
+<td><strong>ETL pipelines</strong></td>
+<td>Extract, transform, load</td>
+<td>Idempotent loads, checkpoints, backfills, validation, chunking</td>
+<td>FRM Sheets-to-MySQL (19M raw GL rows). IA rollup builds. Menu ingestion. Masters bulk imports</td>
+<td>Production</td>
 </tr>
 </tbody>
 </table>
-<h2 id="databases-and-storage">Databases and Storage</h2>
+<p>Deep pages: <a href="kafka_streaming.html">kafka_streaming.md</a>, <a href="flink.html">flink.md</a>, <a href="kafka_flink_scale_defense.html">kafka_flink_scale_defense.md</a>, <a href="clickhouse.html">clickhouse.md</a>.</p>
+<p>The HFM (Oracle Hyperion) ETL at FRM was a shared pipeline responsibility. I owned the scoping backend and the Sheets-to-MySQL migration.</p>
+<hr>
+<h2 id="5-databases-and-storage">5. Databases and Storage</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
+<th>What it is</th>
+<th>Fundamentals to know</th>
 <th>Where</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>PostgreSQL / MySQL / Redis / MongoDB / Elasticsearch</strong></td>
-<td>OLTP, cache, docs, search/logs</td>
-<td>Masters, FRM, GFG</td>
+<td><strong>PostgreSQL</strong></td>
+<td>Open-source relational database</td>
+<td>MVCC, indexes, isolation levels, partitioning, pooling</td>
+<td>Masters India (sharded by tax quarter). IA (thin metadata, UAM, roles)</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>DynamoDB / S3</strong> (PyGo DynamoDB)</td>
-<td>NoSQL / object storage literacy</td>
-<td>AWS/cloud paths; Menu/IA artifacts</td>
+<td><strong>MySQL</strong></td>
+<td>Open-source relational database</td>
+<td>InnoDB row locks, transactions, optimistic locking, indexes</td>
+<td>Uber FRM (8-table schema on SOADB). GeeksforGeeks</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>Caching / Sharding</strong></td>
-<td>cache-aside; quarter shards; CH partitions</td>
-<td>Masters, IA</td>
+<td><strong>Redis</strong></td>
+<td>In-memory key-value store</td>
+<td>Data types, TTL, cache-aside, invalidation, stampede guards, <code>SET NX</code> locks</td>
+<td>Masters (read load down 30%). IA (auth waterfall front cache). GFG (counters)</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>MongoDB</strong></td>
+<td>Document database</td>
+<td>Flexible schemas, indexes, document modelling</td>
+<td>Masters (invoice payload snapshots). GFG (doubt bodies)</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td><strong>Elasticsearch</strong></td>
+<td>Search engine on inverted indexes</td>
+<td>Analyzers, inverted index, relevance, as ELK log storage</td>
+<td>Masters (invoice search, ELK). GFG (doubt search)</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td><strong>DynamoDB</strong></td>
+<td>AWS managed key-value and document database</td>
+<td>Partition and sort keys, capacity modes, single-table design</td>
+<td>None</td>
+<td>Literacy</td>
+</tr>
+<tr>
+<td><strong>S3</strong></td>
+<td>AWS object storage</td>
+<td>Buckets, keys, durability, lifecycle rules</td>
+<td>Masters: bulk import files landed in object storage</td>
+<td>Light production use. Do not claim deep ownership</td>
 </tr>
 </tbody>
 </table>
-<h2 id="cloud-and-infrastructure">Cloud and Infrastructure</h2>
+<p>Deep page: <a href="postgres_mysql_redis.html">postgres_mysql_redis.md</a>. MongoDB and Elasticsearch depth: <a href="../../../prep/02_mongodb_elasticsearch.html">../../../prep/02_mongodb_elasticsearch.md</a>.</p>
+<hr>
+<h2 id="6-cloud-and-devops">6. Cloud and DevOps</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
+<th>What it is</th>
+<th>Fundamentals to know</th>
 <th>Where</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>GCP / AWS / Docker / Kubernetes / Linux / CI/CD</strong></td>
-<td>deploy literacy</td>
-<td>All</td>
+<td><strong>GCP</strong></td>
+<td>Google Cloud</td>
+<td>Compute, storage, BigQuery, IAM basics</td>
+<td>IA, Uber Menu</td>
+<td>Production (keep product names qualitative unless sure)</td>
 </tr>
 <tr>
-<td><strong>Maven</strong> (Java) / <strong>Bazel</strong></td>
-<td>builds; FRM test targets</td>
-<td>Java / FRM</td>
+<td><strong>AWS</strong></td>
+<td>Amazon Web Services</td>
+<td>S3, KMS, compute, IAM basics</td>
+<td>Masters India</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
-<td><strong>New Relic / Datadog / PostHog / LangSmith</strong></td>
-<td>APM / platform / product / agent</td>
-<td>Masters + IA</td>
+<td><strong>Docker</strong></td>
+<td>Container images and runtime</td>
+<td>Layers and caching, small pinned images, one process per container</td>
+<td>IA, FRM, Menu, Masters tech lines</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Kubernetes</strong></td>
+<td>Container orchestration</td>
+<td>Pods, deployments, services, HPA, probes, graceful SIGTERM</td>
+<td>None</td>
+<td>Literacy. No cluster operations claim</td>
+</tr>
+<tr>
+<td><strong>Bazel</strong></td>
+<td>Hermetic, incremental monorepo build system</td>
+<td>BUILD files, test targets, caching, stacked PRs</td>
+<td>Uber FRM</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>CI/CD</strong></td>
+<td>Automated checks and releases</td>
+<td>Test gates, coverage gates, canaries, rollbacks</td>
+<td>Masters (coverage from 35% to 82%, 98% deploy success). FRM (Bazel gates, 100% module coverage). IA (80% eval promotion gate)</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Datadog</strong></td>
+<td>Hosted metrics, logs and APM</td>
+<td>Traces and spans, service maps, monitors</td>
+<td>IA Go edge distributed tracing (C1)</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>ELK</strong></td>
+<td>Elasticsearch, Logstash, Kibana</td>
+<td>Structured logs, correlation ids, dashboards</td>
+<td>Masters India (triage down 70%)</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td><strong>New Relic</strong></td>
+<td>Hosted APM</td>
+<td>Distributed tracing, error rates, alerting</td>
+<td>Masters India</td>
+<td>Production (historical)</td>
 </tr>
 </tbody>
 </table>
-<p>See: <a href="observability_cloud.html">observability_cloud.md</a>.</p>
-<h2 id="core-engineering">Core Engineering</h2>
+<p>Deep page: <a href="observability_cloud.html">observability_cloud.md</a>.</p>
+<hr>
+<h2 id="7-architecture-and-core-concepts">7. Architecture and Core Concepts</h2>
 <table>
 <thead>
 <tr>
 <th>Skill</th>
-<th>Fundamentals</th>
-<th>Where</th>
+<th>What it means</th>
+<th>Fundamentals to know</th>
+<th>My best example</th>
+<th>Strength</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Distributed Systems / HLD/LLD</strong></td>
-<td>consistency, retries, design ownership</td>
-<td>FRM, IA, Masters</td>
+<td><strong>Distributed systems</strong></td>
+<td>Many services and machines cooperating over a network</td>
+<td>Partial failure, retries, timeouts, consistency models, idempotency</td>
+<td>Masters bulk pipeline. Menu Kafka and Flink. IA copier</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>Multithreading / Concurrency</strong></td>
-<td>threads vs async vs goroutines</td>
-<td>All</td>
+<td><strong>Microservices</strong></td>
+<td>Small services owning one domain each</td>
+<td>Service boundaries, strangler migration, shared database during cutover</td>
+<td>Masters PHP monolith to FastAPI microservices</td>
+<td>Production (historical)</td>
 </tr>
 <tr>
-<td><strong>Caching / Sharding / Reliability / Testing</strong></td>
-<td>ops + quality</td>
-<td>Masters, FRM</td>
+<td><strong>System design (HLD and LLD)</strong></td>
+<td>High-level architecture and low-level class and schema design</td>
+<td>Requirements, capacity math, data model, failure modes, trade-offs</td>
+<td>Any project whiteboard. FRM schema (LLD). Menu pipeline (HLD)</td>
+<td>Production</td>
 </tr>
 <tr>
-<td><strong>JUnit</strong> (Java) <em>(off Skills since Aug 2026; not on this track's PDF at all)</em></td>
-<td>unit tests</td>
-<td>FRM / Masters Java</td>
+<td><strong>Data structures and algorithms</strong></td>
+<td>Problem solving fundamentals</td>
+<td>Complexity, hashing, trees, graphs, DP</td>
+<td>Google Code Jam Qualifier 2021, rank 2260 out of 37,000+. HackerRank Problem Solving certificate</td>
+<td>HISTORICAL achievements</td>
+</tr>
+<tr>
+<td><strong>Caching</strong></td>
+<td>Keeping hot data close and cheap to read</td>
+<td>Cache-aside, TTL, invalidation, stampede, precomputation</td>
+<td>Masters Redis (read load down 30%). IA ClickHouse rollups as precomputation. IA auth cache</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Reliability</strong></td>
+<td>Keeping systems working under failure</td>
+<td>Timeouts, circuit breakers, checkpoints, DLQs, bounded retries, canaries, graceful fallback</td>
+<td>IA registry (timeouts, breakers, checkpoints, deterministic fallback). Masters DLQ and retries. Go edge nested timeouts</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Multithreading</strong></td>
+<td>Running work in parallel threads</td>
+<td>Races, locks, thread pools, the GIL</td>
+<td>Go copier double buffering. FastAPI thread pool for sync handlers</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Database sharding</strong></td>
+<td>Splitting data across tables or servers by a key</td>
+<td>Shard key choice, routing, hot shards, archiving</td>
+<td>Masters PostgreSQL sharded by tax quarter. (ClickHouse partitions by season are partitioning, not sharding)</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td><strong>Concurrency</strong></td>
+<td>Many tasks in progress at once</td>
+<td>async versus threads versus goroutines, backpressure, bounded concurrency</td>
+<td>Go goroutines, asyncio IRP calls, Celery workers, Flink parallelism</td>
+<td>Production</td>
+</tr>
+<tr>
+<td><strong>Idempotency</strong></td>
+<td>Doing it twice has the same effect as once</td>
+<td>Idempotency keys, upserts, unique constraints, version columns</td>
+<td>Masters <code>client + fileHash + batchIndex</code>. Menu catalog upserts. FRM SHA-256 natural keys. IA ReplacingMergeTree versions. GFG unique (user, content) votes</td>
+<td>Production</td>
 </tr>
 </tbody>
 </table>
 <hr>
-<h2 id="anti-patterns">Anti-patterns</h2>
+<h2 id="8-java-tracks-for-reference-only">8. Java tracks (for reference only)</h2>
+<p>This page is the PyGo track. The Java tracks (<code>final_java_pygo_ia</code>, <code>final_java_ai</code>) add Java, Spring Boot, Spring MVC, Spring Security, Spring Data JPA, Hibernate, Spring Batch and Maven, and say "Amazon S3". On those tracks, the Uber FRM and Masters India stacks are described in Spring terms. Impact Analytics platform APIs are <strong>Go/Gin on every track</strong>, never Spring Boot. JUnit is not on this track's PDF.</p>
+<hr>
+<h2 id="9-anti-patterns-what-not-to-claim">9. Anti-patterns: what not to claim</h2>
 <ul>
-<li>Do not claim <strong>Terraform</strong> / <strong>K8s operator</strong> ownership.</li>
-<li>Do not claim <strong>Spark</strong> / <strong>Vitess</strong> / <strong>Pinecone</strong> on PDF.</li>
-<li>Do not claim <strong>production agentic load-test PASS</strong> — AssortSmart is <strong>building</strong>.</li>
-<li>Do not claim <strong>SFT</strong> on Menu PDF.</li>
-<li>Mentorship / SOA / Microservices / ELK / SQLAlchemy removed from skills — defend from experience bullets if asked.</li>
+<li>No <strong>Terraform</strong> or <strong>Kubernetes operator or cluster operations</strong> ownership.</li>
+<li>No <strong>Spark</strong>, <strong>Pinot</strong>, <strong>Vitess</strong> or <strong>Pinecone</strong> on the resume. Spark is a verbal backfill option for Menu only.</li>
+<li>No <strong>Kafka, Flink, CDC or Milvus at Impact Analytics.</strong> The CDC pipeline there was written by a colleague, Ashvin Sharma.</li>
+<li>No <strong>fine-tuning or SFT</strong> claims.</li>
+<li>No <strong>human review queues (HITL)</strong> at Impact Analytics.</li>
+<li><strong>Ask Iris is shipped</strong> (capability, no SLA). The <strong>Cluster Recommendation Copilot is still being built</strong> (say "building"). Its load test is pending, and its 14 tools and 3 confirm gates are verbal design depth. Older prep said "do not claim production agentic load-test PASS, AssortSmart is building". The accurate version is that Ask Iris shipped and the Copilot load test is pending.</li>
+<li><strong>Mentorship and SOA</strong> are not skills-line items. Defend them from the bullets (mentored 2 at Masters, led 3 at FRM, and SOADB at FRM). <strong>Design Patterns</strong> was removed from Skills in August 2026 and is verbal only.</li>
+<li>Older versions of this map listed <strong>Linux</strong>, <strong>PostHog</strong> and "embeddings for IA async jobs". None of those are on the current resume. Older versions also said <strong>Microservices, ELK and SQLAlchemy</strong> were removed from Skills. Microservices and ELK are back on the skills line, and SQLAlchemy 2.0 is on the FRM tech line.</li>
+</ul>
+<hr>
+<h2 id="10-rapid-fire-drill">10. Rapid-fire drill</h2>
+<ol>
+<li><strong>Where is Flink?</strong> Uber Menu only.</li>
+<li><strong>Where is Kafka?</strong> Uber Menu and Masters India. Two different products.</li>
+<li><strong>Where is LangSmith?</strong> Ask Iris at Impact Analytics.</li>
+<li><strong>Where is Milvus?</strong> Uber Menu only.</li>
+<li><strong>Is MCP a production claim?</strong> No. Skills-level.</li>
+<li><strong>Where is Go?</strong> Impact Analytics: the Gin platform, KPI parser, auth middleware and copier.</li>
+<li><strong>What is your strongest database story?</strong> FRM's 8-table MySQL schema and the column-aliasing bug, or IA's ClickHouse rollups and 170GB OOM fix.</li>
+<li><strong>Have you run Kubernetes clusters?</strong> No. Literacy only.</li>
+<li><strong>gRPC?</strong> Literacy. REST was primary.</li>
+<li><strong>Where did you shard a database?</strong> Masters India: PostgreSQL by tax quarter.</li>
+</ol>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="00_index.html">00_index.md</a></li>
+<li><a href="../../../handbook/09_tech_glossary.html">../../../handbook/09_tech_glossary.md</a></li>
+<li><a href="../../../prep/36_skills_ai_agents_defense.html">../../../prep/36_skills_ai_agents_defense.md</a></li>
 </ul></main>
 </div>
 

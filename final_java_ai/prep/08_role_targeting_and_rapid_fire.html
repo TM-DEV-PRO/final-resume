@@ -40,71 +40,187 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+AI</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/08_role_targeting_and_rapid_fire.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#role-targeting-rapid-fire-java-spring-senior-swe">Role targeting + rapid-fire — Java / Spring senior SWE</a>
-<a class="lvl2" href="#1-role-families-and-what-to-lead-with">1. Role families and what to lead with</a>
-<a class="lvl2" href="#2-rapid-fire-java-resume-claims">2. Rapid-fire (Java resume claims)</a>
-<a class="lvl2" href="#3-claims-interviewers-poke-hardest">3. Claims interviewers poke hardest</a>
-<a class="lvl2" href="#4-system-design-prep-picks-java-interview">4. System design prep picks (Java interview)</a></nav>
-<main><h1 id="role-targeting-rapid-fire-java-spring-senior-swe">Role targeting + rapid-fire — Java / Spring senior SWE</h1>
-<p>Use this when applying with this track — <code>final_java_ai/artifacts/Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>. Lead with Java/Spring keywords; keep cloud, Kafka, and systems stories.</p>
-<h2 id="1-role-families-and-what-to-lead-with">1. Role families and what to lead with</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#role-targeting-rapid-fire-java-python-track">Role targeting + rapid-fire (Java + Python track)</a>
+<a class="lvl2" href="#part-1-which-story-fits-which-role">Part 1. Which story fits which role</a>
+<a class="lvl2" href="#part-2-rapid-fire-tricky-questions-and-safe-answers">Part 2. Rapid-fire: tricky questions and safe answers</a></nav>
+<main><h1 id="role-targeting-rapid-fire-java-python-track">Role targeting + rapid-fire (Java + Python track)</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li>Part 1 tells you which project story to lead with for each kind of job, and why. Read it while you tailor an application or before a recruiter call.</li>
+<li>Part 2 is rapid-fire: the tricky one-line questions where a careless answer over-claims. Read it the night before any screen.</li>
+<li>Memorise the 15-second lead for your target role and the first sentence of every rapid-fire answer.</li>
+</ul>
+</div>
+<p>Use this page when applying with this track's PDF, <code>final_java_ai/artifacts/Tarun_Mittal_SSE_5yr_Java_AI.pdf</code> (summary line: "Expertise in Java and Python microservices"). On this track, Uber FRM is Java and Spring Boot with Spring Data JPA and Hibernate, Masters India is Spring Boot microservices, and Impact Analytics platform APIs are Go/Gin with a Python agent plane.</p>
+<p><strong>Which roles this track suits.</strong> Send this PDF to JVM and Spring-heavy backend roles, where the Uber FRM and Masters India work in Java is the direct match. It also works for AI and data roles, because the Impact Analytics Go platform, ClickHouse work and Python agents are the same on every track.</p>
+<p><strong>Tags used here.</strong> MEASURED means there is a log, document or code behind the number. TARGET means a design goal, so say "targeting". ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records.</p>
+<hr>
+<h2 id="part-1-which-story-fits-which-role">Part 1. Which story fits which role</h2>
+<h3 id="the-idea-in-plain-english">The idea in plain English</h3>
+<p>Recruiters skim. In the first 15 seconds of a call they decide whether you "are" the role they are hiring for. You have six projects, and each one proves something different. So the trick is not to tell all six. Lead with the one project whose problem looks most like their problem, back it with one more, and keep the rest for follow-ups.</p>
+<p>A good fit has three parts. The <strong>problem shape</strong> matches (for example, "make analytics queries fast" or "make a pipeline never double-process"). The <strong>stack</strong> overlaps with their job post. And the <strong>seniority signal</strong> matches, such as leading people, owning design, or setting quality gates.</p>
+<h3 id="role-families-at-a-glance">Role families at a glance</h3>
 <table>
 <thead>
 <tr>
 <th>Role family</th>
-<th>Screen for</th>
-<th>Lead with</th>
+<th>Lead story</th>
+<th>Back-up story</th>
+<th>Keywords to mirror from the job post</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Senior Java / Spring Boot backend</td>
-<td>Spring Boot, JPA, microservices, REST, SQL</td>
-<td>Masters India migration (Spring Boot + Batch, p95, 1M+ txn/day) + Uber FRM (JPA, 36 APIs, audit correctness)</td>
+<td>Java / Spring backend engineer (JVM-heavy)</td>
+<td>Uber FRM: 36 Spring Boot endpoints, Spring Data JPA / Hibernate migration</td>
+<td>Masters India PHP to Spring Boot migration</td>
+<td>Java, Spring Boot, Spring Data JPA, Hibernate, JUnit, microservices, REST</td>
 </tr>
 <tr>
-<td>Platform / distributed systems (Java shops)</td>
-<td>Kafka, scale, design</td>
-<td>Menu ingestion (Kafka/Flink/Spark/Pinot — Python + streaming) + IA ClickHouse write model</td>
+<td>Backend / platform engineer (Go or Python)</td>
+<td>IA Core: Go/Gin platform at 10k peak RPS</td>
+<td>Masters India PHP to Spring Boot migration</td>
+<td>microservices, Go, Gin, REST, reliability, tracing</td>
 </tr>
 <tr>
-<td>FinTech / payments / compliance Java</td>
-<td>Correctness, audits, observability</td>
-<td>FRM (PwC work papers, 100% module coverage) + GST (RBAC, audit logs, idempotency)</td>
+<td>Data infrastructure / analytics engineer</td>
+<td>IA ClickHouse rollups (189s to 12s), 170GB OOM fix, Go copy pump</td>
+<td>Uber Menu Kafka + Flink</td>
+<td>ClickHouse, OLAP, ETL, BigQuery, partitioning, pre-aggregation</td>
 </tr>
 <tr>
-<td>AI platform with Java services</td>
-<td>Agents + solid backend</td>
-<td>IA: Python agent service + Spring Boot core + ClickHouse</td>
+<td>Applied AI / GenAI / LLM engineer</td>
+<td>IA Agentic: Keep/Drop engine, Ask Iris, 80% CI gate</td>
+<td>Uber Menu RAG (Gemini, LangChain, Milvus)</td>
+<td>LangGraph, RAG, agents, evaluation, guardrails, LangSmith</td>
 </tr>
 <tr>
-<td>SRE-leaning Java</td>
-<td>Observability, K8s, incidents</td>
-<td>ELK + New Relic 70% triage; Actuator/metrics; Pinot ops dashboards</td>
+<td>Streaming / event pipeline engineer</td>
+<td>Uber Menu Kafka + Flink, keyed dedupe, exactly-once upserts</td>
+<td>Masters India Kafka IRP pipeline, 1M+/day</td>
+<td>Kafka, Flink, idempotency, dead-letter queues, backpressure</td>
+</tr>
+<tr>
+<td>Fintech / compliance / correctness-heavy backend</td>
+<td>Uber FRM: 14 days to 3 days, $340M materiality, SOX gates</td>
+<td>Masters India GST e-invoicing; ANZ compliance</td>
+<td>audit trail, SOX, reconciliation, optimistic locking, data integrity</td>
+</tr>
+<tr>
+<td>High-throughput API / distributed systems</td>
+<td>Masters India: 1M+/day, p95 from 1.2s to 300ms</td>
+<td>IA Go/Gin 10k peak RPS</td>
+<td>latency, throughput, sharding, caching, idempotency</td>
+</tr>
+<tr>
+<td>Senior / tech-lead track</td>
+<td>Uber FRM: led 3 engineers on the Spring Data JPA / Hibernate migration</td>
+<td>Masters India: mentored 2 engineers</td>
+<td>ownership, design reviews, mentoring, quality gates</td>
+</tr>
+<tr>
+<td>Product-minded / consumer platform</td>
+<td>GeeksforGeeks Django migration and influencer dashboard</td>
+<td>Uber Menu onboarding time</td>
+<td>user-facing features, growth, dashboards, traffic spikes</td>
 </tr>
 </tbody>
 </table>
-<h2 id="2-rapid-fire-java-resume-claims">2. Rapid-fire (Java resume claims)</h2>
-<p><strong>"Spring Boot microservices with worker pools — how?"</strong><br>
-Bulk-save handler validates the batch, assigns a version, submits chunk insert tasks to a fixed <code>ThreadPoolExecutor</code> with a bounded queue and <code>CallerRunsPolicy</code> (or abort + 429). Each task uses the ClickHouse batch API; futures collected with a per-request deadline. Pool sized from DB/ClickHouse connection budget, not "CPU cores × 200."</p>
-<p><strong>"Why Hibernate then also ClickHouse?"</strong><br>
-Different workloads. Hibernate/JPA on PostgreSQL/MySQL for OLTP metadata and FRM CRUD. ClickHouse for insert-only / partition-swapped analytical/planning facts — mutations are the wrong model there; we insert versions (or swap partitions) and read latest state via views. Never claim Hibernate→ClickHouse.</p>
-<p><strong>"100% changed-module coverage — how enforced?"</strong><br>
-CI computes coverage for files touched in the PR; merge blocked under threshold. Encourages tests with the code, not a heroic end-of-quarter push.</p>
-<p><strong>"Did you really build Uber FRM / Masters / GFG in Spring?"</strong><br>
-This Java resume is a <strong>positioning track</strong> for Spring roles — same products, schemas, endpoints, and metrics as the live systems. Defend architecture and outcomes first; map service/ORM boundaries to Spring idioms. Do not invent org-specific Spring internals you cannot walk through line-by-line.</p>
-<h2 id="3-claims-interviewers-poke-hardest">3. Claims interviewers poke hardest</h2>
+<h3 id="why-each-pairing-works">Why each pairing works</h3>
+<p><strong>Java and Spring backend roles lead with Uber FRM.</strong> It is the clearest proof that I own a Spring Boot service end to end. The scoping backend has 36 Spring Boot endpoints, an 8-table MySQL schema mapped with Spring Data JPA and Hibernate, optimistic locking through a <code>@Version</code> field, and atomic cross-table syncs in one <code>@Transactional</code> method. I led 3 engineers on the Spring Data JPA / Hibernate migration that removed latent column-aliasing bugs and raised module coverage to 100% with JUnit. Masters India backs it up with a second Java story: a PHP monolith moved to Spring Boot microservices, with p95 latency from 1.2 seconds to 300 milliseconds.</p>
+<p><strong>Backend / platform roles lead with Impact Analytics Core.</strong> It is my current work and the most direct proof of platform ownership. The Go/Gin service handles 10k peak RPS, uses Google Wire (a tool that wires up dependencies at compile time, so a missing dependency is a build error rather than a crash at startup), and protects itself without a reverse proxy, using nested timeouts and Datadog tracing. Masters India backs it up with a classic migration story, from a PHP monolith to Spring Boot microservices, with a measurable latency win.</p>
+<p><strong>Data infrastructure roles lead with ClickHouse.</strong> ClickHouse is a column-oriented analytics database. It stores each column separately, so a query that sums one column over millions of rows reads only that column. My story has a query-time win (planner pivots from 189 seconds to 12 seconds through six rollup tables), a load-time fix (the 170GB out-of-memory failure solved by inserting one fiscal week at a time with memory and spill caps) and a data-movement tool (a Go pump copying about 344k rows per second between clusters). Uber Menu's Kafka and Flink pipeline adds the streaming side.</p>
+<p><strong>Applied AI roles lead with Impact Analytics Agentic.</strong> Most AI candidates can describe a demo. My story shows production discipline: the LLM never touches the database, every output row carries a config_hash (a fingerprint of the exact prompts and settings that produced it), a timeout falls back to a deterministic score, and nothing is promoted without passing an 80% CI gate. Uber Menu then shows RAG on real documents with a measured 98% offline field fidelity.</p>
+<p><strong>Streaming roles lead with Uber Menu.</strong> Kafka is a durable message log that many services can read at their own pace. Flink is a stream processor that keeps state per key, for example "the last content hash I saw for this vendor". Together they gave keyed deduplication and idempotent catalog upserts. Masters India is the second Kafka story, in a different product, with dead-letter queues and retries against a flaky government portal.</p>
+<p><strong>Fintech and compliance roles lead with Uber FRM.</strong> The problem is correctness under audit, not speed. The story covers moving 19M general ledger rows off Google Sheets, an 8-table normalized MySQL schema, optimistic locking (each row carries a version number, and an update succeeds only if the version has not changed since you read it), SHA-256 natural keys to stop duplicates, and finite-state-machine gates with 50% delta-variance checks for SOX (the US Sarbanes-Oxley law on financial controls). Masters India's GST work and the ANZ compliance automation reinforce it.</p>
+<p><strong>High-throughput roles lead with Masters India.</strong> It has the cleanest traffic numbers: 1M+ government submissions a day, 1,500+ clients, p95 latency from 1.2 seconds to 300 milliseconds, and throughput from 700 to 4,000 requests per minute. p95 latency is the response time that 95% of requests beat, so it reflects what slow users actually feel.</p>
+<p><strong>Senior and tech-lead roles lead with leadership facts, kept separate.</strong> I led 3 engineers on the Uber FRM Spring Data JPA / Hibernate migration as tech lead of an EPAM pod, not as a people manager. At Masters India I mentored 2 engineers. Never merge these into "led 5".</p>
+<p><strong>Product-minded roles can open with GeeksforGeeks.</strong> It shows user-facing features (voting, pinning and locking doubt threads), handling 10x traffic spikes during live contests, and an influencer earnings dashboard tied to a 30% course sales lift that the business team attributed.</p>
+<h3 id="role-to-story-map">Role-to-story map</h3>
+<p>The diagram is a quick visual of the table. Notice that Impact Analytics serves three role families, which is why it is usually your opener, and that Uber FRM is the opener for Java and Spring roles.</p>
+<div class="mermaid">flowchart LR
+  R0["Java / Spring backend"] --&gt; S7["Uber FRM"]
+  R0 --&gt; S8["Masters Spring Boot migration"]
+  R1["Backend / platform"] --&gt; S1["IA Core: Go/Gin"]
+  R2["Data infrastructure"] --&gt; S2["IA ClickHouse rollups"]
+  R3["Applied AI"] --&gt; S3["IA Agentic + Ask Iris"]
+  R3 --&gt; S4["Uber Menu RAG"]
+  R4["Streaming"] --&gt; S5["Uber Menu Kafka + Flink"]
+  R4 --&gt; S6["Masters Kafka IRP"]
+  R5["Fintech / compliance"] --&gt; S7["Uber FRM"]
+  R6["High-throughput API"] --&gt; S6
+  R7["Tech lead"] --&gt; S7
+</div>
+<h3 id="15-second-leads-by-role">15-second leads by role</h3>
+<p>Say these as written. Each is built only from PDF facts.</p>
 <ul>
-<li><strong>IA p95 &lt;500 ms / &lt;80 ms edits:</strong> design targets from NFRs — say "design target," not "we measured in prod for a year."</li>
-<li><strong>Menu $600K+/yr:</strong> finance-owned cost model; know the arithmetic.</li>
-<li><strong>Java vs your Python/Go track:</strong> "Same systems and ownership; this resume leads with Spring for Java roles. Agentic/RAG stays Python because that is the real agent stack." Interviewers respect a bilingual story more than a brittle all-Java claim.</li>
+<li><strong>Java / Spring backend.</strong> "I'm a senior backend engineer with five years in Java, Python and Go. At Uber via EPAM I owned a Spring Boot finance scoping backend with 36 endpoints that cut quarterly reconciliation from 14 days to 3 days, and I led 3 engineers on its Spring Data JPA / Hibernate migration. At Masters India I moved a PHP monolith to Spring Boot microservices and took p95 latency from 1.2 seconds to 300 milliseconds."</li>
+<li><strong>Platform / backend.</strong> "I'm a senior backend engineer with five years in Java, Python and Go. Right now I own a multi-tenant Go/Gin platform at Impact Analytics that peaks at 10k requests per second, and I cut planner pivots from 189 seconds to 12 seconds with ClickHouse rollups."</li>
+<li><strong>Applied AI.</strong> "I build production AI systems with guardrails. At Impact Analytics I built an AI decision engine that scores 348k article-seasons and shipped Ask Iris, a LangGraph copilot, behind a 300-case evaluation harness and an 80% CI gate. Before that I built RAG-based menu extraction at Uber Eats."</li>
+<li><strong>Data infrastructure.</strong> "I make large analytical data fast and safe to move. I built ClickHouse rollups that took pivots from 189 seconds to 12 seconds, fixed a 170GB out-of-memory failure in weekly builds, and wrote a Go pump that copied about 344k rows per second between clusters."</li>
+<li><strong>Streaming.</strong> "I've built two Kafka pipelines: Uber Eats menu ingestion with Flink, keyed dedupe and exactly-once upserts, and a GST e-invoicing pipeline at Masters India handling over a million government submissions a day."</li>
+<li><strong>Fintech / compliance.</strong> "At Uber via EPAM I owned the Finance risk scoping backend that cut quarterly reconciliation from 14 days to 3 days against a $340M materiality threshold, with SOX gates and an audit-safe MySQL schema."</li>
 </ul>
-<h2 id="4-system-design-prep-picks-java-interview">4. System design prep picks (Java interview)</h2>
-<ol>
-<li><strong>Planning grid backend</strong> — versioned writes, ClickHouse, Spring API tier + Python agents.  </li>
-<li><strong>Menu ingestion</strong> — Kafka → Flink → sinks; Python RAG path (no Spring claim on resume).  </li>
-<li><strong>GST bulk e-invoice</strong> — Spring Batch + idempotency + rate limits to external IRP.</li>
-</ol></main>
+<div class="callout warn">
+<p><b>Older prep had a different Impact Analytics lead. Do not use it.</b>
+It quoted "20-100 configs vs 1", "under 1 hour", "63/8" tables, "12B store-week (100-450x)" and PostHog / OpenTelemetry. Those are verbal Cluster Copilot depth or not part of the current resume at all. The leads above use only PDF numbers.</p>
+</div>
+<hr>
+<h2 id="part-2-rapid-fire-tricky-questions-and-safe-answers">Part 2. Rapid-fire: tricky questions and safe answers</h2>
+<p>Each answer starts with the direct answer. Keep it to two or three sentences unless they push.</p>
+<h3 id="numbers-that-are-easy-to-over-claim">Numbers that are easy to over-claim</h3>
+<p><strong>"So your agent is 80% accurate in production?"</strong>
+No. 80% is the CI promotion gate: a change to the agent is blocked unless it scores at least 80% on our 300-case evaluation harness. It is how we refuse a bad agent, not a claim that every tenant runs at 80% live.
+<em>Follow-up they may ask:</em> "Then what is the 73%?" That is a cost cut. On a separate 200-case benchmark, switching models cut live execution cost by 73% while still completing all 200 cases. The deterministic baseline scored 74% on that same benchmark.</p>
+<p><strong>"Did the LLM beat the deterministic baseline?"</strong>
+Not on the blend. On the 200-case benchmark the blended LLM score came in around 63%, below the 74% deterministic baseline. So we froze the blend weights instead of retuning them until the numbers looked good. I think that is the honest way to run an AI system.</p>
+<p><strong>"Did the ClickHouse rollups also fix the out-of-memory problem?"</strong>
+No, those are two separate wins. The 15.5x speedup, from 189 seconds to 12 seconds, is query time for planner pivots. The 170GB out-of-memory failure was load time, when building weekly rollups, and I fixed it by inserting one fiscal week at a time with memory and disk-spill caps.</p>
+<p><strong>"344k requests per second?"</strong>
+No, 344k is rows per second, a data copy rate. It was the combined rate of two season streams when my Go pump copied rollups between ClickHouse Cloud clusters. API traffic is a separate number: 10k peak RPS on the Go/Gin platform.</p>
+<p><strong>"Did the 4.09B-row migration finish?"</strong>
+Say this carefully. The 4.09B-row partition set was measured while the copy was in flight. I do not claim the cutover finished. What I can describe is how restarts were made safe: checkpoint files, a ledger of completed weeks, and rollback by dropping a partition and recopying that season.</p>
+<p><strong>"Is the partition rollback an atomic swap?"</strong>
+No. It is DROP PARTITION followed by a recopy of that season. It is not a live swap that readers never notice. I also wrote an incremental design using REPLACE PARTITION, which would allow a swap, but that design was written, not executed.</p>
+<p><strong>"Is the 70% reconciliation cut real?"</strong>
+Yes. The platform cut quarterly reconciliation from 14 days to 3 days for the close. If they press on how it was measured, say the technical design doc framed that cut and that is what the platform delivered. Do not walk it back unprompted.</p>
+<p><strong>"Thirty-six endpoints? What are they?"</strong>
+About 31 functional routes in the scoping service controllers, plus the collaboration-service APIs for comments and notifications described in the technical design doc. Together that makes 36. I did not build the collaboration service itself.</p>
+<p><strong>"Nineteen million rows sounds big. Was this big data?"</strong>
+No, and I don't pitch it that way. 19M is the count of raw general ledger rows migrated off Sheets. Individual quarterly extracts were smaller, roughly 38K to 95K rows. The value was correctness, the four-level hierarchy and auditability, not raw throughput.</p>
+<p><strong>"A million submissions a day. What's that per second?"</strong>
+About 12 per second on average, because 1,000,000 divided by 86,400 seconds is roughly 11.6. Peaks around tax filing deadlines were roughly 8 to 10 times higher, which is an estimate. That is why the pipeline had queues, idempotency and dead-letter handling.</p>
+<p><strong>"700 to 4,000 requests per minute. In RPS?"</strong>
+Roughly 12 to 67 requests per second. The latency win, p95 from 1.2 seconds to 300 milliseconds, came from non-blocking calls to the government portal (Spring WebClient and bounded thread pools), HikariCP connection pooling, query and index fixes, and a Redis read cache.</p>
+<p><strong>"How did you get $600K?"</strong>
+About $2 per menu of manual and third-party cost, times 30K menus a month, times 12 months, is $720K. I round down to $600K to be conservative. The 98% is field fidelity on an offline evaluation set, not live production accuracy.</p>
+<h3 id="wording-traps">Wording traps</h3>
+<p><strong>"Your resume says lock contention. What locks?"</strong>
+That is Uber FRM. During financial close, the ETL loads were running into lock contention on the old data model. I fixed it with an 8-table normalized MySQL schema on SOADB (Uber's standard for service-owned MySQL), optimistic row-locking with a version check on update, and one-transaction cross-table syncs. On Impact Analytics the related idea is different: ReplacingMergeTree writes are insert-only, so there are no row locks or ClickHouse mutations to contend on, and reads resolve the newest version.</p>
+<p><strong>"BigQuery is on your skills. What did you do with it?"</strong>
+BigQuery is on the Impact Analytics tech line as an upstream historical data source that feeds ClickHouse. I don't claim BigQuery warehouse optimisation as my work. If they want depth, steer to ClickHouse, where my measured work is.</p>
+<p><strong>"Is Kafka part of Impact Analytics?"</strong>
+No. Kafka on my resume is Uber Eats Menu (with Flink) and Masters India (the IRP pipeline). Impact Analytics uses Go/Gin, ClickHouse, PostgreSQL, Redis and Python for the AI layer. The Postgres-to-ClickHouse CDC pipeline there was a colleague's work.</p>
+<p><strong>"Did you run the Kubernetes cluster?"</strong>
+No. Kubernetes is on my skills line as working literacy. I don't claim cluster operations. The same goes for Terraform, Spark and multi-region setups: study-level only.</p>
+<p><strong>"Are you an Uber employee?"</strong>
+I worked on Uber projects through EPAM Systems, from July 2024 to May 2026. Always say "Uber via EPAM".</p>
+<p><strong>"How many people did you lead?"</strong>
+Two separate facts. I led 3 engineers on the Uber FRM Spring Data JPA / Hibernate migration as tech lead of an EPAM pod, not as their manager. At Masters India I mentored 2 engineers during the Spring Boot migration.</p>
+<p><strong>"What's your FRM stack on this resume?"</strong>
+Java, Spring Boot, Spring Data JPA, Hibernate, MySQL, JUnit, Bazel and Docker. The ORM migration was to Spring Data JPA / Hibernate, and it removed latent column-aliasing bugs, where duplicate column names in joined SQL silently mapped rows to the wrong ID.</p>
+<p><strong>"Is Ask Iris used by every customer? What's its SLA?"</strong>
+Ask Iris is a shipped capability: a JWT-secured WebSocket copilot planners use to query KPIs and inspect AI decisions. I don't quote usage numbers or an SLA, because I don't have ones I can defend.</p>
+<p><strong>"Do you use human review queues in the AI pipeline?"</strong>
+Not on Impact Analytics. In Keep/Drop, offline evaluations replaced critic and evaluator agents, and the batch runs a fixed step order with no LLM orchestrator. The evaluator loop I talk about is in Ask Iris, capped at 3 attempts.</p>
+<p><strong>"Have you used MCP or Milvus at Impact Analytics?"</strong>
+No. MCP and tool calling are skills-level for me. I can talk through a tool design for a clustering copilot, but that is verbal design depth, not a resume bullet. Milvus was Uber Eats Menu only.</p>
+<p><strong>"Why are MongoDB and Elasticsearch on your skills?"</strong>
+They come from Masters India and GeeksforGeeks, where both are on the tech lines. gRPC, pgvector, DynamoDB, C and C++ are literacy-level. Cassandra, DuckDB and Rust are not on this resume because I can't point to a bullet that uses them in production.</p>
+<p><strong>"Under one hour?" (only if they ask about clustering)</strong>
+That is the Cluster Recommendation Copilot, which is verbal design work, not a resume bullet. Under one hour is a TARGET from the design. The measured baseline was about 8.5% run failures (37 of 437 runs), and I don't claim production results for it yet.</p>
+<p>For the full arithmetic behind every number, see <a href="09_metrics_derivations.html"><code>09_metrics_derivations.md</code></a> and <a href="18_resume_number_catalog.html"><code>18_resume_number_catalog.md</code></a>. For the locked facts, see <a href="GROUND_TRUTH.html"><code>GROUND_TRUTH.md</code></a>.</p></main>
 </div>
 
 <script type="module">

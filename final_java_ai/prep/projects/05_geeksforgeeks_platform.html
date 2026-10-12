@@ -40,28 +40,183 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../index.html">← All tracks</a><a href="../../index.html">Final Java+AI</a><a href="../../InterviewPrep.html">Prep hub</a><a href="../../ApplicationKit.html">Application Kit</a><a href="../../../all_pages.html">All pages</a><span class="path">final_java_ai/prep/projects/05_geeksforgeeks_platform.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#geeksforgeeks-platform-backend-java-spring-track">GeeksforGeeks — Platform Backend (Java / Spring track)</a>
-<a class="lvl2" href="#1-elevator-pitch">1. Elevator pitch</a>
-<a class="lvl2" href="#2-what-to-defend">2. What to defend</a>
-<a class="lvl2" href="#3-qa">3. Q&amp;A</a></nav>
-<main><h1 id="geeksforgeeks-platform-backend-java-spring-track">GeeksforGeeks — Platform Backend (Java / Spring track)</h1>
-<p><strong>Role:</strong> Software Development Engineer · August 2021 – November 2022 · Noida<br>
-<strong>Resume tech:</strong> Java, Spring Boot, Spring MVC, Hibernate, MySQL, Redis, REST, Cron, AWS</p>
-<hr>
-<h2 id="1-elevator-pitch">1. Elevator pitch</h2>
-<p>"First job out of college. I worked on GeeksforGeeks' community and courses backend: migrated the community product from legacy PHP to Spring Boot serving 100K+ daily queries, and built data models and REST APIs for voting and pinning that lifted premium subscription sales 15–20%."</p>
-<h2 id="2-what-to-defend">2. What to defend</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#geeksforgeeks-courses-platform-and-influencer-dashboard">GeeksforGeeks: Courses Platform and Influencer Dashboard</a>
+<a class="lvl2" href="#1-the-one-minute-version">1. The one-minute version</a>
+<a class="lvl2" href="#2-the-business-in-plain-english">2. The business in plain English</a>
+<a class="lvl2" href="#3-words-you-need">3. Words you need</a>
+<a class="lvl2" href="#4-architecture">4. Architecture</a>
+<a class="lvl2" href="#5-one-request-step-by-step-an-upvote-during-a-contest">5. One request, step by step: an upvote during a contest</a>
+<a class="lvl2" href="#6-each-resume-bullet-decoded">6. Each resume bullet decoded</a>
+<a class="lvl2" href="#7-tech-used-and-why">7. Tech used and why</a>
+<a class="lvl2" href="#8-questions-they-will-ask">8. Questions they will ask</a>
+<a class="lvl2" href="#9-what-not-to-say">9. What not to say</a></nav>
+<main><h1 id="geeksforgeeks-courses-platform-and-influencer-dashboard">GeeksforGeeks: Courses Platform and Influencer Dashboard</h1>
+<p><strong>Role:</strong> Software Development Engineer · August 2021 to November 2022 · Noida · first job after college<br>
+<strong>Resume tech line (exact):</strong> Python, Django, MySQL, MongoDB, Redis, Elasticsearch</p>
+<p>This project is Django on every resume track. Older Java-track notes described it as Spring Boot. That was wrong and has been fixed here.</p>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li><strong>PHP → Spring Boot:</strong> re-modeled posts, comments, votes, pins, reports into normalized MySQL with Hibernate entities; REST controllers for web + app clients; Redis on hot feeds/counters.</li>
-<li><strong>Engagement features:</strong> denormalized counters updated transactionally + periodic reconciliation cron — explain consistency tradeoff.</li>
-<li><strong>Cron:</strong> video-processing triggers, reminders, cleanup — idempotent jobs with alerting.</li>
+<li><strong>What it covers:</strong> the doubt-support platform migration from PHP to Django, the voting, pinning and locking APIs, why each of the four data stores was used, the influencer earnings dashboard, and the scheduled background jobs.</li>
+<li><strong>When to read it:</strong> before questions on early-career ownership, "design a voting system", hot rows, safe cron jobs, or "Django vs FastAPI vs Spring Boot".</li>
+<li><strong>What to memorise:</strong> 10K+ daily queries, 10x contest spikes, 20% relative lift in premium subscriptions (attributed by the growth team), 30% course sales lift (business attribution), 70% operational efficiency gain.</li>
 </ul>
-<h2 id="3-qa">3. Q&amp;A</h2>
+</div>
+<p><strong>Tags on this page.</strong> HISTORICAL means it comes from my past work records and the resume. ESTIMATED means arithmetic I can show. "Illustrative" marks made-up sample data used to explain a mechanism.</p>
+<p>Longer version: <a href="../../handbook/08_geeksforgeeks.html">Handbook chapter 8, GeeksforGeeks</a>. Older notes: <a href="../12_masters_gfg_deep_dive.html">Masters and GFG deep dive</a> and <a href="../02_mongodb_elasticsearch.html">MongoDB and Elasticsearch</a>.</p>
+<hr>
+<h2 id="1-the-one-minute-version">1. The one-minute version</h2>
+<blockquote>
+<p>"My first job was at GeeksforGeeks, the computer-science learning platform. Learners post doubts, meaning questions, on courses and articles, and that system ran on a fragile PHP backend. It struggled with 10K+ daily queries and with traffic that jumped about ten times during live coding contests. I migrated it to Django and built the REST APIs for voting, pinning and locking threads, with MySQL as the source of truth, Redis for hot counters, MongoDB for flexible content and Elasticsearch for search. The growth team tied those features to a 20% lift in premium subscriptions. I also built an influencer analytics and earnings dashboard, which the business team credited with 30% more course sales, and scheduled jobs for video processing, reminders and cleanup that cut manual ops work by about 70%. It is where I learned unique constraints for idempotency, keeping hot counters off the database, and making jobs safe to re-run."</p>
+</blockquote>
+<h2 id="2-the-business-in-plain-english">2. The business in plain English</h2>
+<p>GeeksforGeeks (GFG) has free articles, practice problems, live contests and paid courses. Premium subscriptions and course sales are a big part of revenue. On the doubt-support platform a learner asks "Why does my DFS overflow the stack?", others reply, good answers are <strong>upvoted</strong>, and a moderator can <strong>pin</strong> the best thread to the top or <strong>lock</strong> it to stop new replies.</p>
+<p>What hurt before: the PHP backend lacked clean transactions and request validation, doubt pages got slow during contest spikes, popular doubts caused database lock queues, influencers could not see how their coupon codes converted, and ops staff did video handoffs, reminders and cleanup by hand. A reliable doubt system is part of what premium users pay for, so breaking during a contest costs money.</p>
+<h2 id="3-words-you-need">3. Words you need</h2>
 <ul>
-<li><strong>"100K daily queries — how fast?"</strong> Redis for feeds/counters; avoid N+1 (<code>JOIN FETCH</code> / entity graphs); composite indexes; slow-query review.</li>
-<li><strong>"Junior framing?"</strong> "Owned features end-to-end within a mentored team" — calibrate claims.</li>
-<li><strong>"Spring MVC vs Boot?"</strong> Boot is the packaging; MVC is the web stack — we used Boot starters for MVC + Data JPA + Redis.</li>
-</ul></main>
+<li><strong>Django.</strong> A "batteries included" Python web framework with an ORM, admin panel, auth and migrations. Like renting a furnished flat. <strong>DRF (Django REST Framework)</strong> adds serializers (validate input, shape output) and permissions.</li>
+<li><strong>Unique constraint.</strong> A database rule that a combination of columns can appear only once.</li>
+<li><strong>Idempotent.</strong> Doing it twice has the same effect as once. Clicking upvote twice should count one vote.</li>
+<li><strong>Hot row.</strong> One row that many requests update at once. Each update locks it, so they queue, like a hundred people at one checkout counter.</li>
+<li><strong>Reconcile.</strong> Periodically recompute the true value from the source of truth and fix drift in the fast copy.</li>
+<li><strong>Cron.</strong> A scheduler that runs a job at fixed times.</li>
+<li><strong>Lease lock.</strong> A short-lived "I'm running this" marker that expires on its own if the holder crashes.</li>
+<li><strong>Affiliate coupon and attribution.</strong> A discount code tied to one influencer. Attribution is deciding which cause gets credit for a business result. Here the business and growth teams did it, not me.</li>
+</ul>
+<h2 id="4-architecture">4. Architecture</h2>
+<div class="mermaid">flowchart LR
+  U["Learners, moderators, influencers"] --&gt; DJ["Django and DRF APIs"]
+  DJ --&gt;|source of truth| MY["MySQL"]
+  DJ --&gt;|hot counters| RD["Redis"]
+  DJ --&gt;|flexible content| MO["MongoDB"]
+  DJ --&gt;|full-text search| ES["Elasticsearch"]
+  RC["Reconcile job"] --&gt;|true totals| RD
+  RC --&gt;|sum votes| MY
+  CR["Scheduled jobs: video, reminders, cleanup"] --&gt;|job keys| MY
+</div>
+<p><em>What to notice: MySQL is the single source of truth. Redis holds fast copies that the reconcile job corrects. Scheduled jobs never run inside a user request.</em></p>
+<p>Box by box. <strong>Django and DRF</strong> replaced PHP, with serializers validating every request and writes inside <code>transaction.atomic()</code>. <strong>MySQL</strong> holds data that must be correct: users, threads, votes, pins, locks, subscriptions and influencer transactions. <strong>Redis</strong> holds vote totals, unread badges and contest hot keys. <strong>MongoDB</strong> holds doubt bodies whose shape varies (code blocks, attachments). <strong>Elasticsearch</strong> gives full-text search with relevance ranking, which SQL <code>LIKE '%stack overflow%'</code> cannot do well.</p>
+<h2 id="5-one-request-step-by-step-an-upvote-during-a-contest">5. One request, step by step: an upvote during a contest</h2>
+<p>Illustrative data: learner 42 upvotes doubt 123 while hundreds of others vote on it.</p>
+<ol>
+<li>Django validates <code>POST /api/v1/votes {content_id: 123, value: +1}</code> with a serializer.</li>
+<li>It upserts the vote row. A unique constraint on <code>(user_id, content_id)</code> means one row per user per doubt.</li>
+<li>If the value changed, Redis is adjusted by the difference: +1 for a new upvote, −2 when an upvote becomes a downvote.</li>
+<li>A double click sends the same request. The row already holds +1, so nothing changes.</li>
+<li>Every few minutes the reconcile job sums the vote rows in MySQL and overwrites Redis. If Redis lost the key, it is rebuilt.</li>
+</ol>
+<h2 id="6-each-resume-bullet-decoded">6. Each resume bullet decoded</h2>
+<h3 id="bullet-1-django-migration-10k-queries-10x-spikes-voting-pinning-locking-20">Bullet 1: Django migration, 10K+ queries, 10x spikes, voting, pinning, locking, 20%</h3>
+<p><strong>What the load really means.</strong> 10K a day is 10,000 / 86,400, about 0.12 requests per second on average (ESTIMATED). Even ten times that is around 1 per second if spread evenly. Contest traffic bunches into short windows, and each doubt brings many reads. So the honest story is <strong>correctness and burst safety</strong>, not raw scale.</p>
+<p><strong>How the vote API works.</strong></p>
+<pre><code class="language-sql">CREATE TABLE votes (
+  id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id    BIGINT NOT NULL,
+  content_id BIGINT NOT NULL,
+  value      TINYINT NOT NULL,            -- +1 or -1
+  UNIQUE KEY uq_vote (user_id, content_id)
+);
+</code></pre>
+<pre><code class="language-python">from django.db import transaction
+
+def cast_vote(user_id: int, content_id: int, value: int) -&gt; int:
+    with transaction.atomic():
+        vote = (Vote.objects.select_for_update()
+                .filter(user_id=user_id, content_id=content_id).first())
+        old = vote.value if vote else 0
+        if old == value:
+            return int(redis.get(f&quot;votes:{content_id}&quot;) or 0)   # repeat click: no-op
+        Vote.objects.update_or_create(
+            user_id=user_id, content_id=content_id, defaults={&quot;value&quot;: value})
+    return redis.incrby(f&quot;votes:{content_id}&quot;, value - old)
+</code></pre>
+<p><em>Illustrative. The schema is logical, from my notes.</em> The lock is only on this user's own row, so votes do not queue behind each other.</p>
+<p><strong>Why this avoids the hot row.</strong> The naive design runs <code>UPDATE content SET vote_count = vote_count + 1 WHERE id = 123</code> on every vote, so 300 votes in a few minutes means 300 transactions waiting on one lock. Here each vote touches its own row, and the shared total is an atomic Redis <code>INCRBY</code>.</p>
+<p><strong>Pinning and locking.</strong> A pin row marks a thread as pinned within its course or article, with an ordering column and a unique constraint so pinning twice is a no-op. A lock row holds <code>content_id</code>, <code>locked_by</code>, <code>reason</code> and an optional expiry, and the "post reply" API refuses replies on a locked thread. Both are moderator-only behind permission checks.</p>
+<p><strong>Alternatives.</strong> A counter column updated on every vote causes the hot row. Counters only in Redis are fast but cannot stop double votes or rebuild after a flush. An app-level "has this user voted?" check races, and only a database constraint is race-proof. Putting everything in MongoDB loses the constraints and transactions that votes and subscriptions need. <em>Trade-off:</em> displayed counts can be a few minutes stale until reconcile, which is fine for a vote badge and would not be fine for money.</p>
+<p><strong>The 20%.</strong> A relative lift in premium subscriptions after these features shipped, attributed by the growth team (HISTORICAL). Illustratively, 1,000 new premium subscriptions a month becoming 1,200, not 20% of all users becoming premium. Say: "The growth team attributed about a 20% relative lift to these features. I owned the engineering."</p>
+<h3 id="bullet-2-influencer-dashboard-30-and-scheduled-workflows-70">Bullet 2: influencer dashboard (30%) and scheduled workflows (70%)</h3>
+<p><strong>The dashboard.</strong> Every coupon purchase was recorded in MySQL linked to the influencer. The dashboard showed transactions, coupon conversions and earnings. Redis counters gave a fresh "today so far" view, and a nightly job built daily rollups for the history charts, so page loads never scanned raw transactions. Illustrative tables: <code>influencer_account(id, coupon_code)</code>, <code>earning_txn(influencer_id, order_id, amount, earning, created_at)</code>, <code>daily_rollup(influencer_id, day, orders, revenue, earning)</code>. The 30% course sales lift was attributed by the business team. The likely mechanism is that influencers who can see what converts promote more.</p>
+<p><strong>Scheduled jobs.</strong> Video processing handoffs, user reminders and data cleanup. Two reliability rules made them safe:</p>
+<pre><code class="language-python">def run_once(job_name: str, run_key: str, work) -&gt; None:
+    lock = f&quot;cron:lock:{job_name}&quot;
+    if not redis.set(lock, HOST, nx=True, ex=3600):    # another host has it
+        return
+    try:
+        if JobRun.objects.filter(job_key=run_key, status=&quot;done&quot;).exists():
+            return                                      # safe re-run
+        work()
+        JobRun.objects.update_or_create(job_key=run_key, defaults={&quot;status&quot;: &quot;done&quot;})
+    finally:
+        redis.delete(lock)
+</code></pre>
+<p><em>Illustrative.</em> The lock stops two hosts both sending 5,000 reminder emails at 2 AM. A per-unit key like <code>reminder:{user_id}:{class_id}:1h_before</code> means a job that crashed after 1,200 of 2,000 emails sends only the remaining 800 on re-run. The 70% is the drop in manual effort on those workflows (HISTORICAL). Illustratively, 10 hours of someone's week becoming about 3. Celery is not on this role's tech line, so describe these as scheduled jobs, not Celery tasks.</p>
+<h2 id="7-tech-used-and-why">7. Tech used and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>Why here</th>
+<th>Alternative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python + Django + DRF</td>
+<td>ORM, admin, auth, migrations, serializers. Fast delivery for a content product</td>
+<td>Staying on PHP, Flask</td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>Unique constraints and transactions for votes, subscriptions, earnings</td>
+<td>MongoDB for everything</td>
+</tr>
+<tr>
+<td>MongoDB</td>
+<td>Doubt bodies with varying shape</td>
+<td>MySQL JSON columns</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>Vote counters, badges, "today" dashboard counters, job locks</td>
+<td>Updating MySQL counters per event</td>
+</tr>
+<tr>
+<td>Elasticsearch</td>
+<td>Search over doubts with relevance</td>
+<td>SQL <code>LIKE</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why Django here, but Spring Boot at Masters India?</strong> In 2021 this was a content and community product, where Django's admin, auth and ORM saved time. At Masters India the problem was slow calls to a government API at high volume, and Spring Boot services with Kafka consumers fit that. Different job, different tool.</p>
+<h2 id="8-questions-they-will-ask">8. Questions they will ask</h2>
+<p><strong>"How do you make a vote API idempotent?"</strong><br>
+A unique constraint on user ID and content ID means one vote row per user per doubt, and the API upserts it. A double click or client retry can never count twice, and the database enforces that even when two requests race.</p>
+<p><strong>"How did you avoid hot rows on popular doubts?"</strong><br>
+We stopped updating a shared counter on every vote. Each vote writes its own row, the display total lives in Redis with atomic increments, and a reconcile job sums the real votes every few minutes so MySQL stays the truth.<br>
+<em>Follow-up they may ask:</em> "What if Redis loses the key?" The next reconcile rebuilds it, and until then the API can fall back to the stored count.</p>
+<p><strong>"10K queries a day isn't much. What was hard?"</strong><br>
+You're right, the average is well under one request per second. The hard part was bursts and fragility: about tenfold spikes in short contest windows, no clean transactions or validation in PHP, and hot rows on popular doubts.</p>
+<p><strong>"Why four data stores?"</strong><br>
+Each did a job the others do badly. MySQL for relational truth, Redis for very frequent tiny counters, MongoDB for content whose shape varied, Elasticsearch for search. If I had to cut one today, I would check whether MongoDB's role could move into MySQL JSON columns.</p>
+<p><strong>"How did you stop a cron job running twice?"</strong><br>
+A lock with expiry so only one host runs it, and an idempotent key per unit of work so a re-run skips finished work.</p>
+<p><strong>"Did your dashboard really raise sales 30%?"</strong><br>
+The business team attributed it. I built the dashboard: transaction and coupon tracking, Redis counters for today and rollups for history. The causal analysis is theirs.</p>
+<p><strong>"What would you do differently?"</strong><br>
+Write votes as events to a queue and build counters from that stream, so totals rebuild by replay. Make idempotent job keys the default through a shared helper. Set explicit latency targets for contest days.</p>
+<h2 id="9-what-not-to-say">9. What not to say</h2>
+<div class="callout warn">
+<ul>
+<li>"Spring Boot", "Hibernate" or "Java" at GeeksforGeeks. The PDF says <strong>Django</strong>.</li>
+<li>"100K daily queries" or "1K daily queries". Older figures. Use <strong>10K+</strong>.</li>
+<li>"15 to 20% premium lift". Older prep. Use <strong>20%</strong>, relative, attributed by the growth team.</li>
+<li>"I increased sales by 30%" as if engineering alone caused it.</li>
+<li>Celery, Kafka, FastAPI or AWS at GeeksforGeeks. None is on this role's tech line.</li>
+<li>Comparing GFG load to Uber or Impact Analytics scale.</li>
+<li>"SMTP sends 50% faster" or unread-count badges as resume bullets. They are older or prep-only details.</li>
+</ul>
+</div></main>
 </div>
 
 <script type="module">

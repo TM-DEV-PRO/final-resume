@@ -40,41 +40,101 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/architecture/00_index.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-index-final-java-ai">Architecture index (Final Java + AI)</a></nav>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#architecture-index-final-java-ai">Architecture index (Final Java + AI)</a>
+<a class="lvl2" href="#what-every-architecture-page-contains">What every architecture page contains</a>
+<a class="lvl2" href="#honesty-tags-used-on-every-page">Honesty tags used on every page</a>
+<a class="lvl2" href="#the-project-pages">The project pages</a>
+<a class="lvl2" href="#rules-that-apply-across-all-five-diagrams">Rules that apply across all five diagrams</a>
+<a class="lvl2" href="#related-reading">Related reading</a></nav>
 <main><h1 id="architecture-index-final-java-ai">Architecture index (Final Java + AI)</h1>
-<p>One doc per resume project: <strong>tech → where used → why</strong>, <strong>DB design</strong>, <strong>ASCII + mermaid</strong>, <strong>flow</strong>.</p>
-<p>Canonical PDF claims: <code>docs/ASSORTSMART_TAB_RESUME.md</code>.</p>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> one architecture page per resume project, each built the same way so you can compare them side by side.</li>
+<li><b>When to read it:</b> before any system design round or any "walk me through the architecture of X" question. Read the project page, then practise the 3-minute whiteboard script at the bottom of it out loud.</li>
+<li><b>What to memorise:</b> for each project, the diagram (five to eight boxes), one request traced end to end, and the two or three numbers tied to that diagram.</li>
+</ul>
+</div>
+<p><strong>This track.</strong> Resume PDF: <code>Tarun_Mittal_SSE_5yr_Java_AI.pdf</code>. Summary line: "Expertise in Java and Python microservices". Uber FRM and Masters India run on Java and Spring Boot. Impact Analytics is Go/Gin plus Python agents. Uber Menu is Python. GeeksforGeeks is Django.</p>
+<h2 id="what-every-architecture-page-contains">What every architecture page contains</h2>
+<p>Each page below follows the same template. That way, once you have learned one, the others are easy to read, and in an interview you can answer any "draw it" question with the same rhythm.</p>
+<ol>
+<li><strong>The one-paragraph version.</strong> What the system is, who uses it, and what problem it solves, in plain English.</li>
+<li><strong>Words you need.</strong> Every technical term used on the page, defined in one or two sentences with an everyday analogy.</li>
+<li><strong>The diagram.</strong> A mermaid flowchart with a one-line caption saying what to notice.</li>
+<li><strong>Box-by-box walkthrough.</strong> Each box in the diagram explained: what it is, why it exists, and what technology sits there and why.</li>
+<li><strong>One request or one job, step by step.</strong> A concrete example with real-looking sample data so the flow is not abstract.</li>
+<li><strong>Design decisions.</strong> For each big choice: what, why, alternatives and why not, the trade-off, and what I would do differently.</li>
+<li><strong>Numbers on this diagram.</strong> What each number measures, how it was derived, and how to say it out loud.</li>
+<li><strong>Failure modes.</strong> What breaks, how you notice, and what the system does about it.</li>
+<li><strong>Say this, not that.</strong> The honesty box.</li>
+<li><strong>How to draw it in 3 minutes.</strong> What to draw first, second and third, and what to say while drawing.</li>
+</ol>
+<h2 id="honesty-tags-used-on-every-page">Honesty tags used on every page</h2>
+<p>Some numbers carry a tag. The tags mean:</p>
+<ul>
+<li><strong>MEASURED</strong> means there is a log, a document or code that shows the number.</li>
+<li><strong>ESTIMATED</strong> means it is arithmetic I can show on a whiteboard. Say "roughly, derived from...".</li>
+<li><strong>TARGET</strong> means a design goal, not a result. Say "targeting".</li>
+<li><strong>HISTORICAL</strong> means it comes from my past work records and was not re-measured for this prep.</li>
+</ul>
+<h2 id="the-project-pages">The project pages</h2>
 <table>
 <thead>
 <tr>
 <th>Project</th>
-<th>File</th>
+<th>What the system does</th>
+<th>Page</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Impact Analytics AssortSmart (Platform + Agentic). Hindsight = <strong>verbal / not on PDF</strong></td>
+<td>Impact Analytics, AssortSmart (Platform and AI)</td>
+<td>Retail assortment planning SaaS: Go/Gin platform on ClickHouse plus a Python agent plane for Keep/Drop decisions and the Ask Iris copilot. Hindsight is described separately as verbal-only depth.</td>
 <td><a href="01_ia_assortsmart_hindsight.html">01_ia_assortsmart_hindsight.md</a></td>
 </tr>
 <tr>
-<td>Uber FRM</td>
+<td>Uber via EPAM, FRM Scoping Platform</td>
+<td>Finance tool that replaced a Google Sheets quarterly close with a Java Spring Boot and MySQL system of record.</td>
 <td><a href="02_uber_frm.html">02_uber_frm.md</a></td>
 </tr>
 <tr>
-<td>Uber Menu</td>
+<td>Uber via EPAM, Menu Ingestion (Uber Eats)</td>
+<td>Scrapes and extracts restaurant menus, streams them through Kafka and Flink, and uses Gemini with RAG for unstructured PDFs.</td>
 <td><a href="03_uber_menu.html">03_uber_menu.md</a></td>
 </tr>
 <tr>
-<td>Masters India GST</td>
+<td>Masters India, GST e-invoicing</td>
+<td>Registers Indian business invoices with the government portal at high volume, after moving a PHP monolith to Spring Boot microservices.</td>
 <td><a href="04_masters_gst.html">04_masters_gst.md</a></td>
 </tr>
 <tr>
-<td>GeeksforGeeks</td>
+<td>GeeksforGeeks, doubt support and dashboards</td>
+<td>Django backend for a coding Q&amp;A platform plus an influencer earnings dashboard and scheduled workflows.</td>
 <td><a href="05_geeksforgeeks.html">05_geeksforgeeks.md</a></td>
 </tr>
 </tbody>
 </table>
-<p>Also see: <code>../design_decisions_tradeoffs.md</code>, <code>../tech_depth/</code>, project packs under <code>../projects/</code>.\n</p></main>
+<h2 id="rules-that-apply-across-all-five-diagrams">Rules that apply across all five diagrams</h2>
+<p>Interviewers sometimes try to merge projects. These separations keep you honest.</p>
+<ul>
+<li><strong>Kafka and Flink live on Uber Menu.</strong> Kafka also appears at Masters India, but it is a different product with different reasons. Neither Kafka nor Flink appears on Impact Analytics.</li>
+<li><strong>Milvus (a vector database) is Uber Menu only.</strong> Impact Analytics has no vector database on the resume.</li>
+<li><strong>ClickHouse is Impact Analytics only.</strong> Menu used Kafka and Flink, not ClickHouse.</li>
+<li><strong>Impact Analytics APIs are Go with the Gin framework.</strong> The agent side is Python (FastAPI and LangGraph). Spring Boot is Uber FRM and Masters India only, never Impact Analytics.</li>
+<li><strong>No Kubernetes cluster operations claims anywhere.</strong> Kubernetes is skills-level literacy.</li>
+<li><strong>"Led 3 engineers" is Uber FRM. "Mentored 2 engineers" is Masters India.</strong> Do not add them together.</li>
+<li><strong>Uber is always "Uber via EPAM".</strong></li>
+</ul>
+<h2 id="related-reading">Related reading</h2>
+<ul>
+<li>Design trade-offs across projects: <a href="../design_decisions_tradeoffs.html">../design_decisions_tradeoffs.md</a></li>
+<li>Every resume number with its derivation: <a href="../numbers_defense.html">../numbers_defense.md</a></li>
+<li>Technology deep dives: <a href="../tech_depth/00_index.html">../tech_depth/00_index.md</a></li>
+<li>Deployment and scale notes: <a href="../deployment_and_scale.html">../deployment_and_scale.md</a></li>
+<li>Project interview packs: <a href="../projects/01_impact_analytics.html">../projects/01_impact_analytics.md</a>, <a href="../projects/02_frm_deep_dive.html">../projects/02_frm_deep_dive.md</a>, <a href="../projects/03_menu_deep_dive.html">../projects/03_menu_deep_dive.md</a>, <a href="../projects/04_masters_gfg_deep_dive.html">../projects/04_masters_gfg_deep_dive.md</a></li>
+<li>Canonical resume wording for Impact Analytics: <code>docs/ASSORTSMART_TAB_RESUME.md</code> at the repo root.</li>
+</ul></main>
 </div>
 
 <script type="module">

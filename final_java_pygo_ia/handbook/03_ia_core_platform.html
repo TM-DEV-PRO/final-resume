@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>03_ia_core_platform — Tarun Mittal</title>
+<style>
+:root{--bg:#0f1115;--panel:#161a22;--ink:#e8eaf0;--mut:#9aa3b2;--acc:#7aa2f7;--acc2:#9ece6a;--warn:#e0af68;--line:#2a3040;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.topbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line);font-size:13px}
+.topbar a{color:var(--acc);text-decoration:none}
+.topbar .path{color:var(--mut);margin-left:auto}
+.layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 46px)}
+nav.toc{position:sticky;top:0;height:calc(100vh - 46px);overflow-y:auto;background:var(--panel);border-right:1px solid var(--line);padding:16px 12px}
+nav.toc .brand{font-weight:700;color:var(--acc);margin-bottom:10px;font-size:13px}
+nav.toc a{display:block;color:var(--mut);text-decoration:none;font-size:12.4px;padding:3px 8px;border-radius:6px;line-height:1.35}
+nav.toc a:hover{color:var(--ink);background:#1d2330}
+nav.toc a.lvl1{color:var(--ink);font-weight:600;margin-top:8px}
+nav.toc a.lvl2{padding-left:18px}
+main{padding:28px 40px 64px;max-width:980px}
+h1{color:var(--acc);font-size:24px;border-bottom:2px solid var(--line);padding-bottom:8px;margin-top:8px}
+h2{color:var(--acc2);font-size:19px;margin-top:28px}
+h3{color:var(--ink);font-size:16px;margin-top:22px}
+a{color:var(--acc)}
+code{background:#1d2330;color:#c6d4f7;padding:1.5px 6px;border-radius:5px;font-size:.88em}
+pre{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:12.6px;line-height:1.5}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.4px}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+th{background:#1a1f2b;color:var(--acc)}
+tr:nth-child(even){background:#141822}
+blockquote{border-left:3px solid var(--acc);margin:12px 0;padding:6px 16px;background:#151a24;color:#c9cfdb;border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:28px 0}
+strong{color:#fff}
+.mermaid{background:#12151c;border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0;overflow-x:auto}
+@media(max-width:900px){.layout{grid-template-columns:1fr}nav.toc{position:relative;height:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a href="../../index.html">← All tracks</a><a href="../index.html">Final Java+PyGo IA</a><a href="../InterviewPrep.html">Prep hub</a><a href="../ApplicationKit.html">Application Kit</a><a href="../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/handbook/03_ia_core_platform.html</span></div>
+<div class="layout">
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#chapter-3-impact-analytics-assortsmart-core-infrastructure-pipeline">Chapter 3 — Impact Analytics: AssortSmart Core Infrastructure &amp; Pipeline</a>
+<a class="lvl2" href="#1-the-one-minute-version-say-this-out-loud">1. The one-minute version (say this out loud)</a>
+<a class="lvl2" href="#2-the-business-in-plain-english">2. The business in plain English</a>
+<a class="lvl2" href="#3-words-you-need">3. Words you need</a>
+<a class="lvl2" href="#4-architecture">4. Architecture</a>
+<a class="lvl2" href="#5-one-request-step-by-step">5. One request, step by step</a>
+<a class="lvl2" href="#6-each-resume-bullet-decoded">6. Each resume bullet decoded</a>
+<a class="lvl2" href="#7-tech-used-in-this-chapter-and-why">7. Tech used in this chapter and why</a>
+<a class="lvl2" href="#8-hard-problems-and-failure-stories">8. Hard problems and failure stories</a>
+<a class="lvl2" href="#9-say-this-dont-say-this">9. Say this / don't say this</a>
+<a class="lvl2" href="#10-practice-drill">10. Practice drill</a>
+<a class="lvl2" href="#11-3-minute-whiteboard-script">11. 3-minute whiteboard script</a></nav>
+<main><h1 id="chapter-3-impact-analytics-assortsmart-core-infrastructure-pipeline">Chapter 3 — Impact Analytics: AssortSmart Core Infrastructure &amp; Pipeline</h1>
+<div class="callout note">
+<p><b>How to use this chapter</b><br>
+• Read sections 1–4 once to understand the product and the big picture. Then study one bullet (C1–C5) per sitting.<br>
+• Memorise the one-minute version and the "Say this / don't say this" box.<br>
+• Practise the 3-minute whiteboard script at the end out loud, drawing as you talk.<br>
+• Companion chapters: <a href="04_ia_agentic_ai.html">Chapter 4 (Agentic AI)</a>, <a href="02_numbers_explained.html">Chapter 2 (numbers)</a>, <a href="10_core_concepts_explained.html">Chapter 10 (concepts)</a>.</p>
+</div>
+<p>Role: <strong>Senior Software Engineer, Impact Analytics, May 2026 to Present.</strong> Project title on the resume: <strong>AssortSmart — Senior Software Engineer (Platform &amp; AI)</strong>. The resume has two sub-sections for this job. This chapter is the second one, <strong>Core Infrastructure &amp; Pipeline</strong>: the Go platform, the formula engine, security and tenancy, the ClickHouse speed-up, and the cluster-to-cluster data copy.</p>
+<hr>
+<h2 id="1-the-one-minute-version-say-this-out-loud">1. The one-minute version (say this out loud)</h2>
+<blockquote>
+<p>"At Impact Analytics I work on AssortSmart, a planning product that retailers use to decide which products to carry each season. On the platform side I own the Go and Gin API layer. It is multi-tenant, peaks at about 10,000 requests per second, uses Google Wire for compile-time dependency injection, and protects itself with nested timeouts and Datadog tracing instead of relying on a reverse proxy. I built a formula engine so business users can define KPIs without a code release; it compiles their formulas into safe, parameterised ClickHouse SQL. I made planner pivot screens 15.5 times faster, from 189 seconds to 12 seconds on a 250-million-row test, by pre-aggregating data into six ClickHouse rollup tables, and I fixed a 170 GB out-of-memory crash in how those rollups are built. Finally, I wrote a Go data pump that copies those rollups between ClickHouse Cloud clusters at about 344,000 rows per second, with ledgers and partition rollbacks so a crash never leaves half-copied data that looks complete."</p>
+</blockquote>
+<hr>
+<h2 id="2-the-business-in-plain-english">2. The business in plain English</h2>
+<p><strong>Who uses it.</strong> Merchandise planners at retail companies. A planner is the person who decides, for example, "next autumn we will sell these 400 women's tops in these 120 stores, and we will stop selling these 60."</p>
+<p><strong>What they do in the product.</strong> They open big pivot grids. Rows might be product categories, columns might be weeks, cells are numbers like units sold, revenue, margin, sell-through (the share of stock that actually sold) and rate of sale (units sold per store per week). They slice by product, by store, by product attribute (colour, size, fabric) and by season or week. They also define their own KPIs ("my margin after discount").</p>
+<p><strong>What hurt before.</strong>
+1. <strong>Slow screens.</strong> The raw data is at the grain of "one product in one store on one day". Adding that up live for every screen was slow. On a 250-million-row test, a typical pivot took <strong>189 seconds</strong> on the old PostgreSQL path. Nobody waits three minutes for a grid.
+2. <strong>Every new KPI needed a code release.</strong> If a client wanted a new formula, an engineer had to write it.
+3. <strong>Many clients on one platform.</strong> Each retailer (tenant) must only ever see its own data, and inside a retailer each planner should only see the part of the product hierarchy they are allowed to see.
+4. <strong>Data had to move between clusters.</strong> Rollup tables needed to be copied between ClickHouse Cloud clusters, and the normal cluster-to-cluster copy was blocked by network allowlists.</p>
+<p><strong>Why the company paid for it.</strong> Fast screens mean planners actually use the tool during planning season. Self-serve KPIs mean fewer engineering tickets per client. Strong isolation is a contract requirement for enterprise retail clients.</p>
+<hr>
+<h2 id="3-words-you-need">3. Words you need</h2>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Plain meaning (with analogy)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tenant</strong></td>
+<td>One customer company on a shared platform. Like flats in one building: shared plumbing, separate locked doors.</td>
+</tr>
+<tr>
+<td><strong>Article / article-season</strong></td>
+<td>An article is one product. An article-season is that product in one selling season. "Blue linen shirt, Summer 2026" is one article-season.</td>
+</tr>
+<tr>
+<td><strong>Go / Gin</strong></td>
+<td>Go is a compiled language built for network servers. Gin is a lightweight Go web framework (routing, middleware, JSON).</td>
+</tr>
+<tr>
+<td><strong>RPS</strong></td>
+<td>Requests per second that the API serves.</td>
+</tr>
+<tr>
+<td><strong>Dependency injection (DI)</strong></td>
+<td>Instead of a component creating its own database client, logger, etc., someone hands them in. Like a restaurant kitchen where ingredients are delivered to each station instead of every cook going shopping.</td>
+</tr>
+<tr>
+<td><strong>Google Wire</strong></td>
+<td>A Go tool that writes the "hand everything in" code for you <strong>at build time</strong>. If something is missing, the build fails, not production.</td>
+</tr>
+<tr>
+<td><strong>Reverse proxy</strong></td>
+<td>A server in front of your app (Nginx, Envoy) that forwards traffic, often adding timeouts, TLS, rate limits.</td>
+</tr>
+<tr>
+<td><strong>h2c</strong></td>
+<td>HTTP/2 over plain TCP (no TLS on that hop). HTTP/2 lets many requests share one connection.</td>
+</tr>
+<tr>
+<td><strong>Nested timeouts</strong></td>
+<td>Several time limits inside each other: the whole request gets, say, 30 s; the database call inside it gets less; the server itself also limits slow clients.</td>
+</tr>
+<tr>
+<td><strong>Distributed tracing</strong></td>
+<td>Following one request across services, with a timeline of each step. Like a parcel tracking page. Datadog is the tool.</td>
+</tr>
+<tr>
+<td><strong>ClickHouse</strong></td>
+<td>A columnar analytics database. It stores each column separately and compresses it, so "sum revenue over 250M rows" is fast.</td>
+</tr>
+<tr>
+<td><strong>OLTP vs OLAP</strong></td>
+<td>OLTP = many small reads and writes (PostgreSQL, MySQL). OLAP = big scans and aggregations (ClickHouse, BigQuery).</td>
+</tr>
+<tr>
+<td><strong>MergeTree</strong></td>
+<td>ClickHouse's main table engine. Data is written in sorted chunks ("parts") that are merged in the background.</td>
+</tr>
+<tr>
+<td><strong>Partition</strong></td>
+<td>A slice of a table you can manage as a unit, here one season (<code>PARTITION BY season_code</code>). You can drop or replace one partition without touching others.</td>
+</tr>
+<tr>
+<td><strong>Rollup / pre-aggregation</strong></td>
+<td>Adding numbers up ahead of time and storing the totals, so screens read totals instead of raw rows. Like keeping a monthly bank summary instead of re-adding every transaction.</td>
+</tr>
+<tr>
+<td><strong>OOM</strong></td>
+<td>Out of memory. The query tried to use more RAM than allowed and was killed.</td>
+</tr>
+<tr>
+<td><strong>Spill to disk</strong></td>
+<td>When an aggregation gets too big for RAM, ClickHouse writes partial results to disk and continues, slower but alive.</td>
+</tr>
+<tr>
+<td><strong>UAM</strong></td>
+<td>User Access Management: which user may see which part of the data.</td>
+</tr>
+<tr>
+<td><strong>OIDC / JWT / Firebase Admin</strong></td>
+<td>Ways to prove who a user is. A JWT is a signed token. OIDC is a standard for logging in with an identity provider (here Google). Firebase Admin is Google's server SDK to verify Firebase-issued login tokens.</td>
+</tr>
+<tr>
+<td><strong>Constant-time comparison</strong></td>
+<td>Comparing two secrets in a way that always takes the same time, so an attacker can't guess the key one character at a time by measuring response speed.</td>
+</tr>
+<tr>
+<td><strong>Native protocol / port 9440</strong></td>
+<td>ClickHouse's own binary protocol (faster than HTTP). 9440 is its TLS-encrypted port.</td>
+</tr>
+<tr>
+<td><strong>Double buffering</strong></td>
+<td>Using two buffers so you can fill one while the other is being sent. Like two buckets in a bucket brigade.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-architecture">4. Architecture</h2>
+<div class="mermaid">flowchart LR
+  UI["Planner UI"] --&gt; EDGE["Go / Gin API edge&lt;br/&gt;Wire DI, h2c, nested timeouts"]
+  EDGE --&gt; AUTH["Auth waterfall&lt;br/&gt;Redis cache, Firebase Admin, JWT / Google OIDC, API keys"]
+  AUTH --&gt; PG["PostgreSQL&lt;br/&gt;users, roles, UAM hierarchy scopes, metadata"]
+  EDGE --&gt; KPI["KPI configurator&lt;br/&gt;tokenizer + parser"]
+  KPI --&gt; SQL["Parameterised ClickHouse SQL&lt;br/&gt;ifNotFinite guard"]
+  SQL --&gt; CH["ClickHouse&lt;br/&gt;six rollup tables"]
+  RAW["Daily facts&lt;br/&gt;product x store x day"] --&gt; LOAD["Weekly / season loaders&lt;br/&gt;one fiscal week per INSERT"]
+  LOAD --&gt; CH
+  CH --&gt; PUMP["Go native-TLS pump&lt;br/&gt;500k-row double-buffered batches"]
+  PUMP --&gt; CH2["Target ClickHouse Cloud cluster"]
+  EDGE -.-&gt; DD["Datadog traces"]
+</div>
+<p><em>What to notice: reads come from rollups, not raw facts; the write side (loaders, pump) is separate from the request side; auth and tenant scope are decided once at the edge and carried into every query.</em></p>
+<p><strong>Box by box.</strong>
+- <strong>Planner UI</strong> sends HTTP requests: "give me this pivot", "save this KPI".
+- <strong>Go/Gin edge</strong> is the single entry point. Routing, JSON, auth middleware, timeouts and tracing all live in this one Go process. Wire assembled its dependencies at build time.
+- <strong>Auth waterfall</strong> answers "who is this?" cheaply. Redis first (cached verified identity), then the slower verifiers. <strong>PostgreSQL</strong> answers "what may they see?" (roles and hierarchy scopes).
+- <strong>KPI configurator</strong> turns a formula a business user typed into a safe SQL fragment.
+- <strong>ClickHouse rollups</strong> are six pre-aggregated tables that make screens fast.
+- <strong>Loaders</strong> build those rollups from raw daily facts, one fiscal week at a time so they never run out of memory.
+- <strong>Go pump</strong> copies rollup partitions to another ClickHouse Cloud cluster.</p>
+<hr>
+<h2 id="5-one-request-step-by-step">5. One request, step by step</h2>
+<p>Example: a planner at tenant "Retailer A" opens a pivot "Women &gt; Tops, revenue and sell-through by week, Season 7".</p>
+<div class="mermaid">sequenceDiagram
+  participant U as Planner UI
+  participant G as Go/Gin edge
+  participant R as Redis
+  participant P as PostgreSQL
+  participant K as KPI compiler
+  participant C as ClickHouse
+  U-&gt;&gt;G: GET /pivot (Bearer token)
+  G-&gt;&gt;R: cached identity for token hash?
+  R--&gt;&gt;G: hit: user 42, tenant A
+  G-&gt;&gt;P: roles + hierarchy scope for user 42
+  P--&gt;&gt;G: may see Women &gt; Tops only
+  G-&gt;&gt;K: compile "sell_through" formula
+  K--&gt;&gt;G: SQL fragment + parameters
+  G-&gt;&gt;C: SELECT ... FROM product_weekly WHERE tenant scope AND season 7 (with query timeout)
+  C--&gt;&gt;G: about 30 weeks x a few hundred rows
+  G--&gt;&gt;U: JSON grid (trace id in Datadog)
+</div>
+<ol>
+<li>The request arrives with a token. The server has a request deadline (for example 30 seconds; the exact values are configuration, keep them qualitative if asked).</li>
+<li>The auth middleware hashes the token and checks Redis. A hit means "already verified recently". A miss means verifying with Firebase Admin, or as a JWT / Google OIDC token, then caching the result.</li>
+<li>PostgreSQL returns the user's role and hierarchy scope: Retailer A, Women &gt; Tops.</li>
+<li>The KPI compiler turns "sell-through" into SQL with parameters and a divide-by-zero guard.</li>
+<li>The query hits <code>product_weekly</code>, a rollup table, with partition pruning on Season 7 and a filter for the user's scope. It is bounded by its own timeout, shorter than the request deadline.</li>
+<li>JSON goes back. Datadog has a trace showing auth time, compile time and ClickHouse time.</li>
+</ol>
+<hr>
+<h2 id="6-each-resume-bullet-decoded">6. Each resume bullet decoded</h2>
+<h3 id="c1-gogin-platform-10k-peak-rps-wire-no-reverse-proxy-h2c-nested-timeouts-datadog">C1 — Go/Gin platform, 10k peak RPS, Wire, no reverse proxy, h2c, nested timeouts, Datadog</h3>
+<blockquote>
+<p><strong>Resume:</strong> Architected a multi-tenant Go/Gin platform scaling to 10k peak RPS, utilizing Google Wire for compile-time DI. Deployed as a self-protecting HTTP edge without a reverse proxy, guaranteeing high availability through native h2c, nested timeouts, and Datadog distributed tracing.</p>
+</blockquote>
+<p><strong>In plain words.</strong> I designed the main API server. It serves many retail clients, handles about 10,000 requests per second at peak, is assembled safely at compile time, and protects itself (timeouts, HTTP/2 handling, tracing) instead of depending on a separate proxy server in front of it.</p>
+<p><strong>How it works.</strong></p>
+<p><em>Wire, compile-time DI.</em> You declare "providers" (functions that build things) and Wire generates the wiring code.</p>
+<pre><code class="language-go">// wire.go (illustrative)
+func InitServer(cfg Config) (*Server, error) {
+    wire.Build(NewRedis, NewPostgres, NewClickHouse, NewAuth, NewKPIService, NewRouter, NewServer)
+    return nil, nil
+}
+</code></pre>
+<p>If <code>NewKPIService</code> needs a <code>*ClickHouse</code> and no provider returns one, <code>wire</code> fails at build time. Runtime DI libraries (Uber Fx, Dig) use reflection and would fail when the app starts or, worse, on a code path.</p>
+<p><em>Self-protecting edge.</em> Without Nginx or Envoy in front, the Go process must enforce its own limits. Go's <code>http.Server</code> has them built in:</p>
+<pre><code class="language-go">srv := &amp;http.Server{
+    Handler:           h2c.NewHandler(router, &amp;http2.Server{}), // HTTP/2 without TLS on this hop
+    ReadHeaderTimeout: 5 * time.Second,  // slow-loris protection
+    ReadTimeout:       15 * time.Second,
+    WriteTimeout:      30 * time.Second,
+    IdleTimeout:       120 * time.Second,
+}
+// per request: ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+// per ClickHouse call: a shorter context deadline derived from ctx
+</code></pre>
+<p>(The numbers above are illustrative. In an interview say "server-level timeouts, a per-request deadline, and shorter per-dependency deadlines inside it".)</p>
+<p><em>Nested timeouts</em> mean the inner call always gives up before the outer one, so the server can still return a clean error instead of hanging. Example: request deadline 30 s, ClickHouse 25 s, Redis 100 ms.</p>
+<p><em>h2c</em> lets one TCP connection carry many concurrent requests (HTTP/2 multiplexing), which cuts connection overhead at high RPS. TLS is handled before traffic reaches this hop. If asked exactly where, describe it at that level and don't invent a specific load balancer.</p>
+<p><em>Datadog tracing.</em> Each request gets a trace ID. Spans for auth, compile and ClickHouse show where time went. This is how you find "pivots are slow because of query X for tenant Y".</p>
+<p><strong>Why this design.</strong> One less hop means less latency and one less thing to operate. The process owns its own timeouts, so behaviour is the same in every environment. Compile-time DI catches wiring mistakes before deploy.</p>
+<p><strong>Alternatives and why not.</strong>
+- Nginx/Envoy in front: a perfectly good choice, and many teams do it. We didn't need its features enough to justify another component to configure and monitor.
+- Fx/Dig runtime DI: more flexible, but errors show up at runtime and reflection makes code harder to follow.</p>
+<p><strong>The numbers.</strong>
+- <strong>10k peak RPS</strong>: peak requests per second the platform serves. It is on the resume as a peak, not an average and not an SLA. If asked how you know, name the actual source you saw (for example a Datadog request-rate graph or a load test). Only say the one that is true for you. Don't invent an uptime percentage.</p>
+<p><strong>Questions they will ask.</strong>
+- <em>"Why Gin and not the standard library?"</em> Gin gives fast routing, middleware chaining and JSON binding with very little overhead. The standard library is fine too; Gin saves boilerplate across many routes.
+- <em>"How do you stop one slow tenant from hurting others?"</em> Per-request deadlines and per-query timeouts, so a heavy pivot can't hold a connection forever. Rollups make the heavy work cheap in the first place.
+- <em>"What happens if ClickHouse is slow?"</em> The inner deadline fires, we return a clear error to the UI, the trace shows the slow span, and the server keeps serving other requests.</p>
+<hr>
+<h3 id="c2-dynamic-kpi-configurator-and-formula-parser">C2 — Dynamic KPI configurator and formula parser</h3>
+<blockquote>
+<p><strong>Resume:</strong> Eliminated deployment bottlenecks by architecting a dynamic KPI configurator and custom formula parser. Engineered a real-time compilation layer that tokenizes operator-authored math into parameterized ClickHouse SQL fragments with native division-by-zero protection, decoupling business logic from code releases.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Business users can type a KPI formula. My code checks it, converts it into a safe SQL snippet, and the next request uses it. No engineer, no release.</p>
+<p><strong>How it works, with an example.</strong></p>
+<p>The user types: <code>margin_pct = (revenue - cost) / revenue * 100</code></p>
+<ol>
+<li><strong>Tokenize</strong>: split into pieces: <code>(</code>, <code>revenue</code>, <code>-</code>, <code>cost</code>, <code>)</code>, <code>/</code>, <code>revenue</code>, <code>*</code>, <code>100</code>.</li>
+<li><strong>Parse</strong>: build a tree that respects operator precedence (multiply and divide before add and subtract, brackets first).</li>
+<li><strong>Resolve names</strong>: <code>revenue</code> and <code>cost</code> are <em>logical</em> names. A catalog maps them to physical columns such as <code>sum(revenue)</code> and <code>sum(cost)</code>. Unknown names are rejected.</li>
+<li><strong>Allowlist functions</strong>: only approved functions (for example sum, min, max, if-style helpers) are allowed. Anything else fails.</li>
+<li><strong>Emit SQL</strong>, wrapped in a guard:</li>
+</ol>
+<pre><code class="language-sql">ifNotFinite(toFloat64((sum(revenue) - sum(cost)) / sum(revenue) * 100), 0) AS margin_pct
+</code></pre>
+<ol start="6">
+<li><strong>Parameters</strong>: any literal values (thresholds, dates) are sent as query parameters, never pasted into the SQL string.</li>
+</ol>
+<p><code>ifNotFinite(x, 0)</code> returns 0 when x is infinity or NaN (not-a-number). In ClickHouse, dividing by zero gives <code>inf</code> or <code>nan</code>, not an error. Without the guard, a store with zero revenue would put <code>inf</code> into the JSON and break the planner's grid. That is the "native division-by-zero protection" on the resume.</p>
+<p><strong>Why this design.</strong> Formulas change often and differ per client. Hard-coding them meant a release for every change. Compiling them keeps the logic data-driven but still safe.</p>
+<p><strong>Alternatives and why not.</strong>
+- <em>Let users write raw SQL</em>: SQL injection risk and they could scan any table. No.
+- <em>Evaluate formulas in Go after fetching rows</em>: you'd pull millions of rows out of ClickHouse to compute in Go. Pushing the math into SQL lets ClickHouse do it where the data lives.
+- <em>A general expression library</em>: possible, but we needed tight control over allowed names and functions and the exact SQL produced.</p>
+<p><strong>Questions they will ask.</strong>
+- <em>"How do you prevent SQL injection?"</em> We never concatenate user text into SQL. Every token must parse. Identifiers must exist in the catalog. Functions must be on the allowlist. Literals become parameters. Unknown input fails closed.
+- <em>"What if the formula is valid but slow?"</em> It only references rollup columns, so the cost is bounded by the rollup's size, not the raw facts.
+- <em>"Is it a prepared statement?"</em> Not in the generic sense. The guard is parse plus allowlist plus parameters plus <code>ifNotFinite</code>. Say that precisely.</p>
+<hr>
+<h3 id="c3-multi-tenant-isolation-and-hierarchy-access-control">C3 — Multi-tenant isolation and hierarchy access control</h3>
+<blockquote>
+<p><strong>Resume:</strong> Guaranteed strict multi-tenant data isolation and UAM-scoped hierarchy access control across PostgreSQL and ClickHouse. Redis-fronted Firebase Admin to JWT/Google OIDC waterfall, constant-time API keys, Postgres-backed role resolution.</p>
+</blockquote>
+<p><strong>In plain words.</strong> Every request is tied to one tenant and one user scope, and every query to PostgreSQL or ClickHouse is filtered by that scope. Login checks are fast because verified identities are cached in Redis.</p>
+<p><strong>How it works.</strong></p>
+<p><em>The waterfall</em> is an ordered list of ways to verify a caller:</p>
+<pre><code class="language-go">func identify(ctx context.Context, token string) (Identity, error) {
+    if id, ok := cache.Get(ctx, hash(token)); ok {
+        return id, nil                        // fast path: verified recently
+    }
+    if id, err := firebaseVerify(ctx, token); err == nil {
+        cache.Set(ctx, hash(token), id, ttl); return id, nil
+    }
+    if id, err := jwtOrGoogleOIDCVerify(ctx, token); err == nil {
+        cache.Set(ctx, hash(token), id, ttl); return id, nil
+    }
+    return Identity{}, ErrUnauthorized          // fails closed, never open
+}
+</code></pre>
+<p><em>Constant-time API keys.</em> Service callers use API keys. Ordinary string comparison stops at the first wrong character, so a wrong first character returns slightly faster than a wrong tenth character. Over many tries an attacker can learn the key. <code>subtle.ConstantTimeCompare(a, b)</code> always takes the same time.</p>
+<p><em>Role resolution.</em> After identity, PostgreSQL returns the user's role and hierarchy scope, for example "Retailer A, Women &gt; Tops". That scope is attached to the request context and added to every query as a filter.</p>
+<p><strong>Why this design.</strong> Verifying a token with an external provider on every call is slow and costly. Caching verified results in Redis keeps auth cheap at high RPS. If Redis misses, we fall through to real verification. We never "fail open".</p>
+<p><strong>Important honesty line.</strong> Isolation is not encryption. Say "tenant isolation and access control", not "we encrypted each tenant's data".</p>
+<p><strong>Questions they will ask.</strong>
+- <em>"What if a user's role changes?"</em> Cached entries have a TTL (time to live). Role data comes from PostgreSQL, so changes apply when the cache entry expires or is cleared.
+- <em>"How do you test isolation?"</em> Tests that call endpoints as user A and assert no rows from tenant B come back, plus scope filters applied in one shared query-building layer so no endpoint forgets them.</p>
+<hr>
+<h3 id="c4-155-faster-pivots-with-rollups-and-the-170-gb-oom-fix">C4 — 15.5× faster pivots with rollups, and the 170 GB OOM fix</h3>
+<blockquote>
+<p><strong>Resume:</strong> Reduced planner pivot latency by 15.5× (189s to 12s on 250M-row operations) by building a ClickHouse pre-aggregation layer for season and weekly rollups. Prevented 170GB OOM crashes by slicing batch inserts into temporal chunks and enforcing strict distributed memory and disk-spill caps.</p>
+</blockquote>
+<p>This bullet has <strong>two separate stories</strong>. Keep them apart.</p>
+<h4 id="story-1-query-time-189-s-to-12-s">Story 1: query time, 189 s to 12 s</h4>
+<p><strong>In plain words.</strong> Instead of adding up raw daily rows on every screen, we pre-compute totals into six tables and the screens read those.</p>
+<p><strong>The six tables</strong> (all ClickHouse MergeTree, <code>PARTITION BY season_code</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Grain</th>
+<th>Product (per SKU)</th>
+<th>Store (per store, no SKU)</th>
+<th>Attribute (per colour, size, etc.)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Season</td>
+<td>product_season</td>
+<td>store_season</td>
+<td>attr_season</td>
+</tr>
+<tr>
+<td>Weekly</td>
+<td>product_weekly</td>
+<td>store_weekly</td>
+<td>attr_weekly</td>
+</tr>
+</tbody>
+</table>
+<p>Example rows, so it feels real:</p>
+<pre><code class="language-text">product_weekly: season 7 | week 2026-W14 | article 123 (blue linen shirt) | units 1,240 | revenue 37,200 | margin 14,900 | closing stock 3,100
+store_weekly:   season 7 | week 2026-W14 | store 55 | units 9,870 | revenue 288,000 ...
+attr_weekly:    season 7 | week 2026-W14 | attr colour = blue | units 22,400 ...
+</code></pre>
+<p>The attribute table is an "unpivot": one product row becomes several rows, one per attribute. That is why <code>attr_weekly</code> is about five times bigger than <code>product_weekly</code>.</p>
+<p><strong>The number.</strong> On a 250-million-row harness, the same pivot took <strong>189 seconds</strong> on the old PostgreSQL path and <strong>12.3 seconds</strong> on ClickHouse rollups (the resume rounds to 12). The harness reported the speed-up as about 15.5× (plain division gives 189 ÷ 12.3 ≈ 15.4, so if someone checks, "about 15 times" is the safe spoken version). Say it as "from 189 seconds to 12 seconds, about 15.5 times faster, on a 250-million-row test". It is a benchmark harness result, not a promise that every screen is 12 seconds, and not "sub-second".</p>
+<p><strong>Why ClickHouse.</strong> Pivots read a few columns over many rows. A columnar database reads only those columns, compressed, using many cores. PostgreSQL reads whole rows and is built for transactions. PostgreSQL still keeps the small, transactional stuff: users, roles, metadata.</p>
+<p><strong>Alternatives.</strong> BigQuery (we have it on the tech line, but per-query slot variance makes interactive latency unpredictable), PostgreSQL materialized views (still row storage, refresh is heavy), Apache Druid or Pinot (another system to run). ClickHouse fit both the speed need and the team's skills.</p>
+<h4 id="story-2-load-time-the-170-gb-out-of-memory-crash">Story 2: load time, the 170 GB out-of-memory crash</h4>
+<p><strong>What broke.</strong> Building the <strong>weekly</strong> rollups with one <code>INSERT ... SELECT ... GROUP BY</code> for a <strong>whole season</strong> needed about <strong>170 GB</strong> of RAM for the aggregation state (each group keeps around 110 <code>any()</code> values plus <code>argMax</code> / <code>argMin</code> over wide strings). The query was killed with <code>MEMORY_LIMIT_EXCEEDED</code>. It failed even when we tried caps of 80 GB and 200 GB. The replica has roughly 59 cores and about 236 GiB of RAM.</p>
+<p><strong>How we found the real unit of work.</strong> We measured memory per slice. One fiscal week of the product table peaked at about <strong>11 GB</strong>. One week of the attribute table peaked at <strong>over 40 GB</strong>. So the problem was the size of the unit, not the size of the machine.</p>
+<p><strong>The fix.</strong>
+1. <strong>Temporal chunks.</strong> One INSERT per fiscal week instead of per season.
+2. <strong>Caps.</strong> Per query: memory cap about <strong>55 GB</strong>, spill to disk after about <strong>16 GB</strong> of GROUP BY state, 8 threads, at most 4 weeks in flight.</p>
+<pre><code class="language-sql">INSERT INTO product_weekly
+SELECT season_code, fiscal_year_week, article, sum(units), sum(revenue), any(colour), argMax(price, ts) ...
+FROM daily_facts
+WHERE season_code = 7 AND fiscal_year_week = '2026-W14'      -- one week only
+GROUP BY season_code, fiscal_year_week, article
+SETTINGS max_memory_usage = 55000000000,                    -- about 55 GB hard cap
+         max_bytes_before_external_group_by = 16000000000,  -- spill after about 16 GB
+         max_threads = 8;
+</code></pre>
+<p><code>max_memory_usage</code> is the hard limit. <code>max_bytes_before_external_group_by</code> tells ClickHouse to write partial GROUP BY results to disk once they get that big, instead of dying.</p>
+<p><strong>Trap to avoid.</strong> "So fixing the OOM made pivots 15.5× faster?" No. The OOM was about <strong>building</strong> the tables. The 15.5× is about <strong>reading</strong> them. Say this before they ask.</p>
+<p><strong>Questions they will ask.</strong>
+- <em>"Why not just buy more RAM?"</em> It failed at 200 GB too. And bigger boxes only delay the problem as data grows. Smaller units scale.
+- <em>"How do you keep store totals equal to the sum of product rows?"</em> Two-pass weighted sums, then validation that product, store and attribute totals match at the same filters.
+- <em>"Why not query daily facts with <code>FINAL</code>?"</em> <code>FINAL</code> forces merge-on-read, which is slow and skips projections. Pay once at load, read cheaply.</p>
+<hr>
+<h3 id="c5-cross-cluster-migration-with-a-go-native-tls-pump">C5 — Cross-cluster migration with a Go native-TLS pump</h3>
+<blockquote>
+<p><strong>Resume:</strong> Migrated ClickHouse rollups across Cloud clusters at ~344k rows/s by writing a custom Go native-TLS data pump to bypass strict cross-cluster IP allowlist restrictions. Processed partitions up to 4.09B rows using 500k-row double-buffered batches, and eliminated partial-commit ghost rows using TSV ledgers and atomic partition rollbacks.</p>
+</blockquote>
+<p><strong>In plain words.</strong> We needed to copy big tables from one ClickHouse Cloud cluster to another. The built-in way (one cluster pulling from the other) was blocked because each cluster only accepts connections from approved IP addresses. My machine's IP was approved on both. So I wrote a Go program that reads from one and writes to the other, fast and safely.</p>
+<div class="mermaid">flowchart LR
+  S["Source ClickHouse Cloud"] --&gt;|native TLS SELECT stream| P["Go pump&lt;br/&gt;buffer A and buffer B"]
+  P --&gt;|native TLS INSERT Send| T["Target ClickHouse Cloud"]
+  P --&gt; L["Checkpoint ledger&lt;br/&gt;migrate-checkpoints/table.done"]
+</div>
+<p><strong>How it works.</strong>
+1. <strong>Unit of work = one season partition</strong> of one table.
+2. <strong>Batches of 500,000 rows</strong>, held as columns (<code>[]int64</code>, <code>[]string</code>...) rather than row objects, so there's no per-row reflection cost.
+3. <strong>Double buffering.</strong> While batch A is being sent to the target, the next 500,000 rows are read into batch B. Then they swap. Reading and writing overlap. This also fixed a real error: when the read stream sat idle during a long insert, the source connection dropped with "unexpected EOF".</p>
+<pre><code class="language-go">// illustrative shape
+for {
+    next := readBatch(src, 500_000)        // fill buffer B
+    if err := &lt;-sendDone; err != nil { return err } // wait for A's Send()
+    go func(b Batch) { sendDone &lt;- b.Send() }(next) // send B, then refill A
+    if next.Len() == 0 { break }
+}
+</code></pre>
+<ol start="4">
+<li><strong>Workers.</strong> <code>-workers N</code> copies N seasons in parallel, each with its own connections. Thread and memory caps are per process.</li>
+<li><strong>Ledger and rollback.</strong> When a season finishes, a checkpoint is written (<code>migrate-checkpoints/&lt;table&gt;.done</code>). On restart, an unfinished season that already has rows in the target gets <code>DROP PARTITION</code>, then is copied again from scratch. Ctrl-C finishes the in-flight batch but does <strong>not</strong> mark that season done.</li>
+</ol>
+<p><strong>What "ghost rows" means.</strong> A failed ClickHouse INSERT can still have committed some blocks. So "the partition has rows, skip it" is a lie. We once saw a half-loaded partition of 64.1 million rows pass that check in the <strong>loader</strong> (the weekly build job, a different program). That's why the loader keeps a <strong>TSV ledger</strong> of finished (kind, season) pairs, and the copier keeps <code>.done</code> files. Only the ledger, never "row count &gt; 0", decides what is complete.</p>
+<p><strong>The numbers.</strong>
+- <strong>~344k rows/s</strong>: combined ingest rate of two season streams of about 150k–190k rows/s each, measured at a live snapshot. It is <strong>rows per second</strong>, not requests per second. If someone says "344k TPS" or "344k RPS", correct them politely.
+- <strong>4.09B rows</strong>: the largest object, the attribute weekly table for two seasons (2,779,317,472 + 1,311,108,195). The copy of that set was <strong>measured in flight</strong>. Don't say the cutover finished. Rough arithmetic if asked how long it takes: 4.09 billion ÷ 344,000 ≈ 11,900 seconds, a bit over 3 hours at that rate (ESTIMATED).
+- <strong>500k-row batches</strong>: the batch size, chosen to keep about 0.3–0.4 sends per second per worker. Big enough to be efficient, small enough to fit in memory.</p>
+<p><strong>"Atomic partition rollbacks" — say it precisely.</strong> It means: if a season's copy didn't finish, drop that whole partition and copy it again, so you never keep a half season. It is <strong>not</strong> an atomic swap that live readers never notice. During a recopy, readers of the target can see a partial season. A swap-based design (<code>REPLACE PARTITION</code> from scratch tables) was written but not executed. Don't claim it ran.</p>
+<p><strong>Why not the alternatives.</strong>
+- <code>remoteSecure</code> / cluster-to-cluster <code>INSERT SELECT</code>: blocked by IP allowlists. The best option if networking allows it.
+- Export to object storage and re-import: valid, more moving parts and storage cost for a one-off move.
+- Kafka or CDC: wrong tool for a one-off bulk copy, and not part of this project.</p>
+<p><strong>Rules you must keep.</strong> Never paste cluster hosts, passwords or <code>.env</code> values anywhere. Don't offer to open-source the copier. Whiteboard it instead.</p>
+<p><strong>Questions they will ask.</strong>
+- <em>"How did you get 344k rows/s?"</em> Native protocol instead of HTTP, columnar batches with no per-row reflection, 500k-row batches, overlap of read and write through double buffering, and two seasons in parallel.
+- <em>"What's the biggest risk?"</em> No atomic swap. A crash leaves a truncated season until it's dropped and recopied. For production I'd prefer a network path that allows server-side copy, or an object-storage freeze.
+- <em>"Why a laptop?"</em> Its IP was on both allowlists. That was a pragmatic workaround, and I say so openly.</p>
+<hr>
+<h2 id="7-tech-used-in-this-chapter-and-why">7. Tech used in this chapter and why</h2>
+<table>
+<thead>
+<tr>
+<th>Tech</th>
+<th>One line</th>
+<th>Why here</th>
+<th>Alternative considered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Go</td>
+<td>Compiled, fast, great concurrency</td>
+<td>High-RPS API and a high-throughput copier</td>
+<td>Python (slower for this), Java (heavier runtime)</td>
+</tr>
+<tr>
+<td>Gin</td>
+<td>Light Go web framework</td>
+<td>Routing and middleware with little overhead</td>
+<td>Standard library, Echo, Fiber</td>
+</tr>
+<tr>
+<td>Google Wire</td>
+<td>Compile-time DI</td>
+<td>Wiring errors fail the build</td>
+<td>Uber Fx / Dig (runtime)</td>
+</tr>
+<tr>
+<td>h2c / HTTP/2</td>
+<td>Many requests per connection</td>
+<td>Lower connection overhead at high RPS</td>
+<td>HTTP/1.1 keep-alive</td>
+</tr>
+<tr>
+<td>Datadog</td>
+<td>Traces, metrics, logs</td>
+<td>See where each request spends time</td>
+<td>OpenTelemetry + Jaeger, New Relic</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>Transactional database</td>
+<td>Users, roles, scopes, metadata</td>
+<td>MySQL</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>In-memory cache</td>
+<td>Cache verified identities, keep auth cheap</td>
+<td>In-process cache (not shared across instances)</td>
+</tr>
+<tr>
+<td>ClickHouse</td>
+<td>Columnar analytics database</td>
+<td>Fast scans and aggregations for pivots</td>
+<td>BigQuery, Druid, Pinot</td>
+</tr>
+<tr>
+<td>BigQuery</td>
+<td>Google's serverless warehouse</td>
+<td>On the IA tech line as part of the analytics stack</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GCP, Docker</td>
+<td>Cloud and containers</td>
+<td>Where the platform runs and how it's packaged</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="8-hard-problems-and-failure-stories">8. Hard problems and failure stories</h2>
+<ol>
+<li><strong>The 170 GB OOM</strong> (best "hardest technical problem" story). Symptom: weekly rollup builds killed. Investigation: memory per grain (product week ~11 GB, attr week &gt;40 GB). Fix: one week per INSERT plus memory and spill caps. Lesson: shrink the unit of work before you buy a bigger machine.</li>
+<li><strong>Ghost rows from failed inserts.</strong> Symptom: a half-loaded 64.1M-row partition looked "done". Fix: ledgers decide completeness, and DROP PARTITION before retry. Lesson: never use "row count &gt; 0" as proof of success.</li>
+<li><strong>"Unexpected EOF" in the copier.</strong> Symptom: source connection dropped during long inserts. Fix: double buffering kept the read stream active. Lesson: overlapping read and write is both faster and more stable.</li>
+<li><strong>Inf / NaN breaking grids.</strong> Fix: <code>ifNotFinite</code> wrapper in the formula compiler. Lesson: make bad values impossible at the source, not in every screen.</li>
+</ol>
+<hr>
+<h2 id="9-say-this-dont-say-this">9. Say this / don't say this</h2>
+<div class="callout warn">
+<p><b>Say:</b> "from 189 seconds to 12 seconds on a 250-million-row test" · "344k rows per second, combined, two streams" · "measured on a 4.09-billion-row set while the copy was in flight" · "partition rollback means drop the partition and recopy it" · "isolation and access control".<br><br>
+<b>Don't say:</b> sub-second ClickHouse · the OOM fix caused the 15.5× · 344k TPS / RPS · the 4.09B cutover finished · atomic swap with no reader impact · Kafka, Flink, CDC or Kubernetes operations at Impact Analytics · that you built the CDC pipeline (a colleague did) · encryption when you mean isolation · that you'll open-source the copier · any host, password or .env value.</p>
+</div>
+<p>Off-PDF but true (fine to say if relevant): 100% Go statement coverage with race detection across 1,200+ tests (that's on LinkedIn), 1.6M article-seasons in the catalog, the 55 GB / 16 GB / one-week knobs.</p>
+<hr>
+<h2 id="10-practice-drill">10. Practice drill</h2>
+<ol>
+<li><strong>What does AssortSmart do?</strong> It helps retail planners decide which products to carry each season, using pivots, KPIs and AI recommendations.</li>
+<li><strong>Why Go for the API?</strong> Fast, low memory, simple concurrency, single binary. It fits a 10k-peak-RPS edge.</li>
+<li><strong>What is Wire and why compile-time?</strong> It generates dependency wiring code. Missing dependencies fail the build, not production.</li>
+<li><strong>Why no reverse proxy?</strong> One less hop and one less component. Go's server handles timeouts and HTTP/2 itself.</li>
+<li><strong>What are nested timeouts?</strong> A request deadline with shorter deadlines for each dependency inside it, so inner calls fail first and the server still answers cleanly.</li>
+<li><strong>How does the formula engine stay safe?</strong> Tokenize, parse, map names through a catalog, allowlist functions, parameterise literals, fail closed.</li>
+<li><strong>What does <code>ifNotFinite</code> do?</strong> It turns infinity or NaN (for example from dividing by zero) into 0.</li>
+<li><strong>How is tenant isolation enforced?</strong> Identity and scope are resolved once at the edge and attached as filters to every PostgreSQL and ClickHouse query.</li>
+<li><strong>Why constant-time comparison?</strong> Normal comparison leaks timing information that can reveal a key character by character.</li>
+<li><strong>Why rollups?</strong> Screens read pre-computed totals instead of adding up hundreds of millions of raw rows each time.</li>
+<li><strong>Name the six tables.</strong> Product, store and attribute, each at season and weekly grain.</li>
+<li><strong>Why did weekly builds OOM?</strong> A whole-season weekly GROUP BY needed about 170 GB of state. One week needs ~11 GB (product) to &gt;40 GB (attribute).</li>
+<li><strong>What is 344k?</strong> Combined rows per second of the copier across two season streams. Not requests per second.</li>
+<li><strong>What is a ghost row?</strong> Data left behind by a failed insert that makes a partition look complete.</li>
+<li><strong>What would you improve?</strong> A swap-based publish so readers never see partial seasons, and a server-side copy path once networking allows it.</li>
+</ol>
+<hr>
+<h2 id="11-3-minute-whiteboard-script">11. 3-minute whiteboard script</h2>
+<ol>
+<li><strong>Draw the request path (45 s).</strong> UI → Go/Gin edge → auth (Redis, then Firebase/JWT/OIDC) → PostgreSQL for roles → ClickHouse rollups. Say: "Everything a request needs to be safe is decided once at the edge."</li>
+<li><strong>Draw the six-table grid (45 s).</strong> Product, store, attr × season, weekly, partitioned by season. Say: "Pay once at load, read cheap. This took a 250M-row pivot from 189 s to 12 s."</li>
+<li><strong>Draw the loader (40 s).</strong> Daily facts → one fiscal week per INSERT → weekly tables, with "55 GB cap, 16 GB spill" written next to it. Say: "A whole season needed 170 GB and died. A week fits."</li>
+<li><strong>Draw the pump (40 s).</strong> Source cluster → Go pump with buffers A and B → target cluster, ledger file on the side. Say: "344k rows per second combined. Ledgers decide what's done. Unfinished seasons are dropped and recopied."</li>
+<li><strong>Close (10 s).</strong> "If I did it again, I'd add a swap-based publish so readers never see a partial season."</li>
+</ol></main>
+</div>
+
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+</script>
+
+</body>
+</html>

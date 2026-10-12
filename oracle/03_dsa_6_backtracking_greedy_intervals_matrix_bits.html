@@ -48,10 +48,46 @@ strong{color:#fff}
 <a class="lvl2" href="#e-bit-manipulation">E. Bit manipulation</a>
 <a class="lvl2" href="#f-math-essentials">F. Math essentials</a></nav>
 <main><h1 id="036-backtracking-greedy-intervals-matrix-bit-manipulation-math">03.6 Backtracking, greedy, intervals, matrix, bit manipulation, math</h1>
+<div class="callout note">
+<p><b>How to use this page</b></p>
+<ul>
+<li><b>What it covers:</b> six smaller families that round out a coding round: backtracking (try everything with pruning), greedy (the locally best choice), intervals, matrix tricks, bit manipulation, and the math facts interviewers expect.</li>
+<li><b>When to read it:</b> last among the DSA files. Intervals and Meeting Rooms are OCI favourites because they map to resource allocation.</li>
+<li><b>What to memorise:</b> the choose / recurse / un-choose template, "sort by end for max non-overlapping", the min-heap of end times for meeting rooms, transpose-then-reverse for rotation, and the bit-trick table.</li>
+<li><b>How each problem is laid out:</b> a one-line restatement, the key insight, a dry run, code, complexity, and a 60-second spoken version.</li>
+</ul>
+</div>
+<p>Imports assumed by every snippet on this page:</p>
+<pre><code class="language-python">from collections import Counter
+from itertools import accumulate
+import bisect
+import heapq
+import math
+import random
+</code></pre>
 <hr>
 <h2 id="a-backtracking">A. Backtracking</h2>
-<p><strong>Intuition:</strong> build candidates step by step. At each step choose, recurse, then <strong>un-choose</strong>. Prune as early as possible. Complexity is usually exponential: say it (O(2^n) subsets, O(n!) permutations).</p>
-<p><strong>Template:</strong></p>
+<h3 id="the-idea">The idea</h3>
+<p><strong>Backtracking</strong> builds candidates one step at a time. At each step: choose an option, recurse to make the remaining choices, then <strong>un-choose</strong> (undo) so the next option starts from a clean state. <strong>Prune</strong> as early as possible: if a partial candidate already can't work, stop exploring that branch. Complexity is usually exponential, and you should say so (O(2^n) subsets, O(n!) permutations).</p>
+<p><strong>Analogy:</strong> exploring a maze while unrolling a ball of string. At each fork you pick a path. When you hit a dead end, you wind the string back to the last fork and try the next path. Pruning is noticing a "No Exit" sign before walking down a corridor.</p>
+<h3 id="when-to-recognise-it">When to recognise it</h3>
+<ul>
+<li>"Return <strong>all</strong> combinations / permutations / subsets / partitions".</li>
+<li>"Place N queens", "solve Sudoku", "find a word in a grid".</li>
+<li>Small input sizes (n ≤ 10 to 20), because the output itself can be exponential.</li>
+</ul>
+<h3 id="hand-traced-example">Hand-traced example</h3>
+<p>All subsets of <code>[1, 2]</code>. Each level decides "what to add next, from index <code>start</code> onwards".</p>
+<pre><code class="language-text">bt(start=0, path=[])        record []
+  add 1 -&gt; bt(1, [1])       record [1]
+    add 2 -&gt; bt(2, [1,2])   record [1, 2]
+    remove 2
+  remove 1
+  add 2 -&gt; bt(2, [2])       record [2]
+  remove 2
+result [[], [1], [1, 2], [2]]
+</code></pre>
+<h3 id="template">Template</h3>
 <pre><code class="language-python">def backtrack(path, choices):
     if is_solution(path):
         res.append(path[:])          # copy!
@@ -63,7 +99,25 @@ strong{color:#fff}
         backtrack(path, next_choices)
         path.pop()
 </code></pre>
+<p><strong>Complexity:</strong> O(number of candidates × cost to build each). Subsets are O(n · 2^n), permutations O(n · n!).</p>
+<h3 id="common-mistakes">Common mistakes</h3>
+<ul>
+<li>Appending <code>path</code> instead of <code>path[:]</code>. Every saved answer then points to the same list, which ends up empty.</li>
+<li>Forgetting to undo (the <code>pop</code>, or restoring a grid cell).</li>
+<li>Producing duplicates when the input has duplicates. Sort first and skip equal values at the same depth.</li>
+<li>Not pruning, so a solvable problem times out.</li>
+</ul>
+<hr>
 <h3 id="a1-subsets-and-subsets-ii-with-duplicates">A1. Subsets (and Subsets II with duplicates)</h3>
+<p><strong>Problem in one sentence:</strong> return every subset of the array; in version II the array has duplicates and the output must not.</p>
+<p><strong>Key insight:</strong> every node of the recursion tree is a valid subset, so record it on entry. For duplicates, sort, and at the same depth skip a value equal to the previous one, because choosing "the second 2" first would generate the same subsets as choosing "the first 2" first.</p>
+<p><strong>Dry run</strong> on <code>[1, 2, 2]</code> (sorted):</p>
+<pre><code class="language-text">[]  -&gt; [1] -&gt; [1,2] -&gt; [1,2,2]
+           (second 2 at this depth skipped)
+    -&gt; [2] -&gt; [2,2]
+    (second 2 at top depth skipped)
+result [[], [1], [1,2], [1,2,2], [2], [2,2]]
+</code></pre>
 <pre><code class="language-python">def subsets_with_dup(nums):
     nums.sort()
     res, path = [], []
@@ -78,8 +132,14 @@ strong{color:#fff}
     bt(0)
     return res
 </code></pre>
-<p>O(n · 2^n).</p>
+<p>Without duplicates, the same code works and the skip line simply never fires.</p>
+<p><strong>Complexity:</strong> O(n · 2^n) time and output size.</p>
+<p><strong>Say it in 60 seconds:</strong> "Each recursion level chooses the next element to add from a start index onward, and every path is itself a subset, so I record it on entry. Moving the start index forward means I never revisit earlier elements, so each subset is produced once. For duplicates I sort first, and within one level I skip a value equal to the one just tried, since it would produce identical subsets. There are 2^n subsets and copying each costs up to n, so O(n · 2^n)."</p>
+<hr>
 <h3 id="a2-permutations">A2. Permutations</h3>
+<p><strong>Problem in one sentence:</strong> return every ordering of distinct numbers.</p>
+<p><strong>Key insight:</strong> unlike subsets, order matters and every element must be used. At each position, try every element not yet used, tracked with a <code>used</code> array.</p>
+<p><strong>Dry run</strong> on <code>[1, 2, 3]</code>: first position 1, then 2 then 3 gives <code>[1,2,3]</code>, then 3 then 2 gives <code>[1,3,2]</code>. First position 2 gives <code>[2,1,3]</code>, <code>[2,3,1]</code>. First position 3 gives <code>[3,1,2]</code>, <code>[3,2,1]</code>. Six total.</p>
 <pre><code class="language-python">def permute(nums):
     res, path, used = [], [], [False] * len(nums)
     def bt():
@@ -93,8 +153,22 @@ strong{color:#fff}
     bt()
     return res
 </code></pre>
-<p>O(n · n!). Permutations II: sort, and skip <code>nums[i] == nums[i-1] and not used[i-1]</code>.</p>
+<p><strong>Complexity:</strong> O(n · n!) time and output.</p>
+<p><strong>Permutations II</strong> (with duplicates): sort, and skip <code>nums[i] == nums[i-1] and not used[i-1]</code>. That rule says equal values must be used in their original order, so swapped copies of identical numbers aren't generated twice.</p>
+<p><strong>Say it in 60 seconds:</strong> "For each position I try every number that isn't used yet, mark it used, recurse, then unmark it. When the path is as long as the input, I save a copy. There are n! permutations and each takes O(n) to copy. With duplicates, I sort and skip a number if it equals the previous one and the previous one isn't currently in use, which forces equal numbers to appear in a fixed order."</p>
+<hr>
 <h3 id="a3-combination-sum-reuse-allowed">A3. Combination Sum (reuse allowed)</h3>
+<p><strong>Problem in one sentence:</strong> find all unique combinations of candidates that add up to a target, where each candidate can be used any number of times.</p>
+<p><strong>Key insight:</strong> recurse with the same index <code>i</code> (not <code>i + 1</code>) to allow reuse, and never go back to earlier indices, which prevents <code>[2, 3]</code> and <code>[3, 2]</code> both appearing. Sorting allows an early <code>break</code> once a candidate exceeds the remaining target.</p>
+<p><strong>Dry run</strong> on candidates <code>[2, 3, 6, 7]</code>, target 7:</p>
+<pre><code class="language-text">remain 7: try 2 -&gt; remain 5: try 2 -&gt; remain 3: try 2 -&gt; remain 1: 2 &gt; 1 break
+                                              try 3 -&gt; remain 0: record [2,2,3]
+                             try 3 -&gt; remain 2: 3 &gt; 2 break
+          try 3 -&gt; remain 4: try 3 -&gt; remain 1 break; 6 &gt; 4 break
+          try 6 -&gt; remain 1 break
+          try 7 -&gt; remain 0: record [7]
+result [[2, 2, 3], [7]]
+</code></pre>
 <pre><code class="language-python">def combination_sum(cands, target):
     cands.sort()
     res, path = [], []
@@ -110,10 +184,46 @@ strong{color:#fff}
     bt(0, target)
     return res
 </code></pre>
+<p><strong>Complexity:</strong> exponential, roughly O(n^(target / min candidate)) in the worst case.</p>
+<p><strong>Say it in 60 seconds:</strong> "I backtrack with a start index and the remaining target. At each level I try candidates from the start index onward, recursing with the same index so a number can repeat, and never going backward so I don't produce the same combination in a different order. Sorting lets me break out as soon as a candidate exceeds what's left. When the remainder hits zero I record the path."</p>
+<hr>
 <h3 id="a4-word-search-grid-backtracking">A4. Word Search (grid backtracking)</h3>
-<p>Mark the cell as visited (<code>board[r][c] = '#'</code>), recurse in 4 directions, then restore it. O(R·C·4^L).</p>
+<p><strong>Problem in one sentence:</strong> can a word be traced through adjacent grid cells without reusing a cell?</p>
+<p><strong>Key insight:</strong> start a DFS from every cell matching the first letter. Mark the cell as visited (<code>board[r][c] = '#'</code>), recurse in 4 directions for the next letter, then restore it. Restoring is the "un-choose" step.</p>
+<p><strong>Dry run</strong> on the grid below looking for "SEE":</p>
+<pre><code class="language-text">A B C E
+S F C S
+A D E E
+
+start at (1,3) 'S' -&gt; up (0,3) 'E' -&gt; next needs 'E': neighbours (0,2) 'C', (1,3) '#'
+                   -&gt; down (2,3) 'E' -&gt; left (2,2) 'E' -&gt; word complete -&gt; True
+</code></pre>
+<pre><code class="language-python">def exist(board, word):
+    R, C = len(board), len(board[0])
+    def bt(r, c, i):
+        if i == len(word):
+            return True
+        if not (0 &lt;= r &lt; R and 0 &lt;= c &lt; C) or board[r][c] != word[i]:
+            return False
+        board[r][c] = &quot;#&quot;
+        found = any(bt(r + dr, c + dc, i + 1) for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+        board[r][c] = word[i]
+        return found
+    return any(bt(r, c, 0) for r in range(R) for c in range(C))
+</code></pre>
+<p><strong>Complexity:</strong> O(R·C·4^L) where L is the word length (3^L after the first step, since you never go back the way you came). O(L) recursion space.</p>
+<p><strong>Say it in 60 seconds:</strong> "From each cell I try to match the word letter by letter with DFS. If the cell is out of bounds or the letter doesn't match, that branch fails. Otherwise I temporarily mark the cell so the path can't reuse it, try all four neighbours for the next letter, and restore the cell afterwards. <code>any</code> stops at the first success. For many words at once I'd switch to a trie, which is Word Search II."</p>
+<hr>
 <h3 id="a5-n-queens">A5. N-Queens</h3>
-<p>Track the sets <code>cols</code>, <code>diag1 = r - c</code>, and <code>diag2 = r + c</code>. Place row by row. O(n!).</p>
+<p><strong>Problem in one sentence:</strong> place n queens on an n × n board so that none attack each other, and return every arrangement.</p>
+<p><strong>Key insight:</strong> one queen per row, so place row by row. Track the sets <code>cols</code>, <code>diag1 = r - c</code>, and <code>diag2 = r + c</code>. Every cell on the same "\" diagonal has the same <code>r - c</code>, and on the same "/" diagonal the same <code>r + c</code>, so each check is O(1).</p>
+<p><strong>Dry run</strong> for n = 4 (one of the two solutions):</p>
+<pre><code class="language-text">row 0: col 1     . Q . .
+row 1: col 3     . . . Q
+row 2: col 0     Q . . .
+row 3: col 2     . . Q .
+(row 0 col 0 was tried first and failed at row 2 or 3, so the algorithm backtracked)
+</code></pre>
 <pre><code class="language-python">def solve_n_queens(n):
     res, cols, d1, d2 = [], set(), set(), set()
     board = [[&quot;.&quot;] * n for _ in range(n)]
@@ -129,11 +239,93 @@ strong{color:#fff}
     bt(0)
     return res
 </code></pre>
-<h3 id="a6-palindrome-partitioning-letter-combinations-of-a-phone-number-generate-parentheses-track-openclose-counts-sudoku-solver">A6. Palindrome Partitioning, Letter Combinations of a Phone Number, Generate Parentheses (track open/close counts), Sudoku Solver.</h3>
+<p><strong>Complexity:</strong> O(n!) time roughly, because each row has fewer safe columns than the last. O(n) space besides the output.</p>
+<p><strong>Say it in 60 seconds:</strong> "Each row gets exactly one queen, so I place them row by row. For a candidate column I need to know in O(1) whether that column or either diagonal is taken. Cells on one diagonal share <code>r - c</code>, and on the other share <code>r + c</code>, so three sets are enough. I place the queen, recurse to the next row, then remove it. When all rows are filled I save the board. The search is roughly O(n!)."</p>
+<hr>
+<h3 id="a6-palindrome-partitioning-letter-combinations-of-a-phone-number-generate-parentheses-track-openclose-counts-sudoku-solver">A6. Palindrome Partitioning, Letter Combinations of a Phone Number, Generate Parentheses (track open/close counts), Sudoku Solver</h3>
+<p><strong>Palindrome Partitioning:</strong> split a string into pieces that are all palindromes, returning every way. At each start index, try every end index whose piece is a palindrome, and recurse from there.</p>
+<pre><code class="language-python">def partition(s):
+    res, path = [], []
+    def bt(start):
+        if start == len(s):
+            res.append(path[:]); return
+        for end in range(start + 1, len(s) + 1):
+            piece = s[start:end]
+            if piece == piece[::-1]:
+                path.append(piece)
+                bt(end)
+                path.pop()
+    bt(0)
+    return res
+</code></pre>
+<p>Dry run: <code>"aab"</code> gives <code>[["a", "a", "b"], ["aa", "b"]]</code>.</p>
+<p><strong>Letter Combinations:</strong> each digit maps to letters on a phone keypad. Choose one letter per digit.</p>
+<pre><code class="language-python">def letter_combinations(digits):
+    if not digits:
+        return []
+    keys = {&quot;2&quot;: &quot;abc&quot;, &quot;3&quot;: &quot;def&quot;, &quot;4&quot;: &quot;ghi&quot;, &quot;5&quot;: &quot;jkl&quot;,
+            &quot;6&quot;: &quot;mno&quot;, &quot;7&quot;: &quot;pqrs&quot;, &quot;8&quot;: &quot;tuv&quot;, &quot;9&quot;: &quot;wxyz&quot;}
+    res = []
+    def bt(i, path):
+        if i == len(digits):
+            res.append(path); return
+        for ch in keys[digits[i]]:
+            bt(i + 1, path + ch)
+    bt(0, &quot;&quot;)
+    return res
+</code></pre>
+<p>Dry run: <code>"23"</code> gives <code>ad ae af bd be bf cd ce cf</code>.</p>
+<p><strong>Generate Parentheses:</strong> produce every valid string of n pairs. You may add <code>(</code> while fewer than n are open, and <code>)</code> only while closes are fewer than opens, so the string never becomes invalid.</p>
+<pre><code class="language-python">def generate_parenthesis(n):
+    res = []
+    def bt(path, opened, closed):
+        if len(path) == 2 * n:
+            res.append(path); return
+        if opened &lt; n:
+            bt(path + &quot;(&quot;, opened + 1, closed)
+        if closed &lt; opened:
+            bt(path + &quot;)&quot;, opened, closed + 1)
+    bt(&quot;&quot;, 0, 0)
+    return res
+</code></pre>
+<p>Dry run: n = 2 gives <code>(())</code> and <code>()()</code>.</p>
+<p><strong>Sudoku Solver:</strong> find an empty cell, try digits 1 to 9 that don't break the row, column or 3 × 3 box (track with sets as in Valid Sudoku, D5 below), recurse, and undo on failure. Picking the empty cell with the fewest options first prunes dramatically.</p>
+<p><strong>Say it in 60 seconds (Generate Parentheses):</strong> "Instead of generating all strings and filtering, I only build valid prefixes. I can add an opening bracket while I've used fewer than n, and a closing bracket only when it would close an open one. When the string reaches length 2n it's guaranteed valid. The number of results is the n-th Catalan number."</p>
 <hr>
 <h2 id="b-greedy">B. Greedy</h2>
-<p><strong>Intuition:</strong> take the locally best choice. <strong>Only correct if you can argue it</strong>: the exchange argument ("swapping any optimal solution's choice for the greedy one doesn't make it worse") or "greedy stays ahead." If you can't argue it, it's probably DP.</p>
+<h3 id="the-idea_1">The idea</h3>
+<p>A <strong>greedy</strong> algorithm makes the locally best choice at each step and never reconsiders. It's fast and simple, but <strong>only correct if you can argue it</strong>. Two standard arguments:</p>
+<ul>
+<li><strong>Exchange argument:</strong> take any optimal solution, and show that swapping its choice for the greedy choice doesn't make it worse. So some optimal solution agrees with greedy.</li>
+<li><strong>Greedy stays ahead:</strong> show that after every step, greedy is at least as good as any other strategy.</li>
+</ul>
+<p>If you can't argue it, it's probably DP (Coin Change is the classic greedy trap).</p>
+<p><strong>Analogy:</strong> filling your day with as many meetings as possible. Always picking the meeting that <strong>ends earliest</strong> leaves the most room for the rest of the day, and you can prove it.</p>
+<h3 id="when-to-recognise-it_1">When to recognise it</h3>
+<ul>
+<li>"Maximum number of non-overlapping...", "minimum number of arrows / rooms / boats".</li>
+<li>"Can you reach the end?", "minimum jumps".</li>
+<li>Sorting by one key (start, end, ratio) obviously helps.</li>
+<li>A small counterexample doesn't break the obvious choice. Always try one before committing.</li>
+</ul>
+<h3 id="common-mistakes_1">Common mistakes</h3>
+<ul>
+<li>Using greedy where it fails (coins <code>[1, 3, 4]</code> for 6).</li>
+<li>Sorting by the wrong key (start versus end).</li>
+<li>Not explaining why greedy works. Interviewers ask.</li>
+</ul>
+<hr>
 <h3 id="b1-jump-game-i-and-ii">B1. Jump Game I and II</h3>
+<p><strong>Problem in one sentence:</strong> each value says how far you can jump from that index. (I) Can you reach the last index? (II) What's the minimum number of jumps?</p>
+<p><strong>Key insight (I):</strong> track the farthest index reachable so far. If you ever stand at an index beyond it, you're stuck.</p>
+<p><strong>Key insight (II):</strong> think of it as BFS by layers. All indices reachable with j jumps form a range. While scanning that range, compute the farthest reach for the next jump. When you reach the end of the current range, you must jump.</p>
+<p><strong>Dry run (II)</strong> on <code>[2, 3, 1, 1, 4]</code>:</p>
+<pre><code class="language-text">i  far = max(far, i + nums[i])   i == end?             jumps  end
+0  2                             yes, jump             1      2
+1  4
+2  4                             yes, jump             2      4
+loop stops before the last index -&gt; answer 2 (0 -&gt; 1 -&gt; 4)
+</code></pre>
 <pre><code class="language-python">def can_jump(nums):
     reach = 0
     for i, x in enumerate(nums):
@@ -151,8 +343,21 @@ def jump(nums):                       # min jumps, BFS by layers
             end = far
     return jumps
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(1) space for both.</p>
+<p><strong>Say it in 60 seconds (Jump Game II):</strong> "Every index reachable in j jumps forms a contiguous range, so this is BFS where each layer is a range. I scan left to right, tracking the farthest index the current layer can reach. When I reach the end of the current layer, I have to take another jump, and the new layer ends at that farthest point. I stop before the last index, because standing on it needs no further jump. O(n), O(1)."</p>
+<hr>
 <h3 id="b2-gas-station">B2. Gas Station</h3>
-<p>If total gas &lt; total cost, the answer is -1. Otherwise, reset the start whenever the running tank goes negative.</p>
+<p><strong>Problem in one sentence:</strong> stations in a circle give gas and cost gas to reach the next one. Find the starting station that lets you complete the loop, or -1.</p>
+<p><strong>Key insight:</strong> if total gas &lt; total cost, the answer is -1. Otherwise a solution exists. Reset the start whenever the running tank goes negative: if you can't get from <code>start</code> to <code>i</code>, then no station between them can be a valid start either, because each of them would arrive at <code>i</code> with even less gas.</p>
+<p><strong>Dry run</strong> on <code>gas = [1, 2, 3, 4, 5]</code>, <code>cost = [3, 4, 5, 1, 2]</code>:</p>
+<pre><code class="language-text">i  gain = gas - cost  tank  action
+0  -2                 -2    reset, start = 1
+1  -2                 -2    reset, start = 2
+2  -2                 -2    reset, start = 3
+3  3                  3
+4  3                  6
+answer 3
+</code></pre>
 <pre><code class="language-python">def can_complete_circuit(gas, cost):
     if sum(gas) &lt; sum(cost):
         return -1
@@ -163,16 +368,116 @@ def jump(nums):                       # min jumps, BFS by layers
             start, tank = i + 1, 0
     return start
 </code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(1) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "If total gas is less than total cost, no start works. Otherwise I scan once with a running tank from a candidate start. If the tank goes negative at station i, the candidate fails, and so does every station between it and i, since each would arrive at i with no more gas than I had. So I jump the candidate to i plus 1 and reset the tank. Because the total is non-negative, the last candidate standing works. O(n)."</p>
+<hr>
 <h3 id="b3-partition-labels">B3. Partition Labels</h3>
-<p>Record the last index of each char. Extend the current partition's end to the max last-index seen, and cut when <code>i == end</code>.</p>
-<h3 id="b4-hand-of-straights-task-scheduler-math-greedy-minimum-number-of-arrows-sort-by-end-boats-to-save-people-two-pointers">B4. Hand of Straights, Task Scheduler (math greedy), Minimum Number of Arrows (sort by end), Boats to Save People (two pointers).</h3>
+<p><strong>Problem in one sentence:</strong> split a string into as many parts as possible so that each letter appears in only one part. Return the part sizes.</p>
+<p><strong>Key insight:</strong> record the last index of each char. As you scan, extend the current partition's end to the max last-index seen, and cut when <code>i == end</code>, because every letter seen so far finishes inside this part.</p>
+<p><strong>Dry run</strong> on <code>"abaccd"</code> (last: a 2, b 1, c 4, d 5):</p>
+<pre><code class="language-text">i  c  end = max(end, last[c])  cut?
+0  a  2
+1  b  2
+2  a  2                        yes, size 3
+3  c  4
+4  c  4                        yes, size 2
+5  d  5                        yes, size 1
+answer [3, 2, 1]
+</code></pre>
+<pre><code class="language-python">def partition_labels(s):
+    last = {c: i for i, c in enumerate(s)}
+    res, start, end = [], 0, 0
+    for i, c in enumerate(s):
+        end = max(end, last[c])
+        if i == end:
+            res.append(end - start + 1)
+            start = i + 1
+    return res
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(alphabet) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "A part can't end before the last occurrence of any letter inside it. So I precompute each letter's last index, then scan while tracking the furthest last index of letters in the current part. When my position reaches that furthest index, every letter in the part is finished, so I cut there. Cutting as early as possible maximises the number of parts. Two passes, O(n)."</p>
+<hr>
+<h3 id="b4-hand-of-straights-task-scheduler-math-greedy-minimum-number-of-arrows-sort-by-end-boats-to-save-people-two-pointers">B4. Hand of Straights, Task Scheduler (math greedy), Minimum Number of Arrows (sort by end), Boats to Save People (two pointers)</h3>
+<p><strong>Hand of Straights in one sentence:</strong> can the cards be split into groups of w consecutive values? The smallest remaining card must <strong>start</strong> a group (nothing smaller can absorb it), so greedily build groups from the smallest value up.</p>
+<pre><code class="language-python">def is_n_straight_hand(hand, w):
+    if len(hand) % w:
+        return False
+    count = Counter(hand)
+    for x in sorted(count):
+        if count[x]:
+            need = count[x]
+            for y in range(x, x + w):
+                if count[y] &lt; need:
+                    return False
+                count[y] -= need
+    return True
+</code></pre>
+<p>Dry run: <code>[1, 2, 3, 6, 2, 3, 4, 7, 8]</code>, w = 3. From 1: use one each of 1, 2, 3. From 2: one each of 2, 3, 4. From 6: 6, 7, 8. True.</p>
+<p><strong>Task Scheduler:</strong> see the <a href="03_dsa_2_linkedlist_stack_queue_heap.html">heap file</a>, section E5. The most frequent task fixes the frame size.</p>
+<p><strong>Minimum Number of Arrows:</strong> balloons are intervals, an arrow at x bursts every balloon covering x. Sort by end and shoot at the end of the first balloon, which bursts everything overlapping it. Same exchange argument as activity selection.</p>
+<pre><code class="language-python">def find_min_arrow_shots(points):
+    points.sort(key=lambda p: p[1])
+    arrows, end = 0, float(&quot;-inf&quot;)
+    for s, e in points:
+        if s &gt; end:
+            arrows += 1
+            end = e
+    return arrows
+</code></pre>
+<p>Dry run: <code>[[10,16], [2,8], [1,6], [7,12]]</code> sorted by end is <code>[1,6], [2,8], [7,12], [10,16]</code>. Arrow at 6 bursts the first two, arrow at 12 bursts the last two. Answer 2.</p>
+<p><strong>Boats to Save People:</strong> each boat holds at most two people under a weight limit. Sort, then pair the heaviest person with the lightest if they fit. The heaviest must go in some boat, and the lightest is the best partner they could have.</p>
+<pre><code class="language-python">def num_rescue_boats(people, limit):
+    people.sort()
+    l, r, boats = 0, len(people) - 1, 0
+    while l &lt;= r:
+        if people[l] + people[r] &lt;= limit:
+            l += 1
+        r -= 1
+        boats += 1
+    return boats
+</code></pre>
+<p>Dry run: <code>[3, 2, 2, 1]</code>, limit 3, sorted <code>[1, 2, 2, 3]</code>: 3 alone, then 1 + 2, then 2 alone. Answer 3.</p>
+<p><strong>Complexity:</strong> all are O(n log n) for the sort.</p>
+<p><strong>Say it in 60 seconds (Arrows):</strong> "Sort balloons by their end. The first balloon must be hit by some arrow, and shooting at its right end is the best choice, because it hits every balloon that starts before that point. Then I skip all balloons that arrow covers and repeat with the next one that starts after it. That's activity selection, and the exchange argument says no other first shot can cover more."</p>
 <hr>
 <h2 id="c-intervals">C. Intervals</h2>
-<p><strong>Intuition:</strong> sort by start (or by end for "max non-overlapping"). Then sweep.</p>
+<h3 id="the-idea_2">The idea</h3>
+<p>An <strong>interval</strong> is a pair <code>[start, end]</code>. Almost every interval problem starts by sorting: by start (to merge overlaps or sweep through time) or by end (to pick the maximum number of non-overlapping intervals). Then a single sweep with a small amount of state solves it. Two intervals <code>[a, b]</code> and <code>[c, d]</code> overlap when <code>a &lt;= d and c &lt;= b</code>.</p>
+<p><strong>Analogy:</strong> a meeting-room calendar. Sorting by start time lets you see conflicts as you read top to bottom. Sorting by end time tells you which meeting frees up a room first.</p>
+<h3 id="when-to-recognise-it_2">When to recognise it</h3>
+<ul>
+<li>"Merge overlapping", "insert an interval", "free time", "intersections".</li>
+<li>"Minimum rooms / servers / platforms needed".</li>
+<li>"Maximum number of events you can attend", "minimum removals to make non-overlapping".</li>
+<li>Log analysis: "maximum concurrent connections".</li>
+</ul>
+<h3 id="hand-traced-example_1">Hand-traced example</h3>
+<p>Merge <code>[[1, 3], [2, 6], [8, 10], [15, 18]]</code> (already sorted):</p>
+<pre><code class="language-text">interval  overlaps last in output?   output
+[1,3]     first                      [[1,3]]
+[2,6]     2 &lt;= 3 yes, extend         [[1,6]]
+[8,10]    8 &lt;= 6 no, append          [[1,6], [8,10]]
+[15,18]   no, append                 [[1,6], [8,10], [15,18]]
+</code></pre>
+<h3 id="template_1">Template</h3>
+<p>The template is the Merge Intervals code below.</p>
+<p><strong>Complexity:</strong> O(n log n) for the sort, O(n) for the sweep.</p>
+<h3 id="common-mistakes_2">Common mistakes</h3>
+<ul>
+<li>Deciding whether touching intervals (<code>[1, 2]</code> and <code>[2, 3]</code>) overlap. Read the problem. Merge Intervals treats them as overlapping. Meeting Rooms treats them as not conflicting.</li>
+<li>Sorting by start when the problem needs end (non-overlapping, arrows).</li>
+<li>Mutating the caller's input lists by accident.</li>
+</ul>
+<hr>
 <h3 id="c1-merge-intervals">C1. Merge Intervals</h3>
+<p><strong>Problem in one sentence:</strong> merge all overlapping intervals.</p>
+<p><strong>Key insight:</strong> after sorting by start, an interval overlaps the merged block only if it starts before that block ends. So compare with the last interval in the output only.</p>
+<p><strong>Dry run:</strong> see the hand-traced example above.</p>
 <pre><code class="language-python">def merge(intervals):
+    if not intervals:
+        return []
     intervals.sort()
-    out = [intervals[0]]
+    out = [list(intervals[0])]
     for s, e in intervals[1:]:
         if s &lt;= out[-1][1]:
             out[-1][1] = max(out[-1][1], e)
@@ -180,11 +485,44 @@ def jump(nums):                       # min jumps, BFS by layers
             out.append([s, e])
     return out
 </code></pre>
-<p>O(n log n).</p>
+<p>An older version of this function crashed on an empty list (<code>intervals[0]</code>) and, because <code>out</code> started with the caller's own first interval, extending it silently changed the caller's data. The guard and <code>list(...)</code> copy fix both.</p>
+<p><strong>Complexity:</strong> O(n log n) time, O(n) for the output.</p>
+<p><strong>Say it in 60 seconds:</strong> "I sort by start time. Then any interval that overlaps the current merged block must start before the block ends, so I only compare with the last interval in my output. If it overlaps, I extend the end to the larger of the two ends. Otherwise it starts a new block. I copy the first interval so I don't mutate the caller's input. Sorting dominates at O(n log n)."</p>
+<hr>
 <h3 id="c2-insert-interval">C2. Insert Interval</h3>
-<p>Add everything that ends before the new one, merge the overlaps, then add the rest. O(n).</p>
+<p><strong>Problem in one sentence:</strong> insert a new interval into a sorted list of non-overlapping intervals, merging as needed.</p>
+<p><strong>Key insight:</strong> the list is already sorted, so no sort is needed. Three phases: add everything that ends before the new one, merge the overlaps, then add the rest. O(n).</p>
+<p><strong>Dry run</strong> on <code>[[1,2], [3,5], [6,7], [8,10], [12,16]]</code>, new <code>[4, 8]</code>:</p>
+<pre><code class="language-text">phase 1: [1,2] ends before 4 -&gt; keep
+phase 2: [3,5] overlaps -&gt; [3,8]; [6,7] overlaps -&gt; [3,8]; [8,10] overlaps -&gt; [3,10]
+phase 3: [12,16] -&gt; keep
+answer [[1,2], [3,10], [12,16]]
+</code></pre>
+<pre><code class="language-python">def insert(intervals, new):
+    res, i, n = [], 0, len(intervals)
+    while i &lt; n and intervals[i][1] &lt; new[0]:
+        res.append(intervals[i]); i += 1
+    s, e = new
+    while i &lt; n and intervals[i][0] &lt;= e:
+        s, e = min(s, intervals[i][0]), max(e, intervals[i][1]); i += 1
+    res.append([s, e])
+    res.extend(intervals[i:])
+    return res
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time and space.</p>
+<p><strong>Say it in 60 seconds:</strong> "The input is sorted and non-overlapping, so I can do it in one pass. First I copy every interval that ends before the new one starts. Then, while intervals start before the new one ends, I absorb them by widening the new interval. I add the merged interval and then copy everything left. O(n), no sorting needed."</p>
+<hr>
 <h3 id="c3-non-overlapping-intervals-min-removals">C3. Non-overlapping Intervals (min removals)</h3>
-<p><strong>Greedy:</strong> sort by <strong>end</strong>, and keep the interval that ends earliest. That's classic activity selection.</p>
+<p><strong>Problem in one sentence:</strong> remove the fewest intervals so the rest don't overlap.</p>
+<p><strong>Key insight:</strong> this is "keep the maximum number of non-overlapping intervals". <strong>Greedy:</strong> sort by <strong>end</strong>, and keep the interval that ends earliest, since it leaves the most room. That's classic activity selection. Every interval that starts before the last kept end must be removed.</p>
+<p><strong>Dry run</strong> on <code>[[1,2], [2,3], [3,4], [1,3]]</code>, sorted by end <code>[1,2], [2,3], [1,3], [3,4]</code>:</p>
+<pre><code class="language-text">interval  start &gt;= end?  action    end  removed
+[1,2]     yes            keep      2    0
+[2,3]     2 &gt;= 2 yes     keep      3    0
+[1,3]     1 &gt;= 3 no      remove    3    1
+[3,4]     yes            keep      4    1
+answer 1
+</code></pre>
 <pre><code class="language-python">def erase_overlap_intervals(intervals):
     intervals.sort(key=lambda x: x[1])
     end, removed = float(&quot;-inf&quot;), 0
@@ -195,8 +533,19 @@ def jump(nums):                       # min jumps, BFS by layers
             removed += 1
     return removed
 </code></pre>
+<p><strong>Complexity:</strong> O(n log n).</p>
+<p><strong>Say it in 60 seconds:</strong> "Minimising removals is the same as keeping as many non-overlapping intervals as possible. Sorting by end time and always keeping the one that finishes first is optimal: if an optimal answer kept something that ends later, swapping in the earlier-ending one can't cause new overlaps. So I scan in end order, keep an interval if it starts at or after the last kept end, and count the rest as removals. O(n log n)."</p>
+<hr>
 <h3 id="c4-meeting-rooms-ii-min-rooms-oci-relevant-resource-allocation">C4. Meeting Rooms II (min rooms, OCI-relevant: resource allocation)</h3>
-<p><strong>Heap:</strong> sort by start. A min-heap of end times. If the earliest end ≤ the current start, reuse that room.</p>
+<p><strong>Problem in one sentence:</strong> given meeting times, find the minimum number of rooms so no two overlapping meetings share a room.</p>
+<p><strong>Key insight (heap):</strong> sort by start. Keep a min-heap of end times for rooms in use. If the earliest end ≤ the current start, that room is free, so reuse it (replace its end time). Otherwise open a new room. The heap size at the end is the answer.</p>
+<p><strong>Dry run</strong> on <code>[[0, 30], [5, 10], [15, 20]]</code>:</p>
+<pre><code class="language-text">meeting  heap of end times before  earliest end &lt;= start?  heap after
+[0,30]   []                        no rooms                [30]
+[5,10]   [30]                      30 &lt;= 5? no, new room   [10, 30]
+[15,20]  [10, 30]                  10 &lt;= 15 yes, reuse     [20, 30]
+answer 2 rooms
+</code></pre>
 <pre><code class="language-python">def min_meeting_rooms(intervals):
     intervals.sort()
     ends = []
@@ -208,11 +557,77 @@ def jump(nums):                       # min jumps, BFS by layers
     return len(ends)
 </code></pre>
 <p><strong>Sweep alternative:</strong> +1 at each start, -1 at each end, sorted. The max running sum is the answer. That's the same idea as "max concurrent connections" from logs.</p>
-<h3 id="c5-employee-free-time-interval-list-intersections-two-pointers-my-calendar-iii-sorted-list-or-segment-tree-car-pooling-difference-array">C5. Employee Free Time, Interval List Intersections (two pointers), My Calendar I/II (sorted list or segment tree), Car Pooling (difference array).</h3>
+<pre><code class="language-python">def min_meeting_rooms_sweep(intervals):
+    events = []
+    for s, e in intervals:
+        events.append((s, 1))
+        events.append((e, -1))
+    events.sort()
+    cur = best = 0
+    for _, delta in events:
+        cur += delta
+        best = max(best, cur)
+    return best
+</code></pre>
+<p>Sorting tuples puts <code>(t, -1)</code> before <code>(t, 1)</code> at the same time t, so a meeting that ends at 10 frees its room before one that starts at 10 needs it. That matches the heap's <code>&lt;=</code>.</p>
+<p><strong>Complexity:</strong> O(n log n) for both.</p>
+<p><strong>Say it in 60 seconds:</strong> "I sort meetings by start time and keep a min-heap of end times, one per room in use. For each meeting, if the earliest-ending room is free by this meeting's start, I reuse it by replacing its end time. Otherwise I need a new room. The heap size is the answer. An equivalent sweep: plus one at every start, minus one at every end, and the maximum running total is the number of rooms. In cloud terms it's capacity planning: how many hosts so no job waits."</p>
+<hr>
+<h3 id="c5-employee-free-time-interval-list-intersections-two-pointers-my-calendar-iii-sorted-list-or-segment-tree-car-pooling-difference-array">C5. Employee Free Time, Interval List Intersections (two pointers), My Calendar I/II (sorted list or segment tree), Car Pooling (difference array)</h3>
+<p><strong>Interval List Intersections in one sentence:</strong> two lists of sorted, disjoint intervals; return their intersections. The overlap of the current pair is <code>[max(starts), min(ends)]</code> if non-empty. Then advance whichever interval ends first, since it can't intersect anything further.</p>
+<pre><code class="language-python">def interval_intersection(a, b):
+    i = j = 0
+    res = []
+    while i &lt; len(a) and j &lt; len(b):
+        lo = max(a[i][0], b[j][0])
+        hi = min(a[i][1], b[j][1])
+        if lo &lt;= hi:
+            res.append([lo, hi])
+        if a[i][1] &lt; b[j][1]:
+            i += 1
+        else:
+            j += 1
+    return res
+</code></pre>
+<p>Dry run: <code>a = [[0, 2], [5, 10]]</code>, <code>b = [[1, 5]]</code>. Pair 1: <code>[1, 2]</code>, advance a. Pair 2: <code>[5, 5]</code>, advance b. Answer <code>[[1, 2], [5, 5]]</code>.</p>
+<p><strong>Car Pooling in one sentence:</strong> can a car with fixed capacity complete all trips <code>(passengers, from, to)</code>? Use a <strong>difference array</strong>: add passengers at the pickup point and subtract at the drop-off point, then the running sum is the load at each location.</p>
+<pre><code class="language-python">def car_pooling(trips, capacity):
+    diff = [0] * 1001
+    for n, s, e in trips:
+        diff[s] += n
+        diff[e] -= n
+    cur = 0
+    for d in diff:
+        cur += d
+        if cur &gt; capacity:
+            return False
+    return True
+</code></pre>
+<p>The size 1001 comes from the problem's bound on locations. Dry run: trips <code>[[2, 1, 5], [3, 3, 7]]</code>, capacity 4: at location 3 the load is 2 + 3 = 5 &gt; 4, so False.</p>
+<p><strong>Employee Free Time:</strong> flatten everyone's busy intervals, merge them (C1), and the gaps between merged blocks are the common free time.</p>
+<p><strong>My Calendar I/II:</strong> book intervals and reject double (or triple) bookings. Keep bookings in a sorted list and check neighbours with <code>bisect</code> for I. For II, keep a list of single bookings and a list of overlaps, or use a sweep over a sorted map of <code>+1/-1</code> counts.</p>
+<p><strong>Say it in 60 seconds (Car Pooling):</strong> "Instead of simulating every passenger, I record changes: plus n at the pickup, minus n at the drop-off. A running sum over locations then gives the exact load at each point, and I fail if it ever exceeds capacity. That's O(n + range). It's the same trick as the meeting-rooms sweep, written as an array because the locations are small integers."</p>
 <hr>
 <h2 id="d-matrix">D. Matrix</h2>
+<h3 id="the-idea_3">The idea</h3>
+<p>Matrix problems are usually about <strong>index arithmetic</strong>: how a cell's coordinates change under a rotation, which boundary to shrink in a spiral, or how to reuse part of the matrix as scratch memory to get O(1) space.</p>
+<p><strong>Analogy:</strong> rotating a photo on your phone. Every pixel moves to a new position by a fixed formula, and you can do it in place by first flipping along the diagonal and then mirroring left to right.</p>
+<h3 id="when-to-recognise-it_3">When to recognise it</h3>
+<ul>
+<li>"Rotate", "spiral", "transpose", "in place".</li>
+<li>"Set rows and columns to zero", "game of life".</li>
+<li>"Search a sorted matrix".</li>
+</ul>
+<hr>
 <h3 id="d1-rotate-image-90-clockwise-in-place">D1. Rotate Image 90° clockwise in place</h3>
-<p>Transpose, then reverse each row.</p>
+<p><strong>Problem in one sentence:</strong> rotate an n × n matrix 90 degrees clockwise without another matrix.</p>
+<p><strong>Key insight:</strong> transpose (swap across the main diagonal), then reverse each row. A clockwise rotation sends <code>(r, c)</code> to <code>(c, n-1-r)</code>. Transpose gives <code>(c, r)</code>, and reversing the row gives <code>(c, n-1-r)</code>.</p>
+<p><strong>Dry run:</strong></p>
+<pre><code class="language-text">original    transpose    reverse rows
+1 2 3       1 4 7        7 4 1
+4 5 6       2 5 8        8 5 2
+7 8 9       3 6 9        9 6 3
+</code></pre>
 <pre><code class="language-python">def rotate(m):
     n = len(m)
     for i in range(n):
@@ -221,8 +636,20 @@ def jump(nums):                       # min jumps, BFS by layers
     for row in m:
         row.reverse()
 </code></pre>
+<p><strong>Complexity:</strong> O(n²) time, O(1) extra space.</p>
+<p><strong>Say it in 60 seconds:</strong> "A 90-degree clockwise rotation moves cell (r, c) to (c, n minus 1 minus r). I get that in two in-place steps: transpose, which swaps r and c, then reverse each row, which mirrors the column. The transpose loop only touches cells above the diagonal so each pair swaps once. O(n²) time and O(1) extra space. Counter-clockwise is transpose then reverse each column."</p>
+<hr>
 <h3 id="d2-spiral-matrix">D2. Spiral Matrix</h3>
-<p>Shrink four boundaries: top, bottom, left, right.</p>
+<p><strong>Problem in one sentence:</strong> return all elements of a matrix in clockwise spiral order.</p>
+<p><strong>Key insight:</strong> shrink four boundaries: top, bottom, left, right. Walk the top row, then the right column, then the bottom row backwards, then the left column upwards, shrinking each boundary after use. The two <code>if</code> checks stop a single remaining row or column from being walked twice.</p>
+<p><strong>Dry run</strong> on <code>[[1, 2, 3], [4, 5, 6], [7, 8, 9]]</code>:</p>
+<pre><code class="language-text">top row 0:     1 2 3     top = 1
+right col 2:   6 9       right = 1
+bottom row 2:  8 7       bot = 1
+left col 0:    4         left = 1
+top row 1:     5         top = 2
+stop. answer [1, 2, 3, 6, 9, 8, 7, 4, 5]
+</code></pre>
 <pre><code class="language-python">def spiral_order(m):
     res = []
     top, bot, left, right = 0, len(m) - 1, 0, len(m[0]) - 1
@@ -239,20 +666,132 @@ def jump(nums):                       # min jumps, BFS by layers
             left += 1
     return res
 </code></pre>
+<p><strong>Complexity:</strong> O(R·C) time, O(1) extra.</p>
+<p><strong>Say it in 60 seconds:</strong> "I keep four boundaries. Each loop peels one layer: the top row left to right, the right column top to bottom, then the bottom row right to left and the left column bottom to top, shrinking each boundary after I use it. Before the last two walks I recheck the boundaries, because a single remaining row or column would otherwise be visited twice. Every cell is visited once."</p>
+<hr>
 <h3 id="d3-set-matrix-zeroes-o1-space">D3. Set Matrix Zeroes (O(1) space)</h3>
-<p>Use the first row and first column as markers, with a separate flag for the first column.</p>
+<p><strong>Problem in one sentence:</strong> if a cell is 0, set its entire row and column to 0, in place.</p>
+<p><strong>Key insight:</strong> you need to remember which rows and columns to clear. Instead of extra arrays, use the first row and first column as markers, with a separate flag for the first column (because <code>m[0][0]</code> can only mark one of row 0 or column 0).</p>
+<p><strong>Dry run:</strong></p>
+<pre><code class="language-text">input      after marking (row 1 has a zero at column 1)   result
+1 1 1      1 0 1                                          1 0 1
+1 0 1      0 0 1                                          0 0 0
+1 1 1      1 1 1                                          1 0 1
+</code></pre>
+<pre><code class="language-python">def set_zeroes(m):
+    R, C = len(m), len(m[0])
+    first_col_zero = any(m[r][0] == 0 for r in range(R))
+    for r in range(R):
+        for c in range(1, C):
+            if m[r][c] == 0:
+                m[r][0] = 0
+                m[0][c] = 0
+    for r in range(1, R):
+        for c in range(1, C):
+            if m[r][0] == 0 or m[0][c] == 0:
+                m[r][c] = 0
+    if m[0][0] == 0:
+        for c in range(1, C):
+            m[0][c] = 0
+    if first_col_zero:
+        for r in range(R):
+            m[r][0] = 0
+</code></pre>
+<p><strong>Complexity:</strong> O(R·C) time, O(1) extra space.</p>
+<p><strong>Say it in 60 seconds:</strong> "The simple way stores sets of zero rows and zero columns, O(R + C) space. To get O(1), I reuse the first row and first column as those sets. First I note whether column 0 itself has a zero, since <code>m[0][0]</code> will be busy marking row 0. Then I mark: a zero at (r, c) sets <code>m[r][0]</code> and <code>m[0][c]</code>. Then I clear the inner cells using the markers, and finally the first row and first column, in that order so the markers aren't destroyed early."</p>
+<hr>
 <h3 id="d4-search-a-2d-matrix">D4. Search a 2D Matrix</h3>
+<p><strong>Problem in one sentence (I):</strong> each row is sorted and each row starts after the previous row ends. <strong>(II):</strong> rows are sorted and columns are sorted separately. Find a target.</p>
 <ul>
-<li>Fully sorted (each row starts after the previous ends): binary search as a 1D array, <code>r, c = divmod(mid, C)</code>.</li>
-<li>Rows and columns sorted separately (II): start at the top-right. Go left if too big, down if too small. O(R + C).</li>
+<li><strong>Fully sorted (I):</strong> it's really one sorted array, so binary search as a 1D array, <code>r, c = divmod(mid, C)</code>.</li>
+<li><strong>Rows and columns sorted separately (II):</strong> start at the top-right. Go left if too big, down if too small. O(R + C). From the top-right, everything to the left is smaller and everything below is larger, so each comparison eliminates a whole row or column.</li>
 </ul>
+<pre><code class="language-python">def search_matrix(m, target):
+    R, C = len(m), len(m[0])
+    lo, hi = 0, R * C - 1
+    while lo &lt;= hi:
+        mid = (lo + hi) // 2
+        r, c = divmod(mid, C)
+        if m[r][c] == target:
+            return True
+        if m[r][c] &lt; target:
+            lo = mid + 1
+        else:
+            hi = mid - 1
+    return False
+
+def search_matrix_ii(m, target):
+    r, c = 0, len(m[0]) - 1
+    while r &lt; len(m) and c &gt;= 0:
+        if m[r][c] == target:
+            return True
+        if m[r][c] &gt; target:
+            c -= 1
+        else:
+            r += 1
+    return False
+</code></pre>
+<p><strong>Dry run (II)</strong> on target 5 in <code>[[1, 4, 7], [2, 5, 8], [3, 6, 9]]</code>: start at 7, too big, go left to 4. Too small, go down to 5. Found.</p>
+<p><strong>Complexity:</strong> O(log(R·C)) for I, O(R + C) for II.</p>
+<p><strong>Say it in 60 seconds (II):</strong> "I start at the top-right corner, where values get smaller as I move left and larger as I move down. If the value is bigger than the target, the whole column below is bigger too, so I move left. If it's smaller, the whole row to the left is smaller, so I move down. Each step discards a row or a column, so it's O(R + C)."</p>
+<hr>
 <h3 id="d5-valid-sudoku">D5. Valid Sudoku</h3>
-<p>Sets per row, column, and box, where <code>box = (r // 3) * 3 + c // 3</code>.</p>
+<p><strong>Problem in one sentence:</strong> check that no digit repeats in any row, column or 3 × 3 box of a partially filled board.</p>
+<p><strong>Key insight:</strong> sets per row, column, and box, where <code>box = (r // 3) * 3 + c // 3</code> numbers the boxes 0 to 8 left to right, top to bottom.</p>
+<pre><code class="language-python">def is_valid_sudoku(board):
+    rows = [set() for _ in range(9)]
+    cols = [set() for _ in range(9)]
+    boxes = [set() for _ in range(9)]
+    for r in range(9):
+        for c in range(9):
+            v = board[r][c]
+            if v == &quot;.&quot;:
+                continue
+            b = (r // 3) * 3 + c // 3
+            if v in rows[r] or v in cols[c] or v in boxes[b]:
+                return False
+            rows[r].add(v); cols[c].add(v); boxes[b].add(v)
+    return True
+</code></pre>
+<p><strong>Dry run:</strong> cell (4, 7) is in box <code>(4 // 3) * 3 + 7 // 3 = 3 + 2 = 5</code>, the middle-right box.</p>
+<p><strong>Complexity:</strong> O(81), constant.</p>
+<p><strong>Say it in 60 seconds:</strong> "I keep 27 sets: one per row, column and box. The box index for a cell is three times its box row plus its box column, which numbers the nine boxes. For each filled cell, if the digit is already in its row, column or box set, it's invalid. Otherwise I add it to all three. It's a fixed 81 cells, so constant time."</p>
+<hr>
 <h3 id="d6-game-of-life-in-place">D6. Game of Life (in place)</h3>
-<p>Encode the next state in extra bits: <code>2</code> = alive to dead, <code>3</code> = dead to alive, or use bit 1 for the next state.</p>
-<h3 id="d7-grid-bfsdfs-problems-islands-rotting-oranges-shortest-path-in-a-binary-matrix-see-graphs">D7. Grid BFS/DFS problems (islands, rotting oranges, shortest path in a binary matrix): see <a href="03_dsa_4_graphs_dsu.html">graphs</a>.</h3>
+<p><strong>Problem in one sentence:</strong> update a grid of live and dead cells to the next generation in place, where every cell's fate depends on its eight neighbours' <strong>current</strong> state.</p>
+<p><strong>Key insight:</strong> you can't overwrite cells as you go, because neighbours still need the old values. Encode the next state in extra bits: <code>2</code> = alive to dead, <code>3</code> = dead to alive, or use bit 1 for the next state. In the bit version, bit 0 is the current state and bit 1 the next. Count neighbours with <code>&amp; 1</code>, then shift everything right by one at the end.</p>
+<p><strong>Rules:</strong> a live cell with 2 or 3 live neighbours stays alive. A dead cell with exactly 3 live neighbours becomes alive. Everything else is dead next round.</p>
+<p><strong>Dry run</strong> (a "blinker"): a horizontal row of three live cells becomes a vertical column of three. The middle cell has 2 neighbours and stays alive. The cells above and below the middle have 3 neighbours and come alive. The two end cells have 1 neighbour and die.</p>
+<pre><code class="language-python">def game_of_life(board):
+    R, C = len(board), len(board[0])
+    for r in range(R):
+        for c in range(C):
+            live = sum(board[nr][nc] &amp; 1
+                       for nr in range(max(0, r - 1), min(R, r + 2))
+                       for nc in range(max(0, c - 1), min(C, c + 2))
+                       if (nr, nc) != (r, c))
+            if board[r][c] &amp; 1 and live in (2, 3):
+                board[r][c] |= 2
+            elif not board[r][c] &amp; 1 and live == 3:
+                board[r][c] |= 2
+    for r in range(R):
+        for c in range(C):
+            board[r][c] &gt;&gt;= 1
+</code></pre>
+<p><strong>Complexity:</strong> O(R·C) time, O(1) extra space.</p>
+<p><strong>Say it in 60 seconds:</strong> "Every cell's next state depends on its neighbours' current states, so I can't overwrite in one pass. I store the next state in the second bit of each cell and keep the current state in the first bit. When counting neighbours, I read only bit 0, so updates don't interfere. After the pass, shifting every cell right by one makes the next state current. O(R·C) time and O(1) extra memory."</p>
+<hr>
+<h3 id="d7-grid-bfsdfs-problems-islands-rotting-oranges-shortest-path-in-a-binary-matrix">D7. Grid BFS/DFS problems (islands, rotting oranges, shortest path in a binary matrix)</h3>
+<p>See <a href="03_dsa_4_graphs_dsu.html">graphs</a>. A grid is a graph where each cell is a node and its 4 (or 8) neighbours are edges.</p>
 <hr>
 <h2 id="e-bit-manipulation">E. Bit manipulation</h2>
+<h3 id="the-idea_4">The idea</h3>
+<p>Integers are stored as binary digits (bits), and bitwise operators work on all bits at once in a single CPU instruction. A few identities replace loops and extra memory.</p>
+<ul>
+<li><code>&amp;</code> (AND) is 1 where both bits are 1. <code>|</code> (OR) is 1 where either is. <code>^</code> (XOR) is 1 where they differ. <code>~</code> flips every bit. <code>&lt;&lt;</code> and <code>&gt;&gt;</code> shift bits left or right (multiply or divide by 2).</li>
+<li><strong>XOR is the star:</strong> <code>a ^ a = 0</code> and <code>a ^ 0 = a</code>, and order doesn't matter. So XOR-ing a list cancels every value that appears twice.</li>
+</ul>
+<p><strong>Analogy:</strong> a row of light switches. AND asks "are both on?", OR asks "is either on?", XOR asks "are they different?", and shifting slides the whole row of switches one place.</p>
 <table>
 <thead>
 <tr>
@@ -291,35 +830,160 @@ def jump(nums):                       # min jumps, BFS by layers
 </tr>
 </tbody>
 </table>
+<p>Worked example of <code>x &amp; (x - 1)</code>: x = 12 is <code>1100</code>. x - 1 = 11 is <code>1011</code>. AND gives <code>1000</code> = 8, which is 12 with its lowest 1-bit removed.</p>
+<h3 id="when-to-recognise-it_4">When to recognise it</h3>
+<ul>
+<li>"Every element appears twice except one", "find the missing number".</li>
+<li>"Without using + or *", "in O(1) extra space".</li>
+<li>"Power of two", "count set bits", "reverse bits".</li>
+<li>n ≤ 20 and "all subsets" (masks).</li>
+</ul>
+<h3 id="common-mistakes_3">Common mistakes</h3>
+<ul>
+<li>Python integers have unlimited size and negative numbers have infinitely many leading 1s, so 32-bit tricks need a mask like <code>0xFFFFFFFF</code>.</li>
+<li>Operator precedence: <code>x &amp; 1 == 0</code> parses as <code>x &amp; (1 == 0)</code>. Write <code>(x &amp; 1) == 0</code>.</li>
+</ul>
+<hr>
 <h3 id="e1-single-number-every-other-number-appears-twice">E1. Single Number (every other number appears twice)</h3>
-<p>XOR everything. O(n), O(1).</p>
+<p><strong>Key insight:</strong> XOR everything. Pairs cancel to 0, leaving the single number. O(n), O(1).</p>
+<p><strong>Dry run</strong> on <code>[4, 1, 2, 1, 2]</code>: 4 ^ 1 = 5, ^ 2 = 7, ^ 1 = 6, ^ 2 = 4. Answer 4.</p>
+<pre><code class="language-python">def single_number(nums):
+    x = 0
+    for v in nums:
+        x ^= v
+    return x
+</code></pre>
+<p><strong>Say it in 60 seconds:</strong> "XOR of a number with itself is zero, XOR with zero leaves a number unchanged, and order doesn't matter. So XOR-ing the whole array cancels every pair and leaves the unique number. One pass, constant space, no hashmap."</p>
+<hr>
 <h3 id="e2-single-number-ii-others-appear-three-times">E2. Single Number II (others appear three times)</h3>
-<p>Count each bit mod 3, or use the <code>ones/twos</code> state machine.</p>
+<p><strong>Key insight:</strong> count each bit mod 3, or use the <code>ones/twos</code> state machine. For each bit, <code>ones</code> holds it if it has appeared once (mod 3) and <code>twos</code> if twice. On the third appearance both clear.</p>
+<pre><code class="language-python">def single_number_ii(nums):
+    ones = twos = 0
+    for x in nums:
+        ones = (ones ^ x) &amp; ~twos
+        twos = (twos ^ x) &amp; ~ones
+    return ones
+</code></pre>
+<p><strong>Dry run</strong> on <code>[2, 2, 3, 2]</code>:</p>
+<pre><code class="language-text">x (binary)  ones  twos  what happened per bit
+2 (10)      10    00    bit 1 seen once
+2 (10)      00    10    bit 1 seen twice
+3 (11)      01    00    bit 1 seen a third time, so cleared; bit 0 seen once
+2 (10)      11    00    bit 1 seen a fourth time, which is once mod 3
+answer ones = 11 = 3
+</code></pre>
+<p>The masks track individual bits, not whole numbers, so trace it bit by bit as above.</p>
+<p><strong>Say it in 60 seconds:</strong> "Every bit position sees the triplicated numbers a multiple of three times, plus the unique number once. So I track, per bit, whether its count mod 3 is one or two, using two masks. Adding a number toggles it into <code>ones</code> unless it's already in <code>twos</code>, and into <code>twos</code> unless it's now in <code>ones</code>. On the third occurrence it clears from both. What's left in <code>ones</code> is the answer. O(n), O(1)."</p>
+<hr>
 <h3 id="e3-counting-bits">E3. Counting Bits</h3>
-<p><code>dp[i] = dp[i &gt;&gt; 1] + (i &amp; 1)</code>.</p>
+<p><strong>Problem in one sentence:</strong> for every i from 0 to n, return the number of 1 bits.</p>
+<p><strong>Key insight:</strong> <code>dp[i] = dp[i &gt;&gt; 1] + (i &amp; 1)</code>. Shifting right drops the last bit, so i has the same bits as <code>i // 2</code> plus its own last bit.</p>
+<p><strong>Dry run:</strong> <code>dp[5]</code> (101) = <code>dp[2]</code> (10, one bit) + 1 = 2.</p>
+<pre><code class="language-python">def count_bits(n):
+    dp = [0] * (n + 1)
+    for i in range(1, n + 1):
+        dp[i] = dp[i &gt;&gt; 1] + (i &amp; 1)
+    return dp
+</code></pre>
+<p><strong>Number of 1 Bits</strong> for a single integer (Kernighan's trick, one loop per set bit):</p>
+<pre><code class="language-python">def hamming_weight(x):
+    count = 0
+    while x:
+        x &amp;= x - 1
+        count += 1
+    return count
+</code></pre>
+<p><strong>Reverse Bits</strong> (32-bit): take the lowest bit of x and push it onto the result, 32 times.</p>
+<pre><code class="language-python">def reverse_bits(x):
+    res = 0
+    for _ in range(32):
+        res = (res &lt;&lt; 1) | (x &amp; 1)
+        x &gt;&gt;= 1
+    return res
+</code></pre>
+<p><strong>Complexity:</strong> Counting Bits O(n). Hamming weight O(number of set bits). Reverse Bits O(32).</p>
+<p><strong>Say it in 60 seconds (Counting Bits):</strong> "The bit count of i equals the bit count of i shifted right by one, plus whether i's last bit is 1. Since i shifted right is smaller, it's already computed, so it's a one-line DP and O(n) overall."</p>
+<hr>
 <h3 id="e4-missing-number">E4. Missing Number</h3>
-<p><code>XOR of 0..n</code> XOR <code>XOR of nums</code>, or <code>n(n+1)/2 - sum</code>.</p>
+<p><strong>Problem in one sentence:</strong> an array holds n distinct numbers from 0 to n with one missing. Find it.</p>
+<p><strong>Key insight:</strong> <code>XOR of 0..n</code> XOR <code>XOR of nums</code>, or <code>n(n+1)/2 - sum</code>. Every present number cancels with its index, leaving the missing one. XOR avoids overflow in fixed-width languages.</p>
+<p><strong>Dry run</strong> on <code>[3, 0, 1]</code>: start with x = 3 (n). Index 0, value 3: x = 3 ^ 0 ^ 3 = 0. Index 1, value 0: x = 0 ^ 1 ^ 0 = 1. Index 2, value 1: x = 1 ^ 2 ^ 1 = 2. Answer 2.</p>
+<pre><code class="language-python">def missing_number(nums):
+    x = len(nums)
+    for i, v in enumerate(nums):
+        x ^= i ^ v
+    return x
+</code></pre>
+<p><strong>Say it in 60 seconds:</strong> "If I XOR all indices 0 to n together with all values, every number that's present appears twice and cancels, so only the missing number remains. I start with n because indices only go to n minus 1. The sum formula works too, but XOR can't overflow in languages with fixed-size integers. O(n), O(1)."</p>
+<hr>
 <h3 id="e5-sum-of-two-integers-without-python-needs-a-32-bit-mask">E5. Sum of Two Integers without + (Python needs a 32-bit mask)</h3>
+<p><strong>Key insight:</strong> <code>a ^ b</code> adds without carries, and <code>(a &amp; b) &lt;&lt; 1</code> is the carries. Repeat until there are no carries. Python integers never overflow, so a negative carry would loop forever. The 32-bit mask stops the loop, and the last line converts a 32-bit result back to a Python negative number when needed.</p>
+<p><strong>Dry run</strong> on <code>a = 1</code>, <code>b = 2</code>: <code>a ^ b = 3</code>, carry <code>(1 &amp; 2) &lt;&lt; 1 = 0</code>. No carry, answer 3.</p>
 <pre><code class="language-python">def get_sum(a, b):
     mask = 0xFFFFFFFF
     while b &amp; mask:
         a, b = a ^ b, (a &amp; b) &lt;&lt; 1
     return a &amp; mask if b &gt; 0 else a
 </code></pre>
+<p><strong>Say it in 60 seconds:</strong> "XOR adds two numbers bit by bit while ignoring carries, and AND shifted left by one gives exactly the carries. I repeat, adding the carries back in, until there are none. In Java or Go that's the whole solution. In Python integers are unbounded, so I limit the loop to 32 bits with a mask, and if the carry ran off the top, I return the masked value, which gives the right two's-complement answer."</p>
+<hr>
 <h3 id="e6-subsets-via-bitmask">E6. Subsets via bitmask</h3>
-<p><code>for m in range(1 &lt;&lt; n): [nums[i] for i in range(n) if m &gt;&gt; i &amp; 1]</code>.</p>
-<p>Systems tie-in: bitmaps and Bloom filters (ClickHouse bloom skip indexes, which I used on product/store/attr), permission bitmasks, and consistent-hash ring positions.</p>
+<p><code>for m in range(1 &lt;&lt; n): [nums[i] for i in range(n) if m &gt;&gt; i &amp; 1]</code>. Each integer from 0 to 2^n - 1 is one subset: bit i says whether <code>nums[i]</code> is included.</p>
+<p><strong>Dry run</strong> on <code>[a, b]</code>: masks 00, 01, 10, 11 give <code>[]</code>, <code>[a]</code>, <code>[b]</code>, <code>[a, b]</code>.</p>
+<pre><code class="language-python">def subsets_bitmask(nums):
+    n = len(nums)
+    return [[nums[i] for i in range(n) if m &gt;&gt; i &amp; 1] for m in range(1 &lt;&lt; n)]
+</code></pre>
+<p><strong>Systems tie-in:</strong> bitmaps and Bloom filters (ClickHouse bloom skip indexes, which I used on product/store/attr), permission bitmasks, and consistent-hash ring positions. A <strong>Bloom filter</strong> is a bit array plus a few hash functions that answers "definitely not present" or "maybe present" using a few bits per key. A ClickHouse skip index uses it to skip blocks of rows that can't contain a filtered value. A <strong>permission bitmask</strong> stores many yes/no flags in one integer, checked with <code>&amp;</code>.</p>
 <hr>
 <h2 id="f-math-essentials">F. Math essentials</h2>
+<h3 id="the-idea_5">The idea</h3>
+<p>A handful of number facts come up as building blocks or follow-ups. Know the name, the one-line idea, and the complexity.</p>
 <ul>
-<li>GCD: <code>math.gcd</code>. LCM = <code>a * b // gcd</code>.</li>
-<li>Sieve of Eratosthenes for primes ≤ n: O(n log log n).</li>
-<li>Fast power: <code>pow(a, b, mod)</code>.</li>
-<li>Modular arithmetic: <code>(a + b) % m</code>. In Python, integers don't overflow; in Go they do.</li>
-<li>Reservoir sampling (pick k from a stream of unknown length): keep item i with probability k/i. Good for "sample logs uniformly."</li>
-<li>Random pick with weight: prefix sums + binary search.</li>
-<li>Pow(x, n), Sqrt(x) by binary search, Happy Number (cycle detection), Plus One, Multiply Strings.</li>
+<li><strong>GCD:</strong> <code>math.gcd</code>. The greatest common divisor, found by Euclid's algorithm (<code>gcd(a, b) = gcd(b, a % b)</code>), O(log min(a, b)). LCM = <code>a * b // gcd</code>.</li>
+<li><strong>Sieve of Eratosthenes</strong> for primes ≤ n: O(n log log n). Cross out multiples of each prime starting from its square.</li>
+<li><strong>Fast power:</strong> <code>pow(a, b, mod)</code>. Square-and-multiply in O(log b).</li>
+<li><strong>Modular arithmetic:</strong> <code>(a + b) % m</code>. In Python, integers don't overflow; in Go they do, so reduce after every multiplication.</li>
+<li><strong>Reservoir sampling</strong> (pick k from a stream of unknown length): keep item i with probability k/i. Good for "sample logs uniformly".</li>
+<li><strong>Random pick with weight:</strong> prefix sums + binary search.</li>
+<li>Pow(x, n), Sqrt(x) by binary search, Happy Number (cycle detection with fast/slow pointers), Plus One, Multiply Strings (grade-school multiplication into a result array of length m + n).</li>
 </ul>
+<pre><code class="language-python">def primes_up_to(n):
+    is_prime = [True] * (n + 1)
+    is_prime[0:2] = [False, False]
+    for i in range(2, math.isqrt(n) + 1):
+        if is_prime[i]:
+            for j in range(i * i, n + 1, i):
+                is_prime[j] = False
+    return [i for i, p in enumerate(is_prime) if p]
+
+def fast_pow(a, b, mod):
+    result = 1
+    a %= mod
+    while b:
+        if b &amp; 1:
+            result = result * a % mod
+        a = a * a % mod
+        b &gt;&gt;= 1
+    return result
+</code></pre>
+<p><strong>Dry run (fast power)</strong> for 3^5 mod 7: b = 5 (101). Bit 0 is 1, so result = 3, a = 9 % 7 = 2. Bit 1 is 0, a = 4. Bit 2 is 1, result = 3 × 4 % 7 = 5. Check: 3^5 = 243, and 243 % 7 = 5.</p>
+<h3 id="f1-random-pick-with-weight">F1. Random Pick with Weight</h3>
+<p><strong>Problem in one sentence:</strong> pick index i with probability proportional to <code>w[i]</code>.</p>
+<p><strong>Key insight:</strong> lay the weights end to end on a number line using prefix sums. A uniform random point on that line lands in segment i with probability <code>w[i] / total</code>. Binary search finds the segment.</p>
+<p><strong>Dry run:</strong> <code>w = [1, 3]</code>, prefix <code>[1, 4]</code>. A random x in [0, 4): below 1 picks index 0 (probability 1/4), otherwise index 1 (3/4).</p>
+<pre><code class="language-python">class WeightedPicker:
+    def __init__(self, w):
+        self.prefix = list(accumulate(w))
+    def pick(self):
+        x = random.random() * self.prefix[-1]
+        return bisect.bisect_right(self.prefix, x)
+</code></pre>
+<p><strong>Complexity:</strong> O(n) setup, O(log n) per pick.</p>
+<h3 id="f2-reservoir-sampling">F2. Reservoir sampling</h3>
+<p><strong>Problem in one sentence:</strong> choose k items uniformly at random from a stream whose length you don't know in advance, using O(k) memory.</p>
+<p><strong>Key insight:</strong> keep the first k items. For item i (counting from 1), replace a random slot with probability k/i. Every item ends up in the sample with probability k/n.</p>
+<p><strong>Dry run</strong> with k = 1 on a stream <code>a, b, c</code>: keep a. At b, replace with probability 1/2. At c, replace with probability 1/3. So c is kept with probability 1/3, and b with probability 1/2 × 2/3 = 1/3, and a with 1/2 × 2/3 = 1/3.</p>
 <pre><code class="language-python">def reservoir_sample(stream, k):
     res = []
     for i, x in enumerate(stream, 1):
@@ -330,7 +994,9 @@ def jump(nums):                       # min jumps, BFS by layers
             if j &lt;= k:
                 res[j - 1] = x
     return res
-</code></pre></main>
+</code></pre>
+<p><strong>Complexity:</strong> O(n) time, O(k) space.</p>
+<p><strong>Say it in 60 seconds:</strong> "I can't store the stream, so I keep a reservoir of k items. The first k go straight in. For the i-th item after that, I draw a random number from 1 to i, and if it's at most k, the new item replaces that slot. By induction, after i items each one has been kept with probability k over i. It's the standard way to sample logs uniformly from a stream of unknown size."</p></main>
 </div>
 
 <script type="module">

@@ -40,31 +40,443 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+AI</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_ai/campaign_extras/interview_prep/tech_depth/postgres_mysql_redis.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#postgresql-mysql-redis-sqlalchemy">PostgreSQL + MySQL + Redis + SQLAlchemy</a>
-<a class="lvl2" href="#what">What</a>
-<a class="lvl2" href="#how-used-here">How used here</a>
-<a class="lvl2" href="#tradeoffs">Tradeoffs</a>
-<a class="lvl2" href="#failure-modes">Failure modes</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a></nav>
-<main><h1 id="postgresql-mysql-redis-sqlalchemy">PostgreSQL + MySQL + Redis + SQLAlchemy</h1>
-<h2 id="what">What</h2>
-<p>Relational stores + cache. SQLAlchemy 2.0 on FRM MySQL. PostgreSQL quarter sharding on Masters. Redis cache-aside.</p>
-<h2 id="how-used-here">How used here</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#postgresql-mysql-redis-and-spring-data-jpa-hibernate-plus-mongodb-and-elasticsearch-briefly">PostgreSQL, MySQL, Redis and Spring Data JPA / Hibernate (plus MongoDB and Elasticsearch, briefly)</a>
+<a class="lvl2" href="#1-relational-database-ideas-interviewers-probe">1. Relational database ideas interviewers probe</a>
+<a class="lvl2" href="#2-mysql-at-uber-frm-uber-via-epam">2. MySQL at Uber FRM (Uber via EPAM)</a>
+<a class="lvl2" href="#3-spring-data-jpa-hibernate-and-the-column-aliasing-bug">3. Spring Data JPA, Hibernate and the column-aliasing bug</a>
+<a class="lvl2" href="#4-postgresql-at-masters-india-sharded-by-tax-quarter">4. PostgreSQL at Masters India: sharded by tax quarter</a>
+<a class="lvl2" href="#5-postgresql-at-impact-analytics-thin-metadata">5. PostgreSQL at Impact Analytics: thin metadata</a>
+<a class="lvl2" href="#6-redis">6. Redis</a>
+<a class="lvl2" href="#7-mongodb-and-elasticsearch-briefly">7. MongoDB and Elasticsearch, briefly</a>
+<a class="lvl2" href="#8-interview-questions-with-speakable-answers">8. Interview questions with speakable answers</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="postgresql-mysql-redis-and-spring-data-jpa-hibernate-plus-mongodb-and-elasticsearch-briefly">PostgreSQL, MySQL, Redis and Spring Data JPA / Hibernate (plus MongoDB and Elasticsearch, briefly)</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li>FRM: 11-table MySQL schema recon migration Sheets→MySQL.</li>
-<li>Masters: PG sharding + Redis cutting redundant reads 30%.</li>
-<li>IA: thin PG metadata (auth/tenant/workflow) beside ClickHouse.</li>
+<li><strong>What it covers:</strong> the relational databases and cache on my resume, taught from scratch: transactions, indexes, locking, sharding, cache-aside and stampedes. It also covers the Java data layer (Spring Data JPA, Hibernate, JdbcTemplate, HikariCP, Spring Data Redis) and where I used each one: Uber FRM on MySQL, Masters India on sharded PostgreSQL with Redis, Impact Analytics' thin Postgres plus a Redis-fronted auth path, and GeeksforGeeks on MySQL, MongoDB, Redis and Elasticsearch.</li>
+<li><strong>When to read it:</strong> before any database, data modelling or "design the schema" round, and before the FRM and Masters deep dives.</li>
+<li><strong>What to memorise:</strong> FRM is an 8-table normalized MySQL schema on SOADB, with SHA-256 natural keys, optimistic row-locking through a JPA <code>@Version</code> field, and <code>@Transactional</code> cross-table syncs. The column-aliasing bug story and its fix (a JPQL query with an explicit, unique alias on every column, mapped into a typed projection). Masters is PostgreSQL sharded by tax quarter, reached through Hibernate and JdbcTemplate over HikariCP pools, with Redis cache-aside cutting read load 30%. At IA, Postgres keeps thin metadata, UAM and roles while ClickHouse holds the facts.</li>
 </ul>
-<h2 id="tradeoffs">Tradeoffs</h2>
-<p>OLTP correctness vs OLAP speed (CH). Cache freshness vs load. Repository layer vs raw SQL.</p>
-<h2 id="failure-modes">Failure modes</h2>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc or code for it. STATED means printed on the resume from the project source. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. Verbal means true but off the resume.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
 <ul>
-<li>Column aliasing bugs on joins (FRM fix story)</li>
-<li>Cache stampede</li>
-<li>Shard key mistakes</li>
+<li><strong>FRM schema is 8 tables</strong> on the resume. 11 is the ORM entity count in code (verbal). Older prep said "11-table schema". Use 8.</li>
+<li><strong>100% is module statement coverage</strong> for the FRM migration. It is not all of Uber Finance.</li>
+<li><strong>Led 3 engineers</strong> is Uber FRM (tech lead of an EPAM pod, not people manager). <strong>Mentored 2</strong> is Masters India. Do not merge them.</li>
+<li><strong>30% is database read load</strong>, not latency.</li>
+<li>The FRM real-time collaboration and Slack notification service was a <strong>separate service</strong> I did not build.</li>
+<li>Snippets are teaching sketches. Column, table and class names are illustrative unless stated.</li>
 </ul>
-<h2 id="likely-questions">Likely questions</h2>
-<p>Walk SQLAlchemy 2.0 Mapped models. Explain recon v2. How does quarter sharding work? Cache invalidation strategy?</p></main>
+</div>
+<hr>
+<h2 id="1-relational-database-ideas-interviewers-probe">1. Relational database ideas interviewers probe</h2>
+<p>A <strong>relational database</strong> stores data in tables of rows and columns, links tables with keys, and guarantees <strong>transactions</strong>. PostgreSQL and MySQL are the two most common open-source ones. Both are <strong>OLTP</strong> databases (Online Transaction Processing): many small, correct reads and writes. ClickHouse, by contrast, is built for big analytical scans (see <a href="clickhouse.html">clickhouse.md</a>).</p>
+<h3 id="11-transactions-and-acid">1.1 Transactions and ACID</h3>
+<p>A <strong>transaction</strong> groups statements so they all happen or none do. <strong>ACID</strong> stands for:</p>
+<ul>
+<li><strong>Atomic:</strong> all or nothing. A bank transfer debits and credits together.</li>
+<li><strong>Consistent:</strong> constraints hold before and after.</li>
+<li><strong>Isolated:</strong> concurrent transactions don't see each other's half-done work.</li>
+<li><strong>Durable:</strong> once committed, it survives a crash.</li>
+</ul>
+<p><strong>Isolation levels</strong> trade safety for concurrency: Read Committed (Postgres default), Repeatable Read (MySQL InnoDB default), Serializable (strictest).</p>
+<h3 id="12-indexes">1.2 Indexes</h3>
+<p>An <strong>index</strong> is a sorted lookup structure, usually a <strong>B-tree</strong>, that lets the database find rows without scanning the table. It is like the index at the back of a book. A <strong>composite index</strong> on <code>(client_id, invoice_date)</code> serves queries that filter by client and then by date range, but not queries that filter by date alone (the leftmost-prefix rule). Indexes speed reads and slow writes. Use <code>EXPLAIN</code> / <code>EXPLAIN ANALYZE</code> to see whether the planner uses them.</p>
+<h3 id="13-the-n1-query-problem">1.3 The N+1 query problem</h3>
+<p>Loading 100 invoices, then running one extra query per invoice for its client, is 1 + 100 queries. The fix is a join or a batched <code>IN (...)</code> query. ORMs make this easy to do by accident. In Hibernate the classic cause is a lazily loaded association touched inside a loop. The usual fix is a <code>join fetch</code> in the JPQL query or an entity graph.</p>
+<h3 id="14-locking-pessimistic-versus-optimistic">1.4 Locking: pessimistic versus optimistic</h3>
+<ul>
+<li><strong>Pessimistic locking</strong> locks the row while you work on it (<code>SELECT ... FOR UPDATE</code>). It is safe, but others wait, and long locks cause contention.</li>
+<li><strong>Optimistic locking</strong> does not lock. Each row has a <code>version</code> column. You update only if the version is still what you read, and bump it. If someone else changed it first, your update affects 0 rows and you retry or tell the user. Analogy: editing a shared document that warns "this was changed since you opened it".</li>
+</ul>
+<pre><code class="language-sql">-- Optimistic row-locking, the SQL underneath. Teaching sketch.
+UPDATE scoping_assessment
+SET status = 'Review', version = version + 1, updated_by = :email
+WHERE uuid = :uuid AND version = :version_read;
+-- 0 rows affected means someone else won: reload and retry.
+</code></pre>
+<p>In Java with JPA you rarely write that SQL by hand. Section 2.7 shows how a <code>@Version</code> field makes Hibernate write it for you.</p>
+<h3 id="15-connection-pooling">1.5 Connection pooling</h3>
+<p>Opening a database connection is expensive (TCP, TLS, auth). A <strong>pool</strong> keeps a set of open connections and lends them out per request. Without pooling, a traffic spike becomes a connection storm. <strong>HikariCP</strong> is the connection pool Spring Boot uses by default: you set a maximum pool size and a connection timeout, and each request borrows a connection and returns it when done. At Masters, per-service HikariCP pools replaced PHP-FPM's per-request connections and were one of the causes of the latency win.</p>
+<h3 id="16-partitioning-versus-sharding">1.6 Partitioning versus sharding</h3>
+<ul>
+<li><strong>Partitioning</strong> splits one table into pieces inside one database (Postgres declarative <code>PARTITION BY RANGE</code>).</li>
+<li><strong>Sharding</strong> splits data across separate tables, schemas or servers, with routing logic choosing where each row goes.</li>
+</ul>
+<p>Both let you prune what a query touches and archive old data cheaply. Sharding also spreads write load, at the cost of routing complexity.</p>
+<h3 id="17-natural-keys-versus-surrogate-keys">1.7 Natural keys versus surrogate keys</h3>
+<p>A <strong>surrogate key</strong> is an arbitrary id (auto-increment, random UUID). A <strong>natural key</strong> comes from the data itself. A <strong>deterministic hashed natural key</strong> computes the id from the identifying fields, so the same logical record always gets the same id, and re-imports cannot create duplicates.</p>
+<hr>
+<h2 id="2-mysql-at-uber-frm-uber-via-epam">2. MySQL at Uber FRM (Uber via EPAM)</h2>
+<h3 id="21-the-bullets">2.1 The bullets</h3>
+<blockquote>
+<p>Owned the Financial Risk Management scoping backend, reducing quarterly reconciliation time by <strong>70%</strong> (from <strong>14 days to 3 days</strong>) against a <strong>$340M</strong> materiality threshold. Engineered the Sheets-to-MySQL migration across <strong>19M</strong> raw GL rows, shipping <strong>36 Spring Boot</strong> endpoints to automate custom financial math and a nested 4-level FSLI (L1-L4) hierarchy with dynamic quarter-annualization.</p>
+<p>Resolved ETL pipeline lock contention during financial close by designing an <strong>8-table normalized MySQL schema on Uber's SOADB</strong> featuring a polymorphic review-status model. Guaranteed real-time, multi-user collaboration integrity by implementing optimistic row-locking, atomic cross-table syncs, and deterministic SHA-256 natural-key hashing to eliminate data duplication across quarterly audit trails.</p>
+<p>Led <strong>3 engineers</strong> in a core Spring Data JPA / Hibernate migration that eliminated latent column-aliasing bugs and raised module statement coverage to <strong>100%</strong>. Orchestrated zero-downtime releases via stacked Bazel PRs, embedding reporting SQL allowlists and automated FSM gates with <strong>50%</strong> delta-variance checks to enforce SOX compliance.</p>
+</blockquote>
+<h3 id="22-in-plain-words">2.2 In plain words</h3>
+<p>Uber Finance used Google Sheets to decide each quarter which financial line items and entities were material enough to need audit testing. <strong>FRM</strong> is Financial Risk Management. A <strong>GL</strong> (general ledger) is the master record of accounting entries. An <strong>FSLI</strong> (Financial Statement Line Item) is one line on the balance sheet or income statement, organised in four levels, L1 (broadest) to L4 (most detailed). <strong>SOADB</strong> is Uber's service-owned MySQL standard. We moved the data and the math from Sheets into MySQL behind a Java Spring Boot service.</p>
+<h3 id="23-how-the-schema-solved-lock-contention">2.3 How the schema solved lock contention</h3>
+<p>During financial close, an ETL load and several analysts were writing at the same time. With wide, denormalised tables, the load and the analysts' edits fought over the same rows and locks. An <strong>8-table normalized schema</strong> separated the fact data (balance sheet and income statement rows) from mappings, assessments, thresholds and review status, so loads and edits touch different rows and tables.</p>
+<p>Facts about the schema (verbal depth):</p>
+<ul>
+<li>Every table carries a fiscal period key (<code>fiscal_quarter</code>, <code>fiscal_year</code>) and audit columns (<code>created_at/by</code>, <code>updated_at/by</code>).</li>
+<li>Relationships are logical joins on <code>level_id</code> plus fiscal period, not database-level foreign keys. That matters for the bug story below.</li>
+<li>There are 11 JPA entity classes in code. The resume number is 8 tables.</li>
+</ul>
+<div class="mermaid">flowchart LR
+    ETL["HFM ETL load"] --&gt; FACT["Fact tables: balance_sheet, income_statement"]
+    MAP["level_mapping: L1 to L4"] --&gt; SVC["FRM Spring Boot service"]
+    FACT --&gt; SVC
+    SVC --&gt; ASM["Assessments and thresholds"]
+    SVC --&gt; REV["Polymorphic review status"]
+    U["Finance analysts"] --&gt; SVC
+</div>
+<p><em>What to notice: the ETL writes facts while analysts mostly write assessments and review status, so the two stop fighting over the same rows.</em></p>
+<h3 id="24-the-polymorphic-review-status-model">2.4 The polymorphic review-status model</h3>
+<p>One review-status model is reused across all eight screens (Reconciliation, Materiality, EMI Scoping, Group Scoping, Threshold Setup, Component Scoping, Residual Risk, Summary) instead of a status column per screen. The statuses are Draft, Review, ReOpen and Closed. The allowed moves between them form a <strong>finite state machine (FSM)</strong>, with automated gates such as the <strong>50% delta-variance check</strong>: a period-over-period change of 50% or more is flagged at a gate, supporting <strong>SOX</strong> (Sarbanes-Oxley) controls.</p>
+<pre><code class="language-text">Draft --submit--&gt; Review --approve--&gt; Closed
+                    |                   |
+                    +--reject--&gt; Draft  +--reopen--&gt; ReOpen --submit--&gt; Review
+(illustrative transitions)
+</code></pre>
+<p>In Java the statuses are a single enum shared by every entity that can be reviewed, stored as a string column with <code>@Enumerated(EnumType.STRING)</code>, and the service checks each transition against the allowed moves before saving.</p>
+<h3 id="25-atomic-cross-table-syncs">2.5 Atomic cross-table syncs</h3>
+<p>Some edits must update two tables together. For example, patching an EMI "Total" also mirrors the amount into <code>balance_sheet</code> / <code>income_statement</code>, and updating benchmark metrics touches two benchmark tables. These run inside <strong>one <code>@Transactional</code> service method</strong>. <code>@Transactional</code> is a Spring annotation that means "run this whole method as one database transaction": Spring opens a transaction when the method starts, commits when it returns, and rolls back if it throws an unchecked exception. If the dependent sync affects zero rows, the method throws and the whole thing rolls back. No half-updated audit trail.</p>
+<pre><code class="language-java">// Teaching sketch.
+@Transactional
+public void patchEmiTotal(String uuid, BigDecimal amount, String email) {
+    EmiLine line = emiRepo.findById(uuid).orElseThrow(NotFoundException::new);
+    line.setTotal(amount);
+    line.setUpdatedBy(email);                       // written at commit (dirty checking)
+    int synced = balanceSheetRepo.mirrorAmount(line.getLevelId(), amount, email);
+    if (synced == 0) {
+        throw new SyncFailedException(uuid);        // unchecked, so Spring rolls back both writes
+    }
+}
+</code></pre>
+<p><em>What to notice: both writes commit together or not at all. </em><em>Dirty checking</em><em> means Hibernate notices which loaded entities changed and writes them at commit, so there is no explicit <code>save</code> call for <code>line</code>.</em></p>
+<h3 id="26-sha-256-natural-keys">2.6 SHA-256 natural keys</h3>
+<p>Each quarter's import must not duplicate rows from the previous one. The uuid is computed deterministically, for example <code>uuid = SHA-256(question_text + normalized page_name)</code>. <strong>SHA-256</strong> turns any input into a fixed 64-character fingerprint, and the same input always gives the same fingerprint. Importing the same logical record twice gives the same key, and the upsert becomes a no-op.</p>
+<pre><code class="language-java">// Teaching sketch.
+static String naturalKey(String questionText, String pageName) {
+    String norm = pageName.strip().toLowerCase(Locale.ROOT);
+    try {
+        byte[] digest = MessageDigest.getInstance(&quot;SHA-256&quot;)
+                .digest((questionText + &quot;|&quot; + norm).getBytes(StandardCharsets.UTF_8));
+        return HexFormat.of().formatHex(digest);
+    } catch (NoSuchAlgorithmException e) {
+        throw new IllegalStateException(e);   // SHA-256 is always present in the JDK
+    }
+}
+</code></pre>
+<h3 id="27-optimistic-row-locking-with-version">2.7 Optimistic row-locking with <code>@Version</code></h3>
+<p>Several analysts can edit during close. Optimistic locking (section 1.4) means nobody holds long locks, and a stale edit is rejected rather than silently overwriting a colleague's change.</p>
+<p>In JPA (the Java Persistence API, the standard for mapping Java classes to tables) you get this by adding a <code>@Version</code> field to the entity. Hibernate then adds <code>AND version = ?</code> and <code>version = version + 1</code> to every UPDATE it generates. If the row changed since you loaded it, zero rows match and Hibernate throws an optimistic-locking exception, which the API maps to <strong>409 Conflict</strong> so the user reloads.</p>
+<pre><code class="language-java">// Teaching sketch.
+@Entity
+@Table(name = &quot;scoping_assessment&quot;)
+public class ScopingAssessment {
+    @Id
+    private String uuid;
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus status;
+    private String updatedBy;
+    @Version
+    private long version;          // Hibernate checks and bumps this on every update
+    // getters and setters omitted
+}
+
+@Transactional
+public AssessmentDto submit(String uuid, long versionFromClient, String email) {
+    ScopingAssessment a = repo.findById(uuid).orElseThrow(NotFoundException::new);
+    if (a.getVersion() != versionFromClient) {
+        throw new StaleVersionException(uuid);      // mapped to 409
+    }
+    a.setStatus(ReviewStatus.REVIEW);
+    a.setUpdatedBy(email);
+    return AssessmentDto.from(a);   // at commit: UPDATE ... WHERE uuid = ? AND version = ?
+}
+</code></pre>
+<p><em>What to notice: the service compares the version the browser saw with the one it loaded. Hibernate's own check at commit catches the race where someone else writes in between.</em></p>
+<p>Say this carefully if pressed on the real-time side: the real-time collaboration and notification service was a separate service I did not build. Older prep notes that the version-check layer for real-time sync lives partly in that collaboration service and the client, so keep your detailed claims to the scoping service's transactional, per-uuid writes.</p>
+<h3 id="28-the-numbers">2.8 The numbers</h3>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Meaning</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>70%, from 14 days to 3 days</td>
+<td>Quarterly reconciliation time</td>
+<td>STATED. The technical design doc framed that cut and the platform delivered it for the close. (14 - 3) / 14 is about 79%, so 70% is the conservative figure</td>
+</tr>
+<tr>
+<td>$340M</td>
+<td>Group materiality threshold on the Q4 2025 close. It is a threshold, not a volume</td>
+<td>MEASURED (config row)</td>
+</tr>
+<tr>
+<td>19M</td>
+<td>Raw GL rows migrated off Sheets</td>
+<td>STATED. Per-quarter extracts were about 38K to 95K rows. The value was correctness, hierarchy and auditability, not big-data throughput</td>
+</tr>
+<tr>
+<td>36 endpoints</td>
+<td>Spring Boot endpoints: about 31 functional routes in the scoping service plus the collaboration-service APIs from the design doc</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>8 tables</td>
+<td>Normalized schema on SOADB</td>
+<td>MEASURED</td>
+</tr>
+<tr>
+<td>100%</td>
+<td>Module statement coverage after the Spring Data JPA / Hibernate migration. 1,100+ tests (verbal)</td>
+<td>STATED</td>
+</tr>
+<tr>
+<td>50%</td>
+<td>Delta-variance threshold at FSM gates</td>
+<td>STATED</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="3-spring-data-jpa-hibernate-and-the-column-aliasing-bug">3. Spring Data JPA, Hibernate and the column-aliasing bug</h2>
+<h3 id="31-what-these-are">3.1 What these are</h3>
+<ul>
+<li><strong>JPA</strong> (Jakarta Persistence API) is the Java standard for mapping classes to tables. It is a specification, a set of annotations and interfaces, not a library you run.</li>
+<li><strong>Hibernate</strong> is the most widely used JPA implementation. It turns entity changes into SQL, tracks which loaded objects changed (dirty checking), and handles <code>@Version</code> checks. An <strong>ORM</strong> (Object-Relational Mapper) like Hibernate lets you work with objects instead of raw SQL strings. Analogy: a translator who speaks both Java and SQL, so you talk in objects and it writes the SQL.</li>
+<li><strong>Spring Data JPA</strong> sits on top. You declare a repository interface, and Spring generates the implementation: <code>findById</code>, <code>save</code>, and query methods derived from names like <code>findByFiscalQuarterAndFiscalYear</code>. For anything more complex you write <strong>JPQL</strong>, a SQL-like language that talks about entities and fields instead of tables and columns.</li>
+<li>An <strong>entity</strong> is a class marked <code>@Entity</code> that maps to a table. A <strong>projection</strong> is a query that returns only some columns into a small typed result instead of whole entities. Spring Data maps each result column to a projection getter <strong>by its alias</strong>, which is why aliases matter in the bug story.</li>
+</ul>
+<pre><code class="language-java">// Teaching sketch.
+@Entity
+@Table(name = &quot;level_mapping&quot;)
+public class LevelMapping {
+    @Id
+    private String uuid;
+    private String levelId;
+    private String fiscalQuarter;
+    private int fiscalYear;
+}
+
+public interface LevelMappingRepository extends JpaRepository&lt;LevelMapping, String&gt; {
+    List&lt;LevelMapping&gt; findByFiscalQuarterAndFiscalYear(String quarter, int year);
+}
+</code></pre>
+<p><em>What to notice: the repository is just an interface. Spring writes the query from the method name.</em></p>
+<h3 id="32-the-bug-tell-this-precisely">3.2 The bug (tell this precisely)</h3>
+<p>The legacy read path ran raw SQL through JDBC and built each result row into a map keyed by column label. That is only safe when column names are unique. The component aggregate <strong>joined the fact table to <code>level_mapping</code></strong>, and both had columns named <code>uuid</code>, <code>level_id</code>, <code>fiscal_quarter</code> and <code>fiscal_year</code>. The result had two columns literally labelled <code>uuid</code>. The loop walked columns by position, and <code>Map.put</code> with a key that already exists replaces the old value, so each row silently kept the <strong>last</strong> one: the <code>level_mapping</code> uuid instead of the fact uuid.</p>
+<p>Symptom: rows looked right on screen, but a PATCH by uuid or a comment pointed at the wrong line. It surfaced when editing one reconciliation line appeared to change a different line.</p>
+<pre><code class="language-java">// Before: silent collision. Two columns labelled &quot;uuid&quot;, the last one wins.
+for (int c = 1; c &lt;= meta.getColumnCount(); c++) {
+    row.put(meta.getColumnLabel(c), rs.getObject(c));
+}
+</code></pre>
+<pre><code class="language-java">// After: JPQL with an explicit, unique alias on every column, mapped to a typed projection.
+public interface ComponentRow {
+    String getFsliId();
+    String getLevelMappingUuid();
+    String getFactQuarter();
+}
+
+@Query(&quot;&quot;&quot;
+    select min(i.uuid)          as fsliId,
+           max(lm.uuid)         as levelMappingUuid,
+           max(i.fiscalQuarter) as factQuarter
+    from ComponentEntity i
+    join LevelMapping lm on lm.levelId = i.levelId and lm.fiscalQuarter = i.fiscalQuarter
+    where i.fiscalQuarter = :quarter and i.fiscalYear = :year
+    group by lm.level1
+    &quot;&quot;&quot;)
+List&lt;ComponentRow&gt; findComponentRows(@Param(&quot;quarter&quot;) String quarter, @Param(&quot;year&quot;) int year);
+</code></pre>
+<p><em>What to notice: with explicit aliases, no two result columns can share a name, and each value lands in its own typed getter.</em></p>
+<h3 id="33-leading-the-migration">3.3 Leading the migration</h3>
+<ul>
+<li><strong>Led 3 engineers</strong> as tech lead of the EPAM pod. Work was sliced along controller, service, repository and entity layers, so two people could build one feature without merge collisions.</li>
+<li><strong>Transaction discipline:</strong> <code>@Transactional</code> on service methods replaced hand-written commit and rollback code in every repository. Short, single-purpose transactions also kept locks short during close.</li>
+<li><strong>Thread model:</strong> Spring Boot's servlet stack serves each request on its own thread from a pool, so blocking JDBC calls are normal and need no special offloading.</li>
+<li><strong>Stacked Bazel PRs:</strong> small dependent PRs, each passing Bazel test targets per layer (JUnit 5 with Mockito, and MockMvc for controllers), so the migration shipped in steps with zero downtime.</li>
+<li><strong>Reporting SQL allowlists:</strong> only known, reviewed reporting queries may run.</li>
+<li><strong>Defences against double-counting:</strong> a parent-equals-sum-of-children invariant in the test plan, an explicit alias on every projected column, and active-flag filters so stale rows drop out.</li>
+</ul>
+<h3 id="34-alternatives-and-trade-offs">3.4 Alternatives and trade-offs</h3>
+<ul>
+<li><em>Keep raw SQL and just fix the one query.</em> Fixes the symptom, not the class of bug.</li>
+<li><em>MyBatis or jOOQ.</em> More direct control over SQL, but no built-in <code>@Version</code> checks or dirty checking, and the platform's Spring conventions already pointed at JPA.</li>
+<li><em>Trade-off:</em> migrating every query is slow work, and an ORM can hide what SQL runs. That is why coverage had to reach 100% on the module, to prove nothing regressed, and why we kept explicit aliases even inside JPQL.</li>
+</ul>
+<hr>
+<h2 id="4-postgresql-at-masters-india-sharded-by-tax-quarter">4. PostgreSQL at Masters India: sharded by tax quarter</h2>
+<blockquote>
+<p>Architected a high-concurrency bulk e-invoicing pipeline processing <strong>1M+</strong> daily government submissions by orchestrating a Kafka event bus and a <strong>PostgreSQL</strong> database horizontally sharded by tax quarter. Enforced exactly-once, idempotent processing for <strong>100K+</strong> concurrent imports with fault-tolerant state management via dead-letter queues and bounded retries against volatile state IRP portals.</p>
+</blockquote>
+<h3 id="41-why-shard-by-tax-quarter">4.1 Why shard by tax quarter</h3>
+<p>Indian GST (Goods and Services Tax) reporting is quarter-scoped and deadline-driven. Writes concentrate in the current quarter. Older quarters are mostly read for reconciliation and audits. Separate per-quarter tables or schemas:</p>
+<ul>
+<li>keep the hot write set and its indexes small,</li>
+<li>let us archive or prune a whole cold quarter without touching the hot one,</li>
+<li>give clear runbooks ("Q3 is frozen").</li>
+</ul>
+<div class="mermaid">flowchart LR
+    API["Invoice API in Spring Boot"] --&gt; ROUTE["Quarter router: derive quarter from invoice date"]
+    ROUTE --&gt; Q1["Shard: FY Q1"]
+    ROUTE --&gt; Q2["Shard: FY Q2"]
+    ROUTE --&gt; Q3["Shard: current quarter, hot writes"]
+    Q1 --&gt; ARCH["Archive cold quarters"]
+</div>
+<p><em>What to notice: routing happens in application code, from the invoice date, before any write.</em></p>
+<ul>
+<li><strong>Trade-off versus native partitioning:</strong> we owned routing in application code, which is more moving parts than Postgres declarative partitions, in exchange for explicit control over archiving whole quarters.</li>
+<li><strong>The main risk:</strong> a write going to the wrong quarter. We derived the quarter from the invoice date at the API boundary and rejected mismatches.</li>
+<li><strong>In Spring terms:</strong> if quarters are separate tables, the repository picks the table name from the derived quarter. If they are separate schemas, Spring's <code>AbstractRoutingDataSource</code> does the same job one level down: the service sets the quarter for the current call and the routing data source hands Hibernate a connection to that quarter's schema. Either shape is an illustration of "routing in application code".</li>
+</ul>
+<h3 id="42-how-the-services-talked-to-postgresql">4.2 How the services talked to PostgreSQL</h3>
+<ul>
+<li><strong>Hibernate entities</strong> for normal reads and writes of invoices, clients and import batches.</li>
+<li><strong>JdbcTemplate</strong> for hot paths that are one SQL statement, such as the idempotency claim below and bulk inserts. <code>JdbcTemplate</code> (and <code>NamedParameterJdbcTemplate</code>) is Spring's thin helper for running plain SQL with parameters, without loading entities.</li>
+<li><strong>HikariCP</strong> pools per service, so no request pays for opening a connection.</li>
+</ul>
+<h3 id="43-idempotency-in-the-database">4.3 Idempotency in the database</h3>
+<p>Each import chunk carries an idempotency key like <code>client + fileHash + batchIndex</code>. A unique constraint on it means a re-delivered Kafka message cannot create a second registration. Duplicate registration with the government is a compliance problem, not just a data bug.</p>
+<pre><code class="language-java">// Teaching sketch. Returns true only for the first delivery of this chunk.
+boolean claim(String idemKey, long clientId) {
+    int inserted = jdbc.update(&quot;&quot;&quot;
+        INSERT INTO import_batches (idem_key, client_id, status)
+        VALUES (:k, :client, 'processing')
+        ON CONFLICT (idem_key) DO NOTHING
+        &quot;&quot;&quot;, Map.of(&quot;k&quot;, idemKey, &quot;client&quot;, clientId));
+    return inserted == 1;          // 0 means already seen: skip
+}
+</code></pre>
+<p><em>What to notice: the database's unique constraint is the referee. Two consumers racing on the same chunk cannot both win.</em></p>
+<h3 id="44-where-the-latency-win-came-from">4.4 Where the latency win came from</h3>
+<p>p95 went from 1.2 seconds to 300 milliseconds (HISTORICAL) across 1,500+ clients during the PHP-to-Spring Boot migration. The database-related causes: per-service HikariCP connection pooling, composite indexes such as <code>(client_id, invoice_date)</code>, removing N+1 list queries, and pagination. Moving slow IRP calls off the request path into Kafka consumers and Redis for reads were the other causes.</p>
+<hr>
+<h2 id="5-postgresql-at-impact-analytics-thin-metadata">5. PostgreSQL at Impact Analytics: thin metadata</h2>
+<p>Planner pivots were slow on PostgreSQL, and POCs showed ClickHouse winning large analytical reads. Postgres stayed for what it is good at: thin metadata, <strong>UAM</strong> (User Access Management), roles, and single-row writes. The Go auth waterfall resolves roles and hierarchy scope from Postgres (see <a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a>). The same tenant id exists in both stores.</p>
+<hr>
+<h2 id="6-redis">6. Redis</h2>
+<h3 id="61-what-redis-is">6.1 What Redis is</h3>
+<p><strong>Redis</strong> is an in-memory key-value store. Reads and writes take well under a millisecond because data lives in RAM. It has rich data types (strings, hashes, lists, sets, sorted sets), <strong>TTLs</strong> (keys that expire automatically) and atomic operations such as <code>INCR</code> and <code>SET NX</code>. It is used for caching, counters, rate limiting, sessions and locks.</p>
+<h3 id="62-cache-aside">6.2 Cache-aside</h3>
+<p><strong>Cache-aside</strong> means the application checks the cache first. On a miss it reads the database, stores the result with a TTL, and returns it. On a write, it updates the database and deletes the cache key.</p>
+<p>At Masters this ran through <strong>Spring Data Redis</strong>, Spring's Redis integration. <code>StringRedisTemplate</code> is its ready-made client for string keys and values.</p>
+<pre><code class="language-java">// Teaching sketch. TTL values are illustrative.
+public ClientConfig get(long clientId) {
+    String key = &quot;cfg:&quot; + clientId;
+    String hit = redis.opsForValue().get(key);
+    if (hit != null) {
+        return json.readValue(hit, ClientConfig.class);
+    }
+    ClientConfig cfg = db.findClientConfig(clientId);
+    long ttl = 300 + ThreadLocalRandom.current().nextInt(61);     // TTL with jitter
+    redis.opsForValue().set(key, json.writeValueAsString(cfg), Duration.ofSeconds(ttl));
+    return cfg;
+}
+
+@Transactional
+public void update(long clientId, ClientConfig cfg) {
+    db.saveClientConfig(clientId, cfg);
+    redis.delete(&quot;cfg:&quot; + clientId);                              // invalidate on write
+}
+</code></pre>
+<p>For slow-changing reference data such as tax-rate masters, Spring's cache annotations are simpler. <code>@Cacheable</code> means "look in the cache first and only run this method on a miss". Backed by a Redis cache manager with a TTL, it is cache-aside in one line:</p>
+<pre><code class="language-java">@Cacheable(cacheNames = &quot;taxRates&quot;, key = &quot;#hsnCode&quot;)
+public TaxRate rateFor(String hsnCode) {
+    return taxRateRepo.findByHsnCode(hsnCode);
+}
+</code></pre>
+<h3 id="63-cache-stampede">6.3 Cache stampede</h3>
+<p>A <strong>stampede</strong> (thundering herd) is when a hot key expires and hundreds of requests miss at once and all hit the database. Guards:</p>
+<ul>
+<li><strong>TTL jitter</strong>, so keys don't all expire together.</li>
+<li><strong>A short lock</strong> (<code>SET key:lock 1 NX EX 5</code>), so one worker recomputes while others wait briefly or serve slightly stale data. In Spring Data Redis that is <code>setIfAbsent(lockKey, "1", Duration.ofSeconds(5))</code>.</li>
+</ul>
+<h3 id="64-where-i-used-redis">6.4 Where I used Redis</h3>
+<table>
+<thead>
+<tr>
+<th>Project</th>
+<th>Use</th>
+<th>Number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Masters India</td>
+<td>Cache-aside through Spring Data Redis for client config, feature flags, GSTIN master lookups, tax-rate masters, and IRP auth tokens (TTL under the token's life). Invalidate on write for config. TTL with jitter for slow-changing masters</td>
+<td>Database read load down <strong>30%</strong> (HISTORICAL)</td>
+</tr>
+<tr>
+<td>Impact Analytics</td>
+<td>Front cache of the Go auth waterfall, so verified identities are not re-verified on every request. A miss falls through to real verification</td>
+<td>No number on the resume</td>
+</tr>
+<tr>
+<td>GeeksforGeeks</td>
+<td>Vote counters and unread counts for display, reconciled to MySQL asynchronously to avoid hot-row contention</td>
+<td>Part of the 10K+ daily queries story</td>
+</tr>
+</tbody>
+</table>
+<p>Why 30% fewer reads is plausible at Masters: the same client config and GSTIN validation ran for every invoice in a bulk import. Caching those across a 100K-row import removes a huge amount of duplicate reading. Caching mostly helped p50 and read-heavy endpoints. Moving IRP calls off the request path and query fixes drove the p95 tail.</p>
+<h3 id="65-alternatives">6.5 Alternatives</h3>
+<ul>
+<li><em>Memcached:</em> simpler and very fast, but no rich types, persistence options or atomic data structures.</li>
+<li><em>An in-process cache (for example Caffeine in Java):</em> fastest, but each instance has its own copy and invalidation across instances is hard.</li>
+<li><em>No cache, just more database replicas:</em> moves the load around without removing duplicate reads.</li>
+</ul>
+<hr>
+<h2 id="7-mongodb-and-elasticsearch-briefly">7. MongoDB and Elasticsearch, briefly</h2>
+<ul>
+<li><strong>MongoDB</strong> is a document database that stores flexible JSON-like documents. At Masters it held invoice payload snapshots and signed IRP responses, whose shape varied. At GeeksforGeeks it held doubt bodies and attachments with varying structure.</li>
+<li><strong>Elasticsearch</strong> is a search engine built on inverted indexes (a map from each word to the documents containing it). At Masters it powered invoice search and was the storage of the ELK logging stack. At GeeksforGeeks it powered search across doubts and content.</li>
+</ul>
+<p>More depth: <a href="../../../prep/02_mongodb_elasticsearch.html">../../../prep/02_mongodb_elasticsearch.md</a>.</p>
+<hr>
+<h2 id="8-interview-questions-with-speakable-answers">8. Interview questions with speakable answers</h2>
+<p><strong>Q1. Walk me through your FRM schema design.</strong>
+It was an 8-table normalized MySQL schema on SOADB, Uber's service-owned MySQL standard. Fact tables hold the balance sheet and income statement lines, separate from level mappings, assessments, thresholds and review status. Every table carries the fiscal period and audit columns. Normalizing meant the close-time ETL load and analysts' edits stopped fighting over the same rows, which is how it resolved lock contention. SHA-256 natural keys stopped duplicates across quarters, and one polymorphic review-status model served all eight screens.</p>
+<p><strong>Q2. Tell me about the column-aliasing bug.</strong>
+The legacy code ran raw SQL through JDBC and built each row into a map keyed by column label. A join between the fact table and <code>level_mapping</code> returned two columns both labelled <code>uuid</code>, and the map kept the last one. So rows silently carried the mapping's uuid instead of the fact's. It surfaced when editing one reconciliation line seemed to change another. The fix was moving reads to Spring Data JPA queries with an explicit, unique alias on every column, mapped into typed projections, so values can't collide. We raised the module's statement coverage to 100% to prove nothing else regressed.</p>
+<p><strong>Q3. Optimistic or pessimistic locking, and why?</strong>
+Optimistic, for analyst edits during close. Edits are short and conflicts are rare, so holding locks would only create contention with the ETL. With a JPA <code>@Version</code> field, Hibernate only updates the row if the version still matches, so a stale edit is rejected with a 409 instead of silently overwriting a colleague's work. Pessimistic locking makes sense when conflicts are frequent and retries are expensive.
+<em>Follow-up they may ask:</em> "What does <code>@Transactional</code> do if you call the method from inside the same class?" Nothing. Spring applies it through a proxy around the bean, and a call from inside the same object skips the proxy. So transactional methods live on the service and are called from the controller.</p>
+<p><strong>Q4. Why shard Postgres by tax quarter?</strong>
+GST work is quarter-scoped. Writes land in the current quarter, while old quarters are mostly read for reconciliation and audits. Per-quarter shards keep the hot write set and its indexes small and let us archive a whole cold quarter safely. The trade-off is that routing lived in our code, so the risk was a write going to the wrong quarter. We derived the quarter from the invoice date at the API boundary and rejected mismatches.</p>
+<p><strong>Q5. How did Redis cut read load 30% at Masters?</strong>
+Cache-aside through Spring Data Redis on hot, repeated reads: client config, feature flags, GSTIN masters, tax rates and IRP auth tokens. In a 100K-row import the same lookups ran for every invoice, so caching them removed most of the duplicates. Config keys were invalidated on write, and slow-changing masters used TTL with jitter or <code>@Cacheable</code>. A short <code>SET NX</code> lock prevented stampedes.</p>
+<p><strong>Q6. How do you invalidate a cache correctly?</strong>
+Write to the database first, then delete the key, so the next read refills it from the truth. Don't update the cache in place, because racing writers can leave stale values. Add TTLs as a safety net, and jitter them. For data where staleness is dangerous, such as credentials, use short TTLs that stay below the real lifetime.</p>
+<p><strong>Q7. How do you find a slow query?</strong>
+Start from the slow endpoint in tracing, find the query, and run <code>EXPLAIN ANALYZE</code>. Look for sequential scans on big tables, bad row estimates and sorts spilling to disk. In a Hibernate service, also turn on SQL logging for that path to catch N+1 patterns from lazy loading. Common fixes from my work: a composite index matching the filter order, a join or <code>IN</code> batch instead of N+1, and pagination on list endpoints.</p>
+<p><strong>Q8. PostgreSQL or MySQL?</strong>
+Both are solid OLTP databases, and the choice is usually the platform standard. At Uber it was MySQL because SOADB is the service-owned standard. At Masters it was Postgres. Postgres has richer SQL features, extensions like pgvector, and native declarative partitioning. MySQL InnoDB is very well understood for high-volume simple OLTP. I design for transactions, indexes and keys either way, and JPA keeps the Java code largely the same on both.</p>
+<p><strong>Q9. Why Spring Data JPA and Hibernate at FRM instead of plain JDBC?</strong>
+Plain JDBC with maps keyed by column name is what caused the aliasing bug. With entities and typed projections, each value lands in a named, typed field. <code>@Version</code> gave optimistic locking without hand-written SQL, and <code>@Transactional</code> gave one consistent way to make cross-table writes atomic. The cost is that an ORM can hide the SQL it runs, so we kept explicit aliases, reviewed reporting queries against an allowlist, and tested every layer.</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="clickhouse.html">clickhouse.md</a> for why analytics moved off Postgres at IA</li>
+<li><a href="python_fastapi.html">python_fastapi.md</a> for the Python services and the Spring equivalents table</li>
+<li><a href="kafka_streaming.html">kafka_streaming.md</a> for the Masters bus and Spring Kafka</li>
+<li><a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a></li>
+<li><a href="../../../handbook/05_uber_frm.html">../../../handbook/05_uber_frm.md</a> and <a href="../../../handbook/07_masters_india.html">../../../handbook/07_masters_india.md</a></li>
+<li><a href="../architecture/02_uber_frm.html">../architecture/02_uber_frm.md</a></li>
+<li><a href="../architecture/04_masters_gst.html">../architecture/04_masters_gst.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">

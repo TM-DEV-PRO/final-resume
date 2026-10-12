@@ -40,35 +40,510 @@ strong{color:#fff}
 <body>
 <div class="topbar"><a href="../../../../index.html">← All tracks</a><a href="../../../index.html">Final Java+PyGo IA</a><a href="../../../InterviewPrep.html">Prep hub</a><a href="../../../ApplicationKit.html">Application Kit</a><a href="../../../../all_pages.html">All pages</a><span class="path">final_java_pygo_ia/campaign_extras/interview_prep/tech_depth/langgraph_mcp_rag.html</span></div>
 <div class="layout">
-<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#langgraph-mcp-rag-production-agent-skills">LangGraph + MCP + RAG + production agent skills</a>
-<a class="lvl2" href="#what-pdf-skills">What (PDF skills)</a>
-<a class="lvl2" href="#how-used-here">How used here</a>
-<a class="lvl2" href="#tradeoffs">Tradeoffs</a>
-<a class="lvl2" href="#failure-modes">Failure modes</a>
-<a class="lvl2" href="#likely-questions">Likely questions</a>
-<a class="lvl2" href="#full-agentic-flow-evals-guardrails">Full agentic flow / evals / guardrails</a></nav>
-<main><h1 id="langgraph-mcp-rag-production-agent-skills">LangGraph + MCP + RAG + production agent skills</h1>
-<p>Defense for the <strong>AI &amp; Agents</strong> skills line on both final resumes. Canonical table: <a href="../../../prep/36_skills_ai_agents_defense.html"><code>../../../prep/36_skills_ai_agents_defense.md</code></a> (from <code>campaign_extras/.../tech_depth/</code> use <code>../../../../prep/36_skills_ai_agents_defense.md</code> — prefer opening <code>prep/36_skills_ai_agents_defense.md</code> from the final folder root).</p>
-<h2 id="what-pdf-skills">What (PDF skills)</h2>
-<p>LLM agents (OpenAI/Gemini/Claude), <strong>LangGraph</strong>, <strong>LangChain</strong>, <strong>MCP</strong>, <strong>tool calling</strong>, <strong>prompt engineering</strong>, <strong>RAG</strong>, <strong>embeddings</strong>, <strong>Milvus</strong>, <strong>pgvector</strong>, <strong>offline eval</strong>, <strong>LangSmith</strong>.</p>
-<h2 id="how-used-here">How used here</h2>
+<nav class="toc"><div class="brand">On this page</div><a class="lvl1" href="#langgraph-llm-agents-tool-calling-mcp-rag-milvus-langsmith-and-offline-evaluation">LangGraph, LLM agents, tool calling, MCP, RAG, Milvus, LangSmith and offline evaluation</a>
+<a class="lvl2" href="#0-where-each-skill-lives">0. Where each skill lives</a>
+<a class="lvl2" href="#1-llm-agents-and-structured-outputs">1. LLM agents and structured outputs</a>
+<a class="lvl2" href="#2-langgraph-and-ask-iris">2. LangGraph and Ask Iris</a>
+<a class="lvl2" href="#3-tool-calling-and-mcp-skills-level">3. Tool calling and MCP (skills-level)</a>
+<a class="lvl2" href="#4-prompt-engineering">4. Prompt engineering</a>
+<a class="lvl2" href="#5-offline-evaluation-and-the-ci-gate-a5">5. Offline evaluation and the CI gate (A5)</a>
+<a class="lvl2" href="#6-rag-embeddings-milvus-and-langchain-uber-menu">6. RAG, embeddings, Milvus and LangChain (Uber Menu)</a>
+<a class="lvl2" href="#7-langsmith-and-llm-observability">7. LangSmith and LLM observability</a>
+<a class="lvl2" href="#8-model-providers-openai-gemini-claude">8. Model providers (OpenAI, Gemini, Claude)</a>
+<a class="lvl2" href="#9-failure-modes-and-guards">9. Failure modes and guards</a>
+<a class="lvl2" href="#10-interview-questions-with-speakable-answers">10. Interview questions with speakable answers</a>
+<a class="lvl2" href="#related">Related</a></nav>
+<main><h1 id="langgraph-llm-agents-tool-calling-mcp-rag-milvus-langsmith-and-offline-evaluation">LangGraph, LLM agents, tool calling, MCP, RAG, Milvus, LangSmith and offline evaluation</h1>
+<div class="callout note">
+<p><strong>How to use this page</strong></p>
 <ul>
-<li><strong>IA:</strong> LangGraph copilot graph; MCP-hosted <strong>tool calling</strong> to audited <strong>read-only</strong> planning tools; <strong>prompt engineering</strong> + structured tool contracts; human confirm before writes; <strong>LangSmith</strong> for traces/eval; embeddings jobs on async/Kafka path; ClickHouse reads — say <strong>building</strong>, not shipped.</li>
-<li><strong>Menu:</strong> <strong>LangChain RAG</strong> + <strong>Gemini 2.5 Pro</strong> + <strong>Milvus</strong> (<strong>embeddings</strong> of labeled menus); <strong>prompt engineering</strong> + schema validation gate; <strong>98%/100% offline eval</strong> (HISTORICAL). No SFT on PDF.</li>
+<li><strong>What it covers:</strong> every item on the <strong>Generative AI</strong> skills line, explained from scratch, and mapped to where I actually used it. That means Ask Iris (LangGraph supervisor plus evaluator, LangSmith) and the Keep/Drop decision engine (structured LLM invokes, 7 lenses, offline eval gate) at Impact Analytics, and the menu RAG pipeline (LangChain, Gemini 2.5 Pro, Milvus) at Uber Menu. MCP, tool calling and pgvector are explained honestly as skills-level.</li>
+<li><strong>When to read it:</strong> before any AI engineer, applied ML or "LLM in production" round, and before the IA Agentic deep dive.</li>
+<li><strong>What to memorise:</strong> LangGraph is Ask Iris. Keep/Drop has a fixed step order and no LLM orchestrator. RAG and Milvus are Uber Menu. MCP is skills-level. LangSmith is Ask Iris. 80% is a CI gate on 300 cases, while 73% and 74% come from a separate 200-case benchmark.</li>
 </ul>
-<h2 id="tradeoffs">Tradeoffs</h2>
-<p>Autonomy vs safety — gated confirms beat fully autonomous money/planning writes. RAG + schema gate beats brittle regex for messy menus. Offline eval ≠ live SLA without monitoring.</p>
-<h2 id="failure-modes">Failure modes</h2>
+</div>
+<p><strong>Labels used on this page.</strong> MEASURED means we have a log, doc, config or code for it. ESTIMATED means arithmetic I can show. HISTORICAL means from my past work records. TARGET means a design goal (say "targeting"). Verbal means true but off the resume.</p>
+<div class="callout warn">
+<p><strong>Say these carefully</strong></p>
 <ul>
-<li>Hallucinated tool args → validators / typed schemas  </li>
-<li>Stale embeddings / RAG index  </li>
-<li>Eval leakage (offline ≠ production)  </li>
-<li>Prompt drift without golden-set regression (LangSmith)</li>
+<li><strong>80% is a CI promotion gate</strong> on the 300-case proxy set. It does not mean "every tenant runs at 80% accuracy live".</li>
+<li><strong>73% lower cost at 100% coverage, and the 74% baseline, come from the gold-200 benchmark</strong>, not the 300-case file. Never fuse them. Model names are not on the resume.</li>
+<li><strong>Keep/Drop has no LLM orchestrator.</strong> Its step order is fixed in code: peer benchmark, then decider, then lenses, then blend, then explanation. Do not call it "seven agents talking to each other".</li>
+<li><strong>LangGraph and LangSmith are Ask Iris.</strong> The Keep/Drop batch uses custom JSON telemetry, not LangSmith.</li>
+<li><strong>RAG and Milvus are Uber Menu only.</strong> Never Impact Analytics. Menu's 98% is <strong>offline evaluation</strong>.</li>
+<li><strong>MCP and tool calling are skills-level.</strong> The Cluster Recommendation Copilot tool design (14 tools) is verbal depth only, not a resume bullet. Say "building", not "shipped", for the Copilot.</li>
+<li><strong>No human review queues (HITL) at IA.</strong> Offline evals replaced critic and evaluator agents in Keep/Drop.</li>
+<li>Ask Iris is a <strong>shipped capability</strong> with no SLA or usage numbers. Do not invent any.</li>
+<li>No fine-tuning or SFT claims on the resume.</li>
 </ul>
-<h2 id="likely-questions">Likely questions</h2>
-<p>Why LangGraph vs plain chains? How do MCP tools stay read-only? What is tool calling vs free-form SQL? How do you evaluate RAG? Prompt engineering vs fine-tuning? Embeddings where?</p>
-<h2 id="full-agentic-flow-evals-guardrails">Full agentic flow / evals / guardrails</h2>
-<p>See <a href="../projects/01d_agentic_evals_guardrails_flow.html">../projects/01d_agentic_evals_guardrails_flow.md</a> if present — production load-test honesty, LangSmith vs Datadog, 14 tools + 3 gates (verbal).</p></main>
+</div>
+<hr>
+<h2 id="0-where-each-skill-lives">0. Where each skill lives</h2>
+<table>
+<thead>
+<tr>
+<th>Skill on the resume</th>
+<th>Where I used it</th>
+<th>Resume bullet</th>
+<th>Strength</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM agents (OpenAI / Gemini / Claude)</td>
+<td>IA Ask Iris and Keep/Drop LLM lenses. Uber Menu Gemini 2.5 Pro</td>
+<td>A1, A4, M1</td>
+<td>Production</td>
+</tr>
+<tr>
+<td>LangGraph</td>
+<td>IA Ask Iris: supervisor plus 3-attempt evaluator</td>
+<td>A4</td>
+<td>Production</td>
+</tr>
+<tr>
+<td>LangChain</td>
+<td>Uber Menu RAG pipeline</td>
+<td>M1</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td>RAG</td>
+<td>Uber Menu extraction</td>
+<td>M1</td>
+<td>Production, 98% offline</td>
+</tr>
+<tr>
+<td>Milvus</td>
+<td>Uber Menu vector store</td>
+<td>M1</td>
+<td>Production (historical)</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>None</td>
+<td>n/a</td>
+<td>Literacy only</td>
+</tr>
+<tr>
+<td>Tool calling</td>
+<td>Concept and design. IA scoring deliberately has no tools</td>
+<td>Skills line</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td>MCP</td>
+<td>Concept and design</td>
+<td>Skills line</td>
+<td>Skills-level</td>
+</tr>
+<tr>
+<td>Prompt engineering</td>
+<td>IA lens prompts, Menu extraction prompts</td>
+<td>A1, M1</td>
+<td>Production</td>
+</tr>
+<tr>
+<td>LangSmith</td>
+<td>IA Ask Iris tracing</td>
+<td>A4</td>
+<td>Production</td>
+</tr>
+<tr>
+<td>Offline evaluation</td>
+<td>IA 300-case gate and gold-200 bench. Menu 98% field fidelity</td>
+<td>A5, M1</td>
+<td>Production</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-llm-agents-and-structured-outputs">1. LLM agents and structured outputs</h2>
+<h3 id="11-plain-english">1.1 Plain English</h3>
+<p>A <strong>large language model (LLM)</strong> predicts text. An <strong>LLM agent</strong> is a program that uses an LLM to decide steps: which tool to call, what to ask next, when to stop. A plain "chain" always runs the same steps in the same order. An agent chooses its path at runtime. That flexibility is also the danger, because agents can loop, wander, or take actions you did not intend.</p>
+<p>A <strong>structured LLM invoke</strong> is a call where the model must return JSON that matches a schema. Think of a form with fixed boxes instead of a blank page. You validate the answer like any API response.</p>
+<pre><code class="language-python"># Teaching sketch: a structured lens call with Pydantic validation.
+class LensScore(BaseModel):
+    lens: Literal[&quot;trend_velocity&quot;, &quot;size_curve&quot;, &quot;colour_cannibalization&quot;]
+    score: float = Field(ge=0, le=1)
+    rationale: str
+
+raw = llm.invoke(prompt, response_format=LensScore.model_json_schema())
+result = LensScore.model_validate_json(raw)   # rejects anything off-schema
+</code></pre>
+<h3 id="12-where-i-used-it-the-keepdrop-decision-engine-a1-a2-a3">1.2 Where I used it: the Keep/Drop decision engine (A1, A2, A3)</h3>
+<blockquote>
+<p>Architected a <strong>multi-pipeline AI merchandise decision engine (Keep/Drop, Missed Opportunities, Top Style)</strong> evaluating <strong>348k</strong> article-seasons. Optimized inference at scale, processing <strong>88k</strong> items per pass, by blending deterministic KPI math with structured LLM invokes across <strong>7 AI lenses</strong>.</p>
+</blockquote>
+<p>In plain words: for each <strong>article-season</strong> (one product in one selling season), code computes hard KPIs such as <strong>sell-through</strong> (share of stock that sold) and <strong>rate of sale</strong> (units per selling store per week). Then the LLM answers up to seven focused questions, the <strong>lenses</strong>, and the two are blended into a keep-or-drop recommendation.</p>
+<p>The seven active lenses are trend_velocity, size_curve, colour_cannibalization, channel_divergence, multi_season_consistency, discount_dependency and margin_resilience. An eighth exists but is switched off. A cheap Python <strong>lens gate</strong> runs first and skips lenses that make no sense, for example size_curve for a single-size product.</p>
+<div class="mermaid">flowchart LR
+    CH["ClickHouse facts"] --&gt; DET["Deterministic KPI math: s_det"]
+    DET --&gt; PAY["JSON payload per article, batches up to 64"]
+    PAY --&gt; PEER["Peer benchmark"]
+    PEER --&gt; DEC["Decider"]
+    DEC --&gt; LENS["Lens calls, structured JSON"]
+    LENS --&gt; BLEND["Blend: s_final = 0.4 x s_det + 0.6 x s_agent"]
+    BLEND --&gt; EXP["Explanation"]
+    EXP --&gt; OUT["Output rows with config_hash"]
+</div>
+<p><em>What to notice: the order of steps is fixed in code. No LLM decides what runs next.</em></p>
+<p>Worked example (from prep): a tee with sell-through 84% and rate of sale 1.168 gets <code>s_det</code> of about 0.65 from code. The gate sees five sizes, two colours and 12 weeks on sale, so size_curve, colour_cannibalization and trend_velocity are eligible. If <code>s_agent = 0.711</code>, then <code>s_final = 0.4 x 0.65 + 0.6 x 0.711</code>, which is about 0.687. That is at or above 0.55, so it is a keep.</p>
+<p><strong>Why the LLM gets JSON, not tools:</strong> the master table is 2.11B rows. A scoring model with a SQL or code tool across 88k items is a latency, cost and injection risk. Code computes the KPIs. The model does judgement, not arithmetic. On timeout, the deterministic score stands (A2).</p>
+<p><strong>Why the step order is fixed:</strong> a batch of 88k items needs predictable cost and behaviour. An LLM choosing the path per item would make cost and evaluation unpredictable.</p>
+<p><strong>Numbers:</strong> 348k article-seasons evaluated (MEASURED, and not the 1.6M catalog), 88k items per pass (MEASURED), 7 lenses (MEASURED, config). About $100 per pass in tokens is true but off the PDF.</p>
+<hr>
+<h2 id="2-langgraph-and-ask-iris">2. LangGraph and Ask Iris</h2>
+<h3 id="21-what-langgraph-is">2.1 What LangGraph is</h3>
+<p><strong>LangGraph</strong> is a library from the LangChain team for building LLM applications as a <strong>graph of steps with shared state</strong>. Each <strong>node</strong> is a function (call a model, call a worker, check an answer). <strong>Edges</strong> connect nodes. <strong>Conditional edges</strong> choose the next node from the current state. Graphs can loop, which is what agents need, and LangGraph adds <strong>checkpointing</strong> (save state between steps) and a <strong>recursion limit</strong> (a maximum number of steps per run).</p>
+<p>Analogy: a hospital triage desk. The triage nurse (supervisor) looks at the patient and sends them to a specialist (worker). A senior doctor (evaluator) reviews the specialist's note and can send it back. Hospital policy says "no more than three reviews", so nobody circles forever.</p>
+<h3 id="22-how-ask-iris-uses-it-a4">2.2 How Ask Iris uses it (A4)</h3>
+<blockquote>
+<p><strong>Shipped "Ask Iris,"</strong> a JWT-secured WebSocket copilot enabling planners to interactively query KPIs and inspect AI decisions on a multi-billion-row database. Prevented infinite LLM loops and multi-tenant data leaks by orchestrating a <strong>LangGraph</strong> supervisor with a 3-attempt evaluator loop, utilizing <strong>LangSmith</strong> for observability, and strictly freezing hierarchy access on the initial socket handshake.</p>
+</blockquote>
+<div class="mermaid">sequenceDiagram
+    participant B as Planner browser
+    participant API as FastAPI WebSocket
+    participant SUP as Supervisor node
+    participant W as Worker node
+    participant EV as Evaluator node
+    B-&gt;&gt;API: Upgrade request with JWT
+    API-&gt;&gt;API: Verify token, freeze plan_scope
+    B-&gt;&gt;API: Why was TEE-0412 dropped?
+    API-&gt;&gt;SUP: Question plus frozen scope
+    SUP-&gt;&gt;W: Route to the right worker
+    W--&gt;&gt;EV: Draft answer
+    EV--&gt;&gt;SUP: Not good enough, attempt 2 of 3
+    SUP-&gt;&gt;W: Retry
+    W--&gt;&gt;EV: Revised answer
+    EV--&gt;&gt;API: Accepted
+    API--&gt;&gt;B: Answer
+</div>
+<p><em>What to notice: scope is set once at the top. The evaluator can send work back, but never more than three times.</em></p>
+<pre><code class="language-python"># Teaching sketch of the graph shape. Not production code.
+MAX_ATTEMPTS = 3
+
+def evaluator(state):
+    ok = judge(state[&quot;draft&quot;], state[&quot;question&quot;])
+    if ok or state[&quot;attempts&quot;] &gt;= MAX_ATTEMPTS:
+        return {&quot;final&quot;: state[&quot;draft&quot;] if ok else graceful_fallback(state)}
+    return {&quot;attempts&quot;: state[&quot;attempts&quot;] + 1}
+
+g = StateGraph(IrisState)
+g.add_node(&quot;supervisor&quot;, supervisor)
+g.add_node(&quot;worker&quot;, worker)
+g.add_node(&quot;evaluator&quot;, evaluator)
+g.add_edge(&quot;supervisor&quot;, &quot;worker&quot;)
+g.add_edge(&quot;worker&quot;, &quot;evaluator&quot;)
+g.add_conditional_edges(&quot;evaluator&quot;, lambda s: END if &quot;final&quot; in s else &quot;supervisor&quot;)
+app = g.compile()
+app.invoke(state, config={&quot;recursion_limit&quot;: 25})   # illustrative limit
+</code></pre>
+<h3 id="23-design-decisions-for-ask-iris">2.3 Design decisions for Ask Iris</h3>
+<ul>
+<li><strong>What:</strong> a supervisor graph with a capped evaluator, behind a JWT-verified WebSocket, with scope frozen at handshake, traced in LangSmith.</li>
+<li><strong>Why:</strong> chat is the riskiest LLM surface. Scope that can change mid-session invites tenant bleed, and uncapped self-critique loops burn tokens.</li>
+<li><strong>Alternatives considered:</strong></li>
+<li><em>A plain chain (no graph).</em> Simpler, but it cannot route different question types to different workers or retry.</li>
+<li><em>A fully autonomous agent with free tool use.</em> More flexible and much harder to bound or test.</li>
+<li><em>Re-check permissions per message.</em> Then scope depends on message content. Freezing at the handshake makes widening scope structurally impossible.</li>
+<li><strong>Trade-off:</strong> if a user's permissions change mid-session, they must reconnect. A capped evaluator sometimes returns a "best effort" answer.</li>
+<li><strong>What I'd do differently:</strong> build an Ask Iris-specific offline eval set from real planner questions early, so routing changes are gated like Keep/Drop changes.</li>
+</ul>
+<h3 id="24-what-not-to-claim">2.4 What not to claim</h3>
+<p>No SLA, latency target, user count or questions per week. It is a shipped capability.</p>
+<hr>
+<h2 id="3-tool-calling-and-mcp-skills-level">3. Tool calling and MCP (skills-level)</h2>
+<h3 id="31-tool-calling">3.1 Tool calling</h3>
+<p><strong>Tool calling</strong> (also called function calling) lets a model ask the application to run a function. You describe the tools with names and JSON schemas. The model returns "call <code>get_kpis</code> with <code>{article: 'TEE-0412'}</code>". Your code validates the arguments, runs the function and gives the result back to the model. The model never runs anything itself. Your code does.</p>
+<pre><code class="language-json">{&quot;name&quot;: &quot;get_article_kpis&quot;,
+ &quot;description&quot;: &quot;Read KPIs for one article within the caller's scope&quot;,
+ &quot;parameters&quot;: {&quot;type&quot;: &quot;object&quot;,
+   &quot;properties&quot;: {&quot;article_id&quot;: {&quot;type&quot;: &quot;string&quot;}, &quot;season&quot;: {&quot;type&quot;: &quot;integer&quot;}},
+   &quot;required&quot;: [&quot;article_id&quot;, &quot;season&quot;]}}
+</code></pre>
+<p>Rules I follow when designing tools:</p>
+<ol>
+<li><strong>Read-only by default.</strong> Writes go through normal product APIs with their own checks.</li>
+<li><strong>Typed arguments, validated.</strong> Reject anything off-schema before it touches data.</li>
+<li><strong>Scope comes from the session, not the arguments.</strong> The model cannot pass a tenant id.</li>
+<li><strong>No free-form SQL tools.</strong> Narrow functions with known cost.</li>
+<li><strong>Budgets:</strong> a cap on tool calls per turn and per-tool timeouts.</li>
+</ol>
+<p><strong>Where:</strong> IA's Keep/Drop scoring deliberately uses <strong>no tools</strong>. It is JSON in, structured score out. Ask Iris workers read data within the frozen <code>plan_scope</code>. On the resume, tool calling is a <strong>skills-line item</strong>, and I present my tool design depth verbally through the Copilot design below.</p>
+<h3 id="32-mcp-model-context-protocol">3.2 MCP (Model Context Protocol)</h3>
+<p><strong>MCP</strong> is an open protocol that standardises how LLM applications connect to tools and data. Think of it as USB-C for AI tools: one plug shape, so any compliant app can use any compliant tool server.</p>
+<ul>
+<li>An <strong>MCP host</strong> is the LLM app (an IDE assistant, a chat app).</li>
+<li>An <strong>MCP client</strong> inside the host keeps a connection to each server.</li>
+<li>An <strong>MCP server</strong> exposes <strong>tools</strong> (functions the model can call), <strong>resources</strong> (data the app can read) and <strong>prompts</strong> (reusable templates).</li>
+<li>Messages use <strong>JSON-RPC</strong>, over stdio for local servers or HTTP for remote ones.</li>
+</ul>
+<p>Why it matters: without MCP, every app writes custom glue for every tool. With MCP, you write a tool server once.</p>
+<p><strong>Where:</strong> skills-level. I understand the protocol and how I would expose platform reads as MCP tools. It is not a shipped IA bullet. Older prep said IA had "MCP-hosted tool calling to audited read-only planning tools". That is the Copilot design, verbal only.</p>
+<div class="callout highlight">
+<p><strong>Verbal only: Cluster Recommendation Copilot tool design</strong></p>
+<p>Use this if an interviewer wants depth on tool design. Say "the design was..." and "building", not "shipped".</p>
+<ul>
+<li><strong>14 audited read-only tools</strong> over planning data. No free-form SQL.</li>
+<li><strong>3 confirm gates</strong> in the design before any write-back through product APIs. This is a design flow, not a shipped human review queue.</li>
+<li>Budgets in the design: tool calls per session, parallel clustering jobs per tenant, token caps, per-tool timeouts.</li>
+<li>Measured baseline: an 8.5% clustering failure rate (37 out of 437), with a TARGET under 2%. TARGET turnaround from days to under 1 hour.</li>
+<li>Phase 1 design review passed. Load test pending.</li>
+</ul>
+</div>
+<hr>
+<h2 id="4-prompt-engineering">4. Prompt engineering</h2>
+<p><strong>Prompt engineering</strong> is designing the instructions, context and output format you give a model so it behaves reliably. In production that means:</p>
+<ul>
+<li><strong>One narrow job per prompt.</strong> Each lens has its own rubric instead of one giant "decide everything" prompt. Narrow prompts are easier to evaluate and fix.</li>
+<li><strong>Strict output schemas.</strong> JSON with bounded numeric fields.</li>
+<li><strong>Context as data, not instructions.</strong> Facts go in a JSON block, clearly separated from the instructions. That reduces prompt-injection risk from data fields.</li>
+<li><strong>Versioning.</strong> At IA, prompt text is part of the <code>config_hash</code> (SHA-256 of guardrails, parameters, prompts and catalog) stamped on every output row. Change one word and the hash changes, so you always know which prompt produced a decision.</li>
+<li><strong>Few-shot examples.</strong> At Menu, retrieval supplied similar labelled menus as examples (section 6).</li>
+</ul>
+<hr>
+<h2 id="5-offline-evaluation-and-the-ci-gate-a5">5. Offline evaluation and the CI gate (A5)</h2>
+<blockquote>
+<p>Built a <strong>300-case</strong> proxy evaluation harness and an <strong>80%</strong> accuracy CI gate to enforce strict deployment guardrails. Reduced live execution costs by <strong>73%</strong> at <strong>100%</strong> coverage by benchmarking models against a <strong>74%</strong> deterministic baseline, strategically freezing final decision weights when the LLM underperformed the baseline.</p>
+</blockquote>
+<h3 id="51-plain-words">5.1 Plain words</h3>
+<p><strong>Offline evaluation</strong> means testing a model or prompt on a fixed labelled set before it reaches users. A <strong>proxy</strong> set uses labels that stand in for the truth, because the real "right answer" for Keep/Drop is only known after the season ends. A <strong>CI gate</strong> is an automated check in the continuous integration pipeline that blocks promotion if a number is too low.</p>
+<h3 id="52-two-different-test-sets-keep-them-apart">5.2 Two different test sets. Keep them apart.</h3>
+<table>
+<thead>
+<tr>
+<th>Set</th>
+<th>Size</th>
+<th>What it gave us</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Proxy eval harness</td>
+<td>300 cases (<code>cases.json</code>)</td>
+<td>The promotion gate: <code>eval.json</code> has <code>gold_min_accuracy: 0.8</code>. Below 80%, a change cannot be promoted</td>
+<td>MEASURED (config)</td>
+</tr>
+<tr>
+<td>Gold-200 benchmark</td>
+<td>200 cases</td>
+<td>Chosen model about 73% cheaper than the previous one, with 200 out of 200 completed (100% coverage). Deterministic baseline at the production threshold 0.65 scored 74%. Blended LLM scored about 63%</td>
+<td>MEASURED</td>
+</tr>
+</tbody>
+</table>
+<div class="mermaid">flowchart LR
+    CHG["Prompt or model change"] --&gt; P300["300-case proxy eval"]
+    P300 --&gt; G{"At least 80 percent?"}
+    G --&gt;|"no"| BLOCK["Blocked from promotion"]
+    G --&gt;|"yes"| PROMO["Eligible to promote"]
+    G200["Separate gold-200 bench"] --&gt; COST["Model pick: about 73% cheaper, 200 of 200 complete"]
+    G200 --&gt; BASE["Det baseline 74%, blended about 63%"]
+    BASE --&gt; FREEZE["Freeze blend weights, do not retune"]
+</div>
+<p><em>What to notice: two separate boxes. The 80% gate lives on the 300-case path. The 73% and 74% live on the gold-200 path.</em></p>
+<h3 id="53-the-judgement-call-interviewers-like">5.3 The judgement call interviewers like</h3>
+<p>The rule-only baseline scored 74% on gold-200. The blended LLM score came in around 63%, which is lower. Instead of retuning blend weights on a 200-case set (overfitting), we <strong>froze</strong> the weights. The model has to beat a free rule before it is allowed to move decisions more. That is a senior call: the eval system can, and did, say no to the AI.</p>
+<h3 id="54-how-to-say-the-numbers">5.4 How to say the numbers</h3>
+<ul>
+<li>"Promotion requires at least 80% on a 300-case proxy set. It's a CI gate."</li>
+<li>"On a separate 200-case benchmark, the model we picked cost about 73% less and still completed all 200 cases."</li>
+<li>"The rule-only baseline scored 74% on that same 200 set. When the blend came in lower, we froze the weights."</li>
+</ul>
+<p>Do NOT say: "80% accuracy in production", "the 300 cases showed 73%", "100% test coverage" for this bullet, or the model names as if they were on the resume.</p>
+<h3 id="55-menus-offline-evaluation">5.5 Menu's offline evaluation</h3>
+<p>98% field fidelity on the Menu RAG pipeline was measured offline against labelled menus. Each field (item name, price, description, modifier) is compared with ground truth. Older prep also quoted "100% schema consistency". The current resume does not, so stick to 98%.</p>
+<hr>
+<h2 id="6-rag-embeddings-milvus-and-langchain-uber-menu">6. RAG, embeddings, Milvus and LangChain (Uber Menu)</h2>
+<blockquote>
+<p>Accelerated restaurant onboarding from <strong>24 hours to 2 hours</strong> and saved <strong>$600K</strong> annually by architecting an automated ingestion pipeline processing <strong>30K+</strong> menus monthly. Converted unstructured, multilingual PDFs into a strict catalog schema at <strong>98%</strong> field fidelity utilizing a <strong>Gemini 2.5 Pro</strong> and <strong>LangChain RAG</strong> pipeline over <strong>Milvus</strong> vector embeddings.</p>
+</blockquote>
+<h3 id="61-plain-english">6.1 Plain English</h3>
+<p><strong>RAG</strong> (Retrieval-Augmented Generation) means: before asking the model, fetch relevant reference material and put it in the prompt. It is an open-book exam instead of a closed-book one.</p>
+<p>An <strong>embedding</strong> is a list of numbers (a vector) that represents the meaning of a piece of text. Texts with similar meaning have vectors that are close together. A <strong>vector database</strong> such as <strong>Milvus</strong> stores millions of these vectors and quickly finds the nearest ones to a query. It uses <strong>approximate nearest neighbour (ANN)</strong> indexes such as HNSW (a layered graph you walk greedily towards the target) or IVF (cluster the vectors, then only search the closest clusters).</p>
+<p><strong>LangChain</strong> is a Python framework with building blocks for LLM apps: document loaders, text splitters, embedding wrappers, vector store connectors, retrievers and prompt templates. We used it as the glue for the RAG pipeline.</p>
+<h3 id="62-how-the-menu-pipeline-worked">6.2 How the menu pipeline worked</h3>
+<div class="mermaid">flowchart LR
+    PDF["Multilingual menu PDF or image"] --&gt; SPLIT["Extract text and chunk by section"]
+    SPLIT --&gt; EMB["Embed chunks"]
+    EMB --&gt; MIL["Milvus: find similar labelled menus and schema examples"]
+    MIL --&gt; PROMPT["Prompt: schema, retrieved examples, menu chunk"]
+    PROMPT --&gt; GEM["Gemini 2.5 Pro: structured extraction"]
+    GEM --&gt; VAL["Schema validation"]
+    VAL --&gt;|"valid"| CAT["Idempotent catalog upsert"]
+    VAL --&gt;|"invalid or low confidence"| HOLD["Held back from auto-publish"]
+</div>
+<p><em>What to notice: retrieval supplies examples of what correct output looks like, and a schema gate sits between the model and the catalog.</em></p>
+<ol>
+<li>A messy PDF menu arrives (multiple languages, columns, images).</li>
+<li>The text is extracted and split into chunks such as a section or a block of items.</li>
+<li>Each chunk is embedded, and Milvus returns similar, already-labelled menus and schema examples.</li>
+<li>The prompt gives Gemini 2.5 Pro the target catalog schema, the retrieved examples and the menu chunk.</li>
+<li>Gemini returns structured items: name, price, description, modifiers.</li>
+<li>A schema validator checks types, required fields and price formats. Valid output becomes an idempotent catalog upsert. Invalid or low-confidence output is held back from auto-publish (older prep describes a manual review path for these).</li>
+</ol>
+<h3 id="63-why-this-design">6.3 Why this design</h3>
+<ul>
+<li><strong>Why RAG over plain prompting:</strong> menus vary wildly. Showing the model similar solved examples makes output more consistent than instructions alone.</li>
+<li><strong>Why not regex or templates:</strong> they break on every new layout and language.</li>
+<li><strong>Why not fine-tuning:</strong> it costs more to iterate and needs a labelled training set per change. Retrieval examples can be updated by adding labelled menus. No fine-tuning is claimed on the resume.</li>
+<li><strong>Why Milvus:</strong> a dedicated, scalable vector database with ANN indexes. pgvector is a reasonable alternative when vectors live next to relational data in Postgres at moderate scale (see 6.5).</li>
+<li><strong>Trade-off:</strong> retrieval quality depends on the labelled corpus. A stale index or poor chunking hurts accuracy quietly.</li>
+<li><strong>What I'd do differently:</strong> track retrieval quality separately from generation quality in the offline eval, so you know which half regressed.</li>
+</ul>
+<h3 id="64-the-numbers">6.4 The numbers</h3>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Meaning</th>
+<th>Tag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>98% field fidelity</td>
+<td>Share of extracted fields matching labelled ground truth</td>
+<td>HISTORICAL, offline evaluation</td>
+</tr>
+<tr>
+<td>From 24 hours to 2 hours</td>
+<td>Restaurant onboarding time, about 92% faster</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>30K+ menus a month</td>
+<td>Volume</td>
+<td>HISTORICAL</td>
+</tr>
+<tr>
+<td>$600K a year</td>
+<td>About $2 per menu x 30,000 x 12 = $720K list, floored to $600K</td>
+<td>ESTIMATED on HISTORICAL inputs</td>
+</tr>
+</tbody>
+</table>
+<p>Say it: "98% field fidelity on our offline evaluation set." Do NOT say "98% accuracy in production" or "$720K saved".</p>
+<h3 id="65-pgvector-literacy">6.5 pgvector (literacy)</h3>
+<p><strong>pgvector</strong> is a PostgreSQL extension that adds a vector column type and nearest-neighbour search (HNSW and IVFFlat indexes). It is great when you want vectors next to your relational data, with one database to operate and SQL joins between vectors and metadata. A dedicated vector database such as Milvus scales further and offers more index options. <strong>I have not run pgvector in production. It is skills-level.</strong></p>
+<hr>
+<h2 id="7-langsmith-and-llm-observability">7. LangSmith and LLM observability</h2>
+<p><strong>LangSmith</strong> is a tracing and evaluation tool for LLM apps from the LangChain team. Every run becomes a <strong>trace tree</strong>: each node, model call, prompt, response, token count and latency. You can replay a bad answer, see which step went wrong, and build datasets from real traces.</p>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Tool</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ask Iris graph runs</td>
+<td>LangSmith</td>
+<td>See supervisor routing, evaluator retries and tokens per question</td>
+</tr>
+<tr>
+<td>Keep/Drop batch runs</td>
+<td>Custom JSON telemetry (tokens, USD cost, step duration, batch fallbacks) plus <code>config_hash</code></td>
+<td>A batch of 88k items needs per-run cost accounting tied to output rows</td>
+</tr>
+<tr>
+<td>Go platform HTTP and database calls</td>
+<td>Datadog</td>
+<td>Distributed tracing of the edge</td>
+</tr>
+</tbody>
+</table>
+<p>Debugging a bad Ask Iris answer, end to end: find the trace in LangSmith, check which worker the supervisor chose, read the evaluator's reasons, see the data the worker had. If the data was wrong, follow the request into Datadog on the Go side.</p>
+<hr>
+<h2 id="8-model-providers-openai-gemini-claude">8. Model providers (OpenAI, Gemini, Claude)</h2>
+<ul>
+<li><strong>OpenAI:</strong> the gold-200 benchmark compared OpenAI models for the Keep/Drop lenses. The specific model names are not on the resume. Do not volunteer them.</li>
+<li><strong>Gemini:</strong> Gemini 2.5 Pro powered the Uber Menu extraction.</li>
+<li><strong>Claude:</strong> on the skills line as a provider I can work with. I have no resume project that names it, so keep it at skills level.</li>
+</ul>
+<p>What I compare when choosing a model: quality on my offline set, cost per item, <strong>completion reliability</strong> (does it finish every case, or leave rows pending), latency, context length and structured output support. On gold-200, a third, even cheaper model left rows pending, so completion reliability decided the pick.</p>
+<hr>
+<h2 id="9-failure-modes-and-guards">9. Failure modes and guards</h2>
+<table>
+<thead>
+<tr>
+<th>Failure</th>
+<th>Guard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hallucinated or malformed output</td>
+<td>Strict JSON schemas, Pydantic validation, reject and fall back</td>
+</tr>
+<tr>
+<td>Hallucinated tool arguments</td>
+<td>Typed schemas, scope from session not arguments, read-only tools</td>
+</tr>
+<tr>
+<td>Infinite loops and cost blow-ups</td>
+<td>MAX_ATTEMPTS = 3, recursion limit, circuit breakers, hard timeouts</td>
+</tr>
+<tr>
+<td>Provider outage mid-run</td>
+<td>Circuit breaker, deterministic fallback, checkpoints with <code>--resume</code></td>
+</tr>
+<tr>
+<td>Prompt drift</td>
+<td>Prompts inside <code>config_hash</code>. Every change re-runs the 300-case gate</td>
+</tr>
+<tr>
+<td>Eval leakage (offline does not equal production)</td>
+<td>Say "offline" every time. Keep proxy and gold sets separate. Monitor fallbacks in telemetry</td>
+</tr>
+<tr>
+<td>Stale embeddings or RAG index (Menu)</td>
+<td>Re-embed when the labelled corpus changes. Track retrieval quality</td>
+</tr>
+<tr>
+<td>Prompt injection from data</td>
+<td>Facts passed as JSON data, not instructions. Model has no SQL or write access</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="10-interview-questions-with-speakable-answers">10. Interview questions with speakable answers</h2>
+<p><strong>Q1. Why LangGraph instead of a plain chain?</strong>
+Because Ask Iris needs routing and bounded retries, which are a graph with a loop, not a straight line. The supervisor picks a worker per question, and the evaluator can send a draft back. LangGraph gives me explicit state, conditional edges and a recursion limit, so I can cap the evaluator at three attempts. A chain can't loop, and a free-form agent is harder to bound.</p>
+<p><strong>Q2. Is Keep/Drop an agent?</strong>
+Not in the "LLM decides the next step" sense, and I'm careful about that. It is a batch pipeline with a fixed order in code: peer benchmark, decider, lenses, blend, explanation. The LLM parts are structured invokes that return JSON scores. I chose that because 88k items per pass needs predictable cost and behaviour, and offline evals replaced critic agents.</p>
+<p><strong>Q3. Why not give the scoring model a SQL tool?</strong>
+The master is 2.11 billion rows. A SQL tool across 88k items is a latency, cost and injection surface, and a hallucinated query could scan billions of rows. Code computes the KPIs and packs a JSON payload. The model only judges patterns. On timeout the deterministic score stands, so the run never stalls.</p>
+<p><strong>Q4. How do you evaluate an LLM feature before shipping?</strong>
+Offline, on a fixed labelled set, as a CI gate. For Keep/Drop, every prompt or model change has to score at least 80% on a 300-case proxy set to be promoted. Separately, we benchmark models on a 200-case gold set for cost and coverage. That's where the chosen model was about 73% cheaper with all 200 completed. And we always compare with the free deterministic baseline, which scored 74% on that set.
+<em>Follow-up they may ask:</em> "Is 80% your production accuracy?" No. It's the promotion threshold.</p>
+<p><strong>Q5. The LLM scored below the rule baseline. What did you do?</strong>
+We froze the blend weights instead of retuning them on a small set. The blended score was about 63% against the rule's 74% on gold-200. Retuning weights on 200 cases would just fit noise. The principle is that a model must beat a free rule before it gets more say. The eval system saying no is the eval system working.</p>
+<p><strong>Q6. Explain RAG and how you used it.</strong>
+RAG means retrieving relevant reference material and putting it in the prompt before generating. At Uber Menu we embedded menu chunks, used Milvus to find similar labelled menus and schema examples, and gave those to Gemini 2.5 Pro with the target catalog schema. Its structured output went through a schema validator before an idempotent catalog upsert. That got 98% field fidelity on our offline evaluation and helped onboarding go from 24 hours to 2 hours.</p>
+<p><strong>Q7. What is MCP and have you used it?</strong>
+MCP is an open protocol for connecting LLM apps to tools and data. A host app talks to MCP servers that expose tools, resources and prompts over JSON-RPC, so a tool server written once works with any compliant app. It's on my skills line at skills level. I haven't shipped an MCP server as a resume bullet. My tool-design depth comes from a copilot design with 14 read-only tools and confirm steps before any write-back. That design is still being built.</p>
+<p><strong>Q8. How do you stop prompt injection?</strong>
+Instructions are not the control. Capabilities are. In Keep/Drop, the model has no tools and no database access, and data goes in as a JSON block separated from instructions. Its output is schema-validated before code writes it. In Ask Iris, scope is frozen in code at the handshake, so an injected "show me tenant B" can't widen it. The worst case is a wrong sentence, not a data leak or a write.</p>
+<p><strong>Q9. Prompt engineering or fine-tuning?</strong>
+I start with prompt engineering, retrieval and structured outputs, because they are cheap to iterate and easy to evaluate offline. Fine-tuning is for when you have a large labelled set and a stable task where prompting has plateaued. Neither of my production projects claims fine-tuning.</p>
+<p><strong>Q10. LangSmith or Datadog?</strong>
+Both, for different layers. LangSmith traces Ask Iris graph runs: routing, evaluator retries, tokens. Datadog traces the Go platform's HTTP and database calls. The Keep/Drop batch uses custom JSON telemetry for tokens, USD cost, step duration and fallbacks, stamped with a config hash, because batch cost accounting per run is what we need there.</p>
+<hr>
+<h2 id="related">Related</h2>
+<ul>
+<li><a href="auth_tenancy_rate_limits.html">auth_tenancy_rate_limits.md</a> for scope freezing and AI budgets</li>
+<li><a href="clickhouse.html">clickhouse.md</a> for the 2.11B master and ReplacingMergeTree</li>
+<li><a href="observability_cloud.html">observability_cloud.md</a> for LangSmith, Datadog and telemetry</li>
+<li><a href="flink.html">flink.md</a> for how menus reach the RAG path</li>
+<li><a href="../projects/01d_agentic_evals_guardrails_flow.html">../projects/01d_agentic_evals_guardrails_flow.md</a></li>
+<li><a href="../../../prep/36_skills_ai_agents_defense.html">../../../prep/36_skills_ai_agents_defense.md</a></li>
+<li><a href="../../../prep/43_ia_bullet_defense.html">../../../prep/43_ia_bullet_defense.md</a></li>
+</ul></main>
 </div>
 
 <script type="module">
