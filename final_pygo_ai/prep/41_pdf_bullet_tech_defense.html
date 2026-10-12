@@ -271,9 +271,9 @@ A: "It means we never register the same invoice twice, even though delivery is a
 <p><strong>In plain English.</strong> AssortSmart serves many retailers from one platform. A planner at retailer A must only see retailer A, and only the departments and stores they are assigned. Identity and roles live in PostgreSQL. The big planning facts live in ClickHouse. Every query carries the same tenant id and the user's frozen scope.</p>
 <div class="mermaid">flowchart LR
   R["Request with token or API key"] --&gt; C{"Redis cache hit?"}
-  C -- "yes" --&gt; S["Resolved user and scope"]
-  C -- "no" --&gt; FB["Firebase Admin verify"]
-  FB -- "not Firebase" --&gt; J["JWT or Google OIDC verify"]
+  C --&gt;|"yes"| S["Resolved user and scope"]
+  C --&gt;|"no"| FB["Firebase Admin verify"]
+  FB --&gt;|"not Firebase"| J["JWT or Google OIDC verify"]
   FB --&gt; PG["Postgres role resolution"]
   J --&gt; PG
   PG --&gt; S

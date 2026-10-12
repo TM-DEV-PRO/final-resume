@@ -20617,9 +20617,9 @@ A: "It means we never register the same invoice twice, even though delivery is a
 <p><strong>In plain English.</strong> AssortSmart serves many retailers from one platform. A planner at retailer A must only see retailer A, and only the departments and stores they are assigned. Identity and roles live in PostgreSQL. The big planning facts live in ClickHouse. Every query carries the same tenant id and the user's frozen scope.</p>
 <div class="mermaid">flowchart LR
   R["Request with token or API key"] --> C{"Redis cache hit?"}
-  C -- "yes" --> S["Resolved user and scope"]
-  C -- "no" --> FB["Firebase Admin verify"]
-  FB -- "not Firebase" --> J["JWT or Google OIDC verify"]
+  C -->|"yes"| S["Resolved user and scope"]
+  C -->|"no"| FB["Firebase Admin verify"]
+  FB -->|"not Firebase"| J["JWT or Google OIDC verify"]
   FB --> PG["Postgres role resolution"]
   J --> PG
   PG --> S
@@ -21814,8 +21814,8 @@ store_weekly    6
 <h3 id="81-plain-english-first">8.1 Plain English first</h3>
 <p>We had to move rollup tables from one ClickHouse Cloud cluster to another. Normally you would tell the target cluster to pull directly from the source with <code>remoteSecure</code>. That was blocked: each cluster's IP allowlist did not include the other cluster. The operator machine's IP was allowed on both. So I wrote a Go program that runs on that machine, reads from the source and writes to the target, both over ClickHouse's native protocol with TLS. It is an allowlisted pump, a workaround, not a design goal.</p>
 <div class="mermaid">flowchart LR
-  SRC["Source ClickHouse Cloud"] -- "native TLS port 9440, SELECT stream" --> GO["Go copier on allowlisted machine"]
-  GO -- "native TLS port 9440, INSERT Send" --> DST["Target ClickHouse Cloud"]
+  SRC["Source ClickHouse Cloud"] -->|"native TLS port 9440, SELECT stream"| GO["Go copier on allowlisted machine"]
+  GO -->|"native TLS port 9440, INSERT Send"| DST["Target ClickHouse Cloud"]
   SRC -.->|"remoteSecure blocked by IP allowlist"| DST
   GO --> CK["migrate-checkpoints table.done files"]
 </div>
@@ -21942,14 +21942,14 @@ func copySeason(ctx context.Context, src, dst driver.Conn, season uint16) error 
 </ol>
 <div class="mermaid">flowchart TD
   A["Start table copy"] --> B{"Season in table.done?"}
-  B -- "yes" --> S["Skip season"]
-  B -- "no" --> C{"Target already has rows for season?"}
-  C -- "yes" --> D["DROP PARTITION season"]
-  C -- "no" --> E["Copy season in 500k batches"]
+  B -->|"yes"| S["Skip season"]
+  B -->|"no"| C{"Target already has rows for season?"}
+  C -->|"yes"| D["DROP PARTITION season"]
+  C -->|"no"| E["Copy season in 500k batches"]
   D --> E
   E --> F{"Finished cleanly?"}
-  F -- "yes" --> G["Append season to table.done"]
-  F -- "no, crash or Ctrl C" --> H["No checkpoint, redo next run"]
+  F -->|"yes"| G["Append season to table.done"]
+  F -->|"no, crash or Ctrl C"| H["No checkpoint, redo next run"]
 </div>
 <p><em>What to notice:</em> the only way a season counts as done is a clean finish followed by a ledger write. That is what "eliminated partial-commit ghost rows" means.</p>
 <p><strong>Say this carefully.</strong> DROP PARTITION is <strong>not</strong> an atomic swap. If the copier crashes, the target has a truncated season until it is dropped and retried, and readers of the target can see that partial season meanwhile. The incremental design, which builds into scratch tables and swaps in with <code>REPLACE PARTITION</code>, was written and <strong>not executed</strong>. Do not claim it ran.</p>
